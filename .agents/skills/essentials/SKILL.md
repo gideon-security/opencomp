@@ -11,13 +11,13 @@ Original Cursor alwaysApply: `true`.
 
 ## Package Manager
 
-Use `bun`, never npm/yarn/pnpm.
+Use `npm`, never bun/yarn/pnpm.
 
 ```bash
-bun install          # Install deps
-bun add <pkg>        # Add package
-bun run <script>     # Run script
-bunx <cmd>           # Execute binary
+npm install          # Install deps
+npm install <pkg>    # Add package
+npm run <script>     # Run script
+npx <cmd>            # Execute binary
 ```
 
 ## Components
@@ -101,8 +101,8 @@ import { useQueryState } from 'nuqs';
 **Always run checks after code changes:**
 
 ```bash
-bun run typecheck
-bun run lint
+npm run typecheck
+npm run lint
 ```
 
 Fix all errors before committing.

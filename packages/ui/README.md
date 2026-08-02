@@ -10,9 +10,6 @@ npm install @trycompai/ui
 
 # Using yarn
 yarn add @trycompai/ui
-
-# Using bun
-bun add @trycompai/ui
 ```
 
 ## Setup

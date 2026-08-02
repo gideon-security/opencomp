@@ -2,12 +2,12 @@
 
 ## Tooling
 
-- **Package manager**: `bun` (never npm/yarn/pnpm)
-- **Build**: `bun run build` (uses turbo). Filter: `bun run --filter '@trycompai/app' build`
-- **Typecheck**: `bun run typecheck` or `npx turbo run typecheck --filter=@trycompai/api`
+- **Package manager**: `npm` (never bun/yarn/pnpm)
+- **Build**: `npm run build` (uses turbo). Filter: `npm run build --workspace=@trycompai/app`
+- **Typecheck**: `npm run typecheck` or `npx turbo run typecheck --filter=@trycompai/api`
 - **Tests (app)**: `cd apps/app && npx vitest run`
 - **Tests (api)**: `cd apps/api && npx jest src/<module> --passWithNoTests`
-- **Lint**: `bun run lint`
+- **Lint**: `npm run lint`
 
 ## Code Style
 
@@ -136,7 +136,7 @@ Every customer-facing API endpoint MUST have:
 
 - **Schema**: `packages/db/prisma/schema/` (split into files per model)
 - **IDs**: Always use prefixed CUIDs: `@default(dbgenerated("generate_prefixed_cuid('prefix'::text)"))`
-- **Migrations**: `cd packages/db && bunx prisma migrate dev --name your_name`
+- **Migrations**: `cd packages/db && npx prisma migrate dev --name your_name`
 - **Multi-tenancy**: Always scope queries by `organizationId`
 - **Transactions**: Use for operations modifying multiple records
 

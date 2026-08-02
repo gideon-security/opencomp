@@ -53,7 +53,7 @@ Provision or renew allowance only for the matching subscription item and SKU. Do
 
 ## Validation
 
-- Run `bun run db:generate` after Prisma schema changes.
-- Run `bun run check:prisma-schemas` to catch stale copied schema fragments.
+- Run `npm run db:generate` after Prisma schema changes.
+- Run `npm run check:prisma-schemas` to catch stale copied schema fragments.
 - Run catalog tests after SKU changes.
 - Add webhook tests for duplicate events, out-of-order delivery, payment failure, action required, cancellation, and renewal.

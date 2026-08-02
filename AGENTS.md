@@ -2,12 +2,12 @@
 
 ## Tooling
 
-- **Package manager**: `bun` (never npm/yarn/pnpm)
-- **Build**: `bun run build` (uses turbo). Filter: `bun run --filter '@trycompai/app' build`
-- **Typecheck**: `bun run typecheck` or `bunx turbo run typecheck --filter=@trycompai/api`
-- **Tests (app)**: `cd apps/app && bunx vitest run`
-- **Tests (api)**: `cd apps/api && bunx jest src/<module> --passWithNoTests`
-- **Lint**: `bun run lint`
+- **Package manager**: `npm` (never bun/yarn/pnpm)
+- **Build**: `npm run build` (uses turbo). Filter: `npm run build --workspace=@trycompai/app`
+- **Typecheck**: `npm run typecheck` or `npx turbo run typecheck --filter=@trycompai/api`
+- **Tests (app)**: `cd apps/app && npx vitest run`
+- **Tests (api)**: `cd apps/api && npx jest src/<module> --passWithNoTests`
+- **Lint**: `npm run lint`
 
 ## Code Style
 
@@ -84,7 +84,7 @@ Every customer-facing endpoint in `apps/api/src/` flows into three systems: the 
 10. **SSE / binary responses** can't be consumed by MCP — disable the tool in `apps/mcp-server/.speakeasy/mcp-uploads-overlay.yaml` while keeping the HTTP endpoint for the web UI.
 11. **Every endpoint needs a meaningful `@ApiOperation({ summary, description })`** — required and **CI-enforced** (`openapi-docs.spec.ts` fails the build if a public op is missing one). The hosted MCP uses **dynamic toolsets**: the agent finds a tool by semantic-searching names + descriptions, so a missing/weak description makes the tool effectively undiscoverable. Write the description for the agent deciding whether to call the tool — what it does + when to use it.
 
-After adding an endpoint: `bun run --filter '@trycompai/api' dev` regenerates `packages/docs/openapi.json` on boot — **commit it with your PR**. The daily Speakeasy CI reads from that file; if it's stale, your endpoint never reaches MCP customers.
+After adding an endpoint: `npm run dev --workspace=@trycompai/api` regenerates `packages/docs/openapi.json` on boot — **commit it with your PR**. The daily Speakeasy CI reads from that file; if it's stale, your endpoint never reaches MCP customers.
 
 ## RBAC
 
@@ -147,13 +147,13 @@ Every customer-facing API endpoint MUST have:
 - **App tests**: Vitest + @testing-library/react (jsdom environment)
 - **API tests**: Jest with NestJS testing utilities
 - **Permission tests**: Test admin (write) and read-only user scenarios
-- **Run from package dir**: `cd apps/app && bunx vitest run` or `cd apps/api && bunx jest`
+- **Run from package dir**: `cd apps/app && npx vitest run` or `cd apps/api && npx jest`
 
 ## Database
 
 - **Schema**: `packages/db/prisma/schema/` (split into files per model)
 - **IDs**: Always use prefixed CUIDs: `@default(dbgenerated("generate_prefixed_cuid('prefix'::text)"))`
-- **Migrations**: `cd packages/db && bunx prisma migrate dev --name your_name`
+- **Migrations**: `cd packages/db && npx prisma migrate dev --name your_name`
 - **Multi-tenancy**: Always scope queries by `organizationId`
 - **Transactions**: Use for operations modifying multiple records
 

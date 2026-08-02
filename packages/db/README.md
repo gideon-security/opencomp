@@ -11,7 +11,7 @@ Database package for Comp AI.
 ## Install
 
 ```bash
-bun add @trycompai/db
+npm install @trycompai/db
 ```
 
 ## Usage

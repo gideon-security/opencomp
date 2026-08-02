@@ -184,7 +184,7 @@ Write the description for the agent deciding *whether to call this tool*: state 
 4. If the endpoint requires session auth, decide: remove `SessionOnlyGuard`, or disable it for MCP via the overlay.
 5. For long-running work, return a run handle and document the poll target.
 6. For file uploads, accept `s3Key` and read via `UploadsService.readUploadAsBase64`.
-7. **`bun run --filter '@trycompai/api' dev`** — your dev server regenerates `packages/docs/openapi.json` on boot.
+7. **`npm run dev --workspace=@trycompai/api`** — your dev server regenerates `packages/docs/openapi.json` on boot.
 8. **`git add packages/docs/openapi.json`** — commit the regenerated spec alongside your API change. The daily Speakeasy CI reads from this file; if it's stale, your new tool never reaches customers.
 9. Sanity-check the new operation in the spec:
    ```

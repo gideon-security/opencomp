@@ -75,8 +75,9 @@ To get a local copy up and running, please follow these simple steps.
 
 Here is what you need to be able to run Comp AI.
 
-- Node.js (Version: >=20.x)
-- Bun (Version: >=1.1.36)
+- Node.js (Version: >=22.x)
+- npm (Version: >=10.x)
+- Docker (Version: >=24.x)
 - Postgres (Version: >=15.x)
 
 ## Development
@@ -107,35 +108,35 @@ git clone https://github.com/trycompai/comp.git
 cd comp
 ```
 
-3. Install dependencies using Bun
+3. Install dependencies using npm
 
 ```sh
-bun install
+npm install
 ```
 
 4. Get Database Running
 
 ```sh
 cd packages/db
-bun run docker:up # Spin up docker container
-bun run db:migrate # Run migrations
+npm run docker:up # Spin up docker container
+npm run db:migrate # Run migrations
 ```
 
 5. Generate Prisma Types for each app
 
 ```sh
 cd apps/app
-bun run db:generate
+npm run db:generate
 cd ../portal
-bun run db:generate
+npm run db:generate
 cd ../api
-bun run db:generate
+npm run db:generate
 ```
 
 6. Run all apps in parallel from the root directory
 
 ```sh
-bun run dev
+npm run dev
 ```
 
 ---
@@ -247,7 +248,7 @@ Start and initialize the PostgreSQL database using Docker:
 
    ```sh
    cd packages/db
-   bun docker:up
+   npm run docker:up
    ```
 
 2. Default credentials:
@@ -281,29 +282,29 @@ Start and initialize the PostgreSQL database using Docker:
 
 ```sh
  # Generate Prisma client
- bun db:generate
+ npm run db:generate
 
  # Push the schema to the database
- bun db:push
+ npm run db:push
 
  # Optional: Seed the database with initial data
- bun db:seed
+ npm run db:seed
 ```
 
 Other useful database commands:
 
 ```sh
 # Open Prisma Studio to view/edit data
-bun db:studio
+npm run db:studio
 
 # Run database migrations
-bun db:migrate
+npm run db:migrate
 
 # Stop the database container
-bun docker:down
+npm run docker:down
 
 # Remove the database container and volume
-bun docker:clean
+npm run docker:clean
 ```
 
 ---
@@ -313,22 +314,43 @@ bun docker:clean
 Once everything is configured:
 
 ```sh
-bun run dev
+npm run dev
 ```
 
 Or use the Turbo repo script:
 
 ```sh
-turbo dev
+npx turbo dev
 ```
 
-> 💡 Make sure you have Turbo installed. If not, you can install it using Bun:
+> 💡 Make sure you have Turbo installed. If not, you can install it using npm:
 
 ```sh
-bun add -g turbo
+npm install -g turbo
 ```
 
 🎉 Yay! You now have a working local instance of Comp AI! 🚀
+
+### Full Stack with Docker Compose
+
+The monorepo ships a Docker-based local stack that runs everything with `node:22` + npm (no bun required on the host). It builds and starts the API, app, and portal along with Postgres, Redis, and LocalStack (AWS S3):
+
+```sh
+# Build and start the whole stack (app on :3000, portal on :3002, api on :3333)
+docker-compose up -d --build
+
+# Run database migrations and seed data
+docker-compose run --rm migrator
+docker-compose run --rm seeder
+
+# Tail logs for a service (e.g. the app)
+docker-compose logs -f app
+
+# Stop everything
+docker-compose down
+```
+
+Services: `localstack` (S3 emulation), `postgres`, `migrator` (Prisma migrate), `seeder`, `api` (NestJS), `redis`, `app` (Next.js frontend), `portal` (employee portal).
 
 ## Deployment
 
@@ -370,13 +392,13 @@ import { client } from '@trycompai/kv'
 
 ```bash
 # Build all packages
-bun run build
+npm run build
 
 # Build specific package
-bun run -F @trycompai/ui build
+npm run build --workspace=@trycompai/ui
 
 # Test packages locally
-bun run release:packages --dry-run
+npm run release:packages -- --dry-run
 ```
 
 ## Contributors

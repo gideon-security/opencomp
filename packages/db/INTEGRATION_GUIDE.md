@@ -19,10 +19,6 @@ The `@trycompai/db` package provides a single, combined schema file that include
 ## Installation
 
 ```bash
-# Using bun (recommended)
-bun add @trycompai/db @prisma/client
-bun add -D prisma
-
 # Using npm
 npm install @trycompai/db @prisma/client
 npm install -D prisma
@@ -136,16 +132,16 @@ This package includes schemas for:
 
 ```bash
 # Generate Prisma client (if needed)
-bunx prisma generate --schema=src/db/schema.prisma
+npx prisma generate --schema=src/db/schema.prisma
 
 # View database in Prisma Studio
-bunx prisma studio --schema=src/db/schema.prisma
+npx prisma studio --schema=src/db/schema.prisma
 
 # Reset database (careful!)
-bunx prisma migrate reset --schema=src/db/schema.prisma
+npx prisma migrate reset --schema=src/db/schema.prisma
 
 # Push schema changes (development)
-bunx prisma db push --schema=src/db/schema.prisma
+npx prisma db push --schema=src/db/schema.prisma
 ```
 
 ## TypeScript Integration
@@ -172,14 +168,14 @@ import type {
 If the schema wasn't copied automatically, run:
 
 ```bash
-bunx @trycompai/db postinstall
+npx @trycompai/db postinstall
 ```
 
 ### Client generation fails
 
 ```bash
 # Manually generate the client
-bunx prisma generate --schema=src/db/schema.prisma
+npx prisma generate --schema=src/db/schema.prisma
 ```
 
 ### Generated files appearing in git
@@ -243,7 +239,7 @@ For issues or questions:
 
 When the `@trycompai/db` package is updated with new schema changes:
 
-1. Update the package: `bun update @trycompai/db`
+1. Update the package: `npm update @trycompai/db`
 2. The postinstall script will automatically update your schema
-3. Run `bunx prisma generate --schema=src/db/schema.prisma` to update your client
+3. Run `npx prisma generate --schema=src/db/schema.prisma` to update your client
 4. Update your application code if needed
