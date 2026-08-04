@@ -4,7 +4,7 @@ This package provides a combined Prisma schema file for your application.
 
 ## Schema-Only Distribution
 
-The `@trycompai/db` package provides a single, combined schema file that includes all our database models. You generate your own Prisma client from this schema.
+The `@gideon-defender/db` package provides a single, combined schema file that includes all our database models. You generate your own Prisma client from this schema.
 
 **What's included:**
 - 📄 Combined Prisma schema file
@@ -20,11 +20,11 @@ The `@trycompai/db` package provides a single, combined schema file that include
 
 ```bash
 # Using npm
-npm install @trycompai/db @prisma/client
+npm install @gideon-defender/db @prisma/client
 npm install -D prisma
 
 # Using yarn
-yarn add @trycompai/db @prisma/client
+yarn add @gideon-defender/db @prisma/client
 yarn add -D prisma
 ```
 
@@ -34,7 +34,7 @@ After installation, copy the schema file to your project and generate the Prisma
 
 ```bash
 # Copy the schema file
-cp node_modules/@trycompai/db/dist/schema.prisma prisma/schema.prisma
+cp node_modules/@gideon-defender/db/dist/schema.prisma prisma/schema.prisma
 
 # Add the generator block to your schema
 echo "
@@ -52,7 +52,7 @@ Or create a setup script in your `package.json`:
 ```json
 {
   "scripts": {
-    "db:setup": "cp node_modules/@trycompai/db/dist/schema.prisma prisma/schema.prisma && echo '\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}' >> prisma/schema.prisma && prisma generate",
+    "db:setup": "cp node_modules/@gideon-defender/db/dist/schema.prisma prisma/schema.prisma && echo '\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated\"\n}' >> prisma/schema.prisma && prisma generate",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio"
@@ -102,10 +102,10 @@ Import and use the database client in your application:
 
 ```typescript
 // Import the database client
-import { db } from '@trycompai/db';
+import { db } from '@gideon-defender/db';
 
 // Import types  
-import type { User, Organization, Departments } from '@trycompai/db/types';
+import type { User, Organization, Departments } from '@gideon-defender/db/types';
 
 // Query examples
 const users = await db.user.findMany();
@@ -168,7 +168,7 @@ import type {
 If the schema wasn't copied automatically, run:
 
 ```bash
-npx @trycompai/db postinstall
+npx @gideon-defender/db postinstall
 ```
 
 ### Client generation fails
@@ -237,9 +237,9 @@ For issues or questions:
 
 ## Schema Updates
 
-When the `@trycompai/db` package is updated with new schema changes:
+When the `@gideon-defender/db` package is updated with new schema changes:
 
-1. Update the package: `npm update @trycompai/db`
+1. Update the package: `npm update @gideon-defender/db`
 2. The postinstall script will automatically update your schema
 3. Run `npx prisma generate --schema=src/db/schema.prisma` to update your client
 4. Update your application code if needed

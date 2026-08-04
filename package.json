@@ -68,17 +68,17 @@
     "deps:update": "syncpack update",
     "deps:upgrade": "syncpack update && npm install",
     "dev": "turbo dev --parallel",
-    "db:generate": "turbo run db:generate --filter=@trycompai/db --filter=@trycompai/app --filter=@trycompai/portal --filter=@trycompai/api --filter=@trycompai/framework-editor",
-    "docker:clean": "npm run docker:clean --workspace=@trycompai/db",
-    "docker:down": "npm run docker:down --workspace=@trycompai/db",
-    "docker:up": "npm run docker:up --workspace=@trycompai/db",
+    "db:generate": "turbo run db:generate --filter=@gideon-defender/db --filter=@gideon-defender/app --filter=@gideon-defender/portal --filter=@gideon-defender/api --filter=@gideon-defender/framework-editor",
+    "docker:clean": "npm run docker:clean --workspace=@gideon-defender/db",
+    "docker:down": "npm run docker:down --workspace=@gideon-defender/db",
+    "docker:up": "npm run docker:up --workspace=@gideon-defender/db",
     "format": "prettier --write .",
     "lint": "turbo lint && syncpack lint",
     "prepare": "husky",
     "test": "turbo test --parallel",
     "test:release": "node scripts/test-release.js",
     "typecheck": "turbo typecheck",
-    "typecheck:ci": "turbo typecheck --filter={apps/**} --filter={packages/**} --filter=!@trycompai/integrations --filter=!@trycompai/ui"
+    "typecheck:ci": "turbo typecheck --filter={apps/**} --filter={packages/**} --filter=!@gideon-defender/integrations --filter=!@gideon-defender/ui"
   },
   "workspaces": [
     "apps/*",

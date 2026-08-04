@@ -67,6 +67,9 @@ function init() {
         scopes JSONB NOT NULL DEFAULT '{}'::jsonb,
         expires_at TIMESTAMPTZ
       );
+      ALTER TABLE local_trigger_runs
+        ADD COLUMN IF NOT EXISTS tags JSONB NOT NULL DEFAULT '[]'::jsonb,
+        ADD COLUMN IF NOT EXISTS attempt INTEGER NOT NULL DEFAULT 0;
     `)
     .then(() => {
       s.ready = true;
@@ -87,8 +90,8 @@ function isReady() {
 async function insertRun(run) {
   const p = getPool();
   await p.query(
-    `INSERT INTO local_trigger_runs (id, task_identifier, status, payload, output, error, metadata, started_at, finished_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+    `INSERT INTO local_trigger_runs (id, task_identifier, status, payload, output, error, metadata, tags, attempt, started_at, finished_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
     [
       run.id,
       run.taskIdentifier,
@@ -97,6 +100,8 @@ async function insertRun(run) {
       run.output == null ? null : JSON.stringify(run.output),
       run.error == null ? null : JSON.stringify(run.error),
       JSON.stringify(run.metadata || {}),
+      JSON.stringify(Array.isArray(run.tags) ? run.tags : []),
+      run.attempt || 0,
       run.startedAt ? new Date(run.startedAt) : null,
       run.finishedAt ? new Date(run.finishedAt) : null,
     ],
@@ -108,7 +113,7 @@ async function updateRun(run) {
   await p.query(
     `UPDATE local_trigger_runs
        SET status = $2, output = $3, error = $4, metadata = $5,
-           started_at = $6, finished_at = $7
+           tags = $6, attempt = $7, started_at = $8, finished_at = $9
      WHERE id = $1`,
     [
       run.id,
@@ -116,6 +121,8 @@ async function updateRun(run) {
       run.output == null ? null : JSON.stringify(run.output),
       run.error == null ? null : JSON.stringify(run.error),
       JSON.stringify(run.metadata || {}),
+      JSON.stringify(Array.isArray(run.tags) ? run.tags : []),
+      run.attempt || 0,
       run.startedAt ? new Date(run.startedAt) : null,
       run.finishedAt ? new Date(run.finishedAt) : null,
     ],
@@ -182,6 +189,8 @@ function rowToRun(row) {
     output: row.output,
     error: row.error,
     metadata: row.metadata || {},
+    tags: row.tags || [],
+    attempt: row.attempt || 0,
     createdAt: row.created_at ? row.created_at.toISOString() : null,
     startedAt: row.started_at ? row.started_at.toISOString() : null,
     finishedAt: row.finished_at ? row.finished_at.toISOString() : null,

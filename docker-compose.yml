@@ -77,12 +77,20 @@ services:
       - '3333:3333'
     env_file:
       - apps/api/.env
+    environment:
+      REDIS_URL: redis://redis:6379
+      LOCAL_TRIGGER_QUEUE_SUFFIX: api
+      # RLS client roles (created by the _add_rls_roles_and_tenant_policies migration).
+      DATABASE_URL_TENANT: postgres://comp_app:comp_app_local_dev_password@postgres:5432/comp?sslmode=disable
+      DATABASE_URL_SERVICE: postgres://comp_service:comp_service_local_dev_password@postgres:5432/comp?sslmode=disable
     depends_on:
       postgres:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
       localstack:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
@@ -127,9 +135,12 @@ services:
       HOSTNAME: 0.0.0.0
       BACKEND_API_URL: http://api:3333
       REDIS_URL: redis://redis:6379
+      LOCAL_TRIGGER_QUEUE_SUFFIX: app
     depends_on:
-      - api
-      - redis
+      api:
+        condition: service_started
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ['CMD-SHELL', 'node -e "fetch(\"http://localhost:3000/api/health\").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"']

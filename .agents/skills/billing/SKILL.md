@@ -11,7 +11,7 @@ Comp AI billing is SKU-first and subscription-ready. Stripe is the payment provi
 
 ## Core Rules
 
-- Use `@trycompai/billing` for SKU keys, amounts, Stripe product IDs, Stripe price IDs, cadence, and included usage.
+- Use `@gideon-defender/billing` for SKU keys, amounts, Stripe product IDs, Stripe price IDs, cadence, and included usage.
 - Do not add product-specific nullable fields to `OrganizationBilling`.
 - Keep org-level billing generic: `stripeCustomerId`, `stripePaymentMethodId`, and `paymentMethodUpdatedAt`.
 - Store per-product state in generic per-SKU tables keyed by `skuKey`.

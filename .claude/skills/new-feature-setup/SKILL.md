@@ -56,8 +56,8 @@ Trigger.dev's `trigger dev` CLI **cannot** be isolated per worktree. Running `np
 - **One active worktree** runs `npm run dev` (full stack with `trigger dev`).
 - **All other worktrees** run:
   ```sh
-  npm run dev:no-trigger --workspace=@trycompai/app    # Next.js only
-  npm run dev:no-trigger --workspace=@trycompai/api    # NestJS only
+  npm run dev:no-trigger --workspace=@gideon-defender/app    # Next.js only
+  npm run dev:no-trigger --workspace=@gideon-defender/api    # NestJS only
   ```
 - Non-active worktrees need a different `PORT` to avoid collision — add `PORT=3001` (or `3334`, etc.) to the worktree's `.env.local`. `.env.local` is not symlinked and stays per-worktree.
 - When swapping which worktree is active, kill the old full `npm run dev` first so task registration is clean.
@@ -87,7 +87,7 @@ npm run dev
 
 # Start dev in a background worktree (no trigger dev, custom port via .env.local)
 echo "PORT=3001" >> apps/app/.env.local
-npm run dev:no-trigger --workspace=@trycompai/app
+npm run dev:no-trigger --workspace=@gideon-defender/app
 
 # Clean up when branch is done
 # (use the stale-worktree-cleanup skill)

@@ -40,12 +40,12 @@ const config: NextConfig = {
       : '',
   reactStrictMode: false,
   transpilePackages: [
-    '@trycompai/auth',
-    '@trycompai/db',
+    '@gideon-defender/auth',
+    '@gideon-defender/db',
     '@trycompai/design-system',
-    '@trycompai/ui',
+    '@gideon-defender/ui',
     '@carbon/icons-react',
-    '@trycompai/company',
+    '@gideon-defender/company',
     '@trigger.dev/sdk',
     '@trigger.dev/react-hooks',
   ],
@@ -58,7 +58,7 @@ const config: NextConfig = {
     ],
   },
 
-  serverExternalPackages: ['jspdf'],
+  serverExternalPackages: ['jspdf', 'bullmq', 'ioredis', 'pg', 'pg-connection-string', 'pgpass'],
 
   experimental: {
     serverActions: {
@@ -73,7 +73,7 @@ const config: NextConfig = {
           : undefined,
     },
     authInterrupts: true,
-    optimizePackageImports: ['@trycompai/db', '@trycompai/ui'],
+    optimizePackageImports: ['@gideon-defender/db', '@gideon-defender/ui'],
     // Reduce build peak memory
     webpackMemoryOptimizations: true,
   },

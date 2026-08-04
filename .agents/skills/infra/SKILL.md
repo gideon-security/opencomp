@@ -29,8 +29,8 @@ comp/
 │   ├── app/             # Next.js main app
 │   └── portal/          # Next.js portal
 ├── packages/
-│   ├── db/              # Prisma (@trycompai/db)
-│   ├── ui/              # Legacy UI (@trycompai/ui); prefer @trycompai/design-system
+│   ├── db/              # Prisma (@gideon-defender/db)
+│   ├── ui/              # Legacy UI (@gideon-defender/ui); prefer @trycompai/design-system
 │   └── ...
 ├── turbo.json
 └── package.json
@@ -47,8 +47,8 @@ npm run dev              # Dev all
 
 # Single package
 npm run dev --workspace=apps/app
-npm run prisma:generate --workspace=@trycompai/db
-turbo build --filter=@trycompai/ui
+npm run prisma:generate --workspace=@gideon-defender/db
+turbo build --filter=@gideon-defender/ui
 ```
 
 ## Importing Between Packages
@@ -56,7 +56,7 @@ turbo build --filter=@trycompai/ui
 ```tsx
 // ✅ Import from package name
 import { Button } from '@trycompai/design-system';
-import { prisma } from '@trycompai/db';
+import { prisma } from '@gideon-defender/db';
 
 // ❌ Never relative paths across packages
 import { Button } from '../../../packages/ui/src/button';
@@ -67,7 +67,7 @@ import { Button } from '../../../packages/ui/src/button';
 ```bash
 # To specific package
 npm install axios --workspace=apps/app
-npm install -D vitest --workspace=@trycompai/ui
+npm install -D vitest --workspace=@gideon-defender/ui
 
 # To root (dev tools only)
 npm install -D -w prettier typescript
@@ -105,7 +105,7 @@ mkdir packages/my-package
 ```json
 // packages/my-package/package.json
 {
-  "name": "@trycompai/my-package",
+  "name": "@gideon-defender/my-package",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",
@@ -119,7 +119,7 @@ mkdir packages/my-package
 ```json
 // packages/my-package/tsconfig.json
 {
-  "extends": "@trycompai/tsconfig/base.json",
+  "extends": "@gideon-defender/tsconfig/base.json",
   "include": ["src"]
 }
 ```

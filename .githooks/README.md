@@ -86,10 +86,10 @@ framework only:
 
 ```sh
 # apps/app — Next.js only, no trigger dev
-npm run dev:no-trigger --workspace=@trycompai/app
+npm run dev:no-trigger --workspace=@gideon-defender/app
 
 # apps/api — NestJS only, no trigger dev
-npm run dev:no-trigger --workspace=@trycompai/api
+npm run dev:no-trigger --workspace=@gideon-defender/api
 ```
 
 Port collisions across worktrees are still your problem: bump the

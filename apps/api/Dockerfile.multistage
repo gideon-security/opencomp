@@ -70,7 +70,7 @@ COPY packages/trigger-react-local ./packages/trigger-react-local
 # Copy API source
 COPY apps/api ./apps/api
 
-# Build db — generates Prisma client + compiles dist/ for @trycompai/db consumers
+# Build db — generates Prisma client + compiles dist/ for @gideon-defender/db consumers
 RUN cd packages/db && npm run build
 
 # Build remaining workspace packages

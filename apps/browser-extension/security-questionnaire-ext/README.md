@@ -54,7 +54,7 @@ a guided mapped paste flow.
 4. Build the static unpacked extension:
 
    ```bash
-   npm run build --workspace=@trycompai/security-questionnaire-extension
+   npm run build --workspace=@gideon-defender/security-questionnaire-extension
    ```
 
 5. Load the generated unpacked extension in Chrome:
@@ -135,7 +135,7 @@ not create the first listing.
   until the page is refreshed.
 - If the console shows `ws://localhost:3100` or `[wxt] Failed to connect to dev
   server`, the loaded extension is `dist/chrome-mv3-dev`. Remove that unpacked
-   extension, or run `npm run dev --workspace=@trycompai/security-questionnaire-extension`.
+   extension, or run `npm run dev --workspace=@gideon-defender/security-questionnaire-extension`.
   For normal local testing, load `dist/chrome-mv3`.
 - Chrome keeps previous entries on the extension Errors page. Clear them after
   reloading if you want to verify only new errors.

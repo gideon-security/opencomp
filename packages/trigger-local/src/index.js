@@ -24,7 +24,7 @@ function makeHandle(def) {
   return {
     id: def.id,
     trigger(payload, opts) {
-      return runtime.createRun(def.id, payload, opts).then((run) => ({ id: run.id }));
+      return triggerTaskRun(def.id, payload, opts);
     },
     batchTrigger(items, opts) {
       return runtime.batchTrigger(def.id, items, opts);
@@ -36,6 +36,12 @@ function makeHandle(def) {
       return runtime.batchTriggerAndWait(def.id, items, opts);
     },
   };
+}
+
+async function triggerTaskRun(taskId, payload, opts) {
+  const run = await runtime.createRun(taskId, payload, opts);
+  const publicAccessToken = await issueToken({ trigger: [taskId] }, undefined);
+  return { id: run.id, publicAccessToken };
 }
 
 function normalizeTaskOptions(opts) {
@@ -79,7 +85,7 @@ function schemaTask(opts) {
 
 const tasks = {
   trigger(taskId, payload, opts) {
-    return runtime.createRun(taskId, payload, opts).then((run) => ({ id: run.id }));
+    return triggerTaskRun(taskId, payload, opts);
   },
   batchTrigger(taskId, items, opts) {
     return runtime.batchTrigger(taskId, items, opts);
@@ -280,31 +286,27 @@ function queue(value) {
 const schedules = {
   task(opts) {
     const def = normalizeTaskOptions({ ...opts, kind: 'schedule' });
-    scheduler.add({
-      id: def.id,
-      cron: def.cron,
-      timezone: def.timezone,
-      onFire: async (payload) => {
-        const run = await runtime.createRun(def.id, payload, null);
-        return waitForScheduleRun(run.id);
-      },
-    });
+    scheduler.add(def);
     return makeHandle(def);
   },
   cron(opts) {
     const taskHandle = opts && opts.task;
-    if (taskHandle && taskHandle.id) {
-      scheduler.add({
-        id: opts.id || `${taskHandle.id}-schedule`,
-        cron: opts.cron,
-        timezone: opts.timezone,
-        onFire: async (payload) => {
-          return taskHandle.trigger(payload).then((r) => r.id);
-        },
-      });
-      return { id: opts.id || `${taskHandle.id}-schedule` };
+    if (!taskHandle || !taskHandle.id) {
+      throw new Error('[local-trigger] schedules.cron requires a task handle');
     }
-    throw new Error('[local-trigger] schedules.cron requires a task handle');
+    const id = opts.id || `${taskHandle.id}-schedule`;
+    scheduler.add({
+      id,
+      kind: 'schedule',
+      cron: opts.cron,
+      timezone: opts.timezone || null,
+      run: async (payload) => {
+        const triggered = await taskHandle.trigger(payload);
+        await runtime.waitForRun(triggered.id, 1000 * 60 * 60);
+        return runtime.retrieveRun(triggered.id);
+      },
+    });
+    return { id };
   },
   start() {
     scheduler.start();
@@ -313,21 +315,6 @@ const schedules = {
     scheduler.stop();
   },
 };
-
-function waitForScheduleRun(runId) {
-  return new Promise((resolve) => {
-    const started = Date.now();
-    const check = () => {
-      const shape = runtime.getRunOrNull(runId).then((run) => {
-        if (run && run.isCompleted) return resolve(run);
-        if (Date.now() - started > 1000 * 60 * 60) return resolve(null);
-        setTimeout(check, 50);
-      });
-      shape.catch(() => setTimeout(check, 50));
-    };
-    check();
-  });
-}
 
 function defineConfig(config) {
   return config;
@@ -365,6 +352,8 @@ function registerFromDirectory(dir, opts) {
 
   walk(dir);
 }
+
+runtime.setContextExtras({ logger, metadata, tags });
 
 module.exports = {
   task,

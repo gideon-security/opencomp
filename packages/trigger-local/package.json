@@ -1,7 +1,7 @@
 {
   "name": "@trigger.dev/sdk",
   "version": "4.4.3",
-  "description": "Local in-process replacement for @trigger.dev/sdk (no external task runner).",
+  "description": "Local replacement for @trigger.dev/sdk backed by BullMQ on the project's existing Redis (no external task runner).",
   "private": true,
   "type": "commonjs",
   "main": "src/index.js",
@@ -15,6 +15,8 @@
     }
   },
   "dependencies": {
+    "bullmq": "^5.48.0",
+    "ioredis": "^5.4.1",
     "pg": "^8.13.1"
   }
 }
