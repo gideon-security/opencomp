@@ -23,7 +23,6 @@ These variables are required for a functional Docker deployment:
 | `BETTER_AUTH_URL` | app, portal | runtime | Base URL for Better Auth (app or portal's public URL) |
 | `NEXT_PUBLIC_BETTER_AUTH_URL` | app, portal | build | Public auth URL (same as `BETTER_AUTH_URL`) |
 | `BETTER_AUTH_SECRET` | portal | runtime | Portal-specific auth secret. Generate: `openssl rand -base64 32` |
-| `RESEND_API_KEY` | app, portal | runtime | [Resend](https://resend.com) API key for email |
 | `TRIGGER_SECRET_KEY` | app | runtime | [Trigger.dev](https://cloud.trigger.dev) project secret key |
 | `REVALIDATION_SECRET` | app | runtime | Random string for revalidation. Generate: `openssl rand -base64 16` |
 | `NEXT_PUBLIC_PORTAL_URL` | app | build | Public URL of the portal (e.g., `https://portal.yourdomain.com`) |
@@ -53,12 +52,21 @@ These variables are required for a functional Docker deployment:
 | `AUTH_MICROSOFT_CLIENT_SECRET` | app | runtime | conditional | Microsoft/Entra OAuth client secret |
 | `AUTH_MICROSOFT_TENANT_ID` | app | runtime | optional | `common` (default), `organizations`, or tenant GUID to restrict login |
 
-### Email
+### Email (SES + SQS, apps/api)
 
 | Name | Service(s) | Phase | Required | Notes |
 |------|-----------|-------|----------|-------|
-| `RESEND_API_KEY` | app, portal | runtime | required-minimal | Resend API key for transactional email |
-| `RESEND_DOMAIN` | portal | runtime | optional | Custom domain for sending emails |
+| `EMAIL_SQS_QUEUE_URL` | api | runtime | required | SQS queue consumed by the email-worker; emails are enqueued by the API and sent via SES |
+| `EMAIL_FROM_SYSTEM` | api | runtime | required | System sender address (transactional emails) |
+| `EMAIL_FROM_DEFAULT` | api | runtime | optional | Default sender address fallback |
+| `EMAIL_FROM_MARKETING` | api | runtime | optional | Marketing sender address |
+| `EMAIL_FROM_TRUST_PORTAL` | api | runtime | optional | Trust Portal sender address (falls back to `EMAIL_FROM_SYSTEM`) |
+| `EMAIL_TO_TEST` | api | runtime | optional | Overrides every recipient (test mode) |
+| `EMAIL_REPLY_TO_MARKETING` | api | runtime | optional | Reply-To for the marketing channel |
+
+<Note>
+Email delivery uses AWS SES (the email-worker process polls the SQS queue and calls SES `SendEmail`). The sender address must be a verified SES identity. AWS credentials are shared with S3 (`APP_AWS_*`).
+</Note>
 
 ### Workflows (Trigger.dev)
 
@@ -149,7 +157,6 @@ SECRET_KEY="your-32-byte-encryption-key"
 BETTER_AUTH_URL="https://app.yourdomain.com"
 NEXT_PUBLIC_BETTER_AUTH_URL="https://app.yourdomain.com"
 NEXT_PUBLIC_PORTAL_URL="https://portal.yourdomain.com"
-RESEND_API_KEY="re_your_api_key"
 TRIGGER_SECRET_KEY="tr_your_secret_key"
 REVALIDATION_SECRET="random-revalidation-string"
 ```
@@ -159,6 +166,5 @@ DATABASE_URL="postgresql://user:pass@host:5432/comp?sslmode=require"
 BETTER_AUTH_SECRET="your-32-byte-portal-secret"
 BETTER_AUTH_URL="https://portal.yourdomain.com"
 NEXT_PUBLIC_BETTER_AUTH_URL="https://portal.yourdomain.com"
-RESEND_API_KEY="re_your_api_key"
 ```
 </CodeGroup>

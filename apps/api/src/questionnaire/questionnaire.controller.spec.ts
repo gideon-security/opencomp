@@ -25,10 +25,6 @@ jest.mock('../trust-portal/email.service', () => ({
   TrustPortalEmailService: jest.fn(),
 }));
 
-jest.mock('../email/resend', () => ({
-  sendEmail: jest.fn(),
-}));
-
 import { QuestionnaireController } from './questionnaire.controller';
 import { QuestionnaireService } from './questionnaire.service';
 import { HybridAuthGuard } from '../auth/hybrid-auth.guard';

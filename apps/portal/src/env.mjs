@@ -5,7 +5,6 @@ export const env = createEnv({
   server: {
     BETTER_AUTH_SECRET: z.string().optional(),
     BETTER_AUTH_URL: z.string().optional(),
-    RESEND_API_KEY: z.string(),
     UPSTASH_REDIS_REST_URL: z.string().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
     AUTH_GOOGLE_ID: z.string().optional(),
@@ -33,7 +32,6 @@ export const env = createEnv({
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
-    RESEND_API_KEY: process.env.RESEND_API_KEY,
     UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,

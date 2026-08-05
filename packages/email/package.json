@@ -9,7 +9,6 @@
     "@gideon-defender/utils": "*",
     "date-fns": "^4.1.0",
     "react-email": "^4.0.15",
-    "resend": "^4.4.1",
     "responsive-react-email": "^0.0.5"
   },
   "devDependencies": {

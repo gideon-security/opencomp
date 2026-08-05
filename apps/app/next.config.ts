@@ -55,7 +55,23 @@ const config: NextConfig = {
         protocol: 'https',
         hostname: '**',
       },
+      // Local dev: presigned S3 URLs point at LocalStack over plain HTTP
+      // (http://localstack:4566 from containers, http://localhost:4566 from host).
+      // These hosts never appear in production URLs.
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '4566',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localstack',
+        port: '4566',
+      },
     ],
+    // LocalStack's container IP is in a private range; Next.js blocks private
+    // IPs by default (SSRF guard). Production images are always public https.
+    dangerouslyAllowLocalIP: true,
   },
 
   serverExternalPackages: ['jspdf', 'bullmq', 'ioredis', 'pg', 'pg-connection-string', 'pgpass'],
