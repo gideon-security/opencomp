@@ -1,6 +1,6 @@
 import { requireApiPermission } from '@/lib/permissions.server';
 import { db } from '@db/server';
-import { auth as triggerAuth } from '@trigger.dev/sdk';
+import { auth as triggerAuth } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
  * something transient (a network blip, rate limit, auth issue) where we
  * should keep the runId so the next attempt can recover.
  *
- * Trigger.dev surfaces purged/missing runs as 404 with a "not found" body.
+ * Local trigger surfaces purged/missing runs as 404 with a "not found" body.
  * Anything else — including unauthorized, timeouts, 5xx — gets treated as
  * transient and bubbles up as a 502 from the route. See Cubic finding
  * #4/#5 on PR #2671.
@@ -32,7 +32,7 @@ function isRunGoneError(err: unknown): boolean {
  * 15 minutes) so the UI can re-subscribe via `useRealtimeRun`.
  *
  * Returns `{ runId: null }` when no active run exists. Also returns null when
- * the trigger.dev run has been purged (TTL elapsed) — the caller treats both
+ * the local-trigger run has been purged (TTL elapsed) — the caller treats both
  * the same: drop the stale runId and start fresh on the next user action.
  *
  * DELETE on the same path discards the active run (user clicked Discard).
@@ -68,7 +68,7 @@ export async function GET(
       return NextResponse.json({ runId: risk.autoLinkRunId, publicAccessToken });
     } catch (err) {
       if (isRunGoneError(err)) {
-        // Run was purged by trigger.dev (retention TTL or never existed).
+        // Run was purged by local-trigger (retention TTL or never existed).
         // Drop the stale id so the next /auto-link call starts cleanly.
         console.warn('[auto-link/active] run gone, clearing stored runId', err);
         await db.risk.update({

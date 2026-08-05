@@ -1,4 +1,4 @@
-import { task } from '@trigger.dev/sdk';
+import { task } from '@gideon-defender/trigger-local';
 import { BrowserLoginAnalyzerService } from '../../browserbase/browser-login-analyzer.service';
 import type { LoginAnalysis } from '../../browserbase/browser-login-analysis';
 

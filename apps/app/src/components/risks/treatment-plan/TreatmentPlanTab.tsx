@@ -42,7 +42,7 @@ interface TreatmentPlanTabProps {
   onRegenerate: () => Promise<void>;
   regenerating: boolean;
   /**
-   * Active trigger.dev run handle for an in-flight regeneration. The
+   * Active local-trigger run handle for an in-flight regeneration. The
    * description editor subscribes via `useRealtimeRun` to render live
    * progress until the run terminates.
    */

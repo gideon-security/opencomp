@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Capture the options passed to useRealtimeRun so tests can invoke onComplete
-// directly (simulating a Trigger.dev run reaching a terminal state).
+// directly (simulating a Local trigger run reaching a terminal state).
 const mockRealtime: {
   onComplete?: (
     run: {
@@ -15,7 +15,7 @@ const mockRealtime: {
   ) => void;
 } = {};
 
-vi.mock('@trigger.dev/react-hooks', () => ({
+vi.mock('@gideon-defender/trigger-react', () => ({
   useRealtimeRun: (
     _runId: string,
     options: { onComplete?: typeof mockRealtime.onComplete },

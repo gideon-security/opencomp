@@ -3,7 +3,7 @@
 import { getOrgIsInternal } from '@/lib/org-participation';
 import { sendNewPolicyEmail } from '@/trigger/tasks/email/new-policy-email';
 import { db, PolicyStatus, type Prisma } from '@db/server';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { z } from 'zod';
 import { authActionClient } from '../safe-action';

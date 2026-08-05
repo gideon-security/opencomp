@@ -863,7 +863,7 @@ export interface IntegrationManifest {
   /**
    * Compliance checks this integration can run.
    * Each check can auto-complete linked tasks when passing.
-   * Checks run daily via a scheduled Trigger.dev task.
+   * Checks run daily via a scheduled Local trigger task.
    */
   checks?: IntegrationCheck[];
 

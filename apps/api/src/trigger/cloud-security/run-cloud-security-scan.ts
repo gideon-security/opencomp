@@ -1,5 +1,5 @@
 import { db } from '@db';
-import { logger, tags, task } from '@trigger.dev/sdk';
+import { logger, tags, task } from '@gideon-defender/trigger-local';
 
 /**
  * Trigger task that runs a cloud security scan for a single connection.

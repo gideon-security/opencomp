@@ -1,23 +1,19 @@
 import { track } from '@/app/posthog';
-import { env } from '@/env.mjs';
 import { auth } from '@/utils/auth';
 import { logger } from '@/utils/logger';
-import { client } from '@gideon-defender/kv';
+import { client, createRateLimiter } from '@gideon-defender/kv';
 import { AuditLogEntityType, db } from '@db/server';
-import { Ratelimit } from '@upstash/ratelimit';
 import { DEFAULT_SERVER_ERROR_MESSAGE, createSafeActionClient } from 'next-safe-action';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import { z } from 'zod';
 
-let ratelimit: Ratelimit | undefined;
-
-if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
-  ratelimit = new Ratelimit({
-    limiter: Ratelimit.fixedWindow(10, '10s'),
-    redis: client,
-  });
-}
+const ratelimit = createRateLimiter({
+  client,
+  limit: 10,
+  windowSeconds: 10,
+  prefix: 'ratelimit:action',
+});
 
 export const actionClientWithMeta = createSafeActionClient({
   handleServerError(e) {
@@ -95,7 +91,7 @@ export const authActionClient = actionClientWithMeta
 
     const shouldRateLimit = !excludedActions.includes(metadata.name);
 
-    if (ratelimit && shouldRateLimit) {
+    if (shouldRateLimit) {
       const { success, remaining: rateLimitRemaining } = await ratelimit.limit(
         `${headersList.get('x-forwarded-for')}-${metadata.name}`,
       );
@@ -307,7 +303,7 @@ export const authActionClientWithoutOrg = actionClientWithMeta
 
     const shouldRateLimit = !excludedActions.includes(metadata.name);
 
-    if (ratelimit && shouldRateLimit) {
+    if (shouldRateLimit) {
       const { success, remaining: rateLimitRemaining } = await ratelimit.limit(
         `${headersList.get('x-forwarded-for')}-${metadata.name}`,
       );

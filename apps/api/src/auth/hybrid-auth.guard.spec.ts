@@ -418,7 +418,7 @@ describe('HybridAuthGuard — service token x-user-id acting member', () => {
     jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false);
     // Valid service token + existing org so we reach the x-user-id block.
     mockResolveServiceByToken.mockReturnValue({
-      definition: { name: 'Trigger.dev' },
+      definition: { name: 'Local trigger' },
     });
     mockOrgFindUnique.mockResolvedValue({ id: 'org_1' });
     mockMemberFindFirst.mockResolvedValue(null);

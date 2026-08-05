@@ -33,7 +33,7 @@ COPY apps/api/package.json ./apps/api/
 COPY scripts/convert-workspace-specs.cjs ./scripts/convert-workspace-specs.cjs
 
 # npm only supports the `workspace:` protocol in the ROOT manifest; rewrite
-# workspace deps (including @trigger.dev/sdk -> trigger-local shim) to file:.
+# workspace deps (including the trigger-local shim packages) to file:.
 RUN node scripts/convert-workspace-specs.cjs
 
 # Install dependencies — skip lifecycle scripts (husky, prisma postinstall,

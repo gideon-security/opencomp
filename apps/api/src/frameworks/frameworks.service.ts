@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { db, type EvidenceFormType } from '@db';
 
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import {
   getOverviewScores,
   getCurrentMember,

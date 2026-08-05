@@ -30,7 +30,7 @@ vi.mock('@db/server', () => {
   };
 });
 
-vi.mock('@trigger.dev/sdk', () => ({
+vi.mock('@gideon-defender/trigger-local', () => ({
   metadata: { set: vi.fn() },
 }));
 

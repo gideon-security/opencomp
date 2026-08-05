@@ -52,7 +52,7 @@ function createPrismaClient(rawUrl: string): PrismaClient {
   // - Remote with NODE_EXTRA_CA_CERTS set: verified TLS using that bundle
   //   (e.g. Docker with the RDS CA bundle baked in).
   // - Remote in explicit opt-out mode (PRISMA_ALLOW_INSECURE_TLS=1):
-  //   unverified TLS — used by Trigger.dev / Vercel envs that connect via
+  //   unverified TLS — used by Local trigger / Vercel envs that connect via
   //   a tunneled proxy whose cert can't be pinned. Must be set deliberately;
   //   the previous default ("just turn off verification") silently exposed
   //   prod connections to MITM. (Cubic finding #1 on PR #2671.)

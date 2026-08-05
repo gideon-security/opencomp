@@ -15,14 +15,14 @@ export class TriggerAutoAnswerResponseDto {
 
   @ApiProperty({
     description:
-      'Background run identifier for the generation job (Trigger.dev run id).',
+      'Background run identifier for the generation job (Local trigger run id).',
     example: 'run_cmpotsz153eac0ultc1ya87f5',
   })
   runId!: string;
 
   @ApiProperty({
     description:
-      'Token for tracking the run via Trigger.dev realtime. Optional — MCP/agent clients should poll GET /v1/questionnaire/:id instead.',
+      'Token for tracking the run via Local trigger realtime. Optional — MCP/agent clients should poll GET /v1/questionnaire/:id instead.',
     example: 'pat_...',
   })
   publicAccessToken!: string;

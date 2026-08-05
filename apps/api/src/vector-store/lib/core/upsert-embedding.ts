@@ -35,12 +35,11 @@ export async function upsertEmbedding(
 ): Promise<void> {
   if (!vectorIndex) {
     const errorMsg =
-      'Upstash Vector is not configured - check UPSTASH_VECTOR_REST_URL and UPSTASH_VECTOR_REST_TOKEN';
+      'Vector store is not configured - check DATABASE_URL is set';
     logger.error(errorMsg, {
       id,
       sourceType: metadata.sourceType,
-      hasUrl: !!process.env.UPSTASH_VECTOR_REST_URL,
-      hasToken: !!process.env.UPSTASH_VECTOR_REST_TOKEN,
+      hasDatabaseUrl: !!process.env.DATABASE_URL,
     });
     throw new Error(errorMsg);
   }
@@ -91,7 +90,7 @@ export async function upsertEmbedding(
       });
     }
 
-    // Upsert into Upstash Vector
+    // Upsert into the vector store
     const upsertResult = await vectorIndex.upsert({
       id,
       vector: embedding,
@@ -132,7 +131,7 @@ export async function batchUpsertEmbeddings(
   }>,
 ): Promise<void> {
   if (!vectorIndex) {
-    throw new Error('Upstash Vector is not configured');
+    throw new Error('Vector store is not configured');
   }
 
   if (items.length === 0) {
@@ -157,7 +156,7 @@ export async function batchUpsertEmbeddings(
     // Step 2: Upsert all embeddings in parallel
     // Check vectorIndex before using it (TypeScript safety)
     if (!vectorIndex) {
-      throw new Error('Upstash Vector is not configured');
+      throw new Error('Vector store is not configured');
     }
 
     // Store reference to avoid null check issues in map

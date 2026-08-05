@@ -2,7 +2,7 @@
  * A live activity timeline for an evidence run — the same "steps" the composer's
  * Test panel and the connect/sign-in flow show. Each engine log advances the
  * timeline (the prior active step becomes done, a new active step is appended),
- * and the whole snapshot is emitted so a Trigger.dev task can publish it to
+ * and the whole snapshot is emitted so a Local trigger task can publish it to
  * realtime metadata for the UI to render.
  */
 export interface EvidenceTimelineStep {

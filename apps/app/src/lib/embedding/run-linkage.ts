@@ -16,7 +16,7 @@ import {
 /**
  * Phase emitted by `runLinkage` via the optional `onPhase` callback.
  *
- * Consumed by the trigger.dev wrapper to mirror progress into run metadata so
+ * Consumed by the local-trigger wrapper to mirror progress into run metadata so
  * the frontend can render a live progress indicator via `useRealtimeRun`.
  */
 export type LinkagePhase =
@@ -25,10 +25,9 @@ export type LinkagePhase =
   | { name: 'embedding-risks'; current: number; total: number }
   | { name: 'embedding-vendors'; current: number; total: number }
   /**
-   * Upstash Vector indexes upserted vectors asynchronously — emitted between
-   * the embedding phase and matching phase while we poll `info()` until
-   * `pendingVectorCount === 0`. Without this gate, the cosine queries can
-   * race ahead of indexing and silently return zero candidates.
+   * Emitted between the embedding phase and matching phase. On pgvector, HNSW
+   * indexing is synchronous so this is a no-op gate — kept so callers can rely
+   * on the same phase ordering regardless of storage backend.
    */
   | { name: 'waiting-for-index' }
   | { name: 'matching-risks'; current: number; total: number }
@@ -55,7 +54,7 @@ export interface RunLinkageInput {
    */
   suggestionsOnly?: boolean;
   /**
-   * Optional progress callback. The trigger.dev wrapper passes this and writes
+   * Optional progress callback. The local-trigger wrapper passes this and writes
    * each phase to `metadata.set(...)` so the UI can subscribe via realtime.
    * Pure callers (e.g. tests, server-side scripts) can omit it.
    */
@@ -484,7 +483,7 @@ export async function runLinkage({
 
   // Build id → hash maps for skip-if-unchanged. Anything with a non-null
   // hash that still matches the current text gets skipped at the upsert
-  // layer — saving both the OpenAI embedding call and the Upstash write.
+  // layer — saving both the OpenAI embedding call and the vector write.
   const taskHashes = new Map<string, string>();
   for (const t of tasks) {
     if (t.embeddingHash !== null) taskHashes.set(t.id, t.embeddingHash);
@@ -564,12 +563,9 @@ export async function runLinkage({
     onPhase?.({ name: 'embedding-vendors', current: vendors.length, total: vendors.length });
   }
 
-  // Block matching until Upstash has finished indexing the vectors we just
-  // wrote. The HNSW index is built asynchronously after upsert, so cosine
-  // queries that race ahead silently return zero candidates for IDs that
-  // are still pending. We hit this in onboarding when 6 of 11 risks got 0
-  // links because their queries fired ~4s after upsert vs the next 5 risks
-  // that fired ~5s after and got full results.
+  // Gate matching on the index drain: with pgvector, HNSW indexing is
+  // synchronous so `waitForIndexed` resolves on the first poll — a no-op
+  // kept so the phase ordering stays stable across storage backends.
   //
   // Skip the wait entirely when every embedding was served from the cache
   // (the dedup hash path) — the existing vectors are already queryable

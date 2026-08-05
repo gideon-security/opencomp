@@ -1,5 +1,5 @@
 import { db } from '@db/server';
-import { logger, task } from '@trigger.dev/sdk';
+import { logger, task } from '@gideon-defender/trigger-local';
 import { createFleetLabelForOrg } from './create-fleet-label-for-org';
 
 export const createFleetLabelForAllOrgs = task({

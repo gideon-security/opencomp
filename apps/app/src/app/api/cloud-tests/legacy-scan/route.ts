@@ -1,6 +1,6 @@
 import { runIntegrationTests } from '@/trigger/tasks/integration/run-integration-tests';
 import { auth } from '@/utils/auth';
-import { runs, tasks } from '@trigger.dev/sdk';
+import { runs, tasks } from '@gideon-defender/trigger-local';
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: false,
       errors: [
-        'Scan is taking longer than expected. Check the Trigger.dev dashboard.',
+        'Scan is taking longer than expected. Check the Local trigger dashboard.',
       ],
       taskId: handle.id,
     });

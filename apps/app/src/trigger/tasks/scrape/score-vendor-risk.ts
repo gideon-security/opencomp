@@ -1,7 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import { Impact, Likelihood } from '@db';
 import { db } from '@db/server';
-import { logger, schemaTask } from '@trigger.dev/sdk';
+import { logger, schemaTask } from '@gideon-defender/trigger-local';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 

@@ -3,7 +3,7 @@
 import { Button } from '@gideon-defender/ui/button';
 import { Card, CardContent } from '@gideon-defender/ui/card';
 import type { Onboarding } from '@db';
-import { useRun } from '@trigger.dev/react-hooks';
+import { useRun } from '@gideon-defender/trigger-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   AlertTriangle,

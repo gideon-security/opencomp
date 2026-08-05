@@ -1,5 +1,5 @@
 // apps/api/src/trigger/vendor/vendor-risk-assessment/firecrawl-agent-news.ts
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 import type { VendorRiskAssessmentNewsItem } from './agent-types';
 import {
   handleFirecrawlError,

@@ -94,9 +94,6 @@ To develop locally:
 5. Set up your `.env` file:
    - Duplicate `.env.example` to `.env`.
    - Use `openssl rand -base64 32` to generate a key and add it under `SECRET_KEY` in the `.env` file.
-   - Setup Trigger.dev
-     - CD into apps/app and run `npx trigger.dev@latest login`, then `npx trigger.dev@latest dev`
-     - Use `openssl rand -base64 32` to generate a key and add it under `TRIGGER_SECRET_KEY` in the `.env` file.
 
 6. Start developing and watch for code changes:
 

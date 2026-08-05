@@ -170,7 +170,7 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
 
     try {
       if (targetProvider.isLegacy) {
-        // Run legacy scan via API route (triggers Trigger.dev task)
+        // Run legacy scan via API route (triggers Local trigger task)
         const res = await fetch('/api/cloud-tests/legacy-scan', {
           method: 'POST',
           credentials: 'include',

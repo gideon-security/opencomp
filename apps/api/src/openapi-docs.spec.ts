@@ -91,14 +91,6 @@ jest.mock('@db', () => {
   };
 });
 
-// Mock @upstash/redis to avoid real Redis connections during tests
-jest.mock('@upstash/redis', () => ({
-  Redis: jest.fn().mockImplementation(() => ({
-    get: jest.fn().mockResolvedValue(null),
-    set: jest.fn().mockResolvedValue('OK'),
-  })),
-}));
-
 // Set required env vars before any module-level code runs.
 // These prevent config factories (aws.config.ts, better-auth, etc.) from throwing.
 process.env.SECRET_KEY = 'test-secret-key-at-least-16-chars';

@@ -29,7 +29,7 @@ describe('org-participation-rule (API mirror)', () => {
 });
 
 // Drift guard: this API-local rule is a deliberate dependency-free mirror of
-// `@gideon-defender/auth/participation` (files in the Trigger.dev bundle can't import
+// `@gideon-defender/auth/participation` (files in the Local trigger bundle can't import
 // the auth package — its dist isn't built in that deploy). Fail CI if the two
 // ever diverge.
 describe('API rule stays in sync with @gideon-defender/auth', () => {

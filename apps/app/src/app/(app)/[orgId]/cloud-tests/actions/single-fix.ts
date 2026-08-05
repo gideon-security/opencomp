@@ -1,6 +1,6 @@
 'use server';
 
-import { auth as triggerAuth, tasks } from '@trigger.dev/sdk';
+import { auth as triggerAuth, tasks } from '@gideon-defender/trigger-local';
 import { auth } from '@/utils/auth';
 import { headers } from 'next/headers';
 

@@ -22,13 +22,13 @@ export type RunAllChecksResult = Awaited<ReturnType<typeof runAllChecks>>;
  * and returns the raw result WITHOUT persisting anything.
  *
  * Why this exists: AWS checks make S3 (and other) API calls that egress the
- * runtime's network. In the Trigger.dev runtime those calls exit Trigger.dev's
+ * runtime's network. In the Local trigger runtime those calls exit Local trigger's
  * VPC, whose S3 endpoint policy blocks our cross-account audit reads
  * ("no VPC endpoint policy allows ..."). Running them here egresses OUR VPC,
  * whose endpoint allows the read — identical to the in-app manual "Run".
  *
  * Only the AWS Trigger tasks call this; GCP/Azure/dynamic/legacy integrations
- * keep executing in Trigger.dev unchanged. Persistence + task status + emails
+ * keep executing in Local trigger unchanged. Persistence + task status + emails
  * stay in the caller, so AWS results are recorded exactly like every other
  * provider's.
  */

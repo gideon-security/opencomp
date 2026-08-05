@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-05-11T18:03:02.706Z",
-  "total": 583,
+  "total": 582,
   "sourceCount": 583,
   "uniqueSlugs": 583,
   "byCategory": {
@@ -11,7 +11,7 @@
     "Communication": 47,
     "Monitoring": 56,
     "Cloud": 54,
-    "Development": 54,
+    "Development": 53,
     "Identity & Access": 22
   },
   "integrations": [
@@ -4820,15 +4820,6 @@
       "checkCount": 4,
       "syncSupported": false,
       "file": "integrations/trend-micro-vision-one.json"
-    },
-    {
-      "slug": "trigger-dev",
-      "name": "Trigger.dev",
-      "category": "Development",
-      "authType": "custom",
-      "checkCount": 2,
-      "syncSupported": false,
-      "file": "integrations/trigger-dev.json"
     },
     {
       "slug": "trinet",

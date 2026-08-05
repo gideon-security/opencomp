@@ -5,7 +5,7 @@ import { RelinkButton } from './RelinkButton';
 vi.mock('sonner', () => ({ toast: { info: vi.fn(), success: vi.fn(), error: vi.fn() } }));
 
 const realtimeRunMock = vi.fn();
-vi.mock('@trigger.dev/react-hooks', () => ({
+vi.mock('@gideon-defender/trigger-react', () => ({
   useRealtimeRun: (runId: string, opts: { accessToken?: string; enabled?: boolean }) =>
     realtimeRunMock(runId, opts),
 }));

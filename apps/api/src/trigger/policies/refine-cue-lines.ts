@@ -1,5 +1,5 @@
 import { anthropic } from '@ai-sdk/anthropic';
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 

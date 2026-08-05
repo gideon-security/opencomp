@@ -38,7 +38,7 @@ jest.mock('@/trigger/questionnaire/answer-question-helpers', () => ({
   generateAnswerWithRAGBatch: jest.fn(),
 }));
 
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   tasks: {
     trigger: jest.fn(),
   },
@@ -66,7 +66,7 @@ jest.mock('./utils/questionnaire-storage', () => ({
 import { db } from '@db';
 import { syncManualAnswerToVector } from '@/vector-store/lib';
 import { answerQuestion } from '@/trigger/questionnaire/answer-question';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import {
   updateAnsweredCount,
   persistQuestionnaireResult,

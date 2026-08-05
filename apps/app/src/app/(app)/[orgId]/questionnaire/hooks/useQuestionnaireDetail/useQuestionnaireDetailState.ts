@@ -52,7 +52,7 @@ export function useQuestionnaireDetailState({
 
   const [savingIndex, setSavingIndex] = useState<number | null>(null);
 
-  // No longer need trigger tokens - using server actions instead of Trigger.dev
+  // No longer need trigger tokens - using server actions instead of Local trigger
 
   // Sync queue ref with state
   useEffect(() => {

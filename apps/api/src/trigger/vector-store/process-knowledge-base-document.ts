@@ -1,4 +1,4 @@
-import { logger, tags, task } from '@trigger.dev/sdk';
+import { logger, tags, task } from '@gideon-defender/trigger-local';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { db } from '@db';
 import { batchUpsertEmbeddings } from '@/vector-store/lib/core/upsert-embedding';
@@ -8,7 +8,7 @@ import { vectorIndex } from '@/vector-store/lib/core/client';
 import { extractContentFromFile } from './helpers/extract-content-from-file';
 
 /**
- * Creates an S3 client instance for Trigger.dev tasks
+ * Creates an S3 client instance for Local trigger tasks
  */
 function createS3Client(): S3Client {
   const region = process.env.APP_AWS_REGION || 'us-east-1';
@@ -17,7 +17,7 @@ function createS3Client(): S3Client {
 
   if (!accessKeyId || !secretAccessKey) {
     throw new Error(
-      'AWS S3 credentials are missing. Please set APP_AWS_ACCESS_KEY_ID and APP_AWS_SECRET_ACCESS_KEY environment variables in Trigger.dev.',
+      'AWS S3 credentials are missing. Please set APP_AWS_ACCESS_KEY_ID and APP_AWS_SECRET_ACCESS_KEY environment variables in Local trigger.',
     );
   }
 
@@ -41,7 +41,7 @@ async function extractContentFromKnowledgeBaseDocument(
 
   if (!knowledgeBaseBucket) {
     throw new Error(
-      'Knowledge base bucket is not configured. Please set APP_AWS_KNOWLEDGE_BASE_BUCKET environment variable in Trigger.dev.',
+      'Knowledge base bucket is not configured. Please set APP_AWS_KNOWLEDGE_BASE_BUCKET environment variable in Local trigger.',
     );
   }
 

@@ -10,7 +10,7 @@ export interface AnalysisRunHandle {
 }
 
 /**
- * Kicks off vendor login analysis as a background Trigger.dev run and returns a
+ * Kicks off vendor login analysis as a background Local trigger run and returns a
  * handle to subscribe to. The browser + AI work runs off the request path, so it
  * can't be cut short by an HTTP or browser timeout. Returns null on failure.
  */

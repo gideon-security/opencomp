@@ -1,4 +1,4 @@
-import { logger, metadata, tags, task } from '@trigger.dev/sdk';
+import { logger, metadata, tags, task } from '@gideon-defender/trigger-local';
 import { processKnowledgeBaseDocumentTask } from './process-knowledge-base-document';
 
 const BATCH_SIZE = 10; // Process 10 documents at a time

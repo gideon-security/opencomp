@@ -1,4 +1,4 @@
-import { metadata, task } from '@trigger.dev/sdk';
+import { metadata, task } from '@gideon-defender/trigger-local';
 import {
   BrowserInstructionTestService,
   type InstructionTestResult,

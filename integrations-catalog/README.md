@@ -2,7 +2,7 @@
 
 Public catalog of all compliance integrations available in the [CompAI](https://trycomp.ai) platform.
 
-**583 integrations** across 9 categories.
+**582 integrations** across 9 categories.
 
 > Last updated: 2026-05-11
 
@@ -38,7 +38,7 @@ curl https://raw.githubusercontent.com/trycompai/comp/main/integrations-catalog/
 - **HR & People** — 63 integrations
 - **Monitoring** — 56 integrations
 - **Cloud** — 54 integrations
-- **Development** — 54 integrations
+- **Development** — 53 integrations
 - **Communication** — 47 integrations
 - **Infrastructure** — 33 integrations
 - **Identity & Access** — 22 integrations
@@ -156,7 +156,7 @@ curl https://raw.githubusercontent.com/trycompai/comp/main/integrations-catalog/
 | [Wistia](integrations/wistia.json) | `wistia` | custom | 2 |  |
 | [Zoom](integrations/zoom.json) | `zoom` | oauth2 | 2 |  |
 
-### Development (54)
+### Development (53)
 
 | Integration | Slug | Auth | Checks | Sync |
 |-------------|------|------|--------|------|
@@ -213,7 +213,6 @@ curl https://raw.githubusercontent.com/trycompai/comp/main/integrations-catalog/
 | [TeamCity](integrations/teamcity.json) | `teamcity` | custom | 3 |  |
 | [TestRail](integrations/testrail.json) | `testrail` | custom | 2 |  |
 | [Travis CI](integrations/travis-ci.json) | `travis-ci` | custom | 2 |  |
-| [Trigger.dev](integrations/trigger-dev.json) | `trigger-dev` | custom | 2 |  |
 
 ### HR & People (63)
 

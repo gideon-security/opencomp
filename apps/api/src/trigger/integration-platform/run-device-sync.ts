@@ -1,9 +1,9 @@
-import { logger, tags, task } from '@trigger.dev/sdk';
+import { logger, tags, task } from '@gideon-defender/trigger-local';
 
 const API_BASE_URL = process.env.BASE_URL || 'http://localhost:3333';
 
 /**
- * Trigger.dev task that runs device sync for a single org+connection.
+ * Local trigger task that runs device sync for a single org+connection.
  * Calls the existing API endpoint which handles credential refresh,
  * DSL interpretation, and device processing.
  *
@@ -11,7 +11,7 @@ const API_BASE_URL = process.env.BASE_URL || 'http://localhost:3333';
  */
 export const runDeviceSync = task({
   id: 'run-device-sync',
-  maxDuration: 60 * 10, // 10 minutes — Trigger.dev maxDuration is in SECONDS
+  maxDuration: 60 * 10, // 10 minutes — Local trigger maxDuration is in SECONDS
   run: async (payload: {
     organizationId: string;
     connectionId: string;

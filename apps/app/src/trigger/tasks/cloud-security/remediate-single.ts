@@ -1,4 +1,4 @@
-import { logger, metadata, task } from '@trigger.dev/sdk';
+import { logger, metadata, task } from '@gideon-defender/trigger-local';
 import {
   getCloudSecurityApiBaseUrl,
   makeServiceTokenHeaders,

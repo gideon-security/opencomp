@@ -82,7 +82,7 @@ jest.mock('@db', () => ({
   TimelineStatus: {},
 }));
 
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   auth: { createPublicToken: jest.fn() },
   tasks: { trigger: jest.fn() },
 }));

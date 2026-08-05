@@ -1,5 +1,5 @@
 import { db } from '@db';
-import { logger, tags, task } from '@trigger.dev/sdk';
+import { logger, tags, task } from '@gideon-defender/trigger-local';
 import { BrowserbaseService } from '../../browserbase/browserbase.service';
 
 const browserbaseService = new BrowserbaseService();
@@ -63,7 +63,7 @@ export function isTaskStatusProtectedFromAutomation(status: string): boolean {
  */
 export const runBrowserAutomation = task({
   id: 'run-browser-automation',
-  maxDuration: 60 * 10, // 10 minutes per automation — Trigger.dev maxDuration is in SECONDS
+  maxDuration: 60 * 10, // 10 minutes per automation — Local trigger maxDuration is in SECONDS
   queue: {
     concurrencyLimit: browserAutomationConcurrencyLimit(),
   },

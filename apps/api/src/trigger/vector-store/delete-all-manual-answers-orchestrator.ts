@@ -1,4 +1,4 @@
-import { logger, metadata, tags, task } from '@trigger.dev/sdk';
+import { logger, metadata, tags, task } from '@gideon-defender/trigger-local';
 import { db } from '@db';
 import { deleteManualAnswerTask } from './delete-manual-answer';
 

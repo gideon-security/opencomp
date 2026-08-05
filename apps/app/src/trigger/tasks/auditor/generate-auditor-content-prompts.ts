@@ -1,6 +1,6 @@
 // Pure prompt + input-assembly logic for the auditor content generation task
 // (see ./generate-auditor-content.ts). Kept dependency-free (no DB / AI /
-// Trigger.dev imports) so the prompt contract and prompt assembly can be unit
+// Local trigger imports) so the prompt contract and prompt assembly can be unit
 // tested in isolation. See CS-589.
 
 export const SECTIONS = [

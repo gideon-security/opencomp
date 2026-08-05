@@ -107,7 +107,7 @@ export function usePolicy({ policyId, organizationId, initialData }: UsePolicyOp
     async (body: { approverId: string; comment?: string }) => {
       // Route through the app's API (not apiClient → NestJS directly) so
       // notification emails are sent after the version is published. The email
-      // task lives in the app's Trigger.dev project, so the trigger must happen
+      // task lives in the app's Local trigger project, so the trigger must happen
       // server-side in the app; the route forwards to the NestJS endpoint.
       const response = await fetch(`/api/policies/${policyId}/accept-changes`, {
         method: 'POST',

@@ -1,7 +1,7 @@
 import { decrypt } from '@gideon-defender/app/src/lib/encryption';
 import { type DecryptFunction, getIntegrationHandler } from '@gideon-defender/integrations';
 import { db } from '@db/server';
-import { logger, schemaTask } from '@trigger.dev/sdk';
+import { logger, schemaTask } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 
 const getAwsRegion = (details: unknown): string | null => {

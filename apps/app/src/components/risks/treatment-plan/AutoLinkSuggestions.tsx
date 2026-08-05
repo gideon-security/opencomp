@@ -51,7 +51,7 @@ export interface AutoLinkSuggestionsProps {
    * Resumes an in-flight or completed-but-unreviewed AI scan after a page
    * reload. Parent fetches `GET /auto-link/active`. When this returns a run,
    * the component jumps straight into the loading state and re-subscribes to
-   * the trigger.dev run via `useRealtimeRun`.
+   * the local-trigger run via `useRealtimeRun`.
    */
   onResume?: () => Promise<{ runId: string; publicAccessToken: string } | null>;
   /**

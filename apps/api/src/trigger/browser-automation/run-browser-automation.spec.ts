@@ -8,7 +8,7 @@ jest.mock('@db', () => ({
   },
 }));
 
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
   tags: { add: jest.fn() },
   task: (config: unknown) => config,

@@ -1,6 +1,6 @@
 import { requireApiPermission } from '@/lib/permissions.server';
 import { db } from '@db/server';
-import { auth as triggerAuth } from '@trigger.dev/sdk';
+import { auth as triggerAuth } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**

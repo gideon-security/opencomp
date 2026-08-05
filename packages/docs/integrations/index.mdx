@@ -11,7 +11,7 @@ Integrations let you connect third-party services (GitHub, AWS, Google Cloud, et
 - Extensible architecture for adding new integrations
 - Multiple auth strategies (OAuth, API keys, custom credentials)
 - Automated compliance checks that map to tasks
-- Background execution via Trigger.dev
+- Background execution via Local trigger
 - Type-safe with full TypeScript support
 
 ## How It Works
@@ -55,9 +55,9 @@ Example: The GitHub "Branch Protection" check maps to the "Code Changes" task. W
 ### 5. Auto-Run Logic
 
 After connecting an integration:
-- If all required variables are configured → Checks run automatically via Trigger.dev
+- If all required variables are configured → Checks run automatically via Local trigger
 - If variables needed → User configures them → Checks run
-- Checks also run daily via scheduled Trigger.dev task
+- Checks also run daily via scheduled Local trigger task
 
 ## Architecture
 

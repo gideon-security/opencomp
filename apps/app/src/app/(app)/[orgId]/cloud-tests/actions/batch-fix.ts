@@ -3,7 +3,7 @@
 import { serverApi } from '@/lib/api-server';
 import { classifyExecuteResult } from '@/trigger/tasks/cloud-security/execute-result';
 import { classifyRetryPreview } from '@/trigger/tasks/cloud-security/retry-preview';
-import { auth, runs, tasks } from '@trigger.dev/sdk';
+import { auth, runs, tasks } from '@gideon-defender/trigger-local';
 
 interface BatchFixInput {
   organizationId: string;

@@ -43,8 +43,8 @@ vi.mock('swr', () => ({
   }),
 }));
 
-// Mock useRealtimeRun from trigger.dev
-vi.mock('@trigger.dev/react-hooks', () => ({
+// Mock useRealtimeRun from local-trigger
+vi.mock('@gideon-defender/trigger-react', () => ({
   useRealtimeRun: () => ({ run: null }),
 }));
 

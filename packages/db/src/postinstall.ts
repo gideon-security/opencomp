@@ -151,13 +151,7 @@ function shouldRunCli(force: boolean): boolean {
     return true;
   }
 
-  if (process.env.TRIGGER_PRISMA_FORCE_GENERATE === '1') {
-    return true;
-  }
-
   return Boolean(
-    process.env.TRIGGER_SECRET_KEY ||
-    process.env.TRIGGER_DEPLOYMENT ||
     process.env.CI === 'true' ||
     process.env.PRISMA_GENERATE_ON_INSTALL === '1',
   );

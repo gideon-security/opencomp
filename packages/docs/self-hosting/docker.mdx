@@ -19,7 +19,6 @@ This guide covers running Comp with Docker Compose. The stack includes:
 - Docker Desktop or Docker Engine installed
 - External PostgreSQL 14+ with SSL (e.g., Neon, DigitalOcean, RDS)
 - [Resend](https://resend.com) account for transactional email
-- [Trigger.dev](https://cloud.trigger.dev) account for background workflows
 
 ## Environment File Layout
 
@@ -57,9 +56,6 @@ For a functional Docker deployment, you need:
     BETTER_AUTH_URL="https://app.yourdomain.com"
     NEXT_PUBLIC_BETTER_AUTH_URL="https://app.yourdomain.com"
     NEXT_PUBLIC_PORTAL_URL="https://portal.yourdomain.com"
-
-    # Workflows (required)
-    TRIGGER_SECRET_KEY="tr_..."
 
     # Revalidation
     REVALIDATION_SECRET="<random string>"
@@ -155,17 +151,9 @@ curl -s http://localhost:3000/api/health
 curl -s http://localhost:3002/
 ```
 
-## Deploy Trigger.dev Tasks
+## Background Tasks
 
-Trigger.dev runs as a hosted service. Deploy your tasks from your workstation:
-
-```bash
-cd apps/app
-bunx trigger.dev@latest login
-bunx trigger.dev@latest deploy
-```
-
-Set `TRIGGER_SECRET_KEY` in `apps/app/.env` from your Trigger.dev project settings.
+Background tasks and schedules run in-process via the local task runner (BullMQ on the project's Redis) — no external task service or deployment step is required. Task definitions under `apps/app/src/trigger/` and `apps/api/src/trigger/` are registered at boot and executed by the worker embedded in each service.
 
 ## Fresh Install (Optional Clean)
 
@@ -260,7 +248,7 @@ Look for errors mentioning `process.env.*` or "Missing env var", then compare wi
 |-------|----------|
 | Using root `.env` | Docker reads per-service env files only |
 | Missing `DATABASE_URL` | Must be set in all three env files |
-| Missing `TRIGGER_SECRET_KEY` | Required in `apps/app/.env` for workflows |
+| Missing `REDIS_URL` | Required for background tasks (BullMQ queue) |
 | Mismatched auth URLs | Ensure `BETTER_AUTH_URL` matches `NEXT_PUBLIC_BETTER_AUTH_URL` |
 | Build args not exported | Export `BETTER_AUTH_URL` and `BETTER_AUTH_URL_PORTAL` before build |
 

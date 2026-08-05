@@ -91,13 +91,6 @@ jest.mock('@db', () => {
   };
 });
 
-jest.mock('@upstash/redis', () => ({
-  Redis: jest.fn().mockImplementation(() => ({
-    get: jest.fn().mockResolvedValue(null),
-    set: jest.fn().mockResolvedValue('OK'),
-  })),
-}));
-
 process.env.SECRET_KEY = 'test-secret-key-at-least-16-chars';
 process.env.BASE_URL = 'http://localhost:3333';
 process.env.APP_AWS_ACCESS_KEY_ID = 'test-access-key-id';

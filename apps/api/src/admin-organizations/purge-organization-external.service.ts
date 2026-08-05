@@ -5,7 +5,7 @@ import {
   ListObjectsV2Command,
   type ObjectIdentifier,
 } from '@aws-sdk/client-s3';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import type Stripe from 'stripe';
 import { StripeService } from '../stripe/stripe.service';
 import {

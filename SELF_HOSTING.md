@@ -37,7 +37,6 @@ For a functional deployment:
 - Docker Desktop or Docker Engine
 - External PostgreSQL 14+ with SSL
 - [Resend](https://resend.com) account for email
-- [Trigger.dev](https://cloud.trigger.dev) account for workflows
 
 ### Build & Run
 
@@ -63,15 +62,10 @@ docker compose run --rm seeder
 docker compose up -d app portal
 ```
 
-### Trigger.dev Deployment
+### Background Tasks
 
-Deploy tasks from your workstation (not inside Docker):
-
-```bash
-cd apps/app
-npx trigger.dev@latest login
-npx trigger.dev@latest deploy
-```
+Background tasks run in-process inside the app and API containers; no separate
+worker deployment is required.
 
 ### Troubleshooting
 

@@ -1,4 +1,4 @@
-import { logger, tags, task } from '@trigger.dev/sdk';
+import { logger, tags, task } from '@gideon-defender/trigger-local';
 import { deleteManualAnswerFromVector } from '@/vector-store/lib/sync/sync-manual-answer';
 
 /**

@@ -2,7 +2,7 @@
 
 import { api } from '@/lib/api-client';
 import { isFailureRunStatus } from '@/app/(app)/[orgId]/cloud-tests/status';
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';

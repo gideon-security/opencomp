@@ -8,7 +8,7 @@ vi.mock('@db/server', () => ({
   },
 }));
 
-vi.mock('@trigger.dev/sdk', () => ({
+vi.mock('@gideon-defender/trigger-local', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
   schedules: {
     task: (config: { run: (payload: unknown) => Promise<unknown> }) => config,

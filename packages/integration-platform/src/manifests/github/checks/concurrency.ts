@@ -7,7 +7,7 @@
  * per-request backoff sleeps stack up — took long enough to blow past the API's
  * HTTP request timeout on the synchronous manual-run path, so the run never
  * reported success and the task's "last ran"/result never updated. (The daily
- * scheduled run still finished because it executes in a long-lived Trigger.dev
+ * scheduled run still finished because it executes in a long-lived Local trigger
  * task.) A bounded pool keeps even a large monorepo well under that ceiling
  * while staying far below GitHub's concurrent-request limit.
  */

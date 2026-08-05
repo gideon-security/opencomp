@@ -17,7 +17,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import type { Request, Response } from 'express';
 import type { Archiver } from 'archiver';
 import { AuditRead } from '../../audit/skip-audit-log.decorator';
@@ -208,7 +208,7 @@ export class EvidenceExportController {
 
 /**
  * Auditor-only controller for bulk evidence export.
- * The heavy work runs in a Trigger.dev background task to avoid OOM in the API.
+ * The heavy work runs in a Local trigger background task to avoid OOM in the API.
  */
 @ApiTags('Evidence Export (Auditor)')
 @Controller({ path: 'evidence-export', version: '1' })

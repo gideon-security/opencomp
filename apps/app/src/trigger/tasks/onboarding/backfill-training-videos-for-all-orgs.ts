@@ -1,5 +1,5 @@
 import { db } from '@db/server';
-import { logger, task } from '@trigger.dev/sdk';
+import { logger, task } from '@gideon-defender/trigger-local';
 import { backfillTrainingVideosForOrg } from './backfill-training-videos-for-org';
 
 export const backfillTrainingVideosForAllOrgs = task({
@@ -47,7 +47,7 @@ export const backfillTrainingVideosForAllOrgs = task({
         },
       }));
 
-      // Split into chunks of 500 (Trigger.dev batch size limit)
+      // Split into chunks of 500 (Local trigger batch size limit)
       const BATCH_SIZE = 500;
       const batches: (typeof allBatchItems)[] = [];
 

@@ -27,7 +27,7 @@ jest.mock('@db', () => ({
   },
 }));
 
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   auth: {
     createPublicToken: jest.fn().mockResolvedValue('mock-public-access-token'),
   },

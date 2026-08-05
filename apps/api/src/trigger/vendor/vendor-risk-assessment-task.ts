@@ -6,8 +6,8 @@ import {
   type TaskItemEntityType,
 } from '@db';
 import type { Prisma } from '@db';
-import type { Task } from '@trigger.dev/sdk';
-import { logger, metadata, queue, schemaTask, tags } from '@trigger.dev/sdk';
+import type { Task } from '@gideon-defender/trigger-local';
+import { logger, metadata, queue, schemaTask, tags } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 
 import { resolveTaskCreatorAndAssignee } from './vendor-risk-assessment/assignee';
@@ -1145,7 +1145,7 @@ export const vendorRiskAssessmentTask: Task<
         });
       }
 
-      throw error; // Re-throw so trigger.dev still records the failure and retries
+      throw error; // Re-throw so local-trigger still records the failure and retries
     }
   },
 });

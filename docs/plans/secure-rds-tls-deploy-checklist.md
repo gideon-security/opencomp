@@ -18,20 +18,14 @@ If `NODE_EXTRA_CA_CERTS` is still set as a shared/team Vercel env var,
 `Warning: Ignoring extra certs from … load failed: error:80000002:system
 library` for every cold start.
 
-## Trigger.dev (api and app projects, staging + prod)
+## Background task worker TLS (api + app, staging + prod)
 
-The `caBundleExtension` and `NODE_EXTRA_CA_CERTS` setup in `trigger.config.ts`
-remain as-is — Trigger.dev images bake the cert into
-`/app/certs/rds-global-bundle.pem`. The shared `@gideon-defender/db` client falls
-through to verified TLS via the inline bundle either way.
+Tasks run in-process (BullMQ on Redis) and inherit the process' `NODE_EXTRA_CA_CERTS`
+/ `DATABASE_URL` config. The shared `@gideon-defender/db` client falls through to
+verified TLS via the inline RDS bundle either way.
 
 If `PRISMA_ALLOW_INSECURE_TLS` is still set as a leftover from earlier
-debugging, remove it:
-
-```bash
-bunx trigger.dev@4.4.3 envvars remove PRISMA_ALLOW_INSECURE_TLS --env staging
-bunx trigger.dev@4.4.3 envvars remove PRISMA_ALLOW_INSECURE_TLS --env prod
-```
+debugging, remove it from the container/process env and restart.
 
 ## API Docker (apps/api)
 

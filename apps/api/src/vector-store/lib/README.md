@@ -1,35 +1,36 @@
 # Vector Search Utilities
 
-This directory contains utilities for semantic search using Upstash Vector and OpenAI embeddings.
+This directory contains utilities for semantic search using pgvector (Postgres) and OpenAI embeddings.
 
 ## Structure
 
 ```
-lib/vector/
-├── core/                    # Core functionality
-│   ├── client.ts           # Upstash Vector client initialization
+lib/
+├── core/                      # Core functionality
+│   ├── client.ts             # Shared pgvector client (re-exported from @gideon-defender/db)
 │   ├── generate-embedding.ts # OpenAI embedding generation
-│   ├── find-similar.ts     # Semantic search function
-│   └── upsert-embedding.ts # Embedding storage
-├── utils/                   # Utility functions
-│   ├── chunk-text.ts       # Text chunking utility
+│   ├── find-similar.ts       # Semantic search function
+│   └── upsert-embedding.ts   # Embedding storage
+├── sync/                      # Embedding sync jobs (policies, context, manual answers, KB)
+├── utils/                     # Utility functions
+│   ├── chunk-text.ts         # Text chunking utility
 │   └── extract-policy-text.ts # TipTap JSON to text conversion
-├── index.ts                 # Main exports
-└── README.md               # This file
+├── index.ts                   # Main exports
+└── README.md                 # This file
 ```
 
 ## Setup
 
-1. **Create Upstash Vector Database**
-   - Go to [Upstash Console](https://console.upstash.com)
-   - Create a new Vector Database
-   - Copy the REST URL and Token
+1. **Enable pgvector**
+   - The `vector` extension and `vector_embedding` table (with HNSW index) are created by the
+     migration `20260805000000_add_pgvector_embeddings` in `packages/db/prisma/migrations`.
+   - Vector writes/reads go through raw SQL in the shared client; Prisma does not own the
+     `vector(1536)` column type.
 
 2. **Add Environment Variables**
    Add to your `.env` file:
    ```
-   UPSTASH_VECTOR_REST_URL=your_vector_rest_url
-   UPSTASH_VECTOR_REST_TOKEN=your_vector_rest_token
+   DATABASE_URL=postgres://user:password@host:5432/comp?sslmode=disable
    OPENAI_API_KEY=your_openai_api_key
    ```
 
@@ -98,10 +99,14 @@ const text = extractTextFromPolicy(policy);
 ## Files
 
 ### Core (`core/`)
-- `client.ts` - Upstash Vector client initialization
+- `client.ts` - Shared pgvector client (from `@gideon-defender/db`)
 - `generate-embedding.ts` - OpenAI embedding generation
 - `find-similar.ts` - Semantic search function
 - `upsert-embedding.ts` - Embedding storage
+
+### Sync (`sync/`)
+- `sync-policies.ts`, `sync-context.ts`, `sync-manual-answer.ts`, `sync-knowledge-base.ts`,
+  `sync-organization.ts` - Keep the vector store in sync with source documents.
 
 ### Utils (`utils/`)
 - `chunk-text.ts` - Text chunking utility

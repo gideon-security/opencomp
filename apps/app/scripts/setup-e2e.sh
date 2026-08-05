@@ -41,8 +41,7 @@ NEXT_PUBLIC_PORTAL_URL=http://localhost:3002
 REVALIDATION_SECRET=test-revalidation-secret
 
 # Test Redis
-UPSTASH_REDIS_REST_URL=https://test.upstash.io
-UPSTASH_REDIS_REST_TOKEN=test-token
+REDIS_URL=redis://localhost:6379
 
 # Google OAuth (mock values for test)
 GOOGLE_ID=test-client-id

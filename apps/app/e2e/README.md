@@ -30,9 +30,8 @@ AUTH_SECRET=test-secret-for-e2e-only
 NEXT_PUBLIC_PORTAL_URL=http://localhost:3002
 REVALIDATION_SECRET=test-revalidation-secret
 
-# Redis/Upstash test instance
-UPSTASH_REDIS_REST_URL=https://test.upstash.io
-UPSTASH_REDIS_REST_TOKEN=test-token
+# Redis test instance
+REDIS_URL=redis://localhost:6379
 
 # Google OAuth credentials
 GOOGLE_ID=test-client-id

@@ -1,24 +1,17 @@
 import type { Request, Response, NextFunction } from 'express';
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
+import { createRateLimiter } from '@gideon-defender/kv/rate-limit';
+import { redisClient } from '../redis/redis.client';
 
 const MAX_REQUESTS = 10;
-const WINDOW = '60 s';
+const WINDOW_SECONDS = 60;
 
-const hasUpstashConfig =
-  !!process.env.UPSTASH_REDIS_REST_URL &&
-  !!process.env.UPSTASH_REDIS_REST_TOKEN;
-
-const ratelimit = hasUpstashConfig
-  ? new Ratelimit({
-      redis: new Redis({
-        url: process.env.UPSTASH_REDIS_REST_URL!,
-        token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-      }),
-      limiter: Ratelimit.slidingWindow(MAX_REQUESTS, WINDOW),
-      prefix: 'ratelimit:admin-auth',
-    })
-  : null;
+const ratelimit = createRateLimiter({
+  client: redisClient,
+  limit: MAX_REQUESTS,
+  windowSeconds: WINDOW_SECONDS,
+  prefix: 'ratelimit:admin-auth',
+  algorithm: 'sliding',
+});
 
 /**
  * Express middleware that rate-limits requests to /api/auth/admin/*.
@@ -26,8 +19,8 @@ const ratelimit = hasUpstashConfig
  * better-auth admin routes (impersonation, set-role, ban, etc.) are handled
  * by better-auth's own request handler and never reach NestJS controllers,
  * so the global ThrottlerGuard does not apply to them. This middleware fills
- * that gap with a per-IP sliding window (10 req/min) backed by Upstash Redis
- * so limits are shared across all ECS instances.
+ * that gap with a per-IP sliding window (10 req/min) backed by the shared
+ * Redis client so limits are shared across all ECS instances.
  */
 export async function adminAuthRateLimiter(
   req: Request,
@@ -35,10 +28,6 @@ export async function adminAuthRateLimiter(
   next: NextFunction,
 ): Promise<void> {
   if (!req.path.startsWith('/api/auth/admin')) {
-    return next();
-  }
-
-  if (!ratelimit) {
     return next();
   }
 

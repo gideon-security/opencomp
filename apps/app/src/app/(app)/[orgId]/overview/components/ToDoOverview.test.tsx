@@ -16,7 +16,7 @@ vi.mock('@/hooks/use-permissions', () => ({
   }),
 }));
 
-vi.mock('@trigger.dev/react-hooks', () => ({
+vi.mock('@gideon-defender/trigger-react', () => ({
   useRealtimeRun: () => ({ run: null }),
 }));
 

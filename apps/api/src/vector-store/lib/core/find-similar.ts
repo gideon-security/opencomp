@@ -54,7 +54,7 @@ export async function findSimilarContent(
   organizationId: string,
 ): Promise<SimilarContentResult[]> {
   if (!vectorIndex) {
-    logger.warn('Upstash Vector is not configured, returning empty results');
+    logger.warn('Vector store is not configured, returning empty results');
     return [];
   }
 
@@ -140,7 +140,7 @@ export async function findSimilarContentBatch(
   organizationId: string,
 ): Promise<SimilarContentResult[][]> {
   if (!vectorIndex) {
-    logger.warn('Upstash Vector is not configured, returning empty results');
+    logger.warn('Vector store is not configured, returning empty results');
     return questions.map(() => []);
   }
 

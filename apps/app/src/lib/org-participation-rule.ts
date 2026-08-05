@@ -2,10 +2,10 @@
  * Pure, dependency-free org-participation rule.
  *
  * This is a deliberate mirror of `packages/auth/src/participation.ts`. The app
- * cannot import `@gideon-defender/auth` from files that end up in the Trigger.dev
+ * cannot import `@gideon-defender/auth` from files that end up in the Local trigger
  * bundle (that package pulls in better-auth, which the deploy pipeline can't
  * bundle — see policy-acknowledgment-digest-helpers.ts for the same pattern).
- * Keeping this rule free of imports lets both RSC/server code and Trigger.dev
+ * Keeping this rule free of imports lets both RSC/server code and Local trigger
  * tasks share one implementation. KEEP IN SYNC with the auth package version.
  *
  * Platform admins (`User.role === 'admin'`) are Comp AI staff embedded in

@@ -124,7 +124,7 @@ ctx.warn('Warning message', { data });
 
 **Logs appear in:**
 - API console during development
-- Trigger.dev dashboard for background jobs
+- Local trigger dashboard for background jobs
 - Check run logs in database
 
 ### State Storage
@@ -674,7 +674,7 @@ for (const id of ids) {
 
 ### Timeouts
 
-Checks have a **15-minute timeout** (Trigger.dev default). For long-running checks:
+Checks have a **15-minute timeout** (Local trigger default). For long-running checks:
 
 ```typescript
 // Process in batches

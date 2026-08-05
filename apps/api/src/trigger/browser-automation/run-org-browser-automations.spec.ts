@@ -1,7 +1,7 @@
 // Importing the runner evaluates queue()/task() at module load — stub them.
 // runBrowserAutomation + the integration email path are only referenced inside
 // the task body (not at load), but stub them so nothing real is pulled in.
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
   queue: jest.fn(() => ({ name: 'q' })),
   task: (config: unknown) => config,

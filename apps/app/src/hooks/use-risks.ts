@@ -190,7 +190,7 @@ export function useRisk(
     riskId ? `/v1/risks/${riskId}` : null,
     {
       ...restOptions,
-      // Enable polling for real-time updates (when trigger.dev tasks complete)
+      // Enable polling for real-time updates (when local-trigger tasks complete)
       refreshInterval: restOptions.refreshInterval ?? DEFAULT_POLLING_INTERVAL,
       // Continue polling even when window is not focused
       refreshWhenHidden: false,

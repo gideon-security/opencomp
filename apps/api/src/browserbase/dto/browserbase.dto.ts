@@ -99,7 +99,7 @@ export class LoginRecommendationDto {
 
 export class AnalyzeLoginResponseDto {
   @ApiProperty({
-    description: 'Trigger.dev run id for the background analysis',
+    description: 'Local trigger run id for the background analysis',
   })
   runId: string;
 
@@ -224,7 +224,7 @@ export class SignInAuthProfileDto {
 
 export class SignInAuthProfileResponseDto {
   @ApiProperty({
-    description: 'Trigger.dev run id for the background automated sign-in',
+    description: 'Local trigger run id for the background automated sign-in',
   })
   runId: string;
 
@@ -737,7 +737,7 @@ export class TestInstructionDto {
 }
 
 export class TestInstructionResponseDto {
-  @ApiProperty({ description: 'Trigger.dev run id to subscribe to' })
+  @ApiProperty({ description: 'Local trigger run id to subscribe to' })
   runId: string;
 
   @ApiProperty({ description: 'Public token for realtime subscription' })

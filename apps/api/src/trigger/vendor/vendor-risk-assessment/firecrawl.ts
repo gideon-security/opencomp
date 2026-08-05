@@ -1,4 +1,4 @@
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 import { firecrawlVendorDataSchema, type FirecrawlVendorData } from './schema';
 import { extractVendorDomain, isUrlFromVendorDomain } from './url-validation';
 

@@ -2,7 +2,7 @@
 
 import { Button } from '@trycompai/design-system';
 import { Add, Close, Play } from '@trycompai/design-system/icons';
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import type {

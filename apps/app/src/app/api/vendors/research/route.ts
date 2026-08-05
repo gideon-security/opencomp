@@ -1,6 +1,6 @@
 import { researchVendor } from '@/trigger/tasks/scrape/research';
 import { auth } from '@/utils/auth';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {

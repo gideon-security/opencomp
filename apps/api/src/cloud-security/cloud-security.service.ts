@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { db, Prisma } from '@db';
 import { getManifest, runAllChecks } from '@gideon-defender/integration-platform';
-import { runs, tasks } from '@trigger.dev/sdk';
+import { runs, tasks } from '@gideon-defender/trigger-local';
 import { CredentialVaultService } from '../integration-platform/services/credential-vault.service';
 import { OAuthCredentialsService } from '../integration-platform/services/oauth-credentials.service';
 import { GCPSecurityService } from './providers/gcp-security.service';
@@ -607,7 +607,7 @@ export class CloudSecurityService {
    * IAM role — performed here in ECS, which holds the roleAssumer task role and
    * the SECURITY_HUB_ROLE_ASSUMER_ARN env.
    *
-   * The Cloud Tests CHECK path runs in the Trigger.dev runtime, which has no
+   * The Cloud Tests CHECK path runs in the Local trigger runtime, which has no
    * base AWS credentials or roleAssumer ARN, so it cannot assume the
    * cross-account role itself. It calls this (via the internal `resolve-session`
    * endpoint) and injects the returned temp creds into the check credentials,

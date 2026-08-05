@@ -2,7 +2,7 @@
 
 import { Button } from '@trycompai/design-system';
 import { MagicWandFilled } from '@trycompai/design-system/icons';
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useEffect, useMemo, useRef } from 'react';
 import { ControlsSection, TasksSection } from './AutoLinkSuggestions.sections';
 import {

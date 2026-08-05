@@ -1,7 +1,7 @@
-import { schedules } from '@trigger.dev/sdk';
+import { schedules } from '@gideon-defender/trigger-local';
 
 // Static imports guarantee every task + schedule registers with the local
-// in-process @trigger.dev shim inside the Next.js server bundle (the bundler
+// in-process local-trigger shim inside the Next.js server bundle (the bundler
 // cannot enumerate the trigger directory at runtime, so imports are explicit).
 import './lib/prompts';
 import './lib/research';

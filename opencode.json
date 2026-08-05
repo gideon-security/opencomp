@@ -1,13 +1,5 @@
 {
   "mcpServers": {
-    "trigger": {
-      "type": "stdio",
-      "command": "bunx",
-      "args": [
-        "trigger.dev@latest",
-        "mcp"
-      ]
-    },
     "sentry": {
       "type": "sse",
       "url": "https://mcp.sentry.dev/mcp/comp-ai/comp"

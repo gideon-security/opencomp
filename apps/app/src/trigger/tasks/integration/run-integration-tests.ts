@@ -1,5 +1,5 @@
 import { db } from '@db/server';
-import { logger, tags, task } from '@trigger.dev/sdk';
+import { logger, tags, task } from '@gideon-defender/trigger-local';
 import { sendIntegrationResults } from './integration-results';
 
 export const runIntegrationTests = task({

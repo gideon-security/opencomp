@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
-import { assistantChatRedisClient } from './upstash-redis.client';
+import { redisClient } from '../redis/redis.client';
 import type { AssistantChatMessage } from './assistant-chat.types';
 
 const StoredMessageSchema = z.object({
@@ -38,7 +38,7 @@ export class AssistantChatService {
     params: GetAssistantChatKeyParams,
   ): Promise<AssistantChatMessage[]> {
     const key = getAssistantChatKey(params);
-    const raw = await assistantChatRedisClient.get<unknown>(key);
+    const raw = await redisClient.get<unknown>(key);
     const parsed = StoredMessagesSchema.safeParse(raw);
     if (!parsed.success) return [];
     return parsed.data;
@@ -51,11 +51,11 @@ export class AssistantChatService {
     const key = getAssistantChatKey(params);
     // Always validate before writing to keep the cache shape stable.
     const validated = StoredMessagesSchema.parse(messages);
-    await assistantChatRedisClient.set(key, validated, { ex: this.ttlSeconds });
+    await redisClient.set(key, validated, { ex: this.ttlSeconds });
   }
 
   async clearHistory(params: GetAssistantChatKeyParams): Promise<void> {
     const key = getAssistantChatKey(params);
-    await assistantChatRedisClient.del(key);
+    await redisClient.del(key);
   }
 }

@@ -1,6 +1,6 @@
 'use server';
 
-import { auth } from '@trigger.dev/sdk';
+import { auth } from '@gideon-defender/trigger-local';
 import { cookies } from 'next/headers';
 
 // Server action that can set cookies (called from client components or forms)

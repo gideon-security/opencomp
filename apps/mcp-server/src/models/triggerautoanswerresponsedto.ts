@@ -22,13 +22,13 @@ export const TriggerAutoAnswerResponseDto$zodSchema: z.ZodType<
   ),
   message: z.string().describe("Human-readable summary of what to do next."),
   publicAccessToken: z.string().describe(
-    "Token for tracking the run via Trigger.dev realtime. Optional — MCP/agent clients should poll GET /v1/questionnaire/:id instead.",
+    "Token for tracking the run via Local trigger realtime. Optional — MCP/agent clients should poll GET /v1/questionnaire/:id instead.",
   ),
   questionnaireId: z.string().describe(
     "The questionnaire whose answers are being generated.",
   ),
   runId: z.string().describe(
-    "Background run identifier for the generation job (Trigger.dev run id).",
+    "Background run identifier for the generation job (Local trigger run id).",
   ),
   status: z.string().describe(
     "Always 'generating' on a successful trigger. Poll GET /v1/questionnaire/:id; answers are ready once answeredQuestions equals totalQuestions.",

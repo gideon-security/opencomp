@@ -1,6 +1,6 @@
 import { getManifest, runAllChecks } from '@gideon-defender/integration-platform';
 import { db } from '@db';
-import { logger, tags, task } from '@trigger.dev/sdk';
+import { logger, tags, task } from '@gideon-defender/trigger-local';
 import { isCheckDisabledForTask } from '../../integration-platform/utils/disabled-task-checks';
 import {
   getAccessToken,
@@ -81,7 +81,7 @@ export const runTaskIntegrationChecks = task({
 
     const manifest = getManifest(providerSlug);
 
-    // Dynamic (DB-backed) providers have no manifest in the Trigger.dev runtime,
+    // Dynamic (DB-backed) providers have no manifest in the Local trigger runtime,
     // so run their checks ON OUR SERVER (like AWS), where the dynamic-manifest
     // loader has populated the registry. Static providers keep running here.
     const isDynamic = manifest
@@ -236,7 +236,7 @@ export const runTaskIntegrationChecks = task({
       for (const checkId of effectiveCheckIds) {
         // Server-delegated providers (AWS + dynamic) run ON OUR SERVER so their
         // checks egress our VPC / resolve their DB-backed manifest there.
-        // Static providers keep executing here in the Trigger.dev runtime,
+        // Static providers keep executing here in the Local trigger runtime,
         // unchanged. The result shape is identical either way, so all the
         // persistence / status / email logic below is shared.
         let result: RunAllChecksResult;

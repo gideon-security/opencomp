@@ -1,6 +1,6 @@
 'use client';
 
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useCallback, useEffect, useRef } from 'react';
 
 interface UseDocumentProcessingOptions {
@@ -13,7 +13,7 @@ interface UseDocumentProcessingOptions {
 }
 
 /**
- * Hook to track document processing and deletion runs using Trigger.dev realtime
+ * Hook to track document processing and deletion runs using Local trigger realtime
  *
  * The tokens should be obtained from the API response (e.g., from processDocuments or deleteDocument endpoints)
  * which return `publicAccessToken` along with the `runId`.

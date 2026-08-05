@@ -30,7 +30,7 @@ export interface AutoSigninHandle {
 
 /**
  * Password path of the connect flow: resolve the profile, store the login, then
- * kick off the automated first sign-in as a background Trigger.dev run. Returns
+ * kick off the automated first sign-in as a background Local trigger run. Returns
  * a handle to subscribe to (plus the profileId, so a fallback live sign-in can
  * target the same profile). Returns null on failure.
  */

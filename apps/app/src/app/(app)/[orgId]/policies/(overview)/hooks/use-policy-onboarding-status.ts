@@ -1,6 +1,6 @@
 'use client';
 
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useMemo } from 'react';
 import type { PolicyTailoringStatus } from '../../all/components/policy-tailoring-context';
 
@@ -10,7 +10,7 @@ export interface PolicyOnboardingItemInfo {
 }
 
 /**
- * Subscribe to the onboarding trigger.dev run and derive per-policy tailoring
+ * Subscribe to the onboarding local-trigger run and derive per-policy tailoring
  * status plus overall progress. Mirrors use-onboarding-status in risk/ and
  * vendors/ but handles the `policies` → `policy_<id>_status` singular
  * conversion correctly (the shared hook's `itemType.slice(0, -1)` would

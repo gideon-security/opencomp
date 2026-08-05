@@ -39,6 +39,9 @@ export async function executeVectorQuery(
       vector: queryEmbedding,
       topK: 100,
       includeMetadata: true,
+      // Server-side metadata filtering (exact match on the indexed columns) so
+      // we never depend on top-K recall to find every chunk of a source.
+      filter: `organizationId = "${filter.organizationId}" AND sourceType = "${filter.sourceType}" AND sourceId = "${filter.sourceId}"`,
     });
 
     return filterAndMapResults(results, filter);
@@ -125,10 +128,10 @@ export async function fetchChunkContent(
   try {
     const chunkResult = await vectorIndex.fetch([chunkId]);
     if (chunkResult && chunkResult.length > 0 && chunkResult[0]) {
-      const metadata = chunkResult[0].metadata as Record<string, unknown>;
+      const metadata = chunkResult[0].metadata;
       return {
-        content: metadata?.content as string | undefined,
-        documentName: metadata?.documentName as string | undefined,
+        content: metadata?.content ?? undefined,
+        documentName: metadata?.documentName ?? undefined,
       };
     }
     return null;

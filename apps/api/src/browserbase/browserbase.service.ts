@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { TaskFrequency } from '@db';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import {
   BrowserAutomationCrudService,
   type BrowserAutomationStepInput,
@@ -47,7 +47,7 @@ export class BrowserbaseService {
   private readonly automationDrafts = new BrowserAutomationDraftService();
 
   /**
-   * Kicks off login analysis as a background Trigger.dev run (browser + AI, which
+   * Kicks off login analysis as a background Local trigger run (browser + AI, which
    * can outlast an HTTP/browser timeout) and returns a handle the client
    * subscribes to for the result.
    */
@@ -62,7 +62,7 @@ export class BrowserbaseService {
   /**
    * Kicks off a live test of an instruction the user hasn't saved yet. Creates
    * the session up front (so the client shows it as a live view), then runs the
-   * instruction as a background Trigger.dev task that streams its steps. Nothing
+   * instruction as a background Local trigger task that streams its steps. Nothing
    * is persisted — this only proves the instruction out before it's saved.
    */
   async testInstruction(input: {
@@ -181,7 +181,7 @@ export class BrowserbaseService {
    * Kicks off the connect flow's first automated sign-in. Creates the browser
    * session up front (so the client can show it as a live view — the user
    * watches the auto-fill and takes over in place if it can't finish), then runs
-   * the sign-in as a background Trigger.dev task on that session (browser + AI,
+   * the sign-in as a background Local trigger task on that session (browser + AI,
    * which can outlast an HTTP/browser timeout).
    */
   async signInAuthProfile(input: {

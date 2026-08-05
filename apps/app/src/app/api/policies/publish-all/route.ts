@@ -21,7 +21,7 @@ export async function POST() {
     );
   }
 
-  // Trigger emails via Trigger.dev
+  // Trigger emails via Local trigger
   const { members } = response.data;
   if (members.length > 0) {
     try {

@@ -1,0 +1,22 @@
+model VectorEmbedding {
+  id                   String   @id
+  embedding            Unsupported("vector(1536)")?
+  organizationId       String
+  sourceType           String
+  sourceId             String
+  content              String?
+  policyName           String?
+  contextQuestion      String?
+  documentName         String?
+  manualAnswerQuestion String?
+  department           String?
+  updatedAt            DateTime?
+  createdAt            DateTime @default(now())
+
+  @@index([organizationId, sourceType])
+  @@index([sourceId])
+  @@index([sourceType, sourceId])
+  @@index([organizationId])
+
+  @@map("vector_embedding")
+}

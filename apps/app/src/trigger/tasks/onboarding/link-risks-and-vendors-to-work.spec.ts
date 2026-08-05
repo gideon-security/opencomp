@@ -18,7 +18,7 @@ vi.mock('@/lib/embedding', () => ({
   findSimilarTasks: findSimilarTasksMock,
 }));
 
-vi.mock('@trigger.dev/sdk', () => ({
+vi.mock('@gideon-defender/trigger-local', () => ({
   task: (def: { run: Function }) => ({ run: def.run }),
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
   metadata: { set: vi.fn() },

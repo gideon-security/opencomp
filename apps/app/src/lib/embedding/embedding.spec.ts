@@ -1,20 +1,22 @@
 import { Departments } from '@db';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
-const upsertMock = vi.fn();
-const queryMock = vi.fn();
-const infoMock = vi.fn();
-const deleteMock = vi.fn();
-const rangeMock = vi.fn();
+const { upsertMock, queryMock, infoMock, deleteMock, rangeMock } = vi.hoisted(() => ({
+  upsertMock: vi.fn(),
+  queryMock: vi.fn(),
+  infoMock: vi.fn(),
+  deleteMock: vi.fn(),
+  rangeMock: vi.fn(),
+}));
 
-vi.mock('@upstash/vector', () => ({
-  Index: vi.fn().mockImplementation(() => ({
+vi.mock('@gideon-defender/db', () => ({
+  vectorIndex: {
     upsert: upsertMock,
     query: queryMock,
     info: infoMock,
     delete: deleteMock,
     range: rangeMock,
-  })),
+  },
 }));
 
 vi.mock('@ai-sdk/openai', () => ({
@@ -44,8 +46,6 @@ beforeEach(() => {
   infoMock.mockReset();
   deleteMock.mockReset();
   rangeMock.mockReset();
-  process.env.UPSTASH_VECTOR_REST_URL = 'https://test.upstash.io';
-  process.env.UPSTASH_VECTOR_REST_TOKEN = 'test-token';
 });
 
 describe('upsertEntityEmbeddings', () => {
@@ -112,7 +112,7 @@ describe('upsertEntityEmbeddings', () => {
   });
 
   it('skips entities whose existing hash matches (no embed, no upsert)', async () => {
-    // First call: capture the hashes Upstash sees written.
+    // First call: capture the hashes the store sees written.
     const first = await upsertEntityEmbeddings({
       organizationId: 'org_1',
       kind: 'task',
@@ -177,7 +177,7 @@ describe('cosineToUnitScore', () => {
     expect(cosineToUnitScore([1, 0], [0, 1])).toBeCloseTo(0.5, 10);
   });
 
-  it('is magnitude-invariant (pure cosine) and matches Upstash (1+cos)/2', () => {
+  it('is magnitude-invariant (pure cosine) and matches the vector store (1+cos)/2', () => {
     // Same direction, different magnitudes → still 1.
     expect(cosineToUnitScore([2, 0], [5, 0])).toBeCloseTo(1, 10);
     // cos = 0.6 → (1 + 0.6) / 2 = 0.8
@@ -224,7 +224,7 @@ describe('findSimilarTasks', () => {
       }),
     );
     expect(queryMock).not.toHaveBeenCalled();
-    // Sorted by score desc, scores on Upstash's (1+cos)/2 scale.
+    // Sorted by score desc, scores on the (1+cos)/2 scale.
     expect(results).toEqual([
       { id: 'tsk_a', score: 1, department: 'hr' },
       { id: 'tsk_b', score: 0.5, department: 'none' },
@@ -488,7 +488,7 @@ describe('pruneOrphanTaskVectors', () => {
 
   it('continues past a failing delete batch and returns only successfully-deleted sourceIds', async () => {
     // 150 orphans → two batches (100 + 50). The first batch's delete throws
-    // (transient Upstash error); the sweep must still run batch 2 and must NOT
+    // (transient store error); the sweep must still run batch 2 and must NOT
     // report batch 1's sourceIds as deleted — clearing their hashes while the
     // vectors survive is wasteful, but reporting them deleted while the vectors
     // are gone-but-cached would break re-embedding. (cubic P2)

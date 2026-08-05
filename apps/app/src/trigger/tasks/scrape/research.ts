@@ -1,6 +1,6 @@
 import { researchJobCore } from '@/trigger/lib/research';
 import { db } from '@db/server';
-import { logger, queue, schemaTask, tasks } from '@trigger.dev/sdk';
+import { logger, queue, schemaTask, tasks } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 import type { scoreVendorRisk } from './score-vendor-risk';
 

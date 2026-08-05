@@ -69,7 +69,7 @@ describe('ActingUserResolver', () => {
         authType: 'service',
         isApiKey: false,
         isServiceToken: true,
-        serviceName: 'Trigger.dev',
+        serviceName: 'Local trigger',
       });
 
       const result = await resolver.resolve(req, 'org_1');
@@ -269,14 +269,14 @@ describe('ActingUserResolver', () => {
         userId: undefined,
         authType: 'service',
         isServiceToken: true,
-        serviceName: 'Trigger.dev',
+        serviceName: 'Local trigger',
       });
 
       const result = await resolver.resolve(req, 'org_1');
 
       expect(result.userId).toBe('usr_owner');
       expect(result.source).toBe('org-owner-fallback');
-      expect(result.callerLabel).toBe('via service "Trigger.dev"');
+      expect(result.callerLabel).toBe('via service "Local trigger"');
     });
 
     it('falls back to "via service token" when the service name is missing', async () => {

@@ -37,7 +37,7 @@ jest.mock('@gideon-defender/integration-platform', () => ({
   getManifest: jest.fn(),
 }));
 
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
   schedules: {
     task: (config: unknown) => config,

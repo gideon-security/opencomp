@@ -1,24 +1,16 @@
-import { env } from '@/env.mjs';
-import { client } from '@gideon-defender/kv';
-import { Ratelimit } from '@upstash/ratelimit';
+import { client, createRateLimiter } from '@gideon-defender/kv';
 import type { NextRequest } from 'next/server';
 
-let ratelimit: Ratelimit | undefined;
-
-if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
-  ratelimit = new Ratelimit({
-    redis: client,
-    limiter: Ratelimit.slidingWindow(20, '10 s'),
-  });
-}
+const limiter = createRateLimiter({
+  client,
+  limit: 20,
+  windowSeconds: 10,
+  prefix: 'ratelimit:api',
+});
 
 export async function rateLimit(request: NextRequest) {
-  if (!ratelimit) {
-    return { success: true };
-  }
-
   const ip = request.headers.get('x-forwarded-for') ?? '127.0.0.1';
-  const { success } = await ratelimit.limit(ip);
+  const { success } = await limiter.limit(ip);
 
   return { success };
 }

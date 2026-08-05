@@ -33,7 +33,7 @@ describe('isOrgParticipant', () => {
 
 // Drift guard: this app-local rule is a deliberate dependency-free mirror of
 // `@gideon-defender/auth/participation` (the app can't import the auth index from
-// Trigger.dev-bundled files). Fail CI if the two ever diverge.
+// Local trigger-bundled files). Fail CI if the two ever diverge.
 describe('org-participation rule stays in sync with @gideon-defender/auth', () => {
   const roles: Array<string | null | undefined> = [
     'admin',

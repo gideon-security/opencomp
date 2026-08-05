@@ -1,4 +1,4 @@
-import { metadata, task } from '@trigger.dev/sdk';
+import { metadata, task } from '@gideon-defender/trigger-local';
 import { BrowserbaseService } from '../../browserbase/browserbase.service';
 
 const browserbaseService = new BrowserbaseService();

@@ -36,7 +36,7 @@ import type { Response } from 'express';
 import { openai } from '@ai-sdk/openai';
 import { streamText, convertToModelMessages, type UIMessage } from 'ai';
 import { db } from '@db';
-import { auth as triggerAuth, tasks } from '@trigger.dev/sdk';
+import { auth as triggerAuth, tasks } from '@gideon-defender/trigger-local';
 import type { updatePolicy } from '../trigger/policies/update-policy';
 import { AuditRead } from '../audit/skip-audit-log.decorator';
 import { AuthContext, OrganizationId } from '../auth/auth-context.decorator';

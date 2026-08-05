@@ -33,14 +33,14 @@ async function main() {
       });
 
       console.log(`✅ Successfully triggered job with ID: ${handle.id}`);
-      console.log(`📊 You can monitor the progress in the Trigger.dev dashboard`);
+      console.log(`📊 You can monitor the progress in the Local trigger dashboard`);
     } else {
       console.log('🚀 Triggering training video backfill for ALL organizations');
 
       const handle = await backfillTrainingVideosForAllOrgs.trigger();
 
       console.log(`✅ Successfully triggered batch job with ID: ${handle.id}`);
-      console.log(`📊 You can monitor the progress in the Trigger.dev dashboard`);
+      console.log(`📊 You can monitor the progress in the Local trigger dashboard`);
       console.log(`⚠️  This will process ALL organizations and their members`);
     }
   } catch (error) {

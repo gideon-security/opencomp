@@ -1,6 +1,10 @@
 import 'server-only';
 
-import { Index, type RangeResult } from '@upstash/vector';
+import {
+  vectorIndex as pgVectorIndex,
+  type VectorIndex,
+  type VectorRangeResult,
+} from '@gideon-defender/db';
 import { openai } from '@ai-sdk/openai';
 import { embedMany } from 'ai';
 import { createHash } from 'node:crypto';
@@ -21,7 +25,7 @@ interface UpsertOptions {
    * Optional id → hash map of the embeddings currently stored for these
    * entities. Any entity whose freshly-computed `contentHash` matches its
    * stored value is skipped — both the OpenAI embedding call AND the
-   * Upstash upsert. Pass an empty map (or omit) to force re-embedding.
+   * vector upsert. Pass an empty map (or omit) to force re-embedding.
    *
    * Stored hashes live on `Task/Risk/Vendor.embeddingHash` in Postgres;
    * `runLinkage` reads them up-front and writes the new hashes back after
@@ -51,9 +55,9 @@ export interface SimilarTaskResult {
 
 // `text-embedding-3-large` truncated to 1536 dims via Matryoshka. The
 // truncated 1536-dim form of -3-large still outperforms -3-small on MTEB
-// while keeping the existing Upstash Vector index (which is provisioned at
-// 1536 dims) usable as-is. Bumping to the full 3072 dims would require a
-// new index + a one-time re-embed of every org.
+// while matching the shared pgvector `vector_embedding` column (VECTOR(1536)).
+// Bumping to the full 3072 dims would require a schema change + a one-time
+// re-embed of every org.
 const EMBEDDING_MODEL = 'text-embedding-3-large';
 const EMBEDDING_DIMENSIONS = 1536;
 const DEFAULT_TOP_K = 25;
@@ -66,19 +70,11 @@ const TASK_VECTOR_PAGE_SIZE = 1000;
 // task vectors, far beyond any real org — hitting it signals a bug, not scale.
 const TASK_VECTOR_MAX_PAGES = 500;
 
-let cachedIndex: Index | null = null;
-
-function getIndex(): Index {
-  if (cachedIndex) return cachedIndex;
-  const url = process.env.UPSTASH_VECTOR_REST_URL;
-  const token = process.env.UPSTASH_VECTOR_REST_TOKEN;
-  if (!url || !token) {
-    throw new Error(
-      'Upstash Vector is not configured (UPSTASH_VECTOR_REST_URL / UPSTASH_VECTOR_REST_TOKEN)',
-    );
+function getIndex(): VectorIndex {
+  if (!pgVectorIndex) {
+    throw new Error('Vector store is not configured (DATABASE_URL)');
   }
-  cachedIndex = new Index({ url, token });
-  return cachedIndex;
+  return pgVectorIndex;
 }
 
 function embeddingIdPrefix(kind: EntityKind, organizationId: string): string {
@@ -128,11 +124,11 @@ export function computeEntityContentHash({
 }
 
 /**
- * Upsert per-org entity embeddings into Upstash Vector.
+ * Upsert per-org entity embeddings into the shared pgvector-backed store.
  *
- * NOTE: this duplicates a thin slice of `apps/api/src/vector-store/`. Consolidate
- * into a shared package as a follow-up — keeping it here avoids cross-app imports
- * for the trigger task without a refactor.
+ * NOTE: this now routes through `@gideon-defender/db`, the same shared client
+ * used by `apps/api/src/vector-store/` — kept here so the trigger task does
+ * not import across app boundaries.
  */
 export async function upsertEntityEmbeddings({
   organizationId,
@@ -145,7 +141,7 @@ export async function upsertEntityEmbeddings({
 
   // Skip entities whose stored hash matches the current content hash —
   // text + model + dims + department haven't changed, so the existing
-  // vector is still authoritative. Saves the OpenAI embed AND the Upstash
+  // vector is still authoritative. Saves the OpenAI embed AND the vector
   // upsert (the two non-trivial costs in this path).
   const withHashes = valid.map((entity) => ({
     entity,
@@ -209,7 +205,7 @@ async function fetchOrgTaskVectors(organizationId: string): Promise<OrgTaskVecto
   let cursor: string | number = '0';
   let enumeratedFully = false;
   for (let page = 0; page < TASK_VECTOR_MAX_PAGES; page++) {
-    const { vectors, nextCursor }: RangeResult = await index.range({
+    const { vectors, nextCursor }: VectorRangeResult = await index.range({
       cursor,
       limit: TASK_VECTOR_PAGE_SIZE,
       prefix,
@@ -240,9 +236,10 @@ async function fetchOrgTaskVectors(organizationId: string): Promise<OrgTaskVecto
 }
 
 /**
- * Cosine similarity mapped to Upstash's COSINE score scale, `(1 + cos) / 2`, so
- * scores stay in [0, 1] and are drop-in compatible with the department boost /
- * threshold in `linkSuggestions` and the reranker's `cosineScore` hint.
+ * Cosine similarity mapped to the vector store's COSINE score scale,
+ * `(1 + cos) / 2`, so scores stay in [0, 1] and are drop-in compatible with
+ * the department boost / threshold in `linkSuggestions` and the reranker's
+ * `cosineScore` hint.
  */
 export function cosineToUnitScore(a: number[], b: number[]): number {
   const len = Math.min(a.length, b.length);
@@ -264,14 +261,10 @@ export function cosineToUnitScore(a: number[], b: number[]): number {
  * Returns raw task ids (not prefixed embedding ids) along with score + department.
  *
  * Retrieval enumerates the org's task vectors by id prefix and scores them
- * exactly in-process, rather than issuing a metadata-filtered ANN query. A
- * filtered `query` (`organizationId AND sourceType`) collapses to near-zero
- * recall here: one org is a tiny slice of a 180k+ vector shared-namespace index,
- * so Upstash's approximate traversal exhausts its candidate budget on nearer,
- * non-matching vectors before reaching this org's tasks — returning 0 candidates
- * even when relevant tasks exist, which starved treatment plans of every
- * suggestion (CS-681). An org holds at most low-hundreds of tasks, so exact
- * scoring over the full set is both correct (no recall loss) and cheap.
+ * exactly in-process rather than issuing a metadata-filtered ANN query. An org
+ * holds at most low-hundreds of tasks, so exact scoring over the full set is
+ * both correct (no recall loss) and cheap, and it keeps the score semantics
+ * identical across storage backends.
  */
 export async function findSimilarTasks({
   organizationId,
@@ -301,7 +294,7 @@ export async function findSimilarTasks({
 }
 
 export interface PruneOrphanTaskVectorsResult {
-  /** sourceIds of the task vectors that were deleted from Upstash. */
+  /** sourceIds of the task vectors that were deleted from the vector store. */
   deletedSourceIds: string[];
   /** How many of the org's task vectors were examined. */
   scanned: number;
@@ -339,8 +332,8 @@ export async function pruneOrphanTaskVectors({
   const prefix = embeddingIdPrefix('task', organizationId);
 
   // Enumerate the org's task vectors page by page over their shared id prefix.
-  // Upstash returns `nextCursor === ''` when the last page is drained; the page
-  // cap is a runaway backstop (a healthy cursor always terminates first).
+  // A drained page reports a falsy `nextCursor`; the page cap is a runaway
+  // backstop (a healthy cursor always terminates first).
   const orphans: Array<{ vectorId: string; sourceId: string }> = [];
   let scanned = 0;
   let cursor: string | number = '0';
@@ -348,7 +341,7 @@ export async function pruneOrphanTaskVectors({
   for (let page = 0; page < TASK_VECTOR_MAX_PAGES; page++) {
     // Annotate the result explicitly: `cursor = nextCursor` would otherwise make
     // TS infer `nextCursor`'s type from a binding that depends on it (TS7022).
-    const { vectors, nextCursor }: RangeResult = await index.range({
+    const { vectors, nextCursor }: VectorRangeResult = await index.range({
       cursor,
       limit: TASK_VECTOR_PAGE_SIZE,
       prefix,
@@ -417,16 +410,13 @@ export interface WaitForIndexedResult {
 }
 
 /**
- * Block until Upstash Vector has finished indexing every previously-upserted
- * vector (i.e. `info().pendingVectorCount === 0`).
+ * pgvector HNSW indexing is synchronous — once `upsert` returns, the vector is
+ * immediately queryable, so `info().pendingVectorCount` is always 0 here. This
+ * is a no-op that resolves on the first poll.
  *
- * Upstash returns 200 from `upsert` as soon as the write is durable, but the
- * HNSW index is built asynchronously. Vectors sit in `pendingVectorCount` for
- * a few hundred ms to several seconds before they become queryable. Querying
- * during that window returns empty results for the not-yet-indexed IDs even
- * though the upsert succeeded — see ENG-221 for the race we hit during
- * onboarding (6 of 11 risks got 0 cosine candidates because their queries
- * raced ahead of indexing).
+ * Kept as a no-op gate so callers (`runLinkage`) can keep the same phase
+ * ordering regardless of backend: it guarantees that anything written before
+ * this call is searchable before matching begins.
  *
  * Call this AFTER `upsertEntityEmbeddings` and BEFORE any query that depends
  * on the just-written vectors being searchable.

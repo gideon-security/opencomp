@@ -4,7 +4,7 @@
  * the parallel implementation works correctly in production.
  */
 import Firecrawl from '@mendable/firecrawl-js';
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 import { vendorRiskAssessmentAgentSchema } from './agent-schema';
 import type { VendorRiskAssessmentDataV1 } from './agent-types';
 import { extractVendorDomain, validateVendorUrl } from './url-validation';
@@ -121,7 +121,7 @@ Focus on their official website ${vendorWebsite} (especially trust/security/comp
       urls: seedUrls,
       strictConstrainToURLs: false,
       maxCredits: 1000,
-      timeout: 480, // 8 minutes — enough for thorough research, with headroom before trigger.dev's 10min maxDuration
+      timeout: 480, // 8 minutes — enough for thorough research, with headroom before local-trigger's 10min maxDuration
       pollInterval: 5,
       schema: {
         type: 'object',
@@ -188,7 +188,7 @@ Focus on their official website ${vendorWebsite} (especially trust/security/comp
       message.includes('Too Many Requests');
 
     if (isBillingOrRateLimit) {
-      // Billing/rate-limit errors — re-throw so the task fails and trigger.dev
+      // Billing/rate-limit errors — re-throw so the task fails and local-trigger
       // sends a Slack notification. The parent try-catch resets the vendor status
       // so the customer never sees error details, just a normal "assessed" state.
       logger.error('Firecrawl API billing or rate limit error', {

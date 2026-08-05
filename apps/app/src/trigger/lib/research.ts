@@ -1,5 +1,5 @@
 import { env } from '@/env.mjs';
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 import { z, ZodSchema } from 'zod';
 
 export const initialResponseSchema = z.object({

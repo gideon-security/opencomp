@@ -7,7 +7,7 @@ model KnowledgeBaseDocument {
   fileSize         Int // File size in bytes
   processingStatus KnowledgeBaseDocumentProcessingStatus @default(pending) // Track indexing status
   processedAt      DateTime? // When indexing completed
-  triggerRunId     String? // Trigger.dev run ID for tracking processing progress
+  triggerRunId     String? // Local trigger run ID for tracking processing progress
 
   // Dates
   createdAt DateTime @default(now())

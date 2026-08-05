@@ -1,7 +1,7 @@
 'use server';
 
 import { researchVendor } from '@/trigger/tasks/scrape/research';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 import { authActionClientWithoutOrg } from './safe-action';
 

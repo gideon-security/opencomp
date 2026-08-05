@@ -1,7 +1,7 @@
 import { requireApiPermission } from '@/lib/permissions.server';
 import type { linkRisksAndVendorsToWork } from '@/trigger/tasks/onboarding/link-risks-and-vendors-to-work';
 import { db } from '@db/server';
-import { auth as triggerAuth, tasks } from '@trigger.dev/sdk';
+import { auth as triggerAuth, tasks } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**

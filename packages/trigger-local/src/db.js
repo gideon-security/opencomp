@@ -7,7 +7,7 @@
 // see `false` and claim runs are missing. All bundles run inside the same Node
 // process, so we hold the singleton state on globalThis to guarantee a single
 // shared pg pool and readiness flag across every runtime.
-const GLOBAL_STATE_KEY = Symbol.for('@trigger.dev/local-trigger/db-state.v1');
+const GLOBAL_STATE_KEY = Symbol.for('@gideon-defender/trigger-local/db-state.v1');
 
 function getState() {
   if (typeof globalThis === 'undefined') return null;

@@ -1,7 +1,7 @@
 import { getOrganizationContext } from '@/trigger/tasks/onboarding/onboard-organization-helpers';
 import { openai } from '@ai-sdk/openai';
 import { db } from '@db/server';
-import { logger, metadata, schemaTask, tags } from '@trigger.dev/sdk';
+import { logger, metadata, schemaTask, tags } from '@gideon-defender/trigger-local';
 import { generateText } from 'ai';
 import { z } from 'zod';
 import {
