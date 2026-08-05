@@ -41,11 +41,10 @@ Gideon Defender is the fastest way to get compliant with frameworks like SOC 2, 
 - [Prisma](https://prisma.io/?ref=gideondefender.com)
 - [Tailwind CSS](https://tailwindcss.com/?ref=gideondefender.com)
 - [Upstash](https://upstash.com/?ref=gideondefender.com)
-- [Vercel](https://vercel.com/?ref=gideondefender.com)
 
 ## Contact us
 
-Contact our founders at opensource@gideondefender.com to learn more about how we can help you achieve compliance.
+Contact our team at info@gideondefender.com to learn more about how we can help you achieve compliance.
 
 ## Stay Up-to-Date
 
@@ -332,10 +331,6 @@ Services: `localstack` (S3 emulation), `postgres`, `migrator` (Prisma migrate), 
 ### Docker
 
 Steps to deploy Gideon Defender on Docker are coming soon.
-
-### Vercel
-
-Steps to deploy Gideon Defender on Vercel are coming soon.
 
 ## 📦 Package Publishing
 

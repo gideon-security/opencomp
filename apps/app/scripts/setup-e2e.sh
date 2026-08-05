@@ -37,7 +37,6 @@ DATABASE_URL=postgresql://postgres:postgres@localhost:5432/comp_e2e_test
 
 # Required app vars
 AUTH_SECRET=test-secret-for-e2e-only
-RESEND_API_KEY=re_test_key
 NEXT_PUBLIC_PORTAL_URL=http://localhost:3002
 REVALIDATION_SECRET=test-revalidation-secret
 

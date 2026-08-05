@@ -10,7 +10,7 @@ services:
     image: docker.io/localstack/localstack:3
     platform: linux/arm64
     environment:
-      SERVICES: s3
+      SERVICES: s3,sqs,ses
       DEBUG: '0'
       PERSISTENCE: '0'
     ports:
@@ -113,6 +113,24 @@ services:
       interval: 5s
       timeout: 5s
       retries: 12
+    logging: *default-logging
+
+  email-worker:
+    # Polls the comp-emails SQS queue and sends via SES.
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.multistage
+      target: production
+    command: ['node', 'dist/src/email-worker/main.js']
+    env_file:
+      - apps/api/.env
+    depends_on:
+      localstack:
+        condition: service_healthy
+    restart: unless-stopped
+    # The baked-in API healthcheck (HTTP on :3333) doesn't apply to this process.
+    healthcheck:
+      disable: true
     logging: *default-logging
 
   app:

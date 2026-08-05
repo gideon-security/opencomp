@@ -6,15 +6,14 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { tasks } from '@trigger.dev/sdk';
 import { HybridAuthGuard } from '../auth/hybrid-auth.guard';
 import { PermissionGuard } from '../auth/permission.guard';
 import { RequirePermission } from '../auth/require-permission.decorator';
 import { SkipAuditLog } from '../audit/skip-audit-log.decorator';
 import { SendEmailDto } from './dto/send-email.dto';
 import { SendBatchEmailDto } from './dto/send-batch-email.dto';
-import type { sendEmailTask } from '../trigger/email/send-email';
-import type { sendBatchEmailTask } from '../trigger/email/send-batch-email';
+import { defaultFromAddress } from './from-address';
+import { enqueueEmail, enqueueEmailBatch } from './sqs-client';
 
 @ApiExcludeController()
 @ApiTags('Internal - Email')
@@ -29,11 +28,11 @@ export class EmailController {
   // bytes — never worth diffing into the audit log, and readable with app:read.
   @SkipAuditLog()
   @ApiOperation({
-    summary: 'Send an email via the centralized Trigger task (internal)',
+    summary: 'Enqueue an email via SQS for SES delivery (internal)',
   })
-  @ApiResponse({ status: 200, description: 'Email task triggered' })
+  @ApiResponse({ status: 200, description: 'Email enqueued' })
   async sendEmail(@Body() dto: SendEmailDto) {
-    const handle = await tasks.trigger<typeof sendEmailTask>('send-email', {
+    const { id } = await enqueueEmail({
       to: dto.to,
       subject: dto.subject,
       html: dto.html,
@@ -44,7 +43,7 @@ export class EmailController {
       attachments: dto.attachments,
     });
 
-    return { success: true, taskId: handle.id };
+    return { success: true, taskId: id };
   }
 
   @Post('send-batch')
@@ -52,12 +51,11 @@ export class EmailController {
   @RequirePermission('email', 'send')
   @SkipAuditLog()
   @ApiOperation({
-    summary: 'Send a batch of emails via the centralized Trigger task (internal)',
+    summary: 'Enqueue a batch of emails via SQS for SES delivery (internal)',
   })
-  @ApiResponse({ status: 200, description: 'Batch email task triggered' })
+  @ApiResponse({ status: 200, description: 'Batch email enqueued' })
   async sendBatchEmail(@Body() dto: SendBatchEmailDto) {
-    const fromAddress =
-      process.env.RESEND_FROM_SYSTEM ?? process.env.RESEND_FROM_DEFAULT;
+    const fromAddress = defaultFromAddress();
 
     const emails = dto.emails.map((email) => ({
       to: email.to,
@@ -67,11 +65,8 @@ export class EmailController {
       cc: email.cc,
     }));
 
-    const handle = await tasks.trigger<typeof sendBatchEmailTask>(
-      'send-batch-email',
-      { emails },
-    );
+    const { id } = await enqueueEmailBatch(emails);
 
-    return { success: true, taskId: handle.id };
+    return { success: true, taskId: id };
   }
 }

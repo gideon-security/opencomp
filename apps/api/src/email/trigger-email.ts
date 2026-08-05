@@ -1,8 +1,7 @@
 import { render } from '@react-email/render';
-import { tasks } from '@trigger.dev/sdk';
 import type { ReactElement } from 'react';
-import type { EmailChannel, sendEmailTask } from '../trigger/email/send-email';
-import type { EmailAttachment } from './resend';
+import type { EmailChannel } from './email-message';
+import { enqueueEmail } from './sqs-client';
 
 type TriggerEmailFlags = {
   marketing?: boolean;
@@ -17,6 +16,12 @@ function resolveChannel(flags: TriggerEmailFlags): EmailChannel {
   return 'default';
 }
 
+export type EmailAttachmentInput = {
+  filename: string;
+  content: Buffer | string;
+  contentType?: string;
+};
+
 export async function triggerEmail(params: {
   to: string;
   subject: string;
@@ -26,14 +31,14 @@ export async function triggerEmail(params: {
   trustPortal?: boolean;
   cc?: string | string[];
   scheduledAt?: string;
-  attachments?: EmailAttachment[];
+  attachments?: EmailAttachmentInput[];
 }): Promise<{ id: string }> {
   try {
     const html = await render(params.react);
 
     const channel = resolveChannel(params);
 
-    const handle = await tasks.trigger<typeof sendEmailTask>('send-email', {
+    const { id } = await enqueueEmail({
       to: params.to,
       subject: params.subject,
       html,
@@ -50,9 +55,9 @@ export async function triggerEmail(params: {
       })),
     });
 
-    return { id: handle.id };
+    return { id };
   } catch (error) {
-    console.error('[triggerEmail] Failed to trigger email task', {
+    console.error('[triggerEmail] Failed to enqueue email', {
       to: params.to,
       subject: params.subject,
       error: error instanceof Error ? error.message : String(error),

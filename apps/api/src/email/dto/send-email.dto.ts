@@ -42,7 +42,7 @@ export class SendEmailDto {
   from?: string;
 
   @ApiPropertyOptional({
-    description: 'Use system sender address (RESEND_FROM_SYSTEM)',
+    description: 'Use system sender address (EMAIL_FROM_SYSTEM)',
   })
   @IsOptional()
   @IsBoolean()
