@@ -1,16 +1,3 @@
 {
-  "mcpServers": {
-    "sentry": {
-      "type": "sse",
-      "url": "https://mcp.sentry.dev/mcp/comp-ai/comp"
-    },
-    "trycompai": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@trycompai/design-system-mcp@latest"
-      ]
-    }
-  }
+  "$schema": "https://opencode.ai/config.json"
 }

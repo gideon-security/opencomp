@@ -17,14 +17,14 @@ describe('canAccessApp', () => {
     expect(canAccessApp(permissions)).toBe(true);
   });
 
-  it('returns true for users with pentest permissions (custom role)', () => {
+  it('returns false for users with only pentest permissions (no explicit app:read)', () => {
     const permissions: UserPermissions = { pentest: ['create', 'read', 'delete'] };
-    expect(canAccessApp(permissions)).toBe(true);
+    expect(canAccessApp(permissions)).toBe(false);
   });
 
-  it('returns true for users with any app-implying resource', () => {
+  it('returns false for users with a compliance resource but no explicit app:read', () => {
     const permissions: UserPermissions = { control: ['read'] };
-    expect(canAccessApp(permissions)).toBe(true);
+    expect(canAccessApp(permissions)).toBe(false);
   });
 
   it('returns false for portal-only users (employee: policy + compliance only)', () => {
@@ -116,7 +116,7 @@ describe('getDefaultRoute', () => {
     expect(route).toBe('/org_123/security/penetration-tests');
   });
 
-  it('returns frameworks as first route for full-access users', () => {
+  it('returns overview as first route for full-access users', () => {
     const permissions: UserPermissions = {
       app: ['read'],
       framework: ['read'],
@@ -124,7 +124,7 @@ describe('getDefaultRoute', () => {
       pentest: ['read'],
     };
     const route = getDefaultRoute(permissions, 'org_123');
-    expect(route).toBe('/org_123/frameworks');
+    expect(route).toBe('/org_123/overview');
   });
 
   it('returns null for users with no permissions at all', () => {

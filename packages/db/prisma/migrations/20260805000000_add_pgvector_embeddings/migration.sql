@@ -42,3 +42,17 @@ CREATE INDEX "vector_embedding_organizationId_idx" ON "vector_embedding"("organi
 -- pendingVectorCount like Upstash) and supports SQL filtering during
 -- traversal, so org-scoped ANN queries are exact-by-filter.
 CREATE INDEX "vector_embedding_embedding_idx" ON "vector_embedding" USING hnsw ("embedding" vector_cosine_ops);
+
+-- ============================================================================
+-- Row-Level Security
+-- ============================================================================
+-- Same tenant_isolation policy as the Phase 1 RLS migration: the embedding
+-- store is org-scoped via `organizationId`, so `comp_app` can only read/write
+-- rows whose organization matches the `app.tenant_id` GUC. `comp_service`
+-- (BYPASSRLS) keeps running migrations/backfills without a tenant context.
+-- Tables/sequences created by this migration inherit the grants/RLS roles via
+-- the DEFAULT PRIVILEGES set in the Phase 1 migration.
+ALTER TABLE public."vector_embedding" ENABLE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation ON public."vector_embedding"
+  USING ("organizationId" = public.app_current_tenant())
+  WITH CHECK ("organizationId" = public.app_current_tenant());

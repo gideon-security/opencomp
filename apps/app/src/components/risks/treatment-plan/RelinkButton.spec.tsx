@@ -45,7 +45,8 @@ describe('RelinkButton', () => {
     realtimeRunMock.mockReturnValue({
       run: {
         status: 'COMPLETED',
-        metadata: { phase: 'done', riskLinks: 2, vendorLinks: 0 },
+        metadata: { phase: 'done' },
+        output: { riskLinks: 2, vendorLinks: 0 },
       },
     });
     const onRelink = vi.fn().mockResolvedValue({ runId: 'r1', publicAccessToken: 't1' });

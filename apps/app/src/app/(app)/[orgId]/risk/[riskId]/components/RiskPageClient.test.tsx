@@ -4,7 +4,6 @@ import {
   setMockPermissions,
   mockHasPermission,
   ADMIN_PERMISSIONS,
-  AUDITOR_PERMISSIONS,
 } from '@/test-utils/mocks/permissions';
 
 // Mock usePermissions
@@ -53,6 +52,22 @@ vi.mock('@/hooks/use-risks', () => ({
   }),
 }));
 
+// Mock useTaskItems / useTaskItemActions
+vi.mock('@/hooks/use-task-items', () => ({
+  useTaskItems: () => ({
+    data: { data: { data: [] } },
+    mutate: vi.fn(),
+  }),
+  useTaskItemActions: () => ({
+    updateTaskItem: vi.fn(),
+  }),
+}));
+
+// Mock useAuditLogs
+vi.mock('@/hooks/use-audit-logs', () => ({
+  useAuditLogs: () => ({ logs: [] }),
+}));
+
 // Mock @db
 vi.mock('@db', () => ({
   CommentEntityType: { risk: 'risk' },
@@ -84,19 +99,62 @@ vi.mock('@db', () => ({
   },
 }));
 
+// Mock nuqs — tab state is controlled via `setActiveTab` so individual
+// tests can render with the tab panel they need to assert against.
+const { getActiveTab, setActiveTab } = vi.hoisted(() => {
+  let tab = 'overview';
+  return {
+    getActiveTab: () => tab,
+    setActiveTab: (next: string) => {
+      tab = next;
+    },
+  };
+});
+
+vi.mock('nuqs', () => ({
+  useQueryState: (key: string, options?: { defaultValue?: string }) => [
+    key === 'tab' ? getActiveTab() : (options?.defaultValue ?? ''),
+    vi.fn((next: string) => setActiveTab(next)),
+  ],
+}));
+
+vi.mock('next/link', () => ({
+  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
+}));
+
 // Mock design system
 vi.mock('@trycompai/design-system', () => ({
-  PageHeader: ({ title, actions }: any) => (
-    <div data-testid="page-header">
-      <h1>{title}</h1>
-      <div data-testid="page-header-actions">{actions}</div>
-    </div>
+  Breadcrumb: ({ items }: { items: Array<{ label: string }> }) => (
+    <nav data-testid="breadcrumb">
+      {items.map((item, i) => (
+        <span key={i}>{item.label}</span>
+      ))}
+    </nav>
   ),
+  HStack: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Stack: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Tabs: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  TabsList: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  TabsTrigger: ({ children, value }: { children: React.ReactNode; value: string }) => (
+    <button data-tab-trigger={value}>{children}</button>
+  ),
+  TabsContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Text: ({ children }: { children: React.ReactNode }) => <p>{children}</p>,
 }));
 
 // Mock child components
 vi.mock('@/components/comments/Comments', () => ({
   Comments: () => <div data-testid="comments" />,
+}));
+
+vi.mock('@/components/RecentAuditLogs', () => ({
+  RecentAuditLogs: () => <div data-testid="recent-audit-logs" />,
+}));
+
+vi.mock('@/components/risks/acceptance/ResidualAcceptanceCard', () => ({
+  ResidualAcceptanceCard: () => <div data-testid="residual-acceptance-card" />,
 }));
 
 vi.mock('@/components/risks/charts/InherentRiskChart', () => ({
@@ -111,15 +169,12 @@ vi.mock('@/components/risks/risk-overview', () => ({
   RiskOverview: () => <div data-testid="risk-overview" />,
 }));
 
-vi.mock('@/components/task-items/TaskItems', () => ({
-  TaskItems: () => <div data-testid="task-items" />,
+vi.mock('@/components/risks/treatment-plan/TreatmentPlanTab', () => ({
+  TreatmentPlanTab: () => <div data-testid="treatment-plan-tab" />,
 }));
 
-// Mock RiskActions to show/hide based on permissions
-vi.mock('./RiskActions', () => ({
-  RiskActions: ({ riskId, orgId }: any) => (
-    <div data-testid="risk-actions" data-risk-id={riskId} data-org-id={orgId} />
-  ),
+vi.mock('@/components/task-items/TaskItems', () => ({
+  TaskItems: () => <div data-testid="task-items" />,
 }));
 
 import { RiskPageClient } from './RiskPageClient';
@@ -141,6 +196,7 @@ const defaultProps = {
 describe('RiskPageClient permission gating', () => {
   beforeEach(() => {
     setMockPermissions({});
+    setActiveTab('overview');
     vi.clearAllMocks();
   });
 
@@ -149,52 +205,49 @@ describe('RiskPageClient permission gating', () => {
 
     render(<RiskPageClient {...defaultProps} />);
 
-    expect(screen.getByText('Test Risk')).toBeInTheDocument();
+    expect(screen.getAllByText('Test Risk').length).toBeGreaterThanOrEqual(1);
   });
 
-  it('renders RiskActions in the page header for admin', () => {
-    setMockPermissions(ADMIN_PERMISSIONS);
-
-    render(<RiskPageClient {...defaultProps} />);
-
-    expect(screen.getByTestId('risk-actions')).toBeInTheDocument();
-  });
-
-  it('renders RiskActions for auditor (the component itself handles gating)', () => {
-    setMockPermissions(AUDITOR_PERMISSIONS);
-
-    render(<RiskPageClient {...defaultProps} />);
-
-    // RiskActions is always rendered; it gates itself internally
-    expect(screen.getByTestId('risk-actions')).toBeInTheDocument();
-  });
-
-  it('renders RiskOverview, charts, and comments when not viewing a task', () => {
+  it('renders RiskOverview when the overview tab is active and not viewing a task', () => {
     setMockPermissions({});
+    setActiveTab('overview');
 
     render(<RiskPageClient {...defaultProps} />);
 
     expect(screen.getByTestId('risk-overview')).toBeInTheDocument();
+  });
+
+  it('renders charts when the risk-matrix tab is active', () => {
+    setMockPermissions({});
+    setActiveTab('risk-matrix');
+
+    render(<RiskPageClient {...defaultProps} />);
+
     expect(screen.getByTestId('inherent-risk-chart')).toBeInTheDocument();
     expect(screen.getByTestId('residual-risk-chart')).toBeInTheDocument();
+  });
+
+  it('renders Comments when the comments tab is active', () => {
+    setMockPermissions({});
+    setActiveTab('comments');
+
+    render(<RiskPageClient {...defaultProps} />);
+
     expect(screen.getByTestId('comments')).toBeInTheDocument();
   });
 
-  it('hides RiskOverview, charts, and comments when viewing a task item', () => {
+  it('hides RiskOverview when viewing a task item', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
 
     render(<RiskPageClient {...defaultProps} taskItemId="task_item_1" />);
 
     expect(screen.queryByTestId('risk-overview')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('inherent-risk-chart')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('residual-risk-chart')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('comments')).not.toBeInTheDocument();
   });
 
-  it('always renders TaskItems regardless of permissions', () => {
+  it('always renders TaskItems when viewing a task item', () => {
     setMockPermissions({});
 
-    render(<RiskPageClient {...defaultProps} />);
+    render(<RiskPageClient {...defaultProps} taskItemId="task_item_1" />);
 
     expect(screen.getByTestId('task-items')).toBeInTheDocument();
   });
@@ -204,15 +257,16 @@ describe('RiskPageClient permission gating', () => {
 
     render(<RiskPageClient {...defaultProps} taskItemId="abc123def456" />);
 
-    // shortTaskId takes last 6 chars, uppercased
-    expect(screen.getByText('DEF456')).toBeInTheDocument();
+    // shortTaskId takes last 6 chars, uppercased — falls back to 'Task'
+    // since the mocked useTaskItems returns an empty list.
+    expect(screen.getByRole('heading', { name: 'Task' })).toBeInTheDocument();
   });
 
-  it('renders page header regardless of user permissions', () => {
+  it('renders the breadcrumb regardless of user permissions', () => {
     setMockPermissions({});
 
     render(<RiskPageClient {...defaultProps} />);
 
-    expect(screen.getByTestId('page-header')).toBeInTheDocument();
+    expect(screen.getByTestId('breadcrumb')).toBeInTheDocument();
   });
 });

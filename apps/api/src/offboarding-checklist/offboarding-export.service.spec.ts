@@ -17,6 +17,7 @@ jest.mock('archiver', () => {
   const mockArchive = {
     pipe: jest.fn(),
     append: jest.fn(),
+    on: jest.fn(),
     finalize: jest.fn().mockResolvedValue(undefined),
   };
   return jest.fn(() => mockArchive);
@@ -157,7 +158,7 @@ describe('OffboardingExportService', () => {
     const evidenceCall = appendCalls.find(
       (c: unknown[]) =>
         (c[1] as { name: string }).name ===
-        'vendor-access-revocations/evidence/aws-disable.png',
+        'vendor-access-revocations/evidence/att_1-aws-disable.png',
     );
     expect(evidenceCall).toBeDefined();
     expect(Buffer.isBuffer(evidenceCall[0])).toBe(true);
@@ -205,7 +206,7 @@ describe('OffboardingExportService', () => {
     const evidenceCall = appendCalls.find(
       (c: unknown[]) =>
         (c[1] as { name: string }).name ===
-        'checklist-items/01-recover-devices/device-receipt.pdf',
+        'checklist-items/01-recover-devices/att_2-device-receipt.pdf',
     );
     expect(evidenceCall).toBeDefined();
   });

@@ -5,7 +5,7 @@ const limiter = createRateLimiter({
   client,
   limit: 20,
   windowSeconds: 10,
-  prefix: 'ratelimit:api',
+  prefix: 'app:ratelimit:api',
 });
 
 export async function rateLimit(request: NextRequest) {

@@ -13,6 +13,9 @@ vi.mock('@db/server', () => ({
     integrationConnection: {
       findMany: vi.fn(async () => []),
     },
+    organization: {
+      findUnique: vi.fn(async () => ({ isInternal: false })),
+    },
   },
 }));
 

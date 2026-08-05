@@ -130,6 +130,31 @@ vi.mock('lucide-react', () => ({
   ),
 }));
 
+vi.mock('@trycompai/design-system', () => ({
+  Button: ({
+    children,
+    onClick,
+    disabled,
+    ...props
+  }: {
+    children: React.ReactNode;
+    onClick?: () => void;
+    disabled?: boolean;
+  }) => (
+    <button onClick={onClick} disabled={disabled} {...props}>
+      {children}
+    </button>
+  ),
+  Tabs: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  TabsList: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  TabsTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  cn: (...args: string[]) => args.filter(Boolean).join(' '),
+}));
+
+vi.mock('@trycompai/design-system/icons', () => ({
+  TrashCan: () => <span data-testid="trash-can-icon" />,
+}));
+
 vi.mock('sonner', () => ({
   toast: {
     error: vi.fn(),
@@ -184,17 +209,14 @@ describe('CloudSettingsModal permission gating', () => {
   it('always shows connection info regardless of permissions', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<CloudSettingsModal {...defaultProps} />);
-    expect(screen.getByText('Manage Cloud Connections')).toBeInTheDocument();
-    expect(screen.getByText('AWS Production')).toBeInTheDocument();
-    expect(
-      screen.getByText(/Credentials are securely stored/),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Connection Settings')).toBeInTheDocument();
+    expect(screen.getByText('123456789012')).toBeInTheDocument();
   });
 
   it('always shows connection status regardless of permissions', () => {
     setMockPermissions({});
     render(<CloudSettingsModal {...defaultProps} />);
-    expect(screen.getByText('Connection Status')).toBeInTheDocument();
+    expect(screen.getByText('Status')).toBeInTheDocument();
     expect(screen.getByText('active')).toBeInTheDocument();
   });
 

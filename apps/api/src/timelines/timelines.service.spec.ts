@@ -142,7 +142,7 @@ describe('TimelinesService', () => {
       if (!phase) return cloneTimeline(timelineState);
 
       phase.status = 'COMPLETED';
-      phase.completedAt = '2026-01-10T00:00:00.000Z';
+      (phase as { completedAt: string | null }).completedAt = '2026-01-10T00:00:00.000Z';
 
       const nextPending = timelineState.phases.find((p) => p.status === 'PENDING');
       if (nextPending) {
@@ -158,10 +158,10 @@ describe('TimelinesService', () => {
       return cloneTimeline(timelineState);
     });
 
-    const result = await service.findAllForOrganization(orgId);
+    await service.reconcileAutoPhasesForOrganization(orgId);
 
     expect(lifecycle.completePhase).toHaveBeenCalledTimes(3);
-    expect(result[0].phases.map((p) => p.status)).toEqual([
+    expect(timelineState.phases.map((p) => p.status)).toEqual([
       'COMPLETED',
       'COMPLETED',
       'COMPLETED',
@@ -284,14 +284,14 @@ describe('TimelinesService', () => {
       people: { total: 1, completed: 1 },
     });
 
-    const result = await service.findAllForOrganization(orgId);
+    await service.reconcileAutoPhasesForOrganization(orgId);
 
     expect(mockDb.timelinePhase.update).toHaveBeenCalledWith({
       where: { id: 'p1' },
       data: { regressedAt: expect.any(Date) },
     });
-    expect(result[0].phases[0].status).toBe('COMPLETED');
-    expect(result[0].phases[0].regressedAt).toBeTruthy();
+    expect(timelineState.phases[0].status).toBe('COMPLETED');
+    expect(timelineState.phases[0].regressedAt).toBeTruthy();
   });
 
   it('re-opens AUTO_PEOPLE immediately when live people score drops below 100%', async () => {
@@ -368,6 +368,9 @@ describe('TimelinesService', () => {
             return phase;
           }),
         },
+        timelineInstance: {
+          updateMany: jest.fn(),
+        },
       };
       return fn(tx);
     });
@@ -378,14 +381,14 @@ describe('TimelinesService', () => {
       people: { total: 2, completed: 1 },
     });
 
-    const result = await service.findAllForOrganization(orgId);
+    await service.reconcileAutoPhasesForOrganization(orgId);
 
     expect(mockDb.$transaction).toHaveBeenCalledTimes(1);
-    expect(result[0].phases.map((phase) => phase.status)).toEqual([
+    expect(timelineState.phases.map((phase) => phase.status)).toEqual([
       'IN_PROGRESS',
       'PENDING',
     ]);
-    expect(result[0].phases[0].regressedAt).toBeNull();
+    expect(timelineState.phases[0].regressedAt).toBeNull();
   });
 
   it('re-opens a regressed AUTO phase after the 24-hour grace window', async () => {
@@ -464,6 +467,9 @@ describe('TimelinesService', () => {
             return phase;
           }),
         },
+        timelineInstance: {
+          updateMany: jest.fn(),
+        },
       };
       return fn(tx);
     });
@@ -474,14 +480,14 @@ describe('TimelinesService', () => {
       people: { total: 1, completed: 1 },
     });
 
-    const result = await service.findAllForOrganization(orgId);
+    await service.reconcileAutoPhasesForOrganization(orgId);
 
     expect(mockDb.$transaction).toHaveBeenCalledTimes(1);
-    expect(result[0].phases.map((phase) => phase.status)).toEqual([
+    expect(timelineState.phases.map((phase) => phase.status)).toEqual([
       'IN_PROGRESS',
       'PENDING',
     ]);
-    expect(result[0].phases[0].regressedAt).toBeNull();
+    expect(timelineState.phases[0].regressedAt).toBeNull();
     jest.useRealTimers();
   });
 
@@ -738,6 +744,9 @@ describe('TimelinesService', () => {
     const findAllSpy = jest
       .spyOn(service, 'findAllForOrganization')
       .mockResolvedValue([] as any);
+    const reconcileSpy = jest
+      .spyOn(service, 'reconcileAutoPhasesForOrganization')
+      .mockResolvedValue();
 
     await service.recreateAllForOrganization('org_1');
 
@@ -746,7 +755,7 @@ describe('TimelinesService', () => {
       frameworkInstance: expect.objectContaining({ id: 'fi_1' }),
       forceRefresh: true,
     });
-    expect(findAllSpy).toHaveBeenLastCalledWith('org_1', {
+    expect(reconcileSpy).toHaveBeenCalledWith('org_1', {
       bypassRegressionGrace: true,
     });
   });

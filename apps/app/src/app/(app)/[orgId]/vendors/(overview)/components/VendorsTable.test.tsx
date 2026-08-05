@@ -133,6 +133,8 @@ const mockVendors: any[] = [
     inherentImpact: 'moderate',
     residualProbability: 'unlikely',
     residualImpact: 'minor',
+    treatmentStrategy: 'mitigate',
+    tasks: [{ status: 'done' }],
     website: null,
     isSubProcessor: false,
     logoUrl: null,
@@ -257,7 +259,7 @@ describe('VendorsTable', () => {
     expect(screen.getByText('4/10')).toBeInTheDocument();
   });
 
-  it('renders the RESIDUAL RISK column immediately after INHERENT RISK', () => {
+  it('renders the CURRENT RISK column immediately after INHERENT RISK', () => {
     setMockPermissions({});
 
     render(
@@ -268,13 +270,13 @@ describe('VendorsTable', () => {
       />,
     );
 
-    expect(screen.getByText('RESIDUAL RISK')).toBeInTheDocument();
+    expect(screen.getByText('CURRENT RISK')).toBeInTheDocument();
 
     const headers = screen
       .getAllByRole('columnheader')
       .map((h) => (h.textContent || '').toUpperCase());
     const inherentIdx = headers.findIndex((h) => h.includes('INHERENT RISK'));
-    const residualIdx = headers.findIndex((h) => h.includes('RESIDUAL RISK'));
+    const residualIdx = headers.findIndex((h) => h.includes('CURRENT RISK'));
     expect(inherentIdx).toBeGreaterThanOrEqual(0);
     expect(residualIdx).toBe(inherentIdx + 1);
   });

@@ -84,13 +84,10 @@ describe('CredentialVaultService multi-DC api_domain handling', () => {
 
     // Stored as a plaintext string (not encrypted) so the check runtime can
     // read it as ctx.credentials.api_domain and route to the right region.
-    expect(createInput.encryptedPayload.api_domain).toBe(
-      'https://www.zohoapis.eu',
-    );
+    const payload = createInput.encryptedPayload as Record<string, unknown>;
+    expect(payload.api_domain).toBe('https://www.zohoapis.eu');
     // Secrets are still encrypted.
-    expect(createInput.encryptedPayload.access_token).toEqual(
-      encrypted('zoho-access'),
-    );
+    expect(payload.access_token).toEqual(encrypted('zoho-access'));
     // No need to read the prior credential when the response already has it.
     expect(getCredsSpy).not.toHaveBeenCalled();
   });
@@ -112,9 +109,8 @@ describe('CredentialVaultService multi-DC api_domain handling', () => {
     const createInput = createSpy.mock.calls[0]?.[0];
     if (!createInput) throw new Error('Expected credential version to be created');
 
-    expect(createInput.encryptedPayload.api_domain).toBe(
-      'https://www.zohoapis.in',
-    );
+    const payload = createInput.encryptedPayload as Record<string, unknown>;
+    expect(payload.api_domain).toBe('https://www.zohoapis.in');
   });
 
   it('stores no api_domain for providers that never send one (backward compatible)', async () => {

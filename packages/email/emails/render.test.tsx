@@ -50,12 +50,9 @@ const cases = [
         email="user@example.com"
         userName="User"
         taskName="Task"
-        oldStatus="todo"
-        newStatus="done"
+        taskStatus="todo"
         organizationName="Acme"
-        organizationId="org_123"
-        taskId="t1"
-        changedByName="Admin"
+        taskUrl="https://app.trycomp.ai/org_123/tasks/t1"
       />
     ),
   },
@@ -89,8 +86,7 @@ const cases = [
         organizationName="Acme"
         organizationId="org_123"
         policyName="Acceptable Use"
-        policyId="p1"
-        isUpdate={false}
+        notificationType="new"
       />
     ),
   },
@@ -112,7 +108,6 @@ const cases = [
         userName="User"
         organizationName="Acme"
         organizationId="org_123"
-        isUpdate={false}
       />
     ),
   },

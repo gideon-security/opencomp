@@ -1,13 +1,23 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockDelete = vi.fn();
+const mockDeleteOrganization = vi.fn();
 
-vi.mock('@/hooks/use-api', () => ({
-  useApi: () => ({
-    delete: mockDelete,
-    organizationId: 'org_123',
+vi.mock('@/hooks/use-organization-mutations', () => ({
+  useOrganizationMutations: () => ({
+    deleteOrganization: mockDeleteOrganization,
   }),
+}));
+
+vi.mock('@/hooks/use-permissions', () => ({
+  usePermissions: () => ({
+    permissions: {},
+    hasPermission: () => true,
+  }),
+}));
+
+vi.mock('next/navigation', () => ({
+  redirect: vi.fn(),
 }));
 
 vi.mock('sonner', () => ({
@@ -54,8 +64,8 @@ describe('DeleteOrganization', () => {
     expect(confirmButton).not.toBeDisabled();
   });
 
-  it('calls api.delete and shows success toast', async () => {
-    mockDelete.mockResolvedValue({ data: {}, status: 200 });
+  it('calls deleteOrganization and shows success toast', async () => {
+    mockDeleteOrganization.mockResolvedValue(undefined);
 
     render(<DeleteOrganization organizationId="org_123" isOwner={true} />);
 
@@ -71,7 +81,7 @@ describe('DeleteOrganization', () => {
     fireEvent.click(confirmButton);
 
     await waitFor(() => {
-      expect(mockDelete).toHaveBeenCalledWith('/v1/organization');
+      expect(mockDeleteOrganization).toHaveBeenCalled();
     });
 
     await waitFor(() => {
@@ -80,7 +90,7 @@ describe('DeleteOrganization', () => {
   });
 
   it('shows error toast when delete fails', async () => {
-    mockDelete.mockResolvedValue({ error: 'Forbidden', status: 403 });
+    mockDeleteOrganization.mockRejectedValue(new Error('Forbidden'));
 
     render(<DeleteOrganization organizationId="org_123" isOwner={true} />);
 

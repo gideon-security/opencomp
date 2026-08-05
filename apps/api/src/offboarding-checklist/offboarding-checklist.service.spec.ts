@@ -38,7 +38,7 @@ const mockDb = {
   attachment: {
     findMany: jest.fn(),
   },
-  $transaction: jest.fn((fn: (tx: typeof mockDb) => Promise<unknown>) => fn(mockDb)),
+  $transaction: jest.fn((fn: (tx: unknown) => Promise<unknown>) => fn(mockDb)),
 };
 
 jest.mock('@db', () => ({

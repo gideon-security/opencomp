@@ -21,6 +21,7 @@ vi.mock('next/navigation', async (importOriginal) => {
   return {
     ...actual,
     useParams: vi.fn(() => ({ orgId: 'org_123', taskId: 'task_123' })),
+    useSearchParams: vi.fn(() => new URLSearchParams()),
   };
 });
 
@@ -129,6 +130,18 @@ vi.mock('@trycompai/design-system', () => ({
   TabsContent: ({ children }: any) => <div>{children}</div>,
   TabsList: ({ children }: any) => <div>{children}</div>,
   TabsTrigger: ({ children }: any) => <button>{children}</button>,
+  Breadcrumb: ({ items }: any) => (
+    <nav data-testid="breadcrumb">
+      {items?.map((item: { label: string }, i: number) => (
+        <span key={i}>{item.label}</span>
+      ))}
+    </nav>
+  ),
+  HStack: ({ children }: any) => <div>{children}</div>,
+  Stack: ({ children }: any) => <div>{children}</div>,
+  Label: ({ children }: any) => <label>{children}</label>,
+  PageLayout: ({ children }: any) => <div>{children}</div>,
+  Text: ({ children }: any) => <span>{children}</span>,
 }));
 
 // Mock next/link
@@ -164,6 +177,14 @@ vi.mock('./TaskIntegrationChecks', () => ({
 
 vi.mock('./TaskMainContent', () => ({
   TaskMainContent: () => <div data-testid="task-main-content" />,
+}));
+
+vi.mock('./TaskPolicies', () => ({
+  TaskPolicies: () => <div data-testid="task-policies" />,
+}));
+
+vi.mock('@/components/RecentAuditLogs', () => ({
+  RecentAuditLogs: () => <div data-testid="recent-audit-logs" />,
 }));
 
 vi.mock('./TaskActivity', () => ({
@@ -209,8 +230,8 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.getByTitle('Regenerate task')).toBeInTheDocument();
-    expect(screen.getByTitle('Delete task')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Regenerate' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
   });
 
   it('hides regenerate button when user lacks task:update', () => {
@@ -218,7 +239,7 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.queryByTitle('Regenerate task')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Regenerate' })).not.toBeInTheDocument();
   });
 
   it('hides delete button when user lacks task:delete', () => {
@@ -226,7 +247,7 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.queryByTitle('Delete task')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument();
   });
 
   it('always shows the download evidence button regardless of permissions', () => {
@@ -234,7 +255,7 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.getByTitle('Download task evidence')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Download' })).toBeInTheDocument();
   });
 
   it('shows regenerate but not delete with only task:update permission', () => {
@@ -242,8 +263,8 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.getByTitle('Regenerate task')).toBeInTheDocument();
-    expect(screen.queryByTitle('Delete task')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Regenerate' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument();
   });
 
   it('shows delete but not regenerate with only task:delete permission', () => {
@@ -251,7 +272,7 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.queryByTitle('Regenerate task')).not.toBeInTheDocument();
-    expect(screen.getByTitle('Delete task')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Regenerate' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
   });
 });

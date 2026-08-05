@@ -91,7 +91,7 @@ vi.mock('next/link', () => ({
 // Mock next/navigation
 vi.mock('next/navigation', () => ({
   useParams: () => ({ orgId: 'org-1' }),
-  useRouter: () => ({ push: mockRouterPush }),
+  useRouter: () => ({ push: mockRouterPush, replace: mockRouterPush }),
   useSearchParams: mockUseSearchParams,
 }));
 
@@ -284,8 +284,8 @@ describe('PlatformIntegrations', () => {
     });
   });
 
-  describe('Employee sync import prompt', () => {
-    it('shows import prompt toast after Google Workspace OAuth callback', async () => {
+  describe('OAuth callback success toast', () => {
+    it('shows a connected-success toast after Google Workspace OAuth callback', async () => {
       // Override mocks for this test to simulate OAuth callback
       const { useIntegrationProviders, useIntegrationConnections } = vi.mocked(
         await import('@/hooks/use-integration-platform'),
@@ -338,16 +338,9 @@ describe('PlatformIntegrations', () => {
       expect(toast.success).toHaveBeenCalledWith(
         'Google Workspace connected successfully!',
       );
-      expect(toast.info).toHaveBeenCalledWith(
-        'Import your Google Workspace users',
-        expect.objectContaining({
-          description: 'Go to People to import and sync your team members.',
-          action: expect.objectContaining({ label: 'Go to People' }),
-        }),
-      );
     });
 
-    it('does not show import prompt for non-sync providers', async () => {
+    it('does not show a toast for non-sync providers beyond the connected-success one', async () => {
       // Override mocks for this test to simulate OAuth callback for a non-sync provider
       const { useIntegrationProviders, useIntegrationConnections } = vi.mocked(
         await import('@/hooks/use-integration-platform'),
@@ -436,14 +429,7 @@ describe('PlatformIntegrations', () => {
         isLoading: false,
       });
       mockUseIntegrationConnections.mockReturnValue({
-        connections: [
-          {
-            id: 'conn-1',
-            providerSlug: 'github',
-            status: 'active',
-            variables: {},
-          },
-        ],
+        connections: [],
         isLoading: false,
         refresh: vi.fn(),
       });

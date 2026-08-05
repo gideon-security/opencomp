@@ -9,7 +9,7 @@ const ratelimit = createRateLimiter({
   client,
   limit: 10,
   windowSeconds: 10,
-  prefix: 'ratelimit:action',
+  prefix: 'app:ratelimit:action',
 });
 
 export const actionClientWithMeta = createSafeActionClient({

@@ -20,6 +20,12 @@ vi.mock('./TaskItemForm', () => ({
   TaskItemForm: () => <div data-testid="task-item-form">Task Item Form</div>,
 }));
 
+// Mock useMediaQuery — real impl calls window.matchMedia which jsdom doesn't
+// implement by default.
+vi.mock('@gideon-defender/ui/hooks', () => ({
+  useMediaQuery: () => true,
+}));
+
 import { TaskItemCreateDialog } from './TaskItemCreateDialog';
 
 const defaultProps = {

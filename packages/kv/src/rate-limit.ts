@@ -87,7 +87,7 @@ function noOpLimiter(options: CreateRateLimiterOptions): RateLimiter {
 function luaLimiter(options: CreateRateLimiterOptions): RateLimiter {
   const script =
     options.algorithm === 'sliding' ? SLIDING_WINDOW_SCRIPT : FIXED_WINDOW_SCRIPT;
-  const keyPrefix = options.prefix ?? 'ratelimit';
+  const keyPrefix = options.prefix ?? 'app:ratelimit';
 
   return {
     async limit(identifier: string) {

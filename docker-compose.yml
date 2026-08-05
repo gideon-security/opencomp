@@ -78,11 +78,21 @@ services:
     env_file:
       - apps/api/.env
     environment:
-      REDIS_URL: redis://redis:6379
+      # comp_app = least-privilege cache role (ACL-scoped to app:* keys).
+      # comp_service = full-access queue role for BullMQ/trigger-local.
+      REDIS_URL: redis://comp_app:comp_app_local_dev_password@redis:6379
+      LOCAL_TRIGGER_REDIS_URL: redis://comp_service:comp_service_local_dev_password@redis:6379
       LOCAL_TRIGGER_QUEUE_SUFFIX: api
       # RLS client roles (created by the _add_rls_roles_and_tenant_policies migration).
       DATABASE_URL_TENANT: postgres://comp_app:comp_app_local_dev_password@postgres:5432/comp?sslmode=disable
       DATABASE_URL_SERVICE: postgres://comp_service:comp_service_local_dev_password@postgres:5432/comp?sslmode=disable
+      # LocalStack S3/SQS/SES (see .env for host-agnostic localhost equivalents).
+      APP_AWS_REGION: us-east-1
+      APP_AWS_ACCESS_KEY_ID: test
+      APP_AWS_SECRET_ACCESS_KEY: test
+      APP_AWS_ENDPOINT: http://localstack:4566
+      EMAIL_SQS_QUEUE_URL: http://localstack:4566/000000000000/comp-emails
+      PORTAL_URL: http://portal:3000
     depends_on:
       postgres:
         condition: service_healthy
@@ -106,10 +116,13 @@ services:
     platform: linux/arm64
     ports:
       - '6379:6379'
+    command: ['redis-server', '/usr/local/etc/redis/redis.conf']
     volumes:
+      - ./infra/redis/redis.conf:/usr/local/etc/redis/redis.conf
       - redis_data:/data
     healthcheck:
-      test: ['CMD-SHELL', 'redis-cli ping | grep PONG']
+      # requirepass locks the DEFAULT user, so the probe must authenticate.
+      test: ['CMD-SHELL', 'redis-cli --no-auth-warning -a comp_master_local_dev_password ping | grep PONG']
       interval: 5s
       timeout: 5s
       retries: 12
@@ -124,6 +137,12 @@ services:
     command: ['node', 'dist/src/email-worker/main.js']
     env_file:
       - apps/api/.env
+    environment:
+      APP_AWS_REGION: us-east-1
+      APP_AWS_ACCESS_KEY_ID: test
+      APP_AWS_SECRET_ACCESS_KEY: test
+      APP_AWS_ENDPOINT: http://localstack:4566
+      EMAIL_SQS_QUEUE_URL: http://localstack:4566/000000000000/comp-emails
     depends_on:
       localstack:
         condition: service_healthy
@@ -152,7 +171,9 @@ services:
     environment:
       HOSTNAME: 0.0.0.0
       BACKEND_API_URL: http://api:3333
-      REDIS_URL: redis://redis:6379
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/comp?sslmode=disable
+      REDIS_URL: redis://comp_app:comp_app_local_dev_password@redis:6379
+      LOCAL_TRIGGER_REDIS_URL: redis://comp_service:comp_service_local_dev_password@redis:6379
       LOCAL_TRIGGER_QUEUE_SUFFIX: app
     depends_on:
       api:
@@ -182,7 +203,7 @@ services:
     environment:
       HOSTNAME: 0.0.0.0
       BACKEND_API_URL: http://api:3333
-      REDIS_URL: redis://redis:6379
+      REDIS_URL: redis://comp_app:comp_app_local_dev_password@redis:6379
     depends_on:
       - api
       - redis

@@ -190,22 +190,16 @@ describe('EmptyState permission gating', () => {
     }
   });
 
-  it('disables connect button in GCP form for auditor', () => {
+  it('opens ConnectIntegrationDialog for GCP provider for auditor', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<EmptyState {...defaultProps} initialProvider="gcp" />);
-    const connectButton = screen.getByRole('button', {
-      name: /Connect GCP/i,
-    });
-    expect(connectButton).toBeDisabled();
+    expect(screen.getByTestId('connect-dialog')).toBeInTheDocument();
   });
 
-  it('enables connect button in GCP form for admin', () => {
+  it('opens ConnectIntegrationDialog for GCP provider for admin', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<EmptyState {...defaultProps} initialProvider="gcp" />);
-    const connectButton = screen.getByRole('button', {
-      name: /Continue|Connect GCP/i,
-    });
-    expect(connectButton).not.toBeDisabled();
+    expect(screen.getByTestId('connect-dialog')).toBeInTheDocument();
   });
 
   it('opens ConnectIntegrationDialog for AWS provider for admin', () => {

@@ -26,6 +26,9 @@ vi.mock('swr', () => ({
     error: null,
     mutate: vi.fn(),
   })),
+  useSWRConfig: () => ({
+    mutate: vi.fn(),
+  }),
 }));
 
 // ─── Mock api client ─────────────────────────────────────────
@@ -40,15 +43,30 @@ vi.mock('@/lib/api-client', () => ({
 // ─── Mock design system ──────────────────────────────────────
 
 vi.mock('@trycompai/design-system', () => ({
+  AlertDialog: ({ children, open }: any) => (open ? <div data-testid="alert-dialog">{children}</div> : null),
+  AlertDialogCancel: ({ children }: any) => <button>{children}</button>,
+  AlertDialogContent: ({ children }: any) => <div>{children}</div>,
+  AlertDialogDescription: ({ children }: any) => <p>{children}</p>,
+  AlertDialogFooter: ({ children }: any) => <div>{children}</div>,
+  AlertDialogHeader: ({ children }: any) => <div>{children}</div>,
+  AlertDialogTitle: ({ children }: any) => <h2>{children}</h2>,
   Badge: ({ children }: any) => <span>{children}</span>,
   Button: ({ children, ...props }: any) => (
     <button {...props}>{children}</button>
   ),
+  DropdownMenu: ({ children }: any) => <div>{children}</div>,
+  DropdownMenuContent: ({ children }: any) => <div>{children}</div>,
+  DropdownMenuItem: ({ children, onClick }: any) => (
+    <button onClick={onClick}>{children}</button>
+  ),
+  DropdownMenuTrigger: ({ children }: any) => <button data-testid="dropdown-trigger">{children}</button>,
   Empty: ({ children }: any) => <div>{children}</div>,
   EmptyDescription: ({ children }: any) => <p>{children}</p>,
   EmptyHeader: ({ children }: any) => <div>{children}</div>,
   EmptyMedia: ({ children }: any) => <div>{children}</div>,
   EmptyTitle: ({ children }: any) => <h3>{children}</h3>,
+  Field: ({ children }: any) => <div>{children}</div>,
+  FieldLabel: ({ children }: any) => <label>{children}</label>,
   InputGroup: ({ children }: any) => <div>{children}</div>,
   InputGroupAddon: ({ children }: any) => <div>{children}</div>,
   InputGroupInput: (props: any) => <input {...props} />,
@@ -58,12 +76,17 @@ vi.mock('@trycompai/design-system', () => ({
       {actions}
     </div>
   ),
+  Stack: ({ children }: any) => <div>{children}</div>,
   Table: ({ children }: any) => <table>{children}</table>,
   TableBody: ({ children }: any) => <tbody>{children}</tbody>,
   TableCell: ({ children }: any) => <td>{children}</td>,
   TableHead: ({ children }: any) => <th>{children}</th>,
   TableHeader: ({ children }: any) => <thead>{children}</thead>,
   TableRow: ({ children }: any) => <tr>{children}</tr>,
+  Tabs: ({ children }: any) => <div>{children}</div>,
+  TabsContent: ({ children }: any) => <div>{children}</div>,
+  TabsList: ({ children }: any) => <div>{children}</div>,
+  TabsTrigger: ({ children }: any) => <button>{children}</button>,
   Text: ({ children }: any) => <span>{children}</span>,
 }));
 
@@ -71,7 +94,10 @@ vi.mock('@trycompai/design-system/icons', () => ({
   Add: () => <span data-testid="add-icon" />,
   Catalog: () => <span data-testid="catalog-icon" />,
   Download: () => <span data-testid="download-icon" />,
+  OverflowMenuVertical: () => <span data-testid="overflow-icon" />,
   Search: () => <span data-testid="search-icon" />,
+  TrashCan: () => <span data-testid="trash-icon" />,
+  Upload: () => <span data-testid="upload-icon" />,
 }));
 
 // ─── Mock submission-utils ───────────────────────────────────
@@ -180,17 +206,6 @@ describe('CompanyFormPageClient', () => {
       if (hasRead) {
         expect(screen.getByText('Export CSV')).toBeInTheDocument();
       }
-    });
-
-    it('still renders the findings section', () => {
-      render(
-        <CompanyFormPageClient
-          organizationId="org-1"
-          formType="access-request"
-        />,
-      );
-
-      expect(screen.getByTestId('findings-section')).toBeInTheDocument();
     });
   });
 

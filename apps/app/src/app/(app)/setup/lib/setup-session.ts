@@ -21,7 +21,7 @@ export interface SetupSession {
 }
 
 const SETUP_SESSION_TTL = 60 * 60 * 24; // 24 hours in seconds
-const SETUP_SESSION_PREFIX = 'setup:session:';
+const SETUP_SESSION_PREFIX = 'app:setup:session:';
 
 export async function createSetupSession(
   userId: string,

@@ -9,6 +9,7 @@ import {
   type MeetingSubType,
 } from '@/app/(app)/[orgId]/documents/forms';
 import { api } from '@/lib/api-client';
+import { usePermissions } from '@/hooks/use-permissions';
 import { useActiveMember } from '@/utils/auth-client';
 import {
   AlertDialog,
@@ -165,6 +166,9 @@ export function CompanyFormPageClient({
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'submissions';
   const { mutate: globalMutate } = useSWRConfig();
+  const { hasPermission } = usePermissions();
+  const canCreate = hasPermission('evidence', 'create');
+  const canRead = hasPermission('evidence', 'read');
   const [search, setSearch] = useState('');
   const [isExporting, setIsExporting] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -387,26 +391,32 @@ export function CompanyFormPageClient({
         title={formDefinition.title}
         actions={
           <div className="flex items-center gap-2">
-            <Link href={`/${organizationId}/documents/${formType}/new`}>
-              <Button iconLeft={<Add size={16} />}>New Submission</Button>
-            </Link>
-            <Button
-              type="button"
-              variant="secondary"
-              iconLeft={<Upload size={16} />}
-              onClick={() => setIsUploadOpen(true)}
-            >
-              Upload Evidence
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              iconLeft={<Download size={16} />}
-              onClick={handleExportCsv}
-              disabled={isExporting}
-            >
-              {isExporting ? 'Exporting...' : 'Export CSV'}
-            </Button>
+            {canCreate && (
+              <>
+                <Link href={`/${organizationId}/documents/${formType}/new`}>
+                  <Button iconLeft={<Add size={16} />}>New Submission</Button>
+                </Link>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  iconLeft={<Upload size={16} />}
+                  onClick={() => setIsUploadOpen(true)}
+                >
+                  Upload Evidence
+                </Button>
+              </>
+            )}
+            {canRead && (
+              <Button
+                type="button"
+                variant="secondary"
+                iconLeft={<Download size={16} />}
+                onClick={handleExportCsv}
+                disabled={isExporting}
+              >
+                {isExporting ? 'Exporting...' : 'Export CSV'}
+              </Button>
+            )}
           </div>
         }
       />

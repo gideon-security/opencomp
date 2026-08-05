@@ -173,6 +173,9 @@ class LocalRedisClient implements KvClient {
     this.client = new Redis(url, {
       lazyConnect: true,
       maxRetriesPerRequest: null,
+      // The ACL app role (`comp_app`) is not granted INFO, so skip ioredis's
+      // INFO-based readiness probe; the 'ready' event fires on connect instead.
+      enableReadyCheck: false,
     });
     this.client.on('error', () => {
       // Connection failures shouldn't crash the process; commands will reject.

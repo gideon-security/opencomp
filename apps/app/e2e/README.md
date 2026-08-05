@@ -30,7 +30,8 @@ AUTH_SECRET=test-secret-for-e2e-only
 NEXT_PUBLIC_PORTAL_URL=http://localhost:3002
 REVALIDATION_SECRET=test-revalidation-secret
 
-# Redis test instance
+# Redis test instance (own local instance without ACLs; if you point this at the
+# docker-compose Redis instead, use the comp_app URL from apps/api/.env.example)
 REDIS_URL=redis://localhost:6379
 
 # Google OAuth credentials

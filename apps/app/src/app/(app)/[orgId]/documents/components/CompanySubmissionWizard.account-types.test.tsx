@@ -14,6 +14,14 @@ vi.mock('@trycompai/design-system', () => {
   const Passthrough = ({ children }: any) => <div>{children}</div>;
   return {
     Alert: Passthrough,
+    AlertDialog: ({ children, open }: any) => (open ? <div data-testid="alert-dialog">{children}</div> : null),
+    AlertDialogAction: ({ children, ...props }: any) => <button {...props}>{children}</button>,
+    AlertDialogCancel: ({ children }: any) => <button>{children}</button>,
+    AlertDialogContent: Passthrough,
+    AlertDialogDescription: ({ children }: any) => <p>{children}</p>,
+    AlertDialogFooter: Passthrough,
+    AlertDialogHeader: Passthrough,
+    AlertDialogTitle: ({ children }: any) => <h2>{children}</h2>,
     Button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
     Field: Passthrough,
     FieldError: () => null,

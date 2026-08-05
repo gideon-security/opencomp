@@ -9,7 +9,7 @@ const ratelimit = createRateLimiter({
   client: redisClient,
   limit: MAX_REQUESTS,
   windowSeconds: WINDOW_SECONDS,
-  prefix: 'ratelimit:admin-auth',
+  prefix: 'app:ratelimit:admin-auth',
   algorithm: 'sliding',
 });
 

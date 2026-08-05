@@ -41,6 +41,12 @@ vi.mock('swr', () => ({
   useSWRConfig: () => ({
     mutate: vi.fn(),
   }),
+  default: vi.fn(() => ({ data: undefined, error: undefined, isLoading: false, mutate: vi.fn() })),
+}));
+
+// Mock useAuditLogs (used by PolicyHeaderActions for the activity feed)
+vi.mock('@/hooks/use-audit-logs', () => ({
+  useAuditLogs: () => ({ logs: [], mutate: vi.fn() }),
 }));
 
 // Mock useRealtimeRun from local-trigger

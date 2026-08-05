@@ -50,7 +50,7 @@ export class DeviceAgentAuthService {
     const code = randomBytes(32).toString('hex');
 
     await deviceAgentRedisClient.set(
-      `device-auth:${code}`,
+      `app:device-auth:${code}`,
       {
         userId: session.user.id,
         state,
@@ -64,7 +64,7 @@ export class DeviceAgentAuthService {
 
   async exchangeCode({ code }: { code: string }) {
     const stored = await deviceAgentRedisClient.getdel<StoredAuthCode>(
-      `device-auth:${code}`,
+      `app:device-auth:${code}`,
     );
 
     if (!stored) {

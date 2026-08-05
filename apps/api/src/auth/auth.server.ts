@@ -63,7 +63,7 @@ function getCookieDomain(): string | undefined {
 
 // ── Custom domain lookup via Redis cache ─────────────────────────────────────
 
-const CORS_DOMAINS_CACHE_KEY = 'cors:custom-domains';
+const CORS_DOMAINS_CACHE_KEY = 'app:cors:custom-domains';
 const CORS_DOMAINS_CACHE_TTL_SECONDS = 5 * 60; // 5 minutes
 
 // The shared client falls back to in-memory when REDIS_URL is unset, so these

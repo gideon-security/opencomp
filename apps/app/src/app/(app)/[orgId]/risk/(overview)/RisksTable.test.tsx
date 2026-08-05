@@ -235,7 +235,8 @@ describe('RisksTable permission gating', () => {
 
     expect(screen.getByText('RISK')).toBeInTheDocument();
     expect(screen.getByText('SEVERITY')).toBeInTheDocument();
-    expect(screen.getByText('RISK SCORE')).toBeInTheDocument();
+    expect(screen.getByText('INHERENT RISK')).toBeInTheDocument();
+    expect(screen.getByText('CURRENT RISK')).toBeInTheDocument();
     expect(screen.getByText('STATUS')).toBeInTheDocument();
     expect(screen.getByText('OWNER')).toBeInTheDocument();
     expect(screen.getByText('UPDATED')).toBeInTheDocument();
@@ -253,7 +254,7 @@ describe('RisksTable permission gating', () => {
     // The severity filter dropdown also contains "Low" as an option, so
     // we expect at least one (row + dropdown option).
     expect(screen.getAllByText('Low').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText('4/10')).toBeInTheDocument();
+    expect(screen.getAllByText('4/10').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders search bar regardless of permissions', () => {

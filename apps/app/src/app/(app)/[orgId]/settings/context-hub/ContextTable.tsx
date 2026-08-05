@@ -1,6 +1,7 @@
 'use client';
 
 import { apiClient } from '@/lib/api-client';
+import { usePermissions } from '@/hooks/use-permissions';
 import { isJSON } from '@/lib/utils';
 import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import type { Context } from '@db';
@@ -384,7 +385,7 @@ function EditableAnswerCell({ context }: { context: Context }) {
 }
 
 // Actions cell with dropdown
-function ActionsCell({ context }: { context: Context }) {
+function ActionsCell({ context, canUpdate }: { context: Context; canUpdate: boolean }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [status, setStatus] = useState<'idle' | 'executing'>('idle');
   const router = useRouter();
@@ -404,6 +405,8 @@ function ActionsCell({ context }: { context: Context }) {
     },
     [router],
   );
+
+  if (!canUpdate) return null;
 
   return (
     <>
@@ -501,6 +504,8 @@ export const ContextTable = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { hasPermission } = usePermissions();
+  const canUpdate = hasPermission('evidence', 'update');
   const [search, setSearch] = useState('');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -544,10 +549,12 @@ export const ContextTable = ({
             />
           </InputGroup>
         </div>
-        <Button onClick={() => setIsSheetOpen(true)}>
-          <Add size={16} />
-          Add Entry
-        </Button>
+        {canUpdate && (
+          <Button onClick={() => setIsSheetOpen(true)}>
+            <Add size={16} />
+            Add Entry
+          </Button>
+        )}
       </HStack>
 
       {/* Table */}
@@ -567,13 +574,13 @@ export const ContextTable = ({
           <TableRow>
             <TableHead style={{ width: '35%' }}>QUESTION</TableHead>
             <TableHead style={{ width: '55%', maxWidth: '500px' }}>ANSWER</TableHead>
-            <TableHead style={{ width: '10%' }}>ACTIONS</TableHead>
+            {canUpdate && <TableHead style={{ width: '10%' }}>ACTIONS</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredEntries.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={3}>
+              <TableCell colSpan={canUpdate ? 3 : 2}>
                 <div className="flex items-center justify-center py-8">
                   <Text variant="muted">
                     {search ? 'No entries match your search' : 'No context entries yet'}
@@ -590,11 +597,13 @@ export const ContextTable = ({
                 <TableCell style={{ maxWidth: '500px' }}>
                   <EditableAnswerCell context={entry} />
                 </TableCell>
-                <TableCell>
-                  <div className="flex justify-center">
-                    <ActionsCell context={entry} />
-                  </div>
-                </TableCell>
+                {canUpdate && (
+                  <TableCell>
+                    <div className="flex justify-center">
+                      <ActionsCell context={entry} canUpdate={canUpdate} />
+                    </div>
+                  </TableCell>
+                )}
               </TableRow>
             ))
           )}

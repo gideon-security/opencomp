@@ -301,7 +301,11 @@ describe('PolicyContentManager', () => {
 
     it('renders editor as read-only when pending approval', () => {
       render(
-        <PolicyContentManager {...defaultProps} isPendingApproval={true} />,
+        <PolicyContentManager
+          {...defaultProps}
+          isPendingApproval={true}
+          pendingVersionId="ver-1"
+        />,
       );
       const editor = screen.getByTestId('policy-editor');
       expect(editor.getAttribute('data-readonly')).toBe('true');

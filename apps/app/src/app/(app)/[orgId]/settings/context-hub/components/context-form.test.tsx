@@ -1,15 +1,16 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+const mockGet = vi.fn();
 const mockPost = vi.fn();
 const mockPatch = vi.fn();
 
-vi.mock('@/hooks/use-api', () => ({
-  useApi: () => ({
-    post: mockPost,
-    patch: mockPatch,
-    organizationId: 'org_123',
-  }),
+vi.mock('@/lib/api-client', () => ({
+  apiClient: {
+    get: (...args: unknown[]) => mockGet(...args),
+    post: (...args: unknown[]) => mockPost(...args),
+    patch: (...args: unknown[]) => mockPatch(...args),
+  },
 }));
 
 vi.mock('sonner', () => ({
@@ -19,12 +20,20 @@ vi.mock('sonner', () => ({
   },
 }));
 
+vi.mock('@/hooks/use-permissions', () => ({
+  usePermissions: () => ({
+    permissions: {},
+    hasPermission: () => true,
+  }),
+}));
+
 import { toast } from 'sonner';
 import { ContextForm } from './context-form';
 
 describe('ContextForm', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGet.mockResolvedValue({ data: { data: [], count: 0, pageCount: 0 } });
   });
 
   it('renders create form when no entry is provided', () => {
