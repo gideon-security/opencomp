@@ -1,5 +1,5 @@
 import { db } from '@db';
-import { logger, queue, task } from '@trigger.dev/sdk';
+import { logger, queue, task } from '@gideon-defender/trigger-local';
 import { isUserUnsubscribed } from '@gideon-defender/email';
 import { triggerEmail } from '../../email/trigger-email';
 import { AutomationBulkFailuresEmail } from '../../email/templates/automation-bulk-failures';

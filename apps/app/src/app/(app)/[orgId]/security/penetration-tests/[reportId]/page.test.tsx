@@ -26,6 +26,14 @@ vi.mock('@db', () => ({
   },
 }));
 
+vi.mock('@db/server', () => ({
+  db: {
+    member: {
+      findFirst: (...args: unknown[]) => dbFindFirstMock(...args),
+    },
+  },
+}));
+
 vi.mock('next/headers', () => ({
   headers: () => headersMock(),
 }));

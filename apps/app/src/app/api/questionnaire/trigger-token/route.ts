@@ -1,5 +1,5 @@
 import { auth as betterAuth } from '@/utils/auth';
-import { auth } from '@trigger.dev/sdk';
+import { auth } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 const ALLOWED_TASK_IDS = [

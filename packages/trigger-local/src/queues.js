@@ -7,7 +7,7 @@ const { getRedis } = require('./redis');
 // Queue, worker and repeatable schedulers are process-scoped singletons kept on
 // globalThis so the different Next.js bundles (which each carry their own copy
 // of this module) share one worker per process.
-const GLOBAL_QUEUES_KEY = Symbol.for('@trigger.dev/local-trigger/queues.v1');
+const GLOBAL_QUEUES_KEY = Symbol.for('@gideon-defender/trigger-local/queues.v1');
 
 const SCHEDULE_JOB_NAME = '__schedule__';
 

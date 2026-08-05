@@ -1,11 +1,11 @@
 import { db } from '@db';
 
 /**
- * Dynamic (DB-backed) integrations are NOT present in the Trigger.dev runtime's
+ * Dynamic (DB-backed) integrations are NOT present in the Local trigger runtime's
  * manifest registry: the registry singleton is seeded only with the static code
  * manifests, and the loader that merges DB-backed manifests in
  * (`DynamicManifestLoaderService`) is a NestJS lifecycle service that never runs
- * in the Trigger.dev process. So `getManifest(slug)` returns `undefined` here
+ * in the Local trigger process. So `getManifest(slug)` returns `undefined` here
  * for dynamic providers, and their checks cannot execute in-process.
  *
  * The fix (mirroring AWS) is to run those checks ON OUR SERVER, where the loader
@@ -24,10 +24,10 @@ export async function isActiveDynamicProvider(slug: string): Promise<boolean> {
 
 /**
  * Whether a provider's checks must run on the API server instead of in the
- * Trigger.dev runtime.
+ * Local trigger runtime.
  *
  * - AWS → always on the server (its S3 calls must egress our VPC, not
- *   Trigger.dev's, whose endpoint policy blocks the cross-account read).
+ *   Local trigger's, whose endpoint policy blocks the cross-account read).
  * - Has a manifest here → static code integration → run in-process (unchanged).
  * - No manifest but an active dynamic integration → on the server (the manifest
  *   only exists in the API process).

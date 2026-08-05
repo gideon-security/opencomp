@@ -13,6 +13,12 @@ vi.mock('@db', async () => {
   return { ...actual, db: mockDb };
 });
 
+vi.mock('@db/server', async () => {
+  const { mockDb } = await import('@/test-utils/mocks/db');
+  const actual = await vi.importActual<typeof import('@db')>('@db');
+  return { ...actual, db: mockDb };
+});
+
 // Mock dependencies that the layout imports but we don't need to test
 vi.mock('@/app/posthog', () => ({
   getFeatureFlags: vi.fn().mockResolvedValue({}),
@@ -31,10 +37,12 @@ vi.mock('@/lib/api-server', () => ({
 }));
 vi.mock('@/lib/permissions', () => ({
   canAccessApp: vi.fn().mockReturnValue(true),
+  canAccessAuditorView: vi.fn().mockReturnValue(false),
   parseRolesString: vi.fn().mockReturnValue(['owner']),
 }));
 vi.mock('@/lib/permissions.server', () => ({
   resolveUserPermissions: vi.fn().mockResolvedValue([]),
+  resolveCustomRolePermissions: vi.fn().mockResolvedValue({}),
 }));
 vi.mock('./components/AppShellWrapper', () => ({
   AppShellWrapper: ({ children }: { children: React.ReactNode }) => children,

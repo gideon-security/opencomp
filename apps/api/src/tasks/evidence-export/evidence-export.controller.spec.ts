@@ -1,7 +1,7 @@
 // Mocks must be declared before any SUT import so guards' transitive deps
 // (Prisma, better-auth) don't instantiate in Jest.
 const mockTrigger = jest.fn();
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   tasks: { trigger: mockTrigger },
 }));
 

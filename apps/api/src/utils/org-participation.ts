@@ -1,6 +1,6 @@
 import { db, Prisma } from '@db';
 // Use the dependency-free local mirror (not @gideon-defender/auth) so this file is
-// safe in the API's Trigger.dev bundle — the auth package's dist isn't built in
+// safe in the API's Local trigger bundle — the auth package's dist isn't built in
 // that deploy, so esbuild can't resolve `@gideon-defender/auth/participation`. The
 // mirror is kept in sync with the auth package by org-participation-rule.spec.ts.
 import { PLATFORM_ADMIN_ROLE, isOrgParticipant } from './org-participation-rule';

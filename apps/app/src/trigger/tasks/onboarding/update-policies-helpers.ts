@@ -1,7 +1,7 @@
 import { createGatewayProvider } from '@ai-sdk/gateway';
 import { db, FrameworkEditorFramework, FrameworkEditorPolicyTemplate, type Policy } from '@db/server';
 import type { JSONContent } from '@tiptap/react';
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 import { processTemplate } from './process-policy-template';
@@ -179,14 +179,14 @@ export async function updatePolicyInDatabase(
     }
 
     // Delete S3 files for existing versions if they have PDFs
-    // Note: We import S3 client dynamically to avoid issues with Trigger.dev runtime
+    // Note: We import S3 client dynamically to avoid issues with Local trigger runtime
     const pdfUrlsToDelete = policy.versions
       .map((v) => v.pdfUrl)
       .filter((url): url is string => !!url);
 
     if (pdfUrlsToDelete.length > 0) {
       try {
-        // Dynamic import to work in Trigger.dev context
+        // Dynamic import to work in Local trigger context
         const { BUCKET_NAME, s3Client } = await import('@/app/s3');
         const { DeleteObjectCommand } = await import('@aws-sdk/client-s3');
 

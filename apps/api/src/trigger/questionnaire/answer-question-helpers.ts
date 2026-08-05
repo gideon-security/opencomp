@@ -4,7 +4,7 @@ import {
 } from '@/vector-store/lib';
 import type { SimilarContentResult } from '@/vector-store/lib';
 import { openai } from '@ai-sdk/openai';
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 import { generateText } from 'ai';
 import {
   deduplicateSources,

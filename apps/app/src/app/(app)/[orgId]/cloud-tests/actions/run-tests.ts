@@ -2,7 +2,7 @@
 
 import { runIntegrationTests } from '@/trigger/tasks/integration/run-integration-tests';
 import { auth } from '@/utils/auth';
-import { runs, tasks } from '@trigger.dev/sdk';
+import { runs, tasks } from '@gideon-defender/trigger-local';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 
@@ -94,7 +94,7 @@ export const runTests = async (integrationId?: string) => {
     // Timeout - task is taking too long
     return {
       success: false,
-      errors: ['Scan is taking longer than expected. Check the status in Trigger.dev dashboard.'],
+      errors: ['Scan is taking longer than expected. Check the status in Local trigger dashboard.'],
       taskId: handle.id,
     };
   } catch (error) {

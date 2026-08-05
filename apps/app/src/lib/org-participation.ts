@@ -6,7 +6,7 @@ import { db } from '@db/server';
  * App-side server helper for the org-participation rule. This module imports
  * `@db/server`, so it must only be used from server code. The pure predicate
  * lives in `./org-participation-rule` (dependency-free) — import
- * `isOrgParticipant` from there directly so client/Trigger.dev bundles never
+ * `isOrgParticipant` from there directly so client/Local trigger bundles never
  * pull `@db/server` in transitively. See `packages/auth/src/participation.ts`
  * for the canonical rule.
  */

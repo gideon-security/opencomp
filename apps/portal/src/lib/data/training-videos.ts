@@ -27,7 +27,7 @@ export interface TrainingVideo {
  * canonical ID, so a video we never render would leave employees permanently
  * unable to finish training, while a rendered video the API rejects would 400.
  *
- * The import is type-only on purpose: client components and a Trigger.dev task
+ * The import is type-only on purpose: client components and a Local trigger task
  * import this file, and `@gideon-defender/company` requires `@gideon-defender/db` at
  * runtime.
  */

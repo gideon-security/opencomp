@@ -1,7 +1,7 @@
 import { initializeOrganization } from '@/actions/organization/lib/initialize-organization';
 import { resolveFrameworkIds } from '@/actions/organization/lib/resolve-framework-ids';
 import { db } from '@db/server';
-import { logger, queue, tags, task } from '@trigger.dev/sdk';
+import { logger, queue, tags, task } from '@gideon-defender/trigger-local';
 
 const initOrgQueue = queue({
   name: 'initialize-organization',
@@ -9,11 +9,11 @@ const initOrgQueue = queue({
 });
 
 /**
- * Standalone Trigger.dev task for initializing an organization's framework
+ * Standalone Local trigger task for initializing an organization's framework
  * structure (framework instances, controls, policies, tasks, requirement maps).
  *
  * Use cases:
- * - Manual re-run from the Trigger.dev dashboard for orgs stuck in a partial state
+ * - Manual re-run from the Local trigger dashboard for orgs stuck in a partial state
  * - Automatic recovery when `completeOnboarding` detects missing framework instances
  *
  * Accepts optional `frameworkIds`. When omitted, resolves them by reverse-looking

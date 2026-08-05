@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 // generate-risk-mitigation.ts calls task()/queue() at import time and pulls in
 // the Prisma client, axios, and onboarding helpers. Mock those so we can import
 // and unit-test the pure buildMitigationDefaultWrites helper in isolation.
-vi.mock('@trigger.dev/sdk', () => ({
+vi.mock('@gideon-defender/trigger-local', () => ({
   task: vi.fn((config) => config),
   queue: vi.fn((config) => config),
   tags: { add: vi.fn() },

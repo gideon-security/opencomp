@@ -1,6 +1,6 @@
 import { isOrgParticipant } from '@/lib/org-participation-rule';
 import { db } from '@db/server';
-import { logger, schedules } from '@trigger.dev/sdk';
+import { logger, schedules } from '@gideon-defender/trigger-local';
 import { sendWeeklyTaskDigestEmailTask } from '../email/weekly-task-digest-email';
 
 const ORG_INACTIVITY_DAYS = 90;
@@ -121,7 +121,7 @@ export const weeklyTaskReminder = schedules.task({
     }
 
     // Batch trigger all emails with concurrency control
-    // Trigger.dev has a limit of 500 items per batchTrigger
+    // Local trigger has a limit of 500 items per batchTrigger
     if (emailPayloads.length > 0) {
       const BATCH_SIZE = 500;
       const batches = [];

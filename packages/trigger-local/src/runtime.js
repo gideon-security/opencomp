@@ -14,7 +14,7 @@ const als = new AsyncLocalStorage();
 // would be invisible to a server action that triggers it. These bundles all
 // run inside the same Node process, so we keep the registry on globalThis to
 // guarantee a single, shared task registry across every runtime.
-const GLOBAL_REGISTRY_KEY = Symbol.for('@trigger.dev/local-trigger/registry.v1');
+const GLOBAL_REGISTRY_KEY = Symbol.for('@gideon-defender/trigger-local/registry.v1');
 const registry =
   (typeof globalThis !== 'undefined' && globalThis[GLOBAL_REGISTRY_KEY]) ||
   (globalThis[GLOBAL_REGISTRY_KEY] = new Map());
@@ -101,7 +101,7 @@ async function ensureDb() {
 
 // Enforce the per-queue concurrency limit from `queue({ name, concurrencyLimit })`
 // in-process. Tasks without an explicit queue share the 'default' lane with a
-// limit of 1 (Trigger.dev semantics).
+// limit of 1 (Local trigger semantics).
 function withQueueLock(def, fn) {
   const key = def.queue ? def.queue.name : 'default';
   const limit = def.queue ? def.queue.concurrencyLimit || 1 : 1;
@@ -430,7 +430,7 @@ function toRunShape(run) {
   };
 }
 
-// Trigger.dev run ids carry an attempt suffix (e.g. `run_xxx:1`); the
+// Local trigger run ids carry an attempt suffix (e.g. `run_xxx:1`); the
 // local shim stores plain ids. Normalise before every lookup so both the
 // handle returned by `tasks.trigger` and the id the client polls with work.
 function normalizeRunId(runId) {

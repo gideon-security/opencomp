@@ -1,5 +1,5 @@
 import Firecrawl from '@mendable/firecrawl-js';
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 import { extractVendorDomain } from './url-validation';
 
 export function normalizeUrl(url: string | null | undefined): string | null {

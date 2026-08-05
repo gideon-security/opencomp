@@ -12,7 +12,7 @@ import {
   VendorStatus,
 } from '@db';
 import { db } from '@db/server';
-import { logger, metadata, tasks } from '@trigger.dev/sdk';
+import { logger, metadata, tasks } from '@gideon-defender/trigger-local';
 import { generateObject, jsonSchema } from 'ai';
 
 const gateway = createGatewayProvider({
@@ -1355,7 +1355,7 @@ export async function createVendors(
     organizationId,
   );
 
-  // Trigger Risk Assessment task items in the API Trigger.dev project (batch, idempotent).
+  // Trigger Risk Assessment task items in the API Local trigger project (batch, idempotent).
   // We prefer triggering only for newly created vendors, but if for any reason this list is empty
   // (e.g. reruns, existing vendors), we still trigger for all created vendors — the API task is
   // idempotent and will quickly dedupe if the task already exists.

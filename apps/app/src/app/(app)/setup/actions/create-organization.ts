@@ -9,7 +9,7 @@ import { createFleetLabelForOrg } from '@/trigger/tasks/device/create-fleet-labe
 import { onboardOrganization as onboardOrganizationTask } from '@/trigger/tasks/onboarding/onboard-organization';
 import { auth } from '@/utils/auth';
 import { db } from '@db/server';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import { revalidatePath } from 'next/cache';
 import { cookies, headers } from 'next/headers';
 import { companyDetailsSchema, steps } from '../lib/constants';

@@ -8,7 +8,7 @@ vi.mock('../../hooks/useInstructionTest', () => ({
   useInstructionTest: () => ({ startTest, closeTestSession, isStarting: false }),
 }));
 
-vi.mock('@trigger.dev/react-hooks', () => ({
+vi.mock('@gideon-defender/trigger-react', () => ({
   useRealtimeRun: () => ({ run: undefined, error: undefined }),
 }));
 

@@ -87,7 +87,7 @@ describe('DeviceAgentAuthService', () => {
 
       expect(result.code).toHaveLength(64); // 32 bytes hex
       expect(mockKv.set).toHaveBeenCalledWith(
-        expect.stringMatching(/^device-auth:/),
+        expect.stringMatching(/^app:device-auth:/),
         expect.objectContaining({
           userId: 'user-1',
           state: 'test-state',
@@ -125,7 +125,7 @@ describe('DeviceAgentAuthService', () => {
 
       const result = await service.exchangeCode({ code: 'code-abc' });
 
-      expect(mockKv.getdel).toHaveBeenCalledWith('device-auth:code-abc');
+      expect(mockKv.getdel).toHaveBeenCalledWith('app:device-auth:code-abc');
       expect(mockCreateDeviceAgentSession).toHaveBeenCalledWith({
         userId: 'usr_1',
       });

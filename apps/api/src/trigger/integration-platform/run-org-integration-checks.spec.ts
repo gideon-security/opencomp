@@ -23,7 +23,7 @@ jest.mock('../../email/templates/automation-bulk-failures', () => ({
 
 // Importing the runner evaluates queue()/task() at module load — stub them.
 // runTaskIntegrationChecks is only referenced inside the task body (not load).
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
   queue: jest.fn(() => ({ name: 'q' })),
   task: (config: unknown) => config,

@@ -270,7 +270,7 @@ export function useQuestionnaireAutoAnswer({
 
   return {
     triggerAutoAnswer,
-    autoAnswerRun: null, // No Trigger.dev run object
+    autoAnswerRun: null, // No Local trigger run object
     autoAnswerError,
     isAutoAnswerTriggering,
     isAutoAnswering,

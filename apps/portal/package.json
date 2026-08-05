@@ -20,7 +20,6 @@
         "@gideon-defender/kv": "*",
         "@gideon-defender/ui": "*",
         "@types/jszip": "^3.4.1",
-        "@upstash/ratelimit": "^2.0.5",
         "archiver": "^7.0.1",
         "better-auth": "^1.6.13",
         "class-variance-authority": "^0.7.1",

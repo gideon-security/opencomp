@@ -1,5 +1,5 @@
 import { syncOrganizationEmbeddings } from '@/vector-store/lib';
-import { logger, metadata, tags, task } from '@trigger.dev/sdk';
+import { logger, metadata, tags, task } from '@gideon-defender/trigger-local';
 import { generateAnswerWithRAG } from './answer-question-helpers';
 
 export interface AnswerQuestionPayload {
@@ -24,7 +24,7 @@ export interface AnswerQuestionResult {
 
 export interface AnswerQuestionOptions {
   /**
-   * Whether to push updates to Trigger.dev metadata.
+   * Whether to push updates to Local trigger metadata.
    * Disable when running outside of a Trigger task (e.g. server actions).
    */
   useMetadata?: boolean;
@@ -163,7 +163,7 @@ export async function answerQuestion(
 }
 
 /**
- * Trigger.dev task wrapper for frontend use (single question answers)
+ * Local trigger task wrapper for frontend use (single question answers)
  * This wraps the answerQuestion function so it can be triggered from the frontend
  */
 export const answerQuestionTask = task({

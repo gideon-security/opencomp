@@ -1,5 +1,5 @@
 import { db } from '@db/server';
-import { logger, metadata, queue, tags, task, tasks } from '@trigger.dev/sdk';
+import { logger, metadata, queue, tags, task, tasks } from '@gideon-defender/trigger-local';
 import axios from 'axios';
 import { generateAuditorContentTask } from '../auditor/generate-auditor-content';
 import { generateRiskMitigationsForOrg } from './generate-risk-mitigation';
@@ -198,7 +198,7 @@ export const onboardOrganization = task({
 
       // Fan-out vendor + risk mitigations. triggerAndWait keeps this task
       // alive so metadata.root stays writable for child tasks. Sequential
-      // because Trigger.dev doesn't support parallel waits, but both
+      // because Local trigger doesn't support parallel waits, but both
       // fan-outs use batchTriggerAndWait internally so their children
       // run with full queue concurrency.
       metadata.set('currentStep', 'Assessing Vendors...');

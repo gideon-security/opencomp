@@ -59,7 +59,7 @@ export interface UseCommentsOptions extends UseApiSWROptions<Comment[]> {
 
 /**
  * Generic hook to fetch comments for any entity using SWR
- * Includes polling for real-time updates (e.g., when trigger.dev tasks create comments)
+ * Includes polling for real-time updates (e.g., when local-trigger tasks create comments)
  * 
  * IMPORTANT: Always pass organizationId from URL params to ensure correct org context
  * when user navigates to a different org's page while active org is different.
@@ -74,7 +74,7 @@ export function useComments(
 
   return useApiSWR<Comment[]>(endpoint, {
     ...options,
-    // Enable polling for real-time updates (when trigger.dev tasks create comments)
+    // Enable polling for real-time updates (when local-trigger tasks create comments)
     refreshInterval: options.refreshInterval ?? DEFAULT_COMMENTS_POLLING_INTERVAL,
   });
 }

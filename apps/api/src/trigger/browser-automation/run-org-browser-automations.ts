@@ -1,4 +1,4 @@
-import { logger, queue, task } from '@trigger.dev/sdk';
+import { logger, queue, task } from '@gideon-defender/trigger-local';
 import { runBrowserAutomation } from './run-browser-automation';
 import {
   sendBundledFailureEmails,

@@ -28,17 +28,17 @@ describe('sendEmailViaSes', () => {
 
     const result = await sendEmailViaSes({
       to: 'recipient@example.com',
-      from: 'Comp AI <noreply@trycomp.local>',
+      from: 'Gideon Defender <noreply@gideondefender.com>',
       subject: 'Hello',
       html: '<p>hi</p>',
     });
 
     const input = commandInput();
-    expect(input.Source).toBe('Comp AI <noreply@trycomp.local>');
+    expect(input.Source).toBe('Gideon Defender <noreply@gideondefender.com>');
     expect(input.Destinations).toEqual(['recipient@example.com']);
 
     const raw = Buffer.from(input.RawMessage.Data).toString('utf8');
-    expect(raw).toContain('From: Comp AI <noreply@trycomp.local>');
+    expect(raw).toContain('From: Gideon Defender <noreply@gideondefender.com>');
     expect(raw).toContain('To: recipient@example.com');
     expect(raw).toContain('Subject: Hello');
     expect(raw).toContain('MIME-Version: 1.0');

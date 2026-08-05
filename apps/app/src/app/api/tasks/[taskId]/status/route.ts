@@ -1,5 +1,5 @@
 import { auth } from '@/utils/auth';
-import { runs } from '@trigger.dev/sdk';
+import { runs } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
@@ -21,7 +21,7 @@ export async function GET(
       return NextResponse.json({ error: 'Task ID is required' }, { status: 400 });
     }
 
-    // Use runs API from Trigger.dev SDK to get run status
+    // Use runs API from Local trigger SDK to get run status
     // taskId is actually a run ID (starts with 'run_')
     const run = await runs.retrieve(taskId);
 
@@ -45,7 +45,7 @@ export async function GET(
     
     // Handle specific error cases
     if (error instanceof Error) {
-      // Check if it's a 404 error from Trigger.dev
+      // Check if it's a 404 error from Local trigger
       if (error.message.includes('not found') || error.message.includes('404')) {
         return NextResponse.json({ error: 'Run not found' }, { status: 404 });
       }

@@ -15,12 +15,11 @@ export async function syncManualAnswerToVector(
   // Check if vectorIndex is configured
   if (!vectorIndex) {
     logger.error(
-      '❌ Upstash Vector not configured - check UPSTASH_VECTOR_REST_URL and UPSTASH_VECTOR_REST_TOKEN',
+      '❌ Vector store not configured - check DATABASE_URL is set',
       {
         manualAnswerId,
         organizationId,
-        hasUrl: !!process.env.UPSTASH_VECTOR_REST_URL,
-        hasToken: !!process.env.UPSTASH_VECTOR_REST_TOKEN,
+        hasDatabaseUrl: !!process.env.DATABASE_URL,
       },
     );
     return { success: false, error: 'Vector DB not configured' };

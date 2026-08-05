@@ -1,6 +1,6 @@
 import { isOrgParticipant } from '@/lib/org-participation-rule';
 import { VendorStatus, db } from '@db/server';
-import { logger, metadata, queue, tags, task, tasks } from '@trigger.dev/sdk';
+import { logger, metadata, queue, tags, task, tasks } from '@gideon-defender/trigger-local';
 import axios from 'axios';
 import {
   createVendorRiskComment,

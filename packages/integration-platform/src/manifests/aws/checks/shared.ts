@@ -53,7 +53,7 @@ export function resolveAwsCredentialInputs(
  * credentials by the Cloud Tests CHECK runner (apps/api `checks-aws-session.ts`)
  * when the cross-account assume was performed in ECS. The underscore-prefixed
  * keys never collide with real connection fields. When present, the check uses
- * these directly instead of assuming the role itself — it runs in the Trigger.dev
+ * these directly instead of assuming the role itself — it runs in the Local trigger
  * runtime, which has no base AWS credentials or roleAssumer ARN.
  */
 function readInjectedAwsSession(
@@ -134,7 +134,7 @@ export async function assumeAwsSession(
   const { roleArn, externalId, regions } = inputs;
 
   // If the CHECK runner already resolved a session in ECS (the cross-account
-  // assume cannot run in the Trigger.dev runtime, which lacks base AWS creds and
+  // assume cannot run in the Local trigger runtime, which lacks base AWS creds and
   // the roleAssumer ARN), use it directly. An injected error surfaces the real
   // failure reason via the caller's "Could not assume AWS role" finding.
   const injected = readInjectedAwsSession(

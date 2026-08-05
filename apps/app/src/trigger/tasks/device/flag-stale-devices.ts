@@ -1,5 +1,5 @@
 import { db } from '@db/server';
-import { logger, schedules } from '@trigger.dev/sdk';
+import { logger, schedules } from '@gideon-defender/trigger-local';
 import { STALE_DEVICE_THRESHOLD_DAYS } from '@gideon-defender/utils/devices';
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -7,7 +7,7 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000;
 export const flagStaleDevices = schedules.task({
   id: 'flag-stale-devices',
   cron: '0 6 * * *', // Daily at 06:00 UTC (~01:00 US/Eastern)
-  maxDuration: 60 * 5, // 5 minutes (trigger.dev expects seconds)
+  maxDuration: 60 * 5, // 5 minutes (local-trigger expects seconds)
   run: async (): Promise<{
     success: boolean;
     flaggedCount: number;

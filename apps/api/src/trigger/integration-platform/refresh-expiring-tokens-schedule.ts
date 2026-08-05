@@ -1,5 +1,5 @@
 import { db } from '@db';
-import { logger, schedules } from '@trigger.dev/sdk';
+import { logger, schedules } from '@gideon-defender/trigger-local';
 import { requestValidCredentials } from './ensure-valid-credentials';
 
 // Refresh tokens expiring within the next 24 hours

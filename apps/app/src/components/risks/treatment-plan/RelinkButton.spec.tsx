@@ -5,7 +5,7 @@ import { RelinkButton } from './RelinkButton';
 vi.mock('sonner', () => ({ toast: { info: vi.fn(), success: vi.fn(), error: vi.fn() } }));
 
 const realtimeRunMock = vi.fn();
-vi.mock('@trigger.dev/react-hooks', () => ({
+vi.mock('@gideon-defender/trigger-react', () => ({
   useRealtimeRun: (runId: string, opts: { accessToken?: string; enabled?: boolean }) =>
     realtimeRunMock(runId, opts),
 }));
@@ -45,7 +45,8 @@ describe('RelinkButton', () => {
     realtimeRunMock.mockReturnValue({
       run: {
         status: 'COMPLETED',
-        metadata: { phase: 'done', riskLinks: 2, vendorLinks: 0 },
+        metadata: { phase: 'done' },
+        output: { riskLinks: 2, vendorLinks: 0 },
       },
     });
     const onRelink = vi.fn().mockResolvedValue({ runId: 'r1', publicAccessToken: 't1' });

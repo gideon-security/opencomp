@@ -1394,7 +1394,7 @@ export class PoliciesService {
     // Publishing cleared signedBy[] above, so everyone with the compliance
     // obligation must (re-)acknowledge the new version. Surface that audience so
     // the app layer can send notification emails — the email task lives in the
-    // app's Trigger.dev project, which the API cannot trigger directly. Mirrors
+    // app's Local trigger project, which the API cannot trigger directly. Mirrors
     // publishAll. notificationType uses the pre-update policy state captured at
     // the top of this method (signedBy/lastPublishedAt before they were reset).
     const allMembers = await db.member.findMany({

@@ -192,7 +192,7 @@ export interface ApiPermissionContext {
  *     // ...use ctx.organizationId, ctx.permissions...
  *
  * The Next.js mutation routes for risk/vendor auto-link, relink, and unlink
- * orchestrate work that the NestJS API doesn't host directly (trigger.dev
+ * orchestrate work that the NestJS API doesn't host directly (local-trigger
  * tokens, Upstash queries, Prisma joins). These endpoints still need the
  * same RBAC contract as the API — see Cubic finding #9 on PR #2671.
  */

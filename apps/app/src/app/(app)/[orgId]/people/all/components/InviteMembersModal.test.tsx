@@ -2,6 +2,14 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { InviteMembersModal } from './InviteMembersModal';
 
+beforeEach(() => {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+});
+
 // Mock server actions
 vi.mock('../actions/addEmployeeWithoutInvite', () => ({
   addEmployeeWithoutInvite: vi.fn().mockResolvedValue({ success: true }),

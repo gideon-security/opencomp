@@ -1,5 +1,5 @@
 import { db } from '@db/server';
-import { logger, queue, tags, task } from '@trigger.dev/sdk';
+import { logger, queue, tags, task } from '@gideon-defender/trigger-local';
 import WeeklyTaskDigestEmail from '@gideon-defender/email/emails/reminders/weekly-task-digest';
 import { isUserUnsubscribed } from '@gideon-defender/email/lib/check-unsubscribe';
 import { sendEmailViaApi } from '../../lib/send-email-via-api';

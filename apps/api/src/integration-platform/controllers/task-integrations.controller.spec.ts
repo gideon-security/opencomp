@@ -281,6 +281,9 @@ describe('TaskIntegrationsController', () => {
     // test that opts into `true` never leaks into the next (clearAllMocks keeps
     // implementations).
     mockedIsCodeManifest.mockReturnValue(false);
+    // Default: no active dynamic integration row (tests that need one set their
+    // own). Without this, a `mockResolvedValue` leaks into later tests.
+    mockDynamicIntegrationFindFirst.mockResolvedValue(null);
     // Default: no active exceptions (existing tests behave as before).
     mockFindingExceptionFindMany.mockResolvedValue([]);
     mockCheckRunRepository.create.mockImplementation(() =>
@@ -491,7 +494,7 @@ describe('TaskIntegrationsController', () => {
       expect(mockTaskUpdate).not.toHaveBeenCalled();
     });
 
-    it('still fails the task for a dynamic integration on a REAL finding', async () => {
+    it('holds a dynamic integration run as inconclusive even on a REAL finding (agent decides)', async () => {
       // Same dynamic provider, but a genuine compliance finding (no error signal).
       mockProviderRepository.findById.mockResolvedValue({
         id: 'prov_neon',
@@ -520,12 +523,13 @@ describe('TaskIntegrationsController', () => {
         checkId: 'aws-s3-encryption',
       });
 
-      expect(result.taskStatus).toBe('failed');
-      // A genuine compliance finding is a REAL failure — the run row stays
-      // 'failed' (visible to the customer), never held.
+      // comp does NO classification for dynamic integrations — even a REAL
+      // finding is held as 'inconclusive' (pending) and handed to the self-heal
+      // agent. It never fails the task here.
+      expect(result.taskStatus).toBeNull();
       expect(mockCheckRunRepository.complete).toHaveBeenCalledWith(
         'icr_x',
-        expect.objectContaining({ status: 'failed' }),
+        expect.objectContaining({ status: 'inconclusive' }),
       );
     });
 

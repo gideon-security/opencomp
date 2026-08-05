@@ -355,7 +355,7 @@ export class BrowserAuthProfileService {
   /**
    * Persist the outcome of the most recent connect/sign-in attempt on the
    * connection, so a "can't connect" support ticket can be diagnosed from the
-   * row alone rather than from ephemeral Trigger.dev logs. Purely diagnostic —
+   * row alone rather than from ephemeral Local trigger logs. Purely diagnostic —
    * it does NOT change `status` (the mark* methods own that). Best-effort: scoped
    * by org (no cross-tenant write), never throws on a missing row, and swallows
    * failures so logging can never break the sign-in flow.

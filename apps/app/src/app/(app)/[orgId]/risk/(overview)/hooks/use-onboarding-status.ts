@@ -1,6 +1,6 @@
 'use client';
 
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useMemo } from 'react';
 
 export type OnboardingItemStatus = 'pending' | 'processing' | 'created' | 'assessing' | 'completed';

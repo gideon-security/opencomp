@@ -1,6 +1,6 @@
 import { trainingVideos } from '@/lib/data/training-videos';
 import { db } from '@db/server';
-import { logger, tags, task } from '@trigger.dev/sdk';
+import { logger, tags, task } from '@gideon-defender/trigger-local';
 
 export const backfillTrainingVideosForOrg = task({
   id: 'backfill-training-videos-for-org',

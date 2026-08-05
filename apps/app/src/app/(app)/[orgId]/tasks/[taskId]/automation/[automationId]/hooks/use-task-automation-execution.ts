@@ -1,7 +1,7 @@
 /**
  * useTaskAutomationExecution Hook
  *
- * Handles the execution of task automation scripts via Trigger.dev.
+ * Handles the execution of task automation scripts via Local trigger.
  * Manages execution state, results, and error handling.
  *
  * @example
@@ -43,11 +43,11 @@ interface AutomationRunData {
   };
 }
 
-// Trigger.dev run statuses that mean the run is still in progress. Anything
+// Local trigger run statuses that mean the run is still in progress. Anything
 // NOT in this set is terminal (the run has stopped for good). Keeping a run
 // status outside both this set and COMPLETED used to fall through to an
 // infinite poll, which is exactly what hung the "Running your automation"
-// dialog. Source: @trigger.dev/sdk v4 RunStatus.
+// dialog. Source: @gideon-defender/trigger-local v4 RunStatus.
 const IN_PROGRESS_RUN_STATUSES = new Set<string>([
   'PENDING_VERSION',
   'QUEUED',

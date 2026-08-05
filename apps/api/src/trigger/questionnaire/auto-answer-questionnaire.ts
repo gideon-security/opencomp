@@ -1,5 +1,5 @@
 import { db } from '@db';
-import { logger, metadata, tags, task } from '@trigger.dev/sdk';
+import { logger, metadata, tags, task } from '@gideon-defender/trigger-local';
 import { syncOrganizationEmbeddings } from '@/vector-store/lib';
 import { saveGeneratedAnswer } from '@/questionnaire/utils/questionnaire-storage';
 import { generateAnswerWithRAGBatch } from './answer-question-helpers';

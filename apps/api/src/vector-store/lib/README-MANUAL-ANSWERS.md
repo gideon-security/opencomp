@@ -65,7 +65,7 @@ Before generating answers for questionnaires:
 When deleting all manual answers:
 1. Orchestrator task is triggered in the background
 2. Deletions happen in parallel batches (50 at a time)
-3. Progress can be tracked via Trigger.dev dashboard
+3. Progress can be tracked via Local trigger dashboard
 
 ## Troubleshooting
 

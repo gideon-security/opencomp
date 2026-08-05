@@ -51,7 +51,7 @@ const buildResponseHeaders = (
 };
 
 const getDownloadToken = async (token: string): Promise<DownloadTokenInfo | null> => {
-  const info = await kv.get<DownloadTokenInfo>(`download:${token}`);
+  const info = await kv.get<DownloadTokenInfo>(`app:download:${token}`);
   return info ?? null;
 };
 
@@ -107,7 +107,7 @@ const handleDownload = async (req: NextRequest, isHead: boolean) => {
       return new NextResponse('Installer file not found', { status: 404 });
     }
 
-    await kv.del(`download:${token}`);
+    await kv.del(`app:download:${token}`);
 
     const s3Stream = s3Response.Body as Readable;
     const webStream = Readable.toWeb(s3Stream) as unknown as ReadableStream;

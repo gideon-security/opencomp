@@ -23,7 +23,6 @@ These variables are required for a functional Docker deployment:
 | `BETTER_AUTH_URL` | app, portal | runtime | Base URL for Better Auth (app or portal's public URL) |
 | `NEXT_PUBLIC_BETTER_AUTH_URL` | app, portal | build | Public auth URL (same as `BETTER_AUTH_URL`) |
 | `BETTER_AUTH_SECRET` | portal | runtime | Portal-specific auth secret. Generate: `openssl rand -base64 32` |
-| `TRIGGER_SECRET_KEY` | app | runtime | [Trigger.dev](https://cloud.trigger.dev) project secret key |
 | `REVALIDATION_SECRET` | app | runtime | Random string for revalidation. Generate: `openssl rand -base64 16` |
 | `NEXT_PUBLIC_PORTAL_URL` | app | build | Public URL of the portal (e.g., `https://portal.yourdomain.com`) |
 
@@ -68,11 +67,10 @@ These variables are required for a functional Docker deployment:
 Email delivery uses AWS SES (the email-worker process polls the SQS queue and calls SES `SendEmail`). The sender address must be a verified SES identity. AWS credentials are shared with S3 (`APP_AWS_*`).
 </Note>
 
-### Workflows (Trigger.dev)
+### Workflows
 
 | Name | Service(s) | Phase | Required | Notes |
 |------|-----------|-------|----------|-------|
-| `TRIGGER_SECRET_KEY` | app | runtime | required-minimal | Trigger.dev project secret |
 | `REVALIDATION_SECRET` | app | runtime | required-minimal | Server-side revalidation secret |
 
 ### AWS S3 Storage
@@ -101,14 +99,11 @@ AWS S3 variables are required for file upload features (attachments, logos, ques
 | `GROQ_API_KEY` | app | runtime | optional | Groq API key for dashboard chat |
 | `FIRECRAWL_API_KEY` | app | runtime | conditional | Firecrawl for vendor research |
 
-### Rate Limiting & Caching (Upstash)
+### Rate Limiting & Caching
 
 | Name | Service(s) | Phase | Required | Notes |
 |------|-----------|-------|----------|-------|
-| `UPSTASH_REDIS_REST_URL` | app | runtime | optional | Upstash Redis URL for rate limiting |
-| `UPSTASH_REDIS_REST_TOKEN` | app | runtime | optional | Upstash Redis token |
-| `UPSTASH_VECTOR_REST_URL` | app | runtime | optional | Upstash Vector for embeddings |
-| `UPSTASH_VECTOR_REST_TOKEN` | app | runtime | optional | Upstash Vector token |
+| `REDIS_URL` | app, portal, api | runtime | optional | Redis connection string (e.g. `redis://localhost:6379`) for rate limiting. Falls back to in-memory when unset |
 
 ### Analytics & Tracking
 
@@ -157,7 +152,6 @@ SECRET_KEY="your-32-byte-encryption-key"
 BETTER_AUTH_URL="https://app.yourdomain.com"
 NEXT_PUBLIC_BETTER_AUTH_URL="https://app.yourdomain.com"
 NEXT_PUBLIC_PORTAL_URL="https://portal.yourdomain.com"
-TRIGGER_SECRET_KEY="tr_your_secret_key"
 REVALIDATION_SECRET="random-revalidation-string"
 ```
 

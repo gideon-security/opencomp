@@ -1,5 +1,5 @@
 import { auth as betterAuth } from '@/utils/auth';
-import { auth, runs } from '@trigger.dev/sdk';
+import { auth, runs } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(

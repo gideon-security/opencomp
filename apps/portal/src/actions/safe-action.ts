@@ -1,20 +1,16 @@
 import { auth } from '@/app/lib/auth';
-import { env } from '@/env.mjs';
 import { logger } from '@/utils/logger';
-import { client } from '@gideon-defender/kv';
-import { Ratelimit } from '@upstash/ratelimit';
+import { client, createRateLimiter } from '@gideon-defender/kv';
 import { DEFAULT_SERVER_ERROR_MESSAGE, createSafeActionClient } from 'next-safe-action';
 import { headers } from 'next/headers';
 import { z } from 'zod';
 
-let ratelimit: Ratelimit | undefined;
-
-if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
-  ratelimit = new Ratelimit({
-    limiter: Ratelimit.fixedWindow(10, '10s'),
-    redis: client,
-  });
-}
+const ratelimit = createRateLimiter({
+  client,
+  limit: 10,
+  windowSeconds: 10,
+  prefix: 'app:ratelimit:action',
+});
 
 export const actionClientWithMeta = createSafeActionClient({
   handleServerError(e) {
@@ -68,10 +64,6 @@ export const authActionClient = actionClientWithMeta
     return result;
   })
   .use(async ({ next, metadata }) => {
-    if (!ratelimit) {
-      return next({});
-    }
-
     const headersList = await headers();
 
     const { success, remaining: rateLimitRemaining } = await ratelimit.limit(

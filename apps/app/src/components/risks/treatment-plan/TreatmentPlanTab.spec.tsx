@@ -79,9 +79,14 @@ describe('TreatmentPlanTab', () => {
 
   it('coverage gate: Mitigate with no linked work shows inherent as the target', () => {
     // No linked tasks → target collapses to inherent regardless of strategy.
-    // The headline shows 7 → 7 ("no change") with the explanatory copy
-    // pointing the user at linking work.
-    render(<TreatmentPlanTab {...buildProps()} />);
+    // The headline shows 7 → 7 ("no change"). With a plan already in place
+    // (treatmentStrategyDescription set), the copy points at linking work
+    // rather than the "no plan yet" empty-state message.
+    const entity: TreatmentPlanEntity = {
+      ...baseEntity,
+      treatmentStrategyDescription: 'Roll out MFA for all admin accounts.',
+    };
+    render(<TreatmentPlanTab {...buildProps({ entity })} />);
     const headline = screen.getByLabelText(/From 7 to 7 out of 10/i);
     expect(headline).toBeInTheDocument();
     expect(

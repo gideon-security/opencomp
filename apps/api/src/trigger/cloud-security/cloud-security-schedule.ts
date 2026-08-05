@@ -1,6 +1,6 @@
 import { getManifest } from '@gideon-defender/integration-platform';
 import { db } from '@db';
-import { logger, schedules } from '@trigger.dev/sdk';
+import { logger, schedules } from '@gideon-defender/trigger-local';
 import { runCloudSecurityScan } from './run-cloud-security-scan';
 
 /**

@@ -25,7 +25,7 @@ jest.mock('@db', () => ({
   },
 }));
 
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   tasks: { trigger: jest.fn() },
   auth: { createPublicToken: jest.fn() },
 }));
@@ -58,7 +58,7 @@ jest.mock(
 );
 
 import { db } from '@db';
-import { tasks, auth } from '@trigger.dev/sdk';
+import { tasks, auth } from '@gideon-defender/trigger-local';
 import { syncManualAnswerToVector } from '@/vector-store/lib';
 import {
   uploadToS3,

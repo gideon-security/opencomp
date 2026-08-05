@@ -1,5 +1,5 @@
 import { BackgroundCheckStatus, db, Prisma } from '@db';
-import { logger, schedules } from '@trigger.dev/sdk';
+import { logger, schedules } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 import { BackgroundCheckIdentityClient } from '../../background-checks/background-check-identity.client';
 import { fetchCompletedReportSnapshot } from '../../background-checks/background-check-report-snapshot';
@@ -214,7 +214,7 @@ export async function runReconciliation(): Promise<ReconciliationResult> {
 export const reconcileBackgroundChecksSchedule = schedules.task({
   id: 'reconcile-background-checks-schedule',
   cron: '0 * * * *', // hourly (UTC)
-  maxDuration: 30 * 60, // 30 minutes — Trigger.dev maxDuration is in SECONDS
+  maxDuration: 30 * 60, // 30 minutes — Local trigger maxDuration is in SECONDS
 
   run: () => runReconciliation(),
 });

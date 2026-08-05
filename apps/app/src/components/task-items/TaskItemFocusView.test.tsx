@@ -15,12 +15,16 @@ vi.mock('@/hooks/use-permissions', () => ({
   }),
 }));
 
-// Mock useOptimisticTaskItems
+// Mock useOptimisticTaskItems + useAuditLogs
 vi.mock('@/hooks/use-task-items', () => ({
   useOptimisticTaskItems: () => ({
     optimisticUpdate: vi.fn(),
     optimisticDelete: vi.fn(),
   }),
+}));
+
+vi.mock('@/hooks/use-audit-logs', () => ({
+  useAuditLogs: () => ({ logs: [], mutate: vi.fn() }),
 }));
 
 // Mock useAssignableMembers
@@ -50,35 +54,77 @@ vi.mock('@db', () => ({
   CommentEntityType: { task: 'task' },
 }));
 
-// Capture props passed to child components
-let sidebarProps: any = null;
-let mainContentProps: any = null;
-
-// Mock child components
-vi.mock('./TaskItemActivityTimeline', () => ({
-  TaskItemActivityTimeline: () => <div data-testid="activity-timeline" />,
+vi.mock('@gideon-defender/ui/dialog', () => ({
+  Dialog: ({ children, open }: { children: React.ReactNode; open: boolean }) =>
+    open ? <div data-testid="delete-dialog">{children}</div> : null,
+  DialogContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogDescription: ({ children }: { children: React.ReactNode }) => <p>{children}</p>,
+  DialogFooter: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogHeader: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogTitle: ({ children }: { children: React.ReactNode }) => <h2>{children}</h2>,
 }));
 
-vi.mock('./TaskItemFocusSidebar', () => ({
-  TaskItemFocusSidebar: (props: any) => {
-    sidebarProps = props;
-    return <div data-testid="focus-sidebar" />;
-  },
-}));
-
-vi.mock('./task-item-utils', () => ({
-  getTaskIdShort: (id: string) => id.slice(0, 8),
+vi.mock('@/components/RecentAuditLogs', () => ({
+  RecentAuditLogs: () => <div data-testid="activity-timeline" />,
 }));
 
 vi.mock('../comments/Comments', () => ({
   Comments: () => <div data-testid="comments" />,
 }));
 
-vi.mock('./custom-task/CustomTaskItemMainContent', () => ({
-  CustomTaskItemMainContent: (props: any) => {
-    mainContentProps = props;
-    return <div data-testid="main-content" />;
-  },
+vi.mock('@/components/SelectAssignee', () => ({
+  SelectAssignee: ({ disabled }: { disabled?: boolean }) => (
+    <div data-testid="select-assignee" data-disabled={disabled ? 'true' : 'false'} />
+  ),
+}));
+
+vi.mock('@/components/status-indicator', () => ({
+  StatusIndicator: ({ status }: { status: string }) => <span>{status}</span>,
+}));
+
+vi.mock('./task-item-utils', () => ({
+  STATUS_OPTIONS: [
+    { value: 'todo', label: 'Todo' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'in_review', label: 'In Review' },
+    { value: 'done', label: 'Done' },
+    { value: 'canceled', label: 'Canceled' },
+  ],
+  PRIORITY_OPTIONS: [
+    { value: 'urgent', label: 'Urgent' },
+    { value: 'high', label: 'High' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'low', label: 'Low' },
+  ],
+}));
+
+vi.mock('lucide-react', () => ({
+  Loader2: () => <span data-testid="loader-icon" />,
+}));
+
+vi.mock('@trycompai/design-system', () => ({
+  Button: ({ children, onClick, disabled }: any) => (
+    <button onClick={onClick} disabled={disabled}>
+      {children}
+    </button>
+  ),
+  Grid: ({ children }: any) => <div>{children}</div>,
+  HStack: ({ children }: any) => <div>{children}</div>,
+  Label: ({ children }: any) => <label>{children}</label>,
+  Select: ({ children, disabled, value }: any) => (
+    <div data-testid="select" data-disabled={disabled ? 'true' : 'false'} data-value={value}>
+      {children}
+    </div>
+  ),
+  SelectContent: ({ children }: any) => <div>{children}</div>,
+  SelectItem: ({ children }: any) => <div>{children}</div>,
+  SelectTrigger: ({ children }: any) => <div>{children}</div>,
+  Stack: ({ children }: any) => <div>{children}</div>,
+  Tabs: ({ children }: any) => <div>{children}</div>,
+  TabsContent: ({ children }: any) => <div>{children}</div>,
+  TabsList: ({ children }: any) => <div>{children}</div>,
+  TabsTrigger: ({ children }: any) => <button>{children}</button>,
+  Text: ({ children, onClick }: any) => <p onClick={onClick}>{children}</p>,
 }));
 
 import { TaskItemFocusView } from './TaskItemFocusView';
@@ -104,60 +150,54 @@ const defaultProps = {
 describe('TaskItemFocusView permission gating', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    sidebarProps = null;
-    mainContentProps = null;
   });
 
-  it('passes readOnly=false to children when user has task:update permission', () => {
+  it('enables status/priority selectors and assignee when user has task:update permission', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
 
     render(<TaskItemFocusView {...defaultProps} />);
 
-    expect(mainContentProps).not.toBeNull();
-    expect(mainContentProps.readOnly).toBe(false);
-
-    expect(sidebarProps).not.toBeNull();
-    expect(sidebarProps.readOnly).toBe(false);
+    const selects = screen.getAllByTestId('select');
+    for (const select of selects) {
+      expect(select).toHaveAttribute('data-disabled', 'false');
+    }
+    expect(screen.getByTestId('select-assignee')).toHaveAttribute('data-disabled', 'false');
   });
 
-  it('passes readOnly=true to children when user lacks task:update permission', () => {
+  it('disables status/priority selectors and assignee when user lacks task:update permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
 
     render(<TaskItemFocusView {...defaultProps} />);
 
-    expect(mainContentProps).not.toBeNull();
-    expect(mainContentProps.readOnly).toBe(true);
-
-    expect(sidebarProps).not.toBeNull();
-    expect(sidebarProps.readOnly).toBe(true);
+    const selects = screen.getAllByTestId('select');
+    for (const select of selects) {
+      expect(select).toHaveAttribute('data-disabled', 'true');
+    }
+    expect(screen.getByTestId('select-assignee')).toHaveAttribute('data-disabled', 'true');
   });
 
-  it('passes canDelete=true to sidebar when user has task:delete permission', () => {
+  it('shows the Delete Task button when user has task:delete permission', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
 
     render(<TaskItemFocusView {...defaultProps} />);
 
-    expect(sidebarProps).not.toBeNull();
-    expect(sidebarProps.canDelete).toBe(true);
+    expect(screen.getByRole('button', { name: 'Delete Task' })).toBeInTheDocument();
   });
 
-  it('passes canDelete=false to sidebar when user lacks task:delete permission', () => {
+  it('hides the Delete Task button when user lacks task:delete permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
 
     render(<TaskItemFocusView {...defaultProps} />);
 
-    expect(sidebarProps).not.toBeNull();
-    expect(sidebarProps.canDelete).toBe(false);
+    expect(screen.queryByRole('button', { name: 'Delete Task' })).not.toBeInTheDocument();
   });
 
-  it('passes canDelete=false when user has no permissions', () => {
+  it('hides the Delete Task button when user has no permissions', () => {
     setMockPermissions({});
 
     render(<TaskItemFocusView {...defaultProps} />);
 
-    expect(sidebarProps).not.toBeNull();
-    expect(sidebarProps.canDelete).toBe(false);
-    expect(sidebarProps.readOnly).toBe(true);
+    expect(screen.queryByRole('button', { name: 'Delete Task' })).not.toBeInTheDocument();
   });
 
   it('always renders activity timeline and comments regardless of permissions', () => {

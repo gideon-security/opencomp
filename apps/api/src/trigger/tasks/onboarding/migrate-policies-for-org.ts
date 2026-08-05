@@ -1,5 +1,5 @@
 import { db, PolicyStatus, type Prisma } from '@db';
-import { logger, schemaTask, tags } from '@trigger.dev/sdk';
+import { logger, schemaTask, tags } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 
 const POLICY_BATCH_SIZE = 50;

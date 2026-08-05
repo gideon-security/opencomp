@@ -2,7 +2,7 @@ import { generateVendorMitigation } from '@/trigger/tasks/onboarding/generate-ve
 import type { PolicyContext } from '@/trigger/tasks/onboarding/onboard-organization-helpers';
 import { serverApi } from '@/lib/api-server';
 import { requireApiPermission } from '@/lib/permissions.server';
-import { auth as triggerAuth, tasks } from '@trigger.dev/sdk';
+import { auth as triggerAuth, tasks } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 interface PeopleApiResponse {

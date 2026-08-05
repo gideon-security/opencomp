@@ -53,7 +53,7 @@ const mockRealtime: {
     err?: Error,
   ) => void;
 } = {};
-vi.mock('@trigger.dev/react-hooks', () => ({
+vi.mock('@gideon-defender/trigger-react', () => ({
   useRealtimeRun: (
     _runId: string,
     options: { onComplete?: typeof mockRealtime.onComplete },

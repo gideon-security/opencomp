@@ -2,7 +2,7 @@ import type {
   FrameworkEditorFramework,
   FrameworkEditorPolicyTemplate,
 } from '@db';
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 
 export const generatePrompt = ({
   policyTemplate,

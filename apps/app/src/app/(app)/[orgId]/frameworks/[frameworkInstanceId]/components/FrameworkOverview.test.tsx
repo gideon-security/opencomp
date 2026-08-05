@@ -50,8 +50,8 @@ describe('FrameworkOverview permission gating', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<FrameworkOverview {...baseProps} />);
     // The dropdown trigger button (MoreVertical icon) should be present
-    const dropdownTrigger = screen.getByRole('button');
-    expect(dropdownTrigger).toBeInTheDocument();
+    const dropdownTrigger = screen.getByRole('button', { expanded: false, name: '' });
+    expect(dropdownTrigger).toHaveAttribute('aria-haspopup', 'menu');
   });
 
   it('hides delete dropdown menu when user lacks framework:delete permission', () => {

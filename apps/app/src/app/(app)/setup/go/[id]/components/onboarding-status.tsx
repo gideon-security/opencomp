@@ -1,7 +1,7 @@
 'use client';
 
 import type { onboardOrganization } from '@/trigger/tasks/onboarding/onboard-organization';
-import { useRun } from '@trigger.dev/react-hooks';
+import { useRun } from '@gideon-defender/trigger-react';
 import { CheckCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';

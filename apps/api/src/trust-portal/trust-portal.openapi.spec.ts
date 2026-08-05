@@ -42,13 +42,6 @@ jest.mock('@db', () => {
   };
 });
 
-jest.mock('@upstash/redis', () => ({
-  Redis: jest.fn().mockImplementation(() => ({
-    get: jest.fn().mockResolvedValue(null),
-    set: jest.fn().mockResolvedValue('OK'),
-  })),
-}));
-
 // Env vars must be set before the imports below run (the transitive `../app/s3`
 // import reads them at module load).
 process.env.SECRET_KEY = 'test-secret-key-at-least-16-chars';

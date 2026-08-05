@@ -1,4 +1,4 @@
-import { metadata, schemaTask } from '@trigger.dev/sdk';
+import { metadata, schemaTask } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 import { PassThrough } from 'node:stream';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
@@ -73,7 +73,7 @@ export const exportOrganizationEvidenceTask = schemaTask({
   queue: { name: 'evidence-export', concurrencyLimit: 1 },
   // maxDuration is max compute time in SECONDS. Orgs with high automation
   // volume + large outputs were exceeding the old 30-minute budget, so
-  // Trigger.dev killed the run (retry maxAttempts: 0) — a non-COMPLETED
+  // Local trigger killed the run (retry maxAttempts: 0) — a non-COMPLETED
   // terminal state the browser reports as a failed export with no download
   // link. Give the single-threaded stream-to-S3 pass up to an hour to finish.
   maxDuration: 60 * 60,

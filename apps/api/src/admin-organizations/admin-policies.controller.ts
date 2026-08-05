@@ -19,7 +19,7 @@ import {
   Frequency,
   DEPARTMENT_MAX_LENGTH,
 } from '../policies/dto/create-policy.dto';
-import { auth as triggerAuth, tasks } from '@trigger.dev/sdk';
+import { auth as triggerAuth, tasks } from '@gideon-defender/trigger-local';
 import type { updatePolicy } from '../trigger/policies/update-policy';
 import { PlatformAdminGuard } from '../auth/platform-admin.guard';
 import { PoliciesService } from '../policies/policies.service';

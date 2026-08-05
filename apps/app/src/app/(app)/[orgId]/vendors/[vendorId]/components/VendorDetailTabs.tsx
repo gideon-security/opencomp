@@ -22,7 +22,7 @@ import { TreatmentPlanTab } from '@/components/risks/treatment-plan/TreatmentPla
 import type { Member, RiskTreatmentType, User, Vendor } from '@db';
 import { CommentEntityType } from '@db';
 import type { Prisma } from '@db';
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { AnimatePresence, motion } from 'motion/react';
 import {
   Breadcrumb,
@@ -157,7 +157,7 @@ export function VendorDetailTabs({
     return ['EXECUTING', 'QUEUED', 'PENDING', 'WAITING'].includes(assessmentRun.status);
   }, [assessmentRun]);
 
-  // Extract research progress from trigger.dev run metadata
+  // Extract research progress from local-trigger run metadata
   const researchMetadata = useMemo(() => {
     if (!assessmentRun?.metadata) return null;
     const meta = assessmentRun.metadata as Record<string, unknown>;

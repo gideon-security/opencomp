@@ -1,7 +1,7 @@
 {
-  "name": "@trigger.dev/sdk",
-  "version": "4.4.3",
-  "description": "Local replacement for @trigger.dev/sdk backed by BullMQ on the project's existing Redis (no external task runner).",
+  "name": "@gideon-defender/trigger-local",
+  "version": "1.0.0",
+  "description": "In-process task runner (tasks, schedules, runs, realtime auth) backed by BullMQ on the project's existing Redis — no external task runner.",
   "private": true,
   "type": "commonjs",
   "main": "src/index.js",

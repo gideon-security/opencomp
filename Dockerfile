@@ -11,8 +11,8 @@ FROM node:22-slim AS deps
 WORKDIR /app
 
 # Copy workspace configuration. npm only supports the `workspace:` protocol in
-# the ROOT manifest, so we rewrite every workspace dep (including the local
-# @trigger.dev shim aliases) to `file:` relative paths before installing.
+# the ROOT manifest, so we rewrite every workspace dep (including the
+# trigger-local shim packages) to `file:` relative paths before installing.
 COPY package.json ./
 COPY packages ./packages
 COPY apps/app/package.json ./apps/app/package.json
@@ -178,4 +178,4 @@ ENV PORT=3000
 EXPOSE 3000
 CMD ["node", "apps/portal/server.js"]
 
-# (Trigger.dev runs in-process via the local @trigger.dev shim; no external runner.)
+# (Tasks run in-process via the local-trigger shim; no external runner.)

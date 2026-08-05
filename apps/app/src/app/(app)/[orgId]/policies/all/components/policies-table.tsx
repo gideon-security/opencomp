@@ -1,6 +1,6 @@
 'use client';
 
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { Download, Loader2 } from 'lucide-react';
 import * as React from 'react';
 import { toast } from 'sonner';

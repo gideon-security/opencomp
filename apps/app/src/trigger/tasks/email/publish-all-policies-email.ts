@@ -1,7 +1,7 @@
 import { db } from '@db/server';
 import { AllPolicyNotificationEmail } from '@gideon-defender/email';
 import { isUserUnsubscribed } from '@gideon-defender/email/lib/check-unsubscribe';
-import { logger, queue, tags, task } from '@trigger.dev/sdk';
+import { logger, queue, tags, task } from '@gideon-defender/trigger-local';
 import { sendEmailViaApi } from '../../lib/send-email-via-api';
 
 const allPolicyEmailQueue = queue({

@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
   });
 
   await kv.set(
-    `download:${token}`,
+    `app:download:${token}`,
     {
       orgId,
       employeeId,

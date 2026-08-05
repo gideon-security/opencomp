@@ -46,8 +46,8 @@ const config: NextConfig = {
     '@gideon-defender/ui',
     '@carbon/icons-react',
     '@gideon-defender/company',
-    '@trigger.dev/sdk',
-    '@trigger.dev/react-hooks',
+    '@gideon-defender/trigger-local',
+    '@gideon-defender/trigger-react',
   ],
   images: {
     remotePatterns: [

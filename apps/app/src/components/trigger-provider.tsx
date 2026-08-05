@@ -1,6 +1,6 @@
 'use client';
 
-import { TriggerAuthContext } from '@trigger.dev/react-hooks';
+import { TriggerAuthContext } from '@gideon-defender/trigger-react';
 
 export function TriggerProvider({
   accessToken,

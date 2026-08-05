@@ -52,14 +52,14 @@ jest.mock('@gideon-defender/integration-platform', () => ({
   getManifest: jest.fn(),
 }));
 
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   tasks: {
     trigger: jest.fn(),
   },
 }));
 
 import { getManifest } from '@gideon-defender/integration-platform';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 
 const mockedGetManifest = getManifest as jest.MockedFunction<
   typeof getManifest

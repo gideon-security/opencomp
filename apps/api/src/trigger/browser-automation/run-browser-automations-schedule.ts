@@ -1,5 +1,5 @@
 import { db, TaskFrequency } from '@db';
-import { logger, schedules } from '@trigger.dev/sdk';
+import { logger, schedules } from '@gideon-defender/trigger-local';
 import {
   runOrgBrowserAutomations,
   type OrgBrowserAutomation,
@@ -147,7 +147,7 @@ export function groupAutomationsByOrg<
 export const browserAutomationsSchedule = schedules.task({
   id: 'browser-automations-schedule',
   cron: '0 5 * * *', // Daily at 5:00 AM UTC
-  maxDuration: 60 * 30, // 30 minutes — Trigger.dev maxDuration is in SECONDS
+  maxDuration: 60 * 30, // 30 minutes — Local trigger maxDuration is in SECONDS
   run: async (payload) => {
     logger.info('Starting daily browser automations orchestrator', {
       scheduledAt: payload.timestamp,

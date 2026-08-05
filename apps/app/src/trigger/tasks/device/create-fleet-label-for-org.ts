@@ -1,7 +1,7 @@
 import { getFleetInstance } from '@/lib/fleet';
 import { db } from '@db/server';
 
-import { logger, queue, tags, task } from '@trigger.dev/sdk';
+import { logger, queue, tags, task } from '@gideon-defender/trigger-local';
 import { AxiosError } from 'axios';
 // Optional: define a queue if we want to control concurrency in v4
 const fleetQueue = queue({ name: 'create-fleet-label-for-org', concurrencyLimit: 10 });

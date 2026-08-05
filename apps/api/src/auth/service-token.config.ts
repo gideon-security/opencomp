@@ -16,7 +16,7 @@ export interface ServiceDefinition {
 export const SERVICE_DEFINITIONS: Record<string, ServiceDefinition> = {
   trigger: {
     envVar: 'SERVICE_TOKEN_TRIGGER',
-    name: 'Trigger.dev Workers',
+    name: 'Local trigger Workers',
     permissions: [
       'integration:read',
       'integration:update',

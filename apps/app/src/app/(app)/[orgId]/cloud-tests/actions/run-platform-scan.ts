@@ -57,7 +57,7 @@ export const runPlatformScan = async (connectionId: string) => {
   try {
     const authHeaders = await getAuthHeaders(orgId);
 
-    // Trigger the scan via API (task is defined in the API's trigger.dev project)
+    // Trigger the scan via API (task is defined in the API's local-trigger project)
     const triggerResponse = await serverApi.post<{ runId: string }>(
       `/v1/cloud-security/trigger/${connectionId}`,
       undefined,

@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { AlertTriangle, ListOrdered, Loader2, RotateCcw } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -322,11 +322,11 @@ export function RemediationDialog({
   const [permissionError, setPermissionError] = useState<{ missingActions: string[]; fixScript?: string } | null>(null);
   const [acknowledgment, setAcknowledgment] = useState<string | null>(null);
 
-  // Trigger.dev state for preview (async)
+  // Local trigger state for preview (async)
   const [previewRunId, setPreviewRunId] = useState<string | null>(null);
   const [previewAccessToken, setPreviewAccessToken] = useState<string | null>(null);
 
-  // Trigger.dev state for execute (async)
+  // Local trigger state for execute (async)
   const [executeRunId, setExecuteRunId] = useState<string | null>(null);
   const [executeAccessToken, setExecuteAccessToken] = useState<string | null>(null);
 

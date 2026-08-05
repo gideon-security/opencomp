@@ -25,7 +25,7 @@ export const RAIL_INDEX: Record<Step, number> = {
   error: 0,
 };
 
-// Terminal Trigger.dev run states that aren't a clean success.
+// Terminal Local trigger run states that aren't a clean success.
 export const FAILED_RUN_STATUSES = new Set([
   'CANCELED',
   'FAILED',

@@ -2,24 +2,13 @@ import type { Request, Response } from 'express';
 
 const mockLimit = jest.fn();
 
-const MockRatelimit = jest.fn().mockImplementation(() => ({
-  limit: mockLimit,
-}));
-(MockRatelimit as unknown as Record<string, unknown>).slidingWindow = jest
-  .fn()
-  .mockReturnValue('sliding-window-config');
-
-jest.mock('@upstash/ratelimit', () => ({
-  Ratelimit: MockRatelimit,
+jest.mock('@gideon-defender/kv/rate-limit', () => ({
+  createRateLimiter: jest.fn().mockReturnValue({ limit: mockLimit }),
 }));
 
-jest.mock('@upstash/redis', () => ({
-  Redis: jest.fn(),
+jest.mock('../redis/redis.client', () => ({
+  redisClient: {},
 }));
-
-// Set env vars before importing the middleware
-process.env.UPSTASH_REDIS_REST_URL = 'https://fake.upstash.io';
-process.env.UPSTASH_REDIS_REST_TOKEN = 'fake-token';
 
 import { adminAuthRateLimiter } from './admin-rate-limit.middleware';
 

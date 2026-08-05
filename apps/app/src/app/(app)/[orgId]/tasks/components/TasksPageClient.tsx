@@ -2,7 +2,7 @@
 
 import { UpdateOrganizationEvidenceApproval } from '@/components/forms/organization/update-organization-evidence-approval';
 import { triggerBulkEvidenceExport } from '@/lib/evidence-download';
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import type { Member, Task, User } from '@db';
 import {
   Button,

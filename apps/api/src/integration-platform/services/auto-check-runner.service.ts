@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import { getManifest } from '@gideon-defender/integration-platform';
 import { ConnectionRepository } from '../repositories/connection.repository';
 import { ProviderRepository } from '../repositories/provider.repository';
@@ -94,7 +94,7 @@ export class AutoCheckRunnerService {
 
   /**
    * Auto-run checks for a connection if conditions are met.
-   * Triggers a Trigger.dev task for reliable background execution.
+   * Triggers a Local trigger task for reliable background execution.
    * Returns true if the task was triggered, false otherwise.
    */
   async tryAutoRunChecks(connectionId: string): Promise<boolean> {
@@ -122,7 +122,7 @@ export class AutoCheckRunnerService {
     }
 
     try {
-      // Trigger the Trigger.dev task for reliable background execution
+      // Trigger the Local trigger task for reliable background execution
       const handle = await tasks.trigger('run-connection-checks', {
         connectionId,
         organizationId: connection.organizationId,

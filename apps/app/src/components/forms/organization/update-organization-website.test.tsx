@@ -1,12 +1,18 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockPatch = vi.fn();
+const mockUpdateOrganization = vi.fn();
 
-vi.mock('@/hooks/use-api', () => ({
-  useApi: () => ({
-    patch: mockPatch,
-    organizationId: 'org_123',
+vi.mock('@/hooks/use-organization-mutations', () => ({
+  useOrganizationMutations: () => ({
+    updateOrganization: mockUpdateOrganization,
+  }),
+}));
+
+vi.mock('@/hooks/use-permissions', () => ({
+  usePermissions: () => ({
+    permissions: {},
+    hasPermission: () => true,
   }),
 }));
 
@@ -30,8 +36,8 @@ describe('UpdateOrganizationWebsite', () => {
     expect(screen.getByDisplayValue('https://acme.com')).toBeInTheDocument();
   });
 
-  it('calls api.patch on submit and shows success toast', async () => {
-    mockPatch.mockResolvedValue({ data: { website: 'https://new.com' }, status: 200 });
+  it('calls updateOrganization on submit and shows success toast', async () => {
+    mockUpdateOrganization.mockResolvedValue({ website: 'https://new.com' });
 
     render(<UpdateOrganizationWebsite organizationWebsite="https://acme.com" />);
 
@@ -40,7 +46,7 @@ describe('UpdateOrganizationWebsite', () => {
     fireEvent.click(screen.getByRole('button', { name: /save/i }));
 
     await waitFor(() => {
-      expect(mockPatch).toHaveBeenCalledWith('/v1/organization', {
+      expect(mockUpdateOrganization).toHaveBeenCalledWith({
         website: 'https://new.com',
       });
     });
@@ -50,8 +56,8 @@ describe('UpdateOrganizationWebsite', () => {
     });
   });
 
-  it('shows error toast when api returns error', async () => {
-    mockPatch.mockResolvedValue({ error: 'Forbidden', status: 403 });
+  it('shows error toast when the update fails', async () => {
+    mockUpdateOrganization.mockRejectedValue(new Error('Forbidden'));
 
     render(<UpdateOrganizationWebsite organizationWebsite="https://acme.com" />);
 

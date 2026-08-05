@@ -207,8 +207,8 @@ describe('TaskItemItem permission gating', () => {
 
     render(<TaskItemItem {...defaultProps} />);
 
-    const statusButton = screen.getByTitle(/Status: todo/);
-    expect(statusButton).not.toBeDisabled();
+    const statusButton = screen.getByTitle(/Status: Todo/);
+    expect(statusButton.closest('[data-disabled]')).toHaveAttribute('data-disabled', 'false');
   });
 
   it('disables status dropdown trigger when user lacks task:update permission', () => {
@@ -216,8 +216,8 @@ describe('TaskItemItem permission gating', () => {
 
     render(<TaskItemItem {...defaultProps} />);
 
-    const statusButton = screen.getByTitle(/Status: todo/);
-    expect(statusButton).toBeDisabled();
+    const statusButton = screen.getByTitle(/Status: Todo/);
+    expect(statusButton.closest('[data-disabled]')).toHaveAttribute('data-disabled', 'true');
   });
 
   it('enables priority dropdown trigger when user has task:update permission', () => {
@@ -226,7 +226,7 @@ describe('TaskItemItem permission gating', () => {
     render(<TaskItemItem {...defaultProps} />);
 
     const priorityButton = screen.getByTitle(/Priority: medium/);
-    expect(priorityButton).not.toBeDisabled();
+    expect(priorityButton.closest('[data-disabled]')).toHaveAttribute('data-disabled', 'false');
   });
 
   it('disables priority dropdown trigger when user lacks task:update permission', () => {
@@ -235,7 +235,7 @@ describe('TaskItemItem permission gating', () => {
     render(<TaskItemItem {...defaultProps} />);
 
     const priorityButton = screen.getByTitle(/Priority: medium/);
-    expect(priorityButton).toBeDisabled();
+    expect(priorityButton.closest('[data-disabled]')).toHaveAttribute('data-disabled', 'true');
   });
 
   it('renders task title regardless of permissions', () => {

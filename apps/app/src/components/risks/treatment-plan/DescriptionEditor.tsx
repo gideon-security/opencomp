@@ -2,7 +2,7 @@
 
 import { Button } from '@trycompai/design-system';
 import { Edit, Renew } from '@trycompai/design-system/icons';
-import { useRealtimeRun } from '@trigger.dev/react-hooks';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';

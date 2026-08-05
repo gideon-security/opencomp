@@ -1,7 +1,7 @@
 import { extractS3KeyFromUrl } from '@/app/s3';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { db } from '@db';
-import { logger, metadata, tags, task } from '@trigger.dev/sdk';
+import { logger, metadata, tags, task } from '@gideon-defender/trigger-local';
 
 // Import shared utilities
 import {
@@ -13,7 +13,7 @@ import {
   type QuestionAnswer,
 } from '@/questionnaire/utils/question-parser';
 
-// Adapter to convert Trigger.dev logger to ContentExtractionLogger interface
+// Adapter to convert Local trigger logger to ContentExtractionLogger interface
 const triggerLogger: ContentExtractionLogger = {
   info: (msg, meta) => logger.info(msg, meta),
   warn: (msg, meta) => logger.warn(msg, meta),
@@ -107,7 +107,7 @@ async function extractContentFromUrl(url: string): Promise<string> {
 }
 
 /**
- * Creates an S3 client instance for Trigger.dev tasks
+ * Creates an S3 client instance for Local trigger tasks
  */
 function createS3Client(): S3Client {
   const region = process.env.APP_AWS_REGION || 'us-east-1';
@@ -116,7 +116,7 @@ function createS3Client(): S3Client {
 
   if (!accessKeyId || !secretAccessKey) {
     throw new Error(
-      'AWS S3 credentials are missing. Please set APP_AWS_ACCESS_KEY_ID and APP_AWS_SECRET_ACCESS_KEY environment variables in Trigger.dev.',
+      'AWS S3 credentials are missing. Please set APP_AWS_ACCESS_KEY_ID and APP_AWS_SECRET_ACCESS_KEY environment variables in Local trigger.',
     );
   }
 
@@ -150,7 +150,7 @@ async function extractContentFromAttachment(
   const bucketName = process.env.APP_AWS_BUCKET_NAME;
   if (!bucketName) {
     throw new Error(
-      'APP_AWS_BUCKET_NAME environment variable is not set in Trigger.dev.',
+      'APP_AWS_BUCKET_NAME environment variable is not set in Local trigger.',
     );
   }
 
@@ -198,7 +198,7 @@ async function extractContentFromS3Key(
 
   if (!questionnaireBucket) {
     throw new Error(
-      'Questionnaire upload bucket is not configured. Please set APP_AWS_QUESTIONNAIRE_UPLOAD_BUCKET environment variable in Trigger.dev.',
+      'Questionnaire upload bucket is not configured. Please set APP_AWS_QUESTIONNAIRE_UPLOAD_BUCKET environment variable in Local trigger.',
     );
   }
 

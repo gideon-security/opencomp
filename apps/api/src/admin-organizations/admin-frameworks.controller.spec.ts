@@ -39,7 +39,7 @@ jest.mock('@db', () => ({
   FindingType: { soc2: 'soc2', iso27001: 'iso27001' },
 }));
 
-jest.mock('@trigger.dev/sdk', () => ({
+jest.mock('@gideon-defender/trigger-local', () => ({
   tasks: { trigger: jest.fn() },
 }));
 

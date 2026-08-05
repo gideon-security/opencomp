@@ -46,7 +46,7 @@ export async function downloadTaskEvidenceZip({
 
 /**
  * Trigger bulk evidence export as a background job.
- * Returns a run ID and access token for tracking progress via Trigger.dev realtime.
+ * Returns a run ID and access token for tracking progress via Local trigger realtime.
  */
 export async function triggerBulkEvidenceExport({
   includeJson = false,

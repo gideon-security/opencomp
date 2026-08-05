@@ -260,7 +260,7 @@ export class AWSSecurityService {
    *
    * This exists so the Cloud Tests CHECK path can perform the cross-account
    * assume in ECS (which holds the roleAssumer task role + env), instead of in
-   * the Trigger.dev runtime where no base AWS credentials or roleAssumer ARN
+   * the Local trigger runtime where no base AWS credentials or roleAssumer ARN
    * are available. Throws when the connection is not role-auth or the assume
    * fails — the caller maps those to "not_configured" / "assume_failed".
    */

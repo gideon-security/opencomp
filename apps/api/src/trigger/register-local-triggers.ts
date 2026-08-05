@@ -1,9 +1,9 @@
-import { registerFromDirectory, schedules } from '@trigger.dev/sdk';
+import { registerFromDirectory, schedules } from '@gideon-defender/trigger-local';
 
 let initialized = false;
 
 /**
- * Registers every task + schedule with the local in-process @trigger.dev shim.
+ * Registers every task + schedule with the local in-process local-trigger shim.
  * Task modules self-register as a side effect of being required.
  */
 export function initLocalTriggerRuntime(): void {

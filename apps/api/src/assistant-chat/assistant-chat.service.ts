@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { z } from 'zod';
-import { assistantChatRedisClient } from './upstash-redis.client';
+import { withTenantRedis } from '../redis/tenant-redis.client';
 import type { AssistantChatMessage } from './assistant-chat.types';
 
 const StoredMessageSchema = z.object({
@@ -17,11 +17,10 @@ type GetAssistantChatKeyParams = {
   userId: string;
 };
 
-const getAssistantChatKey = ({
-  organizationId,
-  userId,
-}: GetAssistantChatKeyParams): string => {
-  return `assistant-chat:v1:${organizationId}:${userId}`;
+const getAssistantChatKey = ({ userId }: { userId: string }): string => {
+  // Org scoping is enforced by withTenantRedis, which namespaces the key as
+  // `app:{organizationId}:assistant-chat:v1:{userId}`.
+  return `assistant-chat:v1:${userId}`;
 };
 
 @Injectable()
@@ -38,10 +37,12 @@ export class AssistantChatService {
     params: GetAssistantChatKeyParams,
   ): Promise<AssistantChatMessage[]> {
     const key = getAssistantChatKey(params);
-    const raw = await assistantChatRedisClient.get<unknown>(key);
-    const parsed = StoredMessagesSchema.safeParse(raw);
-    if (!parsed.success) return [];
-    return parsed.data;
+    return withTenantRedis(params.organizationId, async (redis) => {
+      const raw = await redis.get<unknown>(key);
+      const parsed = StoredMessagesSchema.safeParse(raw);
+      if (!parsed.success) return [];
+      return parsed.data;
+    });
   }
 
   async saveHistory(
@@ -51,11 +52,15 @@ export class AssistantChatService {
     const key = getAssistantChatKey(params);
     // Always validate before writing to keep the cache shape stable.
     const validated = StoredMessagesSchema.parse(messages);
-    await assistantChatRedisClient.set(key, validated, { ex: this.ttlSeconds });
+    await withTenantRedis(params.organizationId, async (redis) => {
+      await redis.set(key, validated, { ex: this.ttlSeconds });
+    });
   }
 
   async clearHistory(params: GetAssistantChatKeyParams): Promise<void> {
     const key = getAssistantChatKey(params);
-    await assistantChatRedisClient.del(key);
+    await withTenantRedis(params.organizationId, async (redis) => {
+      await redis.del(key);
+    });
   }
 }

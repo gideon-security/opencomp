@@ -1,18 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  setMockPermissions,
-  ADMIN_PERMISSIONS,
-  AUDITOR_PERMISSIONS,
-  NO_PERMISSIONS,
-  mockHasPermission,
-} from '@/test-utils/mocks/permissions';
 
-vi.mock('@/hooks/use-permissions', () => ({
-  usePermissions: () => ({
-    permissions: {},
-    hasPermission: mockHasPermission,
-  }),
+const mockUseSession = vi.fn();
+vi.mock('@/utils/auth-client', () => ({
+  useSession: () => mockUseSession(),
 }));
 
 const mockAddFrameworks = vi.fn();
@@ -97,11 +88,12 @@ const defaultProps = {
 describe('AddFrameworkModal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockUseSession.mockReturnValue({ data: { user: { role: 'admin' }, session: {} } });
   });
 
   describe('Permission gating', () => {
-    it('enables the "Add Selected" button when user has framework:create permission and frameworks selected', () => {
-      setMockPermissions(ADMIN_PERMISSIONS);
+    it('enables the "Add Selected" button once a framework is selected, for admin users', () => {
+      mockUseSession.mockReturnValue({ data: { user: { role: 'admin' }, session: {} } });
 
       render(<AddFrameworkModal {...defaultProps} />);
 
@@ -112,42 +104,51 @@ describe('AddFrameworkModal', () => {
       expect(addButton).not.toBeDisabled();
     });
 
-    it('disables the "Add Selected" button when user lacks framework:create permission (auditor)', () => {
-      setMockPermissions(AUDITOR_PERMISSIONS);
+    it('calls addFrameworks when an admin submits selected frameworks', async () => {
+      mockUseSession.mockReturnValue({ data: { user: { role: 'admin' }, session: {} } });
+      mockAddFrameworks.mockResolvedValue({ frameworksAdded: 1 });
 
       render(<AddFrameworkModal {...defaultProps} />);
 
-      const checkbox = screen.getByTestId('framework-checkbox-fw-1');
-      fireEvent.click(checkbox);
+      fireEvent.click(screen.getByTestId('framework-checkbox-fw-1'));
+      fireEvent.click(screen.getByRole('button', { name: /add selected/i }));
 
-      const addButton = screen.getByRole('button', { name: /add selected/i });
-      expect(addButton).toBeDisabled();
+      await screen.findByRole('button', { name: /add selected/i });
+      expect(mockAddFrameworks).toHaveBeenCalledWith(['fw-1']);
     });
 
-    it('disables the "Add Selected" button when user has no permissions', () => {
-      setMockPermissions(NO_PERMISSIONS);
+    it('shows a contact-account-manager message instead of adding frameworks for non-admin users', async () => {
+      mockUseSession.mockReturnValue({ data: { user: { role: 'member' }, session: {} } });
 
       render(<AddFrameworkModal {...defaultProps} />);
 
-      const checkbox = screen.getByTestId('framework-checkbox-fw-1');
-      fireEvent.click(checkbox);
+      fireEvent.click(screen.getByTestId('framework-checkbox-fw-1'));
+      fireEvent.click(screen.getByRole('button', { name: /add selected/i }));
 
-      const addButton = screen.getByRole('button', { name: /add selected/i });
-      expect(addButton).toBeDisabled();
+      expect(
+        await screen.findByText('Contact your account manager'),
+      ).toBeInTheDocument();
+      expect(mockAddFrameworks).not.toHaveBeenCalled();
     });
 
-    it('checks the correct resource and action for permission', () => {
-      setMockPermissions(ADMIN_PERMISSIONS);
+    it('allows impersonating staff to add frameworks even without the admin role', async () => {
+      mockUseSession.mockReturnValue({
+        data: { user: { role: 'member' }, session: { impersonatedBy: 'staff_1' } },
+      });
+      mockAddFrameworks.mockResolvedValue({ frameworksAdded: 1 });
 
       render(<AddFrameworkModal {...defaultProps} />);
 
-      expect(mockHasPermission).toHaveBeenCalledWith('framework', 'create');
+      fireEvent.click(screen.getByTestId('framework-checkbox-fw-1'));
+      fireEvent.click(screen.getByRole('button', { name: /add selected/i }));
+
+      await screen.findByRole('button', { name: /add selected/i });
+      expect(mockAddFrameworks).toHaveBeenCalledWith(['fw-1']);
     });
   });
 
   describe('Rendering', () => {
     it('renders modal title and description', () => {
-      setMockPermissions(ADMIN_PERMISSIONS);
 
       render(<AddFrameworkModal {...defaultProps} />);
 
@@ -158,7 +159,6 @@ describe('AddFrameworkModal', () => {
     });
 
     it('renders available framework cards', () => {
-      setMockPermissions(ADMIN_PERMISSIONS);
 
       render(<AddFrameworkModal {...defaultProps} />);
 
@@ -167,7 +167,6 @@ describe('AddFrameworkModal', () => {
     });
 
     it('shows empty state when no frameworks available', () => {
-      setMockPermissions(ADMIN_PERMISSIONS);
 
       render(
         <AddFrameworkModal
@@ -182,7 +181,6 @@ describe('AddFrameworkModal', () => {
     });
 
     it('disables "Add Selected" button when nothing is selected even with permissions', () => {
-      setMockPermissions(ADMIN_PERMISSIONS);
 
       render(<AddFrameworkModal {...defaultProps} />);
 

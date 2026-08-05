@@ -1,5 +1,5 @@
 import { db } from '@db/server';
-import { logger, task } from '@trigger.dev/sdk';
+import { logger, task } from '@gideon-defender/trigger-local';
 import { backfillExecutiveContextSingleOrg } from './backfill-executive-context-single-org';
 
 export const backfillExecutiveContextAllOrgs = task({
@@ -39,7 +39,7 @@ export const backfillExecutiveContextAllOrgs = task({
         },
       }));
 
-      // Split into chunks of 500 (Trigger.dev batch size limit)
+      // Split into chunks of 500 (Local trigger batch size limit)
       const BATCH_SIZE = 500;
       const batches: (typeof allBatchItems)[] = [];
 

@@ -1,4 +1,4 @@
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 import type { IntegrationCredentialValues } from './ensure-valid-credentials';
 
 const RESOLVE_SESSION_TIMEOUT_MS = 30_000;
@@ -33,10 +33,10 @@ export const RESOLVED_AWS_SESSION_KEYS = {
  * roleAssumer task role + `SECURITY_HUB_ROLE_ASSUMER_ARN`) and inject the
  * resulting short-lived, customer-scoped credentials into `credentials`.
  *
- * Why: the Cloud Tests CHECK path runs inside the Trigger.dev runtime, which has
+ * Why: the Cloud Tests CHECK path runs inside the Local trigger runtime, which has
  * no base AWS credentials or roleAssumer ARN, so it cannot perform the two-hop
  * assume itself. Resolving in ECS keeps the cross-tenant master credential out
- * of Trigger.dev; the check just consumes the temp creds.
+ * of Local trigger; the check just consumes the temp creds.
  *
  * On a genuine assume failure (or any transport error) an error marker is
  * injected so the AWS check surfaces a real "Could not assume AWS role" finding

@@ -8,7 +8,7 @@ import { UploadsService } from '../uploads/uploads.service';
 import type { AnswerQuestionResult } from '@/trigger/questionnaire/answer-question';
 import { answerQuestion } from '@/trigger/questionnaire/answer-question';
 import { generateAnswerWithRAGBatch } from '@/trigger/questionnaire/answer-question-helpers';
-import { tasks } from '@trigger.dev/sdk';
+import { tasks } from '@gideon-defender/trigger-local';
 import type { parseQuestionnaireTask } from '@/trigger/questionnaire/parse-questionnaire';
 import type { autoAnswerQuestionnaireTask } from '@/trigger/questionnaire/auto-answer-questionnaire';
 import { TriggerAutoAnswerResponseDto } from './dto/trigger-auto-answer-response.dto';
@@ -260,7 +260,7 @@ export class QuestionnaireService {
       throw new Error('Failed to upload questionnaire file to S3');
     }
 
-    // Trigger async processing via Trigger.dev
+    // Trigger async processing via Local trigger
     const handle = await tasks.trigger<typeof parseQuestionnaireTask>(
       'parse-questionnaire',
       {

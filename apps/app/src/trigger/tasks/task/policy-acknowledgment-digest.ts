@@ -1,5 +1,5 @@
 import { db } from '@db/server';
-import { logger, schedules } from '@trigger.dev/sdk';
+import { logger, schedules } from '@gideon-defender/trigger-local';
 
 import {
   PolicyAcknowledgmentDigestEmail,

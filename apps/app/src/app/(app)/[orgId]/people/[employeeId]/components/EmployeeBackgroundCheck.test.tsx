@@ -124,7 +124,7 @@ describe('EmployeeBackgroundCheck — V1 two-paths', () => {
       'aria-checked',
       'true',
     );
-    expect(screen.getByText(/Drop the PDF here/)).toBeInTheDocument();
+    expect(screen.getByText(/Drop the file here/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Attach report/i })).toBeDisabled();
   });
 

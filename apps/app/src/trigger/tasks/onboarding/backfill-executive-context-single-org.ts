@@ -1,5 +1,5 @@
 import { db } from '@db/server';
-import { logger, queue, schemaTask } from '@trigger.dev/sdk';
+import { logger, queue, schemaTask } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 
 const CSUITE_QUESTION = 'Who are your C-Suite executives?';

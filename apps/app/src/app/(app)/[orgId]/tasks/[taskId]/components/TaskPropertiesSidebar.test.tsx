@@ -55,20 +55,6 @@ vi.mock('@/hooks/use-organization-members', () => ({
   }),
 }));
 
-// Track disabled prop values passed to PropertySelector
-const propertySelectorCalls: Array<{ label: string; disabled: boolean }> = [];
-
-vi.mock('./PropertySelector', () => ({
-  PropertySelector: ({ disabled, trigger, value }: { disabled?: boolean; trigger: React.ReactNode; value?: string | null }) => {
-    // We capture the disabled prop by rendering it as a data attribute
-    return (
-      <div data-testid="property-selector" data-disabled={disabled ? 'true' : 'false'}>
-        {trigger}
-      </div>
-    );
-  },
-}));
-
 vi.mock('./constants', () => ({
   DEPARTMENT_COLORS: { none: '#888' },
   taskDepartments: ['none'],
@@ -76,10 +62,53 @@ vi.mock('./constants', () => ({
   taskStatuses: ['open', 'done'],
 }));
 
-vi.mock('../../components/TaskStatusIndicator', () => ({
-  TaskStatusIndicator: ({ status }: { status: string }) => (
-    <span data-testid="status-indicator">{status}</span>
+// Mock DepartmentSelect + SelectAssignee — surface the `disabled` prop as a
+// data attribute so tests can assert on it.
+vi.mock('@/components/DepartmentSelect', () => ({
+  DepartmentSelect: ({ disabled }: { disabled?: boolean }) => (
+    <div data-testid="department-select" data-disabled={disabled ? 'true' : 'false'} />
   ),
+}));
+
+vi.mock('@/components/SelectAssignee', () => ({
+  SelectAssignee: ({ disabled }: { disabled?: boolean }) => (
+    <div data-testid="select-assignee" data-disabled={disabled ? 'true' : 'false'} />
+  ),
+}));
+
+// Mock design-system Select — surface the `disabled` prop on the trigger
+// wrapper so tests can assert status/frequency selectors are gated.
+vi.mock('@trycompai/design-system', () => ({
+  Section: ({ title, children }: { title: string; children: React.ReactNode }) => (
+    <section>
+      <h3>{title}</h3>
+      {children}
+    </section>
+  ),
+  Stack: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Grid: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Label: ({ children }: { children: React.ReactNode }) => <label>{children}</label>,
+  Select: ({ children, disabled, value }: { children: React.ReactNode; disabled?: boolean; value?: string }) => (
+    <div data-testid="select" data-disabled={disabled ? 'true' : 'false'} data-value={value}>
+      {children}
+    </div>
+  ),
+  SelectTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SelectContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SelectItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Input: (props: Record<string, unknown>) => <input {...props} />,
+  InputGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  InputGroupInput: (props: Record<string, unknown>) => <input {...props} />,
+  InputGroupAddon: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Text: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
+}));
+
+vi.mock('lucide-react', () => ({
+  Calendar: () => <span data-testid="calendar-icon" />,
+}));
+
+vi.mock('../../components/NotRelevantJustificationDialog', () => ({
+  NotRelevantJustificationDialog: () => null,
 }));
 
 // Mock next/link
@@ -94,49 +123,15 @@ vi.mock('date-fns', () => ({
   format: (date: Date, fmt: string) => '1/1/2024',
 }));
 
-// Mock @gideon-defender/ui components
-vi.mock('@gideon-defender/ui/avatar', () => ({
-  Avatar: ({ children, ...props }: { children: React.ReactNode; className?: string }) => (
-    <div {...props}>{children}</div>
-  ),
-  AvatarFallback: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
-  AvatarImage: () => null,
-}));
-
-vi.mock('@gideon-defender/ui/badge', () => ({
-  Badge: ({ children, ...props }: { children: React.ReactNode }) => (
-    <span {...props}>{children}</span>
-  ),
-}));
-
-vi.mock('@gideon-defender/ui/button', () => ({
-  Button: ({
-    children,
-    disabled,
-    ...props
-  }: {
-    children: React.ReactNode;
-    disabled?: boolean;
-    variant?: string;
-    className?: string;
-  }) => (
-    <button disabled={disabled} {...props}>
-      {children}
-    </button>
-  ),
-}));
-
 import { TaskPropertiesSidebar } from './TaskPropertiesSidebar';
 
 const defaultProps = {
   handleUpdateTask: vi.fn(),
-  initialMembers: [],
 };
 
 describe('TaskPropertiesSidebar permission gating', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    propertySelectorCalls.length = 0;
   });
 
   it('enables all PropertySelectors when user has task:update', () => {
@@ -144,15 +139,15 @@ describe('TaskPropertiesSidebar permission gating', () => {
 
     render(<TaskPropertiesSidebar {...defaultProps} />);
 
-    const selectors = screen.getAllByTestId('property-selector');
-    // Status, Assignee, Frequency, Department = 4 selectors
-    expect(selectors.length).toBe(4);
+    // Status + Frequency use the mocked design-system Select
+    const selects = screen.getAllByTestId('select');
+    expect(selects.length).toBe(2);
+    for (const select of selects) {
+      expect(select).toHaveAttribute('data-disabled', 'false');
+    }
 
-    // All selectors should be enabled (canUpdate = true)
-    expect(selectors[0]).toHaveAttribute('data-disabled', 'false');
-    expect(selectors[1]).toHaveAttribute('data-disabled', 'false');
-    expect(selectors[2]).toHaveAttribute('data-disabled', 'false');
-    expect(selectors[3]).toHaveAttribute('data-disabled', 'false');
+    // Department is gated by canUpdate
+    expect(screen.getByTestId('department-select')).toHaveAttribute('data-disabled', 'false');
   });
 
   it('disables all selectors when user lacks task:update', () => {
@@ -160,13 +155,12 @@ describe('TaskPropertiesSidebar permission gating', () => {
 
     render(<TaskPropertiesSidebar {...defaultProps} />);
 
-    const selectors = screen.getAllByTestId('property-selector');
+    const selects = screen.getAllByTestId('select');
+    for (const select of selects) {
+      expect(select).toHaveAttribute('data-disabled', 'true');
+    }
 
-    // All selectors disabled (no task:update)
-    expect(selectors[0]).toHaveAttribute('data-disabled', 'true');
-    expect(selectors[1]).toHaveAttribute('data-disabled', 'true');
-    expect(selectors[2]).toHaveAttribute('data-disabled', 'true');
-    expect(selectors[3]).toHaveAttribute('data-disabled', 'true');
+    expect(screen.getByTestId('department-select')).toHaveAttribute('data-disabled', 'true');
   });
 
   it('enables all selectors when user has task:update (assign is part of update)', () => {
@@ -174,13 +168,13 @@ describe('TaskPropertiesSidebar permission gating', () => {
 
     render(<TaskPropertiesSidebar {...defaultProps} />);
 
-    const selectors = screen.getAllByTestId('property-selector');
+    const selects = screen.getAllByTestId('select');
+    for (const select of selects) {
+      expect(select).toHaveAttribute('data-disabled', 'false');
+    }
 
-    // All selectors enabled — assign is now part of update
-    expect(selectors[0]).toHaveAttribute('data-disabled', 'false');
-    expect(selectors[1]).toHaveAttribute('data-disabled', 'false');
-    expect(selectors[2]).toHaveAttribute('data-disabled', 'false');
-    expect(selectors[3]).toHaveAttribute('data-disabled', 'false');
+    expect(screen.getByTestId('select-assignee')).toHaveAttribute('data-disabled', 'false');
+    expect(screen.getByTestId('department-select')).toHaveAttribute('data-disabled', 'false');
   });
 
   it('renders Properties heading regardless of permissions', () => {
@@ -188,6 +182,6 @@ describe('TaskPropertiesSidebar permission gating', () => {
 
     render(<TaskPropertiesSidebar {...defaultProps} />);
 
-    expect(screen.getByText('Properties')).toBeInTheDocument();
+    expect(screen.getByText('Evidence Settings')).toBeInTheDocument();
   });
 });

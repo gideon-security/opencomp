@@ -1,16 +1,17 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockDelete = vi.fn();
-const mockPost = vi.fn();
-const mockPatch = vi.fn();
+const mockDeleteEntry = vi.fn();
 
-vi.mock('@/hooks/use-api', () => ({
-  useApi: () => ({
-    delete: mockDelete,
-    post: mockPost,
-    patch: mockPatch,
-    organizationId: 'org_123',
+vi.mock('../hooks/useContextEntries', () => ({
+  useContextEntries: (options?: { initialData?: unknown[] }) => ({
+    entries: options?.initialData ?? [],
+    isLoading: false,
+    error: null,
+    mutate: vi.fn(),
+    createEntry: vi.fn(),
+    updateEntry: vi.fn(),
+    deleteEntry: mockDeleteEntry,
   }),
 }));
 
@@ -63,8 +64,8 @@ describe('ContextList', () => {
     expect(screen.getByRole('button', { name: /add entry/i })).toBeInTheDocument();
   });
 
-  it('calls api.delete and shows success toast on delete', async () => {
-    mockDelete.mockResolvedValue({ data: {}, status: 200 });
+  it('calls deleteEntry and shows success toast on delete', async () => {
+    mockDeleteEntry.mockResolvedValue(undefined);
     const entries = [makeEntry()];
 
     render(<ContextList entries={entries as any} locale="en" />);
@@ -78,7 +79,7 @@ describe('ContextList', () => {
     fireEvent.click(confirmButton);
 
     await waitFor(() => {
-      expect(mockDelete).toHaveBeenCalledWith('/v1/context/ctx_1');
+      expect(mockDeleteEntry).toHaveBeenCalledWith('ctx_1');
     });
 
     await waitFor(() => {
@@ -87,7 +88,7 @@ describe('ContextList', () => {
   });
 
   it('shows error toast when delete fails', async () => {
-    mockDelete.mockResolvedValue({ error: 'Server error', status: 500 });
+    mockDeleteEntry.mockRejectedValue(new Error('Server error'));
     const entries = [makeEntry()];
 
     render(<ContextList entries={entries as any} locale="en" />);

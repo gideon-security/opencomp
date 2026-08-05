@@ -12,8 +12,8 @@ const REQUEST_TIMEOUT_MS = 10 * 60 * 1000;
 /**
  * Run a connection's checks ON OUR SERVER (ECS) and return the raw result.
  *
- * Used by the AWS Trigger tasks only: AWS S3 calls made from the Trigger.dev
- * runtime egress Trigger.dev's VPC, whose endpoint policy blocks our
+ * Used by the AWS Trigger tasks only: AWS S3 calls made from the Local trigger
+ * runtime egress Local trigger's VPC, whose endpoint policy blocks our
  * cross-account reads. Running them on our server egresses our own VPC (where
  * the endpoint allows the read) — matching the in-app manual "Run". The caller
  * still persists the returned result, so AWS runs are recorded exactly like

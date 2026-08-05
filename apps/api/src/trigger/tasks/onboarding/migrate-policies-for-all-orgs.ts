@@ -1,5 +1,5 @@
 import { db } from '@db';
-import { logger, task } from '@trigger.dev/sdk';
+import { logger, task } from '@gideon-defender/trigger-local';
 import { migratePoliciesForOrg } from './migrate-policies-for-org';
 
 const ORG_BATCH_SIZE = 20;

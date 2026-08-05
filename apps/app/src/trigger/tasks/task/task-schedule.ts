@@ -1,7 +1,7 @@
 import { isOrgParticipant } from '@/lib/org-participation-rule';
 import { db } from '@db/server';
 import { Novu } from '@novu/api';
-import { logger, schedules } from '@trigger.dev/sdk';
+import { logger, schedules } from '@gideon-defender/trigger-local';
 import { isUserUnsubscribed, TaskStatusNotificationEmail } from '@gideon-defender/email';
 import { sendEmailViaApi } from '../../lib/send-email-via-api';
 

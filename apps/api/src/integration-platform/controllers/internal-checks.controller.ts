@@ -31,9 +31,9 @@ class RunConnectionChecksOnServerDto {
 /**
  * Internal, service-token-only endpoint that runs a connection's checks ON OUR
  * SERVER and returns the raw result (no persistence). Used exclusively by the
- * AWS Trigger tasks so AWS S3 calls egress our VPC instead of Trigger.dev's
+ * AWS Trigger tasks so AWS S3 calls egress our VPC instead of Local trigger's
  * (whose endpoint policy blocks our cross-account reads). All other providers
- * keep executing inside Trigger.dev unchanged.
+ * keep executing inside Local trigger unchanged.
  */
 @Controller({ path: 'integrations/internal', version: '1' })
 @ApiTags('Integrations')

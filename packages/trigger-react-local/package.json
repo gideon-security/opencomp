@@ -1,7 +1,7 @@
 {
-  "name": "@trigger.dev/react-hooks",
-  "version": "4.4.3",
-  "description": "Local polling-based replacement for @trigger.dev/react-hooks.",
+  "name": "@gideon-defender/trigger-react",
+  "version": "1.0.0",
+  "description": "Polling-based React hooks for the in-process task runner.",
   "private": true,
   "type": "module",
   "main": "src/index.js",

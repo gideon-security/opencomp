@@ -323,7 +323,7 @@ If using Google integrations (Workspace, GCP) in production with external users,
 
 OAuth providers have rate limits. The integration platform handles this by:
 - Caching API responses where appropriate
-- Running checks via background jobs (Trigger.dev)
+- Running checks via background jobs (Local trigger)
 - Implementing exponential backoff on retries
 
 ### Token Refresh

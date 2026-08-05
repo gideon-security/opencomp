@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { db } from '@db';
-import { tasks, auth } from '@trigger.dev/sdk';
+import { tasks, auth } from '@gideon-defender/trigger-local';
 import { syncManualAnswerToVector } from '@/vector-store/lib';
 import { UploadDocumentDto } from './dto/upload-document.dto';
 import { UploadsService } from '../uploads/uploads.service';

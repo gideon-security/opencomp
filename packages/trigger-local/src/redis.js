@@ -7,7 +7,7 @@ const { Redis } = require('ioredis');
 // therefore its own Redis client. All bundles run inside the same Node process,
 // so we hold the singleton connection on globalThis to guarantee a single
 // shared client (and a single event-loop footprint) across every runtime.
-const GLOBAL_REDIS_KEY = Symbol.for('@trigger.dev/local-trigger/redis.v1');
+const GLOBAL_REDIS_KEY = Symbol.for('@gideon-defender/trigger-local/redis.v1');
 
 function redisUrl() {
   return (

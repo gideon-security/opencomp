@@ -5,7 +5,7 @@ import type {
   FrameworkEditorPolicyTemplate,
   Policy,
 } from '@db';
-import { logger } from '@trigger.dev/sdk';
+import { logger } from '@gideon-defender/trigger-local';
 import { processTemplate } from './process-policy-template';
 import { refineCueLines } from './refine-cue-lines';
 

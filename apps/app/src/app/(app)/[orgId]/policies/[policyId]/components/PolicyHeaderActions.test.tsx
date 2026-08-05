@@ -41,10 +41,16 @@ vi.mock('swr', () => ({
   useSWRConfig: () => ({
     mutate: vi.fn(),
   }),
+  default: vi.fn(() => ({ data: undefined, error: undefined, isLoading: false, mutate: vi.fn() })),
 }));
 
-// Mock useRealtimeRun from trigger.dev
-vi.mock('@trigger.dev/react-hooks', () => ({
+// Mock useAuditLogs (used by PolicyHeaderActions for the activity feed)
+vi.mock('@/hooks/use-audit-logs', () => ({
+  useAuditLogs: () => ({ logs: [], mutate: vi.fn() }),
+}));
+
+// Mock useRealtimeRun from local-trigger
+vi.mock('@gideon-defender/trigger-react', () => ({
   useRealtimeRun: () => ({ run: null }),
 }));
 
