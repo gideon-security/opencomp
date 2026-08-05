@@ -15,7 +15,7 @@ export const tool$taskAutomationsAutomationsControllerUpdateAutomationV1:
     name: "update-automation",
     description: `Update an existing automation
 
-Update an existing automation in Comp AI. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.`,
+Update an existing automation in OpenComp. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

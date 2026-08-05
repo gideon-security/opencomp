@@ -16,7 +16,7 @@ export const tool$commentsCommentsControllerCreateCommentV1: ToolDefinition<
   name: "create-comment",
   description: `Create a new comment
 
-Create a new comment in Comp AI. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.`,
+Create a new comment in OpenComp. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

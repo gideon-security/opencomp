@@ -8,7 +8,7 @@ describe('validateBillingRedirectUrl', () => {
     ).not.toThrow();
 
     expect(() =>
-      validateBillingRedirectUrl('http://app.trycomp.ai/org_1/billing'),
+      validateBillingRedirectUrl('http://app.gideondefender.com/org_1/billing'),
     ).toThrow(BadRequestException);
   });
 });

@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Delete a finding (auditor or platform admin only)
  *
  * @remarks
- * Delete a finding (auditor or platform admin only) in Comp AI. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.
+ * Delete a finding (auditor or platform admin only) in OpenComp. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

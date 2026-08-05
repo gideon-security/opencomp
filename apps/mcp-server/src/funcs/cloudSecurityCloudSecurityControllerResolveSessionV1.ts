@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Resolve short-lived AWS credentials for a connection (internal only)
  *
  * @remarks
- * Resolve short-lived AWS credentials for a connection (internal only) in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
+ * Resolve short-lived AWS credentials for a connection (internal only) in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
  */
 export function cloudSecurityCloudSecurityControllerResolveSessionV1(
   client$: CompAiCore,

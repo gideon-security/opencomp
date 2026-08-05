@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Accept pending policy changes and publish the version
  *
  * @remarks
- * Accept pending policy changes and publish the version in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
+ * Accept pending policy changes and publish the version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

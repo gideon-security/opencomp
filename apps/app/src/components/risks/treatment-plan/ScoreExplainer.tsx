@@ -108,7 +108,7 @@ export function ScoreExplainer() {
         <div className="mt-1.5 italic">
           The matrix structure and treatment categories align with these
           standards; the specific 1–10 normalization and step-down magnitudes
-          are Comp AI's calibration.
+          are OpenComp's calibration.
         </div>
       </div>
     </div>

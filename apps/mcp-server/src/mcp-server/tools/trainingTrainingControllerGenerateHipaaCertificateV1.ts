@@ -15,7 +15,7 @@ export const tool$trainingTrainingControllerGenerateHipaaCertificateV1:
     name: "generate-hipaa-certificate",
     description: `Generate HIPAA training certificate PDF
 
-Generate HIPAA training certificate PDF in Comp AI. Record security awareness and HIPAA training completion status and generate completion certificates.`,
+Generate HIPAA training certificate PDF in OpenComp. Record security awareness and HIPAA training completion status and generate completion certificates.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

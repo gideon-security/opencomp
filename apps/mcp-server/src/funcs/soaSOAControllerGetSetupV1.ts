@@ -24,7 +24,7 @@ import { Result } from "../types/fp.js";
  * Read SOA configuration and document without creating either
  *
  * @remarks
- * Read SOA configuration and document without creating either in Comp AI. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.
+ * Read SOA configuration and document without creating either in OpenComp. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

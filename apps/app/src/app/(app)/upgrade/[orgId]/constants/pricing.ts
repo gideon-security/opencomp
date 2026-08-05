@@ -14,7 +14,7 @@ export const PRICING_FEATURES = {
     'Compliant in 14 Days or Less',
     'Dedicated Success Team',
     '24x7x365 Support & SLA',
-    'Slack Channel with Comp AI',
+    'Slack Channel with OpenComp',
   ],
 } as const;
 

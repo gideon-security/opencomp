@@ -85,7 +85,7 @@ describe('background checks', () => {
       BACKGROUND_CHECK_WEBHOOK_SECRET: 'whsec_test',
       BACKGROUND_WH_ENDPOINT: '',
       STRIPE_BACKGROUND_CHECK_PRICE_ID: 'price_bg',
-      NEXT_PUBLIC_APP_URL: 'https://app.trycomp.ai',
+      NEXT_PUBLIC_APP_URL: 'https://app.gideondefender.com',
     };
   });
 
@@ -99,7 +99,7 @@ describe('background checks', () => {
         JSON.stringify({
           id: 'check_1',
           status: 'invited',
-          candidateUrl: 'https://identity.trycomp.ai/cand_1',
+          candidateUrl: 'https://identity.gideondefender.com/cand_1',
         }),
         { status: 200 },
       ),
@@ -142,7 +142,7 @@ describe('background checks', () => {
       compMemberId: 'mem_1',
     });
     expect(body.callbackUrl).toBe(
-      'https://api.trycomp.ai/v1/background-checks/webhook',
+      'https://api.gideondefender.com/v1/background-checks/webhook',
     );
     expect(body.requesterNotes).toBeUndefined();
   });
@@ -155,7 +155,7 @@ describe('background checks', () => {
         JSON.stringify({
           id: 'check_1',
           status: 'invited',
-          candidateUrl: 'https://identity.trycomp.ai/cand_1',
+          candidateUrl: 'https://identity.gideondefender.com/cand_1',
         }),
         { status: 200 },
       ),
@@ -333,7 +333,7 @@ describe('background checks', () => {
       createBackgroundCheck: jest.fn().mockResolvedValue({
         id: 'check_1',
         status: 'invited',
-        candidateUrl: 'https://identity.trycomp.ai/cand_1',
+        candidateUrl: 'https://identity.gideondefender.com/cand_1',
       }),
     };
     const paymentService = {
@@ -381,7 +381,7 @@ describe('background checks', () => {
       expect.objectContaining({
         data: expect.objectContaining({
           identityBackgroundCheckId: 'check_1',
-          candidateUrl: 'https://identity.trycomp.ai/cand_1',
+          candidateUrl: 'https://identity.gideondefender.com/cand_1',
         }),
       }),
     );
@@ -458,7 +458,7 @@ describe('background checks', () => {
         successUrl:
           'http://localhost:3000/org_1/people/mem_1?background_check_billing=success',
         cancelUrl: 'http://localhost:3000/org_1/people/mem_1',
-        customerEmail: 'billing@trycomp.ai',
+        customerEmail: 'billing@gideondefender.com',
       }),
     ).resolves.toEqual({ url: 'https://checkout.stripe.com/c/session_1' });
 
@@ -467,7 +467,7 @@ describe('background checks', () => {
       successUrl:
         'http://localhost:3000/org_1/people/mem_1?background_check_billing=success',
       cancelUrl: 'http://localhost:3000/org_1/people/mem_1',
-      customerEmail: 'billing@trycomp.ai',
+      customerEmail: 'billing@gideondefender.com',
     });
   });
 

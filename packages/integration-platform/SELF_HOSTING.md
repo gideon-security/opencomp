@@ -26,7 +26,7 @@ OAuth integrations (GitHub, Google Workspace, GCP, etc.) require **platform-leve
 1. Go to https://github.com/settings/developers
 2. Click **New OAuth App**
 3. Fill in:
-   - **Application name**: `Comp AI` (or your deployment name)
+   - **Application name**: `OpenComp` (or your deployment name)
    - **Homepage URL**: `https://yourapp.com`
    - **Authorization callback URL**: `https://yourapp.com/v1/integrations/oauth/callback`
 4. Click **Register application**
@@ -62,7 +62,7 @@ OAuth integrations (GitHub, Google Workspace, GCP, etc.) require **platform-leve
    - Go to **APIs & Services** → **Credentials**
    - Click **Create Credentials** → **OAuth client ID**
    - Select **Web application**
-   - Name: `Comp AI`
+   - Name: `OpenComp`
    - **Authorized redirect URIs**: `https://yourapp.com/v1/integrations/oauth/callback`
    - Create → Copy **Client ID** and **Client Secret**
 
@@ -95,7 +95,7 @@ OAuth integrations (GitHub, Google Workspace, GCP, etc.) require **platform-leve
 1. Go to https://linear.app/settings/api
 2. Click **Create new OAuth application**
 3. Fill in:
-   - **Name**: `Comp AI`
+   - **Name**: `OpenComp`
    - **Callback URLs**: `https://yourapp.com/v1/integrations/oauth/callback`
 4. Create → Copy **Client ID** and **Client Secret**
 
@@ -114,7 +114,7 @@ OAuth integrations (GitHub, Google Workspace, GCP, etc.) require **platform-leve
 1. Go to https://vercel.com/dashboard/integrations/console
 2. Click **Create Integration**
 3. Fill in:
-   - **Name**: `Comp AI`
+   - **Name**: `OpenComp`
    - **Redirect URL**: `https://yourapp.com/v1/integrations/oauth/callback`
 4. Create → Copy **Client ID**, **Client Secret**, and **Integration Slug**
 

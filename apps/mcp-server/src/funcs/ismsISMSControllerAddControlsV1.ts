@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Map organization controls to an ISMS document
  *
  * @remarks
- * Map organization controls to an ISMS document in Comp AI.
+ * Map organization controls to an ISMS document in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -11,7 +11,7 @@ export const PASSWORD_FIELD_TITLE = 'password';
 export const TOTP_FIELD_TITLE = 'one-time password';
 
 export function buildOrgVaultTitle(organizationId: string): string {
-  return `Comp AI Browser Automations — ${organizationId}`;
+  return `OpenComp Browser Automations — ${organizationId}`;
 }
 
 export function buildItemReference(vaultId: string, itemId: string): string {

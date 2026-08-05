@@ -49,13 +49,13 @@ describe('enqueueEmail', () => {
   });
 
   it('applies SQS DelaySeconds for a future scheduledAt', async () => {
-    const future = new Date(Date.now() + 30_000).toISOString();
+    const future = new Date(Date.now() + 120_000).toISOString();
     sendMock.mockResolvedValueOnce({ MessageId: 'msg-2' });
 
     await enqueueEmail({ ...message, scheduledAt: future });
 
     const command = (SendMessageCommand as unknown as jest.Mock).mock.calls[0][0];
-    expect(command.DelaySeconds).toBe(30);
+    expect(command.DelaySeconds).toBe(120);
   });
 
   it('does not delay past SQS 900s cap and warns', async () => {

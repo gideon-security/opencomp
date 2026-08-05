@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Upload employment evidence
  *
  * @remarks
- * Upload employment evidence in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.
+ * Upload employment evidence in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

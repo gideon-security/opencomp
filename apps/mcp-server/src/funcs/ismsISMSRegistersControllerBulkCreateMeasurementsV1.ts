@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Record measurements for several metrics/periods in one save (Metrics due / backfill)
  *
  * @remarks
- * Record measurements for several metrics/periods in one save (Metrics due / backfill) in Comp AI.
+ * Record measurements for several metrics/periods in one save (Metrics due / backfill) in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

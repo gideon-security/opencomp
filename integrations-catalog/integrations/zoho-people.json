@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "setupInstructions": "Connect your Zoho People account so Comp AI can verify access and sync employee records.\n\nWhen you click \"Connect\":\n1. You will be redirected to Zoho\n2. Sign in with the Zoho account that has access to your People app\n3. Authorize the requested permission (read employee data)\n4. You will be redirected back here, ready to use\n\nAfter connection, tokens auto-refresh — you will not need to reconnect periodically.\n\nNote: Currently optimized for the Zoho US data center (.com). If your Zoho account is in EU/India/Australia/etc., contact support — multi-region support is in progress.",
+      "setupInstructions": "Connect your Zoho People account so OpenComp can verify access and sync employee records.\n\nWhen you click \"Connect\":\n1. You will be redirected to Zoho\n2. Sign in with the Zoho account that has access to your People app\n3. Authorize the requested permission (read employee data)\n4. You will be redirected back here, ready to use\n\nAfter connection, tokens auto-refresh — you will not need to reconnect periodically.\n\nNote: Currently optimized for the Zoho US data center (.com). If your Zoho account is in EU/India/Australia/etc., contact support — multi-region support is in progress.",
       "scopes": [
         "ZohoPeople.forms.ALL"
       ],

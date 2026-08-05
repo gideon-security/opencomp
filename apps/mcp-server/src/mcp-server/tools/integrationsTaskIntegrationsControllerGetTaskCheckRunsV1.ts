@@ -15,7 +15,7 @@ export const tool$integrationsTaskIntegrationsControllerGetTaskCheckRunsV1:
     name: "get-task-check-runs",
     description: `List check runs for a task
 
-List check runs for a task in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+List check runs for a task in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -85,6 +85,7 @@
             "dependsOn": ["^lint"]
         },
         "typecheck": {
+            "dependsOn": ["^build"],
             "outputs": ["node_modules/.cache/tsbuildinfo.json"]
         },
         "dev": {

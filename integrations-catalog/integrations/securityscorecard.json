@@ -20,7 +20,7 @@
           "label": "Your Company Domain",
           "type": "text",
           "required": true,
-          "helpText": "Your company's primary domain in SecurityScorecard (e.g., trycomp.ai). Used for self-assessment checks."
+          "helpText": "Your company's primary domain in SecurityScorecard (e.g., gideondefender.com). Used for self-assessment checks."
         }
       ]
     }

@@ -15,7 +15,7 @@ export const tool$trainingTrainingControllerSendTrainingCompletionEmailV1:
     name: "send-training-completion-email",
     description: `Send training completion email with certificate
 
-Send training completion email with certificate in Comp AI. Record security awareness and HIPAA training completion status and generate completion certificates.`,
+Send training completion email with certificate in OpenComp. Record security awareness and HIPAA training completion status and generate completion certificates.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

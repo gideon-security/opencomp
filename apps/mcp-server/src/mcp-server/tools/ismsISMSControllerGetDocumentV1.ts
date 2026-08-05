@@ -15,7 +15,7 @@ export const tool$ismsISMSControllerGetDocumentV1: ToolDefinition<typeof args> =
     name: "get-document",
     description: `Get an ISMS document with its latest version
 
-Get an ISMS document with its latest version in Comp AI.`,
+Get an ISMS document with its latest version in OpenComp.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

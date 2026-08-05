@@ -15,7 +15,7 @@ export const tool$cloudSecurityCloudSecurityControllerGetActivityV1:
     name: "get-activity",
     description: `List recent cloud security activity
 
-List recent cloud security activity in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
+List recent cloud security activity in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

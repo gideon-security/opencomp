@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Save a singleton document narrative
  *
  * @remarks
- * Save a singleton document narrative in Comp AI.
+ * Save a singleton document narrative in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

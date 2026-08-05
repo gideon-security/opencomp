@@ -205,7 +205,7 @@ describe('OpenAPI document', () => {
       expect(policies?.summary).toBe('List compliance policies');
       expect(policies?.description).toContain('SOC 2');
       expect(policies?.['x-mint']?.metadata?.title).toBe(
-        'List compliance policies | Comp AI API',
+        'List compliance policies | OpenComp API',
       );
     });
   });

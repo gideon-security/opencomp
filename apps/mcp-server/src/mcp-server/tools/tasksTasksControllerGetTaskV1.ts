@@ -14,7 +14,7 @@ export const tool$tasksTasksControllerGetTaskV1: ToolDefinition<typeof args> = {
   name: "get-task",
   description: `Get task by ID
 
-Get task by ID in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Get task by ID in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

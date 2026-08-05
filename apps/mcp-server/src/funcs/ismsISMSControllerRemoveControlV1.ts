@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Remove a control mapping from an ISMS document
  *
  * @remarks
- * Remove a control mapping from an ISMS document in Comp AI.
+ * Remove a control mapping from an ISMS document in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "custom",
     "config": {
-      "setupInstructions": "1. Log in to your Okta Admin Console (https://YOUR_DOMAIN-admin.okta.com).\n2. Go to Security > API > Tokens.\n3. Click 'Create Token', give it a name (e.g. 'Comp AI'), and copy the token value.\n4. Enter your Okta domain (e.g. company.okta.com) and the API token below.",
+      "setupInstructions": "1. Log in to your Okta Admin Console (https://YOUR_DOMAIN-admin.okta.com).\n2. Go to Security > API > Tokens.\n3. Click 'Create Token', give it a name (e.g. 'OpenComp'), and copy the token value.\n4. Enter your Okta domain (e.g. company.okta.com) and the API token below.",
       "credentialFields": [
         {
           "label": "Okta Domain",

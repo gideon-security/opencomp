@@ -19,7 +19,7 @@ import {
 } from '../../integrations/[slug]/components/AwsScanModeStep';
 
 const MODE_LABEL: Record<AwsScanModeChoice, string> = {
-  comp_scanners: 'Comp AI Scanners',
+  comp_scanners: 'OpenComp Scanners',
   security_hub: 'AWS Security Hub',
 };
 

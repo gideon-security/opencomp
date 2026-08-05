@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Revoke a device agent session
  *
  * @remarks
- * Revoke a device agent session in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
+ * Revoke a device agent session in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
  */
 export function deviceAgentDeviceAgentControllerRevokeAgentAccessV1(
   client$: CompAiCore,

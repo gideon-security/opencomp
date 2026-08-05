@@ -15,7 +15,7 @@ export const tool$trustAccessTrustAccessControllerGetPublicCustomFrameworksV1:
     name: "get-public-custom-frameworks",
     description: `Get org-authored custom frameworks shown on a trust portal
 
-Get org-authored custom frameworks shown on a trust portal in Comp AI. Manage external Trust Center access requests, NDA signing, grants, tokenized document downloads, public FAQs, and reviewer access.`,
+Get org-authored custom frameworks shown on a trust portal in OpenComp. Manage external Trust Center access requests, NDA signing, grants, tokenized document downloads, public FAQs, and reviewer access.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

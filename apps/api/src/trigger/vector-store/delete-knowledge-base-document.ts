@@ -90,7 +90,7 @@ export const deleteKnowledgeBaseDocumentTask = task({
       for (let i = 0; i < idsToDelete.length; i += batchSize) {
         const batch = idsToDelete.slice(i, i + batchSize);
         try {
-          await vectorIndex.delete(batch);
+          await vectorIndex.delete(batch, payload.organizationId);
           deletedCount += batch.length;
           logger.info('Deleted batch of embeddings', {
             documentId: payload.documentId,
@@ -156,7 +156,7 @@ export const deleteKnowledgeBaseDocumentTask = task({
           const batchSize = 100;
           for (let i = 0; i < remainingIds.length; i += batchSize) {
             const batch = remainingIds.slice(i, i + batchSize);
-            await vectorIndex.delete(batch);
+            await vectorIndex.delete(batch, payload.organizationId);
             deletedCount += batch.length;
           }
 
@@ -212,7 +212,7 @@ export const deleteKnowledgeBaseDocumentTask = task({
           // Try deleting these final chunks
           const finalIds = finalRemainingEmbeddings.map((e) => e.id);
           try {
-            await vectorIndex.delete(finalIds);
+            await vectorIndex.delete(finalIds, payload.organizationId);
             deletedCount += finalIds.length;
             logger.info('Deleted chunks in final aggressive attempt', {
               documentId: payload.documentId,

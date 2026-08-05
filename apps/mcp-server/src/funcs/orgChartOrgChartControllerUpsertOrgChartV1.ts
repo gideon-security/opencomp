@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Create or update an interactive organization chart
  *
  * @remarks
- * Create or update an interactive organization chart in Comp AI. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.
+ * Create or update an interactive organization chart in OpenComp. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

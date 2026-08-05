@@ -14,7 +14,7 @@ export const tool$ismsISMSControllerApproveV1: ToolDefinition<typeof args> = {
   name: "approve",
   description: `Approve an ISMS document
 
-Approve an ISMS document in Comp AI.`,
+Approve an ISMS document in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

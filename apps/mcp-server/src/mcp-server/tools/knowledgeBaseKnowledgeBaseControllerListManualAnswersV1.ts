@@ -10,7 +10,7 @@ export const tool$knowledgeBaseKnowledgeBaseControllerListManualAnswersV1:
     name: "list-manual-answers",
     description: `List all manual answers for an organization
 
-List all manual answers for an organization in Comp AI. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.`,
+List all manual answers for an organization in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

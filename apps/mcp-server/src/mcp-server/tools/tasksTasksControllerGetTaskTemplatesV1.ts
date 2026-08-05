@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerGetTaskTemplatesV1: ToolDefinition<
   name: "get-task-templates",
   description: `Get task templates
 
-Get task templates in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Get task templates in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

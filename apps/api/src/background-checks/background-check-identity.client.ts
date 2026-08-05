@@ -94,7 +94,7 @@ export class BackgroundCheckIdentityClient {
   private callbackUrl(): string {
     const endpoint = process.env.BACKGROUND_WH_ENDPOINT?.trim();
     return (
-      endpoint || 'https://api.trycomp.ai/v1/background-checks/webhook'
+      endpoint || 'https://api.gideondefender.com/v1/background-checks/webhook'
     ).replace(/\/+$/, '');
   }
 

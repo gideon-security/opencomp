@@ -4,7 +4,7 @@ import { jsPDF } from 'jspdf';
 // Primary brand color (teal/green) - hsl(165, 100%, 15%)
 const PRIMARY_COLOR = { r: 0, g: 77, b: 61 };
 
-const COMP_AI_LOGO_URL = 'https://assets.trycomp.ai/logo.png';
+const COMP_AI_LOGO_URL = 'https://assets.gideondefender.com/logo.png';
 
 const getLogoDataUrl = async (): Promise<string | null> => {
   try {
@@ -108,7 +108,7 @@ export class TrainingCertificatePdfService {
     doc.setLineWidth(0.5);
     doc.rect(15, 15, pageWidth - 30, pageHeight - 30, 'S');
 
-    // Add Comp AI logo at top center
+    // Add OpenComp logo at top center
     const logoDataUrl = await getLogoDataUrl();
     if (logoDataUrl) {
       const logoWidth = 15;
@@ -220,11 +220,11 @@ export class TrainingCertificatePdfService {
     doc.setTextColor(120, 120, 120);
     doc.text('Certified by', pageWidth / 2, 158, { align: 'center' });
 
-    // Comp AI branding with logo
+    // OpenComp branding with logo
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(18);
     doc.setTextColor(18, 18, 18);
-    const compAiText = 'Comp AI';
+    const compAiText = 'OpenComp';
     const compAiTextWidth = doc.getTextWidth(compAiText);
     const logoSize = 8;
     const gap = 3;
@@ -244,7 +244,7 @@ export class TrainingCertificatePdfService {
     doc.text('AI-powered compliance platform', pageWidth / 2, 178, {
       align: 'center',
     });
-    doc.text('https://trycomp.ai', pageWidth / 2, 183, { align: 'center' });
+    doc.text('https://gideondefender.com', pageWidth / 2, 183, { align: 'center' });
 
     // Get the PDF as a buffer
     const pdfOutput = doc.output('arraybuffer');

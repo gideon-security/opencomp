@@ -16,7 +16,7 @@ export const tool$peoplePeopleControllerGetEmploymentEvidenceV1: ToolDefinition<
   name: "get-employment-evidence",
   description: `Get employment evidence attachments
 
-Get employment evidence attachments in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Get employment evidence attachments in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

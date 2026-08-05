@@ -40,7 +40,7 @@ export function conclusionSentence(verdict: string): string {
 /**
  * The fifteen default Controls Tested rows seeded per audit, covering the
  * most-probed management-system clauses and high-impact Annex A controls.
- * "Where to find it" entries begin with "Comp AI" to signal the default
+ * "Where to find it" entries begin with "OpenComp" to signal the default
  * location; the customer overwrites the field when evidence lives elsewhere.
  * Seeding is idempotent by controlKey (seedAuditControlsIfMissing) and never
  * overwrites customer edits.
@@ -51,63 +51,63 @@ export const SEED_AUDIT_CONTROL_DEFINITIONS: SeedAuditControlDefinition[] = [
     controlRef: 'Clause 4.1 Context',
     whatWasTested:
       'Whether the org has identified internal and external issues affecting the ISMS.',
-    whereToFind: 'Comp AI > ISMS > Documents > Context of the Organization',
+    whereToFind: 'OpenComp > ISMS > Documents > Context of the Organization',
   },
   {
     controlKey: 'clause_4_3_scope',
     controlRef: 'Clause 4.3 Scope',
     whatWasTested:
       'Whether the ISMS scope is documented, current, and reflects the certificate scope statement.',
-    whereToFind: 'Comp AI > ISMS > Documents > ISMS Scope Statement',
+    whereToFind: 'OpenComp > ISMS > Documents > ISMS Scope Statement',
   },
   {
     controlKey: 'clause_5_2_policy',
     controlRef: 'Clause 5.2 Policy',
     whatWasTested:
       'Whether the information security policy is documented, approved, and communicated.',
-    whereToFind: 'Comp AI > Policies > Information Security & Privacy Governance',
+    whereToFind: 'OpenComp > Policies > Information Security & Privacy Governance',
   },
   {
     controlKey: 'clause_6_1_risk',
     controlRef: 'Clause 6.1 Risk',
     whatWasTested:
       'Whether risks affecting the ISMS are identified, assessed, and have a recorded treatment.',
-    whereToFind: 'Comp AI > Risks (risk register)',
+    whereToFind: 'OpenComp > Risks (risk register)',
   },
   {
     controlKey: 'clause_7_2_competence',
     controlRef: 'Clause 7.2 Competence',
     whatWasTested:
       'Whether the competence of persons doing ISMS work is defined and evidenced.',
-    whereToFind: 'Comp AI > ISMS > Roles > per-holder competence records',
+    whereToFind: 'OpenComp > ISMS > Roles > per-holder competence records',
   },
   {
     controlKey: 'clause_8_1_operational_planning',
     controlRef: 'Clause 8.1 Operational planning',
     whatWasTested:
       'Whether ISMS processes have been planned, implemented, and controlled.',
-    whereToFind: 'Comp AI > Policies + Controls + Tasks',
+    whereToFind: 'OpenComp > Policies + Controls + Tasks',
   },
   {
     controlKey: 'clause_9_1_monitoring',
     controlRef: 'Clause 9.1 Monitoring',
     whatWasTested:
       'Whether info-security performance and ISMS effectiveness are being measured.',
-    whereToFind: 'Comp AI > ISMS > Monitoring',
+    whereToFind: 'OpenComp > ISMS > Monitoring',
   },
   {
     controlKey: 'clause_9_3_management_review',
     controlRef: 'Clause 9.3 Management review',
     whatWasTested:
       'Whether top management reviews the ISMS at planned intervals with required inputs and outputs.',
-    whereToFind: 'Comp AI > ISMS > Management Review',
+    whereToFind: 'OpenComp > ISMS > Management Review',
   },
   {
     controlKey: 'a_5_1_policies',
     controlRef: 'A.5.1 Policies',
     whatWasTested:
       'Whether an information security policy set is defined, approved, published and reviewed.',
-    whereToFind: 'Comp AI > Policies (full list)',
+    whereToFind: 'OpenComp > Policies (full list)',
   },
   {
     controlKey: 'a_5_15_access_control',
@@ -115,7 +115,7 @@ export const SEED_AUDIT_CONTROL_DEFINITIONS: SeedAuditControlDefinition[] = [
     whatWasTested:
       'Whether access rights are granted, reviewed and removed on a defined basis.',
     whereToFind:
-      'Comp AI > Policies > Access Control & Least Privilege + related evidence tasks',
+      'OpenComp > Policies > Access Control & Least Privilege + related evidence tasks',
   },
   {
     controlKey: 'a_5_19_supplier_relationships',
@@ -123,7 +123,7 @@ export const SEED_AUDIT_CONTROL_DEFINITIONS: SeedAuditControlDefinition[] = [
     whatWasTested:
       'Whether information-security risks associated with suppliers are identified and managed.',
     whereToFind:
-      'Comp AI > Vendors > vendor register + Comp AI > Policies > Vendor & Third-Party Risk',
+      'OpenComp > Vendors > vendor register + OpenComp > Policies > Vendor & Third-Party Risk',
   },
   {
     controlKey: 'a_5_24_incident_management',
@@ -131,7 +131,7 @@ export const SEED_AUDIT_CONTROL_DEFINITIONS: SeedAuditControlDefinition[] = [
     whatWasTested:
       'Whether an information-security incident management process is defined and evidenced.',
     whereToFind:
-      'Comp AI > Policies > Incident Response & Breach Notification + Comp AI > Findings',
+      'OpenComp > Policies > Incident Response & Breach Notification + OpenComp > Findings',
   },
   {
     controlKey: 'a_8_7_malware',
@@ -139,7 +139,7 @@ export const SEED_AUDIT_CONTROL_DEFINITIONS: SeedAuditControlDefinition[] = [
     whatWasTested:
       'Whether protection against malware is in place and supported by user awareness.',
     whereToFind:
-      'Comp AI > Policies > Security Configuration Hardening & Anti-Malware',
+      'OpenComp > Policies > Security Configuration Hardening & Anti-Malware',
   },
   {
     controlKey: 'a_8_13_backup',
@@ -147,14 +147,14 @@ export const SEED_AUDIT_CONTROL_DEFINITIONS: SeedAuditControlDefinition[] = [
     whatWasTested:
       'Whether backups of information, software and systems are taken and tested.',
     whereToFind:
-      "Comp AI > Evidence tasks tagged 'backup' + Comp AI > Policies > Backup, Business Continuity & DR",
+      "OpenComp > Evidence tasks tagged 'backup' + OpenComp > Policies > Backup, Business Continuity & DR",
   },
   {
     controlKey: 'a_8_24_cryptography',
     controlRef: 'A.8.24 Cryptography',
     whatWasTested:
       'Whether rules for the effective use of cryptography are defined and applied.',
-    whereToFind: 'Comp AI > Policies > Encryption & Crypto Controls',
+    whereToFind: 'OpenComp > Policies > Encryption & Crypto Controls',
   },
 ];
 

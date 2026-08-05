@@ -10,7 +10,7 @@ export const tool$trustPortalTrustPortalControllerUploadFaviconV1:
     name: "upload-favicon",
     description: `Upload a favicon for the trust portal
 
-Upload a favicon for the trust portal in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Upload a favicon for the trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

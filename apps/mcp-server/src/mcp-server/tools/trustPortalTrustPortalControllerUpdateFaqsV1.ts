@@ -16,7 +16,7 @@ export const tool$trustPortalTrustPortalControllerUpdateFaqsV1: ToolDefinition<
   name: "update-faqs",
   description: `Update trust portal FAQs
 
-Update trust portal FAQs in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Update trust portal FAQs in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

@@ -54,7 +54,7 @@ function shell(body: string): string {
       <div class="header">
         <span class="brand-mark" aria-hidden="true">${compMarkSvg()}</span>
         <div>
-          <h1 class="title">Comp AI Questionnaire</h1>
+          <h1 class="title">OpenComp Questionnaire</h1>
           <p class="subtitle">Review answers before anything is inserted.</p>
         </div>
         <span class="connected">Connected</span>

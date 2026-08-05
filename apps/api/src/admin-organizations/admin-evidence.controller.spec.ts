@@ -15,7 +15,45 @@ jest.mock('../auth/auth.server', () => ({
   auth: { api: {} },
 }));
 
-jest.mock('@db', () => ({ db: {} }));
+jest.mock('@db', () => ({
+  db: {},
+  AuditLogEntityType: {
+    organization: 'organization',
+    framework: 'framework',
+    requirement: 'requirement',
+    control: 'control',
+    policy: 'policy',
+    task: 'task',
+    people: 'people',
+    risk: 'risk',
+    vendor: 'vendor',
+    tests: 'tests',
+    integration: 'integration',
+    trust: 'trust',
+    finding: 'finding',
+    pentest: 'pentest',
+  },
+  CommentEntityType: {
+    task: 'task',
+    vendor: 'vendor',
+    risk: 'risk',
+    policy: 'policy',
+    finding: 'finding',
+  },
+  BackgroundCheckStatus: {
+    invited: 'invited',
+    in_progress: 'in_progress',
+    in_review: 'in_review',
+    completed: 'completed',
+    completed_with_flags: 'completed_with_flags',
+    failed: 'failed',
+    cancelled: 'cancelled',
+  },
+  FindingType: {
+    soc2: 'soc2',
+    iso27001: 'iso27001',
+  },
+}));
 
 describe('AdminEvidenceController', () => {
   let controller: AdminEvidenceController;

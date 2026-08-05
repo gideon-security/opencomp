@@ -1,6 +1,6 @@
 {
   "name": "@gideon-defender/analytics",
-  "description": "Analytics utilities using PostHog for Comp AI",
+  "description": "Analytics utilities using PostHog for OpenComp",
   "version": "1.0.0",
   "dependencies": {
     "posthog-js": "^1.236.6",

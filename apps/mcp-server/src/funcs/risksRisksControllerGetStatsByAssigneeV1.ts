@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * Get risk statistics grouped by assignee
  *
  * @remarks
- * Get risk statistics grouped by assignee in Comp AI. Create, update, and report on organizational risks with ownership, departments, and compliance remediation status.
+ * Get risk statistics grouped by assignee in OpenComp. Create, update, and report on organizational risks with ownership, departments, and compliance remediation status.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

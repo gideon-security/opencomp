@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * Download Windows Device Agent ZIP
  *
  * @remarks
- * Downloads a ZIP package containing the Comp AI Device Agent installer for Windows, along with setup scripts and instructions. The package includes an MSI installer, setup batch script customized for the organization and user, and a README.
+ * Downloads a ZIP package containing the OpenComp Device Agent installer for Windows, along with setup scripts and instructions. The package includes an MSI installer, setup batch script customized for the organization and user, and a README.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -209,6 +209,7 @@ async function fetchOrgTaskVectors(organizationId: string): Promise<OrgTaskVecto
       cursor,
       limit: TASK_VECTOR_PAGE_SIZE,
       prefix,
+      organizationId,
       includeVectors: true,
       includeMetadata: true,
     });
@@ -345,6 +346,7 @@ export async function pruneOrphanTaskVectors({
       cursor,
       limit: TASK_VECTOR_PAGE_SIZE,
       prefix,
+      organizationId,
       includeMetadata: true,
     });
     scanned += vectors.length;
@@ -382,7 +384,7 @@ export async function pruneOrphanTaskVectors({
   for (let i = 0; i < orphans.length; i += BATCH) {
     const batch = orphans.slice(i, i + BATCH);
     try {
-      await index.delete(batch.map((o) => o.vectorId));
+      await index.delete(batch.map((o) => o.vectorId), organizationId);
       deletedSourceIds.push(...batch.map((o) => o.sourceId));
     } catch (err) {
       console.error(

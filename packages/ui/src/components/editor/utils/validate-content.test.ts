@@ -28,7 +28,7 @@ describe('validateAndFixTipTapContent', () => {
         type: 'paragraph',
         content: [
           {
-            text: 'Executive Summary: Comp AI is committed to maintaining the highest security standards to protect sensitive data. This policy delineates acceptable use and endpoint security measures to ensure compliance with SOC 2. All employees must adhere strictly to these guidelines for safe and responsible use of company resources.',
+            text: 'Executive Summary: OpenComp is committed to maintaining the highest security standards to protect sensitive data. This policy delineates acceptable use and endpoint security measures to ensure compliance with SOC 2. All employees must adhere strictly to these guidelines for safe and responsible use of company resources.',
             // ❌ This is the problematic node - missing "type": "text"
           },
         ],

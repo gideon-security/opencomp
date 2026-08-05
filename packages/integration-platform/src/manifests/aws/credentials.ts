@@ -173,7 +173,7 @@ export function getAwsCloudShellScript(environment: AwsEnvironment = 'aws'): str
     'job-function/ViewOnlyAccess',
   );
 
-  return `# Create Auditor Role for Comp AI
+  return `# Create Auditor Role for OpenComp
 # Run this in AWS CloudShell to create the read-only IAM role.
 
 (
@@ -280,7 +280,7 @@ export const awsRemediationScript = getAwsRemediationScript();
 export const awsSetupInstructions = `Setup (AWS CloudShell)
 
 1. Open AWS CloudShell at console.aws.amazon.com/cloudshell
-2. Run the following command (replace YOUR_EXTERNAL_ID with your Comp AI organization ID):
+2. Run the following command (replace YOUR_EXTERNAL_ID with your OpenComp organization ID):
 
 EXTERNAL_ID="YOUR_EXTERNAL_ID" && ROLE_NAME="CompAI-Auditor" && aws iam create-role --role-name "$ROLE_NAME" --max-session-duration 43200 --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":"arn:aws:iam::684120556289:role/roleAssumer"},"Action":"sts:AssumeRole","Condition":{"StringEquals":{"sts:ExternalId":"'$EXTERNAL_ID'"}}}]}' --query 'Role.Arn' --output text && aws iam attach-role-policy --role-name "$ROLE_NAME" --policy-arn arn:aws:iam::aws:policy/SecurityAudit && aws iam attach-role-policy --role-name "$ROLE_NAME" --policy-arn arn:aws:iam::aws:policy/job-function/ViewOnlyAccess && aws iam put-role-policy --role-name "$ROLE_NAME" --policy-name CompAI-CostExplorer --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":"ce:GetCostAndUsage","Resource":"*"}]}' && aws iam put-role-policy --role-name "$ROLE_NAME" --policy-name CompAI-ExtraReadAccess --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["ssm:GetDocument","ssm:DescribeDocument","ssm:ListDocuments"],"Resource":"*"}]}'
 

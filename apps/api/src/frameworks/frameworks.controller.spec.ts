@@ -1,5 +1,14 @@
 jest.mock('@db', () => ({
   db: {},
+  BackgroundCheckStatus: {
+    invited: 'invited',
+    in_progress: 'in_progress',
+    in_review: 'in_review',
+    completed: 'completed',
+    completed_with_flags: 'completed_with_flags',
+    failed: 'failed',
+    cancelled: 'cancelled',
+  },
   FindingType: {
     soc2: 'soc2',
     iso27001: 'iso27001',
@@ -235,7 +244,7 @@ describe('FrameworksController', () => {
   });
 
   describe('syncFramework', () => {
-    const mockAuthContext = { userId: 'usr_1', organizationId: 'org_1' };
+    const mockAuthContext = { userId: 'usr_1', memberId: 'mem_1', organizationId: 'org_1' };
 
     it('should delegate to syncService and return { data: result }', async () => {
       const mockResult = { kind: 'synced', frameworkInstanceId: 'fi_1', syncOperationId: 'fso_1' };
@@ -253,7 +262,7 @@ describe('FrameworksController', () => {
         organizationId: 'org_1',
         frameworkInstanceId: 'fi_1',
         targetVersionId: 'fvr_2',
-        userId: 'usr_1',
+        memberId: 'mem_1',
       });
     });
 
@@ -273,7 +282,7 @@ describe('FrameworksController', () => {
   });
 
   describe('rollbackFramework', () => {
-    const mockAuthContext = { userId: 'usr_1', organizationId: 'org_1' };
+    const mockAuthContext = { userId: 'usr_1', memberId: 'mem_1', organizationId: 'org_1' };
 
     it('should delegate to rollbackService and return { data: result }', async () => {
       const mockResult = { rollbackOperationId: 'fso_rb_1' };
@@ -291,7 +300,7 @@ describe('FrameworksController', () => {
         organizationId: 'org_1',
         frameworkInstanceId: 'fi_1',
         syncOperationId: 'fso_1',
-        userId: 'usr_1',
+        memberId: 'mem_1',
       });
     });
 

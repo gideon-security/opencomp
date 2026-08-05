@@ -12,9 +12,9 @@ program
   .name('comp-framework')
   .version('1.0.0', '-V')
   .description(
-    `Comp AI Framework Editor CLI
+    `OpenComp Framework Editor CLI
 
-Manage compliance framework templates via the Comp AI API. This tool lets you
+Manage compliance framework templates via the OpenComp API. This tool lets you
 create and configure frameworks, requirements, controls, policies, and tasks
 from the command line.
 

@@ -30,7 +30,7 @@ function sleep(ms: number): Promise<void> {
 
 function buildUnsubscribeHeaders(to: string): Record<string, string> {
   const apiBaseUrl =
-    process.env.NEXT_PUBLIC_API_URL || 'https://api.trycomp.ai';
+    process.env.NEXT_PUBLIC_API_URL || 'https://api.gideondefender.com';
   const token = generateUnsubscribeToken(to);
   const oneClickUrl = `${apiBaseUrl}/v1/email/unsubscribe?email=${encodeURIComponent(to)}&token=${encodeURIComponent(token)}`;
 

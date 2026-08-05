@@ -8,7 +8,7 @@ import { GoogleSignIn } from './google-sign-in';
 import { Unauthorized } from './Unauthorized';
 
 export const metadata: Metadata = {
-  title: 'Login | Comp AI',
+  title: 'Login | OpenComp',
 };
 
 export default async function Page() {
@@ -35,7 +35,7 @@ export default async function Page() {
       <div className="relative z-20 m-auto flex w-full max-w-[380px] flex-col py-8">
         <div className="relative flex w-full flex-col">
           <Balancer>
-            <h1 className="pb-1 text-3xl font-medium">Get Started with Comp AI</h1>
+            <h1 className="pb-1 text-3xl font-medium">Get Started with OpenComp</h1>
             <h2 className="pb-1 text-xl font-medium">Sign in to continue</h2>
           </Balancer>
 
@@ -45,11 +45,11 @@ export default async function Page() {
 
           <p className="text-muted-foreground text-xs">
             By clicking continue, you acknowledge that you have read and agree to the{' '}
-            <a href="https://trycomp.ai/terms-and-conditions" className="underline">
+            <a href="https://gideondefender.com/terms-and-conditions" className="underline">
               Terms and Conditions
             </a>{' '}
             and{' '}
-            <a href="https://trycomp.ai/privacy-policy" className="underline">
+            <a href="https://gideondefender.com/privacy-policy" className="underline">
               Privacy Policy
             </a>
             .

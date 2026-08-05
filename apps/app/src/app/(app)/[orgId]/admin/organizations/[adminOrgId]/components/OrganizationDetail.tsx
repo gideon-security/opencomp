@@ -150,7 +150,7 @@ export function OrganizationDetail({
           <div className="flex-1">
             <Text weight="medium">Internal organization</Text>
             <Text size="sm" variant="muted">
-              For Comp AI-operated orgs only. When on, platform admins are treated as real members
+              For OpenComp-operated orgs only. When on, platform admins are treated as real members
               here — assignable, counted in compliance, and notified. Leave off for every customer
               organization.
             </Text>
@@ -201,7 +201,7 @@ export function OrganizationDetail({
             </AlertDialogTitle>
             <AlertDialogDescription>
               {pendingInternal
-                ? 'Platform admins will be treated as real members here — assignable, counted in compliance, and notified. Only enable this for Comp AI-operated orgs, never a customer organization.'
+                ? 'Platform admins will be treated as real members here — assignable, counted in compliance, and notified. Only enable this for OpenComp-operated orgs, never a customer organization.'
                 : 'Platform admins will be excluded from this organization again — removed from assignments, compliance counts, and notifications.'}
             </AlertDialogDescription>
           </AlertDialogHeader>

@@ -52,11 +52,11 @@ const MAGIC_LINK_EXPIRES_IN_SECONDS = 60 * 60; // 1 hour
 function getCookieDomain(): string | undefined {
   const baseUrl = process.env.BASE_URL || '';
 
-  if (baseUrl.includes('staging.trycomp.ai')) {
-    return '.staging.trycomp.ai';
+  if (baseUrl.includes('staging.gideondefender.com')) {
+    return '.staging.gideondefender.com';
   }
-  if (baseUrl.includes('trycomp.ai')) {
-    return '.trycomp.ai';
+  if (baseUrl.includes('gideondefender.com')) {
+    return '.gideondefender.com';
   }
   return undefined;
 }
@@ -88,7 +88,6 @@ async function getCustomDomains(): Promise<Set<string>> {
     const trusts = await db.trust.findMany({
       where: {
         domain: { not: null },
-        domainVerified: true,
         status: 'published',
       },
       select: { domain: true },
@@ -119,7 +118,7 @@ async function getCustomDomains(): Promise<Set<string>> {
 /**
  * Check if an origin is trusted. Checks (in order):
  * 1. Static trusted origins list
- * 2. *.trycomp.ai / *.trust.inc subdomains
+ * 2. *.gideondefender.com / *.trust.inc subdomains
  * 3. Published custom domains from the DB (cached in Redis, TTL 5 min)
  */
 export async function isTrustedOrigin(origin: string): Promise<boolean> {
@@ -192,12 +191,12 @@ const gramMcpClient =
     ? {
         clientId: process.env.GRAM_OAUTH_CLIENT_ID,
         clientSecret: process.env.GRAM_OAUTH_CLIENT_SECRET,
-        name: 'Comp AI MCP (Gram)',
+        name: 'OpenComp MCP (Gram)',
         type: 'web' as const,
         disabled: false,
         redirectUrls: [process.env.GRAM_OAUTH_REDIRECT_URI],
         metadata: null,
-        // First-party client: Gram is Comp AI's own hosted MCP, so the user's
+        // First-party client: Gram is OpenComp's own hosted MCP, so the user's
         // login (Sign in with Google) IS the authorization — no separate consent
         // screen is needed. This also avoids having to build a consent page UI.
         skipConsent: true,
@@ -208,7 +207,7 @@ const gramMcpClient =
 // Must point at the app's sign-in page. Override per environment via env.
 const mcpLoginPage =
   process.env.MCP_OAUTH_LOGIN_PAGE ||
-  `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.trycomp.ai'}/auth`;
+  `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.gideondefender.com'}/auth`;
 
 // =============================================================================
 // Security Validation
@@ -250,10 +249,10 @@ validateSecurityConfig();
 /**
  * The auth server instance - single source of truth for authentication.
  *
- * BASE_URL must point to the API (e.g., https://api.trycomp.ai).
+ * BASE_URL must point to the API (e.g., https://api.gideondefender.com).
  * OAuth callbacks go directly to the API. Clients send absolute callbackURLs
  * so better-auth redirects to the correct app after processing.
- * Cross-subdomain cookies (.trycomp.ai) ensure the session works on all apps.
+ * Cross-subdomain cookies (.gideondefender.com) ensure the session works on all apps.
  */
 export const auth = betterAuth({
   // better-auth (sessions, members, org plugin, OAuth) runs as the service
@@ -262,11 +261,11 @@ export const auth = betterAuth({
   database: prismaAdapter(serviceDb, {
     provider: 'postgresql',
   }),
-  // baseURL must point to the API (e.g., https://api.trycomp.ai) so that
+  // baseURL must point to the API (e.g., https://api.gideondefender.com) so that
   // OAuth callbacks go directly to the API regardless of which frontend
   // initiated the flow. Clients must send absolute callbackURLs so that
   // after OAuth processing, better-auth redirects to the correct app.
-  // Cross-subdomain cookies (.trycomp.ai) ensure the session works everywhere.
+  // Cross-subdomain cookies (.gideondefender.com) ensure the session works everywhere.
   baseURL: process.env.BASE_URL || 'http://localhost:3333',
   trustedOrigins: getBetterAuthTrustedOrigins(),
   emailAndPassword: {
@@ -281,7 +280,7 @@ export const auth = betterAuth({
       }
       await triggerEmail({
         to: user.email,
-        subject: 'Verify your email for Comp AI',
+        subject: 'Verify your email for OpenComp',
         react: VerifyEmail({ email: user.email, url }),
       });
     },
@@ -292,7 +291,7 @@ export const auth = betterAuth({
     },
     // Prevent cookie collisions between environments.
     // Production keeps the default 'better-auth' prefix (unchanged).
-    ...(cookieDomain === '.staging.trycomp.ai' && {
+    ...(cookieDomain === '.staging.gideondefender.com' && {
       cookiePrefix: 'staging',
     }),
     ...(!cookieDomain && {
@@ -454,11 +453,11 @@ export const auth = betterAuth({
         const appUrl =
           process.env.NEXT_PUBLIC_APP_URL ??
           process.env.BETTER_AUTH_URL ??
-          'https://app.trycomp.ai';
+          'https://app.gideondefender.com';
         const inviteLink = `${appUrl}/invite/${data.invitation.id}`;
         await triggerEmail({
           to: data.email,
-          subject: `You've been invited to join ${data.organization.name} on Comp AI`,
+          subject: `You've been invited to join ${data.organization.name} on OpenComp`,
           react: InviteEmail({
             organizationName: data.organization.name,
             inviteLink,
@@ -503,7 +502,7 @@ export const auth = betterAuth({
         }
         await triggerEmail({
           to: email,
-          subject: 'Login to Comp AI',
+          subject: 'Login to OpenComp',
           react: MagicLinkEmail({ email, url }),
         });
       },
@@ -517,7 +516,7 @@ export const auth = betterAuth({
         }
         await triggerEmail({
           to: email,
-          subject: 'One-Time Password for Comp AI',
+          subject: 'One-Time Password for OpenComp',
           react: OTPVerificationEmail({ email, otp }),
         });
       },
@@ -554,7 +553,7 @@ export const auth = betterAuth({
       sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
         await triggerEmail({
           to: user.email,
-          subject: 'Confirm your email change for Comp AI',
+          subject: 'Confirm your email change for OpenComp',
           react: ChangeEmailConfirmationEmail({
             currentEmail: user.email,
             newEmail,

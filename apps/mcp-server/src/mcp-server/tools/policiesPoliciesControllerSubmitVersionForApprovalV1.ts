@@ -15,7 +15,7 @@ export const tool$policiesPoliciesControllerSubmitVersionForApprovalV1:
     name: "submit-policy-version-for-approval",
     description: `Submit version for approval
 
-Submit version for approval in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Submit version for approval in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

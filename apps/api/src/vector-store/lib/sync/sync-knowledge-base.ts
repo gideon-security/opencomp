@@ -86,7 +86,7 @@ async function deleteExistingDocumentEmbeddings(
   if (existingDocEmbeddings.length > 0 && vectorIndex) {
     const idsToDelete = existingDocEmbeddings.map((e) => e.id);
     try {
-      await vectorIndex.delete(idsToDelete);
+      await vectorIndex.delete(idsToDelete, organizationId);
       logger.info('Deleted existing embeddings', {
         documentId,
         deletedCount: idsToDelete.length,

@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Link existing org controls to a requirement
  *
  * @remarks
- * Link existing org controls to a requirement in Comp AI. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
+ * Link existing org controls to a requirement in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
  */
 export function frameworksFrameworksControllerLinkControlsV1(
   client$: CompAiCore,

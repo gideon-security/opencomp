@@ -15,7 +15,7 @@ export const tool$evidenceFormsEvidenceFormsControllerUploadFileV1:
     name: "upload-file",
     description: `Upload evidence form file
 
-Upload evidence form file in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
+Upload evidence form file in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

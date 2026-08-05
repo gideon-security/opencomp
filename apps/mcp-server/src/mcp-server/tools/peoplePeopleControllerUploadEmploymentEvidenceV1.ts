@@ -15,7 +15,7 @@ export const tool$peoplePeopleControllerUploadEmploymentEvidenceV1:
     name: "upload-employment-evidence",
     description: `Upload employment evidence
 
-Upload employment evidence in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Upload employment evidence in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

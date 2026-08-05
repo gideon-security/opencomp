@@ -1,6 +1,6 @@
 # Product Analytics Tracking
 
-The product app intentionally tracks product analytics only. Marketing pixels belong on the marketing site, not on `app.trycomp.ai`.
+The product app intentionally tracks product analytics only. Marketing pixels belong on the marketing site, not on `app.gideondefender.com`.
 
 Revenue, customer, and signed-deal measurement for paid media lives in HubSpot lifecycle imports. App-side `purchase_completed` events are product analytics only and must not be wired to ad conversion pixels.
 

@@ -10,7 +10,7 @@ export const tool$organizationOrganizationControllerRemoveLogoV1:
     name: "remove-logo",
     description: `Remove organization logo
 
-Remove organization logo in Comp AI. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.`,
+Remove organization logo in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

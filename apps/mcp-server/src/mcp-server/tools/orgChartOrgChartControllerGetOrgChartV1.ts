@@ -16,7 +16,7 @@ export const tool$orgChartOrgChartControllerGetOrgChartV1: ToolDefinition<
   name: "get-org-chart",
   description: `Get the organization chart
 
-Get the organization chart in Comp AI. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.`,
+Get the organization chart in OpenComp. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

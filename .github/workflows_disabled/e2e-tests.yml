@@ -29,7 +29,7 @@ env:
 jobs:
   e2e-tests:
     name: E2E Tests - ${{ matrix.project }}
-    runs-on: warp-ubuntu-latest-arm64-4x
+    runs-on: ubuntu-latest
     timeout-minutes: 20
 
     strategy:
@@ -430,7 +430,7 @@ jobs:
   # Job to post consolidated test results
   post-results:
     name: Post Test Results to PR
-    runs-on: warp-ubuntu-latest-arm64-4x
+    runs-on: ubuntu-latest
     needs: e2e-tests
     if: always() && github.event_name == 'pull_request'
 

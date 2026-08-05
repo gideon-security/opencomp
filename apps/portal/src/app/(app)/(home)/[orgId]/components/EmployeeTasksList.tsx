@@ -154,7 +154,7 @@ export const EmployeeTasksList = ({
     ...(deviceAgentStepEnabled
       ? [
           {
-            title: 'Download and install Comp AI Device Agent',
+            title: 'Download and install OpenComp Device Agent',
             content: (
               <DeviceAgentAccordionItem
                 member={member}

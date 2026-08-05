@@ -14,38 +14,38 @@ import { Toaster } from 'sonner';
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://portal.trycomp.ai'),
-  title: 'Comp AI | Employee Portal',
+  metadataBase: new URL('https://portal.gideondefender.com'),
+  title: 'OpenComp | Employee Portal',
   description: 'Enter your email and one time password to continue',
   twitter: {
-    title: 'Comp AI | Employee Portal',
+    title: 'OpenComp | Employee Portal',
     description: 'Enter your email and one time password to continue',
     images: [
       {
-        url: 'https://cdn.trycomp.ai/opengraph-image.jpg',
+        url: 'https://cdn.gideondefender.com/opengraph-image.jpg',
         width: 800,
         height: 600,
       },
       {
-        url: 'https://cdn.trycomp.ai/opengraph-image.jpg',
+        url: 'https://cdn.gideondefender.com/opengraph-image.jpg',
         width: 1800,
         height: 1600,
       },
     ],
   },
   openGraph: {
-    title: 'Comp AI | Employee Portal',
+    title: 'OpenComp | Employee Portal',
     description: 'Enter your email and one time password to continue',
-    url: 'https://portal.trycomp.ai',
-    siteName: 'Comp AI',
+    url: 'https://portal.gideondefender.com',
+    siteName: 'OpenComp',
     images: [
       {
-        url: 'https://cdn.trycomp.ai/opengraph-image.jpg',
+        url: 'https://cdn.gideondefender.com/opengraph-image.jpg',
         width: 800,
         height: 600,
       },
       {
-        url: 'https://cdn.trycomp.ai/opengraph-image.jpg',
+        url: 'https://cdn.gideondefender.com/opengraph-image.jpg',
         width: 1800,
         height: 1600,
       },

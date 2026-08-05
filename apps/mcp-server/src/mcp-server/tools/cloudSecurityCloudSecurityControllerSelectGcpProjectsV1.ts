@@ -15,7 +15,7 @@ export const tool$cloudSecurityCloudSecurityControllerSelectGcpProjectsV1:
     name: "select-gcp-projects",
     description: `Select GCP projects for a connection
 
-Select GCP projects for a connection in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
+Select GCP projects for a connection in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

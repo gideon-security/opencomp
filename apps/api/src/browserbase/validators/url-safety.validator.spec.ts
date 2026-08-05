@@ -3,7 +3,7 @@ import { isSafeUrl } from './url-safety.validator';
 describe('isSafeUrl', () => {
   it('should allow normal HTTPS URLs', () => {
     expect(isSafeUrl('https://example.com')).toBe(true);
-    expect(isSafeUrl('https://app.trycomp.ai/dashboard')).toBe(true);
+    expect(isSafeUrl('https://app.gideondefender.com/dashboard')).toBe(true);
   });
 
   it('should allow HTTP URLs', () => {

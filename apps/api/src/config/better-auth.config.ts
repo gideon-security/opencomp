@@ -12,8 +12,8 @@ export type BetterAuthConfig = z.infer<typeof betterAuthConfigSchema>;
  *
  * BASE_URL should point to the API itself since the API is the auth server.
  * For example:
- * - Production: https://api.trycomp.ai
- * - Staging: https://api.staging.trycomp.ai
+ * - Production: https://api.gideondefender.com
+ * - Staging: https://api.staging.gideondefender.com
  * - Development: http://localhost:3333
  */
 export const betterAuthConfig = registerAs(

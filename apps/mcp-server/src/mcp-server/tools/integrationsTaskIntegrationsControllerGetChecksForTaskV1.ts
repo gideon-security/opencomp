@@ -15,7 +15,7 @@ export const tool$integrationsTaskIntegrationsControllerGetChecksForTaskV1:
     name: "get-checks-for-task",
     description: `List checks attached to a task
 
-List checks attached to a task in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+List checks attached to a task in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

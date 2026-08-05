@@ -19,12 +19,12 @@ import type {
   PublicVisibility,
 } from './types';
 
-export const PUBLIC_OPENAPI_TITLE = 'Comp AI API';
+export const PUBLIC_OPENAPI_TITLE = 'OpenComp API';
 
 export const PUBLIC_OPENAPI_DESCRIPTION =
   'Compliance automation API for SOC 2, ISO 27001, HIPAA, GDPR, evidence collection, policy workflows, Trust Access, security questionnaires, integrations, cloud checks, and device compliance.';
 
-export const PUBLIC_SERVER_URL = 'https://api.trycomp.ai';
+export const PUBLIC_SERVER_URL = 'https://api.gideondefender.com';
 
 /**
  * Default request timeout (ms) baked into the generated SDK + MCP server via the
@@ -116,7 +116,7 @@ function createFallbackDescription(operation: OpenApiOperation): string {
     : undefined;
 
   if (summary) {
-    const base = `${toActionFragment(summary)} in Comp AI.`;
+    const base = `${toActionFragment(summary)} in OpenComp.`;
 
     if (tagDescription) {
       return toOperationDescription(`${base} ${tagDescription}`);

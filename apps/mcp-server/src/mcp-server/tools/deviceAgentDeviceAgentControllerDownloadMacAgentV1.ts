@@ -10,7 +10,7 @@ export const tool$deviceAgentDeviceAgentControllerDownloadMacAgentV1:
     name: "download-mac-agent",
     description: `Download macOS Device Agent
 
-Downloads the Comp AI Device Agent installer for macOS as a DMG file. The agent helps monitor device compliance and security policies.`,
+Downloads the OpenComp Device Agent installer for macOS as a DMG file. The agent helps monitor device compliance and security policies.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

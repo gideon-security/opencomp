@@ -99,7 +99,7 @@ function makeAudit(overrides: Partial<IsmsAudit> = {}): IsmsAudit {
         controlKey: 'clause_9_1_monitoring',
         controlRef: 'Clause 9.1 Monitoring',
         whatWasTested: 'Whether info-security performance is being measured.',
-        whereToFind: 'Comp AI > ISMS > Monitoring',
+        whereToFind: 'OpenComp > ISMS > Monitoring',
         result: 'nonconformity_raised',
         notes: 'Three metrics overdue. See F-01.',
         source: 'derived',
@@ -112,7 +112,7 @@ function makeAudit(overrides: Partial<IsmsAudit> = {}): IsmsAudit {
         controlKey: 'a_8_13_backup',
         controlRef: 'A.8.13 Backup',
         whatWasTested: 'Whether backups are taken and tested.',
-        whereToFind: "Comp AI > Evidence tasks tagged 'backup'",
+        whereToFind: "OpenComp > Evidence tasks tagged 'backup'",
         result: null,
         notes: null,
         source: 'derived',
@@ -215,7 +215,7 @@ describe('InternalAuditClient', () => {
     // Appears in the table and again as the finding's related control.
     expect(screen.getAllByText('Clause 9.1 Monitoring').length).toBeGreaterThan(0);
     expect(screen.getByText('A.8.13 Backup')).toBeInTheDocument();
-    expect(screen.getByText('Comp AI > ISMS > Monitoring')).toBeInTheDocument();
+    expect(screen.getByText('OpenComp > ISMS > Monitoring')).toBeInTheDocument();
     expect(screen.getByText('Three metrics overdue. See F-01.')).toBeInTheDocument();
   });
 

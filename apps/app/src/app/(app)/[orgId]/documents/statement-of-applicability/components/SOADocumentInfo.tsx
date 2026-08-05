@@ -83,7 +83,7 @@ export function SOADocumentInfo({
             suffix={`(${progressPercentage}%)`}
           />
           <div className="hidden xl:block h-8 w-px bg-border" />
-          <InfoItem label="Prepared by" value={document.preparedBy || 'Comp AI'} />
+          <InfoItem label="Prepared by" value={document.preparedBy || 'OpenComp'} />
           <div className="hidden xl:block h-8 w-px bg-border" />
           <InfoItem label="Approval status" value={approvalStatusText} />
 

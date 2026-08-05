@@ -15,7 +15,7 @@ export const tool$securityPenetrationTestsSecurityPenetrationTestsControllerGetP
     name: "get-pdf",
     description: `Get penetration test PDF
 
-Get penetration test PDF in Comp AI. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF reports.`,
+Get penetration test PDF in OpenComp. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF reports.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

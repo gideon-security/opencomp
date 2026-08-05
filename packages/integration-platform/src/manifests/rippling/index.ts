@@ -62,7 +62,7 @@ export const ripplingManifest: IntegrationManifest = {
 
   // Rippling is an HRIS — the authoritative source of truth for who works
   // at the company. Phase 2 deactivation is intentionally allowed: when a
-  // worker is offboarded in Rippling they should be deactivated in Comp AI.
+  // worker is offboarded in Rippling they should be deactivated in OpenComp.
   isDirectorySource: true,
 
   services: [

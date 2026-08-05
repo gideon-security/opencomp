@@ -8,7 +8,7 @@ export async function ContextHubList({ entries }: { entries: Context[] }) {
       <CardHeader>
         <CardTitle>Context</CardTitle>
         <CardDescription>
-          You can add context to the Comp AI platform to help it better understand your
+          You can add context to the OpenComp platform to help it better understand your
           organization/processes.
         </CardDescription>
       </CardHeader>

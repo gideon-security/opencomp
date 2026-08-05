@@ -2,38 +2,42 @@ name: Create Feature Branch -> Main Pull Request
 on:
   push:
     branches:
-      - feature/*
       - feat/*
       - chore/*
       - patch/*
       - fix/*
-      - bug/*
       - task/*
       - story/*
-      - claudio/*
-      - mariano/*
-      - lewis/*
-      - daniel/*
-      - COMP-*
       - cursor/*
       - codex/*
-      - chas/*
-      - tofik/*
+
 jobs:
   create-pull-request:
-    runs-on: warp-ubuntu-latest-arm64-4x
+    runs-on: ubuntu-latest
     continue-on-error: true
     permissions:
       pull-requests: write
       contents: write
       issues: write
     steps:
-      - name: Add permissions
-        run: git config --global --add safe.directory /github/workspace
-      - name: Check out epository code
+      - name: Check out repository code
         uses: actions/checkout@v3
+
+      - name: Check for existing pull request
+        id: check_pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_COUNT=$(gh pr list \
+            --head "${{ github.ref_name }}" \
+            --base main \
+            --state open \
+            --json number \
+            --jq 'length')
+          echo "pr_count=$PR_COUNT" >> "$GITHUB_OUTPUT"
+
       - name: Create pull request
-        if: ${{ success() }}
+        if: ${{ steps.check_pr.outputs.pr_count == '0' }}
         uses: repo-sync/pull-request@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -41,5 +45,5 @@ jobs:
           pr_title: "[dev] [${{ github.actor }}] ${{ github.ref_name }}"
           pr_label: "automated-pr"
           pr_body: |
-            This is an automated pull request to merge ${{ github.ref_name }} into dev.
+            This is an automated pull request to merge ${{ github.ref_name }} into main.
             It was created by the [Auto Pull Request] action.

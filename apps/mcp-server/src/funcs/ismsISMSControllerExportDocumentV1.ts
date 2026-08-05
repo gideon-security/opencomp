@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Export an ISMS document as PDF or DOCX
  *
  * @remarks
- * Export an ISMS document as PDF or DOCX in Comp AI.
+ * Export an ISMS document as PDF or DOCX in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

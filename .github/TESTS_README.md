@@ -2,10 +2,10 @@
 
 ## Workflow Status
 
-[![Quick Tests](https://github.com/trycompai/comp/actions/workflows/test-quick.yml/badge.svg)](https://github.com/trycompai/comp/actions/workflows/test-quick.yml)
-[![Unit Tests](https://github.com/trycompai/comp/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/trycompai/comp/actions/workflows/unit-tests.yml)
-[![E2E Tests](https://github.com/trycompai/comp/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/trycompai/comp/actions/workflows/e2e-tests.yml)
-[![Release Tests](https://github.com/trycompai/comp/actions/workflows/release-tests.yml/badge.svg)](https://github.com/trycompai/comp/actions/workflows/release-tests.yml)
+[![Quick Tests](https://github.com/gideon-security/opencomp/actions/workflows/test-quick.yml/badge.svg)](https://github.com/gideon-security/opencomp/actions/workflows/test-quick.yml)
+[![Unit Tests](https://github.com/gideon-security/opencomp/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/gideon-security/opencomp/actions/workflows/unit-tests.yml)
+[![E2E Tests](https://github.com/gideon-security/opencomp/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/gideon-security/opencomp/actions/workflows/e2e-tests.yml)
+[![Release Tests](https://github.com/gideon-security/opencomp/actions/workflows/release-tests.yml/badge.svg)](https://github.com/gideon-security/opencomp/actions/workflows/release-tests.yml)
 
 ## Workflow Overview
 

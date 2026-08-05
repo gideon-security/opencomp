@@ -69,7 +69,7 @@ export function EmployeeTrainingVideos({
             <InformationFilled size={20} />
           </span>
           <div>
-            <Text weight="medium">Security training is managed outside of Comp AI</Text>
+            <Text weight="medium">Security training is managed outside of OpenComp</Text>
             <Text size="sm" variant="muted">
               Evidence for security training completion can be logged in the Security Awareness
               Training evidence task.

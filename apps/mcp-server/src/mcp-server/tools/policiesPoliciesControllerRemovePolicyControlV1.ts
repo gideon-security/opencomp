@@ -15,7 +15,7 @@ export const tool$policiesPoliciesControllerRemovePolicyControlV1:
     name: "remove-policy-control",
     description: `Remove a control mapping from a policy
 
-Remove a control mapping from a policy in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Remove a control mapping from a policy in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

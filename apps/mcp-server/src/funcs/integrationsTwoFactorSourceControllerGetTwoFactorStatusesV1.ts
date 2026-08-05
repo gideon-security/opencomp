@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * Per-user 2FA status from the configured source
  *
  * @remarks
- * Per-user 2FA status from the configured source in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.
+ * Per-user 2FA status from the configured source in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

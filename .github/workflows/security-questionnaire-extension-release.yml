@@ -27,14 +27,14 @@ concurrency:
 env:
   EXTENSION_DIR: apps/browser-extension/security-questionnaire-ext
   EXTENSION_TAG_PREFIX: security-questionnaire-ext-v
-  WXT_PUBLIC_API_BASE_URL: https://api.trycomp.ai
-  WXT_PUBLIC_APP_BASE_URL: https://app.trycomp.ai
+  WXT_PUBLIC_API_BASE_URL: https://api.gideondefender.com
+  WXT_PUBLIC_APP_BASE_URL: https://app.gideondefender.com
 
 jobs:
   release:
     name: Publish Chrome extension
     if: ${{ github.ref == 'refs/heads/release' }}
-    runs-on: warp-ubuntu-latest-arm64-4x
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -131,7 +131,7 @@ jobs:
                 'Refusing to publish: manifest still points at ' + localhost.join(', '),
               );
             }
-            if (!hosts.some((host) => host.startsWith('https://api.trycomp.ai'))) {
+            if (!hosts.some((host) => host.startsWith('https://api.gideondefender.com'))) {
               throw new Error(
                 'Refusing to publish: manifest is missing the production API host',
               );

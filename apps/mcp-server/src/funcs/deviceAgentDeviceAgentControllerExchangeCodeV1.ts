@@ -24,7 +24,7 @@ import { Result } from "../types/fp.js";
  * Exchange an auth code for device credentials
  *
  * @remarks
- * Exchange an auth code for device credentials in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
+ * Exchange an auth code for device credentials in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
  */
 export function deviceAgentDeviceAgentControllerExchangeCodeV1(
   client$: CompAiCore,

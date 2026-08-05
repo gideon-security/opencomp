@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Remove a control mapping from a policy
  *
  * @remarks
- * Remove a control mapping from a policy in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
+ * Remove a control mapping from a policy in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

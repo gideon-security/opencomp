@@ -16,7 +16,7 @@ export const tool$evidenceFormsEvidenceFormsControllerGetPendingSubmissionCountV
     name: "get-pending-submission-count",
     description: `Get pending submission count for current user
 
-Get pending submission count for current user in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
+Get pending submission count for current user in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

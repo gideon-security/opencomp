@@ -1,31 +1,17 @@
 import { db } from '@db';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import type { MacedClient } from '@maced/api-client';
 import type { BillingEntitlementsService } from '../billing/billing-entitlements.service';
 import type { PentestCreditsService } from './pentest-credits.service';
 import { SecurityPenetrationTestsService } from './security-penetration-tests.service';
 
 const mockMacedPentestsCreate = jest.fn();
 
-jest.mock(
-  '@maced/api-client',
-  () => ({
-    createMacedClient: () => ({
-      pentests: {
-        create: mockMacedPentestsCreate,
-      },
-    }),
-    MacedApiError: class MacedApiError extends Error {},
-    MacedWebhookSignatureError: class MacedWebhookSignatureError extends Error {
-      code = 'invalid_signature';
-    },
-    MacedClient: {
-      webhooks: {
-        constructEvent: jest.fn(),
-      },
-    },
-  }),
-  { virtual: true },
-);
+const mockMacedClient = {
+  pentests: {
+    create: mockMacedPentestsCreate,
+  },
+} as unknown as MacedClient;
 
 jest.mock('@db', () => ({
   db: {
@@ -118,6 +104,7 @@ describe('SecurityPenetrationTestsService billing usage', () => {
     service = new SecurityPenetrationTestsService(
       credits as unknown as PentestCreditsService,
       billingEntitlements as unknown as BillingEntitlementsService,
+      mockMacedClient,
     );
   });
 

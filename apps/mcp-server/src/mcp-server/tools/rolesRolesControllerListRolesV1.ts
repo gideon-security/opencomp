@@ -9,7 +9,7 @@ export const tool$rolesRolesControllerListRolesV1: ToolDefinition = {
   name: "list-roles",
   description: `List all roles
 
-List all roles in Comp AI. Create custom roles and resolve permission sets for organization-level access control.`,
+List all roles in OpenComp. Create custom roles and resolve permission sets for organization-level access control.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

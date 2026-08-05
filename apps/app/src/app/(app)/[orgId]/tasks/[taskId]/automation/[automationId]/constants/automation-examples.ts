@@ -18,7 +18,7 @@ export const AUTOMATION_EXAMPLES: AutomationExample[] = [
   {
     title: 'Check if my website has a privacy policy',
     prompt: 'Check if my website has a privacy policy',
-    url: 'https://img.logo.dev/trycomp.ai?token=pk_AZatYxV5QDSfWpRDaBxzRQ',
+    url: 'https://img.logo.dev/gideondefender.com?token=pk_AZatYxV5QDSfWpRDaBxzRQ',
   },
   {
     title: 'Give me a list of failed deployments in my Vercel project',

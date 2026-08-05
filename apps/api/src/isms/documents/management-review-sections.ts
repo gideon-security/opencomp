@@ -120,7 +120,7 @@ function buildReviewSections(
       ? {
           heading: `Actions arising${suffix}`,
           intro:
-            "Actions arising from this review, tracked to closure in Comp AI. Open actions carry forward automatically to the next review's input (a).",
+            "Actions arising from this review, tracked to closure in OpenComp. Open actions carry forward automatically to the next review's input (a).",
           table: {
             headers: ACTION_TABLE_HEADERS,
             rows: actionRows(review.actions),

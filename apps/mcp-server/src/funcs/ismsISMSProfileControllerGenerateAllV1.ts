@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Ensure and regenerate all ISMS documents
  *
  * @remarks
- * Ensure and regenerate all ISMS documents in Comp AI.
+ * Ensure and regenerate all ISMS documents in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -77,7 +77,7 @@ export const AUTO_DOC_ROLE_ROWS = [
     name: 'Control / asset / risk / policy owners',
     holders: 'Identified in the platform per policy, control, risk, task, and vendor.',
     responsibilities:
-      'Implement, operate, and evidence the specific controls, policies, risks, and evidence tasks assigned to them. Operational ownership is assigned at the artifact level in Comp AI.',
+      'Implement, operate, and evidence the specific controls, policies, risks, and evidence tasks assigned to them. Operational ownership is assigned at the artifact level in OpenComp.',
     authority: 'Make operational decisions for their assigned item. Authority granted by the SPO.',
   },
   {
@@ -91,10 +91,10 @@ export const AUTO_DOC_ROLE_ROWS = [
 
 /**
  * Non-removable note reproduced verbatim in the generated document (§2). Clarifies
- * that Comp AI application-access levels are not ISMS governance roles.
+ * that OpenComp application-access levels are not ISMS governance roles.
  */
 export const APPLICATION_ACCESS_NOTE =
-  'Comp AI application-access levels (Owner / Admin / Auditor / Employee / Contractor) are not ISMS governance roles. The ISMS governance roles are defined below.';
+  'OpenComp application-access levels (Owner / Admin / Auditor / Employee / Contractor) are not ISMS governance roles. The ISMS governance roles are defined below.';
 
 /** The application-access levels and what they grant (generated document §2). */
 export const APPLICATION_ACCESS_LEVELS: string[] = [

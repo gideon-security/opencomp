@@ -52,7 +52,7 @@ export class CreateCommentDto {
     description:
       'Optional URL of the page where the comment was created, used for deep-linking in notifications',
     example:
-      'https://app.trycomp.ai/org_abc123/vendors/vnd_abc123?taskItemId=tki_abc123#task-items',
+      'https://app.gideondefender.com/org_abc123/vendors/vnd_abc123?taskItemId=tki_abc123#task-items',
     required: false,
     maxLength: 2048,
   })

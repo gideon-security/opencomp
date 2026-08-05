@@ -15,7 +15,7 @@ export const tool$integrationsSyncControllerGetAvailableSyncProvidersV1:
     name: "get-available-sync-providers",
     description: `List sync providers available to the org
 
-List sync providers available to the org in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+List sync providers available to the org in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

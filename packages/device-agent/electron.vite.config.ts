@@ -12,10 +12,10 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin({ exclude: ['electron-store'] })],
     define: {
       __PORTAL_URL__: JSON.stringify(
-        process.env.PORTAL_URL || 'https://portal.trycomp.ai',
+        process.env.PORTAL_URL || 'https://portal.gideondefender.com',
       ),
       __API_URL__: JSON.stringify(
-        process.env.API_URL || 'https://api.trycomp.ai',
+        process.env.API_URL || 'https://api.gideondefender.com',
       ),
       __AGENT_VERSION__: JSON.stringify(
         process.env.AGENT_VERSION || pkg.version,

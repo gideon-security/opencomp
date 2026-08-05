@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get submission statuses for all forms
  *
  * @remarks
- * Get submission statuses for all forms in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.
+ * Get submission statuses for all forms in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

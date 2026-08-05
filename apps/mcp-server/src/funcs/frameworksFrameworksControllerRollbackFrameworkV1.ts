@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Roll back a framework sync operation
  *
  * @remarks
- * Roll back a framework sync operation in Comp AI. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
+ * Roll back a framework sync operation in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
  */
 export function frameworksFrameworksControllerRollbackFrameworkV1(
   client$: CompAiCore,

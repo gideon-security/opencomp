@@ -63,7 +63,7 @@ export class PeopleBackgroundChecksController {
       employeeName: body.employeeName,
       employeeEmail: body.employeeEmail.trim().toLowerCase(),
       requesterNotes: body.requesterNotes?.trim() || undefined,
-      requesterEmail: authContext.userEmail ?? 'api-key@trycomp.ai',
+      requesterEmail: authContext.userEmail ?? 'api-key@gideondefender.com',
     });
   }
 
@@ -121,7 +121,7 @@ export class PeopleBackgroundChecksController {
     return this.backgroundChecksService.retryForMember({
       organizationId,
       memberId,
-      requesterEmail: authContext.userEmail ?? 'api-key@trycomp.ai',
+      requesterEmail: authContext.userEmail ?? 'api-key@gideondefender.com',
     });
   }
 

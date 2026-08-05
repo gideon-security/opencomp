@@ -78,7 +78,7 @@ describe('findOrCreateBackgroundCheckBillingCustomer', () => {
       findOrCreateBackgroundCheckBillingCustomer({
         stripeService,
         organizationId: 'org_1',
-        customerEmail: 'billing@trycomp.ai',
+        customerEmail: 'billing@gideondefender.com',
       }),
     ).resolves.toBe('cus_winner');
 
@@ -90,7 +90,7 @@ describe('findOrCreateBackgroundCheckBillingCustomer', () => {
       { idempotencyKey: 'background-check-customer:org_1' },
     );
     expect(customersUpdate).toHaveBeenCalledWith('cus_winner', {
-      email: 'billing@trycomp.ai',
+      email: 'billing@gideondefender.com',
     });
   });
 

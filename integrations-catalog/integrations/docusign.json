@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "setupInstructions": "1. Go to https://developers.docusign.com/apps-and-keys\n2. Create an Integration (App)\n3. Set redirect URI to: https://api.trycomp.ai/v1/integrations/oauth/callback\n4. Copy Integration Key (Client ID) and Secret Key\n5. After connecting, enter your DocuSign Account ID and API base URL (found in DocuSign Admin > API and Keys)",
+      "setupInstructions": "1. Go to https://developers.docusign.com/apps-and-keys\n2. Create an Integration (App)\n3. Set redirect URI to: https://api.gideondefender.com/v1/integrations/oauth/callback\n4. Copy Integration Key (Client ID) and Secret Key\n5. After connecting, enter your DocuSign Account ID and API base URL (found in DocuSign Admin > API and Keys)",
       "scopes": [
         "signature",
         "offline_access"

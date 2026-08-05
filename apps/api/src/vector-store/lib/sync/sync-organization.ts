@@ -194,7 +194,7 @@ async function verifyEmbeddingIsReady(
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       // First, fetch the embedding to get its vector
-      const fetchedEmbeddings = await vectorIndex.fetch([embeddingId], {
+      const fetchedEmbeddings = await vectorIndex.fetch([embeddingId], organizationId, {
         includeVectors: true,
       });
 
@@ -220,6 +220,7 @@ async function verifyEmbeddingIsReady(
       const queryResults = await vectorIndex.query({
         vector: fetchedEmbedding.vector,
         topK: 1,
+        organizationId,
         filter: `organizationId = "${organizationId}"`,
         includeMetadata: true,
       });
@@ -415,7 +416,7 @@ async function deleteOrphanedEmbeddings(
     if (!shouldExist && vectorIndex) {
       const idsToDelete = embeddings.map((e) => e.id);
       try {
-        await vectorIndex.delete(idsToDelete);
+        await vectorIndex.delete(idsToDelete, organizationId);
         orphanedDeleted += idsToDelete.length;
         logger.info('Deleted orphaned embeddings', {
           sourceId,

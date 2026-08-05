@@ -83,12 +83,12 @@ describe('filterDescriptionByFrameworks', () => {
 
   it('handles the real-world Asset Inventory with HIPAA example', () => {
     const desc =
-      'Keep and maintain a list of your devices (laptops/servers). If you install the Comp AI agent on your devices, these will be automatically tracked in-app and you can mark this task as not-relevant.\n\nFor HIPAA: Know which devices hold your patient data is going and create a maintain a system to track it\n\nComp AI device agent is located at: portal.trycomp.ai';
+      'Keep and maintain a list of your devices (laptops/servers). If you install the OpenComp agent on your devices, these will be automatically tracked in-app and you can mark this task as not-relevant.\n\nFor HIPAA: Know which devices hold your patient data is going and create a maintain a system to track it\n\nOpenComp device agent is located at: portal.gideondefender.com';
 
     const soc2Only = filterDescriptionByFrameworks(desc, ['SOC 2']);
     expect(soc2Only).toContain('Keep and maintain a list');
     expect(soc2Only).not.toContain('HIPAA');
-    expect(soc2Only).toContain('Comp AI device agent');
+    expect(soc2Only).toContain('OpenComp device agent');
   });
 
   it('handles SOC 2 v.1 seed name variant', () => {

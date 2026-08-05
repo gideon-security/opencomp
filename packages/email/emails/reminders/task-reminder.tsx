@@ -23,13 +23,13 @@ interface Props {
 }
 
 export const TaskReminderEmail = ({ email, name, dueDate, recordId }: Props) => {
-  const link = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.trycomp.ai'}${recordId}`;
+  const link = `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.gideondefender.com'}${recordId}`;
 
   return (
     <Html>
       <Tailwind>
         <head />
-        <Preview>Comp AI - Task Reminder</Preview>
+        <Preview>OpenComp - Task Reminder</Preview>
 
         <Body className="mx-auto my-auto bg-[#fff] font-sans">
           <Container

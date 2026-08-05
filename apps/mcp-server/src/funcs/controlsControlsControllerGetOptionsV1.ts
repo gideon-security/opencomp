@@ -24,7 +24,7 @@ import { Result } from "../types/fp.js";
  * Get dropdown options for creating controls
  *
  * @remarks
- * Get dropdown options for creating controls in Comp AI. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.
+ * Get dropdown options for creating controls in OpenComp. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.
  */
 export function controlsControlsControllerGetOptionsV1(
   client$: CompAiCore,

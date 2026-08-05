@@ -25,10 +25,10 @@ export function setInlineButtonState(
   if (!host?.shadowRoot) return;
   const label =
     state === 'busy'
-      ? 'Drafting answer from Comp AI'
+      ? 'Drafting answer from OpenComp'
       : state === 'inserted'
-        ? 'Answer inserted by Comp AI'
-        : 'Generate answer with Comp AI';
+        ? 'Answer inserted by OpenComp'
+        : 'Generate answer with OpenComp';
   host.shadowRoot.innerHTML = `
     <style>
       :host {

@@ -610,7 +610,7 @@ describe('TrustAccessService access request notification', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.BETTER_AUTH_URL = 'https://app.trycomp.ai';
+    process.env.BETTER_AUTH_URL = 'https://app.gideondefender.com';
   });
 
   afterAll(() => {
@@ -638,7 +638,7 @@ describe('TrustAccessService access request notification', () => {
     // trust portal settings/overview page).
     expect(emailService.sendAccessRequestNotification).toHaveBeenCalledWith(
       expect.objectContaining({
-        reviewUrl: 'https://app.trycomp.ai/org_123/trust/access-requests',
+        reviewUrl: 'https://app.gideondefender.com/org_123/trust/access-requests',
       }),
     );
   });

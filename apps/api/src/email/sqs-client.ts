@@ -14,7 +14,7 @@ function computeDelaySeconds(scheduledAt?: string): number | undefined {
   const delayMs = new Date(scheduledAt).getTime() - Date.now();
   if (delayMs <= 0) return undefined;
 
-  const seconds = Math.floor(delayMs / 1000);
+  const seconds = Math.ceil(delayMs / 1000);
   if (seconds > SQS_MAX_DELAY_SECONDS) {
     console.warn(
       `[enqueueEmail] scheduledAt is ${seconds}s in the future; SQS delays are capped at ${SQS_MAX_DELAY_SECONDS}s. The email will be sent early.`,

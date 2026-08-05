@@ -15,7 +15,7 @@ export const tool$knowledgeBaseKnowledgeBaseControllerGetDownloadUrlV1:
     name: "get-download-url",
     description: `Get a signed download URL for a document
 
-Get a signed download URL for a document in Comp AI. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.`,
+Get a signed download URL for a document in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

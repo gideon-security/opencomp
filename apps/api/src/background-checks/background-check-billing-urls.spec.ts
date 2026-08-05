@@ -15,7 +15,7 @@ describe('validateBackgroundCheckBillingRedirectUrl', () => {
 
     expect(() =>
       validateBackgroundCheckBillingRedirectUrl(
-        'https://app.trycomp.ai/return',
+        'https://app.gideondefender.com/return',
       ),
     ).toThrow(BadRequestException);
   });
@@ -31,7 +31,7 @@ describe('validateBackgroundCheckBillingRedirectUrl', () => {
   });
 
   it('rejects opaque redirect URLs', () => {
-    process.env.NEXT_PUBLIC_APP_URL = 'https://app.trycomp.ai';
+    process.env.NEXT_PUBLIC_APP_URL = 'https://app.gideondefender.com';
     process.env.APP_URL = '';
     process.env.BETTER_AUTH_URL = '';
 

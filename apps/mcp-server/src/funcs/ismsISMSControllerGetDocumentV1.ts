@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get an ISMS document with its latest version
  *
  * @remarks
- * Get an ISMS document with its latest version in Comp AI.
+ * Get an ISMS document with its latest version in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

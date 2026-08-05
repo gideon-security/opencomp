@@ -60,37 +60,37 @@ export const TRUST_OPERATION_METADATA: Record<string, PublicOperationMetadata> =
     TrustAccessController_getNda_v1: {
       summary: 'Get Trust Access NDA',
       description:
-        'Internal Trust Portal NDA session endpoint used by the Comp AI frontend during reviewer access flows.',
+        'Internal Trust Portal NDA session endpoint used by the OpenComp frontend during reviewer access flows.',
       visibility: 'excluded',
     },
     TrustAccessController_previewNdaByToken_v1: {
       summary: 'Preview Trust Access NDA by session',
       description:
-        'Internal Trust Portal NDA preview endpoint used by the Comp AI frontend during reviewer access flows.',
+        'Internal Trust Portal NDA preview endpoint used by the OpenComp frontend during reviewer access flows.',
       visibility: 'excluded',
     },
     TrustAccessController_signNda_v1: {
       summary: 'Sign Trust Access NDA',
       description:
-        'Internal Trust Portal NDA signing endpoint used by the Comp AI frontend during reviewer access flows.',
+        'Internal Trust Portal NDA signing endpoint used by the OpenComp frontend during reviewer access flows.',
       visibility: 'excluded',
     },
     TrustAccessController_getGrantByAccessToken_v1: {
       summary: 'Get Trust Access grant session',
       description:
-        'Internal Trust Portal grant session endpoint used by the Comp AI frontend for reviewer access.',
+        'Internal Trust Portal grant session endpoint used by the OpenComp frontend for reviewer access.',
       visibility: 'excluded',
     },
     TrustAccessController_getPoliciesByAccessToken_v1: {
       summary: 'List Trust Access policies by session',
       description:
-        'Internal Trust Portal policy session endpoint used by the Comp AI frontend for reviewer access.',
+        'Internal Trust Portal policy session endpoint used by the OpenComp frontend for reviewer access.',
       visibility: 'excluded',
     },
     TrustAccessController_downloadAllPolicies_v1: {
       summary: 'Download Trust Access policy bundle',
       description:
-        'Internal Trust Portal policy bundle endpoint used by the Comp AI frontend for reviewer access.',
+        'Internal Trust Portal policy bundle endpoint used by the OpenComp frontend for reviewer access.',
       visibility: 'excluded',
     },
     TrustAccessController_getFaqs_v1: {

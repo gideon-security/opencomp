@@ -15,7 +15,7 @@ export const tool$policiesPoliciesControllerGetPolicyVersionByIdV1:
     name: "get-policy-version",
     description: `Get policy version by ID
 
-Get policy version by ID in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Get policy version by ID in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -16,7 +16,7 @@ export const tool$commentsCommentsControllerUpdateCommentV1: ToolDefinition<
   name: "update-comment",
   description: `Update a comment
 
-Update a comment in Comp AI. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.`,
+Update a comment in OpenComp. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

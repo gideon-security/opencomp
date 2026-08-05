@@ -358,7 +358,7 @@ export class HybridAuthGuard implements CanActivate {
         // org. A 401 would make the MCP client re-run sign-in in a loop.
         throw new ForbiddenException(
           'This account belongs to multiple organizations. Choose your ' +
-            'organization for AI/MCP access in Comp AI settings, then try again.',
+            'organization for AI/MCP access in OpenComp settings, then try again.',
         );
       }
       member = chosen;

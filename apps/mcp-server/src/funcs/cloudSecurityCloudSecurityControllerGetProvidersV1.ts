@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * List supported cloud providers
  *
  * @remarks
- * List supported cloud providers in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
+ * List supported cloud providers in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
  */
 export function cloudSecurityCloudSecurityControllerGetProvidersV1(
   client$: CompAiCore,

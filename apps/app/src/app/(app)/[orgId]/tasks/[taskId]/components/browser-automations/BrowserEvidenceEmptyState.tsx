@@ -7,7 +7,7 @@ const STEPS = [
   {
     n: 'Step 1',
     title: 'Connect once',
-    desc: 'Sign in to the vendor a single time. Comp AI saves the session and re-logs in on its own.',
+    desc: 'Sign in to the vendor a single time. OpenComp saves the session and re-logs in on its own.',
   },
   {
     n: 'Step 2',
@@ -47,7 +47,7 @@ export function BrowserEvidenceEmptyState({
           </span>
         </div>
         <p className="mt-1 text-xs text-muted-foreground">
-          Comp AI signs in to your vendors and captures screenshots as evidence — on a
+          OpenComp signs in to your vendors and captures screenshots as evidence — on a
           schedule, unattended.
         </p>
       </div>

@@ -15,7 +15,7 @@ export const tool$integrationsConnectionsControllerUpdateConnectionServicesV1:
     name: "update-connection-services",
     description: `Set services enabled on a connection
 
-Set services enabled on a connection in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Set services enabled on a connection in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

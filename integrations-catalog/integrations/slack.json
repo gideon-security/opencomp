@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "setupInstructions": "1. Go to https://api.slack.com/apps and create a new Slack app\n2. Under 'OAuth & Permissions', add Bot Token Scopes: users:read, users:read.email, team:read\n3. Install the app to your workspace\n4. Set redirect URI to https://api.trycomp.ai/v1/integrations/oauth/callback\n5. Enter Client ID and Client Secret below",
+      "setupInstructions": "1. Go to https://api.slack.com/apps and create a new Slack app\n2. Under 'OAuth & Permissions', add Bot Token Scopes: users:read, users:read.email, team:read\n3. Install the app to your workspace\n4. Set redirect URI to https://api.gideondefender.com/v1/integrations/oauth/callback\n5. Enter Client ID and Client Secret below",
       "createAppUrl": "https://api.slack.com/apps",
       "scopes": [
         "users:read",

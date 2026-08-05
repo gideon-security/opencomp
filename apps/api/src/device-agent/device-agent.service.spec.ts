@@ -35,6 +35,7 @@ describe('DeviceAgentService', () => {
   let service: DeviceAgentService;
 
   beforeAll(() => {
+    process.env.FLEET_AGENT_BUCKET_NAME = 'test-bucket';
     process.env.APP_AWS_BUCKET_NAME = 'test-bucket';
     process.env.APP_AWS_REGION = 'us-east-1';
     process.env.APP_AWS_ACCESS_KEY_ID = 'test-key';
@@ -54,12 +55,12 @@ describe('DeviceAgentService', () => {
       const result = await service.downloadMacAgent();
 
       expect(result.stream).toBe(mockStream);
-      expect(result.filename).toBe('Comp AI Agent-1.0.0-arm64.dmg');
+      expect(result.filename).toBe('OpenComp Agent-1.0.0-arm64.dmg');
       expect(result.contentType).toBe('application/x-apple-diskimage');
       expect(mockSend).toHaveBeenCalledWith(
         expect.objectContaining({
           Bucket: 'test-bucket',
-          Key: 'macos/Comp AI Agent-1.0.0-arm64.dmg',
+          Key: 'macos/OpenComp Agent-1.0.0-arm64.dmg',
         }),
       );
     });
@@ -235,12 +236,12 @@ describe('DeviceAgentService', () => {
       const result = await service.downloadWindowsAgent();
 
       expect(result.stream).toBe(mockStream);
-      expect(result.filename).toBe('Comp AI Agent 1.0.0.exe');
+      expect(result.filename).toBe('OpenComp Agent 1.0.0.exe');
       expect(result.contentType).toBe('application/octet-stream');
       expect(mockSend).toHaveBeenCalledWith(
         expect.objectContaining({
           Bucket: 'test-bucket',
-          Key: 'windows/Comp AI Agent 1.0.0.exe',
+          Key: 'windows/OpenComp Agent 1.0.0.exe',
         }),
       );
     });

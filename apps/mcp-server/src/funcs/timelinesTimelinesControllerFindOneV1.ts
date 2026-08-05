@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Get a single timeline instance with phases
  *
  * @remarks
- * Get a single timeline instance with phases in Comp AI. Track audit and compliance readiness timelines, phases, and review milestones for an organization.
+ * Get a single timeline instance with phases in OpenComp. Track audit and compliance readiness timelines, phases, and review milestones for an organization.
  */
 export function timelinesTimelinesControllerFindOneV1(
   client$: CompAiCore,

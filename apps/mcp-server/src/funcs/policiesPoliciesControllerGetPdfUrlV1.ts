@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get signed URL for policy PDF (alternate path)
  *
  * @remarks
- * Get signed URL for policy PDF (alternate path) in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
+ * Get signed URL for policy PDF (alternate path) in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

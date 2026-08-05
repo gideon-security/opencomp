@@ -10,7 +10,7 @@ export const tool$organizationOrganizationControllerGetOnboardingV1:
     name: "get-onboarding",
     description: `Get organization onboarding status
 
-Get organization onboarding status in Comp AI. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.`,
+Get organization onboarding status in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

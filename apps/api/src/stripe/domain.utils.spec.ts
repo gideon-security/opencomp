@@ -41,6 +41,6 @@ describe('isPublicEmailDomain', () => {
 
   it('returns false for a real company domain', () => {
     expect(isPublicEmailDomain('acme.com')).toBe(false);
-    expect(isPublicEmailDomain('trycomp.ai')).toBe(false);
+    expect(isPublicEmailDomain('gideondefender.com')).toBe(false);
   });
 });

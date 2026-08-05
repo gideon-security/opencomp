@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get a signed view URL for a document
  *
  * @remarks
- * Get a signed view URL for a document in Comp AI. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.
+ * Get a signed view URL for a document in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

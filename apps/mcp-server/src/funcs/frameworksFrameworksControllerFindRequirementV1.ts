@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Get a specific requirement with related controls
  *
  * @remarks
- * Get a specific requirement with related controls in Comp AI. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
+ * Get a specific requirement with related controls in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
  */
 export function frameworksFrameworksControllerFindRequirementV1(
   client$: CompAiCore,

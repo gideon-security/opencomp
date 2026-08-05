@@ -120,7 +120,7 @@ describe('OrganizationAccessService', () => {
     expect(isDomainActiveCustomer).not.toHaveBeenCalled();
   });
 
-  it('grants on @trycomp.ai email without consulting Stripe', async () => {
+  it('grants on @gideondefender.com email without consulting Stripe', async () => {
     mockedDb.organization.findUnique.mockResolvedValue({
       id: 'org_1',
       hasAccess: false,
@@ -130,7 +130,7 @@ describe('OrganizationAccessService', () => {
 
     const result = await service.autoApproveAccess({
       organizationId: 'org_1',
-      userEmail: 'tofik@trycomp.ai',
+      userEmail: 'tofik@gideondefender.com',
     });
 
     expect(result).toEqual({
@@ -142,7 +142,7 @@ describe('OrganizationAccessService', () => {
     expect(mockedDb.organization.update).toHaveBeenCalled();
   });
 
-  it('does not grant on @trycomp.ai email when the account email is unverified', async () => {
+  it('does not grant on @gideondefender.com email when the account email is unverified', async () => {
     mockedDb.organization.findUnique.mockResolvedValue({
       id: 'org_1',
       hasAccess: false,
@@ -153,7 +153,7 @@ describe('OrganizationAccessService', () => {
 
     const result = await service.autoApproveAccess({
       organizationId: 'org_1',
-      userEmail: 'tofik@trycomp.ai',
+      userEmail: 'tofik@gideondefender.com',
     });
 
     expect(result).toEqual({

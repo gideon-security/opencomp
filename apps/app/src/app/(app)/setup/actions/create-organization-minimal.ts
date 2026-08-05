@@ -73,10 +73,10 @@ export const createOrganizationMinimal = authActionClientWithoutOrg
         };
       }
 
-      // Internal team accounts (verified @trycomp.ai) have access provisioned up front.
+      // Internal team accounts (verified @gideondefender.com) have access provisioned up front.
       const userEmail = session.user.email;
       const isVerifiedTryCompEmail =
-        (userEmail?.endsWith('@trycomp.ai') ?? false) &&
+        (userEmail?.endsWith('@gideondefender.com') ?? false) &&
         session.user.emailVerified === true;
 
       // Check if self-hosted

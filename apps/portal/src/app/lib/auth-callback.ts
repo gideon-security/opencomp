@@ -11,7 +11,7 @@ export interface SignInCallbackUrls {
  *
  * Both URLs are absolute and rooted at the PORTAL origin. Passing an
  * `errorCallbackURL` is essential: without it, better-auth falls back to a
- * default error URL rooted at the API's baseURL (api.trycomp.ai) when the OAuth
+ * default error URL rooted at the API's baseURL (api.gideondefender.com) when the OAuth
  * callback errors, which lands the user on the Swagger API docs page instead of
  * the portal (see redirectOnError/parseState in better-auth and CS-760). This is
  * most visible for brand-new Microsoft/Entra work accounts, whose ID token can

@@ -16,7 +16,7 @@ export const PUBLIC_TAG_METADATA: Record<string, PublicTagMetadata> = {
   },
   'Background Check Billing': {
     description:
-      'Manage Stripe setup and billing sessions for background check purchases inside the Comp AI app.',
+      'Manage Stripe setup and billing sessions for background check purchases inside the OpenComp app.',
     visibility: 'excluded',
   },
   'Background Checks': {
@@ -45,7 +45,7 @@ export const PUBLIC_TAG_METADATA: Record<string, PublicTagMetadata> = {
   },
   Context: {
     description:
-      'Manage organization context that helps Comp AI tailor policies, assessments, and compliance automation to the business.',
+      'Manage organization context that helps OpenComp tailor policies, assessments, and compliance automation to the business.',
   },
   Controls: {
     description:
@@ -97,6 +97,11 @@ export const PUBLIC_TAG_METADATA: Record<string, PublicTagMetadata> = {
     description:
       'Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.',
   },
+  ISMS: {
+    group: 'ISMS',
+    description:
+      'Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.',
+  },
   'Knowledge Base': {
     description:
       'Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.',
@@ -115,7 +120,7 @@ export const PUBLIC_TAG_METADATA: Record<string, PublicTagMetadata> = {
   },
   'Pentest Credits': {
     description:
-      'Read penetration-test credit balances used by the Comp AI purchasing flow.',
+      'Read penetration-test credit balances used by the OpenComp purchasing flow.',
     visibility: 'excluded',
   },
   Policies: {

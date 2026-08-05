@@ -24,7 +24,7 @@ import { Result } from "../types/fp.js";
  * Delete all manual answers for an organization
  *
  * @remarks
- * Delete all manual answers for an organization in Comp AI. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.
+ * Delete all manual answers for an organization in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

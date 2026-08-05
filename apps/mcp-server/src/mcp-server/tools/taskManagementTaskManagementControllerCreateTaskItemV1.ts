@@ -15,7 +15,7 @@ export const tool$taskManagementTaskManagementControllerCreateTaskItemV1:
     name: "create-task-item",
     description: `Create a new task item
 
-Create a new task item in Comp AI. Manage task items and attachments linked to operational entities such as risks and vendors.`,
+Create a new task item in OpenComp. Manage task items and attachments linked to operational entities such as risks and vendors.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

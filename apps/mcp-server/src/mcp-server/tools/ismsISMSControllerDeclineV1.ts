@@ -14,7 +14,7 @@ export const tool$ismsISMSControllerDeclineV1: ToolDefinition<typeof args> = {
   name: "decline",
   description: `Decline an ISMS document
 
-Decline an ISMS document in Comp AI.`,
+Decline an ISMS document in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

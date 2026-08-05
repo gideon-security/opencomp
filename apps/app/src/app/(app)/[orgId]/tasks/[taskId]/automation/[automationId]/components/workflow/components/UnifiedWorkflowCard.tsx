@@ -78,7 +78,7 @@ export function UnifiedWorkflowCard({
       {/* Header with integration icons */}
       <CardHeader className="p-4">
         <div className="flex items-center gap-2 mb-4">
-          {(integrationsUsed?.length ? integrationsUsed : [{ link: 'trycomp.ai' }]).map(
+          {(integrationsUsed?.length ? integrationsUsed : [{ link: 'gideondefender.com' }]).map(
             (integration) => (
               <div
                 key={`https://img.logo.dev/${integration.link}?token=pk_AZatYxV5QDSfWpRDaBxzRQ`}

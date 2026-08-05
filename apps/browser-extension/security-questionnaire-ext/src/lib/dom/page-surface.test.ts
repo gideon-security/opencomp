@@ -13,7 +13,7 @@ describe('page surface detection', () => {
       shouldSkipQuestionnaireInjection(new URL('http://localhost:3333/v1/auth/me')),
     ).toBe(true);
     expect(
-      shouldSkipQuestionnaireInjection(new URL('https://app.staging.trycomp.ai/auth')),
+      shouldSkipQuestionnaireInjection(new URL('https://app.staging.gideondefender.com/auth')),
     ).toBe(true);
   });
 

@@ -611,7 +611,7 @@ describe('SOAService', () => {
       (mockDb.sOADocument.findFirst as jest.Mock).mockResolvedValue({
         id: 'doc-1',
         organizationId: 'org-1',
-        preparedBy: 'Comp AI',
+        preparedBy: 'OpenComp',
         answeredQuestions: 2,
         totalQuestions: 2,
         approvedAt: null,
@@ -688,7 +688,7 @@ describe('SOAService', () => {
       (mockDb.sOADocument.findFirst as jest.Mock).mockResolvedValue({
         id: 'doc-1',
         organizationId: 'org-1',
-        preparedBy: 'Comp AI',
+        preparedBy: 'OpenComp',
         answeredQuestions: 0,
         totalQuestions: 1,
         approvedAt: null,

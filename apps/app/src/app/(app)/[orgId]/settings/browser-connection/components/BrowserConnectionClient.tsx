@@ -312,7 +312,7 @@ export function BrowserConnectionClient({
             <li className="flex gap-1.5">
               <span className="shrink-0 text-foreground">1.</span>
               <span>
-                Connect a vendor login here — Comp AI signs in for you, including any
+                Connect a vendor login here — OpenComp signs in for you, including any
                 two-factor codes.
               </span>
             </li>
@@ -352,7 +352,7 @@ export function BrowserConnectionClient({
                   : `${atRisk.length} connections can stay signed in on their own`}
               </div>
               <div className="mt-0.5 text-[12px] leading-relaxed text-muted-foreground">
-                Add an authenticator setup key and Comp AI generates the 6-digit code at
+                Add an authenticator setup key and OpenComp generates the 6-digit code at
                 every run — no manual re-sign-ins.
               </div>
             </div>
@@ -381,7 +381,7 @@ export function BrowserConnectionClient({
           <div className="max-w-[320px]">
             <div className="text-sm text-foreground">No connections yet</div>
             <p className="mt-1 text-[12.5px] text-muted-foreground">
-              Connect a vendor login so Comp AI can sign in and capture evidence for your
+              Connect a vendor login so OpenComp can sign in and capture evidence for your
               browser automations.
             </p>
             {canConnect && (

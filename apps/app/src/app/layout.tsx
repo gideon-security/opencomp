@@ -17,38 +17,38 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://app.trycomp.ai'),
-  title: 'Comp AI | Automate SOC 2, ISO 27001 and GDPR compliance with AI.',
+  metadataBase: new URL('https://app.gideondefender.com'),
+  title: 'OpenComp | Automate SOC 2, ISO 27001 and GDPR compliance with AI.',
   description: 'Automate SOC 2, ISO 27001 and GDPR compliance with AI.',
   twitter: {
-    title: 'Comp AI | Automate SOC 2, ISO 27001 and GDPR compliance with AI.',
+    title: 'OpenComp | Automate SOC 2, ISO 27001 and GDPR compliance with AI.',
     description: 'Automate SOC 2, ISO 27001 and GDPR compliance with AI.',
     images: [
       {
-        url: 'https://cdn.trycomp.ai/opengraph-image.jpg',
+        url: 'https://cdn.gideondefender.com/opengraph-image.jpg',
         width: 800,
         height: 600,
       },
       {
-        url: 'https://cdn.trycomp.ai/opengraph-image.jpg',
+        url: 'https://cdn.gideondefender.com/opengraph-image.jpg',
         width: 1800,
         height: 1600,
       },
     ],
   },
   openGraph: {
-    title: 'Comp AI | Automate SOC 2, ISO 27001 and GDPR compliance with AI.',
+    title: 'OpenComp | Automate SOC 2, ISO 27001 and GDPR compliance with AI.',
     description: 'Automate SOC 2, ISO 27001 and GDPR compliance with AI.',
-    url: 'https://app.trycomp.ai',
-    siteName: 'Comp AI',
+    url: 'https://app.gideondefender.com',
+    siteName: 'OpenComp',
     images: [
       {
-        url: 'https://cdn.trycomp.ai/opengraph-image.jpg',
+        url: 'https://cdn.gideondefender.com/opengraph-image.jpg',
         width: 800,
         height: 600,
       },
       {
-        url: 'https://cdn.trycomp.ai/opengraph-image.jpg',
+        url: 'https://cdn.gideondefender.com/opengraph-image.jpg',
         width: 1800,
         height: 1600,
       },

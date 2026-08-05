@@ -16,7 +16,7 @@ export const tool$cloudSecurityCloudSecurityControllerGetHistoryV1:
     description:
       `List resolution, exception, and regression history for a connection
 
-List resolution, exception, and regression history for a connection in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
+List resolution, exception, and regression history for a connection in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

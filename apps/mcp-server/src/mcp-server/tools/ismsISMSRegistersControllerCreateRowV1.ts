@@ -16,7 +16,7 @@ export const tool$ismsISMSRegistersControllerCreateRowV1: ToolDefinition<
   name: "create-row",
   description: `Create a row in an ISMS register
 
-Create a row in an ISMS register in Comp AI.`,
+Create a row in an ISMS register in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

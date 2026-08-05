@@ -9,7 +9,7 @@ import type { SeedReviewInputDefinition } from './types';
 
 /** The Procedure paragraph, rendered verbatim into the generated document. */
 export function defaultProcedureText(organizationName: string): string {
-  return `${organizationName} holds a management review of the ISMS at least annually, and additionally after any major incident or significant change. The review is chaired by top management, considers the inputs required by ISO 27001 Clause 9.3.2, and records the outputs required by Clause 9.3.3. Minutes are retained in Comp AI.`;
+  return `${organizationName} holds a management review of the ISMS at least annually, and additionally after any major incident or significant change. The review is chaired by top management, considers the inputs required by ISO 27001 Clause 9.3.2, and records the outputs required by Clause 9.3.3. Minutes are retained in OpenComp.`;
 }
 
 /** Default "Decisions on continual improvement" text for a new review (9.3.3). */
@@ -51,7 +51,7 @@ export function reviewConclusionSentence({
  * The ten default Inputs (9.3.2) rows seeded per review: inputs (a) through
  * (g), with (d) split into its four sub-inputs. The table is the meeting
  * agenda — working through it in order covers everything ISO requires.
- * "Where to find it" entries begin with "Comp AI" to signal the default
+ * "Where to find it" entries begin with "OpenComp" to signal the default
  * location; the customer overwrites the field when evidence lives elsewhere.
  * Seeding is idempotent by inputKey (seedReviewInputsIfMissing) and never
  * overwrites customer edits.
@@ -61,14 +61,14 @@ export const SEED_REVIEW_INPUT_DEFINITIONS: SeedReviewInputDefinition[] = [
     inputKey: 'a_prior_actions',
     inputRef: '(a) Prior actions',
     whatItCovers: 'Status of actions from previous management reviews.',
-    whereToFind: 'Comp AI > ISMS > Management Review',
+    whereToFind: 'OpenComp > ISMS > Management Review',
   },
   {
     inputKey: 'b_context_changes',
     inputRef: '(b) Context changes',
     whatItCovers:
       'Changes in external and internal issues relevant to the ISMS.',
-    whereToFind: 'Comp AI > ISMS > Documents > Context of the Organization',
+    whereToFind: 'OpenComp > ISMS > Documents > Context of the Organization',
   },
   {
     inputKey: 'c_interested_party_changes',
@@ -76,25 +76,25 @@ export const SEED_REVIEW_INPUT_DEFINITIONS: SeedReviewInputDefinition[] = [
     whatItCovers: 'Changes in needs and expectations of interested parties.',
     // Canonical document titles so the agenda reference is followable.
     whereToFind:
-      'Comp AI > ISMS > Documents > Interested Parties Register & Interested Parties Requirements',
+      'OpenComp > ISMS > Documents > Interested Parties Register & Interested Parties Requirements',
   },
   {
     inputKey: 'd1_nonconformity_trends',
     inputRef: '(d.1) Nonconformity trends',
     whatItCovers: 'Trends in nonconformities and corrective actions.',
-    whereToFind: 'Comp AI > Findings',
+    whereToFind: 'OpenComp > Findings',
   },
   {
     inputKey: 'd2_monitoring_results',
     inputRef: '(d.2) Monitoring results',
     whatItCovers: 'Monitoring and measurement results.',
-    whereToFind: 'Comp AI > ISMS > Monitoring',
+    whereToFind: 'OpenComp > ISMS > Monitoring',
   },
   {
     inputKey: 'd3_audit_results',
     inputRef: '(d.3) Audit results',
     whatItCovers: 'Results of internal audits.',
-    whereToFind: 'Comp AI > ISMS > Internal Audit',
+    whereToFind: 'OpenComp > ISMS > Internal Audit',
   },
   {
     inputKey: 'd4_objectives_fulfilment',
@@ -103,28 +103,28 @@ export const SEED_REVIEW_INPUT_DEFINITIONS: SeedReviewInputDefinition[] = [
       'Extent to which information security objectives have been met.',
     // Canonical document title so the agenda reference is followable.
     whereToFind:
-      'Comp AI > ISMS > Documents > Information Security Objectives and Plan',
+      'OpenComp > ISMS > Documents > Information Security Objectives and Plan',
   },
   {
     inputKey: 'e_interested_party_feedback',
     inputRef: '(e) Interested-party feedback',
     whatItCovers:
       'Feedback received from interested parties (customers, vendors, regulators).',
-    whereToFind: 'Comp AI > Vendors (reviews) + external channels',
+    whereToFind: 'OpenComp > Vendors (reviews) + external channels',
   },
   {
     inputKey: 'f_risk_assessment',
     inputRef: '(f) Risk assessment',
     whatItCovers:
       'Results of risk assessment and status of the risk-treatment plan.',
-    whereToFind: 'Comp AI > Risks (risk register)',
+    whereToFind: 'OpenComp > Risks (risk register)',
   },
   {
     inputKey: 'g_improvement_opportunities',
     inputRef: '(g) Improvement opportunities',
     whatItCovers:
       'Opportunities for continual improvement raised at the meeting or before.',
-    whereToFind: 'Comp AI > Findings (tagged OFI) + ideas raised at this meeting',
+    whereToFind: 'OpenComp > Findings (tagged OFI) + ideas raised at this meeting',
   },
 ];
 

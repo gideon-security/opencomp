@@ -105,7 +105,7 @@ function makeReview(
         inputKey: 'a_prior_actions',
         inputRef: '(a) Prior actions',
         whatItCovers: 'Status of actions from previous management reviews.',
-        whereToFind: 'Comp AI > ISMS > Management Review',
+        whereToFind: 'OpenComp > ISMS > Management Review',
         discussionNotes: 'First review — no prior actions.',
         discussed: true,
         source: 'derived',
@@ -118,7 +118,7 @@ function makeReview(
         inputKey: 'f_risk_assessment',
         inputRef: '(f) Risk assessment',
         whatItCovers: 'Results of risk assessment and treatment status.',
-        whereToFind: 'Comp AI > Risks (risk register)',
+        whereToFind: 'OpenComp > Risks (risk register)',
         discussionNotes: null,
         discussed: true,
         source: 'derived',
@@ -215,7 +215,7 @@ describe('ManagementReviewClient', () => {
     expect(screen.getByText('Inputs (9.3.2)')).toBeInTheDocument();
     expect(screen.getByText('2 of 2 discussed')).toBeInTheDocument();
     expect(screen.getByText('(a) Prior actions')).toBeInTheDocument();
-    expect(screen.getByText('Comp AI > Risks (risk register)')).toBeInTheDocument();
+    expect(screen.getByText('OpenComp > Risks (risk register)')).toBeInTheDocument();
     expect(screen.getByText('First review — no prior actions.')).toBeInTheDocument();
   });
 
@@ -346,7 +346,7 @@ describe('ManagementReviewClient', () => {
               inputKey: 'a_prior_actions',
               inputRef: '(a) Prior actions',
               whatItCovers: 'Status of actions.',
-              whereToFind: 'Comp AI > ISMS > Management Review',
+              whereToFind: 'OpenComp > ISMS > Management Review',
               discussionNotes: null,
               discussed: false,
               source: 'derived',

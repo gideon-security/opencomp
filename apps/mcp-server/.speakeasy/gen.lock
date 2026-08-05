@@ -6397,7 +6397,7 @@ examples:
   CommentsController_createComment_v1:
     speakeasy-default-comments-controller-create-comment-v1:
       requestBody:
-        application/json: {"content": "This task needs to be completed by end of week", "entityId": "tsk_abc123def456", "entityType": "task", "contextUrl": "https://app.trycomp.ai/org_abc123/vendors/vnd_abc123?taskItemId=tki_abc123#task-items", "attachments": [{"fileName": "document.pdf", "fileType": "application/pdf", "description": "Meeting notes from Q4 planning session", "userId": "usr_abc123def456"}], "userId": "usr_abc123def456"}
+        application/json: {"content": "This task needs to be completed by end of week", "entityId": "tsk_abc123def456", "entityType": "task", "contextUrl": "https://app.gideondefender.com/org_abc123/vendors/vnd_abc123?taskItemId=tki_abc123#task-items", "attachments": [{"fileName": "document.pdf", "fileType": "application/pdf", "description": "Meeting notes from Q4 planning session", "userId": "usr_abc123def456"}], "userId": "usr_abc123def456"}
       responses:
         "201":
           application/json: {"id": "cmt_abc123def456", "content": "This task needs to be completed by end of week", "author": {"id": "usr_abc123def456", "name": "John Doe", "email": "john.doe@company.com", "image": {}, "deactivated": false}, "attachments": [{"id": "att_abc123def456", "name": "document.pdf", "type": "application/pdf", "createdAt": "2024-01-15T10:30:00Z"}], "createdAt": "2024-01-15T10:30:00Z"}
@@ -6407,7 +6407,7 @@ examples:
         path:
           commentId: "cmt_abc123def456"
       requestBody:
-        application/json: {"content": "This task needs to be completed by end of week (updated)", "contextUrl": "https://app.trycomp.ai/org_abc123/risk/rsk_abc123?taskItemId=tki_abc123#task-items", "userId": "usr_abc123def456"}
+        application/json: {"content": "This task needs to be completed by end of week (updated)", "contextUrl": "https://app.gideondefender.com/org_abc123/risk/rsk_abc123?taskItemId=tki_abc123#task-items", "userId": "usr_abc123def456"}
       responses:
         "200":
           application/json: {"id": "cmt_abc123def456", "content": "This task needs to be completed by end of week", "author": {"id": "usr_abc123def456", "name": "John Doe", "email": "john.doe@company.com", "image": {}, "deactivated": false}, "attachments": [{"id": "att_abc123def456", "name": "document.pdf", "type": "application/pdf", "createdAt": "2024-01-15T10:30:00Z"}], "createdAt": "2024-01-15T10:30:00Z"}

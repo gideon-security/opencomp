@@ -11,7 +11,7 @@ import { auth } from './lib/auth';
 import { isInternalUser } from './lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Comp AI - Framework Editor',
+  title: 'OpenComp - Framework Editor',
   description: 'Edit your framework',
 };
 

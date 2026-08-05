@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerGetTaskAttachmentsV1: ToolDefinition<
   name: "get-task-attachments",
   description: `Get task attachments
 
-Get task attachments in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Get task attachments in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

@@ -32,8 +32,8 @@ function getPostPaymentSteps(userEmail?: string) {
     filteredSteps = filteredSteps.filter((step) => step.key !== 'shipping');
   }
 
-  // Hide cSuite and reportSignatory for @trycomp.ai users
-  if (userEmail?.includes('@trycomp.ai')) {
+  // Hide cSuite and reportSignatory for @gideondefender.com users
+  if (userEmail?.includes('@gideondefender.com')) {
     filteredSteps = filteredSteps.filter(
       (step) => step.key !== 'cSuite' && step.key !== 'reportSignatory',
     );

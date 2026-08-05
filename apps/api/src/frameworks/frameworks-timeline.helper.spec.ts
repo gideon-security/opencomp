@@ -66,6 +66,9 @@ describe('frameworks-timeline.helper', () => {
   it('auto-completes AUTO_FINDINGS phase only when all findings for that framework type are closed', async () => {
     const timelinesService = {
       completePhase: jest.fn().mockResolvedValue({ id: 'tli_soc2' }),
+      reconcileAutoPhasesForOrganization: jest
+        .fn()
+        .mockResolvedValue({ id: 'tli_soc2' }),
     };
 
     (mockDb.timelinePhase.findMany as jest.Mock).mockResolvedValue([
@@ -125,6 +128,9 @@ describe('frameworks-timeline.helper', () => {
   it('does not auto-complete AUTO_FINDINGS phase when no findings exist for that framework type', async () => {
     const timelinesService = {
       completePhase: jest.fn().mockResolvedValue({ id: 'tli_soc2' }),
+      reconcileAutoPhasesForOrganization: jest
+        .fn()
+        .mockResolvedValue({ id: 'tli_soc2' }),
     };
 
     (mockDb.timelinePhase.findMany as jest.Mock).mockResolvedValue([
@@ -156,6 +162,9 @@ describe('frameworks-timeline.helper', () => {
   it('maps SOC 2 v.1 AUTO_FINDINGS phases to SOC 2 finding type', async () => {
     const timelinesService = {
       completePhase: jest.fn().mockResolvedValue({ id: 'tli_soc2_v1' }),
+      reconcileAutoPhasesForOrganization: jest
+        .fn()
+        .mockResolvedValue({ id: 'tli_soc2_v1' }),
     };
 
     (mockDb.timelinePhase.findMany as jest.Mock).mockResolvedValue([

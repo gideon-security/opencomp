@@ -16,7 +16,7 @@ function record(overrides: Partial<BackgroundCheckRecord> = {}): BackgroundCheck
     employeeName: 'Quinn Lee',
     employeeEmail: 'quinn@example.com',
     requesterNotes: null,
-    candidateUrl: 'https://identity.trycomp.ai/cand_1',
+    candidateUrl: 'https://identity.gideondefender.com/cand_1',
     status: 'invited',
     identityStatus: 'passed',
     employmentStatus: 'verified',
@@ -46,7 +46,7 @@ describe('BackgroundCheckStatusView', () => {
     fireEvent.click(screen.getByRole('button', { name: /copy candidate link/i }));
 
     await waitFor(() => {
-      expect(writeText).toHaveBeenCalledWith('https://identity.trycomp.ai/cand_1');
+      expect(writeText).toHaveBeenCalledWith('https://identity.gideondefender.com/cand_1');
       expect(toast.success).toHaveBeenCalledWith('Candidate link copied');
     });
     expect(screen.queryByRole('link', { name: /candidate link/i })).not.toBeInTheDocument();
@@ -194,7 +194,7 @@ describe('BackgroundCheckStatusView', () => {
                 'Background check completed. Identity and employment were verified, and two references were verified.',
               linkedKeyFindings: [
                 {
-                  text: 'Public research found Lewis Carhart associated with Comp AI as CEO and Co-Founder.',
+                  text: 'Public research found Lewis Carhart associated with OpenComp as CEO and Co-Founder.',
                   sourceUrl: 'https://www.linkedin.com/in/lewiscarhart',
                   sourceLabel: 'LinkedIn - Lewis Carhart',
                   entityType: 'candidate',
@@ -227,7 +227,7 @@ describe('BackgroundCheckStatusView', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Public research found Lewis Carhart associated with Comp AI as CEO and Co-Founder.',
+        'Public research found Lewis Carhart associated with OpenComp as CEO and Co-Founder.',
       ),
     ).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: 'LinkedIn - Lewis Carhart' })).toHaveLength(2);

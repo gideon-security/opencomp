@@ -52,7 +52,7 @@ export const githubAppManifest: IntegrationManifest = {
     'Connect GitHub with secure, read-only access to the repositories you choose. Monitors repository security, branch protection, and organization settings.',
   category: 'Development',
   logoUrl: 'https://img.logo.dev/github.com?token=pk_AZatYxV5QDSfWpRDaBxzRQ',
-  docsUrl: 'https://docs.trycomp.ai/integrations/github',
+  docsUrl: 'https://docs.gideondefender.com/integrations/github',
 
   // API configuration for the ctx.fetch helper (identical to the OAuth GitHub).
   baseUrl: 'https://api.github.com',

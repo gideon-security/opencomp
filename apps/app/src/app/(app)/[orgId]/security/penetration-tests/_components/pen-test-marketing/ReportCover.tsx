@@ -62,7 +62,7 @@ export function ReportCover() {
           color: '#888',
         }}
       >
-        <span>Comp AI — Penetration Test Report</span>
+        <span>OpenComp — Penetration Test Report</span>
         <span>1 of 33</span>
       </div>
     </ReportPage>

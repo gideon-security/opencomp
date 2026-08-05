@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Create a published version record for an automation
  *
  * @remarks
- * Create a published version record for an automation in Comp AI. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.
+ * Create a published version record for an automation in OpenComp. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

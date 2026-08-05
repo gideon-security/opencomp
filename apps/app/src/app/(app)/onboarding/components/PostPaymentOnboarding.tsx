@@ -54,7 +54,7 @@ export function PostPaymentOnboarding({
   // Internal-only: fast-path to complete onboarding (not exposed to customers)
   const canSkipOnboarding = useMemo(() => {
     if (!userEmail) return false;
-    return userEmail.endsWith('@trycomp.ai');
+    return userEmail.endsWith('@gideondefender.com');
   }, [userEmail]);
 
   // Track if there are any invalid URLs (from OnboardingStepInput callback)

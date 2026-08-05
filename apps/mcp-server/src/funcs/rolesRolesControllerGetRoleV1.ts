@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get a role by ID
  *
  * @remarks
- * Get a role by ID in Comp AI. Create custom roles and resolve permission sets for organization-level access control.
+ * Get a role by ID in OpenComp. Create custom roles and resolve permission sets for organization-level access control.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -151,7 +151,7 @@ export async function getFleetAgent({
   }
 
   const fleetBucketName = process.env.FLEET_AGENT_BUCKET_NAME;
-  const fleetAgentFileName = 'Comp AI Agent-1.0.0-arm64.dmg';
+  const fleetAgentFileName = 'OpenComp Agent-1.0.0-arm64.dmg';
 
   if (!fleetBucketName) {
     throw new Error('FLEET_AGENT_BUCKET_NAME is not defined.');

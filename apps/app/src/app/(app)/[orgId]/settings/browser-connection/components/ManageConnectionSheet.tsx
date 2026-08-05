@@ -274,7 +274,7 @@ export function ManageConnectionSheet({
                   )}
 
                   {/* Automatic 2FA — password connections only; the setup key lets
-                      Comp AI generate codes so scheduled runs stay unattended. */}
+                      OpenComp generate codes so scheduled runs stay unattended. */}
                   {method === 'password' && (
                     <div className="flex flex-col gap-2 border-t border-border pt-3">
                       <div className="flex items-start justify-between gap-2.5">

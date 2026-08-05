@@ -10,7 +10,7 @@ export const tool$trustPortalTrustPortalControllerAddCustomDomainV1:
     name: "add-custom-domain",
     description: `Add or update a custom domain for the trust portal
 
-Add or update a custom domain for the trust portal in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Add or update a custom domain for the trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

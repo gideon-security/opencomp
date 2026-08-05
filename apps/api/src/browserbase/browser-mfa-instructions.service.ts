@@ -85,7 +85,7 @@ const UNIVERSAL_STEPS = [
   'Sign in to the vendor and open your account Security / Two-factor authentication settings.',
   'Choose to add an authenticator app (TOTP).',
   'When the QR code appears, select "Can\'t scan?" / "Enter this code manually" to reveal the setup key.',
-  'Copy that setup key and paste it into Comp AI.',
+  'Copy that setup key and paste it into OpenComp.',
 ];
 
 const SYSTEM_PROMPT = `You help a user turn on an authenticator app (TOTP) for a third-party SaaS vendor so an automation can generate their 2FA codes.
@@ -130,7 +130,7 @@ Base your steps on these docs. If they clearly describe adding an authenticator 
 
 /**
  * Produces per-vendor, human-readable instructions for obtaining an authenticator
- * (TOTP) setup key, so users can hand Comp AI the seed for unattended 2FA. Steps
+ * (TOTP) setup key, so users can hand OpenComp the seed for unattended 2FA. Steps
  * are AI-generated (no per-vendor hardcode), confidence-gated to a universal
  * fallback, and cached per hostname.
  */

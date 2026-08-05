@@ -38,7 +38,7 @@ process.on('unhandledRejection', (reason) => {
   log(`Unhandled rejection: ${reason}`, 'ERROR');
 });
 
-log('Comp AI Device Agent starting...');
+log('OpenComp Device Agent starting...');
 log(`Platform: ${process.platform}, Arch: ${process.arch}, Electron: ${process.versions.electron}`);
 
 // Ensure single instance
@@ -256,7 +256,7 @@ function isNewerVersion(remote: string, local: string): boolean {
 async function checkForManualUpdate(): Promise<void> {
   try {
     const updateUrl =
-      process.env.AUTO_UPDATE_URL || 'https://portal.trycomp.ai/api/device-agent/updates';
+      process.env.AUTO_UPDATE_URL || 'https://portal.gideondefender.com/api/device-agent/updates';
     const ymlUrl = `${updateUrl}/latest-linux.yml`;
 
     log(`Manual update check: fetching ${ymlUrl}`);

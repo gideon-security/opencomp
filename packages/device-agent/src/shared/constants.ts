@@ -4,11 +4,11 @@ declare const __AGENT_VERSION__: string;
 
 /** Default portal base URL - injected at build time via electron-vite define */
 export const DEFAULT_PORTAL_URL =
-  typeof __PORTAL_URL__ !== 'undefined' ? __PORTAL_URL__ : 'https://app.staging.trycomp.ai';
+  typeof __PORTAL_URL__ !== 'undefined' ? __PORTAL_URL__ : 'https://app.staging.gideondefender.com';
 
 /** Default API base URL - injected at build time via electron-vite define */
 export const DEFAULT_API_URL =
-  typeof __API_URL__ !== 'undefined' ? __API_URL__ : 'https://api.staging.trycomp.ai';
+  typeof __API_URL__ !== 'undefined' ? __API_URL__ : 'https://api.staging.gideondefender.com';
 
 /** How often to run compliance checks (in milliseconds) */
 export const CHECK_INTERVAL_MS = 60 * 60 * 1000; // 1 hour

@@ -16,7 +16,7 @@ export const tool$findingsFindingsControllerGetFindingHistoryV1: ToolDefinition<
   name: "get-finding-history",
   description: `Get activity history for a finding
 
-Get activity history for a finding in Comp AI. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.`,
+Get activity history for a finding in OpenComp. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

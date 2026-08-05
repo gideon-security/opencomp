@@ -33,10 +33,10 @@ export function shouldSkipQuestionnaireInjection(location: PageLocation): boolea
   const protectedHosts = new Set([
     getUrlHost(extensionConfig.appBaseUrl),
     getUrlHost(extensionConfig.apiBaseUrl),
-    'app.trycomp.ai',
-    'api.trycomp.ai',
-    'app.staging.trycomp.ai',
-    'api.staging.trycomp.ai',
+    'app.gideondefender.com',
+    'api.gideondefender.com',
+    'app.staging.gideondefender.com',
+    'api.staging.gideondefender.com',
   ]);
   return protectedHosts.has(location.host) || isAssistantHost(location.hostname);
 }

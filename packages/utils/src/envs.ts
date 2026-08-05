@@ -1,6 +1,6 @@
 export function getAppUrl() {
   if (process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production') {
-    return 'https://app.trycomp.ai';
+    return 'https://app.gideondefender.com';
   }
 
   if (process.env.VERCEL_ENV === 'preview') {
@@ -11,12 +11,12 @@ export function getAppUrl() {
 }
 
 export function getEmailUrl() {
-  return 'https://trycomp.ai';
+  return 'https://gideondefender.com';
 }
 
 export function getWebsiteUrl() {
   if (process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production') {
-    return 'https://trycomp.ai';
+    return 'https://gideondefender.com';
   }
 
   if (process.env.VERCEL_ENV === 'preview') {
@@ -27,5 +27,5 @@ export function getWebsiteUrl() {
 }
 
 export function getCdnUrl() {
-  return 'https://cdn.trycomp.ai';
+  return 'https://cdn.gideondefender.com';
 }

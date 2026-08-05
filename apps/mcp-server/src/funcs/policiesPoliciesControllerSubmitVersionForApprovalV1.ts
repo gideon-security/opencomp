@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Submit version for approval
  *
  * @remarks
- * Submit version for approval in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
+ * Submit version for approval in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

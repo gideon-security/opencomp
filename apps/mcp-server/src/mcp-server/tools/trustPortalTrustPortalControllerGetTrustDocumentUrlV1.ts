@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerGetTrustDocumentUrlV1:
     name: "get-trust-document-url",
     description: `Generate a temporary signed URL for a trust portal document
 
-Generate a temporary signed URL for a trust portal document in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Generate a temporary signed URL for a trust portal document in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

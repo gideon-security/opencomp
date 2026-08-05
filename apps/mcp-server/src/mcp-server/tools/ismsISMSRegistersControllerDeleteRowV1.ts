@@ -16,7 +16,7 @@ export const tool$ismsISMSRegistersControllerDeleteRowV1: ToolDefinition<
   name: "delete-row",
   description: `Delete a row in an ISMS register
 
-Delete a row in an ISMS register in Comp AI.`,
+Delete a row in an ISMS register in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

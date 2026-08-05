@@ -15,7 +15,7 @@ export const tool$knowledgeBaseKnowledgeBaseControllerDeleteDocumentV1:
     name: "delete-document",
     description: `Delete a knowledge base document
 
-Delete a knowledge base document in Comp AI. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.`,
+Delete a knowledge base document in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -16,7 +16,7 @@ export const tool$peoplePeopleControllerGetTrainingVideosV1: ToolDefinition<
   name: "get-training-videos",
   description: `Get training video completions for a member
 
-Get training video completions for a member in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Get training video completions for a member in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

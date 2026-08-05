@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Disconnect an integration
  *
  * @remarks
- * Disconnect an integration in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.
+ * Disconnect an integration in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

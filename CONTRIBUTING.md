@@ -1,10 +1,10 @@
-# Contributing to Comp AI
+# Contributing to OpenComp
 
 Contributions are what makes the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 ## House rules
 
-- Before submitting a new issue or PR, check if it already exists in [issues](https://github.com/trycompai/comp/issues) or [PRs](https://github.com/trycompai/comp/pulls).
+- Before submitting a new issue or PR, check if it already exists in [issues](https://github.com/gideon-security/opencomp/issues) or [PRs](https://github.com/gideon-security/opencomp/pulls).
 - GitHub issues: take note of the `🚨 needs approval` label.
   - **For Contributors**:
     - Feature Requests: Wait for a core member to approve and remove the `🚨 needs approval` label before you start coding or submit a PR.
@@ -29,7 +29,7 @@ Contributions are what makes the open source community such an amazing place to 
       Minor improvements, non-core feature requests
     </td>
     <td>
-      <a href="https://github.com/trycompai/comp/issues?q=is:issue+is:open+sort:updated-desc+label:%22Low+priority%22">
+      <a href="https://github.com/gideon-security/opencomp/issues?q=is:issue+is:open+sort:updated-desc+label:%22Low+priority%22">
         <img src="https://img.shields.io/badge/-Low%20Priority-green">
       </a>
     </td>
@@ -39,7 +39,7 @@ Contributions are what makes the open source community such an amazing place to 
       Confusing UX (... but working)
     </td>
     <td>
-      <a href="https://github.com/trycompai/comp/issues?q=is:issue+is:open+sort:updated-desc+label:%22Medium+priority%22">
+      <a href="https://github.com/gideon-security/opencomp/issues?q=is:issue+is:open+sort:updated-desc+label:%22Medium+priority%22">
         <img src="https://img.shields.io/badge/-Medium%20Priority-yellow">
       </a>
     </td>
@@ -49,7 +49,7 @@ Contributions are what makes the open source community such an amazing place to 
       Core Features (Booking page, availability, timezone calculation)
     </td>
     <td>
-      <a href="https://github.com/trycompai/comp/issues?q=is:issue+is:open+sort:updated-desc+label:%22High+priority%22">
+      <a href="https://github.com/gideon-security/opencomp/issues?q=is:issue+is:open+sort:updated-desc+label:%22High+priority%22">
         <img src="https://img.shields.io/badge/-High%20Priority-orange">
       </a>
     </td>
@@ -59,7 +59,7 @@ Contributions are what makes the open source community such an amazing place to 
       Core Bugs (Login, Booking page, Emails are not working)
     </td>
     <td>
-      <a href="https://github.com/trycompai/comp/issues?q=is:issue+is:open+sort:updated-desc+label:Urgent">
+      <a href="https://github.com/gideon-security/opencomp/issues?q=is:issue+is:open+sort:updated-desc+label:Urgent">
         <img src="https://img.shields.io/badge/-Urgent-red">
       </a>
     </td>
@@ -73,7 +73,7 @@ requests should be made against. We will merge into main every week.
 
 To develop locally:
 
-1. [Fork](https://github.com/trycompai/comp/fork/) this repository to your
+1. [Fork](https://github.com/gideon-security/opencomp/fork/) this repository to your
    own GitHub account and then
    [clone](https://help.github.com/articles/cloning-a-repository/) it to your local device.
 2. Create a new branch:

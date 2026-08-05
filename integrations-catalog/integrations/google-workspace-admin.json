@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "setupInstructions": "1. Create or use existing OAuth app in Google Cloud Console > APIs & Services > Credentials\n2. Enable Admin SDK Directory API and Reports API\n3. Add redirect URI: https://api.trycomp.ai/v1/integrations/oauth/callback\n4. Copy Client ID and Secret to Comp AI admin panel\n5. Must be authorized by a Google Workspace super admin account",
+      "setupInstructions": "1. Create or use existing OAuth app in Google Cloud Console > APIs & Services > Credentials\n2. Enable Admin SDK Directory API and Reports API\n3. Add redirect URI: https://api.gideondefender.com/v1/integrations/oauth/callback\n4. Copy Client ID and Secret to OpenComp admin panel\n5. Must be authorized by a Google Workspace super admin account",
       "scopes": [
         "https://www.googleapis.com/auth/admin.directory.user.readonly",
         "https://www.googleapis.com/auth/admin.directory.orgunit.readonly"

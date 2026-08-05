@@ -15,7 +15,7 @@ export const tool$evidenceFormsEvidenceFormsControllerDeleteSubmissionV1:
     name: "delete-submission",
     description: `Delete a submission
 
-Delete a submission in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
+Delete a submission in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -15,7 +15,7 @@ export const tool$deviceAgentDeviceAgentControllerGetUpdateFileV1:
     name: "get-update-file",
     description: `Download a device-agent update
 
-Download a device-agent update in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
+Download a device-agent update in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -38,6 +38,7 @@ export async function executeVectorQuery(
     const results = await vectorIndex.query({
       vector: queryEmbedding,
       topK: 100,
+      organizationId: filter.organizationId,
       includeMetadata: true,
       // Server-side metadata filtering (exact match on the indexed columns) so
       // we never depend on top-K recall to find every chunk of a source.
@@ -113,35 +114,6 @@ export async function executeMultipleQueries(
   }
 
   return allResults;
-}
-
-/**
- * Fetch chunk content by ID from vector index
- */
-export async function fetchChunkContent(
-  chunkId: string,
-): Promise<{ content?: string; documentName?: string } | null> {
-  if (!vectorIndex) {
-    return null;
-  }
-
-  try {
-    const chunkResult = await vectorIndex.fetch([chunkId]);
-    if (chunkResult && chunkResult.length > 0 && chunkResult[0]) {
-      const metadata = chunkResult[0].metadata;
-      return {
-        content: metadata?.content ?? undefined,
-        documentName: metadata?.documentName ?? undefined,
-      };
-    }
-    return null;
-  } catch (error) {
-    logger.warn('Error fetching chunk content', {
-      chunkId,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
-    return null;
-  }
 }
 
 /**

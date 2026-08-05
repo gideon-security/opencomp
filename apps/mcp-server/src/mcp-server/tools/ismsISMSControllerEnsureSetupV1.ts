@@ -15,7 +15,7 @@ export const tool$ismsISMSControllerEnsureSetupV1: ToolDefinition<typeof args> =
     name: "isms-ensure-setup",
     description: `Ensure ISMS foundational documents exist
 
-Ensure ISMS foundational documents exist in Comp AI.`,
+Ensure ISMS foundational documents exist in OpenComp.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "setupInstructions": "1. Go to Salesforce > Setup > App Manager > New Connected App\n2. Enable OAuth Settings\n3. Set callback URL to: https://api.trycomp.ai/v1/integrations/oauth/callback\n4. Add scopes: Access (api), ID (id), Offline (offline_access)\n5. Copy Consumer Key (Client ID) and Secret\n6. After connecting, enter your Salesforce instance URL (e.g. https://yourorg.my.salesforce.com)",
+      "setupInstructions": "1. Go to Salesforce > Setup > App Manager > New Connected App\n2. Enable OAuth Settings\n3. Set callback URL to: https://api.gideondefender.com/v1/integrations/oauth/callback\n4. Add scopes: Access (api), ID (id), Offline (offline_access)\n5. Copy Consumer Key (Client ID) and Secret\n6. After connecting, enter your Salesforce instance URL (e.g. https://yourorg.my.salesforce.com)",
       "scopes": [
         "id",
         "api",

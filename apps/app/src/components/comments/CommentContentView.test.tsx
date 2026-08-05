@@ -32,7 +32,7 @@ import { CommentContentView } from './CommentContentView';
 // `break-word`).
 describe('CommentContentView', () => {
   const longUrl =
-    'https://app.trycomp.ai/org_0ab47745b0c0b2c/tasks/tsk_6916cd97cc6f4c40bca83199';
+    'https://app.gideondefender.com/org_0ab47745b0c0b2c/tasks/tsk_6916cd97cc6f4c40bca83199';
 
   it('renders plain-text URLs as links that can wrap instead of overflowing', () => {
     // A non-JSON string takes the plain-text render branch.

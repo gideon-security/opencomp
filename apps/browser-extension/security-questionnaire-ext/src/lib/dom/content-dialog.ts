@@ -18,7 +18,7 @@ export function confirmDomainInContent(
         <h2>Use ${escapeHtml(confirmation.organizationName)} here?</h2>
         <p>
           Answers will be generated for <code>${escapeHtml(confirmation.host)}</code>
-          using the active Comp AI workspace.
+          using the active OpenComp workspace.
         </p>
         <div class="org">${escapeHtml(confirmation.organizationName)}</div>
         <div class="actions">

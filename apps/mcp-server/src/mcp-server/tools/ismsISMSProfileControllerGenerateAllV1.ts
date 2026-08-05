@@ -16,7 +16,7 @@ export const tool$ismsISMSProfileControllerGenerateAllV1: ToolDefinition<
   name: "generate-all",
   description: `Ensure and regenerate all ISMS documents
 
-Ensure and regenerate all ISMS documents in Comp AI.`,
+Ensure and regenerate all ISMS documents in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

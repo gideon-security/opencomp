@@ -9,7 +9,7 @@ export const tool$peoplePeopleControllerGetDevicesV1: ToolDefinition = {
   name: "get-devices",
   description: `Get all employee devices with fleet compliance data
 
-Get all employee devices with fleet compliance data in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Get all employee devices with fleet compliance data in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

@@ -2,10 +2,10 @@ name: Device Agent Release
 
 on:
   workflow_dispatch:
-  push:
-    branches: ['**']
-    paths:
-      - 'packages/device-agent/**'
+  # push:
+  #   branches: ['**']
+  #   paths:
+  #     - 'packages/device-agent/**'
 
 permissions:
   contents: write
@@ -51,15 +51,15 @@ jobs:
           if [ "$BRANCH" = "release" ]; then
             TAG_NAME="device-agent-v${NEXT_VERSION}"
             IS_PRERELEASE="false"
-            PORTAL_URL="https://portal.trycomp.ai"
-            API_URL="https://api.trycomp.ai"
+            PORTAL_URL="https://portal.gideondefender.com"
+            API_URL="https://api.gideondefender.com"
             RELEASE_NAME="Device Agent v${NEXT_VERSION}"
             S3_ENV="production"
           else
             TAG_NAME="device-agent-v${NEXT_VERSION}-staging.${GITHUB_RUN_NUMBER}"
             IS_PRERELEASE="true"
-            PORTAL_URL="https://portal.staging.trycomp.ai"
-            API_URL="https://api.staging.trycomp.ai"
+            PORTAL_URL="https://portal.staging.gideondefender.com"
+            API_URL="https://api.staging.gideondefender.com"
             RELEASE_NAME="Device Agent v${NEXT_VERSION} (Staging #${GITHUB_RUN_NUMBER})"
             S3_ENV="staging"
           fi
@@ -406,7 +406,7 @@ jobs:
             ### Installation
             1. Download the installer for your operating system
             2. Run the installer and follow the prompts
-            3. Sign in with your Comp AI portal credentials
+            3. Sign in with your OpenComp portal credentials
             4. The agent will run in your system tray and check compliance automatically
           draft: false
           prerelease: ${{ needs.detect-version.outputs.is_prerelease == 'true' }}

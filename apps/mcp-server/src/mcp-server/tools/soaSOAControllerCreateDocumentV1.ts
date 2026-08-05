@@ -16,7 +16,7 @@ export const tool$soaSOAControllerCreateDocumentV1: ToolDefinition<
   name: "create-document",
   description: `Create a new SOA document
 
-Create a new SOA document in Comp AI. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
+Create a new SOA document in OpenComp. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

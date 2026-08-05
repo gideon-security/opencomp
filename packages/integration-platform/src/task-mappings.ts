@@ -290,13 +290,13 @@ PCI: Mask PAN when displayed outside the secure CDE, ensuring only truncated ...
   },
   frk_tt_684076a02261faf3d331289d: {
     name: 'Publish Policies',
-    description: `Make sure all of the policies in Comp AI have been published and all employees have signed/agreed to...`,
+    description: `Make sure all of the policies in OpenComp have been published and all employees have signed/agreed to...`,
     department: 'gov',
     frequency: 'yearly',
   },
   frk_tt_68406903839203801ac8041a: {
     name: 'Device List',
-    description: `Keep and maintain a list of your devices (laptops/servers). If you install the Comp AI agent on your...`,
+    description: `Keep and maintain a list of your devices (laptops/servers). If you install the OpenComp agent on your...`,
     department: 'admin',
     frequency: 'yearly',
   },

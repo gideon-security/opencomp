@@ -83,7 +83,7 @@ const config: NextConfig = {
       bodySizeLimit: '150mb',
       allowedOrigins:
         process.env.NODE_ENV === 'production'
-          ? ([process.env.NEXT_PUBLIC_PORTAL_URL, 'https://app.trycomp.ai'].filter(
+          ? ([process.env.NEXT_PUBLIC_PORTAL_URL, 'https://app.gideondefender.com'].filter(
               Boolean,
             ) as string[])
           : undefined,

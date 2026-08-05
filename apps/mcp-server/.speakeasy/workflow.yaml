@@ -1,7 +1,7 @@
 workflowVersion: 1.0.0
 speakeasyVersion: latest
 sources:
-    Comp AI API:
+    OpenComp API:
         inputs:
             - location: ../../packages/docs/openapi.json
         overlays:
@@ -12,7 +12,7 @@ sources:
 targets:
     comp-ai:
         target: mcp-typescript
-        source: Comp AI API
+        source: OpenComp API
         publish:
             npm:
                 token: $npm_token

@@ -835,7 +835,7 @@ export interface IntegrationManifest {
   /**
    * Whether this integration is the authoritative source of truth for employment status.
    *
-   * When `true`, the sync paths are allowed to deactivate members who appear in Comp AI
+   * When `true`, the sync paths are allowed to deactivate members who appear in OpenComp
    * but are absent from this provider's user list (Phase 2 deactivation).
    *
    * When `false` or omitted (default), Phase 2 deactivation is skipped — useful for

@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Trigger a cloud security run for a connection
  *
  * @remarks
- * Trigger a cloud security run for a connection in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
+ * Trigger a cloud security run for a connection in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
  */
 export function cloudSecurityCloudSecurityControllerTriggerScanV1(
   client$: CompAiCore,

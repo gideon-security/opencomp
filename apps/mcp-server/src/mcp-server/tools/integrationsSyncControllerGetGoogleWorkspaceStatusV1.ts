@@ -10,7 +10,7 @@ export const tool$integrationsSyncControllerGetGoogleWorkspaceStatusV1:
     name: "get-google-workspace-status",
     description: `Get Google Workspace sync status
 
-Get Google Workspace sync status in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Get Google Workspace sync status in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

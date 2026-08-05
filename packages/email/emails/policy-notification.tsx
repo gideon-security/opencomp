@@ -32,7 +32,7 @@ export const PolicyNotificationEmail = ({
   organizationId,
   notificationType,
 }: Props) => {
-  const link = `${process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://portal.trycomp.ai'}/${organizationId}`;
+  const link = `${process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://portal.gideondefender.com'}/${organizationId}`;
   const subjectText = 'Please review and accept this policy';
 
   const getBodyText = () => {

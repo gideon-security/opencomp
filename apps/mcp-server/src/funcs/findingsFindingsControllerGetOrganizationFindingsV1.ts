@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * List all findings for the organization
  *
  * @remarks
- * List all findings for the organization in Comp AI. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.
+ * List all findings for the organization in OpenComp. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

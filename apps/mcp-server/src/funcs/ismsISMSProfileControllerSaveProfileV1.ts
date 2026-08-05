@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Save (partial) ISMS wizard answers
  *
  * @remarks
- * Save (partial) ISMS wizard answers in Comp AI.
+ * Save (partial) ISMS wizard answers in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

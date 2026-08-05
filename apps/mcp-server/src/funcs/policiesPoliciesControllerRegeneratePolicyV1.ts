@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Regenerate policy with AI
  *
  * @remarks
- * Regenerate policy content using Comp AI while keeping the result reviewable before it is published or used as compliance evidence.
+ * Regenerate policy content using OpenComp while keeping the result reviewable before it is published or used as compliance evidence.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

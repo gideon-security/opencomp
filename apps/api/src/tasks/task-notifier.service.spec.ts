@@ -350,7 +350,7 @@ describe('TaskNotifierService', () => {
 
     it('includes platform admins for an internal org (isInternal true)', async () => {
       mockDb.organization.findUnique.mockResolvedValue({
-        name: 'Comp AI',
+        name: 'OpenComp',
         isInternal: true,
       });
       mockDb.task.findUnique.mockResolvedValue({ assignee: null });
@@ -399,7 +399,7 @@ describe('TaskNotifierService', () => {
 
     it('includes platform admins for an internal org (isInternal true)', async () => {
       mockDb.organization.findUnique.mockResolvedValue({
-        name: 'Comp AI',
+        name: 'OpenComp',
         isInternal: true,
       });
       mockDb.task.findMany.mockResolvedValue([{ id: 'tsk_1', assignee: null }]);

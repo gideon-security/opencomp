@@ -15,7 +15,7 @@ export const tool$cloudSecurityCloudSecurityControllerSetupAzureV1:
     name: "setup-azure",
     description: `Set up Azure for a connection
 
-Set up Azure for a connection in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
+Set up Azure for a connection in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

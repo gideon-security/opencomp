@@ -15,7 +15,7 @@ export const tool$deviceAgentDeviceAgentControllerGetDeviceStatusV1:
     name: "get-device-status",
     description: `Get device-agent status
 
-Get device-agent status in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
+Get device-agent status in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

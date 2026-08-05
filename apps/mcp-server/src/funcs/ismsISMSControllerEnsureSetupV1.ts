@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Ensure ISMS foundational documents exist
  *
  * @remarks
- * Ensure ISMS foundational documents exist in Comp AI.
+ * Ensure ISMS foundational documents exist in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -15,7 +15,7 @@ export const tool$integrationsChecksControllerListConnectionChecksV1:
     name: "list-connection-checks",
     description: `List checks for a connection
 
-List checks for a connection in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+List checks for a connection in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

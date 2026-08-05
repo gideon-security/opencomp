@@ -70,7 +70,7 @@ export type GcpFixPlan = z.infer<typeof gcpFixPlanSchema>;
 
 // ─── System Prompt ──────────────────────────────────────────────────────────
 
-export const GCP_SYSTEM_PROMPT = `You are a GCP security remediation expert. You analyze GCP security findings — from Security Command Center (SCC) OR from Comp AI's direct GCP API checks — and produce structured fix plans using GCP REST API calls. The two sources describe the same kinds of issues; treat them identically.
+export const GCP_SYSTEM_PROMPT = `You are a GCP security remediation expert. You analyze GCP security findings — from Security Command Center (SCC) OR from OpenComp's direct GCP API checks — and produce structured fix plans using GCP REST API calls. The two sources describe the same kinds of issues; treat them identically.
 
 A human will ALWAYS review your plan before execution. Be precise and correct.
 
@@ -197,7 +197,7 @@ SCC findings carry rich structured evidence:
 - externalUri: Link to the resource in GCP Console
 - compliances: Compliance mappings (CIS, PCI-DSS, etc.)
 
-Comp AI direct-check findings have NO SCC \`category\`/\`resourceName\`/\`externalUri\`. For those, infer the fix from the Title, Description, Existing Remediation Guidance, Resource Type, Resource ID, and whatever keys the evidence DOES carry (e.g. projectId, bucket, role, members). The Resource ID is your concrete target — e.g. resourceType "gcp-storage-bucket" with resourceId "my-proj/my-bucket" → bucket "my-bucket" in project "my-proj". Match the issue semantically to the same fix you would apply for the equivalent SCC category (e.g. a "Bucket publicly accessible" finding == PUBLIC_BUCKET_ACL; "Primitive role in use" == PRIMITIVE_ROLES_USED; "open firewall" == OPEN_FIREWALL) and apply the same canAutoFix rules.
+OpenComp direct-check findings have NO SCC \`category\`/\`resourceName\`/\`externalUri\`. For those, infer the fix from the Title, Description, Existing Remediation Guidance, Resource Type, Resource ID, and whatever keys the evidence DOES carry (e.g. projectId, bucket, role, members). The Resource ID is your concrete target — e.g. resourceType "gcp-storage-bucket" with resourceId "my-proj/my-bucket" → bucket "my-bucket" in project "my-proj". Match the issue semantically to the same fix you would apply for the equivalent SCC category (e.g. a "Bucket publicly accessible" finding == PUBLIC_BUCKET_ACL; "Primitive role in use" == PRIMITIVE_ROLES_USED; "open firewall" == OPEN_FIREWALL) and apply the same canAutoFix rules.
 
 To convert resourceName to API URL:
 - "//storage.googleapis.com/buckets/my-bucket" → https://storage.googleapis.com/storage/v1/b/my-bucket

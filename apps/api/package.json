@@ -159,10 +159,10 @@
         "rootDir": "src",
         "testRegex": ".*\\.spec\\.ts$",
         "transform": {
-            "^.+\\.(t|j)sx?$": "ts-jest"
+            "^.+\\.m?[tj]sx?$": "ts-jest"
         },
         "transformIgnorePatterns": [
-            "node_modules/(?!(@maced/api-client|better-auth)/)"
+            "node_modules/(?!(@maced/api-client|better-auth|@better-auth|@noble|@better-fetch|jose|nanostores|better-call|zod|kysely|rou3|@standard-schema|@opentelemetry)/)"
         ],
         "collectCoverageFrom": [
             "**/*.(t|j)s"
@@ -180,6 +180,7 @@
             "^@gideon-defender/db$": "@prisma/client",
             "^@gideon-defender/email$": "<rootDir>/../../../packages/email/index.ts",
             "^@gideon-defender/integration-platform$": "<rootDir>/../../../packages/integration-platform/src/index.ts",
+            "^@gideon-defender/kv/rate-limit$": "<rootDir>/../../../packages/kv/src/rate-limit.ts",
             "^@gideon-defender/utils/(.*)$": "<rootDir>/../../../packages/utils/src/$1.ts"
         }
     },

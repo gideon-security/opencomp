@@ -1,6 +1,6 @@
 # Security Questionnaire Extension
 
-Chrome MV3 extension for generating security questionnaire answers from Comp AI
+Chrome MV3 extension for generating security questionnaire answers from OpenComp
 and inserting them into third-party questionnaire pages.
 
 ## Current UX
@@ -80,8 +80,8 @@ Production builds do not use the local `.env`. The release workflow injects the
 production values from GitHub Actions:
 
 ```text
-WXT_PUBLIC_API_BASE_URL=https://api.trycomp.ai
-WXT_PUBLIC_APP_BASE_URL=https://app.trycomp.ai
+WXT_PUBLIC_API_BASE_URL=https://api.gideondefender.com
+WXT_PUBLIC_APP_BASE_URL=https://app.gideondefender.com
 WXT_GOOGLE_OAUTH_CLIENT_ID=<from GitHub secret>
 ```
 

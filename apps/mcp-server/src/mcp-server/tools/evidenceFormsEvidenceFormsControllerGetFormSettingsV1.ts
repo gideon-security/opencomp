@@ -15,7 +15,7 @@ export const tool$evidenceFormsEvidenceFormsControllerGetFormSettingsV1:
     name: "get-form-settings",
     description: `Get document relevance settings
 
-Get document relevance settings in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
+Get document relevance settings in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

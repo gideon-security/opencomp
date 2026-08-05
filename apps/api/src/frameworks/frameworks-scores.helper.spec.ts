@@ -131,6 +131,7 @@ describe('frameworks-scores.helper', () => {
         where: {
           organizationId: 'org_1',
           memberId: { in: ['mem_1', 'mem_2'] },
+          source: { not: 'integration' },
         },
         select: { memberId: true },
         distinct: ['memberId'],

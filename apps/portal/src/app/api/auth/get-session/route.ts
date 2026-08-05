@@ -10,8 +10,8 @@ const API_BASE =
 /**
  * Backwards-compat alias for device-agent installs (pre-PR #2222) that call
  * `${portalUrl}/api/auth/get-session` to verify their session. Better-auth
- * lives on the NestJS API now; cross-subdomain cookies (.trycomp.ai) make
- * the same session token valid against api.trycomp.ai.
+ * lives on the NestJS API now; cross-subdomain cookies (.gideondefender.com) make
+ * the same session token valid against api.gideondefender.com.
  *
  * TODO: Delete after the device-agent fleet has rolled past 1.0.5.
  */

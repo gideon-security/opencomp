@@ -10,7 +10,7 @@ export const tool$trustPortalTrustPortalControllerUpdateFrameworksV1:
     name: "update-frameworks",
     description: `Update trust portal framework settings
 
-Update trust portal framework settings in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Update trust portal framework settings in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

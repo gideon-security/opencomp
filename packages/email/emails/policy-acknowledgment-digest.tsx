@@ -61,7 +61,7 @@ export const PolicyAcknowledgmentDigestEmail = ({
   if (!firstOrg) return null;
 
   const portalBase = (
-    process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://portal.trycomp.ai'
+    process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://portal.gideondefender.com'
   ).replace(/\/+$/, '');
   const subjectText = computePolicyAcknowledgmentDigestSubject(orgsWithPolicies);
   const isMultiOrg = orgsWithPolicies.length > 1;

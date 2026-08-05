@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get policies that reference a task via shared controls
  *
  * @remarks
- * Get policies that reference a task via shared controls in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.
+ * Get policies that reference a task via shared controls in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

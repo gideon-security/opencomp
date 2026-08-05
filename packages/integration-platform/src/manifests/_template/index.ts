@@ -18,7 +18,7 @@ export const manifest: IntegrationManifest = {
   description: 'Connect Your Integration to monitor security compliance.',
   category: 'Development',
   logoUrl: 'https://img.logo.dev/example.com?token=pk_AZatYxV5QDSfWpRDaBxzRQ',
-  docsUrl: 'https://docs.trycomp.ai/integrations/your-integration',
+  docsUrl: 'https://docs.gideondefender.com/integrations/your-integration',
 
   baseUrl: 'https://api.example.com',
   defaultHeaders: {

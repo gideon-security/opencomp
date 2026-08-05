@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * List recent cloud security activity
  *
  * @remarks
- * List recent cloud security activity in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
+ * List recent cloud security activity in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
  */
 export function cloudSecurityCloudSecurityControllerGetActivityV1(
   client$: CompAiCore,

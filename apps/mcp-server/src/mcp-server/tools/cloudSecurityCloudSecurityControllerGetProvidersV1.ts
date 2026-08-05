@@ -10,7 +10,7 @@ export const tool$cloudSecurityCloudSecurityControllerGetProvidersV1:
     name: "get-providers",
     description: `List supported cloud providers
 
-List supported cloud providers in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
+List supported cloud providers in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

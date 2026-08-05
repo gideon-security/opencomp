@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerRegenerateTaskV1: ToolDefinition<
   name: "regenerate-task",
   description: `Regenerate task from template
 
-Regenerate task from template in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Regenerate task from template in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get policy version by ID
  *
  * @remarks
- * Get policy version by ID in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
+ * Get policy version by ID in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

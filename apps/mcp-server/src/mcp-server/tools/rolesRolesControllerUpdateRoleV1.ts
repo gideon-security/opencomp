@@ -16,7 +16,7 @@ export const tool$rolesRolesControllerUpdateRoleV1: ToolDefinition<
   name: "update-role",
   description: `Update a custom role
 
-Update a custom role in Comp AI. Create custom roles and resolve permission sets for organization-level access control.`,
+Update a custom role in OpenComp. Create custom roles and resolve permission sets for organization-level access control.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

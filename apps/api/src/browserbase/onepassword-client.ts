@@ -5,7 +5,7 @@ export type OnePasswordClient = Awaited<
   ReturnType<OnePasswordModule['createClient']>
 >;
 
-const OP_INTEGRATION_NAME = 'Comp AI Browser Automations';
+const OP_INTEGRATION_NAME = 'OpenComp Browser Automations';
 const OP_INTEGRATION_VERSION = '1.0.0';
 
 const logger = new Logger('OnePasswordClient');

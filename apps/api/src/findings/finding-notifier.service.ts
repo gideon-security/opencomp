@@ -91,7 +91,7 @@ function getAppUrl(): string {
   return (
     process.env.NEXT_PUBLIC_APP_URL ??
     process.env.BETTER_AUTH_URL ??
-    'https://app.trycomp.ai'
+    'https://app.gideondefender.com'
   );
 }
 

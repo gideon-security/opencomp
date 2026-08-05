@@ -16,7 +16,7 @@ export const tool$rolesRolesControllerDeleteRoleV1: ToolDefinition<
   name: "delete-role",
   description: `Delete a custom role
 
-Delete a custom role in Comp AI. Create custom roles and resolve permission sets for organization-level access control.`,
+Delete a custom role in OpenComp. Create custom roles and resolve permission sets for organization-level access control.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

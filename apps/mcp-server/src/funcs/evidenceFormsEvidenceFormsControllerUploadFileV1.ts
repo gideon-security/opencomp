@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Upload evidence form file
  *
  * @remarks
- * Upload evidence form file in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.
+ * Upload evidence form file in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

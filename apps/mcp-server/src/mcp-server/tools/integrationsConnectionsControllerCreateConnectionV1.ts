@@ -15,7 +15,7 @@ export const tool$integrationsConnectionsControllerCreateConnectionV1:
     name: "create-connection",
     description: `Create integration connection
 
-Create an integration connection so Comp AI can collect evidence, run checks, or sync data from a connected provider.`,
+Create an integration connection so OpenComp can collect evidence, run checks, or sync data from a connected provider.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

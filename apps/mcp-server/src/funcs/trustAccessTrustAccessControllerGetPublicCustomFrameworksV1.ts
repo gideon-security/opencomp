@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get org-authored custom frameworks shown on a trust portal
  *
  * @remarks
- * Get org-authored custom frameworks shown on a trust portal in Comp AI. Manage external Trust Center access requests, NDA signing, grants, tokenized document downloads, public FAQs, and reviewer access.
+ * Get org-authored custom frameworks shown on a trust portal in OpenComp. Manage external Trust Center access requests, NDA signing, grants, tokenized document downloads, public FAQs, and reviewer access.
  */
 export function trustAccessTrustAccessControllerGetPublicCustomFrameworksV1(
   client$: CompAiCore,

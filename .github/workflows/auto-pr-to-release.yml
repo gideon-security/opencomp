@@ -5,7 +5,7 @@ on:
       - main
 jobs:
   create-pull-request:
-    runs-on: warp-ubuntu-latest-arm64-4x
+    runs-on: ubuntu-latest
     permissions:
       pull-requests: write
       contents: write

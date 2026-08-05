@@ -9,7 +9,7 @@ Model Context Protocol (MCP) Server for the *@gideon-defender/mcp-server* API.
 <!-- Start Summary [summary] -->
 ## Summary
 
-Comp AI API: Compliance automation API for SOC 2, ISO 27001, HIPAA, GDPR, evidence collection, policy workflows, Trust Access, security questionnaires, integrations, cloud checks, and device compliance.
+OpenComp API: Compliance automation API for SOC 2, ISO 27001, HIPAA, GDPR, evidence collection, policy workflows, Trust Access, security questionnaires, integrations, cloud checks, and device compliance.
 <!-- End Summary [summary] -->
 
 <!-- Start Table of Contents [toc] -->
@@ -30,9 +30,9 @@ Comp AI API: Compliance automation API for SOC 2, ISO 27001, HIPAA, GDPR, eviden
 <details>
 <summary>Claude Desktop</summary>
 
-Install the MCP server as a Desktop Extension using the pre-built [`mcp-server.mcpb`](https://github.com/trycompai/comp/releases/download/v0.2.5/mcp-server.mcpb) file:
+Install the MCP server as a Desktop Extension using the pre-built [`mcp-server.mcpb`](https://github.com/gideon-security/opencomp/releases/download/v0.2.5/mcp-server.mcpb) file:
 
-Simply drag and drop the [`mcp-server.mcpb`](https://github.com/trycompai/comp/releases/download/v0.2.5/mcp-server.mcpb) file onto Claude Desktop to install the extension.
+Simply drag and drop the [`mcp-server.mcpb`](https://github.com/gideon-security/opencomp/releases/download/v0.2.5/mcp-server.mcpb) file onto Claude Desktop to install the extension.
 
 The MCP bundle package includes the MCP server and all necessary configuration. Once installed, the server will be available without additional setup.
 

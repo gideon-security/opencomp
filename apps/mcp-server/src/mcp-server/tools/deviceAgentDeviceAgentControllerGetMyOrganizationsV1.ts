@@ -10,7 +10,7 @@ export const tool$deviceAgentDeviceAgentControllerGetMyOrganizationsV1:
     name: "get-my-organizations",
     description: `List organizations for the current device
 
-List organizations for the current device in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
+List organizations for the current device in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

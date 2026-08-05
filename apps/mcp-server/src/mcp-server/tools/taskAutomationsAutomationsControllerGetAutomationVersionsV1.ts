@@ -15,7 +15,7 @@ export const tool$taskAutomationsAutomationsControllerGetAutomationVersionsV1:
     name: "get-automation-versions",
     description: `Get all versions for an automation
 
-Get all versions for an automation in Comp AI. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.`,
+Get all versions for an automation in OpenComp. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

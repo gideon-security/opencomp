@@ -15,7 +15,7 @@ export const tool$integrationsConnectionsControllerGetProviderV1:
     name: "get-provider",
     description: `Get an integration provider by slug
 
-Get an integration provider by slug in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Get an integration provider by slug in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

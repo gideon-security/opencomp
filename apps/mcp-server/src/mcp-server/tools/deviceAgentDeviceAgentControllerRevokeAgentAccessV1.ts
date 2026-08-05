@@ -15,7 +15,7 @@ export const tool$deviceAgentDeviceAgentControllerRevokeAgentAccessV1:
     name: "revoke-agent-access",
     description: `Revoke a device agent session
 
-Revoke a device agent session in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
+Revoke a device agent session in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

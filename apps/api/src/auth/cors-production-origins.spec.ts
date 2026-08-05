@@ -10,10 +10,10 @@ jest.mock('./auth.server', () => ({ isTrustedOrigin: jest.fn() }));
  * rewritten to support the questionnaire extension, so these assert the
  * existing apps kept working rather than testing anything new.
  */
-const APP = 'https://app.trycomp.ai';
-const PORTAL = 'https://portal.trycomp.ai';
-const SUBDOMAIN = 'https://anything.trycomp.ai';
-// A customer's own trust-portal domain: not a trycomp.ai host, so it is only
+const APP = 'https://app.gideondefender.com';
+const PORTAL = 'https://portal.gideondefender.com';
+const SUBDOMAIN = 'https://anything.gideondefender.com';
+// A customer's own trust-portal domain: not a gideondefender.com host, so it is only
 // ever allowed by the Redis/DB-backed lookup inside isTrustedOrigin.
 const CUSTOM_DOMAIN = 'https://trust.example.com';
 
@@ -41,7 +41,7 @@ describe('production origins still pass CORS', () => {
   it.each([
     ['the app', APP],
     ['the portal', PORTAL],
-    ['an arbitrary trycomp.ai subdomain', SUBDOMAIN],
+    ['an arbitrary gideondefender.com subdomain', SUBDOMAIN],
     ['a customer custom domain', CUSTOM_DOMAIN],
   ])('allows %s', async (_label, origin) => {
     jest.mocked(isTrustedOrigin).mockResolvedValue(true);
@@ -83,7 +83,7 @@ describe('the API resolves origins without AUTH_TRUSTED_ORIGINS', () => {
     delete process.env.AUTH_TRUSTED_ORIGINS;
   });
 
-  it.each([APP, PORTAL, SUBDOMAIN, 'https://api.trycomp.ai'])(
+  it.each([APP, PORTAL, SUBDOMAIN, 'https://api.gideondefender.com'])(
     'trusts %s from the default list',
     (origin) => {
       expect(isStaticTrustedOrigin(origin)).toBe(true);
@@ -91,6 +91,6 @@ describe('the API resolves origins without AUTH_TRUSTED_ORIGINS', () => {
   );
 
   it('does not extend the wildcard to plain HTTP', () => {
-    expect(isStaticTrustedOrigin('http://anything.trycomp.ai')).toBe(false);
+    expect(isStaticTrustedOrigin('http://anything.gideondefender.com')).toBe(false);
   });
 });

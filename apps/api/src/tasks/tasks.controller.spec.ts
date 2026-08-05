@@ -204,6 +204,7 @@ describe('TasksController', () => {
         TaskStatus.done,
         undefined,
         'usr_123',
+        undefined,
       );
       expect(result).toEqual({ updatedCount: 2 });
     });
@@ -226,6 +227,7 @@ describe('TasksController', () => {
         TaskStatus.done,
         new Date('2025-06-01T00:00:00.000Z'),
         'usr_123',
+        undefined,
       );
     });
 
@@ -284,6 +286,7 @@ describe('TasksController', () => {
         TaskStatus.done,
         undefined,
         'usr_api',
+        undefined,
       );
     });
   });

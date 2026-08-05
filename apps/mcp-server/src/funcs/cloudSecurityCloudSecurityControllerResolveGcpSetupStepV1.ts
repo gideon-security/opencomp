@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Resolve a GCP setup step
  *
  * @remarks
- * Resolve a GCP setup step in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
+ * Resolve a GCP setup step in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
  */
 export function cloudSecurityCloudSecurityControllerResolveGcpSetupStepV1(
   client$: CompAiCore,

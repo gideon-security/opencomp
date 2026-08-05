@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get device-agent status
  *
  * @remarks
- * Get device-agent status in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
+ * Get device-agent status in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
  */
 export function deviceAgentDeviceAgentControllerGetDeviceStatusV1(
   client$: CompAiCore,

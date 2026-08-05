@@ -36,7 +36,7 @@ export class OrganizationAccessService {
    * Decision rules (in order):
    *   1. Org already has access → no-op.
    *   2. Self-hosted instance → grant.
-   *   3. User email at @trycomp.ai → grant (internal team).
+   *   3. User email at @gideondefender.com → grant (internal team).
    *   4. User email domain matches the org website domain AND that domain has
    *      an active Stripe customer → grant. Public mailbox domains are
    *      excluded.
@@ -80,9 +80,9 @@ export class OrganizationAccessService {
       return { hasAccess: false, autoApproved: false, reason: 'not-eligible' };
     }
 
-    const isTrycompEmailDomain = userEmailDomain === 'trycomp.ai';
+    const isTrycompEmailDomain = userEmailDomain === 'gideondefender.com';
 
-    // Only treat an @trycomp.ai address as an internal team member once the
+    // Only treat an @gideondefender.com address as an internal team member once the
     // account's email has actually been verified. The domain on its own proves
     // nothing about who controls the mailbox.
     const isVerifiedTrycompEmail =

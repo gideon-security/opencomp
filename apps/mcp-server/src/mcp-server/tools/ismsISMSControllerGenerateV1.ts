@@ -14,7 +14,7 @@ export const tool$ismsISMSControllerGenerateV1: ToolDefinition<typeof args> = {
   name: "generate",
   description: `Derive Context-of-the-Organization issues
 
-Derive Context-of-the-Organization issues in Comp AI.`,
+Derive Context-of-the-Organization issues in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

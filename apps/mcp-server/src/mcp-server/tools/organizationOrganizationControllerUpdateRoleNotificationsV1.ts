@@ -15,7 +15,7 @@ export const tool$organizationOrganizationControllerUpdateRoleNotificationsV1:
     name: "update-role-notifications",
     description: `Update role notification settings
 
-Update role notification settings in Comp AI. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.`,
+Update role notification settings in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

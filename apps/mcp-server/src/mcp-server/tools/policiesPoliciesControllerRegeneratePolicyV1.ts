@@ -16,7 +16,7 @@ export const tool$policiesPoliciesControllerRegeneratePolicyV1: ToolDefinition<
   name: "regenerate-policy",
   description: `Regenerate policy with AI
 
-Regenerate policy content using Comp AI while keeping the result reviewable before it is published or used as compliance evidence.`,
+Regenerate policy content using OpenComp while keeping the result reviewable before it is published or used as compliance evidence.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Enable/disable a custom framework on the trust portal and set its status
  *
  * @remarks
- * Enable/disable a custom framework on the trust portal and set its status in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
+ * Enable/disable a custom framework on the trust portal and set its status in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

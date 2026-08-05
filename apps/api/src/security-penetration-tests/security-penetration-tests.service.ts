@@ -3,8 +3,10 @@ import {
   ForbiddenException,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   Logger,
+  Optional,
 } from '@nestjs/common';
 import { db, Prisma } from '@db';
 import {
@@ -186,6 +188,13 @@ const ORIGINAL_RUN_LINEAGE: RunLineage = {
   retryOfProviderRunId: null,
 };
 
+/**
+ * Optional DI token for injecting a Maced API client (used by tests; the Nest
+ * module does not provide it, so production construction falls back to the
+ * env-configured client).
+ */
+export const MACED_PENTEST_CLIENT = 'MACED_PENTEST_CLIENT';
+
 function createUnconfiguredMacedClient(): MacedClient {
   const client: MacedClient = Object.create(MacedClient.prototype);
   const fail = async () => {
@@ -217,16 +226,22 @@ export class SecurityPenetrationTestsService {
   constructor(
     private readonly credits: PentestCreditsService,
     private readonly billingEntitlements: BillingEntitlementsService,
+    @Optional()
+    @Inject(MACED_PENTEST_CLIENT)
+    macedClient?: MacedClient,
   ) {
+    this.macedClient = macedClient ?? this.buildConfiguredMacedClient();
+  }
+
+  private buildConfiguredMacedClient(): MacedClient {
     const apiKey = process.env.MACED_API_KEY;
     if (!apiKey) {
       this.logger.warn(
         'MACED_API_KEY is not configured. Penetration testing features will fail until it is set.',
       );
-      this.macedClient = createUnconfiguredMacedClient();
-      return;
+      return createUnconfiguredMacedClient();
     }
-    this.macedClient = createMacedClient({
+    return createMacedClient({
       apiKey,
       baseUrl: process.env.MACED_API_BASE_URL,
       userAgent: 'comp-api',
@@ -292,10 +307,10 @@ export class SecurityPenetrationTestsService {
 
   private readonly canonicalWebhookPath =
     '/v1/security-penetration-tests/webhook';
-  private readonly defaultWebhookBaseUrl = 'https://api.trycomp.ai';
+  private readonly defaultWebhookBaseUrl = 'https://api.gideondefender.com';
   private readonly defaultCompWebhookHosts = new Set([
-    'api.trycomp.ai',
-    'api.staging.trycomp.ai',
+    'api.gideondefender.com',
+    'api.staging.gideondefender.com',
     'localhost:3333',
   ]);
 

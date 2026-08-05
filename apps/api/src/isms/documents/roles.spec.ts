@@ -35,13 +35,13 @@ function role(overrides: Partial<RoleExportRow>): RoleExportRow {
 const OWNERSHIP: OperationalOwnershipRow[] = [
   {
     artifact: 'Policies',
-    assignedWhere: 'Policy assignee / approver in Comp AI',
+    assignedWhere: 'Policy assignee / approver in OpenComp',
     ownerResponsibility: 'Keep the policy current.',
     owners: ['Alice'],
   },
   {
     artifact: 'Controls',
-    assignedWhere: 'Control owner in Comp AI',
+    assignedWhere: 'Control owner in OpenComp',
     ownerResponsibility: 'Operate the control.',
     owners: [],
   },

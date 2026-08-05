@@ -15,7 +15,7 @@ export const tool$integrationsServicesControllerGetConnectionServicesV1:
     name: "get-connection-services",
     description: `List services enabled on a connection
 
-List services enabled on a connection in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+List services enabled on a connection in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -313,7 +313,7 @@ export const Message = memo(function Message({
               <div className="w-8 h-8 rounded-full bg-white border border-primary/25 overflow-hidden flex items-center justify-center">
                 <Image
                   src="/compailogo.jpg"
-                  alt="Comp AI"
+                  alt="OpenComp"
                   width={32}
                   height={32}
                   className="w-full h-full object-cover object-center"
@@ -330,7 +330,7 @@ export const Message = memo(function Message({
           {/* Header - Clean and simple */}
           <div className="flex items-baseline gap-2 mb-1">
             <span className="text-sm font-semibold text-foreground">
-              {message.role === 'user' ? 'You' : 'Comp AI'}
+              {message.role === 'user' ? 'You' : 'OpenComp'}
             </span>
             <span className="text-xs text-muted-foreground">
               {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

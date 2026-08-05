@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerUploadTrustDocumentV1:
     name: "upload-trust-document",
     description: `Upload an additional trust portal document
 
-Upload an additional trust portal document in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Upload an additional trust portal document in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

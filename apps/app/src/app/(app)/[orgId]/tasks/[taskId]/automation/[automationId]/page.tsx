@@ -37,10 +37,10 @@ export default async function Page({
           <p className="text-sm text-muted-foreground">
             Task automations require an enterprise license. Contact{' '}
             <a
-              href="mailto:sales@trycomp.ai"
+              href="mailto:sales@gideondefender.com"
               className="text-primary underline underline-offset-4 hover:text-primary/80"
             >
-              sales@trycomp.ai
+              sales@gideondefender.com
             </a>{' '}
             to learn more about enabling this feature.
           </p>

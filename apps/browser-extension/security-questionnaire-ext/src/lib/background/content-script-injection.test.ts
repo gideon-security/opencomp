@@ -9,7 +9,7 @@ describe('canInjectQuestionnaireUrl', () => {
 
   it('skips protected app/API origins and browser pages', () => {
     expect(canInjectQuestionnaireUrl('http://localhost:3000/auth')).toBe(false);
-    expect(canInjectQuestionnaireUrl('https://api.trycomp.ai/v1/auth/me')).toBe(false);
+    expect(canInjectQuestionnaireUrl('https://api.gideondefender.com/v1/auth/me')).toBe(false);
     expect(canInjectQuestionnaireUrl('chrome://extensions')).toBe(false);
   });
 });

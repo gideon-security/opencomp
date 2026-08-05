@@ -15,7 +15,7 @@ export const tool$integrationsVariablesControllerGetConnectionVariablesV1:
     name: "get-connection-variables",
     description: `List connection variables
 
-List connection variables in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+List connection variables in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

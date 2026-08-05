@@ -16,7 +16,7 @@ export const tool$findingsFindingsControllerGetFindingByIdV1: ToolDefinition<
   name: "get-finding-by-id",
   description: `Get finding by ID
 
-Get finding by ID in Comp AI. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.`,
+Get finding by ID in OpenComp. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

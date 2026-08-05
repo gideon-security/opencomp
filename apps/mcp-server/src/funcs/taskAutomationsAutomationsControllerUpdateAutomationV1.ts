@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Update an existing automation
  *
  * @remarks
- * Update an existing automation in Comp AI. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.
+ * Update an existing automation in OpenComp. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

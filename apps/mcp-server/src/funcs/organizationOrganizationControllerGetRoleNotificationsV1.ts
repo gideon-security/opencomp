@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * Get role notification settings
  *
  * @remarks
- * Get role notification settings in Comp AI. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.
+ * Get role notification settings in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

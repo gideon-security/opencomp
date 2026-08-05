@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Trigger vendor risk assessment
  *
  * @remarks
- * Trigger a vendor risk assessment so Comp AI can update third-party risk evidence and vendor security review status.
+ * Trigger a vendor risk assessment so OpenComp can update third-party risk evidence and vendor security review status.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

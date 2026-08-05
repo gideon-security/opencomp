@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Create a custom framework for this organization
  *
  * @remarks
- * Create a custom framework for this organization in Comp AI. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
+ * Create a custom framework for this organization in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
  */
 export function frameworksFrameworksControllerCreateCustomV1(
   client$: CompAiCore,

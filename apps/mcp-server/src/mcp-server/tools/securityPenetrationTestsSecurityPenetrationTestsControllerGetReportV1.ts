@@ -15,7 +15,7 @@ export const tool$securityPenetrationTestsSecurityPenetrationTestsControllerGetR
     name: "get-report",
     description: `Get penetration test output
 
-Get penetration test output in Comp AI. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF reports.`,
+Get penetration test output in OpenComp. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF reports.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

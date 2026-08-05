@@ -7,11 +7,11 @@ permissions:
   contents: read
 jobs:
   check-types:
-    runs-on: warp-ubuntu-latest-arm64-4x
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/dangerous-git-checkout
-      - uses: ./.github/actions/bun-install
+      - uses: ./.github/actions/npm-install
       - name: Show info
         run: node -e "console.log(require('v8').getHeapStatistics())"
       - name: Configure TSC problem matcher

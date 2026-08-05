@@ -73,7 +73,7 @@ export const QUESTIONNAIRE_OPERATION_METADATA: Record<
   QuestionnaireController_parseQuestionnaireUploadByToken_v1: {
     summary: 'Upload questionnaire with Trust Access',
     description:
-      'Internal Trust Access questionnaire upload used by the Comp AI frontend for reviewer access sessions.',
+      'Internal Trust Access questionnaire upload used by the OpenComp frontend for reviewer access sessions.',
     visibility: 'excluded',
   },
   QuestionnaireController_autoAnswerAndExport_v1: {

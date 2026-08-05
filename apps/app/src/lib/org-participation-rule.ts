@@ -8,9 +8,9 @@
  * Keeping this rule free of imports lets both RSC/server code and Local trigger
  * tasks share one implementation. KEEP IN SYNC with the auth package version.
  *
- * Platform admins (`User.role === 'admin'`) are Comp AI staff embedded in
+ * Platform admins (`User.role === 'admin'`) are OpenComp staff embedded in
  * customer orgs for support; they are excluded from an org's business logic
- * UNLESS the org is internal (platform-operated, e.g. Comp AI's own org).
+ * UNLESS the org is internal (platform-operated, e.g. OpenComp's own org).
  */
 export const PLATFORM_ADMIN_ROLE = 'admin';
 

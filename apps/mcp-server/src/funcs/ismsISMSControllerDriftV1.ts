@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Detect drift against the approved snapshot
  *
  * @remarks
- * Detect drift against the approved snapshot in Comp AI.
+ * Detect drift against the approved snapshot in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

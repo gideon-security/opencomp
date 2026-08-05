@@ -11,7 +11,7 @@ export const tool$organizationOrganizationAccessControllerAutoApproveV1:
     description:
       `Auto-approve organization access via domain or self-hosted check
 
-Grants hasAccess on the active organization if the requesting user is an internal trycomp.ai user, the deployment is self-hosted, or the user email domain matches the organization website domain and is an active Stripe customer.`,
+Grants hasAccess on the active organization if the requesting user is an internal gideondefender.com user, the deployment is self-hosted, or the user email domain matches the organization website domain and is an active Stripe customer.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

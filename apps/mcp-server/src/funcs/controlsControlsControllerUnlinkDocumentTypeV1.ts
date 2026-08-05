@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Remove a required document type from a control
  *
  * @remarks
- * Remove a required document type from a control in Comp AI. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.
+ * Remove a required document type from a control in OpenComp. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.
  */
 export function controlsControlsControllerUnlinkDocumentTypeV1(
   client$: CompAiCore,

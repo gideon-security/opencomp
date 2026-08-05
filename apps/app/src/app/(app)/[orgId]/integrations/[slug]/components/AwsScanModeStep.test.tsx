@@ -10,7 +10,7 @@ describe('AwsScanModeStep', () => {
     render(
       <AwsScanModeStep value={DEFAULT_AWS_SCAN_MODE_CHOICE} onChange={() => {}} />,
     );
-    expect(screen.getByText('Comp AI Scanners')).toBeInTheDocument();
+    expect(screen.getByText('OpenComp Scanners')).toBeInTheDocument();
     expect(screen.getByText('AWS Security Hub')).toBeInTheDocument();
   });
 
@@ -19,7 +19,7 @@ describe('AwsScanModeStep', () => {
       <AwsScanModeStep value="comp_scanners" onChange={() => {}} />,
     );
 
-    const compRadio = screen.getByRole('radio', { name: /comp ai scanners/i });
+    const compRadio = screen.getByRole('radio', { name: /OpenComp scanners/i });
     const sechubRadio = screen.getByRole('radio', { name: /aws security hub/i });
     expect(compRadio).toBeChecked();
     expect(sechubRadio).not.toBeChecked();
@@ -48,7 +48,7 @@ describe('AwsScanModeStep', () => {
     // Click on the already-selected one — radio onChange does NOT fire
     // when re-selecting the checked option, so onChange stays at 0.
     fireEvent.click(
-      screen.getByRole('radio', { name: /comp ai scanners/i }),
+      screen.getByRole('radio', { name: /OpenComp scanners/i }),
     );
     expect(onChange).not.toHaveBeenCalled();
   });

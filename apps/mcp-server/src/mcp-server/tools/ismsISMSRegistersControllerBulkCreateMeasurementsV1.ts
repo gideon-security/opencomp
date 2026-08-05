@@ -16,7 +16,7 @@ export const tool$ismsISMSRegistersControllerBulkCreateMeasurementsV1:
     description:
       `Record measurements for several metrics/periods in one save (Metrics due / backfill)
 
-Record measurements for several metrics/periods in one save (Metrics due / backfill) in Comp AI.`,
+Record measurements for several metrics/periods in one save (Metrics due / backfill) in OpenComp.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

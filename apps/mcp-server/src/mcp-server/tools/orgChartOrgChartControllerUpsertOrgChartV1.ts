@@ -16,7 +16,7 @@ export const tool$orgChartOrgChartControllerUpsertOrgChartV1: ToolDefinition<
   name: "upsert-org-chart",
   description: `Create or update an interactive organization chart
 
-Create or update an interactive organization chart in Comp AI. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.`,
+Create or update an interactive organization chart in OpenComp. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

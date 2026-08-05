@@ -15,7 +15,7 @@ export const tool$integrationsConnectionsControllerGetConnectionV1:
     name: "get-connection",
     description: `Get an integration connection by ID
 
-Get an integration connection by ID in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Get an integration connection by ID in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * List check definitions for a provider
  *
  * @remarks
- * List check definitions for a provider in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.
+ * List check definitions for a provider in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

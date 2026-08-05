@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Delete a framework instance
  *
  * @remarks
- * Delete a framework instance in Comp AI. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
+ * Delete a framework instance in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
  */
 export function frameworksFrameworksControllerDeleteV1(
   client$: CompAiCore,

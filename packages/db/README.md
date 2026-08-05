@@ -1,6 +1,6 @@
 # @gideon-defender/db
 
-Database package for Comp AI.
+Database package for OpenComp.
 
 ## What’s included
 

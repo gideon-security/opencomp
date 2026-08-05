@@ -14,7 +14,7 @@ export const tool$soaSOAControllerEnsureSetupV1: ToolDefinition<typeof args> = {
   name: "ensure-setup",
   description: `Ensure SOA configuration and document exist
 
-Ensure SOA configuration and document exist in Comp AI. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
+Ensure SOA configuration and document exist in OpenComp. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

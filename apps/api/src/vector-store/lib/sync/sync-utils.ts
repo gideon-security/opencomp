@@ -118,6 +118,7 @@ export function needsUpdate(
 export async function deleteOldEmbeddings(
   embeddings: ExistingEmbedding[],
   logContext: Record<string, string>,
+  organizationId: string,
 ): Promise<void> {
   if (embeddings.length === 0 || !vectorIndex) {
     return;
@@ -125,7 +126,7 @@ export async function deleteOldEmbeddings(
 
   const idsToDelete = embeddings.map((e) => e.id);
   try {
-    await vectorIndex.delete(idsToDelete);
+    await vectorIndex.delete(idsToDelete, organizationId);
   } catch (error) {
     logger.warn('Failed to delete old embeddings', {
       ...logContext,

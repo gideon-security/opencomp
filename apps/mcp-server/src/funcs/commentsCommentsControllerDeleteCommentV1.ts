@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Delete a comment
  *
  * @remarks
- * Delete a comment in Comp AI. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.
+ * Delete a comment in OpenComp. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

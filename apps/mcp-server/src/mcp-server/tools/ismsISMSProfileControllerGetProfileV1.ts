@@ -16,7 +16,7 @@ export const tool$ismsISMSProfileControllerGetProfileV1: ToolDefinition<
   name: "get-profile",
   description: `Get the ISMS wizard profile, defaults and members
 
-Get the ISMS wizard profile, defaults and members in Comp AI.`,
+Get the ISMS wizard profile, defaults and members in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

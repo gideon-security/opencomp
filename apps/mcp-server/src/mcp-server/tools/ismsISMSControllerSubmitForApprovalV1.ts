@@ -16,7 +16,7 @@ export const tool$ismsISMSControllerSubmitForApprovalV1: ToolDefinition<
   name: "isms-submit-for-approval",
   description: `Submit an ISMS document for approval
 
-Submit an ISMS document for approval in Comp AI.`,
+Submit an ISMS document for approval in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

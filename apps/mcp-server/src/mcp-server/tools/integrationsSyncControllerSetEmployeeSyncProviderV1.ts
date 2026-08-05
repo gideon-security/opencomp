@@ -15,7 +15,7 @@ export const tool$integrationsSyncControllerSetEmployeeSyncProviderV1:
     name: "set-employee-sync-provider",
     description: `Set the employee sync provider
 
-Set the employee sync provider in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Set the employee sync provider in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

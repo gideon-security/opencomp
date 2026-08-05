@@ -21,7 +21,7 @@ export const OTPVerificationEmail = ({ email, otp }: Props) => {
     <Html>
       <Tailwind>
         <head />
-        <Preview>One-Time Password for Comp AI</Preview>
+        <Preview>One-Time Password for OpenComp</Preview>
 
         <Body className="mx-auto my-auto bg-[#fff] font-sans">
           <Container
@@ -30,14 +30,14 @@ export const OTPVerificationEmail = ({ email, otp }: Props) => {
           >
             <Logo />
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-[#121212]">
-              Your one-time password for Comp AI
+              Your one-time password for OpenComp
             </Heading>
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
               Hey there,
               <br />
               <br />
-              Your one-time password for Comp AI is: {otp}. Please do not share this code with
+              Your one-time password for OpenComp is: {otp}. Please do not share this code with
               anyone.
             </Text>
 

@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerDeleteTrustDocumentV1:
     name: "delete-trust-document",
     description: `Delete (deactivate) a trust portal document
 
-Delete (deactivate) a trust portal document in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Delete (deactivate) a trust portal document in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

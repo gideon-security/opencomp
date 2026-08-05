@@ -15,7 +15,7 @@ export const tool$knowledgeBaseKnowledgeBaseControllerDeleteManualAnswerV1:
     name: "delete-manual-answer",
     description: `Delete a manual answer
 
-Delete a manual answer in Comp AI. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.`,
+Delete a manual answer in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

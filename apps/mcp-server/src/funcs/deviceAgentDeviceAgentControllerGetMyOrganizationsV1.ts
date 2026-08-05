@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * List organizations for the current device
  *
  * @remarks
- * List organizations for the current device in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
+ * List organizations for the current device in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
  */
 export function deviceAgentDeviceAgentControllerGetMyOrganizationsV1(
   client$: CompAiCore,

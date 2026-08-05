@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerBulkSubmitForReviewV1: ToolDefinition<
   name: "bulk-submit-for-review",
   description: `Bulk submit tasks for review
 
-Bulk submit tasks for review in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Bulk submit tasks for review in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,
