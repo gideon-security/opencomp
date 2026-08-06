@@ -5,11 +5,11 @@ name: Sync MCP source to Gram
 # and can be triggered manually. No manual uploads — the source is pushed
 # declaratively from gram.json via the Gram CLI.
 on:
-  push:
-    branches: [main]
-    paths:
-      - "packages/docs/openapi.json"
-      - "gram.json"
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - "packages/docs/openapi.json"
+  #     - "gram.json"
   workflow_dispatch:
 
 # Least privilege: this workflow only reads the repo to checkout + push the spec.

@@ -1,4 +1,4 @@
-import { createGatewayProvider } from '@ai-sdk/gateway';
+import { google } from '@ai-sdk/google';
 import {
   Departments,
   FrameworkEditorFramework,
@@ -13,12 +13,10 @@ import {
 } from '@db';
 import { db } from '@db/server';
 import { logger, metadata, tasks } from '@gideon-defender/trigger-local';
-import { generateObject, jsonSchema } from 'ai';
+import { jsonSchema } from 'ai';
+import { generateObjectWithRetry } from '@/lib/llm-call';
 
-const gateway = createGatewayProvider({
-  baseURL: process.env.AI_GATEWAY_BASE_URL,
-});
-const ONBOARDING_MODEL = 'google/gemini-3-flash' as const;
+const ONBOARDING_MODEL = 'gemini-3.5-flash' as const;
 import axios from 'axios';
 import { z } from 'zod';
 import type { researchVendor } from '../scrape/research';
@@ -504,8 +502,8 @@ export async function extractVendorsFromContext(
   // Create a set of custom vendor names for quick lookup
   const customVendorNameSet = new Set(customVendors.map((v) => v.name.toLowerCase()));
 
-  const { object } = await generateObject({
-    model: gateway(ONBOARDING_MODEL),
+  const { object } = await generateObjectWithRetry({
+    model: google(ONBOARDING_MODEL),
     schema: jsonSchema({
       type: 'object',
       properties: {
@@ -672,8 +670,8 @@ ${compliancePostureBlock}
 Citations (write one sentence per item, in order):
 ${formatCitationsBlock(citations)}`;
 
-  const result = await generateObject({
-    model: gateway(ONBOARDING_MODEL),
+  const result = await generateObjectWithRetry({
+    model: google(ONBOARDING_MODEL),
     system: RISK_MITIGATION_PROMPT,
     prompt: userPrompt,
     schema: sentencesSchema,
@@ -849,7 +847,10 @@ async function triggerVendorRiskAssessmentsViaApi(params: {
   }
 
   const apiBaseUrl =
-    process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || 'http://localhost:3333';
+    process.env.BACKEND_API_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    process.env.API_BASE_URL ||
+    'http://localhost:3333';
   const token = process.env.SERVICE_TOKEN_TRIGGER;
 
   // Sanitize vendor websites - only send valid URLs or null
@@ -1041,8 +1042,8 @@ Treatment strategy: ${PLAN_STRATEGY}
 Citations (write one sentence per item, in order):
 ${formatCitationsBlock(citations)}`;
 
-  const result = await generateObject({
-    model: gateway(ONBOARDING_MODEL),
+  const result = await generateObjectWithRetry({
+    model: google(ONBOARDING_MODEL),
     system: RISK_MITIGATION_PROMPT,
     prompt: userPrompt,
     schema: sentencesSchema,
@@ -1113,8 +1114,8 @@ export async function extractRisksFromContext(
   organizationName: string,
   existingRisks: { title: string }[],
 ): Promise<RiskData[]> {
-  const { object } = await generateObject({
-    model: gateway(ONBOARDING_MODEL),
+  const { object } = await generateObjectWithRetry({
+    model: google(ONBOARDING_MODEL),
     schema: jsonSchema({
       type: 'object',
       properties: {

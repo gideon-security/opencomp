@@ -4,9 +4,10 @@ import {
   vectorIndex as pgVectorIndex,
   type VectorIndex,
   type VectorRangeResult,
+  embedTexts,
+  EMBEDDING_MODEL,
+  EMBEDDING_DIMENSIONS,
 } from '@gideon-defender/db';
-import { openai } from '@ai-sdk/openai';
-import { embedMany } from 'ai';
 import { createHash } from 'node:crypto';
 
 export type EntityKind = 'risk' | 'vendor' | 'task';
@@ -53,13 +54,8 @@ export interface SimilarTaskResult {
   department?: string;
 }
 
-// `text-embedding-3-large` truncated to 1536 dims via Matryoshka. The
-// truncated 1536-dim form of -3-large still outperforms -3-small on MTEB
-// while matching the shared pgvector `vector_embedding` column (VECTOR(1536)).
-// Bumping to the full 3072 dims would require a schema change + a one-time
-// re-embed of every org.
-const EMBEDDING_MODEL = 'text-embedding-3-large';
-const EMBEDDING_DIMENSIONS = 1536;
+// Self-hosted BAAI/bge-m3 (1024 dims) via Ollama; model + dims imported from
+// @gideon-defender/db so the content hash and the serving client stay in lockstep.
 const DEFAULT_TOP_K = 25;
 // Pagination for enumerating an org's task vectors by their shared id prefix —
 // used by both `findSimilarTasks` (exact in-process ranking) and
@@ -155,11 +151,7 @@ export async function upsertEntityEmbeddings({
     return { appliedHashes: [], skippedCount };
   }
 
-  const { embeddings } = await embedMany({
-    model: openai.embedding(EMBEDDING_MODEL),
-    values: toEmbed.map(({ entity }) => entity.text),
-    providerOptions: { openai: { dimensions: EMBEDDING_DIMENSIONS } },
-  });
+  const embeddings = await embedTexts(toEmbed.map(({ entity }) => entity.text));
 
   const index = getIndex();
   await Promise.all(
@@ -274,12 +266,7 @@ export async function findSimilarTasks({
 }: FindSimilarTasksOptions): Promise<SimilarTaskResult[]> {
   if (!queryText.trim()) return [];
 
-  const { embeddings } = await embedMany({
-    model: openai.embedding(EMBEDDING_MODEL),
-    values: [queryText],
-    providerOptions: { openai: { dimensions: EMBEDDING_DIMENSIONS } },
-  });
-  const queryVector = embeddings[0];
+  const [queryVector] = await embedTexts([queryText]);
 
   const taskVectors = await fetchOrgTaskVectors(organizationId);
   if (taskVectors.length === 0) return [];

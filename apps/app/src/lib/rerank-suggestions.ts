@@ -1,15 +1,16 @@
-import { createGatewayProvider } from '@ai-sdk/gateway';
-import { generateObject, jsonSchema } from 'ai';
+import { google } from '@ai-sdk/google';
+import { jsonSchema } from 'ai';
+import { generateObjectWithRetry } from './llm-call';
 
 /**
  * LLM reranker for the on-demand auto-link suggestion flow.
  *
- * Cosine similarity on `text-embedding-3-small` does a good job at recall (it
- * pulls the right ballpark of candidates) but is noisy on precision: the
- * scores collapse into a tight band for short compliance prose, so genuinely
- * on-target tasks ("Secure Devices: BitLocker / FileVault / MDM") and
- * surface-keyword matches ("Office Access & Door Monitoring") end up at the
- * same 0.61–0.64 cosine score.
+ * Cosine similarity on the bge-m3 embeddings (self-hosted via Ollama) does a
+ * good job at recall (it pulls the right ballpark of candidates) but is noisy
+ * on precision: the scores collapse into a tight band for short compliance
+ * prose, so genuinely on-target tasks ("Secure Devices: BitLocker / FileVault
+ * / MDM") and surface-keyword matches ("Office Access & Door Monitoring") end
+ * up at the same 0.61–0.64 cosine score.
  *
  * The reranker bridges that gap: a cheap GPT call reads each candidate's
  * title + description and scores 0–10 by actual mitigation effectiveness for
@@ -39,16 +40,7 @@ export interface RerankedCandidate {
   rerankScore: number;
 }
 
-const gateway = createGatewayProvider({
-  baseURL: process.env.AI_GATEWAY_BASE_URL,
-});
-
-/**
- * GA slug. Never pin a `-preview` alias here: the gateway retires it once the model
- * goes GA, and every rerank call then 404s. Both callers in `run-linkage.ts` swallow that
- * into a cosine-only fallback, so the failure is silent — suggestion quality just degrades.
- */
-const RERANK_MODEL = 'google/gemini-3.1-flash-lite' as const;
+const RERANK_MODEL = 'gemini-3.1-flash-lite' as const;
 
 const SYSTEM_PROMPT = `You are a GRC analyst evaluating which compliance tasks would meaningfully reduce a specific risk or vendor exposure.
 
@@ -113,8 +105,8 @@ export async function rerankSuggestions({
     .filter((line): line is string => line !== null)
     .join('\n');
 
-  const result = await generateObject({
-    model: gateway(RERANK_MODEL),
+  const result = await generateObjectWithRetry({
+    model: google(RERANK_MODEL),
     system: SYSTEM_PROMPT,
     prompt: userPrompt,
     schema: rerankSchema,

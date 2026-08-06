@@ -1,14 +1,10 @@
-import { createGatewayProvider } from '@ai-sdk/gateway';
+import { google } from '@ai-sdk/google';
 import { db, FrameworkEditorFramework, FrameworkEditorPolicyTemplate, type Policy } from '@db/server';
 import type { JSONContent } from '@tiptap/react';
 import { logger } from '@gideon-defender/trigger-local';
-import { generateObject } from 'ai';
+import { generateObjectWithRetry } from '@/lib/llm-call';
 import { z } from 'zod';
 import { processTemplate } from './process-policy-template';
-
-const gateway = createGatewayProvider({
-  baseURL: process.env.AI_GATEWAY_BASE_URL,
-});
 
 const CUE_LINE_PATTERN =
   /^(State that|Clarify that|Add a |Include a |Specify |List |Note that|Require that|Describe |Define )/;
@@ -60,8 +56,8 @@ async function refineCueLines(
   if (cueLines.length === 0) return content;
 
   try {
-    const { object } = await generateObject({
-      model: gateway('anthropic/claude-sonnet-4.6'),
+    const { object } = await generateObjectWithRetry({
+      model: google('gemini-3.5-flash'),
       system: `You rewrite policy template instructions into direct, professional policy language. Each input is an instruction (e.g. "State that...", "Define..."). Return the equivalent text as it should appear in a published security policy — authoritative, concise, no instructional phrasing.`,
       prompt: `Policy: "${policyName}"\n\nRewrite each instruction:\n${cueLines.map((c, i) => `${i + 1}. ${c.text}`).join('\n')}`,
       schema: z.object({
