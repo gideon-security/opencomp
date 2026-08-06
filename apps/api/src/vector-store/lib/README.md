@@ -1,6 +1,7 @@
 # Vector Search Utilities
 
-This directory contains utilities for semantic search using pgvector (Postgres) and OpenAI embeddings.
+This directory contains utilities for semantic search using pgvector (Postgres) and self-hosted
+embeddings (BAAI/bge-m3 via Ollama).
 
 ## Structure
 
@@ -8,7 +9,7 @@ This directory contains utilities for semantic search using pgvector (Postgres) 
 lib/
 ├── core/                      # Core functionality
 │   ├── client.ts             # Shared pgvector client (re-exported from @gideon-defender/db)
-│   ├── generate-embedding.ts # OpenAI embedding generation
+│   ├── generate-embedding.ts # Embedding generation (self-hosted bge-m3)
 │   ├── find-similar.ts       # Semantic search function
 │   └── upsert-embedding.ts   # Embedding storage
 ├── sync/                      # Embedding sync jobs (policies, context, manual answers, KB)
@@ -25,13 +26,14 @@ lib/
    - The `vector` extension and `vector_embedding` table (with HNSW index) are created by the
      migration `20260805000000_add_pgvector_embeddings` in `packages/db/prisma/migrations`.
    - Vector writes/reads go through raw SQL in the shared client; Prisma does not own the
-     `vector(1536)` column type.
+     `vector(1024)` column type.
 
 2. **Add Environment Variables**
    Add to your `.env` file:
    ```
    DATABASE_URL=postgres://user:password@host:5432/comp?sslmode=disable
-   OPENAI_API_KEY=your_openai_api_key
+   EMBEDDINGS_BASE_URL=http://localhost:11434   # Ollama API
+   EMBEDDING_MODEL=bge-m3
    ```
 
 3. **Automatic Embedding Creation**
@@ -100,7 +102,7 @@ const text = extractTextFromPolicy(policy);
 
 ### Core (`core/`)
 - `client.ts` - Shared pgvector client (from `@gideon-defender/db`)
-- `generate-embedding.ts` - OpenAI embedding generation
+- `generate-embedding.ts` - Embedding generation (self-hosted bge-m3)
 - `find-similar.ts` - Semantic search function
 - `upsert-embedding.ts` - Embedding storage
 

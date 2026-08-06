@@ -83,6 +83,9 @@ services:
       REDIS_URL: redis://comp_app:comp_app_local_dev_password@redis:6379
       LOCAL_TRIGGER_REDIS_URL: redis://comp_service:comp_service_local_dev_password@redis:6379
       LOCAL_TRIGGER_QUEUE_SUFFIX: api
+      # Self-hosted embeddings (BAAI/bge-m3 via Ollama) — replaces OpenAI.
+      EMBEDDINGS_BASE_URL: http://embeddings:11434
+      EMBEDDING_MODEL: bge-m3
       # RLS client roles (created by the _add_rls_roles_and_tenant_policies migration).
       DATABASE_URL_TENANT: postgres://comp_app:comp_app_local_dev_password@postgres:5432/comp?sslmode=disable
       DATABASE_URL_SERVICE: postgres://comp_service:comp_service_local_dev_password@postgres:5432/comp?sslmode=disable
@@ -152,6 +155,29 @@ services:
       disable: true
     logging: *default-logging
 
+  embeddings:
+    # Self-hosted embedding server (BAAI/bge-m3, 1024 dims). Ollama publishes
+    # linux/arm64 images (TEI is amd64-only), so it runs natively on this Mac.
+    # The entrypoint pulls bge-m3 on first boot (idempotent once cached).
+    image: docker.io/ollama/ollama
+    platform: linux/arm64
+    ports:
+      - '11434:11434'
+    entrypoint:
+      - /bin/sh
+      - -c
+      - 'ollama serve & until ollama list >/dev/null 2>&1; do sleep 1; done; ollama pull bge-m3; wait'
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ['CMD', 'ollama', 'list']
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+    logging: *default-logging
+
   app:
     build:
       context: .
@@ -175,6 +201,9 @@ services:
       REDIS_URL: redis://comp_app:comp_app_local_dev_password@redis:6379
       LOCAL_TRIGGER_REDIS_URL: redis://comp_service:comp_service_local_dev_password@redis:6379
       LOCAL_TRIGGER_QUEUE_SUFFIX: app
+      # Self-hosted embeddings (BAAI/bge-m3 via Ollama) — replaces OpenAI.
+      EMBEDDINGS_BASE_URL: http://embeddings:11434
+      EMBEDDING_MODEL: bge-m3
     depends_on:
       api:
         condition: service_started
@@ -220,3 +249,4 @@ volumes:
   postgres_data:
   localstack_data:
   redis_data:
+  ollama_data:

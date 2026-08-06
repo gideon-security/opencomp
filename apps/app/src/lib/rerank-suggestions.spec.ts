@@ -80,9 +80,9 @@ describe('rerankSuggestions', () => {
     expect(byId.tsk_c).toBe(0);
   });
 
-  // Regression: the reranker was pinned to `google/gemini-3.1-flash-lite-preview`. The
-  // gateway retires `-preview` aliases on GA, so every call 404'd — and because both
-  // callers in run-linkage.ts catch and fall back to cosine, nothing surfaced the failure.
+  // Regression: the reranker was pinned to a `-preview` alias. The gateway retires
+  // `-preview` aliases on GA, so every call 404'd — and because both callers in
+  // run-linkage.ts catch and fall back to cosine, nothing surfaced the failure.
   it('requests a GA model slug, never a -preview alias', async () => {
     generateObjectMock.mockResolvedValueOnce({ object: { scores: [] } });
 
@@ -92,7 +92,7 @@ describe('rerankSuggestions', () => {
     });
 
     const { model } = generateObjectMock.mock.calls[0][0];
-    expect(model.modelId).toBe('google/gemini-3.1-flash-lite');
+    expect(model.modelId).toBe('gemini-3.1-flash-lite');
     expect(model.modelId).not.toMatch(/-preview$/);
   });
 

@@ -6,10 +6,10 @@ import { withService, withTenant } from './client';
 // drop-in (query/upsert/fetch/delete/range/info) so the consuming modules
 // required no structural changes during the migration off Upstash.
 //
-// The embedding column is VECTOR(1536) (both consumers embed to 1536 dims) and
-// cosine similarity is used, matching Upstash's COSINE score scale: pgvector's
-// `<=>` returns cosine distance in [0,2], Upstash returns (1+cos)/2 in [0,1],
-// so score = 1 - distance/2.
+// The embedding column is VECTOR(1024) (both consumers embed to 1024 dims via
+// self-hosted BAAI/bge-m3) and cosine similarity is used, matching Upstash's
+// COSINE score scale: pgvector's `<=>` returns cosine distance in [0,2],
+// Upstash returns (1+cos)/2 in [0,1], so score = 1 - distance/2.
 //
 // Every operation is tenant-scoped: callers must pass the owning
 // `organizationId` and every query runs inside `withTenant` so Postgres RLS
@@ -342,7 +342,7 @@ export const vectorIndex: VectorIndex | null = process.env.DATABASE_URL
           return {
             totalVectorCount: rows[0]?.total ?? 0,
             pendingVectorCount: 0,
-            dimension: 1536,
+            dimension: 1024,
           };
         });
       },
