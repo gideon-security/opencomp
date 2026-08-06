@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Download a device-agent update
  *
  * @remarks
- * Download a device-agent update in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
+ * Download a device-agent update in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
  */
 export function deviceAgentDeviceAgentControllerGetUpdateFileV1(
   client$: CompAiCore,

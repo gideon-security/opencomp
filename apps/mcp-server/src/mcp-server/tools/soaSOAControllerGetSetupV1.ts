@@ -14,7 +14,7 @@ export const tool$soaSOAControllerGetSetupV1: ToolDefinition<typeof args> = {
   name: "get-setup",
   description: `Read SOA configuration and document without creating either
 
-Read SOA configuration and document without creating either in Comp AI. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
+Read SOA configuration and document without creating either in OpenComp. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

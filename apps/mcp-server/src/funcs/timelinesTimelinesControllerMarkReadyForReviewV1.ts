@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Mark a phase as ready for review
  *
  * @remarks
- * Mark a phase as ready for review in Comp AI. Track audit and compliance readiness timelines, phases, and review milestones for an organization.
+ * Mark a phase as ready for review in OpenComp. Track audit and compliance readiness timelines, phases, and review milestones for an organization.
  */
 export function timelinesTimelinesControllerMarkReadyForReviewV1(
   client$: CompAiCore,

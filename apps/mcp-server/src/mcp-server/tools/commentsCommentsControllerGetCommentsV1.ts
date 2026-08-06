@@ -16,7 +16,7 @@ export const tool$commentsCommentsControllerGetCommentsV1: ToolDefinition<
   name: "get-comments",
   description: `Get comments for an entity
 
-Get comments for an entity in Comp AI. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.`,
+Get comments for an entity in OpenComp. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

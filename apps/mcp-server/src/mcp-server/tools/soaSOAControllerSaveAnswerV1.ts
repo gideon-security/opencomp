@@ -14,7 +14,7 @@ export const tool$soaSOAControllerSaveAnswerV1: ToolDefinition<typeof args> = {
   name: "soa-save-answer",
   description: `Save a SOA answer
 
-Save a SOA answer in Comp AI. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
+Save a SOA answer in OpenComp. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

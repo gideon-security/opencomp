@@ -16,7 +16,7 @@ export const tool$integrationsTaskIntegrationsControllerGetChecksForTaskTemplate
     name: "get-checks-for-task-template",
     description: `List checks for a task template
 
-List checks for a task template in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+List checks for a task template in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

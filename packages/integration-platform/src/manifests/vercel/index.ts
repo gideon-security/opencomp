@@ -25,7 +25,7 @@ export const vercelManifest: IntegrationManifest = {
 1. Go to your [Vercel Team Settings → Apps](https://vercel.com/your-team/~/settings/apps)
 2. Click **Create**
 3. Fill in:
-   - **Name**: Comp AI Security
+   - **Name**: OpenComp Security
    - **Redirect URL**: \`{CALLBACK_URL}\`
 4. Click **Create**
 

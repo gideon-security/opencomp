@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Update document relevance setting
  *
  * @remarks
- * Update document relevance setting in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.
+ * Update document relevance setting in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

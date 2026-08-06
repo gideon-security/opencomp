@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerUpdateVendorTrustSettingsV1:
     name: "update-vendor-trust-settings",
     description: `Update vendor trust portal settings
 
-Update vendor trust portal settings in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Update vendor trust portal settings in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

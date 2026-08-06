@@ -11,7 +11,7 @@ import { db } from '@db/server';
  * for the canonical rule.
  */
 
-/** Whether an org is platform-operated ("internal", e.g. Comp AI's own org). */
+/** Whether an org is platform-operated ("internal", e.g. OpenComp's own org). */
 export async function getOrgIsInternal(organizationId: string): Promise<boolean> {
   const org = await db.organization.findUnique({
     where: { id: organizationId },

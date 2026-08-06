@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Preview changes from updating a framework instance
  *
  * @remarks
- * Preview changes from updating a framework instance in Comp AI. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
+ * Preview changes from updating a framework instance in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
  */
 export function frameworksFrameworksControllerGetUpdatePreviewV1(
   client$: CompAiCore,

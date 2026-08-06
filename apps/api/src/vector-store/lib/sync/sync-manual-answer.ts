@@ -77,7 +77,7 @@ export async function syncManualAnswerToVector(
 
     for (let attempt = 0; attempt < maxRetries; attempt++) {
       try {
-        const fetchedEmbeddings = await vectorIndex.fetch([embeddingId]);
+        const fetchedEmbeddings = await vectorIndex.fetch([embeddingId], organizationId);
         wasFound =
           fetchedEmbeddings &&
           fetchedEmbeddings.length > 0 &&
@@ -172,7 +172,7 @@ export async function deleteManualAnswerFromVector(
 
     // Try to delete directly by ID (most efficient)
     try {
-      await vectorIndex.delete([embeddingId]);
+      await vectorIndex.delete([embeddingId], organizationId);
       logger.info('Deleted manual answer from vector DB', {
         manualAnswerId,
         organizationId,

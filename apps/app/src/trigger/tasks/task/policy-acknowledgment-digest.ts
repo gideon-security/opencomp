@@ -18,7 +18,7 @@ import {
 } from './policy-acknowledgment-digest-helpers';
 
 const getPortalBase = () =>
-  (process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://portal.trycomp.ai').replace(/\/+$/, '');
+  (process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://portal.gideondefender.com').replace(/\/+$/, '');
 
 // Skip orgs that look abandoned — same threshold weekly-task-reminder uses so
 // we don't keep hitting dead addresses and burning domain reputation.

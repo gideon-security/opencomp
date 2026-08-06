@@ -61,6 +61,6 @@ export function railSubtitleFor(step: Step): string {
     case 'signin':
       return 'Your turn — finish signing in';
     default:
-      return 'So Comp AI can capture evidence on a schedule';
+      return 'So OpenComp can capture evidence on a schedule';
   }
 }

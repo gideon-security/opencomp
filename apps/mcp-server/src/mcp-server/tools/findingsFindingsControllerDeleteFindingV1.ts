@@ -16,7 +16,7 @@ export const tool$findingsFindingsControllerDeleteFindingV1: ToolDefinition<
   name: "delete-finding",
   description: `Delete a finding (auditor or platform admin only)
 
-Delete a finding (auditor or platform admin only) in Comp AI. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.`,
+Delete a finding (auditor or platform admin only) in OpenComp. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

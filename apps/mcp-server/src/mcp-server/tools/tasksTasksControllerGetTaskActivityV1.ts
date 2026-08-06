@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerGetTaskActivityV1: ToolDefinition<
   name: "get-task-activity",
   description: `Get task activity
 
-Get task activity in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Get task activity in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

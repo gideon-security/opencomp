@@ -52,7 +52,7 @@ const cases = [
         taskName="Task"
         taskStatus="todo"
         organizationName="Acme"
-        taskUrl="https://app.trycomp.ai/org_123/tasks/t1"
+        taskUrl="https://app.gideondefender.com/org_123/tasks/t1"
       />
     ),
   },
@@ -61,7 +61,7 @@ const cases = [
     el: (
       <InvitePortalEmail
         email="user@example.com"
-        inviteLink="https://app.trycomp.ai/invite"
+        inviteLink="https://app.gideondefender.com/invite"
         organizationName="Acme"
       />
     ),
@@ -72,7 +72,7 @@ const cases = [
       <InviteEmail
         email="user@example.com"
         organizationName="Acme"
-        inviteLink="https://app.trycomp.ai/invite"
+        inviteLink="https://app.gideondefender.com/invite"
       />
     ),
   },
@@ -95,7 +95,7 @@ const cases = [
     el: (
       <MagicLinkEmail
         email="user@example.com"
-        url="https://app.trycomp.ai/magic"
+        url="https://app.gideondefender.com/magic"
         inviteCode="abc"
       />
     ),
@@ -114,7 +114,7 @@ const cases = [
   { name: 'otp', el: <OTPVerificationEmail email="user@example.com" otp="123456" /> },
   {
     name: 'verify-email',
-    el: <VerifyEmail email="user@example.com" url="https://app.trycomp.ai/verify" />,
+    el: <VerifyEmail email="user@example.com" url="https://app.gideondefender.com/verify" />,
   },
   {
     name: 'change-email-confirmation',
@@ -122,7 +122,7 @@ const cases = [
       <ChangeEmailConfirmationEmail
         currentEmail="old@example.com"
         newEmail="new@example.com"
-        url="https://app.trycomp.ai/verify"
+        url="https://app.gideondefender.com/verify"
       />
     ),
   },
@@ -164,12 +164,12 @@ const cases = [
               {
                 id: 'p1',
                 name: 'Acceptable Use Policy',
-                url: 'https://portal.trycomp.ai/org_123/policy/p1',
+                url: 'https://portal.gideondefender.com/org_123/policy/p1',
               },
               {
                 id: 'p2',
                 name: 'Security Policy',
-                url: 'https://portal.trycomp.ai/org_123/policy/p2',
+                url: 'https://portal.gideondefender.com/org_123/policy/p2',
               },
             ],
           },
@@ -191,7 +191,7 @@ const cases = [
               {
                 id: 'p1',
                 name: 'Acceptable Use Policy',
-                url: 'https://portal.trycomp.ai/org_1/policy/p1',
+                url: 'https://portal.gideondefender.com/org_1/policy/p1',
               },
             ],
           },
@@ -202,12 +202,12 @@ const cases = [
               {
                 id: 'p2',
                 name: 'Security Policy',
-                url: 'https://portal.trycomp.ai/org_2/policy/p2',
+                url: 'https://portal.gideondefender.com/org_2/policy/p2',
               },
               {
                 id: 'p3',
                 name: 'Data Retention',
-                url: 'https://portal.trycomp.ai/org_2/policy/p3',
+                url: 'https://portal.gideondefender.com/org_2/policy/p3',
               },
             ],
           },

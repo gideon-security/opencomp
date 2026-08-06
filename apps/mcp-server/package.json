@@ -1,12 +1,12 @@
 {
   "name": "@gideon-defender/mcp-server",
   "version": "0.2.5",
-  "author": "Comp AI",
+  "author": "OpenComp",
   "type": "module",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/trycompai/comp.git",
+    "url": "https://github.com/gideon-security/opencomp.git",
     "directory": "apps/mcp-server"
   },
   "bin": {

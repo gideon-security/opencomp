@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { buildSignInCallbackUrls } from './auth-callback';
 
-const PORTAL_ORIGIN = 'https://portal.trycomp.ai';
-const API_ORIGIN = 'https://api.trycomp.ai';
+const PORTAL_ORIGIN = 'https://portal.gideondefender.com';
+const API_ORIGIN = 'https://api.gideondefender.com';
 
 describe('buildSignInCallbackUrls', () => {
   // CS-760: a new Microsoft/Entra user accepts a portal invite; the OAuth

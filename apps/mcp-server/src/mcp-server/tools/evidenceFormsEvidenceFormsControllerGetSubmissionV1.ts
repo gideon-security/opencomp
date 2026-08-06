@@ -15,7 +15,7 @@ export const tool$evidenceFormsEvidenceFormsControllerGetSubmissionV1:
     name: "get-submission",
     description: `Get a single submission
 
-Get a single submission in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
+Get a single submission in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

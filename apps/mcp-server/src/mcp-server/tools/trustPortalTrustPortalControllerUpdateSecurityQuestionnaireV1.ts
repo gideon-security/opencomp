@@ -16,7 +16,7 @@ export const tool$trustPortalTrustPortalControllerUpdateSecurityQuestionnaireV1:
     description:
       `Show or hide the Security Questionnaire on the public trust portal
 
-Show or hide the Security Questionnaire on the public trust portal in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Show or hide the Security Questionnaire on the public trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

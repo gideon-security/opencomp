@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Create a new comment
  *
  * @remarks
- * Create a new comment in Comp AI. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.
+ * Create a new comment in OpenComp. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -1,10 +1,10 @@
 # Security
 
-Contact: [security@trycomp.ai](mailto:security@trycomp.ai)
+Contact: [security@gideondefender.com](mailto:security@gideondefender.com)
 
 Based on [https://supabase.com/.well-known/security.txt](https://supabase.com/.well-known/security.txt)
 
-At Comp AI, Inc., we consider the security of our systems a top priority. But no
+At OpenComp, Inc., we consider the security of our systems a top priority. But no
 matter how much effort we put into system security, there can still be
 vulnerabilities present.
 
@@ -27,7 +27,7 @@ better protect our clients and our systems.
 
 ## Please do the following
 
-- E-mail your findings to [security@trycomp.ai](mailto:security@trycomp.ai).
+- E-mail your findings to [security@gideondefender.com](mailto:security@gideondefender.com).
 - Do not run automated scanners on our infrastructure or dashboard. If you wish
   to do this, contact us and we will set up a sandbox for you.
 - Do not take advantage of the vulnerability or problem you have discovered,

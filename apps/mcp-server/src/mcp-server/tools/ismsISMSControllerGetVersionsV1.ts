@@ -15,7 +15,7 @@ export const tool$ismsISMSControllerGetVersionsV1: ToolDefinition<typeof args> =
     name: "get-versions",
     description: `List an ISMS document's published version history
 
-List an ISMS document's published version history in Comp AI.`,
+List an ISMS document's published version history in OpenComp.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

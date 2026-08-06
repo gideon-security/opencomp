@@ -26,7 +26,7 @@ CREATE TABLE "IsmsDocument" (
     "type" "IsmsDocumentType" NOT NULL,
     "title" TEXT NOT NULL,
     "status" "IsmsDocumentStatus" NOT NULL DEFAULT 'draft',
-    "preparedBy" TEXT NOT NULL DEFAULT 'Comp AI',
+    "preparedBy" TEXT NOT NULL DEFAULT 'OpenComp',
     "approverId" TEXT,
     "approvedAt" TIMESTAMP(3),
     "declinedAt" TIMESTAMP(3),

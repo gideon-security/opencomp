@@ -20,6 +20,42 @@ jest.mock('@db', () => ({
     frameworkInstance: { findMany: jest.fn().mockResolvedValue([]) },
     context: { findMany: jest.fn().mockResolvedValue([]) },
   },
+  AuditLogEntityType: {
+    organization: 'organization',
+    framework: 'framework',
+    requirement: 'requirement',
+    control: 'control',
+    policy: 'policy',
+    task: 'task',
+    people: 'people',
+    risk: 'risk',
+    vendor: 'vendor',
+    tests: 'tests',
+    integration: 'integration',
+    trust: 'trust',
+    finding: 'finding',
+    pentest: 'pentest',
+  },
+  CommentEntityType: {
+    task: 'task',
+    vendor: 'vendor',
+    risk: 'risk',
+    policy: 'policy',
+    finding: 'finding',
+  },
+  FindingType: {
+    soc2: 'soc2',
+    iso27001: 'iso27001',
+  },
+  BackgroundCheckStatus: {
+    invited: 'invited',
+    in_progress: 'in_progress',
+    in_review: 'in_review',
+    completed: 'completed',
+    completed_with_flags: 'completed_with_flags',
+    failed: 'failed',
+    cancelled: 'cancelled',
+  },
   PolicyStatus: {
     draft: 'draft',
     published: 'published',
@@ -62,7 +98,9 @@ describe('AdminPoliciesController', () => {
 
       const result = await controller.list('org_1');
 
-      expect(mockService.findAll).toHaveBeenCalledWith('org_1');
+      expect(mockService.findAll).toHaveBeenCalledWith({
+        organizationId: 'org_1',
+      });
       expect(result).toEqual(policies);
     });
   });

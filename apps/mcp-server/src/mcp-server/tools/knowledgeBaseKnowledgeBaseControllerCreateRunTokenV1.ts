@@ -15,7 +15,7 @@ export const tool$knowledgeBaseKnowledgeBaseControllerCreateRunTokenV1:
     name: "create-run-token",
     description: `Create a public access token for a run
 
-Create a public access token for a run in Comp AI. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.`,
+Create a public access token for a run in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

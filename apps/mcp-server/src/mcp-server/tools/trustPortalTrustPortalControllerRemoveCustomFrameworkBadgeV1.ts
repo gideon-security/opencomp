@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerRemoveCustomFrameworkBadgeV1:
     name: "remove-custom-framework-badge",
     description: `Remove a custom framework's Trust Portal badge image
 
-Remove a custom framework's Trust Portal badge image in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Remove a custom framework's Trust Portal badge image in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

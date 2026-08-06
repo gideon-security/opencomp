@@ -329,9 +329,9 @@ export default function App() {
         <Stack gap="6" align="center">
           <LogoIcon width={40} height={40} />
           <Stack gap="2" align="center">
-            <Heading level="3">Comp AI Device Agent</Heading>
+            <Heading level="3">OpenComp Device Agent</Heading>
             <Text size="sm" variant="muted">
-              Sign in to your Comp AI portal to begin device compliance monitoring.
+              Sign in to your OpenComp portal to begin device compliance monitoring.
             </Text>
           </Stack>
           <div className="w-full">
@@ -342,7 +342,7 @@ export default function App() {
         </Stack>
         <div className="mt-auto pt-8">
           <Text size="xs" variant="muted">
-            Comp AI Device Agent {appVersion ? `v${appVersion}` : ''}
+            OpenComp Device Agent {appVersion ? `v${appVersion}` : ''}
           </Text>
         </div>
       </div>
@@ -364,7 +364,7 @@ export default function App() {
         <LogoIcon width={28} height={28} />
         <Stack gap="0">
           <Text size="sm" weight="semibold">
-            Comp AI
+            OpenComp
           </Text>
           <Text size="xs" variant="muted">
             Device Compliance
@@ -436,7 +436,7 @@ export default function App() {
         </Button>
         <div className="text-center">
           <Text size="xs" variant="muted">
-            Comp AI Device Agent {appVersion ? `v${appVersion}` : ''}
+            OpenComp Device Agent {appVersion ? `v${appVersion}` : ''}
           </Text>
         </div>
       </div>

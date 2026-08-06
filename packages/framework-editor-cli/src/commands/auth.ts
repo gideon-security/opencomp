@@ -24,7 +24,7 @@ export function registerAuthCommands(parent: Command): void {
   auth
     .command('login')
     .description(
-      'Authenticate with the Comp AI platform. Opens a browser window for login, ' +
+      'Authenticate with the OpenComp platform. Opens a browser window for login, ' +
         'then stores the session token locally in an encrypted config file. ' +
         'Requires platform admin privileges (user.role = admin).',
     )
@@ -207,7 +207,7 @@ function startCallbackServer(
 }
 
 function htmlPage(title: string, message: string): string {
-  return `<!DOCTYPE html><html><head><title>Comp AI CLI</title></head>
+  return `<!DOCTYPE html><html><head><title>OpenComp CLI</title></head>
 <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#fafafa;">
 <div style="text-align:center;padding:2rem;">
 <h2 style="color:#111;margin-bottom:0.5rem;">${title}</h2>

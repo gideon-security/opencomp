@@ -16,7 +16,7 @@ export const tool$findingsFindingsControllerUpdateFindingV1: ToolDefinition<
   name: "update-finding",
   description: `Update a finding (status transition rules apply)
 
-Update a finding (status transition rules apply) in Comp AI. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.`,
+Update a finding (status transition rules apply) in OpenComp. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

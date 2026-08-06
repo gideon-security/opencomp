@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * Get organization onboarding status
  *
  * @remarks
- * Get organization onboarding status in Comp AI. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.
+ * Get organization onboarding status in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -25,7 +25,7 @@ export class InlinePreview {
         <button class="icon" data-action="dismiss" aria-label="Dismiss">×</button>
       </div>
       <div class="question"><span>Q.</span>${escapeHtml(question)}</div>
-      <div class="loading"><span class="spin"></span>Drafting from Comp AI knowledge base...</div>
+      <div class="loading"><span class="spin"></span>Drafting from OpenComp knowledge base...</div>
     `);
     this.position();
     this.bindDismiss(() => this.close());

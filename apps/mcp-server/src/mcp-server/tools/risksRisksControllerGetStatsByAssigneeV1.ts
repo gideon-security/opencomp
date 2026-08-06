@@ -9,7 +9,7 @@ export const tool$risksRisksControllerGetStatsByAssigneeV1: ToolDefinition = {
   name: "get-stats-by-assignee",
   description: `Get risk statistics grouped by assignee
 
-Get risk statistics grouped by assignee in Comp AI. Create, update, and report on organizational risks with ownership, departments, and compliance remediation status.`,
+Get risk statistics grouped by assignee in OpenComp. Create, update, and report on organizational risks with ownership, departments, and compliance remediation status.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

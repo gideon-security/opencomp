@@ -72,10 +72,10 @@ describe('scope narrative (4.3)', () => {
   it('collapses stray whitespace so the scope sentence has no double spaces (CS-437)', () => {
     const narrative = deriveScopeNarrative({
       ...data,
-      organizationName: 'Comp AI ',
+      organizationName: 'OpenComp ',
     });
     expect(narrative.certificateScopeSentence).not.toMatch(/ {2,}/);
-    expect(narrative.certificateScopeSentence).toContain('of Comp AI covers');
+    expect(narrative.certificateScopeSentence).toContain('of OpenComp covers');
   });
 
   it('normalizes a wizard-confirmed sentence that contains double spaces (CS-437)', () => {

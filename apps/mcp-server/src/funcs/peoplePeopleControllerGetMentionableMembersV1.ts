@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get members who can read a specific resource type
  *
  * @remarks
- * Get members who can read a specific resource type in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.
+ * Get members who can read a specific resource type in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

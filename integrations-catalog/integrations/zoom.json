@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "setupInstructions": "1. Go to Zoom App Marketplace (marketplace.zoom.us)\n2. Click 'Develop' > Build App > OAuth\n3. Add redirect URL: https://api.trycomp.ai/v1/integrations/oauth/callback\n4. Add scopes: user:read:admin, account:read:admin\n5. Copy Client ID and Client Secret",
+      "setupInstructions": "1. Go to Zoom App Marketplace (marketplace.zoom.us)\n2. Click 'Develop' > Build App > OAuth\n3. Add redirect URL: https://api.gideondefender.com/v1/integrations/oauth/callback\n4. Add scopes: user:read:admin, account:read:admin\n5. Copy Client ID and Client Secret",
       "scopes": [
         "user:read:admin",
         "account:read:admin"

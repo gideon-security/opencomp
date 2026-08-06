@@ -249,7 +249,7 @@ describe('RemediationController', () => {
         actionId,
         organizationId: orgId,
       });
-      expect(result).toEqual({ status: 'rolled_back' });
+      expect(result).toEqual(rollbackResult);
     });
 
     it('should throw BAD_REQUEST when service throws', async () => {

@@ -10,7 +10,7 @@ export const tool$integrationsSyncControllerGetJumpCloudStatusV1:
     name: "get-jump-cloud-status",
     description: `Get JumpCloud sync status
 
-Get JumpCloud sync status in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Get JumpCloud sync status in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

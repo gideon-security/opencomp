@@ -16,7 +16,7 @@ export const tool$evidenceExportAuditorAuditorEvidenceExportControllerExportAllE
     name: "export-all-evidence",
     description: `Trigger bulk evidence export (Auditor only)
 
-Trigger bulk evidence export (Auditor only) in Comp AI. Export all organization evidence for an auditor review package.`,
+Trigger bulk evidence export (Auditor only) in OpenComp. Export all organization evidence for an auditor review package.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

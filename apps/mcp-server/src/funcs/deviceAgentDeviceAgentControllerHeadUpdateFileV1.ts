@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Check a device-agent update's metadata
  *
  * @remarks
- * Check a device-agent update's metadata in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
+ * Check a device-agent update's metadata in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
  */
 export function deviceAgentDeviceAgentControllerHeadUpdateFileV1(
   client$: CompAiCore,

@@ -98,7 +98,7 @@ export const weeklyTaskReminder = schedules.task({
           continue;
         }
 
-        // Exclude platform admins (Comp AI staff) unless the org is internal —
+        // Exclude platform admins (OpenComp staff) unless the org is internal —
         // the single participation rule (no per-member owner carve-out).
         if (
           !isOrgParticipant(member.user.role, {

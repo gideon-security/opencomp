@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Delete device
  *
  * @remarks
- * Delete device in Comp AI. Read and manage employee device inventory and Fleet compliance data used for endpoint security controls.
+ * Delete device in OpenComp. Read and manage employee device inventory and Fleet compliance data used for endpoint security controls.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

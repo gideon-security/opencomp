@@ -19,7 +19,7 @@ function getBaseUrl(): string {
   }
 
   // Default fallback
-  return 'https://app.trycomp.ai';
+  return 'https://app.gideondefender.com';
 }
 
 /**

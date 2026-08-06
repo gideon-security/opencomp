@@ -2015,7 +2015,7 @@ export class TrustAccessService {
         name: params.recipientName,
         email: params.recipientEmail,
         docId: params.docId,
-        watermarkText: 'Comp AI',
+        watermarkText: 'OpenComp',
       },
     );
 

@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "setupInstructions": "1. Create an app at https://developer.intuit.com\n2. Set environment to Production\n3. Add redirect URI: https://api.trycomp.ai/v1/integrations/oauth/callback\n4. Copy Client ID and Client Secret to Comp AI admin panel\n5. After connecting, enter your QuickBooks Company ID (found in the URL when logged into QuickBooks Online)",
+      "setupInstructions": "1. Create an app at https://developer.intuit.com\n2. Set environment to Production\n3. Add redirect URI: https://api.gideondefender.com/v1/integrations/oauth/callback\n4. Copy Client ID and Client Secret to OpenComp admin panel\n5. After connecting, enter your QuickBooks Company ID (found in the URL when logged into QuickBooks Online)",
       "scopes": [
         "com.intuit.quickbooks.accounting"
       ],

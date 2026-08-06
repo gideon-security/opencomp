@@ -79,7 +79,7 @@ export async function openSignIn(): Promise<void> {
     url: buildSignInUrl(),
     width: AUTH_WINDOW_WIDTH,
   });
-  if (!createdWindow) throw new Error('Unable to open the Comp AI sign-in window.');
+  if (!createdWindow) throw new Error('Unable to open the OpenComp sign-in window.');
   authWindow = {
     tabId: createdWindow.tabs?.[0]?.id ?? null,
     windowId: createdWindow.id ?? null,

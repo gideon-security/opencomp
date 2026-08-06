@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerReorderCustomLinksV1:
     name: "reorder-custom-links",
     description: `Reorder custom links
 
-Reorder custom links in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Reorder custom links in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

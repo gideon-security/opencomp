@@ -1,9 +1,9 @@
 ---
 title: 'Security Questionnaire Extension'
-description: 'Answer security questionnaires directly on the vendor''s page — the Chrome extension drafts answers from your Comp AI policies and inserts the ones you approve.'
+description: 'Answer security questionnaires directly on the vendor''s page — the Chrome extension drafts answers from your OpenComp policies and inserts the ones you approve.'
 ---
 
-The Comp AI Security Questionnaire extension brings questionnaire answering to wherever the questionnaire actually lives. Instead of exporting a vendor's portal into a spreadsheet, answering it in Comp AI, and copying everything back, the extension finds the questions on the page you're already on, drafts answers from your own policies, and inserts the ones you approve.
+The OpenComp Security Questionnaire extension brings questionnaire answering to wherever the questionnaire actually lives. Instead of exporting a vendor's portal into a spreadsheet, answering it in OpenComp, and copying everything back, the extension finds the questions on the page you're already on, drafts answers from your own policies, and inserts the ones you approve.
 
 It is a companion to [Security Questionnaire](/security-questionnaire) in the app, and draws on the same knowledge: your policies, context entries, knowledge base documents, and questions you've answered before.
 
@@ -16,15 +16,15 @@ It is a companion to [Security Questionnaire](/security-questionnaire) in the ap
 
 ## Install
 
-1. Install **Comp AI Security Questionnaire** from the Chrome Web Store.
+1. Install **OpenComp Security Questionnaire** from the Chrome Web Store.
 2. Pin it to your toolbar so the icon is always visible.
-3. Sign in to Comp AI in the same browser. The extension uses your existing session — there is no separate login.
+3. Sign in to OpenComp in the same browser. The extension uses your existing session — there is no separate login.
 
 ## Answering a questionnaire
 
 1. Open the questionnaire in your browser.
-2. Click the Comp AI icon, then open the side panel. Every question the extension detected is listed there.
-3. The first time you use the extension on a new site, confirm which Comp AI workspace applies. This keeps answers from one customer's workspace out of another's.
+2. Click the OpenComp icon, then open the side panel. Every question the extension detected is listed there.
+3. The first time you use the extension on a new site, confirm which OpenComp workspace applies. This keeps answers from one customer's workspace out of another's.
 4. Choose **Generate** for a single question, or generate the whole list at once.
 5. Review each draft. Edit anything you want to change, then **Approve** it.
 6. Choose **Insert approved** to write your approved answers back into the page.
@@ -45,7 +45,7 @@ Approved answers are then written into the answer column, in the rows the questi
 
 ## Google Forms and Google Docs
 
-**Google Forms** works like any other web form: an inline Comp AI button appears next to each answer field, and approved answers are inserted directly.
+**Google Forms** works like any other web form: an inline OpenComp button appears next to each answer field, and approved answers are inserted directly.
 
 **Google Docs** does not support reliable automated insertion, so the extension collects your approved answers and copies them to the clipboard for you to paste in.
 
@@ -60,7 +60,7 @@ The extension asks for access to the websites you visit. Security questionnaires
 In practice:
 
 - It examines pages to locate questionnaire fields.
-- The only page content sent to Comp AI is the text of a question you ask it to answer.
+- The only page content sent to OpenComp is the text of a question you ask it to answer.
 - It does not send page contents or browsing history.
 - Answers are written into the page only when you choose to insert them.
 
@@ -70,6 +70,6 @@ In practice:
 
 **"Extension context invalidated."** The extension was reloaded or updated while the tab was open. Refresh the tab.
 
-**An answer says "Needs review — no knowledge-base match."** Comp AI has nothing to base that answer on. Add the relevant policy or a knowledge base document, or answer that question manually.
+**An answer says "Needs review — no knowledge-base match."** OpenComp has nothing to base that answer on. Add the relevant policy or a knowledge base document, or answer that question manually.
 
-**Sign-in problems.** Confirm you are signed in to Comp AI in the same browser profile, then reopen the side panel.
+**Sign-in problems.** Confirm you are signed in to OpenComp in the same browser profile, then reopen the side panel.

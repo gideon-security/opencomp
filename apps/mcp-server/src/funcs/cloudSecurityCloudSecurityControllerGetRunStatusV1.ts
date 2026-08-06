@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get a cloud security scan run by ID
  *
  * @remarks
- * Get a cloud security scan run by ID in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
+ * Get a cloud security scan run by ID in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
  */
 export function cloudSecurityCloudSecurityControllerGetRunStatusV1(
   client$: CompAiCore,

@@ -21,6 +21,7 @@ jest.mock('@/app/s3', () => ({
 describe('BrowserEvidenceRunnerService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env.BROWSER_AUTOMATION_DOMAIN_THROTTLE_MS = '1';
   });
 
   it('treats screenshot upload failures as non-fatal', async () => {

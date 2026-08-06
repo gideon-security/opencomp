@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get the ISMS wizard profile, defaults and members
  *
  * @remarks
- * Get the ISMS wizard profile, defaults and members in Comp AI.
+ * Get the ISMS wizard profile, defaults and members in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Delete a submission
  *
  * @remarks
- * Delete a submission in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.
+ * Delete a submission in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

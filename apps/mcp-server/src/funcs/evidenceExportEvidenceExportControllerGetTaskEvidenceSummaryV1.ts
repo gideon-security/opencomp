@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get task evidence summary
  *
  * @remarks
- * Get task evidence summary in Comp AI. Export task evidence, automation evidence, and reviewer-ready evidence bundles as PDF or ZIP files.
+ * Get task evidence summary in OpenComp. Export task evidence, automation evidence, and reviewer-ready evidence bundles as PDF or ZIP files.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

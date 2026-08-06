@@ -20,7 +20,7 @@ export class UpdateAdminOrganizationDto {
 
   @ApiPropertyOptional({
     description:
-      "When true, the organization is platform-operated (e.g. Comp AI's own org). Platform admins are then treated as real participants — assignable, counted in compliance, and notified. Leave false for all customer orgs.",
+      "When true, the organization is platform-operated (e.g. OpenComp's own org). Platform admins are then treated as real participants — assignable, counted in compliance, and notified. Leave false for all customer orgs.",
   })
   // Optional, but reject an explicit `null` at validation (400) rather than
   // letting it hit the non-null DB column and 500.

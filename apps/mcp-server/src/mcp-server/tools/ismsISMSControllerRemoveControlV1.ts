@@ -16,7 +16,7 @@ export const tool$ismsISMSControllerRemoveControlV1: ToolDefinition<
   name: "remove-control",
   description: `Remove a control mapping from an ISMS document
 
-Remove a control mapping from an ISMS document in Comp AI.`,
+Remove a control mapping from an ISMS document in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

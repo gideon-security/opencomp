@@ -42,7 +42,7 @@ function metadata() {
     frameworkName: 'ISO 27001',
     version: 1,
     status: 'approved',
-    preparedBy: 'Comp AI',
+    preparedBy: 'OpenComp',
     owner: null,
     approverName: 'Raoul Plickat',
     approvedAt: new Date('2026-05-26T00:00:00.000Z'),

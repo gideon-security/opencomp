@@ -15,7 +15,7 @@ export const tool$taskManagementTaskManagementControllerGetTaskItemActivityV1:
     name: "get-task-item-activity",
     description: `Get task item activity log
 
-Get task item activity log in Comp AI. Manage task items and attachments linked to operational entities such as risks and vendors.`,
+Get task item activity log in OpenComp. Manage task items and attachments linked to operational entities such as risks and vendors.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

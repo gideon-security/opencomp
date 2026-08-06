@@ -14,7 +14,7 @@ export const tool$rolesRolesControllerGetRoleV1: ToolDefinition<typeof args> = {
   name: "get-role",
   description: `Get a role by ID
 
-Get a role by ID in Comp AI. Create custom roles and resolve permission sets for organization-level access control.`,
+Get a role by ID in OpenComp. Create custom roles and resolve permission sets for organization-level access control.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

@@ -276,11 +276,11 @@ async function fetchOrgsAndRegister(
 function successPage(): string {
   return `<!DOCTYPE html>
 <html>
-<head><title>Comp AI</title></head>
+<head><title>OpenComp</title></head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #fafafa;">
   <div style="text-align: center; padding: 2rem;">
     <h2 style="color: #111; margin-bottom: 0.5rem;">Sign-in complete!</h2>
-    <p style="color: #666;">You can close this tab and return to the Comp AI agent.</p>
+    <p style="color: #666;">You can close this tab and return to the OpenComp agent.</p>
   </div>
 </body>
 </html>`;
@@ -289,7 +289,7 @@ function successPage(): string {
 function errorPage(message: string): string {
   return `<!DOCTYPE html>
 <html>
-<head><title>Comp AI</title></head>
+<head><title>OpenComp</title></head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #fafafa;">
   <div style="text-align: center; padding: 2rem;">
     <h2 style="color: #111; margin-bottom: 0.5rem;">Sign-in failed</h2>

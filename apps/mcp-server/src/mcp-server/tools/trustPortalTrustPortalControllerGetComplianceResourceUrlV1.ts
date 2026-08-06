@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerGetComplianceResourceUrlV1:
     name: "get-compliance-resource-url",
     description: `Generate a temporary signed URL for a compliance certificate
 
-Generate a temporary signed URL for a compliance certificate in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Generate a temporary signed URL for a compliance certificate in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

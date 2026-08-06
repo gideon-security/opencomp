@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get automation details
  *
  * @remarks
- * Get automation details in Comp AI. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.
+ * Get automation details in OpenComp. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -15,7 +15,7 @@ export const tool$integrationsTwoFactorSourceControllerSetTwoFactorSourceV1:
     name: "set-two-factor-source",
     description: `Set the 2FA source provider
 
-Set the 2FA source provider in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Set the 2FA source provider in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

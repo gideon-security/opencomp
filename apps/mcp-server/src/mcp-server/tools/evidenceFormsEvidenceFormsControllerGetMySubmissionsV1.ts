@@ -15,7 +15,7 @@ export const tool$evidenceFormsEvidenceFormsControllerGetMySubmissionsV1:
     name: "get-my-submissions",
     description: `Get current user submissions
 
-Get current user submissions in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
+Get current user submissions in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -131,7 +131,7 @@ export function MakePermanentSheet({
               <div className="flex flex-col gap-4">
                 <p className="text-[13px] leading-relaxed text-foreground">
                   {vendorName} asks for a 6-digit code from an authenticator app when
-                  we sign in. Paste your authenticator setup key and Comp AI generates
+                  we sign in. Paste your authenticator setup key and OpenComp generates
                   that code at every run — no manual re-sign-ins.
                 </p>
 
@@ -179,7 +179,7 @@ export function MakePermanentSheet({
                 <MfaSetupHelp hostname={connection.hostname} />
 
                 <p className="text-[12px] leading-relaxed text-muted-foreground">
-                  You set up the authenticator on {vendorName} yourself — Comp AI never
+                  You set up the authenticator on {vendorName} yourself — OpenComp never
                   changes your 2FA settings. This key is only used to generate sign-in
                   codes.
                 </p>

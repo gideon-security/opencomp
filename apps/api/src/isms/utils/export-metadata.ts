@@ -6,7 +6,7 @@ const DEFAULT_CLASSIFICATION = 'Internal';
 const DEFAULT_NEXT_REVIEW = 'Annual, or on material change';
 const DEFAULT_OWNER = 'Security & Privacy Owner';
 
-/** A short org code for the document ID, e.g. "Comp AI" -> "CA", "Acme" -> "ACME". */
+/** A short org code for the document ID, e.g. "OpenComp" -> "CA", "Acme" -> "ACME". */
 function orgCode(name: string | null): string {
   const cleaned = (name ?? '').replace(/[^A-Za-z0-9 ]/g, ' ').trim();
   if (!cleaned) return 'ORG';

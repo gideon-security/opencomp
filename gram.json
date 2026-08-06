@@ -5,7 +5,7 @@
     {
       "type": "openapiv3",
       "location": "packages/docs/openapi.json",
-      "name": "Comp AI API",
+      "name": "OpenComp API",
       "slug": "comp-ai-api"
     }
   ]

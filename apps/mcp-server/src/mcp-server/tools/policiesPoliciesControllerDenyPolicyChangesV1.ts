@@ -16,7 +16,7 @@ export const tool$policiesPoliciesControllerDenyPolicyChangesV1: ToolDefinition<
   name: "deny-policy-changes",
   description: `Deny pending policy changes
 
-Deny pending policy changes in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Deny pending policy changes in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

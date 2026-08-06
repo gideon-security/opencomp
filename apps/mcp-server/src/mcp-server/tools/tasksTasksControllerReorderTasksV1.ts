@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerReorderTasksV1: ToolDefinition<
   name: "reorder-tasks",
   description: `Reorder tasks
 
-Reorder tasks in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Reorder tasks in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

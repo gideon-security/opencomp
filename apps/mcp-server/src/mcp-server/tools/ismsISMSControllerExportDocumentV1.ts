@@ -16,7 +16,7 @@ export const tool$ismsISMSControllerExportDocumentV1: ToolDefinition<
   name: "isms-export-document",
   description: `Export an ISMS document as PDF or DOCX
 
-Export an ISMS document as PDF or DOCX in Comp AI.`,
+Export an ISMS document as PDF or DOCX in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

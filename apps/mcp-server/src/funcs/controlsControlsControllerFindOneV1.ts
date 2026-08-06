@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Get control detail with progress
  *
  * @remarks
- * Get control detail with progress in Comp AI. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.
+ * Get control detail with progress in OpenComp. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.
  */
 export function controlsControlsControllerFindOneV1(
   client$: CompAiCore,

@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Derive Context-of-the-Organization issues
  *
  * @remarks
- * Derive Context-of-the-Organization issues in Comp AI.
+ * Derive Context-of-the-Organization issues in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

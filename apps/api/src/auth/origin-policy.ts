@@ -4,14 +4,14 @@ const DEFAULT_TRUSTED_ORIGINS = [
   'http://localhost:3333',
   'http://localhost:3004',
   'http://localhost:3008',
-  'https://app.trycomp.ai',
-  'https://portal.trycomp.ai',
-  'https://api.trycomp.ai',
-  'https://app.staging.trycomp.ai',
-  'https://portal.staging.trycomp.ai',
-  'https://api.staging.trycomp.ai',
-  'https://dev.trycomp.ai',
-  'https://framework-editor.trycomp.ai',
+  'https://app.gideondefender.com',
+  'https://portal.gideondefender.com',
+  'https://api.gideondefender.com',
+  'https://app.staging.gideondefender.com',
+  'https://portal.staging.gideondefender.com',
+  'https://api.staging.gideondefender.com',
+  'https://dev.gideondefender.com',
+  'https://framework-editor.gideondefender.com',
 ];
 
 const COMP_EXTENSION_ALLOWED_ROUTES = [
@@ -93,8 +93,8 @@ export function isStaticTrustedOrigin(origin: string): boolean {
     // HTTP (localhost). The wildcard suffix match is HTTPS-only.
     if (url.protocol !== 'https:') return false;
     return (
-      url.hostname.endsWith('.trycomp.ai') ||
-      url.hostname.endsWith('.staging.trycomp.ai') ||
+      url.hostname.endsWith('.gideondefender.com') ||
+      url.hostname.endsWith('.staging.gideondefender.com') ||
       url.hostname.endsWith('.trust.inc') ||
       url.hostname === 'trust.inc'
     );

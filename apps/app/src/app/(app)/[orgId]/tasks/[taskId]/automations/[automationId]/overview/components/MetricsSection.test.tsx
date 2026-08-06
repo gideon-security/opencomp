@@ -2,6 +2,11 @@ import { render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MetricsSection } from './MetricsSection';
 
+// The component formats with the runner's local timezone. Pin a non-UTC zone
+// so the "not UTC" assertion is deterministic — CI runners default to UTC,
+// where the user's local timezone literally IS "UTC" and the test would fail.
+process.env.TZ = 'America/New_York';
+
 describe('MetricsSection (SALE-49)', () => {
   beforeEach(() => {
     // shouldAdvanceTime lets React effects flush on their normal tick

@@ -16,7 +16,7 @@ export const tool$integrationsChecksControllerRunSingleCheckV1: ToolDefinition<
   name: "run-single-check",
   description: `Run a single check on a connection
 
-Run a single check on a connection in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Run a single check on a connection in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

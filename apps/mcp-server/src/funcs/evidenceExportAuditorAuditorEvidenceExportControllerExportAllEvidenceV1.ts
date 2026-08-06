@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Trigger bulk evidence export (Auditor only)
  *
  * @remarks
- * Trigger bulk evidence export (Auditor only) in Comp AI. Export all organization evidence for an auditor review package.
+ * Trigger bulk evidence export (Auditor only) in OpenComp. Export all organization evidence for an auditor review package.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

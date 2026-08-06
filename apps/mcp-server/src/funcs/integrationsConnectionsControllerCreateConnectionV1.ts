@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Create integration connection
  *
  * @remarks
- * Create an integration connection so Comp AI can collect evidence, run checks, or sync data from a connected provider.
+ * Create an integration connection so OpenComp can collect evidence, run checks, or sync data from a connected provider.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

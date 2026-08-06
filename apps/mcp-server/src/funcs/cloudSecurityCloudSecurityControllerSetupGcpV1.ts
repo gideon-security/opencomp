@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Set up GCP for a connection
  *
  * @remarks
- * Set up GCP for a connection in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
+ * Set up GCP for a connection in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.
  */
 export function cloudSecurityCloudSecurityControllerSetupGcpV1(
   client$: CompAiCore,

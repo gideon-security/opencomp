@@ -60,7 +60,7 @@ function trimTitle(value: string, maxLength: number): string {
 }
 
 export function toSeoTitle(summary: string): string {
-  const suffix = ' | Comp AI API';
+  const suffix = ' | OpenComp API';
   return `${trimTitle(summary, 60 - suffix.length)}${suffix}`;
 }
 

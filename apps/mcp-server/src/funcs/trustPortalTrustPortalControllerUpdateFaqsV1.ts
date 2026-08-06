@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Update trust portal FAQs
  *
  * @remarks
- * Update trust portal FAQs in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
+ * Update trust portal FAQs in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

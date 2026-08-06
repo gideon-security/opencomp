@@ -10,7 +10,7 @@ export const tool$integrationsConnectionsControllerListConnectionsV1:
     name: "list-connections",
     description: `List integration connections
 
-List integration connections in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+List integration connections in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

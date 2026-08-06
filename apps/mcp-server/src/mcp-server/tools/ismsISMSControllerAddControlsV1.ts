@@ -15,7 +15,7 @@ export const tool$ismsISMSControllerAddControlsV1: ToolDefinition<typeof args> =
     name: "add-controls",
     description: `Map organization controls to an ISMS document
 
-Map organization controls to an ISMS document in Comp AI.`,
+Map organization controls to an ISMS document in OpenComp.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

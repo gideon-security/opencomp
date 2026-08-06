@@ -97,7 +97,7 @@ export function createTray(callbacks: {
   try {
     const icon = getIconForStatus('unauthenticated');
     tray = new Tray(icon);
-    tray.setToolTip('Comp AI Device Agent');
+    tray.setToolTip('OpenComp Device Agent');
     updateTrayMenu('unauthenticated', [], callbacks);
     log('System tray created successfully');
   } catch (error) {
@@ -141,7 +141,7 @@ export function updateTrayMenu(
     log(`Failed to update tray icon: ${error}`);
   }
 
-  tray.setToolTip(`Comp AI Device Agent - ${statusLabel}`);
+  tray.setToolTip(`OpenComp Device Agent - ${statusLabel}`);
 
   const checkMenuItems =
     checkResults.length > 0
@@ -257,7 +257,7 @@ export function openStatusWindow(): void {
   statusWindow = new BrowserWindow({
     width: 480,
     height: 720,
-    title: 'Comp AI - Device Status',
+    title: 'OpenComp - Device Status',
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       nodeIntegration: false,

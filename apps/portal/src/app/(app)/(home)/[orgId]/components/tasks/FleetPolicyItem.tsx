@@ -94,7 +94,7 @@ export function FleetPolicyItem({ policy, organizationId, onRefresh }: FleetPoli
                     <p>
                       There are additional steps required to enable MDM. Please check{' '}
                       <a
-                        href="https://trycomp.ai/docs/device-agent#mdm-user-guide"
+                        href="https://gideondefender.com/docs/device-agent#mdm-user-guide"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 dark:text-blue-400 hover:underline"

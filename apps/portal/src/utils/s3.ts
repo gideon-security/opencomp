@@ -143,7 +143,7 @@ export async function getFleetAgent({ os }: { os: SupportedOS }) {
       throw new Error(`Unsupported OS: ${os}`);
   }
 
-  const macosPackageFilename = 'Comp AI Agent-1.0.0-arm64.dmg';
+  const macosPackageFilename = 'OpenComp Agent-1.0.0-arm64.dmg';
   const windowsPackageFilename = 'fleet-osquery.msi';
 
   const getFleetAgentCommand = new GetObjectCommand({

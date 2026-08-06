@@ -7,6 +7,7 @@ const mockDb = {
   frameworkControlPolicyLink: { createMany: jest.fn() },
   frameworkControlTaskLink: { createMany: jest.fn() },
   frameworkControlDocumentTypeLink: { createMany: jest.fn() },
+  $transaction: jest.fn(),
 };
 
 jest.mock('@db', () => ({
@@ -22,7 +23,12 @@ jest.mock('@db', () => ({
 }));
 
 describe('syncDirectLinksToCustomFrameworks', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockDb.$transaction.mockImplementation(
+      (callback: (tx: typeof mockDb) => Promise<unknown>) => callback(mockDb),
+    );
+  });
 
   it('should skip entirely when org has no custom frameworks', async () => {
     mockDb.frameworkInstance.count.mockResolvedValue(0);

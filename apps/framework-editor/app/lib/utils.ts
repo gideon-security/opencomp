@@ -9,7 +9,7 @@ export function formatEnumValue(value: string | null | undefined): string {
     .join(' ');
 }
 
-const ALLOWED_DOMAIN = 'trycomp.ai';
+const ALLOWED_DOMAIN = 'gideondefender.com';
 
 export function isInternalUser(email: string): boolean {
   const parts = email.split('@');

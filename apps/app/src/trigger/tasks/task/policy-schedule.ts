@@ -136,7 +136,7 @@ export const policySchedule = schedules.task({
         }>,
         policy: (typeof overduePolicies)[number],
       ) => {
-        // Exclude platform admins (Comp AI staff) unless the org is internal —
+        // Exclude platform admins (OpenComp staff) unless the org is internal —
         // the single participation rule (no per-member owner carve-out).
         const orgIsInternal = policy.organization?.isInternal ?? false;
         for (const entry of members) {
@@ -185,7 +185,7 @@ export const policySchedule = schedules.task({
             organizationName: recipient.policy.organization.name,
             organizationId: recipient.policy.organizationId,
             policyId: recipient.policy.id,
-            policyUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.trycomp.ai'}/${recipient.policy.organizationId}/policies/${recipient.policy.id}`,
+            policyUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.gideondefender.com'}/${recipient.policy.organizationId}/policies/${recipient.policy.id}`,
           },
         })),
       });

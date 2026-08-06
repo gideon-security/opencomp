@@ -10,7 +10,7 @@ export const tool$integrationsTwoFactorSourceControllerGetTwoFactorSourceV1:
     name: "get-two-factor-source",
     description: `Get the configured 2FA source provider
 
-Get the configured 2FA source provider in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Get the configured 2FA source provider in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

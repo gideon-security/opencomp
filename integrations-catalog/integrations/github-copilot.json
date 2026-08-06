@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "setupInstructions": "1. Go to GitHub > Settings > Developer settings > OAuth Apps > New OAuth App\n2. Set Redirect URI to: https://api.trycomp.ai/v1/integrations/oauth/callback\n3. Request scopes: read:org, manage_billing:copilot\n4. Copy Client ID and Secret to Comp AI admin panel\n5. After connecting, enter your GitHub organization name",
+      "setupInstructions": "1. Go to GitHub > Settings > Developer settings > OAuth Apps > New OAuth App\n2. Set Redirect URI to: https://api.gideondefender.com/v1/integrations/oauth/callback\n3. Request scopes: read:org, manage_billing:copilot\n4. Copy Client ID and Secret to OpenComp admin panel\n5. After connecting, enter your GitHub organization name",
       "scopes": [
         "read:org",
         "manage_billing:copilot"

@@ -25,7 +25,7 @@ export class UpdateCommentDto {
     description:
       'Optional URL of the page where the comment was updated, used for deep-linking in notifications',
     example:
-      'https://app.trycomp.ai/org_abc123/risk/rsk_abc123?taskItemId=tki_abc123#task-items',
+      'https://app.gideondefender.com/org_abc123/risk/rsk_abc123?taskItemId=tki_abc123#task-items',
     required: false,
     maxLength: 2048,
   })

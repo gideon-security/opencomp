@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerGetTaskPoliciesV1: ToolDefinition<
   name: "get-task-policies",
   description: `Get policies that reference a task via shared controls
 
-Get policies that reference a task via shared controls in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Get policies that reference a task via shared controls in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

@@ -170,7 +170,7 @@ export const steps: Step[] = [
 ];
 
 export const welcomeText = [
-  'Welcome to Comp AI!',
+  'Welcome to OpenComp!',
   "Let's set up your security and compliance program. I'll help you:",
   '• Generate relevant vendors and risks for your business',
   '• Create customized security policies',

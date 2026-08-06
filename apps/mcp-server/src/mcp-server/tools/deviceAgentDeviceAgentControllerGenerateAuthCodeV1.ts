@@ -15,7 +15,7 @@ export const tool$deviceAgentDeviceAgentControllerGenerateAuthCodeV1:
     name: "generate-auth-code",
     description: `Create a device-agent auth code
 
-Create a device-agent auth code in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
+Create a device-agent auth code in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

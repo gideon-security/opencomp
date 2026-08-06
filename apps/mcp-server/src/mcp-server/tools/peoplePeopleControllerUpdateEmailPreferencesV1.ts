@@ -15,7 +15,7 @@ export const tool$peoplePeopleControllerUpdateEmailPreferencesV1:
     name: "update-email-preferences",
     description: `Update current user email notification preferences
 
-Update current user email notification preferences in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Update current user email notification preferences in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

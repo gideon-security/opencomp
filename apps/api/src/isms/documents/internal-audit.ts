@@ -176,7 +176,7 @@ function buildAuditSections(
     sections.push({
       heading: `Findings${suffix}`,
       intro:
-        'Non-conformities, opportunities for improvement (OFIs), and observations raised during this audit. Each is tracked to closure in Comp AI.',
+        'Non-conformities, opportunities for improvement (OFIs), and observations raised during this audit. Each is tracked to closure in OpenComp.',
       table: {
         headers: [
           'Ref',

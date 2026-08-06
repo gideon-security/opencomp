@@ -19,7 +19,7 @@ export const DOWNLOAD_MAC_AGENT_RESPONSES: Record<number, ApiResponseOptions> =
             'Indicates file should be downloaded with specific filename',
           schema: {
             type: 'string',
-            example: 'attachment; filename="Comp AI Agent-1.0.0-arm64.dmg"',
+            example: 'attachment; filename="OpenComp Agent-1.0.0-arm64.dmg"',
           },
         },
         'Content-Type': {

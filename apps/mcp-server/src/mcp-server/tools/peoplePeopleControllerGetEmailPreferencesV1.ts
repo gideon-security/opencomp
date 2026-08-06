@@ -10,7 +10,7 @@ export const tool$peoplePeopleControllerGetEmailPreferencesV1: ToolDefinition =
     name: "get-email-preferences",
     description: `Get current user email notification preferences
 
-Get current user email notification preferences in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Get current user email notification preferences in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

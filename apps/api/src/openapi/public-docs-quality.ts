@@ -95,7 +95,7 @@ export function collectPublicOpenApiIssues(document: OpenAPIObject) {
         meta?.description &&
         (meta.description.length < 80 ||
           meta.description.length > 160 ||
-          meta.description.includes('Use this Comp AI'))
+          meta.description.includes('Use this OpenComp'))
       ) {
         invalidSeo.push(endpoint);
       }

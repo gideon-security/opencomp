@@ -16,7 +16,7 @@ export const tool$policiesPoliciesControllerGetPolicyControlsV1: ToolDefinition<
   name: "get-policy-controls",
   description: `Get mapped and all controls for a policy
 
-Get mapped and all controls for a policy in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Get mapped and all controls for a policy in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

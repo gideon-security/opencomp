@@ -380,7 +380,11 @@ describe('FrameworksService', () => {
 
       expect(mockDb.frameworkEditorRequirement.findMany).toHaveBeenCalledWith({
         where: { frameworkId: 'frk_soc2' },
-        orderBy: { name: 'asc' },
+        orderBy: [
+          { sortOrder: { sort: 'asc', nulls: 'last' } },
+          { identifier: 'asc' },
+          { name: 'asc' },
+        ],
       });
       expect(mockDb.customRequirement.findMany).toHaveBeenCalledWith({
         where: { frameworkInstanceId: 'fi_platform' },

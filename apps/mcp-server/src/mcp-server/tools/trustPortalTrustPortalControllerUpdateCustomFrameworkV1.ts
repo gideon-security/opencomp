@@ -17,7 +17,7 @@ export const tool$trustPortalTrustPortalControllerUpdateCustomFrameworkV1:
     description:
       `Enable/disable a custom framework on the trust portal and set its status
 
-Enable/disable a custom framework on the trust portal and set its status in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Enable/disable a custom framework on the trust portal and set its status in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

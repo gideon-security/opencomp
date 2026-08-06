@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Upload knowledge base document
  *
  * @remarks
- * Upload supporting documentation so Comp AI can process approved source material for questionnaire answers and policy workflows.
+ * Upload supporting documentation so OpenComp can process approved source material for questionnaire answers and policy workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

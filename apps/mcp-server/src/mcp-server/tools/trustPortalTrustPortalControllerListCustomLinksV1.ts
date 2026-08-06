@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerListCustomLinksV1:
     name: "list-custom-links",
     description: `List custom links for trust portal
 
-List custom links for trust portal in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+List custom links for trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

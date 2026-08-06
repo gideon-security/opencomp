@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Delete a row in an ISMS register
  *
  * @remarks
- * Delete a row in an ISMS register in Comp AI.
+ * Delete a row in an ISMS register in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

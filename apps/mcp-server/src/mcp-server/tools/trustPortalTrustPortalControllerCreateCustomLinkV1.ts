@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerCreateCustomLinkV1:
     name: "create-custom-link",
     description: `Create a custom link for trust portal
 
-Create a custom link for trust portal in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Create a custom link for trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

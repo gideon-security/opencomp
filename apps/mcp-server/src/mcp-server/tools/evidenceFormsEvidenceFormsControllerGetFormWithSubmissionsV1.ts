@@ -15,7 +15,7 @@ export const tool$evidenceFormsEvidenceFormsControllerGetFormWithSubmissionsV1:
     name: "get-form-with-submissions",
     description: `Get form definition and submissions
 
-Get form definition and submissions in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
+Get form definition and submissions in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

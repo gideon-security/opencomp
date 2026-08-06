@@ -14,7 +14,7 @@ export const tool$ismsISMSControllerDriftV1: ToolDefinition<typeof args> = {
   name: "drift",
   description: `Detect drift against the approved snapshot
 
-Detect drift against the approved snapshot in Comp AI.`,
+Detect drift against the approved snapshot in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

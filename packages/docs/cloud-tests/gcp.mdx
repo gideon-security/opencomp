@@ -1,24 +1,24 @@
 ---
 title: "GCP Cloud Tests"
-description: "Connect Google Cloud Platform to Comp AI over OAuth so findings from Security Command Center flow into your compliance posture."
+description: "Connect Google Cloud Platform to OpenComp over OAuth so findings from Security Command Center flow into your compliance posture."
 ---
 
 ## About the GCP integration
 
-Comp AI connects to Google Cloud Platform over **OAuth 2.0** and reads findings from **Security Command Center (SCC)**. No service account JSON key is uploaded — you sign in with a Google account that has access to the organization and projects you want to monitor.
+OpenComp connects to Google Cloud Platform over **OAuth 2.0** and reads findings from **Security Command Center (SCC)**. No service account JSON key is uploaded — you sign in with a Google account that has access to the organization and projects you want to monitor.
 
-After you connect, Comp AI auto-detects your organization, lets you pick projects, then runs a setup step that enables the required APIs and verifies IAM access. Findings are mapped to common frameworks (SOC 2, ISO 27001, CIS GCP Foundations, PCI DSS, HIPAA).
+After you connect, OpenComp auto-detects your organization, lets you pick projects, then runs a setup step that enables the required APIs and verifies IAM access. Findings are mapped to common frameworks (SOC 2, ISO 27001, CIS GCP Foundations, PCI DSS, HIPAA).
 
 <Note>
-  Security Command Center is where all GCP findings originate. If SCC is not enabled at the organization, Comp AI cannot read findings regardless of connection method.
+  Security Command Center is where all GCP findings originate. If SCC is not enabled at the organization, OpenComp cannot read findings regardless of connection method.
 </Note>
 
 ## How access works
 
 - **Auth model**: OAuth 2.0 with Google, using the `cloud-platform` scope plus `openid`, `email`, `profile` for account identification. Refresh tokens are stored so scans can run without re-prompting.
-- **Real permissions**: The OAuth scope only enables API calls — actual access is gated by the **IAM roles** assigned to the signed-in account. Comp AI only makes read calls.
+- **Real permissions**: The OAuth scope only enables API calls — actual access is gated by the **IAM roles** assigned to the signed-in account. OpenComp only makes read calls.
 - **Required role**: `roles/securitycenter.findingsViewer` on the **organization** (needed to read SCC findings). Project-level `roles/viewer` is also recommended.
-- **Scope**: Comp AI scans the projects you select inside the organization the signed-in account belongs to.
+- **Scope**: OpenComp scans the projects you select inside the organization the signed-in account belongs to.
 
 ## Prerequisites
 
@@ -28,8 +28,8 @@ Before connecting GCP, make sure you have:
 2. A Google account with:
    - `roles/securitycenter.findingsViewer` on the organization
    - `roles/viewer` (or equivalent) on the projects you want to scan
-3. Permission to enable APIs on at least one project in the organization (so Comp AI's setup step can enable SCC, Cloud Resource Manager, and Service Usage APIs if they are not already on)
-4. Admin access to your Comp AI workspace
+3. Permission to enable APIs on at least one project in the organization (so OpenComp's setup step can enable SCC, Cloud Resource Manager, and Service Usage APIs if they are not already on)
+4. Admin access to your OpenComp workspace
 
 <Note>
   If Security Command Center is not yet enabled, enable it first at [console.cloud.google.com/security/command-center](https://console.cloud.google.com/security/command-center).
@@ -39,16 +39,16 @@ Before connecting GCP, make sure you have:
 
 <Steps>
   <Step title="Start the connection">
-    In Comp AI, go to **Cloud Tests → GCP → Connect**. Click **Sign in with Google**.
+    In OpenComp, go to **Cloud Tests → GCP → Connect**. Click **Sign in with Google**.
   </Step>
   <Step title="Authorize with Google">
-    Sign in with a Google account that meets the prerequisites above and approve the consent screen. Comp AI stores the resulting refresh token (never the password) so it can run scheduled scans.
+    Sign in with a Google account that meets the prerequisites above and approve the consent screen. OpenComp stores the resulting refresh token (never the password) so it can run scheduled scans.
   </Step>
   <Step title="Select projects">
-    Comp AI auto-detects your organization and lists the projects that account can access. Pick the ones you want scanned — findings are scoped to those projects.
+    OpenComp auto-detects your organization and lists the projects that account can access. Pick the ones you want scanned — findings are scoped to those projects.
   </Step>
   <Step title="Let auto-setup run">
-    Comp AI's setup guide runs automatically and shows a checklist:
+    OpenComp's setup guide runs automatically and shows a checklist:
 
     - Connected via OAuth
     - Organization detected
@@ -64,7 +64,7 @@ Before connecting GCP, make sure you have:
 
 ## What gets scanned
 
-Comp AI consumes findings from Security Command Center across services including:
+OpenComp consumes findings from Security Command Center across services including:
 
 | Area          | Services                                              |
 | ------------- | ----------------------------------------------------- |
@@ -91,10 +91,10 @@ Findings are mapped to the controls used by:
 
 ## Security model
 
-- **Read-only in practice** — Comp AI only issues read API calls against SCC and resource manager
+- **Read-only in practice** — OpenComp only issues read API calls against SCC and resource manager
 - **IAM-bounded** — access is limited to what the signed-in account's IAM roles permit
 - **Token storage** — refresh tokens are stored in an encrypted vault; they are never returned to the UI
-- **Revocable at any time** — remove the IAM role, revoke the token at [myaccount.google.com/permissions](https://myaccount.google.com/permissions), or delete the connection in Comp AI
+- **Revocable at any time** — remove the IAM role, revoke the token at [myaccount.google.com/permissions](https://myaccount.google.com/permissions), or delete the connection in OpenComp
 
 ## Troubleshooting
 
@@ -115,10 +115,10 @@ Findings are mapped to the controls used by:
 </Accordion>
 
 <Accordion title="No projects listed after OAuth" icon="magnifying-glass">
-  Comp AI only lists projects the signed-in account has IAM access to. Sign in with a different Google account, or ask an admin to add your account as `roles/viewer` on the relevant projects.
+  OpenComp only lists projects the signed-in account has IAM access to. Sign in with a different Google account, or ask an admin to add your account as `roles/viewer` on the relevant projects.
 </Accordion>
 
 ## Support
 
-1. Email [support@trycomp.ai](mailto:support@trycomp.ai)
+1. Email [support@gideondefender.com](mailto:support@gideondefender.com)
 2. Join our [Discord community](https://discord.gg/compai)

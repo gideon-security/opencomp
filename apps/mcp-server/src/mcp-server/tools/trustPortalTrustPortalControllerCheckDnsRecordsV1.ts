@@ -10,7 +10,7 @@ export const tool$trustPortalTrustPortalControllerCheckDnsRecordsV1:
     name: "check-dns-records",
     description: `Check DNS records for a custom domain
 
-Check DNS records for a custom domain in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Check DNS records for a custom domain in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

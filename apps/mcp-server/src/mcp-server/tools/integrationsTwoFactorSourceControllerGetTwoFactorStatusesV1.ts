@@ -10,7 +10,7 @@ export const tool$integrationsTwoFactorSourceControllerGetTwoFactorStatusesV1:
     name: "get-two-factor-statuses",
     description: `Per-user 2FA status from the configured source
 
-Per-user 2FA status from the configured source in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Per-user 2FA status from the configured source in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

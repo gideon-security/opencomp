@@ -24,7 +24,7 @@ import { Result } from "../types/fp.js";
  * Submit SOA document for approval
  *
  * @remarks
- * Submit SOA document for approval in Comp AI. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.
+ * Submit SOA document for approval in OpenComp. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

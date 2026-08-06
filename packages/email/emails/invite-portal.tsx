@@ -24,7 +24,7 @@ export const InvitePortalEmail = ({ email, inviteLink, organizationName }: Props
     <Html>
       <Tailwind>
         <head />
-        <Preview>You've been invited to the Comp AI Portal</Preview>
+        <Preview>You've been invited to the OpenComp Portal</Preview>
 
         <Body className="mx-auto my-auto bg-[#fff] font-sans">
           <Container
@@ -33,13 +33,13 @@ export const InvitePortalEmail = ({ email, inviteLink, organizationName }: Props
           >
             <Logo />
             <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-[#121212]">
-              You've been invited to the Comp AI Portal
+              You've been invited to the OpenComp Portal
             </Heading>
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
               {organizationName
-                ? `${organizationName} has invited you to access their Comp AI Portal.`
-                : "You've been invited to access the Comp AI Portal."}
+                ? `${organizationName} has invited you to access their OpenComp Portal.`
+                : "You've been invited to access the OpenComp Portal."}
             </Text>
             <Section className="mt-[32px] mb-[42px] text-center">
               <Button

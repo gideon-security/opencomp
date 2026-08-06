@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * Remove the trust portal favicon
  *
  * @remarks
- * Remove the trust portal favicon in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
+ * Remove the trust portal favicon in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

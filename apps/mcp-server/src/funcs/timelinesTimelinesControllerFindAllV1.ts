@@ -24,7 +24,7 @@ import { Result } from "../types/fp.js";
  * List timelines for the organization
  *
  * @remarks
- * List timelines for the organization in Comp AI. Track audit and compliance readiness timelines, phases, and review milestones for an organization.
+ * List timelines for the organization in OpenComp. Track audit and compliance readiness timelines, phases, and review milestones for an organization.
  */
 export function timelinesTimelinesControllerFindAllV1(
   client$: CompAiCore,

@@ -24,7 +24,7 @@ import { Result } from "../types/fp.js";
  * Get update statuses for all framework instances
  *
  * @remarks
- * Get update statuses for all framework instances in Comp AI. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
+ * Get update statuses for all framework instances in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
  */
 export function frameworksFrameworksControllerGetAllUpdateStatusesV1(
   client$: CompAiCore,

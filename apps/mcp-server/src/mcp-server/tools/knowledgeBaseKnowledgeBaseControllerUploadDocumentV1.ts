@@ -15,7 +15,7 @@ export const tool$knowledgeBaseKnowledgeBaseControllerUploadDocumentV1:
     name: "upload-document",
     description: `Upload knowledge base document
 
-Upload supporting documentation so Comp AI can process approved source material for questionnaire answers and policy workflows.`,
+Upload supporting documentation so OpenComp can process approved source material for questionnaire answers and policy workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

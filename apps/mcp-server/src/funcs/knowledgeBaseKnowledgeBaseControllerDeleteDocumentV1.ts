@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Delete a knowledge base document
  *
  * @remarks
- * Delete a knowledge base document in Comp AI. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.
+ * Delete a knowledge base document in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that power questionnaires and AI policy workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

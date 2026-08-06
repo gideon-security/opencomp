@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Link (clone) existing requirements from another framework into this one
  *
  * @remarks
- * Link (clone) existing requirements from another framework into this one in Comp AI. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
+ * Link (clone) existing requirements from another framework into this one in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
  */
 export function frameworksFrameworksControllerLinkRequirementsV1(
   client$: CompAiCore,

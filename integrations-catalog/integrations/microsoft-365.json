@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "setupInstructions": "1. Register an app in Azure AD > App registrations\n2. Add Delegated permissions: User.Read.All, AuditLog.Read.All, Policy.Read.All, Directory.Read.All\n3. Grant admin consent for all permissions\n4. Add redirect URI: https://api.trycomp.ai/v1/integrations/oauth/callback\n5. Connect using a Work/School account with Global Administrator or Security Administrator role — personal Microsoft accounts (@hotmail/@outlook) are not supported",
+      "setupInstructions": "1. Register an app in Azure AD > App registrations\n2. Add Delegated permissions: User.Read.All, AuditLog.Read.All, Policy.Read.All, Directory.Read.All\n3. Grant admin consent for all permissions\n4. Add redirect URI: https://api.gideondefender.com/v1/integrations/oauth/callback\n5. Connect using a Work/School account with Global Administrator or Security Administrator role — personal Microsoft accounts (@hotmail/@outlook) are not supported",
       "scopes": [
         "User.Read.All",
         "AuditLog.Read.All",

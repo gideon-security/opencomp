@@ -11,7 +11,7 @@ import { ac, allRoles } from './permissions';
 /**
  * Auth client for browser-side authentication.
  *
- * Points directly to the API server. Cross-subdomain cookies (.trycomp.ai)
+ * Points directly to the API server. Cross-subdomain cookies (.gideondefender.com)
  * ensure the session works across all apps (app, portal, etc.).
  *
  * For server-side session validation, use auth.ts instead.

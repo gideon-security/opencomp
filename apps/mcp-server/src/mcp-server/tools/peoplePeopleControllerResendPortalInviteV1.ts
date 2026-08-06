@@ -16,7 +16,7 @@ export const tool$peoplePeopleControllerResendPortalInviteV1: ToolDefinition<
   name: "resend-portal-invite",
   description: `Resend portal invite email to a member
 
-Resend portal invite email to a member in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Resend portal invite email to a member in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

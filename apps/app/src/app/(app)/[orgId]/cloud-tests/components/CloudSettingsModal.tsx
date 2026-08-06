@@ -199,7 +199,7 @@ function ConnectionTab({
       </p>
 
       {/* AWS-only — scan engine switcher. Lets the customer change between
-          Comp AI scanners and Security Hub on an existing connection.
+          OpenComp scanners and Security Hub on an existing connection.
           Surfaces the current mode + a "Change" button that opens
           ScanModeSwitchDialog with the right confirmation copy.
 
@@ -229,7 +229,7 @@ function ConnectionTab({
 // ─── AWS Scan Mode Section ──────────────────────────────────────────────
 
 const SCAN_MODE_LABEL: Record<AwsScanModeChoice, string> = {
-  comp_scanners: 'Comp AI Scanners',
+  comp_scanners: 'OpenComp Scanners',
   security_hub: 'AWS Security Hub',
 };
 

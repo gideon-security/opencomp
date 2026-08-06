@@ -21,7 +21,7 @@ export const manifest: IntegrationManifest = {
     'Connect Aikido Security to monitor vulnerabilities, code security, and compliance status across your repositories and infrastructure.',
   category: 'Security',
   logoUrl: 'https://img.logo.dev/aikido.dev?token=pk_AZatYxV5QDSfWpRDaBxzRQ',
-  docsUrl: 'https://docs.trycomp.ai/integrations/aikido',
+  docsUrl: 'https://docs.gideondefender.com/integrations/aikido',
 
   // API configuration
   baseUrl: 'https://app.aikido.dev/api/public/v1/',

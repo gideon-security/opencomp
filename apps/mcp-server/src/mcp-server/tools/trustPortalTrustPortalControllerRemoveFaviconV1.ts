@@ -10,7 +10,7 @@ export const tool$trustPortalTrustPortalControllerRemoveFaviconV1:
     name: "remove-favicon",
     description: `Remove the trust portal favicon
 
-Remove the trust portal favicon in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Remove the trust portal favicon in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

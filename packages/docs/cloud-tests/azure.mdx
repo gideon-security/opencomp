@@ -1,21 +1,21 @@
 ---
 title: "Azure Cloud Tests"
-description: "Connect Microsoft Azure to Comp AI over OAuth (or a service principal) to run continuous cloud security checks against Microsoft Defender for Cloud."
+description: "Connect Microsoft Azure to OpenComp over OAuth (or a service principal) to run continuous cloud security checks against Microsoft Defender for Cloud."
 ---
 
 ## About the Azure integration
 
-Comp AI connects to Microsoft Azure to pull security posture, identity, network, and compliance data from **Microsoft Defender for Cloud** and related services. All access is read-only.
+OpenComp connects to Microsoft Azure to pull security posture, identity, network, and compliance data from **Microsoft Defender for Cloud** and related services. All access is read-only.
 
-The recommended connection method is **Microsoft OAuth** — you sign in with an Azure AD account that has the required roles, and Comp AI auto-detects your subscription. A **service principal** flow is also supported for customers who prefer to provision a dedicated identity.
+The recommended connection method is **Microsoft OAuth** — you sign in with an Azure AD account that has the required roles, and OpenComp auto-detects your subscription. A **service principal** flow is also supported for customers who prefer to provision a dedicated identity.
 
 <Note>
-  Comp AI only ever issues `GET`/`list` API calls. It does not create, modify, or delete Azure resources, even when connected with a user that has write permissions.
+  OpenComp only ever issues `GET`/`list` API calls. It does not create, modify, or delete Azure resources, even when connected with a user that has write permissions.
 </Note>
 
 ## How access works
 
-- **Primary flow**: OAuth 2.0 against `login.microsoftonline.com` using the `user_impersonation` scope on Azure Management API. Comp AI acts on behalf of the signed-in user, constrained by their Azure RBAC assignments.
+- **Primary flow**: OAuth 2.0 against `login.microsoftonline.com` using the `user_impersonation` scope on Azure Management API. OpenComp acts on behalf of the signed-in user, constrained by their Azure RBAC assignments.
 - **Alternative flow**: An Azure AD App Registration (service principal) with a client secret, assigned the required roles on a subscription.
 - **Scope**: A single Azure subscription per connection. Connect additional subscriptions by adding more connections.
 
@@ -29,19 +29,19 @@ Before connecting Azure, make sure you have:
    - **Security Reader** — read Microsoft Defender for Cloud findings
    - **Monitoring Reader** — read activity logs, alerts, and metrics
 3. **Microsoft Defender for Cloud** enabled on the subscription (the free tier is sufficient for most checks)
-4. Admin access to your Comp AI workspace
+4. Admin access to your OpenComp workspace
 
 ## Connect with OAuth (recommended)
 
 <Steps>
   <Step title="Start the connection">
-    In Comp AI, go to **Cloud Tests → Azure → Connect**. Click **Sign in with Microsoft**.
+    In OpenComp, go to **Cloud Tests → Azure → Connect**. Click **Sign in with Microsoft**.
   </Step>
   <Step title="Consent to the requested scopes">
     Sign in with an Azure AD account that has the roles listed above on the target subscription. Approve the consent screen.
   </Step>
   <Step title="Verify detected subscription">
-    Comp AI automatically detects the subscriptions your account can access. The setup guide then runs checks for:
+    OpenComp automatically detects the subscriptions your account can access. The setup guide then runs checks for:
 
     - **Subscription detected**
     - **Required role assignments**
@@ -84,7 +84,7 @@ Use this flow if you want a dedicated non-human identity or your tenant restrict
     - **Client Secret** — the value from the previous step
     - **Subscription ID** — Subscriptions → your subscription
   </Step>
-  <Step title="Paste into Comp AI">
+  <Step title="Paste into OpenComp">
     In the Azure connection form, switch to the service principal option and paste the four values. Click **Save and Connect**.
   </Step>
 </Steps>
@@ -117,10 +117,10 @@ Findings are mapped to the controls used by:
 
 ## Security model
 
-- **Read-only** — Comp AI makes no write calls, regardless of the roles you assign
+- **Read-only** — OpenComp makes no write calls, regardless of the roles you assign
 - **Scoped to one subscription per connection** — a connection cannot read data outside the subscription it was created for
 - **Secrets stay encrypted** — client secrets and refresh tokens are stored in an encrypted vault and never returned to the UI
-- **Revocable at any time** — remove the role assignments in the Azure portal, or delete the connection in Comp AI
+- **Revocable at any time** — remove the role assignments in the Azure portal, or delete the connection in OpenComp
 
 ## Troubleshooting
 
@@ -135,7 +135,7 @@ Findings are mapped to the controls used by:
 </Accordion>
 
 <Accordion title="Subscription not detected after sign-in" icon="magnifying-glass">
-  Comp AI only sees subscriptions your signed-in account has access to. If you manage multiple subscriptions, sign in with an account that has **Reader** on the one you want to monitor, or use the service principal flow to target it explicitly.
+  OpenComp only sees subscriptions your signed-in account has access to. If you manage multiple subscriptions, sign in with an account that has **Reader** on the one you want to monitor, or use the service principal flow to target it explicitly.
 </Accordion>
 
 <Accordion title="Missing findings for a specific service" icon="circle-exclamation">
@@ -144,5 +144,5 @@ Findings are mapped to the controls used by:
 
 ## Support
 
-1. Email [support@trycomp.ai](mailto:support@trycomp.ai)
+1. Email [support@gideondefender.com](mailto:support@gideondefender.com)
 2. Join our [Discord community](https://discord.gg/compai)

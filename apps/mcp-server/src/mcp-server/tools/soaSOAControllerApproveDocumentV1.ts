@@ -16,7 +16,7 @@ export const tool$soaSOAControllerApproveDocumentV1: ToolDefinition<
   name: "approve-document",
   description: `Approve a SOA document
 
-Approve a SOA document in Comp AI. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
+Approve a SOA document in OpenComp. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

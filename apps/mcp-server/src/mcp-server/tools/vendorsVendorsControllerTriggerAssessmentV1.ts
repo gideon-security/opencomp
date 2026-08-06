@@ -16,7 +16,7 @@ export const tool$vendorsVendorsControllerTriggerAssessmentV1: ToolDefinition<
   name: "trigger-assessment",
   description: `Trigger vendor risk assessment
 
-Trigger a vendor risk assessment so Comp AI can update third-party risk evidence and vendor security review status.`,
+Trigger a vendor risk assessment so OpenComp can update third-party risk evidence and vendor security review status.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

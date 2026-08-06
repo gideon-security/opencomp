@@ -94,7 +94,7 @@ describe('mapReviews', () => {
               inputKey: 'a_prior_actions',
               inputRef: '(a) Prior actions',
               whatItCovers: 'Status of actions.',
-              whereToFind: 'Comp AI > ISMS > Management Review',
+              whereToFind: 'OpenComp > ISMS > Management Review',
               discussionNotes: null,
               discussed: true,
               source: 'derived',

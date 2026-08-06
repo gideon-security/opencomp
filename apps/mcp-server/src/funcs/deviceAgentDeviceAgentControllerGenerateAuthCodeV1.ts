@@ -24,7 +24,7 @@ import { Result } from "../types/fp.js";
  * Create a device-agent auth code
  *
  * @remarks
- * Create a device-agent auth code in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
+ * Create a device-agent auth code in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.
  */
 export function deviceAgentDeviceAgentControllerGenerateAuthCodeV1(
   client$: CompAiCore,

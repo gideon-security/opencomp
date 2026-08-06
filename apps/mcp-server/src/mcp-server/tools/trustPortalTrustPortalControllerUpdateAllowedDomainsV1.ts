@@ -10,7 +10,7 @@ export const tool$trustPortalTrustPortalControllerUpdateAllowedDomainsV1:
     name: "update-allowed-domains",
     description: `Update allowed domains for the trust portal
 
-Update allowed domains for the trust portal in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Update allowed domains for the trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

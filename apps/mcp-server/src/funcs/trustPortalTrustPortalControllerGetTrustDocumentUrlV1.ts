@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Generate a temporary signed URL for a trust portal document
  *
  * @remarks
- * Generate a temporary signed URL for a trust portal document in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
+ * Generate a temporary signed URL for a trust portal document in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

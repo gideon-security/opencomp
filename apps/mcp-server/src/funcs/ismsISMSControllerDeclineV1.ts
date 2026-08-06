@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Decline an ISMS document
  *
  * @remarks
- * Decline an ISMS document in Comp AI.
+ * Decline an ISMS document in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -15,7 +15,7 @@ export const tool$peoplePeopleControllerDeleteEmploymentEvidenceV1:
     name: "delete-employment-evidence",
     description: `Delete employment evidence
 
-Delete employment evidence in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Delete employment evidence in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

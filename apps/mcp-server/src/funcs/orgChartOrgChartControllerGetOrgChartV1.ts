@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get the organization chart
  *
  * @remarks
- * Get the organization chart in Comp AI. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.
+ * Get the organization chart in OpenComp. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

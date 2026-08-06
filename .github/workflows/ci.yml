@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check-types:
+    uses: ./.github/workflows/check-types.yml
+
+  db-unit:
+    name: DB unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/npm-install
+      - name: Run db unit tests
+        working-directory: packages/db
+        # backfill-framework-versions.spec.ts is a destructive integration test that
+        # requires a seeded local DB; it is not a unit test and is excluded from CI.
+        run: npx vitest run --exclude '**/backfill-framework-versions.spec.ts'
+
+  app-unit:
+    name: App unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/npm-install
+      - name: Run app unit tests
+        working-directory: apps/app
+        run: npx vitest run
+
+  api-unit:
+    name: API unit tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_DB: comp
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d comp"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Localhost is required: the generated Prisma client refuses non-local hosts
+      # without verified TLS, and the test DB is only reachable on the runner loopback.
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/comp?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/npm-install
+      - name: Apply migrations
+        working-directory: packages/db
+        run: npx prisma migrate deploy
+      - name: Run API unit tests
+        working-directory: apps/api
+        # --forceExit: specs that load the real Prisma client leak an open connection
+        # handle, which otherwise makes the jest worker hang on teardown.
+        run: npx jest --forceExit

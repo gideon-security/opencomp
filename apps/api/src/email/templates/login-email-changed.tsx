@@ -36,7 +36,7 @@ export const LoginEmailChangedEmail = ({ organizationName, oldEmail, newEmail }:
             fontStyle="normal"
           />
         </head>
-        <Preview>Your Comp AI login email was changed</Preview>
+        <Preview>Your OpenComp login email was changed</Preview>
 
         <Body className="mx-auto my-auto bg-[#fff] font-sans">
           <Container
@@ -50,7 +50,7 @@ export const LoginEmailChangedEmail = ({ organizationName, oldEmail, newEmail }:
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
               An administrator of <span className="font-medium">{organizationName}</span>{' '}
-              changed your Comp AI login email from{' '}
+              changed your OpenComp login email from{' '}
               <span className="font-medium">{oldEmail}</span> to{' '}
               <span className="font-medium">{newEmail}</span>.
             </Text>
@@ -63,7 +63,7 @@ export const LoginEmailChangedEmail = ({ organizationName, oldEmail, newEmail }:
             <Section>
               <Text className="text-[12px] leading-[24px] text-[#666666]">
                 If you did not expect this change, contact your organization
-                administrator or support@trycomp.ai.
+                administrator or support@gideondefender.com.
               </Text>
             </Section>
 

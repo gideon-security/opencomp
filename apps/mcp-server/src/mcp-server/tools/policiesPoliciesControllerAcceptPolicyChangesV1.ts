@@ -15,7 +15,7 @@ export const tool$policiesPoliciesControllerAcceptPolicyChangesV1:
     name: "accept-policy-changes",
     description: `Accept pending policy changes and publish the version
 
-Accept pending policy changes and publish the version in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Accept pending policy changes and publish the version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

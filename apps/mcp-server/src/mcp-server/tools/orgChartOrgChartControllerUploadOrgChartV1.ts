@@ -16,7 +16,7 @@ export const tool$orgChartOrgChartControllerUploadOrgChartV1: ToolDefinition<
   name: "upload-org-chart",
   description: `Upload an image as the organization chart
 
-Upload an image as the organization chart in Comp AI. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.`,
+Upload an image as the organization chart in OpenComp. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

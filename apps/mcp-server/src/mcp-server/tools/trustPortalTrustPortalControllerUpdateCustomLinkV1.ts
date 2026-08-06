@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerUpdateCustomLinkV1:
     name: "update-custom-link",
     description: `Update a custom link
 
-Update a custom link in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Update a custom link in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

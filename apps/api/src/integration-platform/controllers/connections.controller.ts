@@ -648,7 +648,7 @@ export class ConnectionsController {
         metadata.regions = credentials.regions;
       }
       // AWS only — which scan engine the customer chose at onboarding
-      // (Comp AI scanners vs Security Hub). Read on every scan by
+      // (OpenComp scanners vs Security Hub). Read on every scan by
       // cloud-security.service.ts. Customers can change it later from
       // CloudSettingsModal via aws-scan-mode.service.updateMode.
       if (

@@ -7,7 +7,7 @@ const deelHandler = getIntegrationHandler('deel');
 export default {
   name: 'Deel',
   description: 'Automatically add/remove employees from Deel, and sync their information.',
-  short_description: 'Integrate with Deel to automatically add employees to Comp AI.',
+  short_description: 'Integrate with Deel to automatically add employees to OpenComp.',
   id: 'deel',
   // Use direct reference to the public image
   logo: Logo,

@@ -1,7 +1,7 @@
 /**
  * Organization participation rules.
  *
- * A *platform admin* is a global Comp AI staff account (`User.role === 'admin'`)
+ * A *platform admin* is a global OpenComp staff account (`User.role === 'admin'`)
  * that can enter any organization for support/debugging. By default such an
  * account is NOT a genuine participant of the customer orgs it enters, so it is
  * excluded from that org's business logic: it cannot be an assignee/approver, is
@@ -9,7 +9,7 @@
  * notifications.
  *
  * The single exception is an *internal* organization — one operated by the
- * platform itself (e.g. Comp AI's own org). There, the platform admins ARE the
+ * platform itself (e.g. OpenComp's own org). There, the platform admins ARE the
  * real members and must be able to run compliance like any other org.
  *
  * `isOrgParticipant` is the single source of truth for that rule. Do NOT
@@ -23,7 +23,7 @@
 export const PLATFORM_ADMIN_ROLE = 'admin';
 
 export interface OrgParticipationContext {
-  /** Whether the organization is platform-operated (e.g. Comp AI's own org). */
+  /** Whether the organization is platform-operated (e.g. OpenComp's own org). */
   orgIsInternal: boolean;
 }
 

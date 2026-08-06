@@ -22,7 +22,7 @@ A visual demonstration is strongly recommended, for both the original and new ch
 ## Mandatory Tasks (DO NOT REMOVE)
 
 - [ ] I have self-reviewed the code (A decent size PR without self-review might be rejected).
-- [ ] I have updated the developer docs in /docs if this PR makes changes that would require a [documentation change](https://trycomp.ai/docs). If N/A, write N/A here and check the checkbox.
+- [ ] I have updated the developer docs in /docs if this PR makes changes that would require a [documentation change](https://gideondefender.com/docs). If N/A, write N/A here and check the checkbox.
 - [ ] I confirm automated tests are in place that prove my fix is effective or that my feature works.
 
 ## How should this be tested?
@@ -38,7 +38,7 @@ A visual demonstration is strongly recommended, for both the original and new ch
 
 <!-- Remove bullet points below that don't apply to you -->
 
-- I haven't read the [contributing guide](https://github.com/trycompai/comp/blob/main/CONTRIBUTING.md)
+- I haven't read the [contributing guide](https://github.com/gideon-security/opencomp/blob/main/CONTRIBUTING.md)
 - My code doesn't follow the style guidelines of this project
 - I haven't commented my code, particularly in hard-to-understand areas
 - I haven't checked if my changes generate no new warnings

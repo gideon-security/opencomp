@@ -103,7 +103,7 @@ function generateSOAPDF(
     y,
   );
   y += lineHeight;
-  pdf.text(`Prepared by: ${metadata.preparedBy || 'Comp AI'}`, margin, y);
+  pdf.text(`Prepared by: ${metadata.preparedBy || 'OpenComp'}`, margin, y);
   y += lineHeight;
   const approvalStatusText = metadata.approvedAt
     ? `Approved on ${new Date(metadata.approvedAt).toLocaleDateString()}`

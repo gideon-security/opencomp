@@ -83,7 +83,7 @@ export default async function UpgradePage({ params }: PageProps) {
       });
       hasAccess = true;
     } else {
-      // Stripe-domain auto-approval (and the @trycomp.ai shortcut) live in the
+      // Stripe-domain auto-approval (and the @gideondefender.com shortcut) live in the
       // API so STRIPE_SECRET_KEY only has to exist on the API and the
       // hasAccess flip is RBAC-checked + audit-logged. Soft-fail so a transient
       // API error never blocks the booking step from rendering.

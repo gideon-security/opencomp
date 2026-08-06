@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Delete a custom role
  *
  * @remarks
- * Delete a custom role in Comp AI. Create custom roles and resolve permission sets for organization-level access control.
+ * Delete a custom role in OpenComp. Create custom roles and resolve permission sets for organization-level access control.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -15,7 +15,7 @@ export const tool$evidenceExportEvidenceExportControllerGetTaskEvidenceSummaryV1
     name: "get-task-evidence-summary",
     description: `Get task evidence summary
 
-Get task evidence summary in Comp AI. Export task evidence, automation evidence, and reviewer-ready evidence bundles as PDF or ZIP files.`,
+Get task evidence summary in OpenComp. Export task evidence, automation evidence, and reviewer-ready evidence bundles as PDF or ZIP files.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -16,7 +16,7 @@ export const tool$policiesPoliciesControllerGetPolicyEvidenceTasksV1:
     description:
       `Get tasks that serve as evidence for a policy, grouped by control
 
-Get tasks that serve as evidence for a policy, grouped by control in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Get tasks that serve as evidence for a policy, grouped by control in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

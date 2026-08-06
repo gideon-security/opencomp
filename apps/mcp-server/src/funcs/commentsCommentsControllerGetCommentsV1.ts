@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get comments for an entity
  *
  * @remarks
- * Get comments for an entity in Comp AI. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.
+ * Get comments for an entity in OpenComp. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

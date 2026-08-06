@@ -15,7 +15,7 @@ export const tool$integrationsSyncControllerSyncGoogleWorkspaceEmployeesV1:
     name: "sync-google-workspace-employees",
     description: `Sync Google Workspace employees
 
-Sync Google Workspace employees in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Sync Google Workspace employees in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -249,7 +249,7 @@ describe('SecurityPenetrationTestsService', () => {
 
   it('creates report payload with resolved webhook URL', async () => {
     process.env.SECURITY_PENETRATION_TESTS_WEBHOOK_URL =
-      'https://api.trycomp.ai/webhook';
+      'https://api.gideondefender.com/webhook';
     const expectedPayload = {
       id: 'run_456',
       status: 'provisioning',
@@ -270,7 +270,7 @@ describe('SecurityPenetrationTestsService', () => {
     const requestBody = await getRequestBody();
 
     expect(requestBody.webhookUrl).toBe(
-      'https://api.trycomp.ai/webhook/v1/security-penetration-tests/webhook',
+      'https://api.gideondefender.com/webhook/v1/security-penetration-tests/webhook',
     );
     expect(requestBody.targetUrl).toBe(payload.targetUrl);
     expect(requestBody.repoUrl).toBe(payload.repoUrl);
@@ -494,13 +494,13 @@ describe('SecurityPenetrationTestsService', () => {
     const requestBody = await getRequestBody();
 
     expect(requestBody.webhookUrl).toBe(
-      'https://api.trycomp.ai/v1/security-penetration-tests/webhook',
+      'https://api.gideondefender.com/v1/security-penetration-tests/webhook',
     );
   });
 
   it('creates Comp webhook callback runs without a provider handshake token', async () => {
     process.env.SECURITY_PENETRATION_TESTS_WEBHOOK_URL =
-      'https://api.trycomp.ai/webhook';
+      'https://api.gideondefender.com/webhook';
 
     fetchMock.mockResolvedValueOnce(
       new Response(
@@ -525,7 +525,7 @@ describe('SecurityPenetrationTestsService', () => {
 
   it('does not persist a webhook handshake secret when provider returns one', async () => {
     process.env.SECURITY_PENETRATION_TESTS_WEBHOOK_URL =
-      'https://api.trycomp.ai/webhook';
+      'https://api.gideondefender.com/webhook';
     mockedDb.secret.upsert.mockRejectedValue(new Error('db unavailable'));
 
     fetchMock.mockResolvedValueOnce(

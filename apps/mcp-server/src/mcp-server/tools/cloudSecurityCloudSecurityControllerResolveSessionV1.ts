@@ -16,7 +16,7 @@ export const tool$cloudSecurityCloudSecurityControllerResolveSessionV1:
     description:
       `Resolve short-lived AWS credentials for a connection (internal only)
 
-Resolve short-lived AWS credentials for a connection (internal only) in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
+Resolve short-lived AWS credentials for a connection (internal only) in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

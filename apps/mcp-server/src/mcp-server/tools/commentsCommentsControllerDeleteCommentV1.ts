@@ -16,7 +16,7 @@ export const tool$commentsCommentsControllerDeleteCommentV1: ToolDefinition<
   name: "delete-comment",
   description: `Delete a comment
 
-Delete a comment in Comp AI. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.`,
+Delete a comment in OpenComp. Create and manage collaboration comments on compliance entities such as tasks, policies, risks, vendors, and findings.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

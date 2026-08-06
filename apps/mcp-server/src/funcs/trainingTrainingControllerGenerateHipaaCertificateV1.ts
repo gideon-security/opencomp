@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Generate HIPAA training certificate PDF
  *
  * @remarks
- * Generate HIPAA training certificate PDF in Comp AI. Record security awareness and HIPAA training completion status and generate completion certificates.
+ * Generate HIPAA training certificate PDF in OpenComp. Record security awareness and HIPAA training completion status and generate completion certificates.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

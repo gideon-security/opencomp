@@ -166,7 +166,7 @@ export const processKnowledgeBaseDocumentTask = task({
         if (vectorIndex) {
           const idsToDelete = existingEmbeddings.map((e) => e.id);
           try {
-            await vectorIndex.delete(idsToDelete);
+            await vectorIndex.delete(idsToDelete, payload.organizationId);
             logger.info('Deleted existing embeddings', {
               documentId: document.id,
               deletedCount: idsToDelete.length,

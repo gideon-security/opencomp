@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * List an ISMS document's published version history
  *
  * @remarks
- * List an ISMS document's published version history in Comp AI.
+ * List an ISMS document's published version history in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

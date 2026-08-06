@@ -24,7 +24,7 @@ export const ChangeEmailConfirmationEmail = ({ currentEmail, newEmail, url }: Pr
     <Html>
       <Tailwind>
         <head />
-        <Preview>Confirm your email change for Comp AI</Preview>
+        <Preview>Confirm your email change for OpenComp</Preview>
 
         <Body className="mx-auto my-auto bg-[#fff] font-sans">
           <Container
@@ -37,7 +37,7 @@ export const ChangeEmailConfirmationEmail = ({ currentEmail, newEmail, url }: Pr
             </Heading>
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
-              You requested to change your Comp AI login email from{' '}
+              You requested to change your OpenComp login email from{' '}
               <span className="font-medium">{currentEmail}</span> to{' '}
               <span className="font-medium">{newEmail}</span>. Confirm below,
               then follow the verification link we send to your new address to

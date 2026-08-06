@@ -22,7 +22,7 @@
   {
     "id": "frk_tt_68406951bd282273ebe286cc",
     "name": "Employee Verification",
-    "description": "Maintain a list of reference checks you made for every new hire. Verify the identity of every new hire.\n\nFor ISO 27001: Ensure you are also storing the NDA, candidate evaluation form and access creation request with its approval evidence\n\nFor PCI: For employees with potential access to the CDE, document background verification checks (e.g., reference check, prior employment) before granting access to CHD systems.\n\nBackground checks can be ran within the Comp AI Plaform, in the People Tab. Select the User => Background Check\n",
+    "description": "Maintain a list of reference checks you made for every new hire. Verify the identity of every new hire.\n\nFor ISO 27001: Ensure you are also storing the NDA, candidate evaluation form and access creation request with its approval evidence\n\nFor PCI: For employees with potential access to the CDE, document background verification checks (e.g., reference check, prior employment) before granting access to CHD systems.\n\nBackground checks can be ran within the OpenComp Plaform, in the People Tab. Select the User => Background Check\n",
     "frequency": "yearly",
     "department": "hr",
     "createdAt": "2025-06-04 15:42:08.603",
@@ -102,7 +102,7 @@
   {
     "id": "frk_tt_68406903839203801ac8041a",
     "name": "Device List",
-    "description": "Keep and maintain a list of your devices (laptops/servers). If you install the Comp AI agent on your devices, these will be automatically tracked in-app and you can mark this task as not-relevant.\n\nFor HIPAA: Know which devices hold your patient data is going and create a maintain a system to track it\n\nComp AI device agent is located at: portal.trycomp.ai",
+    "description": "Keep and maintain a list of your devices (laptops/servers). If you install the OpenComp agent on your devices, these will be automatically tracked in-app and you can mark this task as not-relevant.\n\nFor HIPAA: Know which devices hold your patient data is going and create a maintain a system to track it\n\nOpenComp device agent is located at: portal.gideondefender.com",
     "frequency": "yearly",
     "department": "admin",
     "createdAt": "2025-06-04 15:40:51.392",
@@ -682,7 +682,7 @@
   {
     "id": "frk_tt_6840796f77d8a0dff53f947a",
     "name": "Secure Devices",
-    "description": "Ensure all devices meet the following security requirements:\n\n• Full disk encryption enabled (BitLocker for Windows, FileVault for macOS)\n\n• Screen lock enabled after 15 minutes of inactivity\n\n• Minimum password length of 8+ characters\n\n• Automatic installation of security updates\n\n• Anti-virus enabled (Windows Defender on Windows or macOS XProtect)\n\nYou may verify compliance by uploading screenshots for each device or by installing the Comp AI device agent.\n\nIf you already use a third-party MDM provider (e.g., Jamf, Intune, Kandji, etc.), it is recommended that you do not install the Comp AI device agent, as running multiple device management agents may cause conflicts. In these cases, please upload screenshots instead.\n\nThe Comp AI device agent can be downloaded from: portal.trycomp.ai",
+    "description": "Ensure all devices meet the following security requirements:\n\n• Full disk encryption enabled (BitLocker for Windows, FileVault for macOS)\n\n• Screen lock enabled after 15 minutes of inactivity\n\n• Minimum password length of 8+ characters\n\n• Automatic installation of security updates\n\n• Anti-virus enabled (Windows Defender on Windows or macOS XProtect)\n\nYou may verify compliance by uploading screenshots for each device or by installing the OpenComp device agent.\n\nIf you already use a third-party MDM provider (e.g., Jamf, Intune, Kandji, etc.), it is recommended that you do not install the OpenComp device agent, as running multiple device management agents may cause conflicts. In these cases, please upload screenshots instead.\n\nThe OpenComp device agent can be downloaded from: portal.gideondefender.com",
     "frequency": "yearly",
     "department": "itsm",
     "createdAt": "2025-06-04 16:50:54.671",
@@ -712,7 +712,7 @@
   {
     "id": "frk_tt_6952951fc116ab206e4276d6",
     "name": "Period Close-Out & Attestation",
-    "description": "Please review the three questions below. Post a comment on this task with your answers (Yes/No) for each. If the answer is \"Yes,\" please follow the specific instructions listed below and upload the required evidence to this task.\n\nQuestion 1: New Hires\nDid any new employees join the organization during this audit period?\n\nIf NO: State \"No new hires.\"\nIf YES:\n  1. Ensure all new hires have been added to the People tab in the platform.\n  2. Confirm they have a compliant device assigned.\n  3. Verify they have approved all policies and completed security training on portal.trycomp.ai.\n  4. Upload Evidence: Please attach employee verification evidence (e.g., background check confirmation or call notes from reference check call) for the hires.\n\nQuestion 2: Terminations\nDid any employees or contractors leave the organization (voluntarily or involuntarily) during this period?\n\nIf NO: State \"No terminations.\"\nIf YES:\n  1. In your comment, list the Name, Termination Date, and Access Revocation Date for each individual.\n  2. Upload Evidence: Please attach the completed Termination Checklist for each leaver showing that access was revoked on time. Ensure it is dated and signed.\n\nQuestion 3: Non-Production Data\nDoes the organization use real customer data (PII) in non-production environments (e.g., Staging/Dev)?\n\nIf NO: State \"No. Non-production environments use synthetic data only.\"\nIf YES:\n  1. Upload Evidence: Please attach proof of your Data Masking or anonymization process (e.g., screenshots of the obfuscation script or database config) showing that sensitive data is protected.",
+    "description": "Please review the three questions below. Post a comment on this task with your answers (Yes/No) for each. If the answer is \"Yes,\" please follow the specific instructions listed below and upload the required evidence to this task.\n\nQuestion 1: New Hires\nDid any new employees join the organization during this audit period?\n\nIf NO: State \"No new hires.\"\nIf YES:\n  1. Ensure all new hires have been added to the People tab in the platform.\n  2. Confirm they have a compliant device assigned.\n  3. Verify they have approved all policies and completed security training on portal.gideondefender.com.\n  4. Upload Evidence: Please attach employee verification evidence (e.g., background check confirmation or call notes from reference check call) for the hires.\n\nQuestion 2: Terminations\nDid any employees or contractors leave the organization (voluntarily or involuntarily) during this period?\n\nIf NO: State \"No terminations.\"\nIf YES:\n  1. In your comment, list the Name, Termination Date, and Access Revocation Date for each individual.\n  2. Upload Evidence: Please attach the completed Termination Checklist for each leaver showing that access was revoked on time. Ensure it is dated and signed.\n\nQuestion 3: Non-Production Data\nDoes the organization use real customer data (PII) in non-production environments (e.g., Staging/Dev)?\n\nIf NO: State \"No. Non-production environments use synthetic data only.\"\nIf YES:\n  1. Upload Evidence: Please attach proof of your Data Masking or anonymization process (e.g., screenshots of the obfuscation script or database config) showing that sensitive data is protected.",
     "frequency": "yearly",
     "department": "admin",
     "createdAt": "2025-12-29 14:50:07.058",
@@ -1292,7 +1292,7 @@
   {
     "id": "frk_tt_69eb8761ff2b2d874ae2a4da",
     "name": "Login Monitoring & Password Management",
-    "description": "Monitor login attempts and discrepancies, and enforce password management procedures including creation, change, and safeguarding of credentials.\n\nInstall the Comp AI device agent on portal.trycomp.ai, or provide manual evidence of device settings. https://www.trycomp.ai/docs/device-agent#manual-evidence-collection\n\n",
+    "description": "Monitor login attempts and discrepancies, and enforce password management procedures including creation, change, and safeguarding of credentials.\n\nInstall the OpenComp device agent on portal.gideondefender.com, or provide manual evidence of device settings. https://www.gideondefender.com/docs/device-agent#manual-evidence-collection\n\n",
     "frequency": "monthly",
     "department": "it",
     "createdAt": "2026-04-24 15:08:16.690",

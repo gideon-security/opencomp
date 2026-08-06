@@ -44,7 +44,7 @@ export function RolesClient({ memberOptions, ...props }: RolesClientProps) {
       title="Roles, Responsibilities and Authorities"
       description="Define the ISMS governance roles, their responsibilities and authorities, and the members who hold them (ISO 27001 clause 5.3). Assign members and complete each role before generating the document."
       sectionTitle="Governance roles"
-      sectionDescription="Real ISMS governance roles — distinct from Comp AI application-access levels."
+      sectionDescription="Real ISMS governance roles — distinct from OpenComp application-access levels."
       generateSuccessMessage="Restored any missing seeded roles"
       getSubmitBlockedReason={(document) => {
         const messages = roleValidationMessages({

@@ -14,7 +14,7 @@ env:
 
 jobs:
   quick-test:
-    runs-on: warp-ubuntu-latest-arm64-4x
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         app: [app]

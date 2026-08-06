@@ -779,7 +779,7 @@ export const OnboardingTracker = ({ onboarding }: { onboarding: Onboarding }) =>
                 Retry setup
               </Button>
               <Button size="sm" variant="outline" asChild>
-                <a href="mailto:support@trycomp.ai">Contact support</a>
+                <a href="mailto:support@gideondefender.com">Contact support</a>
               </Button>
             </div>
           </div>

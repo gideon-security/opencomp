@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get task item activity log
  *
  * @remarks
- * Get task item activity log in Comp AI. Manage task items and attachments linked to operational entities such as risks and vendors.
+ * Get task item activity log in OpenComp. Manage task items and attachments linked to operational entities such as risks and vendors.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

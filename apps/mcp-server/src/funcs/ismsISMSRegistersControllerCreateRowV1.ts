@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Create a row in an ISMS register
  *
  * @remarks
- * Create a row in an ISMS register in Comp AI.
+ * Create a row in an ISMS register in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -16,7 +16,7 @@ export const tool$peoplePeopleControllerGetMentionableMembersV1: ToolDefinition<
   name: "get-mentionable-members",
   description: `Get members who can read a specific resource type
 
-Get members who can read a specific resource type in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Get members who can read a specific resource type in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

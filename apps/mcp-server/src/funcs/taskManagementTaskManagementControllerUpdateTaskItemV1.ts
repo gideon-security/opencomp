@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Update a task item
  *
  * @remarks
- * Update a task item in Comp AI. Manage task items and attachments linked to operational entities such as risks and vendors.
+ * Update a task item in OpenComp. Manage task items and attachments linked to operational entities such as risks and vendors.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

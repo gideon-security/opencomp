@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Link required document types to a control
  *
  * @remarks
- * Link required document types to a control in Comp AI. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.
+ * Link required document types to a control in OpenComp. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.
  */
 export function controlsControlsControllerLinkDocumentTypesV1(
   client$: CompAiCore,

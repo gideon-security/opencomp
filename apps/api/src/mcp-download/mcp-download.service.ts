@@ -23,7 +23,7 @@ const ASSET_BY_TARGET: Record<string, string> = {
 // past the first page. We page through newest-first and stop at the first MCP
 // release (which, because the list is newest-first, is the latest one).
 const GITHUB_RELEASES_URL =
-  'https://api.github.com/repos/trycompai/comp/releases';
+  'https://api.github.com/repos/gideon-security/opencomp/releases';
 const RELEASES_PER_PAGE = 100;
 // Bounds the work (and the GitHub API budget) while covering many months of
 // product-release velocity, so a slow MCP release cadence can't make downloads

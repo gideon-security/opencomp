@@ -9,7 +9,7 @@ export const tool$tasksTasksControllerGetTaskOptionsV1: ToolDefinition = {
   name: "get-task-options",
   description: `Get page options for tasks overview
 
-Get page options for tasks overview in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Get page options for tasks overview in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

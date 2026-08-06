@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Delete a control
  *
  * @remarks
- * Delete a control in Comp AI. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.
+ * Delete a control in OpenComp. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.
  */
 export function controlsControlsControllerDeleteV1(
   client$: CompAiCore,

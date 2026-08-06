@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Submit an ISMS document for approval
  *
  * @remarks
- * Submit an ISMS document for approval in Comp AI.
+ * Submit an ISMS document for approval in OpenComp.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

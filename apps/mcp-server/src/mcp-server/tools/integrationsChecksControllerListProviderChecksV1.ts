@@ -15,7 +15,7 @@ export const tool$integrationsChecksControllerListProviderChecksV1:
     name: "list-provider-checks",
     description: `List check definitions for a provider
 
-List check definitions for a provider in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+List check definitions for a provider in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

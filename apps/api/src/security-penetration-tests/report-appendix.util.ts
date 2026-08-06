@@ -16,7 +16,7 @@ export interface ReportContextNote {
 
 const APPENDIX_TITLE = 'Appendix: Customer context & management responses';
 const APPENDIX_DISCLAIMER =
-  'The notes below were provided by the customer in Comp AI after testing. ' +
+  'The notes below were provided by the customer in OpenComp after testing. ' +
   'They are customer statements, not findings or conclusions of the testing team.';
 
 function formatDate(date: Date): string {

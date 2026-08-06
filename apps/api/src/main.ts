@@ -29,8 +29,8 @@ declare module 'express-serve-static-core' {
 let app: INestApplication | null = null;
 
 function describeServer(baseUrl: string): string {
-  if (baseUrl.includes('api.staging.trycomp.ai')) return 'Staging API Server';
-  if (baseUrl.includes('api.trycomp.ai')) return 'Production API Server';
+  if (baseUrl.includes('api.staging.gideondefender.com')) return 'Staging API Server';
+  if (baseUrl.includes('api.gideondefender.com')) return 'Production API Server';
   if (baseUrl.startsWith('http://localhost')) return 'Local API Server';
   return 'API Server';
 }

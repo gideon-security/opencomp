@@ -15,7 +15,7 @@ export const tool$cloudSecurityCloudSecurityControllerGetRunStatusV1:
     name: "get-run-status",
     description: `Get a cloud security scan run by ID
 
-Get a cloud security scan run by ID in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
+Get a cloud security scan run by ID in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

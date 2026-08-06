@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * Get risk counts grouped by department
  *
  * @remarks
- * Get risk counts grouped by department in Comp AI. Create, update, and report on organizational risks with ownership, departments, and compliance remediation status.
+ * Get risk counts grouped by department in OpenComp. Create, update, and report on organizational risks with ownership, departments, and compliance remediation status.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

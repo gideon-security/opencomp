@@ -32,7 +32,7 @@ describe('Auth page invite routing', () => {
   });
 
   it('routes an authenticated invitee with an active org to the invite flow (not onboarding)', async () => {
-    // Regression: an auditor who already has a Comp AI session with an active
+    // Regression: an auditor who already has a OpenComp session with an active
     // org clicks an invite link. Previously this redirected to /setup and the
     // invite code was discarded, dumping them into the onboarding wizard.
     mockAuthApi.getSession.mockResolvedValue({

@@ -15,7 +15,7 @@ export const tool$deviceAgentDeviceAgentControllerExchangeCodeV1:
     name: "exchange-code",
     description: `Exchange an auth code for device credentials
 
-Exchange an auth code for device credentials in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
+Exchange an auth code for device credentials in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

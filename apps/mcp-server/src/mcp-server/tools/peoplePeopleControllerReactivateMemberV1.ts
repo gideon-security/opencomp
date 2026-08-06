@@ -16,7 +16,7 @@ export const tool$peoplePeopleControllerReactivateMemberV1: ToolDefinition<
   name: "reactivate-member",
   description: `Reactivate a deactivated member
 
-Reactivate a deactivated member in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Reactivate a deactivated member in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

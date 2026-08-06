@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Regenerate task from template
  *
  * @remarks
- * Regenerate task from template in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.
+ * Regenerate task from template in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -138,7 +138,7 @@ describe('ControlsController', () => {
       const result = await controller.findOne('org_1', 'ctrl_1');
 
       expect(result).toEqual(mockControl);
-      expect(service.findOne).toHaveBeenCalledWith('ctrl_1', 'org_1');
+      expect(service.findOne).toHaveBeenCalledWith('ctrl_1', 'org_1', undefined);
     });
 
     it('should propagate NotFoundException from service', async () => {

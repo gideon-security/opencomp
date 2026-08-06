@@ -8,7 +8,7 @@ const emailService = new TrustEmailService();
 const NOTIFIABLE_ROLES = ['owner', 'admin'];
 
 const APP_BASE_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.trycomp.ai';
+  process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.gideondefender.com';
 
 /**
  * Checks domain config via the Vercel API. Returns null when Vercel is not

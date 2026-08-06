@@ -1,6 +1,9 @@
 import { db } from '@db';
 import { BillingEntitlementsService } from './billing-entitlements.service';
 
+const futurePeriodStart = new Date(Date.now() - 1_000_000);
+const futurePeriodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1_000);
+
 jest.mock('@db', () => ({
   db: {
     organizationBillingSubscription: {
@@ -179,7 +182,7 @@ describe('BillingEntitlementsService', () => {
         stripeStatus: 'active',
         usedQuantity: 1,
         includedQuantity: 4,
-        currentPeriodEnd: new Date('2026-05-30T00:00:00.000Z'),
+        currentPeriodEnd: futurePeriodEnd,
       },
     ]);
     mockedDb.organizationBillingSubscription.findUnique.mockResolvedValue({
@@ -189,8 +192,8 @@ describe('BillingEntitlementsService', () => {
       usedQuantity: 1,
       includedQuantity: 4,
       stripeSubscriptionItemId: 'si_1',
-      currentPeriodStart: new Date('2026-04-30T00:00:00.000Z'),
-      currentPeriodEnd: new Date('2026-05-30T00:00:00.000Z'),
+      currentPeriodStart: futurePeriodStart,
+      currentPeriodEnd: futurePeriodEnd,
     });
     tx.organizationBillingSubscription.updateMany.mockResolvedValue({
       count: 1,
@@ -226,7 +229,7 @@ describe('BillingEntitlementsService', () => {
         stripeStatus: 'active',
         usedQuantity: 1,
         includedQuantity: 1,
-        currentPeriodEnd: new Date('2026-05-30T00:00:00.000Z'),
+        currentPeriodEnd: futurePeriodEnd,
       },
     ]);
     mockedDb.billingUsageEvent.findFirst.mockResolvedValue({
@@ -256,7 +259,7 @@ describe('BillingEntitlementsService', () => {
         stripeStatus: 'active',
         usedQuantity: 0,
         includedQuantity: 1,
-        currentPeriodEnd: new Date('2026-05-30T00:00:00.000Z'),
+        currentPeriodEnd: futurePeriodEnd,
       },
     ]);
     mockedDb.organizationBillingSubscription.findUnique.mockResolvedValue({
@@ -266,8 +269,8 @@ describe('BillingEntitlementsService', () => {
       usedQuantity: 0,
       includedQuantity: 1,
       stripeSubscriptionItemId: 'si_1',
-      currentPeriodStart: new Date('2026-04-30T00:00:00.000Z'),
-      currentPeriodEnd: new Date('2026-05-30T00:00:00.000Z'),
+      currentPeriodStart: futurePeriodStart,
+      currentPeriodEnd: futurePeriodEnd,
     });
     tx.organizationBillingSubscription.updateMany.mockResolvedValue({
       count: 0,
@@ -296,8 +299,8 @@ describe('BillingEntitlementsService', () => {
       usedQuantity: 0,
       includedQuantity: 1,
       stripeSubscriptionItemId: 'si_1',
-      currentPeriodStart: new Date('2026-04-30T00:00:00.000Z'),
-      currentPeriodEnd: new Date('2026-05-30T00:00:00.000Z'),
+      currentPeriodStart: futurePeriodStart,
+      currentPeriodEnd: futurePeriodEnd,
     });
     tx.organizationBillingSubscription.updateMany.mockResolvedValue({
       count: 0,

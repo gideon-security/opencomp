@@ -59,7 +59,7 @@ model IsmsDocument {
   // Approval / sign-off (mirrors SOADocument). These track the WORKING DRAFT's
   // approval lifecycle; the published version's own approver/date live on the
   // IsmsDocumentVersion row (publishedBy/publishedAt).
-  preparedBy String    @default("Comp AI")
+  preparedBy String    @default("OpenComp")
   approverId String?
   approver   Member?   @relation("IsmsDocumentApprover", fields: [approverId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   approvedAt DateTime?
@@ -596,8 +596,8 @@ model IsmsAuditControl {
 
   controlRef    String // e.g. "Clause 4.1 Context" / "A.8.13 Backup"
   whatWasTested String // short description of what the control covers
-  // Pre-filled with a "Comp AI > ..." location; free text so the customer can
-  // point at an external location when evidence lives outside Comp AI.
+  // Pre-filled with a "OpenComp > ..." location; free text so the customer can
+  // point at an external location when evidence lives outside OpenComp.
   whereToFind   String
 
   // Null until the auditor records an outcome for the row.
@@ -765,8 +765,8 @@ model IsmsReviewInput {
 
   inputRef     String // e.g. "(a) Prior actions" / "(d.2) Monitoring results"
   whatItCovers String // what the ISO-mandated input covers (pre-filled, editable)
-  // Pre-filled with a "Comp AI > ..." location; free text so the customer can
-  // point at an external location when evidence lives outside Comp AI.
+  // Pre-filled with a "OpenComp > ..." location; free text so the customer can
+  // point at an external location when evidence lives outside OpenComp.
   whereToFind  String
 
   discussionNotes String? // filled during the meeting — the minutes for this input

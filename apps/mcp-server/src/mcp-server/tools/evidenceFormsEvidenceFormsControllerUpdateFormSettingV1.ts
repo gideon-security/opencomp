@@ -15,7 +15,7 @@ export const tool$evidenceFormsEvidenceFormsControllerUpdateFormSettingV1:
     name: "update-form-setting",
     description: `Update document relevance setting
 
-Update document relevance setting in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
+Update document relevance setting in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

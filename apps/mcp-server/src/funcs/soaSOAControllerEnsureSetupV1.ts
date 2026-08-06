@@ -24,7 +24,7 @@ import { Result } from "../types/fp.js";
  * Ensure SOA configuration and document exist
  *
  * @remarks
- * Ensure SOA configuration and document exist in Comp AI. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.
+ * Ensure SOA configuration and document exist in OpenComp. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

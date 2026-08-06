@@ -15,7 +15,7 @@ export const tool$cloudSecurityCloudSecurityControllerResolveGcpSetupStepV1:
     name: "resolve-gcp-setup-step",
     description: `Resolve a GCP setup step
 
-Resolve a GCP setup step in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
+Resolve a GCP setup step in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture results to compliance work.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

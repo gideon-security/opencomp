@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * Download macOS Device Agent
  *
  * @remarks
- * Downloads the Comp AI Device Agent installer for macOS as a DMG file. The agent helps monitor device compliance and security policies.
+ * Downloads the OpenComp Device Agent installer for macOS as a DMG file. The agent helps monitor device compliance and security policies.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

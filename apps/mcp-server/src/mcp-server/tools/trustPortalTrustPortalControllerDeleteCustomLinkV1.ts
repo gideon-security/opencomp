@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerDeleteCustomLinkV1:
     name: "delete-custom-link",
     description: `Delete a custom link
 
-Delete a custom link in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Delete a custom link in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -59,7 +59,7 @@ async function syncSingleContext(
   }
 
   // Delete old embeddings if they exist
-  await deleteOldEmbeddings(existingEmbeddings, { contextId: context.id });
+  await deleteOldEmbeddings(existingEmbeddings, { contextId: context.id }, organizationId);
 
   // Create new embeddings
   const contextText = `Question: ${context.question}\n\nAnswer: ${context.answer}`;

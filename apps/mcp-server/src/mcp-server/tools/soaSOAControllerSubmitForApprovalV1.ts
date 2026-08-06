@@ -16,7 +16,7 @@ export const tool$soaSOAControllerSubmitForApprovalV1: ToolDefinition<
   name: "submit-for-approval",
   description: `Submit SOA document for approval
 
-Submit SOA document for approval in Comp AI. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
+Submit SOA document for approval in OpenComp. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

@@ -49,7 +49,7 @@ const buildDocument = (
     id: 'doc_1',
     type: 'context_of_organization',
     title: 'Context Doc',
-    preparedBy: 'Comp AI',
+    preparedBy: 'OpenComp',
     framework: { name: 'ISO 27001' },
     organization: { name: 'Acme', primaryColor: '#004D3D' },
     approver: { user: { name: 'Jane', email: 'jane@acme.io' } },

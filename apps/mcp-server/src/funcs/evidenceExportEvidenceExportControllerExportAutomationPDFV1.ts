@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Export automation evidence as PDF
  *
  * @remarks
- * Export automation evidence as PDF in Comp AI. Export task evidence, automation evidence, and reviewer-ready evidence bundles as PDF or ZIP files.
+ * Export automation evidence as PDF in OpenComp. Export task evidence, automation evidence, and reviewer-ready evidence bundles as PDF or ZIP files.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

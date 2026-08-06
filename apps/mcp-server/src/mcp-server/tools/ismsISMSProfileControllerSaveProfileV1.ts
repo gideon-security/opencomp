@@ -18,7 +18,7 @@ export const tool$ismsISMSProfileControllerSaveProfileV1: ToolDefinition<
   name: "save-profile",
   description: `Save (partial) ISMS wizard answers
 
-Save (partial) ISMS wizard answers in Comp AI.`,
+Save (partial) ISMS wizard answers in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

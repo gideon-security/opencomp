@@ -277,7 +277,7 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
     mockGetMcpSession.mockResolvedValue({ userId: 'usr_4', scopes: 'openid' });
     mockUserFindUnique.mockResolvedValue({
       id: 'usr_4',
-      email: 'staff@trycomp.ai',
+      email: 'staff@gideondefender.com',
       role: 'admin',
     });
     mockMemberFindMany.mockResolvedValue([
@@ -298,7 +298,7 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
     mockGetMcpSession.mockResolvedValue({ userId: 'usr_pa', scopes: 'openid' });
     mockUserFindUnique.mockResolvedValue({
       id: 'usr_pa',
-      email: 'staff@trycomp.ai',
+      email: 'staff@gideondefender.com',
       role: 'admin',
     });
     mockMemberFindMany.mockResolvedValue([

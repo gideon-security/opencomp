@@ -9,7 +9,7 @@ jest.mock('@gideon-defender/email', () => ({
   isUserUnsubscribed: jest.fn().mockResolvedValue(false),
   getUnsubscribeUrl: jest
     .fn()
-    .mockReturnValue('https://app.trycomp.ai/unsubscribe'),
+    .mockReturnValue('https://app.gideondefender.com/unsubscribe'),
 }));
 
 jest.mock('../email/trigger-email', () => ({

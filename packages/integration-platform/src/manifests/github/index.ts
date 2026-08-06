@@ -19,7 +19,7 @@ export const manifest: IntegrationManifest = {
     'Connect GitHub to monitor repository security, branch protection, and organization settings.',
   category: 'Development',
   logoUrl: 'https://img.logo.dev/github.com?token=pk_AZatYxV5QDSfWpRDaBxzRQ',
-  docsUrl: 'https://docs.trycomp.ai/integrations/github',
+  docsUrl: 'https://docs.gideondefender.com/integrations/github',
 
   // API configuration for ctx.fetch helper
   baseUrl: 'https://api.github.com',

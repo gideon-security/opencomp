@@ -261,7 +261,7 @@ function buildOperationalSection(
   band: IsmsTeamSizeBand,
 ): IsmsExportSection {
   const intro =
-    'Operational responsibility for the ISMS is assigned at the level of individual artifacts. Comp AI records a named owner or assignee for every policy, control, risk, evidence task, and vendor; this constitutes the live, auditable responsibilities matrix.';
+    'Operational responsibility for the ISMS is assigned at the level of individual artifacts. OpenComp records a named owner or assignee for every policy, control, risk, evidence task, and vendor; this constitutes the live, auditable responsibilities matrix.';
 
   if (band === 'small') {
     return {
@@ -271,7 +271,7 @@ function buildOperationalSection(
         const owners =
           row.owners.length > 0
             ? row.owners.join(', ')
-            : 'assigned per item in Comp AI';
+            : 'assigned per item in OpenComp';
         return `${row.artifact}: ${owners}.`;
       }),
     };
@@ -323,9 +323,9 @@ export function buildRolesSections(
       ],
     },
     {
-      heading: 'Relationship to Comp AI application-access roles',
+      heading: 'Relationship to OpenComp application-access roles',
       intro:
-        'The Comp AI platform assigns application-access levels that determine access to the software only:',
+        'The OpenComp platform assigns application-access levels that determine access to the software only:',
       bullets: APPLICATION_ACCESS_LEVELS,
       paragraphs: [{ text: APPLICATION_ACCESS_NOTE }],
     },
@@ -346,7 +346,7 @@ export function buildRolesSections(
           text: `(b) Reporting on the performance of the ISMS to top management — assigned to the Security & Privacy Owner${spoHolders}, delivered at each management review and on material incidents or risk changes.`,
         },
         {
-          text: 'The authority to assign tasks and make decisions within the ISMS rests with top management, who assign it to the Security & Privacy Owner; the SPO in turn assigns operational ownership of individual controls, policies, risks, and tasks through Comp AI.',
+          text: 'The authority to assign tasks and make decisions within the ISMS rests with top management, who assign it to the Security & Privacy Owner; the SPO in turn assigns operational ownership of individual controls, policies, risks, and tasks through OpenComp.',
         },
       ],
     },
@@ -373,7 +373,7 @@ export function buildRolesSections(
     heading: 'Communication of roles',
     paragraphs: [
       {
-        text: 'Responsibilities and authorities are made known throughout the organisation through policy acknowledgement at onboarding and annually, the per-item owner assignments recorded in Comp AI, and the leadership communications captured in management reviews.',
+        text: 'Responsibilities and authorities are made known throughout the organisation through policy acknowledgement at onboarding and annually, the per-item owner assignments recorded in OpenComp, and the leadership communications captured in management reviews.',
       },
     ],
   });

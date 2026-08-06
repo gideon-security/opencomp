@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * List all roles
  *
  * @remarks
- * List all roles in Comp AI. Create custom roles and resolve permission sets for organization-level access control.
+ * List all roles in OpenComp. Create custom roles and resolve permission sets for organization-level access control.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

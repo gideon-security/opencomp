@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * List org-authored custom frameworks with their trust portal selection
  *
  * @remarks
- * List org-authored custom frameworks with their trust portal selection in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
+ * List org-authored custom frameworks with their trust portal selection in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

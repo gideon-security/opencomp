@@ -14,7 +14,7 @@ const metadata: IsmsExportMetadata = {
   standardLabel: 'ISO/IEC 27001:2022',
   frameworkName: 'ISO 27001',
   version: 2,
-  preparedBy: 'Comp AI',
+  preparedBy: 'OpenComp',
   owner: 'CISO',
   status: 'approved',
   approverName: 'Jane Approver',

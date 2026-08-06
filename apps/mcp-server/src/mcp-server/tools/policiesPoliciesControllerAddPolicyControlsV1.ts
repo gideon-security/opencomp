@@ -16,7 +16,7 @@ export const tool$policiesPoliciesControllerAddPolicyControlsV1: ToolDefinition<
   name: "add-policy-controls",
   description: `Map controls to a policy
 
-Map controls to a policy in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Map controls to a policy in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

@@ -16,7 +16,7 @@ export const tool$ismsISMSRegistersControllerUpdateRowV1: ToolDefinition<
   name: "update-row",
   description: `Update a row in an ISMS register
 
-Update a row in an ISMS register in Comp AI.`,
+Update a row in an ISMS register in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

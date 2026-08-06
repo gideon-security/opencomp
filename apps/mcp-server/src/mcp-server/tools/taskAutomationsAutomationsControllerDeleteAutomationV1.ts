@@ -15,7 +15,7 @@ export const tool$taskAutomationsAutomationsControllerDeleteAutomationV1:
     name: "delete-automation",
     description: `Delete an automation
 
-Delete an automation in Comp AI. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.`,
+Delete an automation in OpenComp. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

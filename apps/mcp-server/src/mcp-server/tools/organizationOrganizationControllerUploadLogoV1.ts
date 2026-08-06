@@ -10,7 +10,7 @@ export const tool$organizationOrganizationControllerUploadLogoV1:
     name: "upload-logo",
     description: `Upload organization logo
 
-Upload organization logo in Comp AI. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.`,
+Upload organization logo in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

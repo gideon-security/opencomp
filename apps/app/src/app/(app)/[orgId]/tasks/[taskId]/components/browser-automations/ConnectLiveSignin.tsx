@@ -119,7 +119,7 @@ export function ConnectLiveSignin({
         <div>
           <div className="text-base text-foreground">Connect to {host}</div>
           <div className="mt-0.5 text-xs text-muted-foreground">
-            Sign in once — Comp AI saves the session and re-logs in automatically.
+            Sign in once — OpenComp saves the session and re-logs in automatically.
           </div>
         </div>
         <button
@@ -222,7 +222,7 @@ export function ConnectLiveSignin({
             <div className="rounded-md border border-border p-3">
               <div className="mb-1 text-[12.5px] text-foreground">Finish sign-in yourself</div>
               <div className="mb-2.5 text-[11.5px] leading-normal text-muted-foreground">
-                Complete the sign-in in the live browser — Comp AI saves the session as
+                Complete the sign-in in the live browser — OpenComp saves the session as
                 usual. Then confirm.
               </div>
               <Button

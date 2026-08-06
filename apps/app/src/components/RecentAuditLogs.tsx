@@ -87,7 +87,7 @@ function LogRow({ log }: { log: AuditLogWithRelations }) {
           <Text as="span" size="sm" weight="medium">{userName}</Text>
           {log.user?.role === 'admin' && (
             <>
-              {' '}<Badge>Comp AI</Badge>
+              {' '}<Badge>OpenComp</Badge>
             </>
           )}
           {' '}

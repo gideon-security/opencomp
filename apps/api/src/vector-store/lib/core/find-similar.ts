@@ -4,7 +4,6 @@ import {
   batchGenerateEmbeddings,
 } from './generate-embedding';
 import { logger } from '../../logger';
-
 export interface SimilarContentResult {
   id: string;
   score: number;
@@ -71,6 +70,7 @@ export async function findSimilarContent(
     const results = await vectorIndex.query({
       vector: queryEmbedding,
       topK: MAX_TOP_K,
+      organizationId,
       includeMetadata: true,
       filter: `organizationId = "${organizationId}"`,
     });
@@ -82,18 +82,18 @@ export async function findSimilarContent(
       .filter((result) => result.score >= MIN_SIMILARITY_SCORE)
       .slice(0, MAX_RESULTS)
       .map((result): SimilarContentResult => {
-        const metadata = result.metadata as any;
+        const metadata = result.metadata;
         return {
           id: String(result.id),
           score: result.score,
-          content: metadata?.content || '',
+          content: metadata?.content ?? '',
           sourceType: (metadata?.sourceType ||
             'policy') as SimilarContentResult['sourceType'],
           sourceId: metadata?.sourceId || '',
-          policyName: metadata?.policyName,
-          contextQuestion: metadata?.contextQuestion,
-          documentName: metadata?.documentName,
-          manualAnswerQuestion: metadata?.manualAnswerQuestion,
+          policyName: metadata?.policyName ?? undefined,
+          contextQuestion: metadata?.contextQuestion ?? undefined,
+          documentName: metadata?.documentName ?? undefined,
+          manualAnswerQuestion: metadata?.manualAnswerQuestion ?? undefined,
         };
       });
 
@@ -180,6 +180,7 @@ export async function findSimilarContentBatch(
             vector: embedding,
             topK: MAX_TOP_K,
             includeMetadata: true,
+            organizationId,
             filter: `organizationId = "${organizationId}"`,
           });
           return { index, results };
@@ -205,18 +206,18 @@ export async function findSimilarContentBatch(
         .filter((result) => result.score >= MIN_SIMILARITY_SCORE)
         .slice(0, MAX_RESULTS)
         .map((result): SimilarContentResult => {
-          const metadata = result.metadata as any;
+          const metadata = result.metadata;
           return {
             id: String(result.id),
             score: result.score,
-            content: metadata?.content || '',
+            content: metadata?.content ?? '',
             sourceType: (metadata?.sourceType ||
               'policy') as SimilarContentResult['sourceType'],
             sourceId: metadata?.sourceId || '',
-            policyName: metadata?.policyName,
-            contextQuestion: metadata?.contextQuestion,
-            documentName: metadata?.documentName,
-            manualAnswerQuestion: metadata?.manualAnswerQuestion,
+            policyName: metadata?.policyName ?? undefined,
+            contextQuestion: metadata?.contextQuestion ?? undefined,
+            documentName: metadata?.documentName ?? undefined,
+            manualAnswerQuestion: metadata?.manualAnswerQuestion ?? undefined,
           };
         });
 

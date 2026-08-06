@@ -121,7 +121,7 @@ export function buildMonitoringSections(
     {
       heading: 'Metrics, responsibilities, and cadence',
       intro:
-        'For each metric the framework records what is measured, the method, the cadence, who monitors, who analyses, the target, and the current (most recent) value — as required by Clause 9.1(a)–(f). Measurement history is retained in Comp AI per metric and is exportable to CSV for auditor sampling.',
+        'For each metric the framework records what is measured, the method, the cadence, who monitors, who analyses, the target, and the current (most recent) value — as required by Clause 9.1(a)–(f). Measurement history is retained in OpenComp per metric and is exportable to CSV for auditor sampling.',
       emptyText: 'No active metrics recorded.',
       table: {
         headers: [
@@ -151,7 +151,7 @@ export function buildMonitoringSections(
           text: 'The Security & Privacy Owner consolidates the recorded measurements into a security performance report and evaluates each metric against its target. Where a metric is off-target, a corrective action is raised with an owner and a due date. The consolidated report is an input to the Management Review.',
         },
         {
-          text: 'Measurement results, analysis, and evaluation are retained as documented information in Comp AI to provide evidence of monitoring and to support audit sampling. Each measurement records the period it covers, the value, who entered it, and an immutable "recorded on" date.',
+          text: 'Measurement results, analysis, and evaluation are retained as documented information in OpenComp to provide evidence of monitoring and to support audit sampling. Each measurement records the period it covers, the value, who entered it, and an immutable "recorded on" date.',
         },
       ],
     },

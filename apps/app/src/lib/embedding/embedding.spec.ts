@@ -379,10 +379,10 @@ describe('pruneOrphanTaskVectors', () => {
     expect(queryMock).not.toHaveBeenCalled();
     // Deletes the orphan vectors by their prefixed embedding id — never the live one.
     expect(deleteMock).toHaveBeenCalledTimes(1);
-    expect(deleteMock).toHaveBeenCalledWith([
-      'task_org_1_tsk_orphan1',
-      'task_org_1_tsk_orphan2',
-    ]);
+    expect(deleteMock).toHaveBeenCalledWith(
+      ['task_org_1_tsk_orphan1', 'task_org_1_tsk_orphan2'],
+      'org_1',
+    );
     expect(result.deletedSourceIds).toEqual(['tsk_orphan1', 'tsk_orphan2']);
     expect(result.scanned).toBe(3);
   });
@@ -480,7 +480,7 @@ describe('pruneOrphanTaskVectors', () => {
 
     // The live vector is preserved; only the true orphan is deleted...
     expect(deleteMock).toHaveBeenCalledTimes(1);
-    expect(deleteMock).toHaveBeenCalledWith(['task_org_1_tsk_orphan']);
+    expect(deleteMock).toHaveBeenCalledWith(['task_org_1_tsk_orphan'], 'org_1');
     // ...and deletedSourceIds carries the RAW task id, so the caller's
     // embeddingHash clear targets a real row.
     expect(result.deletedSourceIds).toEqual(['tsk_orphan']);

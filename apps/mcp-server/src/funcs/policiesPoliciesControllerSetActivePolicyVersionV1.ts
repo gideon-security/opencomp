@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Set active policy version
  *
  * @remarks
- * Set active policy version in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
+ * Set active policy version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

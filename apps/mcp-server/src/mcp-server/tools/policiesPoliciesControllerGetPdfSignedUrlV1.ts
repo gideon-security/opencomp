@@ -16,7 +16,7 @@ export const tool$policiesPoliciesControllerGetPdfSignedUrlV1: ToolDefinition<
   name: "get-pdf-signed-url",
   description: `Get a signed URL for the policy PDF
 
-Get a signed URL for the policy PDF in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Get a signed URL for the policy PDF in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

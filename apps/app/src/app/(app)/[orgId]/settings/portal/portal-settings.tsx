@@ -45,7 +45,7 @@ export function PortalSettings({
       <SettingRow
         size="lg"
         label="Show Device Agent Step"
-        description="Employees will be asked to download and install Comp AI's device agent on their device."
+        description="Employees will be asked to download and install OpenComp's device agent on their device."
       >
         <Switch
           checked={deviceAgentStepEnabled}
@@ -63,7 +63,7 @@ export function PortalSettings({
       <SettingRow
         size="lg"
         label="Show Security Training Step"
-        description="Employees will be required to complete Comp AI's security awareness training videos."
+        description="Employees will be required to complete OpenComp's security awareness training videos."
       >
         <Switch
           checked={securityTrainingStepEnabled}

@@ -15,7 +15,7 @@ export const tool$securityPenetrationTestsSecurityPenetrationTestsControllerList
     name: "list",
     description: `List penetration test runs
 
-List penetration test runs in Comp AI. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF reports.`,
+List penetration test runs in OpenComp. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF reports.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

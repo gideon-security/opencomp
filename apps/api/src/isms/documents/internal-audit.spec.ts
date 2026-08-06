@@ -31,7 +31,7 @@ const audit: AuditExportRow = {
     {
       controlRef: 'Clause 9.1 Monitoring',
       whatWasTested: 'Whether info-security performance is being measured.',
-      whereToFind: 'Comp AI > ISMS > Monitoring',
+      whereToFind: 'OpenComp > ISMS > Monitoring',
       result: 'Non-conformity raised',
       notes: 'Three metrics overdue. See F-01.',
     },
@@ -267,7 +267,7 @@ describe('buildInternalAuditSections', () => {
       [
         'Clause 9.1 Monitoring',
         'Whether info-security performance is being measured.',
-        'Comp AI > ISMS > Monitoring',
+        'OpenComp > ISMS > Monitoring',
         'Non-conformity raised',
         'Three metrics overdue. See F-01.',
       ],

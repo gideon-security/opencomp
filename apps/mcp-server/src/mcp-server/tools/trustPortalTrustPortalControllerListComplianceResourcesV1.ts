@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerListComplianceResourcesV1:
     name: "list-compliance-resources",
     description: `List uploaded compliance certificates for the organization
 
-List uploaded compliance certificates for the organization in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+List uploaded compliance certificates for the organization in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

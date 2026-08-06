@@ -175,7 +175,7 @@ describe('corsOriginMiddleware', () => {
     jest.mocked(isTrustedOrigin).mockResolvedValue(true);
     const request = createRequest({
       method: 'GET',
-      origin: 'https://app.trycomp.ai',
+      origin: 'https://app.gideondefender.com',
       path: '/v1/controls',
     });
     const response = createResponse();
@@ -185,7 +185,7 @@ describe('corsOriginMiddleware', () => {
     await flushPromises();
 
     expect(response.headers['Access-Control-Allow-Origin']).toBe(
-      'https://app.trycomp.ai',
+      'https://app.gideondefender.com',
     );
     expect(response.varied).toContain('Origin');
     expect(next).toHaveBeenCalled();
@@ -195,7 +195,7 @@ describe('corsOriginMiddleware', () => {
     jest.mocked(isTrustedOrigin).mockResolvedValue(true);
     const request = createRequest({
       method: 'OPTIONS',
-      origin: 'https://app.trycomp.ai',
+      origin: 'https://app.gideondefender.com',
       path: '/v1/controls',
       requestedMethod: 'GET',
     });

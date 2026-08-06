@@ -16,7 +16,7 @@ export const tool$cloudSecurityCloudSecurityControllerGetCheckDefinitionV1:
     description:
       `Resolve the "About this check" description for a finding (AI-cached for AWS; provider-derived for GCP/Azure)
 
-Resolve the "About this check" description for a finding (AI-cached for AWS; provider-derived for GCP/Azure) in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture.`,
+Resolve the "About this check" description for a finding (AI-cached for AWS; provider-derived for GCP/Azure) in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

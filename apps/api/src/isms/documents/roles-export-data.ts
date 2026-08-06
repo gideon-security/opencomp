@@ -96,33 +96,33 @@ export async function loadRolesExtras({
   const operationalOwnership: OperationalOwnershipRow[] = [
     {
       artifact: 'Policies',
-      assignedWhere: 'Policy assignee / approver in Comp AI',
+      assignedWhere: 'Policy assignee / approver in OpenComp',
       ownerResponsibility:
         'Keep the policy current and accurate; ensure required acknowledgement.',
       owners: dedupeOwners(policies),
     },
     {
       artifact: 'Controls',
-      assignedWhere: 'Control owner in Comp AI',
+      assignedWhere: 'Control owner in OpenComp',
       ownerResponsibility: 'Implement, operate, and evidence the control.',
       owners: [],
     },
     {
       artifact: 'Risks',
-      assignedWhere: 'Risk owner in Comp AI',
+      assignedWhere: 'Risk owner in OpenComp',
       ownerResponsibility:
         'Assess, treat, and monitor the risk within the risk appetite.',
       owners: dedupeOwners(risks),
     },
     {
       artifact: 'Evidence tasks',
-      assignedWhere: 'Task assignee in Comp AI',
+      assignedWhere: 'Task assignee in OpenComp',
       ownerResponsibility: 'Complete and evidence the task by its due date.',
       owners: dedupeOwners(tasks),
     },
     {
       artifact: 'Vendors / sub-processors',
-      assignedWhere: 'Vendor owner in Comp AI',
+      assignedWhere: 'Vendor owner in OpenComp',
       ownerResponsibility:
         'Perform due diligence and ongoing security review; maintain the DPA.',
       owners: dedupeOwners(vendors),

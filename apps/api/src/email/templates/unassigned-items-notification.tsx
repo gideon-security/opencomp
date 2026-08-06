@@ -56,7 +56,7 @@ export const UnassignedItemsNotificationEmail = ({
 }: Props) => {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL
     ?? process.env.BETTER_AUTH_URL
-    ?? 'https://app.trycomp.ai';
+    ?? 'https://app.gideondefender.com';
   const link = `${baseUrl}/${organizationId}`;
 
   const groupedItems = unassignedItems.reduce(

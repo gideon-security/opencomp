@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Send training completion email with certificate
  *
  * @remarks
- * Send training completion email with certificate in Comp AI. Record security awareness and HIPAA training completion status and generate completion certificates.
+ * Send training completion email with certificate in OpenComp. Record security awareness and HIPAA training completion status and generate completion certificates.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

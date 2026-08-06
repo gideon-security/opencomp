@@ -80,7 +80,7 @@ export function ConnectMethodChooser({ analysis, onChoose, onCancel }: ConnectMe
           </span>
           <div className="text-[13px] text-foreground">This site only supports passkey sign-in</div>
           <p className="max-w-[320px] text-[11.5px] leading-relaxed text-muted-foreground">
-            Passkeys are bound to your device, so Comp AI&apos;s cloud browser can&apos;t sign
+            Passkeys are bound to your device, so OpenComp&apos;s cloud browser can&apos;t sign
             in unattended. Ask the vendor to enable a password or SSO login — or capture this
             evidence manually.
           </p>
@@ -179,7 +179,7 @@ export function ConnectMethodChooser({ analysis, onChoose, onCancel }: ConnectMe
           </span>
           <span>
             This site also offers passkey / security key sign-in. Passkeys are tied to your
-            device, so they won&apos;t work in Comp AI&apos;s browser — use email &amp; password,
+            device, so they won&apos;t work in OpenComp&apos;s browser — use email &amp; password,
             or finish the SSO login when prompted.
           </span>
         </div>

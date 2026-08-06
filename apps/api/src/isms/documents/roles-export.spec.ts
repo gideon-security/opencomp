@@ -48,7 +48,7 @@ const INPUT: DocumentExportInput = {
   operationalOwnership: [
     {
       artifact: 'Policies',
-      assignedWhere: 'Policy assignee in Comp AI',
+      assignedWhere: 'Policy assignee in OpenComp',
       ownerResponsibility: 'Keep it current.',
       owners: ['Alice'],
     },
@@ -63,7 +63,7 @@ function metadata() {
     frameworkName: 'ISO 27001',
     version: 1,
     status: 'approved',
-    preparedBy: 'Comp AI',
+    preparedBy: 'OpenComp',
     owner: null,
     approverName: 'Raoul Plickat',
     approvedAt: new Date('2026-05-26T00:00:00.000Z'),

@@ -10,7 +10,7 @@ export const tool$peoplePeopleControllerGetTestStatsByAssigneeV1:
     name: "get-test-stats-by-assignee",
     description: `Get integration test statistics grouped by assignee
 
-Get integration test statistics grouped by assignee in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
+Get integration test statistics grouped by assignee in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

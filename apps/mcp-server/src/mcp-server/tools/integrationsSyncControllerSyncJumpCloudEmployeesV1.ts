@@ -15,7 +15,7 @@ export const tool$integrationsSyncControllerSyncJumpCloudEmployeesV1:
     name: "sync-jump-cloud-employees",
     description: `Sync JumpCloud employees
 
-Sync JumpCloud employees in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Sync JumpCloud employees in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -15,7 +15,7 @@ const DATA_VALIDATIONS_BLOCK_RE =
  * ExcelJS registers each validation on every individual cell of its sqref
  * range, so a template with a whole-sheet range — e.g. HECVAT Full ships
  * "N1:XFD1048576" ≈ 17 billion cells — blocks the event loop until the
- * process is killed (incident 2026-07-16, api.trycomp.ai outage).
+ * process is killed (incident 2026-07-16, api.gideondefender.com outage).
  * Validations only hold dropdown rules and prompts, never cell text, so
  * removing them cannot change extracted content.
  *

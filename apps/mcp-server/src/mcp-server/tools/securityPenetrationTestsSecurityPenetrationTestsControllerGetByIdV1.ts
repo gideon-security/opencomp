@@ -15,7 +15,7 @@ export const tool$securityPenetrationTestsSecurityPenetrationTestsControllerGetB
     name: "get-by-id",
     description: `Get penetration test status
 
-Get penetration test status in Comp AI. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF reports.`,
+Get penetration test status in OpenComp. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF reports.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

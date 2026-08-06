@@ -34,7 +34,7 @@ const catSections = Object.keys(byCat)
 
 const readme = `# CompAI Integrations Catalog
 
-Public catalog of all compliance integrations available in the [CompAI](https://trycomp.ai) platform.
+Public catalog of all compliance integrations available in the [CompAI](https://gideondefender.com) platform.
 
 **${total} integrations** across ${Object.keys(byCategory).length} categories.
 
@@ -62,7 +62,7 @@ Implementation details are intentionally excluded:
 ## How to read a definition
 
 \`\`\`bash
-curl https://raw.githubusercontent.com/trycompai/comp/main/integrations-catalog/integrations/axonius.json | jq
+curl https://raw.githubusercontent.com/gideon-security/opencomp/main/integrations-catalog/integrations/axonius.json | jq
 \`\`\`
 
 ## Summary by category

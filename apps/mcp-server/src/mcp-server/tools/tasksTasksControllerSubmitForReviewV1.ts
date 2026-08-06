@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerSubmitForReviewV1: ToolDefinition<
   name: "submit-for-review",
   description: `Submit task for review
 
-Submit task for review in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Submit task for review in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

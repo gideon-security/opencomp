@@ -15,7 +15,7 @@ export const tool$integrationsTaskIntegrationsControllerReconnectCheckToTaskV1:
     name: "reconnect-check-to-task",
     description: `Reconnect checks to a task
 
-Reconnect checks to a task in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Reconnect checks to a task in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

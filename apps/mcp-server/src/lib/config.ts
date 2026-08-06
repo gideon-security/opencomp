@@ -15,7 +15,7 @@ export const ServerList = [
   /**
    * Production API Server
    */
-  "https://api.trycomp.ai",
+  "https://api.gideondefender.com",
 ] as const;
 
 export type SDKOptions = {

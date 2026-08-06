@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * List knowledge base documents
  *
  * @remarks
- * List uploaded knowledge base documents that Comp AI can use as approved source material for answers, policies, and reviews.
+ * List uploaded knowledge base documents that OpenComp can use as approved source material for answers, policies, and reviews.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

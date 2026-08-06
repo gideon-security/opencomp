@@ -1,6 +1,6 @@
 {
   "name": "@gideon-defender/kv",
-  "description": "Key-value store utilities backed by Redis for Comp AI",
+  "description": "Key-value store utilities backed by Redis for OpenComp",
   "version": "1.0.0",
   "dependencies": {
     "ioredis": "^5.4.1",

@@ -15,7 +15,7 @@ export const tool$deviceAgentDeviceAgentControllerRegisterDeviceV1:
     name: "register-device",
     description: `Register device agent
 
-Register a Comp AI Device Agent installation so employee endpoint checks can report into compliance tasks and device inventory.`,
+Register a OpenComp Device Agent installation so employee endpoint checks can report into compliance tasks and device inventory.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -10,7 +10,7 @@ describe('parseApiResponse', () => {
 
     const parsed = await parseApiResponse<{ status: string }>(
       response,
-      'https://api.trycomp.ai/v1/cloud-security/remediation/execute',
+      'https://api.gideondefender.com/v1/cloud-security/remediation/execute',
     );
 
     expect(parsed.ok).toBe(true);

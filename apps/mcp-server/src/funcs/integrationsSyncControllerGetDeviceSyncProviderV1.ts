@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * Get the currently configured device sync provider
  *
  * @remarks
- * Get the currently configured device sync provider in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.
+ * Get the currently configured device sync provider in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

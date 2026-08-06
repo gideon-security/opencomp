@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Resolve the "About this check" description for a finding (AI-cached for AWS; provider-derived for GCP/Azure)
  *
  * @remarks
- * Resolve the "About this check" description for a finding (AI-cached for AWS; provider-derived for GCP/Azure) in Comp AI. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture.
+ * Resolve the "About this check" description for a finding (AI-cached for AWS; provider-derived for GCP/Azure) in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture.
  */
 export function cloudSecurityCloudSecurityControllerGetCheckDefinitionV1(
   client$: CompAiCore,

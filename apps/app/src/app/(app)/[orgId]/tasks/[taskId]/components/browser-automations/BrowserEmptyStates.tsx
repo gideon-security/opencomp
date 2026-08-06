@@ -41,7 +41,7 @@ export function NoContextState({ isStartingAuth, onConnect }: NoContextStateProp
             Browser Automations
           </h2>
           <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
-            When a vendor has no integration, Comp AI signs in to its website on a schedule and
+            When a vendor has no integration, OpenComp signs in to its website on a schedule and
             captures a screenshot as audit evidence.
           </p>
 

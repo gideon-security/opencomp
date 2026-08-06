@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get tasks that serve as evidence for a policy, grouped by control
  *
  * @remarks
- * Get tasks that serve as evidence for a policy, grouped by control in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
+ * Get tasks that serve as evidence for a policy, grouped by control in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

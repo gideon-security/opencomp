@@ -23,7 +23,7 @@ import { Result } from "../types/fp.js";
  * Enable or disable the trust portal
  *
  * @remarks
- * Enable or disable the trust portal in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
+ * Enable or disable the trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

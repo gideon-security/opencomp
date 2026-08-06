@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get penetration test output
  *
  * @remarks
- * Get penetration test output in Comp AI. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF reports.
+ * Get penetration test output in OpenComp. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF reports.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

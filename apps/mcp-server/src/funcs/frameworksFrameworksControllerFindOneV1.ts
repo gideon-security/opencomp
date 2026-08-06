@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Get a single framework instance with full detail
  *
  * @remarks
- * Get a single framework instance with full detail in Comp AI. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
+ * Get a single framework instance with full detail in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
  */
 export function frameworksFrameworksControllerFindOneV1(
   client$: CompAiCore,

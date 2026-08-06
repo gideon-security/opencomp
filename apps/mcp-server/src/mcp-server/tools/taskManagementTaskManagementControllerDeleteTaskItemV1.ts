@@ -15,7 +15,7 @@ export const tool$taskManagementTaskManagementControllerDeleteTaskItemV1:
     name: "delete-task-item",
     description: `Delete a task item
 
-Delete a task item in Comp AI. Manage task items and attachments linked to operational entities such as risks and vendors.`,
+Delete a task item in OpenComp. Manage task items and attachments linked to operational entities such as risks and vendors.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

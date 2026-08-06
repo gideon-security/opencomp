@@ -15,7 +15,7 @@ export const tool$evidenceExportEvidenceExportControllerExportAutomationPDFV1:
     name: "export-automation-pdf",
     description: `Export automation evidence as PDF
 
-Export automation evidence as PDF in Comp AI. Export task evidence, automation evidence, and reviewer-ready evidence bundles as PDF or ZIP files.`,
+Export automation evidence as PDF in OpenComp. Export task evidence, automation evidence, and reviewer-ready evidence bundles as PDF or ZIP files.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -14,7 +14,7 @@ export const SEED_METRIC_DEFINITIONS: SeedMetricDefinition[] = [
     whatIsMeasured:
       'Percentage of workforce members who have completed their assigned security-awareness training.',
     method:
-      'Comp AI training tracker: completed assignments over total assigned, per campaign with monthly follow-up.',
+      'OpenComp training tracker: completed assignments over total assigned, per campaign with monthly follow-up.',
     cadence: 'monthly',
     target: '95% completion or above',
   },
@@ -24,7 +24,7 @@ export const SEED_METRIC_DEFINITIONS: SeedMetricDefinition[] = [
     whatIsMeasured:
       'Percentage of critical vendors with an in-date security review and a signed DPA.',
     method:
-      'Comp AI vendor register: critical vendors with a review inside its window and a signed DPA, over all critical vendors.',
+      'OpenComp vendor register: critical vendors with a review inside its window and a signed DPA, over all critical vendors.',
     cadence: 'quarterly',
     target: '100% of critical vendors current',
   },
@@ -34,7 +34,7 @@ export const SEED_METRIC_DEFINITIONS: SeedMetricDefinition[] = [
     whatIsMeasured:
       'Count of open audit findings and the age of each open corrective action.',
     method:
-      'Corrective-action records in Comp AI: open findings and days since each was raised, against its due date.',
+      'Corrective-action records in OpenComp: open findings and days since each was raised, against its due date.',
     cadence: 'monthly',
     target: 'No corrective action open beyond its due date',
   },
@@ -44,7 +44,7 @@ export const SEED_METRIC_DEFINITIONS: SeedMetricDefinition[] = [
     whatIsMeasured:
       'Progress of risk treatment plans across the risk register.',
     method:
-      'Comp AI risk register: risks by treatment status, highlighting high and critical risks without an active plan.',
+      'OpenComp risk register: risks by treatment status, highlighting high and critical risks without an active plan.',
     cadence: 'quarterly',
     target: 'All high and critical risks under active treatment',
   },
@@ -54,7 +54,7 @@ export const SEED_METRIC_DEFINITIONS: SeedMetricDefinition[] = [
     whatIsMeasured:
       'Percentage of workforce members who have acknowledged all policies assigned to them.',
     method:
-      'Comp AI policy tracker: members with all assigned policies acknowledged, over all members with assignments.',
+      'OpenComp policy tracker: members with all assigned policies acknowledged, over all members with assignments.',
     cadence: 'quarterly',
     target: '95% acknowledgement coverage or above',
   },

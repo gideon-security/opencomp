@@ -11,7 +11,7 @@ export const tool$trustPortalTrustPortalControllerListCustomFrameworksV1:
     description:
       `List org-authored custom frameworks with their trust portal selection
 
-List org-authored custom frameworks with their trust portal selection in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+List org-authored custom frameworks with their trust portal selection in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

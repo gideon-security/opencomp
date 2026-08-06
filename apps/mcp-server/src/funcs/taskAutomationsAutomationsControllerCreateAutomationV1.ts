@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Create evidence automation
  *
  * @remarks
- * Create an automated evidence workflow attached to a task so Comp AI can collect recurring proof from connected systems.
+ * Create an automated evidence workflow attached to a task so OpenComp can collect recurring proof from connected systems.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

@@ -620,7 +620,7 @@ function CloudSetup({
         {/* ─── Left: Unified setup flow ─── */}
         <div className="rounded-xl border bg-background shadow-sm">
           {/* Step 1 — AWS only — Scan engine choice. Mutually exclusive
-              between Comp AI scanners (default) and AWS Security Hub.
+              between OpenComp scanners (default) and AWS Security Hub.
               Customers can switch later from CloudSettingsModal. */}
           {provider.id === 'aws' && (
             <div className="p-6 space-y-4">

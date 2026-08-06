@@ -8,7 +8,7 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "setupInstructions": "1. Create an app at https://developer.xero.com/app/manage\n2. Set redirect URI to: https://api.trycomp.ai/v1/integrations/oauth/callback\n3. Copy Client ID and Secret\n4. After connecting, enter your Xero Tenant/Organization ID (found in Xero settings URL)",
+      "setupInstructions": "1. Create an app at https://developer.xero.com/app/manage\n2. Set redirect URI to: https://api.gideondefender.com/v1/integrations/oauth/callback\n3. Copy Client ID and Secret\n4. After connecting, enter your Xero Tenant/Organization ID (found in Xero settings URL)",
       "scopes": [
         "openid",
         "profile",

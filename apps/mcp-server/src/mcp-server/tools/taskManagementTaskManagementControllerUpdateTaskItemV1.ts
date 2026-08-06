@@ -15,7 +15,7 @@ export const tool$taskManagementTaskManagementControllerUpdateTaskItemV1:
     name: "update-task-item",
     description: `Update a task item
 
-Update a task item in Comp AI. Manage task items and attachments linked to operational entities such as risks and vendors.`,
+Update a task item in OpenComp. Manage task items and attachments linked to operational entities such as risks and vendors.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

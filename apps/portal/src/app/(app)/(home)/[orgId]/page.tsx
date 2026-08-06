@@ -60,7 +60,7 @@ export default async function OrganizationPage({ params }: { params: Promise<{ o
   if (!canAccessPortal) {
     return (
       <PageLayout>
-        <PageHeader title="Comp AI - Employee Portal" />
+        <PageHeader title="OpenComp - Employee Portal" />
         <NoAccessMessage message="Your role does not include employee portal access. Ask your administrator to add the employee role to your account." />
       </PageLayout>
     );
@@ -80,7 +80,7 @@ export default async function OrganizationPage({ params }: { params: Promise<{ o
 
   return (
     <PageLayout>
-      <PageHeader title="Comp AI - Employee Portal" />
+      <PageHeader title="OpenComp - Employee Portal" />
       <OrganizationDashboard
         key={orgId}
         organizationId={orgId}

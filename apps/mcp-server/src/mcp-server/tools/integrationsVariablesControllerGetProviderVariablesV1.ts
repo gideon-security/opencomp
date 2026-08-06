@@ -15,7 +15,7 @@ export const tool$integrationsVariablesControllerGetProviderVariablesV1:
     name: "get-provider-variables",
     description: `List variable definitions for a provider
 
-List variable definitions for a provider in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+List variable definitions for a provider in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

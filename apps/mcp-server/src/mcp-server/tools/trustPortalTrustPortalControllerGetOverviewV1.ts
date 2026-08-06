@@ -16,7 +16,7 @@ export const tool$trustPortalTrustPortalControllerGetOverviewV1: ToolDefinition<
   name: "get-overview",
   description: `Get trust portal overview
 
-Get trust portal overview in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+Get trust portal overview in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

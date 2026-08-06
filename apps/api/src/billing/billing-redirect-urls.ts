@@ -3,8 +3,8 @@ import { BadRequestException } from '@nestjs/common';
 const allowedHosts = new Set([
   'localhost',
   '127.0.0.1',
-  'app.trycomp.ai',
-  'app.staging.trycomp.ai',
+  'app.gideondefender.com',
+  'app.staging.gideondefender.com',
 ]);
 const localDevelopmentHosts = new Set(['localhost', '127.0.0.1']);
 

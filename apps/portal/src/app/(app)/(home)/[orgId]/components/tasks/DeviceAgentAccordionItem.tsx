@@ -184,7 +184,7 @@ export function DeviceAgentAccordionItem({
         <AccordionContent>
           <div className="px-4 pb-4 space-y-4">
             <p className="text-sm">
-              Installing Comp AI Device Agent helps you and your security administrator keep your
+              Installing OpenComp Device Agent helps you and your security administrator keep your
               device protected against security threats.
             </p>
 
@@ -300,7 +300,7 @@ export function DeviceAgentAccordionItem({
                   </div>
                 </li>
                 <li>
-                  <strong>Install the Comp AI Device Agent</strong>
+                  <strong>Install the OpenComp Device Agent</strong>
                   <p className="mt-1">
                     {isMacOS
                       ? 'Double-click the downloaded DMG file and follow the installation instructions.'
@@ -350,13 +350,13 @@ export function DeviceAgentAccordionItem({
                   <AccordionItem value="about">
                     <div className="px-4">
                       <AccordionTrigger>
-                        <span className="text-base">About Comp AI Device Monitor</span>
+                        <span className="text-base">About OpenComp Device Monitor</span>
                       </AccordionTrigger>
                     </div>
                     <AccordionContent>
                       <div className="px-4 pb-4 text-muted-foreground space-y-2 text-sm">
                         <p>
-                          Comp AI Device Monitor is a lightweight agent that helps ensure your device
+                          OpenComp Device Monitor is a lightweight agent that helps ensure your device
                           meets security compliance requirements.
                         </p>
                         <p>
@@ -364,7 +364,7 @@ export function DeviceAgentAccordionItem({
                           help maintain a secure work environment.
                         </p>
                         <p>
-                          <strong>Security powered by Comp AI:</strong> Your organization uses Comp AI to
+                          <strong>Security powered by OpenComp:</strong> Your organization uses OpenComp to
                           maintain security and compliance standards.
                         </p>
                         <p className="text-xs">If you have questions, contact your IT administrator.</p>

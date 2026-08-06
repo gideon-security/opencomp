@@ -30,7 +30,7 @@ import { Result } from "../types/fp.js";
  * Get sync history for a framework instance
  *
  * @remarks
- * Get sync history for a framework instance in Comp AI. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
+ * Get sync history for a framework instance in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.
  */
 export function frameworksFrameworksControllerGetSyncHistoryV1(
   client$: CompAiCore,

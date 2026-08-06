@@ -16,7 +16,7 @@ export const tool$soaSOAControllerDeclineDocumentV1: ToolDefinition<
   name: "decline-document",
   description: `Decline a SOA document
 
-Decline a SOA document in Comp AI. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
+Decline a SOA document in OpenComp. Create, auto-fill, review, approve, and export ISO 27001 Statement of Applicability documents.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

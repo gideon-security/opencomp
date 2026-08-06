@@ -34,7 +34,7 @@ function getEnterpriseConfig() {
 
   if (!enterpriseApiKey) {
     throw new EnterpriseApiError(
-      'Task automations require an enterprise license. Please contact sales@trycomp.ai to learn more.',
+      'Task automations require an enterprise license. Please contact sales@gideondefender.com to learn more.',
       403,
     );
   }

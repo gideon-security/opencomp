@@ -10,7 +10,7 @@ export const tool$integrationsSyncControllerGetRipplingStatusV1:
     name: "get-rippling-status",
     description: `Get Rippling sync status
 
-Get Rippling sync status in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Get Rippling sync status in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

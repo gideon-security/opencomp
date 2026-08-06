@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerUpdateTasksStatusV1: ToolDefinition<
   name: "update-tasks-status",
   description: `Update status for multiple tasks
 
-Update status for multiple tasks in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Update status for multiple tasks in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

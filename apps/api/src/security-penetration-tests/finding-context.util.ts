@@ -78,7 +78,7 @@ export function buildAdditionalContext(params: {
     const lines = noteLines.slice(0, includedCount);
     if (omitted > 0) {
       lines.push(
-        `(${omitted} more note${omitted === 1 ? '' : 's'} omitted for length — see the finding context notes in Comp AI)`,
+        `(${omitted} more note${omitted === 1 ? '' : 's'} omitted for length — see the finding context notes in OpenComp)`,
       );
     }
     const sections = userSection ? [userSection] : [];

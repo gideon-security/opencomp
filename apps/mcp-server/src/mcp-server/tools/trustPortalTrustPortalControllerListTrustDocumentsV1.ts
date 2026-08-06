@@ -15,7 +15,7 @@ export const tool$trustPortalTrustPortalControllerListTrustDocumentsV1:
     name: "list-trust-documents",
     description: `List additional trust portal documents for the organization
 
-List additional trust portal documents for the organization in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
+List additional trust portal documents for the organization in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

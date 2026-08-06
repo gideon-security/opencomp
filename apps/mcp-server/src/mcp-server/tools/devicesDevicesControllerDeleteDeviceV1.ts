@@ -16,7 +16,7 @@ export const tool$devicesDevicesControllerDeleteDeviceV1: ToolDefinition<
   name: "delete-device",
   description: `Delete device
 
-Delete device in Comp AI. Read and manage employee device inventory and Fleet compliance data used for endpoint security controls.`,
+Delete device in OpenComp. Read and manage employee device inventory and Fleet compliance data used for endpoint security controls.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

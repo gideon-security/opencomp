@@ -15,7 +15,7 @@ export const tool$taskAutomationsAutomationsControllerGetTaskAutomationRunsV1:
     name: "get-task-automation-runs",
     description: `Get all automation runs for a task
 
-Get all automation runs for a task in Comp AI. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.`,
+Get all automation runs for a task in OpenComp. Create, version, run, and inspect automated evidence collection workflows attached to compliance tasks.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

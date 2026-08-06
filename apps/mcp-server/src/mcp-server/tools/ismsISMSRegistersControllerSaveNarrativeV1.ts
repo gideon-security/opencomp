@@ -16,7 +16,7 @@ export const tool$ismsISMSRegistersControllerSaveNarrativeV1: ToolDefinition<
   name: "save-narrative",
   description: `Save a singleton document narrative
 
-Save a singleton document narrative in Comp AI.`,
+Save a singleton document narrative in OpenComp.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

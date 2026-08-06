@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerUpdateTasksAssigneeV1: ToolDefinition<
   name: "update-tasks-assignee",
   description: `Update assignee for multiple tasks
 
-Update assignee for multiple tasks in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Update assignee for multiple tasks in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

@@ -15,7 +15,7 @@ export const tool$policiesPoliciesControllerSetActivePolicyVersionV1:
     name: "set-active-policy-version",
     description: `Set active policy version
 
-Set active policy version in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Set active policy version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

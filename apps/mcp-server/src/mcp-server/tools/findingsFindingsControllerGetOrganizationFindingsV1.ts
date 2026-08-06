@@ -16,7 +16,7 @@ export const tool$findingsFindingsControllerGetOrganizationFindingsV1:
     name: "get-organization-findings",
     description: `List all findings for the organization
 
-List all findings for the organization in Comp AI. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.`,
+List all findings for the organization in OpenComp. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

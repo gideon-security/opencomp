@@ -14,7 +14,7 @@ export const tool$cloudSecurityCloudSecurityControllerUpdateAwsScanModeV1:
   ToolDefinition<typeof args> = {
     name: "update-aws-scan-mode",
     description:
-      `Switch the AWS scan engine for a connection (Comp AI scanners ↔ Security Hub)
+      `Switch the AWS scan engine for a connection (OpenComp scanners ↔ Security Hub)
 
 Accepts session, API key, or service token auth. For API key / service token callers without an explicit user attribution, the action is attributed to the org's owner.`,
     annotations: {

@@ -15,7 +15,7 @@ export const tool$evidenceFormsEvidenceFormsControllerGetFormStatusesV1:
     name: "get-form-statuses",
     description: `Get submission statuses for all forms
 
-Get submission statuses for all forms in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
+Get submission statuses for all forms in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

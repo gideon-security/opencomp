@@ -7,10 +7,10 @@ interface RunRow {
 }
 
 const ROWS: RunRow[] = [
-  { id: 'PT-0042', target: 'app.staging.trycomp.ai', when: '2 min ago', state: 'running', count: 7 },
-  { id: 'PT-0041', target: 'app.trycomp.ai', when: 'Apr 22', state: 'completed', count: 6 },
-  { id: 'PT-0040', target: 'api.trycomp.ai', when: 'Apr 20', state: 'completed', count: 3 },
-  { id: 'PT-0038', target: 'app.trycomp.ai', when: 'Apr 17', state: 'clean', count: 0 },
+  { id: 'PT-0042', target: 'app.staging.gideondefender.com', when: '2 min ago', state: 'running', count: 7 },
+  { id: 'PT-0041', target: 'app.gideondefender.com', when: 'Apr 22', state: 'completed', count: 6 },
+  { id: 'PT-0040', target: 'api.gideondefender.com', when: 'Apr 20', state: 'completed', count: 3 },
+  { id: 'PT-0038', target: 'app.gideondefender.com', when: 'Apr 17', state: 'clean', count: 0 },
 ];
 
 /**

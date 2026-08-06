@@ -24,7 +24,7 @@ on:
 jobs:
   unit-tests:
     name: Unit Tests
-    runs-on: warp-ubuntu-latest-arm64-4x
+    runs-on: ubuntu-latest
     timeout-minutes: 10
 
     strategy:

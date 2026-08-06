@@ -16,7 +16,7 @@ export const tool$orgChartOrgChartControllerDeleteOrgChartV1: ToolDefinition<
   name: "delete-org-chart",
   description: `Delete the organization chart
 
-Delete the organization chart in Comp AI. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.`,
+Delete the organization chart in OpenComp. Manage organization chart metadata and evidence used for governance, accountability, and audit readiness.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

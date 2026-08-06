@@ -15,7 +15,7 @@ export function EmptyState({ type }: Props) {
           <div className="flex flex-col items-center">
             <h3 className="text-lg font-semibold text-foreground">No Integration Yet</h3>
             <p className="text-sm text-muted-foreground">
-              Chat with the Comp AI agent to build your integration.
+              Chat with the OpenComp agent to build your integration.
             </p>
           </div>
         </div>

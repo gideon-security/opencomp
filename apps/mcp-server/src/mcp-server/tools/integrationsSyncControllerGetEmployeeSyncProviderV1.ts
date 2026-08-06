@@ -10,7 +10,7 @@ export const tool$integrationsSyncControllerGetEmployeeSyncProviderV1:
     name: "get-employee-sync-provider",
     description: `Get the currently configured employee sync provider
 
-Get the currently configured employee sync provider in Comp AI. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
+Get the currently configured employee sync provider in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

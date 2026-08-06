@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get training video completions for a member
  *
  * @remarks
- * Get training video completions for a member in Comp AI. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.
+ * Get training video completions for a member in OpenComp. Invite and manage workforce members, training status, device compliance, email preferences, and employee evidence records.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

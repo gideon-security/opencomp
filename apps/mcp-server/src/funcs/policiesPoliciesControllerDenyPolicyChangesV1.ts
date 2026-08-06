@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Deny pending policy changes
  *
  * @remarks
- * Deny pending policy changes in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
+ * Deny pending policy changes in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

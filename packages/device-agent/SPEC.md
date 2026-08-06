@@ -1,4 +1,4 @@
-# Comp AI Device Agent -- Technical Specification
+# OpenComp Device Agent -- Technical Specification
 
 > Canonical reference for the device compliance system.
 > Last updated: February 2026
@@ -26,7 +26,7 @@
 
 ## 1. Overview and Motivation
 
-The Comp AI Device Agent is a custom Electron-based system tray application that replaces the previous FleetDM-based device compliance system.
+The OpenComp Device Agent is a custom Electron-based system tray application that replaces the previous FleetDM-based device compliance system.
 
 ### Why the change
 
@@ -654,7 +654,7 @@ flowchart LR
 
 ### Auto-updates
 
-The packaged app includes `electron-updater` which checks for new GitHub releases on startup. The `publish` config in `electron-builder.yml` points to `trycompai/comp` on GitHub.
+The packaged app includes `electron-updater` which checks for new GitHub releases on startup. The `publish` config in `electron-builder.yml` points to `gideon-security/opencomp` on GitHub.
 
 ### Local development
 

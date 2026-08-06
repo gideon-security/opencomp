@@ -15,7 +15,7 @@ export const tool$policiesPoliciesControllerUpdateVersionContentV1:
     name: "update-policy-version-content",
     description: `Update version content
 
-Update version content in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Update version content in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

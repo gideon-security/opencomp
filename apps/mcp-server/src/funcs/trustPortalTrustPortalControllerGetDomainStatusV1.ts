@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get domain verification status
  *
  * @remarks
- * Get domain verification status in Comp AI. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
+ * Get domain verification status in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

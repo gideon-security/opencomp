@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Update a finding (status transition rules apply)
  *
  * @remarks
- * Update a finding (status transition rules apply) in Comp AI. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.
+ * Update a finding (status transition rules apply) in OpenComp. Create, review, update, and track audit findings, remediation activity, and finding history for an organization.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

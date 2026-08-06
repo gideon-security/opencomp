@@ -29,7 +29,7 @@ import { Result } from "../types/fp.js";
  * Get form definition and submissions
  *
  * @remarks
- * Get form definition and submissions in Comp AI. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.
+ * Get form definition and submissions in OpenComp. Collect, review, upload, and export structured evidence submissions for compliance tasks and document requirements.
  *
  * If set, this operation will use {@link Security.apikey} from the global security.
  */

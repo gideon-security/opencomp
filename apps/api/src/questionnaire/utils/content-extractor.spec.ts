@@ -164,7 +164,7 @@ describe('content-extractor: extractContentFromFile', () => {
     ).rejects.toThrow('Unsupported file type');
   });
 
-  // Regression test for the 2026-07-16 api.trycomp.ai outage: HECVAT Full
+  // Regression test for the 2026-07-16 api.gideondefender.com outage: HECVAT Full
   // ships a whole-sheet dataValidation (~17 billion cells) that makes
   // ExcelJS block the event loop for minutes. Without the sanitizing step
   // in loadWorkbook this test does not fail — it hangs.

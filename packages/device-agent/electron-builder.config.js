@@ -5,7 +5,7 @@ const isLinuxBuild =
 /** @type {import('electron-builder').Configuration} */
 module.exports = {
   appId: 'ai.trycomp.device-agent',
-  productName: isLinuxBuild ? 'comp-ai-device-agent' : 'Comp AI Device Agent',
+  productName: isLinuxBuild ? 'comp-ai-device-agent' : 'OpenComp Device Agent',
   directories: {
     buildResources: 'assets',
     output: 'release',
@@ -85,6 +85,6 @@ module.exports = {
   },
   publish: {
     provider: 'generic',
-    url: process.env.AUTO_UPDATE_URL || 'https://portal.trycomp.ai/api/device-agent/updates',
+    url: process.env.AUTO_UPDATE_URL || 'https://portal.gideondefender.com/api/device-agent/updates',
   },
 };

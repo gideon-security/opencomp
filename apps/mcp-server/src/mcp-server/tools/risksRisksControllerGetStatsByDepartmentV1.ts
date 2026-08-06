@@ -9,7 +9,7 @@ export const tool$risksRisksControllerGetStatsByDepartmentV1: ToolDefinition = {
   name: "get-stats-by-department",
   description: `Get risk counts grouped by department
 
-Get risk counts grouped by department in Comp AI. Create, update, and report on organizational risks with ownership, departments, and compliance remediation status.`,
+Get risk counts grouped by department in OpenComp. Create, update, and report on organizational risks with ownership, departments, and compliance remediation status.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

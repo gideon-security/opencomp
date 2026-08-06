@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerUpdateTaskV1: ToolDefinition<
   name: "update-task",
   description: `Update a task
 
-Update a task in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Update a task in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,

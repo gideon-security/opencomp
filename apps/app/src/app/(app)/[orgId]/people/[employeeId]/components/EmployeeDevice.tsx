@@ -108,7 +108,7 @@ export function EmployeeDevice({
             <InformationFilled size={20} />
           </span>
           <div>
-            <Text weight="medium">Device agent is managed outside of Comp AI</Text>
+            <Text weight="medium">Device agent is managed outside of OpenComp</Text>
             <Text size="sm" variant="muted">
               Evidence for device compliance can be logged in the Secure Device and Device List
               evidence tasks.

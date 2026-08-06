@@ -333,7 +333,7 @@ export default function Chat() {
                         <LogoSpinner size={16} isDisabled={false} />
                       </div>
                       <span className="text-xs font-semibold text-foreground">
-                        Comp AI
+                        OpenComp
                       </span>
                     </div>
                     <MessageContent className="pl-7">
@@ -368,7 +368,7 @@ export default function Chat() {
             className="mb-2 h-12 min-h-12 w-full resize-none rounded-md border bg-background px-3 pt-3 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             value={input}
             autoFocus
-            placeholder="Ask Comp AI something..."
+            placeholder="Ask OpenComp something..."
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {

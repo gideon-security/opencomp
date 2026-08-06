@@ -15,7 +15,7 @@ export const tool$taskManagementTaskManagementControllerGetTaskItemsV1:
     name: "get-task-items",
     description: `Get task items for an entity
 
-Get task items for an entity in Comp AI. Manage task items and attachments linked to operational entities such as risks and vendors.`,
+Get task items for an entity in OpenComp. Manage task items and attachments linked to operational entities such as risks and vendors.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

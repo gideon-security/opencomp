@@ -36,8 +36,8 @@ export default async function NoAccess() {
         <div className="flex flex-col text-center">
           <p>
             Your current role doesn&apos;t have access to the app. If you&apos;re looking for the employee portal, go to{' '}
-            <Link href="https://portal.trycomp.ai" className="text-primary underline">
-              portal.trycomp.ai
+            <Link href="https://portal.gideondefender.com" className="text-primary underline">
+              portal.gideondefender.com
             </Link>
             .
           </p>

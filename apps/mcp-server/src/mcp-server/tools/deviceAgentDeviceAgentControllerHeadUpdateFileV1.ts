@@ -15,7 +15,7 @@ export const tool$deviceAgentDeviceAgentControllerHeadUpdateFileV1:
     name: "head-update-file",
     description: `Check a device-agent update's metadata
 
-Check a device-agent update's metadata in Comp AI. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
+Check a device-agent update's metadata in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -10,7 +10,7 @@ export const tool$organizationOrganizationControllerGetRoleNotificationsV1:
     name: "get-role-notifications",
     description: `Get role notification settings
 
-Get role notification settings in Comp AI. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.`,
+Get role notification settings in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

@@ -40,7 +40,7 @@ export class MacOSDiskEncryptionCheck implements ComplianceCheck {
           method: 'fdesetup status',
           raw: errorMessage,
           message: isPermission
-            ? 'Unable to determine FileVault status due to insufficient permissions. If your device is managed by an MDM, try granting Full Disk Access to the Comp AI Device Agent in System Settings > Privacy & Security.'
+            ? 'Unable to determine FileVault status due to insufficient permissions. If your device is managed by an MDM, try granting Full Disk Access to the OpenComp Device Agent in System Settings > Privacy & Security.'
             : 'Unable to determine FileVault status',
         },
         checkedAt: new Date().toISOString(),

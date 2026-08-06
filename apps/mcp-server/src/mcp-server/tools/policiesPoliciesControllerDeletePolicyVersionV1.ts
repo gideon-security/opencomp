@@ -15,7 +15,7 @@ export const tool$policiesPoliciesControllerDeletePolicyVersionV1:
     name: "delete-policy-version",
     description: `Delete policy version
 
-Delete policy version in Comp AI. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
+Delete policy version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

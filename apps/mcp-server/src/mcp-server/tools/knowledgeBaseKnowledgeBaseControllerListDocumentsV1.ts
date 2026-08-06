@@ -10,7 +10,7 @@ export const tool$knowledgeBaseKnowledgeBaseControllerListDocumentsV1:
     name: "list-documents",
     description: `List knowledge base documents
 
-List uploaded knowledge base documents that Comp AI can use as approved source material for answers, policies, and reviews.`,
+List uploaded knowledge base documents that OpenComp can use as approved source material for answers, policies, and reviews.`,
     annotations: {
       "title": "",
       "destructiveHint": false,

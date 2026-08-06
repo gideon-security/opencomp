@@ -16,7 +16,7 @@ export const tool$tasksTasksControllerDeleteTaskAttachmentV1: ToolDefinition<
   name: "delete-task-attachment",
   description: `Delete task attachment
 
-Delete task attachment in Comp AI. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
+Delete task attachment in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.`,
   annotations: {
     "title": "",
     "destructiveHint": false,
