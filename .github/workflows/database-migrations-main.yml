@@ -12,38 +12,18 @@ jobs:
   migrate:
     name: Run Database Migrations
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: pgvector/pgvector:pg17
-        env:
-          POSTGRES_DB: comp
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres -d comp"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "22"
 
       - name: Install DB dependencies
         working-directory: packages/db
         run: npm ci --ignore-scripts
-
-      - name: Dry-run migrations against temporary database
-        env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/comp?sslmode=disable
-        working-directory: packages/db
-        run: npx prisma migrate deploy
 
       - name: Apply database migrations
         env:

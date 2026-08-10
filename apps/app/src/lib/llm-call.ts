@@ -79,15 +79,23 @@ function isRetryableError(error: unknown): boolean {
   return false;
 }
 
+function retryAfterSecondsFromMessage(error: unknown): number | null {
+  if (!(error instanceof Error)) return null;
+  const match = /retry in ([\d.]+)s/i.exec(error.message);
+  if (!match) return null;
+  const seconds = Number(match[1]);
+  return Number.isFinite(seconds) && seconds > 0 ? seconds : null;
+}
+
 function backoffDelayMs(error: unknown, attempt: number): number {
-  if (APICallError.isInstance(error) && error.responseHeaders) {
-    const retryAfter = error.responseHeaders['retry-after'];
-    if (retryAfter) {
-      const seconds = Number(retryAfter);
-      if (Number.isFinite(seconds) && seconds > 0) {
-        return Math.min(seconds * 1000, MAX_BACKOFF_MS);
-      }
-    }
+  const headerSeconds = APICallError.isInstance(error)
+    ? Number(error.responseHeaders?.['retry-after'])
+    : NaN;
+  const candidates = [headerSeconds, retryAfterSecondsFromMessage(error)].filter(
+    (s): s is number => s !== null && Number.isFinite(s) && s > 0,
+  );
+  if (candidates.length > 0) {
+    return Math.min(candidates[0] * 1000, MAX_BACKOFF_MS);
   }
   const base = Math.min(BASE_BACKOFF_MS * 2 ** (attempt - 1), MAX_BACKOFF_MS);
   const jitter = Math.floor(Math.random() * base * 0.3);

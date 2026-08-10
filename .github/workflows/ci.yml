@@ -22,7 +22,7 @@ jobs:
     name: DB unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/npm-install
       - name: Run db unit tests
         working-directory: packages/db
@@ -34,7 +34,7 @@ jobs:
     name: App unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/npm-install
       - name: Run app unit tests
         working-directory: apps/app
@@ -62,7 +62,7 @@ jobs:
       # without verified TLS, and the test DB is only reachable on the runner loopback.
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/comp?sslmode=disable
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/npm-install
       - name: Apply migrations
         working-directory: packages/db
