@@ -101,6 +101,25 @@ describe('generateObjectWithRetry', () => {
     expect(result.object).toEqual({ ok: true });
   });
 
+  it('honors retry-after from the error body when no header is present', async () => {
+    const retryAfterMessage = new FakeAPICallError({
+      message:
+        'Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 14.341536868s.',
+      statusCode: 429,
+    });
+    const t0 = Date.now();
+    generateObjectMock
+      .mockRejectedValueOnce(retryAfterMessage)
+      .mockResolvedValueOnce({ object: { ok: true } });
+
+    const result = await callWithSchema();
+
+    const elapsed = Date.now() - t0;
+    expect(generateObjectMock).toHaveBeenCalledTimes(2);
+    expect(result.object).toEqual({ ok: true });
+    expect(elapsed).toBeGreaterThanOrEqual(14_000);
+  }, 20_000);
+
   it('retries a TLS/network reset error', async () => {
     generateObjectMock
       .mockRejectedValueOnce(

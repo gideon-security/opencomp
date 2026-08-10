@@ -26,7 +26,7 @@ jobs:
       GRAM_PROJECT: default
       GRAM_API_KEY: ${{ secrets.GRAM_API_KEY }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Gram CLI
         # Installs to /usr/local/bin (already on PATH on GitHub runners).

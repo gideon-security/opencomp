@@ -32,7 +32,7 @@ jobs:
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/comp?sslmode=disable
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/npm-install
       - name: Apply migrations
         working-directory: packages/db
@@ -49,7 +49,7 @@ jobs:
       E2E_USE_REAL_AUTH: 'false'
       AUTH_SECRET: test-secret-for-e2e-only
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/npm-install
       - name: Install Playwright browsers
         working-directory: apps/app
