@@ -6,7 +6,7 @@
     "version": "2022/2555",
     "createdAt": "2025-05-14 19:20:44.920",
     "updatedAt": "2025-05-14 19:20:44.920",
-    "visible": false
+    "visible": true
   },
   {
     "id": "frk_6820090a1653380dd386c5eb",
@@ -205,5 +205,23 @@
     "createdAt": "2026-04-30 22:28:17.577",
     "updatedAt": "2026-05-01 00:14:14.759",
     "visible": false
+  },
+  {
+    "id": "frk_8788b8a933319a1943d409fb",
+    "name": "DORA",
+    "description": "DORA",
+    "version": "2022/2554",
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000",
+    "visible": true
+  },
+  {
+    "id": "frk_0ed0301606f7806f8683eee5",
+    "name": "HITRUST CSF",
+    "description": "HITRUST CSF",
+    "version": "11.2.0",
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000",
+    "visible": true
   }
 ]

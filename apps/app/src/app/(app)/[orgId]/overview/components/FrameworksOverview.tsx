@@ -76,6 +76,18 @@ export function mapFrameworkToBadge(framework: FrameworkInstanceWithControls) {
     return '/badges/pipeda.svg';
   }
 
+  if (frameworkName === 'NIS 2') {
+    return '/badges/nis2.svg';
+  }
+
+  if (frameworkName === 'DORA') {
+    return '/badges/dora.svg';
+  }
+
+  if (frameworkName === 'HITRUST CSF') {
+    return '/badges/hitrust.svg';
+  }
+
   return null;
 }
 

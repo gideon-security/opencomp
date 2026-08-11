@@ -4,7 +4,7 @@
    <img src="https://www.gideondefender.com/gideon.png" alt="Logo" width="10%">
   </a>
 
-  <h3 align="center">Gideon Defender </h3>
+  <h3 align="center">Gideon Defender OpenComp </h3>
 
   <p align="center">
     The open-source compliance platform.
@@ -33,7 +33,7 @@
 
 ### AI that handles compliance for you in hours.
 
-Gideon Defender is the fastest way to get compliant with frameworks like SOC 2, ISO 27001, HIPAA and GDPR. Gideon Defender automates evidence collection, policy management, and control implementation while keeping you in control of your data and infrastructure.
+OpenComp is the fastest way to get compliant with frameworks like SOC 2, ISO 27001, HIPAA and GDPR. OpenComp automates evidence collection, policy management, and control implementation while keeping you in control of your data and infrastructure.
 
 ### Built With
 
@@ -48,7 +48,7 @@ Contact our team at info@gideondefender.com to learn more about how we can help 
 
 ## Stay Up-to-Date
 
-Get access to the cloud hosted version of [Gideon Defender](https://gideondefender.com).
+Get access to the cloud hosted version of [OpenComp](https://www.gideondefender.com).
 
 ## Getting Started
 
@@ -56,12 +56,12 @@ To get a local copy up and running, please follow these simple steps.
 
 ### Prerequisites
 
-Here is what you need to be able to run Gideon Defender.
+Here is what you need to be able to run OpenComp.
 
 - Node.js (Version: >=22.x)
 - npm (Version: >=10.x)
 - Docker (Version: >=24.x)
-- Postgres (Version: >=15.x)
+- Postgres with PgVector (Version: >=15.x)
 
 ## Development
 
@@ -303,7 +303,7 @@ npx turbo dev
 npm install -g turbo
 ```
 
-🎉 Yay! You now have a working local instance of Gideon Defender! 🚀
+🎉 Yay! You now have a working local instance of Gideon Defender OpenComp! 🚀
 
 ### Full Stack with Docker Compose
 

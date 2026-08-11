@@ -121,11 +121,14 @@ function buildManifestFromFramework(framework: FrameworkWithTemplates) {
       identifier: r.identifier,
       name: r.name,
       description: r.description,
+      requirementFamily: r.requirementFamily ?? null,
+      sortOrder: r.sortOrder ?? null,
     })),
     controls: controlTemplates.map((c) => ({
       id: c.id,
       name: c.name,
       description: c.description,
+      controlFamily: c.controlFamily ?? null,
       requirementIds: c.requirements
         .map((r) => r.id)
         .filter((id) => ownRequirementIds.has(id)),

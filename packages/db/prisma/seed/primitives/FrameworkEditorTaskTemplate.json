@@ -1478,5 +1478,45 @@
     "createdAt": "2026-04-30 23:48:55.224",
     "updatedAt": "2026-05-01 00:11:09.620",
     "automationStatus": "AUTOMATED"
+  },
+  {
+    "id": "frk_tt_685da10e061af4b8454d43dc",
+    "name": "Penetration Testing",
+    "description": "Run an authorised penetration test against production systems and record the scope, findings, and remediation plan.\n\nUpload a summary of the test report and remediation status.",
+    "frequency": "yearly",
+    "department": "it",
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000",
+    "automationStatus": "MANUAL"
+  },
+  {
+    "id": "frk_tt_0cff2b750f95ea9d07a2ed42",
+    "name": "Vulnerability Scanning & Patch Review",
+    "description": "Scan production systems for known vulnerabilities, triage findings by severity, and confirm critical patches are applied.\n\nUpload a scan summary or patch-tracking report.",
+    "frequency": "quarterly",
+    "department": "itsm",
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000",
+    "automationStatus": "MANUAL"
+  },
+  {
+    "id": "frk_tt_9e25b1338555f991374ec6f8",
+    "name": "Incident Reporting Mechanism Review",
+    "description": "Test the incident reporting channel and confirm staff know how to report incidents and that contacts are current.\n\nUpload evidence of the review, such as a short test report or updated contact list.",
+    "frequency": "quarterly",
+    "department": "itsm",
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000",
+    "automationStatus": "MANUAL"
+  },
+  {
+    "id": "frk_tt_da206dfc15e990a01246d1a0",
+    "name": "Board Security Reporting",
+    "description": "Report security posture, incidents, and compliance status to the board or audit committee.\n\nUpload board meeting minutes or the security report presented.",
+    "frequency": "quarterly",
+    "department": "gov",
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000",
+    "automationStatus": "MANUAL"
   }
 ]

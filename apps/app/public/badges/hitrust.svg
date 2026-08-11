@@ -1,0 +1,12 @@
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<rect width="240" height="240" rx="120" fill="#064222"/>
+<circle cx="120" cy="120" r="102" stroke="white" stroke-width="3"/>
+<path d="M96 96L96 60M144 96L144 60M96 78L144 78" stroke="white" stroke-width="12" fill="none" stroke-linecap="round"/>
+<rect x="0" y="114" width="240" height="48" fill="#064222"/>
+<text x="120" y="149" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" text-anchor="middle" letter-spacing="2">HITRUST</text>
+</g>
+<defs>
+<clipPath id="clip0"><rect width="240" height="240" rx="120"/></clipPath>
+</defs>
+</svg>

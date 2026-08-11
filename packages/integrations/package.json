@@ -7,7 +7,7 @@
     "@aws-sdk/client-sts": "^3.0.0",
     "@azure/identity": "^4.10.0",
     "@gideon-defender/app": "*",
-    "ai": "^6.0.175",
+    "ai": "6.0.241",
     "jsonwebtoken": "^9.0.2",
     "node-fetch": "^2.6.7",
     "react": "^19.0.0",
