@@ -50,6 +50,9 @@ const FRAMEWORK_BADGES: Record<string, string> = {
   'SOC 2 Type 1': '/badges/soc2.svg',
   'CCPA': '/badges/ccpa.svg',
   'PIPEDA': '/badges/pipeda.svg',
+  'NIS 2': '/badges/nis2.svg',
+  'DORA': '/badges/dora.svg',
+  'HITRUST CSF': '/badges/hitrust.svg',
 };
 
 function getFrameworkBadge(name: string): string | null {
@@ -59,6 +62,15 @@ function getFrameworkBadge(name: string): string | null {
   const normalizedName = name.trim().toLowerCase();
   if (normalizedName.includes('pci dss')) {
     return '/badges/pci-dss.svg';
+  }
+  if (normalizedName.includes('nis 2')) {
+    return '/badges/nis2.svg';
+  }
+  if (normalizedName.includes('dora')) {
+    return '/badges/dora.svg';
+  }
+  if (normalizedName.includes('hitrust')) {
+    return '/badges/hitrust.svg';
   }
 
   return null;

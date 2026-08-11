@@ -68,6 +68,8 @@ export const FrameworkEditorRequirementSchema = z.object({
   name: z.string(),
   identifier: z.string().optional(), // @default("")
   description: z.string(),
+  requirementFamily: z.string().optional().nullable(), // null until authored
+  sortOrder: z.number().optional().nullable(), // null = fall back to identifier ordering
   // controlTemplates: FrameworkEditorControlTemplate[] - relational, omitted
   // requirementMaps: RequirementMap[] - relational, omitted
   createdAt: z
@@ -146,6 +148,8 @@ export const FrameworkEditorControlTemplateSchema = z.object({
   id: z.string().optional(), // @id @default
   name: z.string(),
   description: z.string(),
+  controlFamily: z.string().optional().nullable(),
+  documentTypes: z.array(z.string()).optional().default([]),
   // policyTemplates: FrameworkEditorPolicyTemplate[] - relational, omitted
   // requirements: FrameworkEditorRequirement[] - relational, omitted
   // taskTemplates: FrameworkEditorTaskTemplate[] - relational, omitted

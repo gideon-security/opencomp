@@ -1,0 +1,13 @@
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<rect width="240" height="240" rx="120" fill="#064222"/>
+<circle cx="120" cy="120" r="102" stroke="white" stroke-width="3"/>
+<path d="M120 44L156 55L156 84C156 100 144 109 120 112C96 109 84 100 84 84L84 55Z" stroke="white" stroke-width="4" stroke-linejoin="round" fill="none"/>
+<path d="M104 90L104 62L136 90L136 62" stroke="white" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="0" y="114" width="240" height="48" fill="#064222"/>
+<text x="120" y="149" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" text-anchor="middle" letter-spacing="2">NIS 2</text>
+</g>
+<defs>
+<clipPath id="clip0"><rect width="240" height="240" rx="120"/></clipPath>
+</defs>
+</svg>

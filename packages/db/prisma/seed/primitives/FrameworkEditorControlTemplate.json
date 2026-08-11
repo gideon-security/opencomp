@@ -1698,5 +1698,1122 @@
       "employee_performance_evaluation",
       "rbac_matrix"
     ]
+  },
+  {
+    "id": "frk_ct_e13915d6401696e46defc209",
+    "name": "Security Policy & Governance",
+    "description": "Defines and governs the overarching network and information security policy, assigns security roles and responsibilities, and obliges personnel and third parties to comply.",
+    "controlFamily": "Policies on risk analysis & IS security",
+    "documentTypes": [
+      "meeting",
+      "board_meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_6676c2cea806388d6a721763",
+    "name": "Cybersecurity Risk Management",
+    "description": "Establishes and operates a cybersecurity risk-management framework covering identification, assessment, treatment, and periodic re-assessment of risks.",
+    "controlFamily": "Policies on risk analysis & IS security",
+    "documentTypes": [
+      "risk_committee_meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_23755de8a70b16e79cd70beb",
+    "name": "Compliance Reviews & Reporting",
+    "description": "Schedules and operates internal compliance reviews, monitors adherence to policy, and conducts independent reviews of the security programme with board reporting.",
+    "controlFamily": "Policies on risk analysis & IS security",
+    "documentTypes": [
+      "board_meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_cee741adc284b383a904c442",
+    "name": "Incident Response Policy & Plans",
+    "description": "Adopts an incident-handling policy defining objectives, roles, and escalation paths for the detection, response, and recovery of security incidents.",
+    "controlFamily": "Incident handling",
+    "documentTypes": [
+      "tabletop_exercise"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_80a20e813ef6c09cf45c6bd4",
+    "name": "Monitoring & Logging",
+    "description": "Monitors systems and networks, maintains event logs, protects log integrity, and defines retention so incidents can be detected and investigated.",
+    "controlFamily": "Incident handling",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_fc6f5d84e5e3dc6febba6893",
+    "name": "Incident Reporting & Notification",
+    "description": "Provides a mechanism for staff, customers, and suppliers to report incidents, and notifies competent authorities and affected parties per statutory obligations.",
+    "controlFamily": "Incident handling",
+    "documentTypes": [
+      "whistleblower_report"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_380826371f0c273084a9256e",
+    "name": "Incident Assessment & Triage",
+    "description": "Assesses and categorises incidents by severity and impact, so response effort is prioritised proportionately.",
+    "controlFamily": "Incident handling",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_97dfd8e785001ea781e85408",
+    "name": "Incident Response & Recovery",
+    "description": "Responds to incidents, contains and eradicates the cause, and restores affected systems and services to normal operation.",
+    "controlFamily": "Incident handling",
+    "documentTypes": [
+      "tabletop_exercise"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_23b3d87e2ccd190c132465b1",
+    "name": "Post-Incident Review & Lessons Learned",
+    "description": "Reviews incidents after resolution, captures lessons learned, and feeds findings back into the security programme.",
+    "controlFamily": "Incident handling",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_c8b986a6f8f7cfe74af883de",
+    "name": "Business Continuity Management",
+    "description": "Identifies critical operations, performs business-impact analyses, and maintains business-continuity plans and recovery procedures.",
+    "controlFamily": "Business continuity & crisis management",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_86fefc1a3da726f2df626031",
+    "name": "Backup & Restore",
+    "description": "Maintains redundant and redundant-separated backups of systems, data, and configurations, and regularly tests restoration.",
+    "controlFamily": "Business continuity & crisis management",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_6ddcb509d40df3c9252d1895",
+    "name": "Crisis Management",
+    "description": "Prepares for major disruptions through crisis-management plans, defined crisis teams, and regular testing and communication procedures.",
+    "controlFamily": "Business continuity & crisis management",
+    "documentTypes": [
+      "board_meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_2c0e203dfa6513ede4464b54",
+    "name": "Physical & Environmental Security",
+    "description": "Protects premises, utilities, and systems against environmental threats and physical damage, including power, climate, and water safeguards.",
+    "controlFamily": "Business continuity & crisis management",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_8a2224d7bfaa5e3af00a6af2",
+    "name": "Physical & Logical Access Control",
+    "description": "Controls entry to premises and sensitive areas and aligns physical access with logical access rights for personnel and third parties.",
+    "controlFamily": "Business continuity & crisis management",
+    "documentTypes": [
+      "access_request"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_4e0d0e235f2299223b55b3c1",
+    "name": "Supply Chain Security",
+    "description": "Secures the supply chain by screening suppliers and subcontractors, agreeing security obligations, and monitoring compliance and vulnerabilities.",
+    "controlFamily": "Supply-chain security",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_f1d06481e74cb0daf0152f50",
+    "name": "Secure Procurement",
+    "description": "Integrates security into procurement and development so purchased and developed systems meet security requirements before go-live.",
+    "controlFamily": "Secure acquisition / development / maintenance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_61331bbb29a79334724b4425",
+    "name": "Secure Development Lifecycle",
+    "description": "Applies secure-development practices covering design, coding, testing, and release, including separation of environments and security reviews.",
+    "controlFamily": "Secure acquisition / development / maintenance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_33998df8594b0fc863e43fdd",
+    "name": "Configuration & Change Management",
+    "description": "Governs configuration baselines and change management for systems so changes are planned, reviewed, and traceable.",
+    "controlFamily": "Secure acquisition / development / maintenance",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_dafab107c2cda0245ba39486",
+    "name": "Security Testing",
+    "description": "Tests systems and products before deployment and on an ongoing basis using methods appropriate to the risk they present.",
+    "controlFamily": "Secure acquisition / development / maintenance",
+    "documentTypes": [
+      "penetration_test"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_d71920259ff04ada8dbaff6f",
+    "name": "Patch & Vulnerability Management",
+    "description": "Operates a vulnerability-management programme that classifies, prioritises, and remediates vulnerabilities and applies patches in a timely way.",
+    "controlFamily": "Secure acquisition / development / maintenance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_f9cf1cfc4bec20007512c109",
+    "name": "Network Security & Segmentation",
+    "description": "Protects network infrastructure, segments networks and services to limit propagation, and restricts insecure protocols.",
+    "controlFamily": "Secure acquisition / development / maintenance",
+    "documentTypes": [
+      "network_diagram"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_0cb670a7f7f8de69ff525adb",
+    "name": "Malware & Endpoint Protection",
+    "description": "Prevents, detects, and remediates malware on systems and endpoints through technical and administrative controls.",
+    "controlFamily": "Secure acquisition / development / maintenance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_bb4884962783684522bb4c08",
+    "name": "Effectiveness Assessment",
+    "description": "Assesses the effectiveness of the security programme and specific controls at planned intervals, including independent review.",
+    "controlFamily": "Effectiveness assessment",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_a69ac61f154bcbf93d870590",
+    "name": "Cyber Hygiene & Training",
+    "description": "Embeds basic cyber-hygiene practices and delivers security awareness training so personnel recognise and reduce security risks.",
+    "controlFamily": "Basic cyber-hygiene & training",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_b0075b40ed9cb53463b535d9",
+    "name": "Cryptography & Key Management",
+    "description": "Uses strong cryptography for confidentiality, integrity, and authenticity and manages cryptographic keys through their lifecycle.",
+    "controlFamily": "Cryptography",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_1e6cc8b6962426a1b955e3fa",
+    "name": "HR Security & Personnel",
+    "description": "Applies security to personnel through screening, role-based responsibilities, on/off-boarding procedures, and a disciplinary process.",
+    "controlFamily": "HR security, access control & asset management",
+    "documentTypes": [
+      "employee_performance_evaluation"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_323780655ea77ae671590d8b",
+    "name": "Access Control & Provisioning",
+    "description": "Grants and revokes logical access to systems and data based on least privilege, and reviews access rights on a defined cycle.",
+    "controlFamily": "HR security, access control & asset management",
+    "documentTypes": [
+      "access_request",
+      "rbac_matrix"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_55b74edc6193bb881b90aa0f",
+    "name": "Privileged & Administrative Access",
+    "description": "Restricts and monitors privileged and administrative access to production and administrative systems.",
+    "controlFamily": "HR security, access control & asset management",
+    "documentTypes": [
+      "account_types"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_5ce9fd3e1eb24a62a72816ec",
+    "name": "Identity & Authentication",
+    "description": "Manages identities and authentication for users and devices, including secure authentication procedures and unique identifiers.",
+    "controlFamily": "HR security, access control & asset management",
+    "documentTypes": [
+      "access_request"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_c9d7803280afd98e0bc61fa7",
+    "name": "Asset Management",
+    "description": "Classifies, inventories, and handles assets across their lifecycle, including storage, media, transfers, and secure disposal or return.",
+    "controlFamily": "HR security, access control & asset management",
+    "documentTypes": [
+      "infrastructure_inventory"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_70e818c0ae851293452c2117",
+    "name": "Multi-Factor Authentication & Secure Communications",
+    "description": "Applies multi-factor or continuous authentication to sensitive accounts and secures communications channels.",
+    "controlFamily": "MFA & secure communications",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_4179257dcac05178927ff30b",
+    "name": "ICT Governance & Risk Framework",
+    "description": "Establishes the internal governance and control framework for ICT risk, assigning the management body ultimate responsibility, clear roles and an independent control function, and ensures the ICT risk management framework is sound, documented and periodically reviewed.",
+    "controlFamily": "Governance and organisation",
+    "documentTypes": [
+      "board_meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_36cdb291ef11f12727e5f3db",
+    "name": "Independent Assurance & Audit",
+    "description": "Subjects the ICT risk management framework to regular independent internal audit, ensures segregation of ICT risk management, control and audit functions, and establishes a formal follow-up process to verify and remediate critical audit findings.",
+    "controlFamily": "Governance and organisation",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_6ee8da37dff9a4d7efb998ac",
+    "name": "Digital Operational Resilience Strategy",
+    "description": "Defines and monitors a digital operational resilience strategy setting out the ICT risk tolerance level, information security objectives, ICT reference architecture and detection and prevention mechanisms, including a multi-vendor strategy for ICT third-party dependencies.",
+    "controlFamily": "Governance and organisation",
+    "documentTypes": [
+      "board_meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_5d0c40f7af849ba822b08b20",
+    "name": "ICT Systems & Infrastructure Reliability",
+    "description": "Ensures ICT systems, protocols and tools are kept updated and are appropriate, reliable, sufficiently sized for peak volumes and technologically resilient under stressed conditions.",
+    "controlFamily": "ICT systems, protocols and tools",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_789f5a8ceede44dd5f19fbcb",
+    "name": "Identification & Asset Inventory",
+    "description": "Identifies, classifies and documents ICT-supported business functions and information and ICT assets, maps critical assets and their interdependencies, and maintains up-to-date inventories.",
+    "controlFamily": "Identification",
+    "documentTypes": [
+      "infrastructure_inventory"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_935eb478e056f65229061210",
+    "name": "ICT Risk & Threat Assessment",
+    "description": "Continuously identifies sources of ICT risk, cyber threats and vulnerabilities, performs risk assessments on major changes and legacy systems, and reviews risk scenarios at least yearly.",
+    "controlFamily": "Identification",
+    "documentTypes": [
+      "risk_committee_meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_10b610a36c95a876c63321fc",
+    "name": "Third-Party Dependencies Identification",
+    "description": "Identifies and documents processes dependent on ICT third-party service providers and interconnections supporting critical or important functions.",
+    "controlFamily": "Identification",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_ecbea0c085ee88f8a6c57759",
+    "name": "Information Security Policy",
+    "description": "Develops and documents an information security policy protecting the availability, authenticity, integrity and confidentiality of data, information assets and ICT assets, including those of customers.",
+    "controlFamily": "Protection and prevention",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_5a6a5fc7ab42140f4811cb3d",
+    "name": "Network Security & Segmentation",
+    "description": "Monitors and controls the security and functioning of ICT systems, establishes a sound network and infrastructure management structure, and uses isolation and segmentation mechanisms to prevent contagion of cyber-attacks.",
+    "controlFamily": "Protection and prevention",
+    "documentTypes": [
+      "network_diagram"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_593905c7b2db1f4c2588d22a",
+    "name": "Access Control & Strong Authentication",
+    "description": "Limits physical and logical access to information and ICT assets on a least-privilege basis and implements strong authentication mechanisms and cryptographic protections based on approved data classification.",
+    "controlFamily": "Protection and prevention",
+    "documentTypes": [
+      "access_request",
+      "rbac_matrix"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_47304b63ed7759d3b1b9e7e0",
+    "name": "Change Management & Patching",
+    "description": "Governs ICT change management through documented, risk-based policies that ensure changes are recorded, tested, approved and verified in a controlled manner, and maintains comprehensive patch and update policies.",
+    "controlFamily": "Protection and prevention",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_b912f94202fc946cd1d9ae51",
+    "name": "Anomaly Detection & Monitoring",
+    "description": "Detects anomalous activities and ICT-related incidents promptly through layered monitoring controls with defined alert thresholds, and devotes sufficient resources to monitoring user activity and anomalies.",
+    "controlFamily": "Detection",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_61d2675b0b4e3154a3e1f72d",
+    "name": "Business Continuity & Impact Analysis",
+    "description": "Maintains a comprehensive ICT business continuity policy and conducts business impact analyses, ensuring redundancy of critical components and continuity of critical or important functions.",
+    "controlFamily": "Response and recovery",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_b920a994640c261e964af3e0",
+    "name": "ICT Response & Recovery Plans",
+    "description": "Implements ICT response and recovery plans with periodic testing including cyber-attack scenarios and switchovers, a crisis management function, and readily accessible records of activities during disruptions.",
+    "controlFamily": "Response and recovery",
+    "documentTypes": [
+      "tabletop_exercise"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_9c62c4a9921ba11e94dfd024",
+    "name": "Backup & Restoration",
+    "description": "Develops documented backup policies and restoration procedures, maintains segregated and redundant backup systems, and periodically tests backup and restoration.",
+    "controlFamily": "Backup policies and restoration",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_6a0ecdb289492715558e8c2e",
+    "name": "Continuous Learning & Improvement",
+    "description": "Gathers and analyses threat intelligence, conducts post-incident reviews, and incorporates lessons learned and the evolution of ICT risk into the ICT risk assessment process, with senior ICT staff reporting to the management body.",
+    "controlFamily": "Learning and evolving",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_3a6b1201898dd2091fcd940d",
+    "name": "ICT Security Awareness & Training",
+    "description": "Delivers compulsory ICT security awareness and digital operational resilience training to all staff and management, and monitors technological developments and ICT risk management practices.",
+    "controlFamily": "Learning and evolving",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_ebb983ac8665c3ea159eb533",
+    "name": "Crisis Communication",
+    "description": "Establishes crisis communication plans for responsible disclosure of major incidents and vulnerabilities, communication policies for internal and external stakeholders, and assigns responsibility for the communication strategy.",
+    "controlFamily": "Communication",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_d645fafd60f7b4cbe8fcd888",
+    "name": "Incident Management Process",
+    "description": "Defines and implements an ICT-related incident management process to detect, manage and notify incidents, with early warning indicators, classification, roles and responsibilities, escalation and client notification plans, and response procedures.",
+    "controlFamily": "ICT-related incident management",
+    "documentTypes": [
+      "tabletop_exercise"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_550d0188379f4fb92191b569",
+    "name": "Incident Classification",
+    "description": "Classifies ICT-related incidents and cyber threats based on defined criteria including clients affected, duration, geographical spread, data losses, criticality of services and economic impact.",
+    "controlFamily": "ICT-related incident management",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_a4755a80804cca8fcd5e8d0a",
+    "name": "Major Incident Reporting & Notification",
+    "description": "Reports major ICT-related incidents to the relevant competent authority using the prescribed templates and timelines, and informs clients without undue delay about major incidents impacting their financial interests.",
+    "controlFamily": "ICT-related incident management",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_480ca90595dc3b436f7ee164",
+    "name": "Digital Operational Resilience Testing",
+    "description": "Establishes a risk-based digital operational resilience testing programme as part of the ICT risk management framework, with independent testing, prioritised remediation of findings, and at least yearly testing of critical systems.",
+    "controlFamily": "Digital operational resilience testing",
+    "documentTypes": [
+      "penetration_test"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_2094fe0aa5d87eac393b67d6",
+    "name": "ICT Tools & Systems Testing",
+    "description": "Executes appropriate tests on ICT tools and systems, including vulnerability assessments and scans, network security assessments, source code reviews, scenario-based, compatibility, performance, end-to-end and penetration testing.",
+    "controlFamily": "Digital operational resilience testing",
+    "documentTypes": [
+      "penetration_test"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_c503400f2ad8c3c3eb26aa9e",
+    "name": "Threat-Led Penetration Testing",
+    "description": "Carries out threat-led penetration testing at least every 3 years on live production systems supporting critical or important functions, with validated scope, third-party participation, risk management controls and reporting to authorities.",
+    "controlFamily": "Digital operational resilience testing",
+    "documentTypes": [
+      "penetration_test"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_b51712712c5d3f88c19e8e03",
+    "name": "Tester Assurance",
+    "description": "Ensures TLPT is carried out by testers of the highest suitability and reputability with proven expertise, certification, assurance and insurance, and that the use of internal testers and the management of TLPT results are secure and approved.",
+    "controlFamily": "Digital operational resilience testing",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_0bca1222c5ffb7d56ab925b9",
+    "name": "ICT Third-Party Risk Management",
+    "description": "Manages ICT third-party risk as an integral part of the ICT risk management framework, with a third-party risk strategy, pre-contract due diligence and risk assessment, information security standards for providers, audit and inspection rights, termination rights and exit strategies.",
+    "controlFamily": "Managing ICT third-party risk",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_23f3f7f12521be9eacdecf45",
+    "name": "Third-Party Register & Reporting",
+    "description": "Maintains a register of information on all ICT contractual arrangements distinguishing critical or important functions, reports to competent authorities on new arrangements, and ensures appropriate documentation of arrangements.",
+    "controlFamily": "Managing ICT third-party risk",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_6a6ba676df670c0899369c9e",
+    "name": "Concentration & Subcontracting Risk",
+    "description": "Assesses ICT concentration risk and the substitutability of providers, and weighs the risks of subcontracting including insolvency, urgent data recovery, third-country data protection and complex subcontracting chains.",
+    "controlFamily": "Managing ICT third-party risk",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_c5fa1cdae3f07adce87973b5",
+    "name": "Third-Party Contractual Provisions",
+    "description": "Ensures contractual arrangements are set out in writing with a clear allocation of rights and obligations, and include the required service level, data, cooperation, termination, audit and exit provisions, including additional elements for critical or important functions.",
+    "controlFamily": "Managing ICT third-party risk",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_bb5e52d75441af38fa99038c",
+    "name": "Cyber Threat Information Sharing",
+    "description": "Participates in trusted information-sharing arrangements on cyber threat information and intelligence within communities of financial entities, governed by rules of conduct that protect sensitive information, and notifies competent authorities of participation.",
+    "controlFamily": "Information-sharing arrangements",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_d84153950b6d4dcc97b38d16",
+    "name": "Information Security Management Program",
+    "description": "Governs information security through a formal, management-approved program aligned to organizational risk, covering the design, implementation, monitoring and continuous improvement of security controls.",
+    "controlFamily": "Information Security Management Program",
+    "documentTypes": [
+      "board_meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_9ef4bb00c111f3fe9d326416",
+    "name": "Business Requirement for Access Control",
+    "description": "Defines the business requirements for controlling access to information and processing facilities through a documented and reviewed access control policy.",
+    "controlFamily": "Access Control",
+    "documentTypes": [
+      "access_request"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_6d4cc45feaafde71d995a0c8",
+    "name": "User Access Management",
+    "description": "Manages the full lifecycle of user access, including registration, de-registration, privileged access allocation, password management and regular review of access rights.",
+    "controlFamily": "Access Control",
+    "documentTypes": [
+      "access_request",
+      "rbac_matrix"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_b86cb601ef58a60f4a3a2f25",
+    "name": "User Responsibilities",
+    "description": "Sets expectations for users, including secure password practices, protection of unattended equipment and adherence to clear desk and clear screen requirements.",
+    "controlFamily": "Access Control",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_36794e3c8a0c2c6616058496",
+    "name": "Network Access Control",
+    "description": "Controls access to network services, including authentication of external connections, equipment identification, protection of remote ports and logical segregation of networks.",
+    "controlFamily": "Access Control",
+    "documentTypes": [
+      "network_diagram"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_ae4507e8636ed0f1c55636b5",
+    "name": "Operating System Access Control",
+    "description": "Secures operating system access through controlled log-on procedures, user authentication, password management, restricted use of system utilities, session time-outs and connection limits.",
+    "controlFamily": "Access Control",
+    "documentTypes": [
+      "access_request",
+      "rbac_matrix"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_6fbfcc14bc0623f1dd6b2bc6",
+    "name": "Application and Information Access Control",
+    "description": "Restricts access to application and system information, in particular sensitive data, and isolates sensitive systems from less trusted environments.",
+    "controlFamily": "Access Control",
+    "documentTypes": [
+      "rbac_matrix"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_23ebb55afa6b90207c38a31c",
+    "name": "Mobile Computing and Teleworking",
+    "description": "Protects mobile computing and communications and teleworking arrangements so that devices and the data they hold are controlled and secured.",
+    "controlFamily": "Access Control",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_28fd5f77242d4e4a77c7a68a",
+    "name": "Prior to Employment",
+    "description": "Defines information security roles and responsibilities and screens employees and contractors prior to engagement, proportional to the role and legal requirements.",
+    "controlFamily": "Human Resources Security",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_c5211007a5863b316b3cb5c1",
+    "name": "During On-Boarding",
+    "description": "Ensures information security responsibilities and duties are included in the terms and conditions of employment and contractor agreements.",
+    "controlFamily": "Human Resources Security",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_dae7ccde6db0ca87144a1ab0",
+    "name": "During Employment",
+    "description": "Manages personnel information security during employment, including management responsibilities, ongoing awareness and training, and a formal disciplinary process.",
+    "controlFamily": "Human Resources Security",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_56ec50a1c404327f9b7a6346",
+    "name": "Termination or Change of Employment",
+    "description": "Manages information security at termination or change of employment, covering responsibilities, the return of assets and the prompt removal or adjustment of access rights.",
+    "controlFamily": "Human Resources Security",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_d4885777353cae9b24dfff8b",
+    "name": "Risk Management Program",
+    "description": "Establishes and operates a structured risk management program covering the identification, analysis, evaluation, mitigation and ongoing evaluation of information security risk.",
+    "controlFamily": "Risk Management",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_09b8ec944ef4075925a92d9c",
+    "name": "Information Security Policy",
+    "description": "Documents, communicates and periodically reviews the information security policy expressing management direction for protecting information assets.",
+    "controlFamily": "Security Policy",
+    "documentTypes": [
+      "board_meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_9c5a0e6eb1bd2436e1345185",
+    "name": "Internal Organization",
+    "description": "Establishes management commitment, coordination, allocation of responsibilities and independent review of information security, together with confidentiality agreements and contacts with authorities and security groups.",
+    "controlFamily": "Organization of Information Security",
+    "documentTypes": [
+      "board_meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_e3cb4d27ca2e973e0e58c770",
+    "name": "External Parties",
+    "description": "Identifies and controls security risks related to external parties, addressing security when dealing with customers and in agreements with third parties.",
+    "controlFamily": "Organization of Information Security",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_9a4852fe036483c1c53696ea",
+    "name": "Compliance with Legal Requirements",
+    "description": "Identifies applicable legislation and maintains compliance, including intellectual property rights, protection of organizational records and covered data, prevention of misuse and regulation of cryptography.",
+    "controlFamily": "Compliance",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_5b28299ade3bb03f21e220d2",
+    "name": "Compliance with Security Policies and Standards",
+    "description": "Ensures compliance with security policies, standards and technical requirements, including management enforcement and regular technical compliance checking.",
+    "controlFamily": "Compliance",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_75595abb897c674c74e247cf",
+    "name": "Information Systems Audit Considerations",
+    "description": "Plans information systems audits to minimize disruption and protects audit tools and audit-related information from misuse.",
+    "controlFamily": "Compliance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_71d1ea88aeb67e07fec80495",
+    "name": "Responsibility for Assets",
+    "description": "Maintains an inventory of assets with assigned owners and documents rules for the acceptable use of information assets and facilities.",
+    "controlFamily": "Asset Management",
+    "documentTypes": [
+      "infrastructure_inventory"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_2b0a0511139af40798bf5951",
+    "name": "Information Classification",
+    "description": "Defines and applies information classification guidelines and procedures for labeling and handling information according to its sensitivity.",
+    "controlFamily": "Asset Management",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_a59f61d20f3eecb5a19878a2",
+    "name": "Secure Areas",
+    "description": "Protects facilities and the areas containing information processing via security perimeters, physical entry controls, secure offices and rooms, environmental protection and controls for secure areas and delivery points.",
+    "controlFamily": "Physical and Environmental Security",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_d817fb779d49180bf9b1bf84",
+    "name": "Equipment Security",
+    "description": "Protects equipment through appropriate siting, supporting utilities, cabling security, maintenance, off-premises controls, secure disposal or re-use, and control over the removal of property.",
+    "controlFamily": "Physical and Environmental Security",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_e861d90fa6cae50ebf791c05",
+    "name": "Documented Operating Procedures",
+    "description": "Documents operating procedures and controls changes, segregates duties and separates development, test and operational environments.",
+    "controlFamily": "Communications and Operations Management",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_09c3a9f6c95b7566ba8b3bc7",
+    "name": "Control of Third Party Service Delivery",
+    "description": "Ensures third-party services are delivered and monitored in line with agreed security controls, service definitions and delivery levels, and that changes to services are managed.",
+    "controlFamily": "Communications and Operations Management",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_6c96e3d2509ff5be093470f2",
+    "name": "System Planning and Acceptance",
+    "description": "Monitors and manages capacity and establishes formal acceptance criteria before new systems are placed into operation.",
+    "controlFamily": "Communications and Operations Management",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_3402e0b4bfef74f61e14ab2f",
+    "name": "Protection Against Malicious and Mobile Code",
+    "description": "Protects systems against malicious code and controls the use of mobile code through prevention, detection and user awareness.",
+    "controlFamily": "Communications and Operations Management",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_68809bf38d76dd50435f8abf",
+    "name": "Information Back-Up",
+    "description": "Takes regular backup copies of information, software and system images in line with documented policies and tests the ability to restore them.",
+    "controlFamily": "Communications and Operations Management",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_ad209ae35deaacdcc85d8550",
+    "name": "Network Security Management",
+    "description": "Manages and controls networks and network services, including traffic, segmentation, connectivity and agreed security features and service levels.",
+    "controlFamily": "Communications and Operations Management",
+    "documentTypes": [
+      "network_diagram"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_483ff3e825675afe5514fb71",
+    "name": "Media Handling",
+    "description": "Manages removable media, secure disposal, information handling procedures and the security of system documentation.",
+    "controlFamily": "Communications and Operations Management",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_81126df1f4857c87b07072fc",
+    "name": "Exchange of Information",
+    "description": "Establishes policies and agreements for exchanging information, including electronic messaging, physical media in transit and interconnected business systems.",
+    "controlFamily": "Communications and Operations Management",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_043731b31211994d3c469730",
+    "name": "On-line Transactions",
+    "description": "Secures electronic commerce services and online transactions, including the protection of transaction information and publicly available information.",
+    "controlFamily": "Communications and Operations Management",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_3cb8bfcd9b4fd2b161130777",
+    "name": "Monitoring",
+    "description": "Logs and monitors system and administrator activity, protects log information, logs faults and synchronizes clocks to support accurate correlation of audit records.",
+    "controlFamily": "Communications and Operations Management",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_20a69fd4710c1adbdb2f083b",
+    "name": "Security Requirements of Information Systems",
+    "description": "Includes information security requirements in the specification and design of new systems and enhancements.",
+    "controlFamily": "Information Systems Acquisition, Development, and Maintenance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_d808542ce441bb2e543aa845",
+    "name": "Correct Processing in Applications",
+    "description": "Validates input, processing, message integrity and output in applications to ensure correct and complete processing.",
+    "controlFamily": "Information Systems Acquisition, Development, and Maintenance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_a0d3e311c83b23a4682da63a",
+    "name": "Cryptographic Controls",
+    "description": "Establishes a policy on cryptographic controls and manages cryptographic keys through a defined lifecycle.",
+    "controlFamily": "Information Systems Acquisition, Development, and Maintenance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_f87a54cd3fca9a84e33d2c59",
+    "name": "Security of System Files",
+    "description": "Controls operational software, protects system test data and restricts access to program source code.",
+    "controlFamily": "Information Systems Acquisition, Development, and Maintenance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_dae8c24b02a77c23b8299321",
+    "name": "Security in Development and Support Processes",
+    "description": "Applies change control procedures to systems and reviews applications after operating system changes to confirm they continue to operate securely.",
+    "controlFamily": "Information Systems Acquisition, Development, and Maintenance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_ced4eaaacee424fb4956c27f",
+    "name": "Vulnerability Management",
+    "description": "Obtains, evaluates and remediates technical vulnerabilities in a timely manner, including risk assessment of affected systems.",
+    "controlFamily": "Information Systems Acquisition, Development, and Maintenance",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_2e33b35db7d3899a90a1ccfd",
+    "name": "Reporting Information Security Incidents and Weaknesses",
+    "description": "Enables the reporting of information security events and observed weaknesses through defined channels as quickly as possible.",
+    "controlFamily": "Information Security Incident Management",
+    "documentTypes": [
+      "tabletop_exercise"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_92d4f85efb27763e4799aaa0",
+    "name": "Management of Information Security Incidents and Improvements",
+    "description": "Defines responsibilities and procedures for responding to incidents, learns from incidents to prevent recurrence and collects and preserves evidence.",
+    "controlFamily": "Information Security Incident Management",
+    "documentTypes": [
+      "tabletop_exercise"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_fdf18ed6c72a845235b057ea",
+    "name": "Information Security Aspects of Business Continuity Management",
+    "description": "Integrates information security into business continuity management, including risk assessment, continuity planning, a planning framework and periodic testing and re-assessment.",
+    "controlFamily": "Business Continuity Management",
+    "documentTypes": [
+      "tabletop_exercise"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_95bfcf561dc18b87d2ffc111",
+    "name": "Transparency",
+    "description": "Provides individuals with clear privacy notices, openness about privacy practices and an accounting of disclosures.",
+    "controlFamily": "Privacy Practices",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_a9881af903915b68089b487d",
+    "name": "Individual Participation",
+    "description": "Obtains consent and provides choice and individual access to personal information, with the ability to review and challenge its accuracy.",
+    "controlFamily": "Privacy Practices",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_c72d69a304cca6042bbde241",
+    "name": "Purpose Specification",
+    "description": "Collects and uses personal information only for legitimate purposes that are specified at or before collection.",
+    "controlFamily": "Privacy Practices",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_0c82e1fe36891a516a941772",
+    "name": "Data Minimization",
+    "description": "Limits the collection and use of personal information to what is necessary for the specified purposes.",
+    "controlFamily": "Privacy Practices",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_b3ce88a98ed73acff054e503",
+    "name": "Use Limitation",
+    "description": "Limits the disclosure of personal information to stated purposes and retains it only as long as necessary, with secure disposal.",
+    "controlFamily": "Privacy Practices",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_643a1ffa57dfb4de403f8039",
+    "name": "Data Quality and Integrity",
+    "description": "Maintains the accuracy and integrity of personal information, provides redress for complaints and complies with applicable privacy requirements.",
+    "controlFamily": "Privacy Practices",
+    "documentTypes": [],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
+  },
+  {
+    "id": "frk_ct_22940946ab2cd717bedfba82",
+    "name": "Accountability & Auditing",
+    "description": "Governs privacy through assigned responsibility, impact and risk assessment, third-party requirements, monitoring and auditing, awareness and training, and reporting.",
+    "controlFamily": "Privacy Practices",
+    "documentTypes": [
+      "meeting"
+    ],
+    "createdAt": "2026-08-11 00:00:00.000",
+    "updatedAt": "2026-08-11 00:00:00.000"
   }
 ]

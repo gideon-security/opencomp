@@ -136,6 +136,39 @@ describe('FrameworksOverview permission gating', () => {
     expect(badge).toHaveAttribute('src', '/badges/pci-dss.svg');
   });
 
+  it.each([
+    ['NIS 2', '/badges/nis2.svg'],
+    ['DORA', '/badges/dora.svg'],
+    ['HITRUST CSF', '/badges/hitrust.svg'],
+  ])('renders %s badge for %s framework instances', (name, expectedSrc) => {
+    setMockPermissions({});
+    mockFrameworksData.push({
+      id: `fi_${name.replace(/\s+/g, '_').toLowerCase()}`,
+      framework: { id: `fw_${name.replace(/\s+/g, '_').toLowerCase()}`, name },
+    } as never);
+
+    render(
+      <FrameworksOverview
+        {...baseProps}
+        overallComplianceScore={0}
+        frameworksWithControls={[
+          {
+            id: `fi_${name.replace(/\s+/g, '_').toLowerCase()}`,
+            controls: [],
+            framework: {
+              id: `fw_${name.replace(/\s+/g, '_').toLowerCase()}`,
+              name,
+              description: `${name} framework instance`,
+            },
+          } as any,
+        ]}
+      />,
+    );
+
+    const badge = screen.getByAltText(name);
+    expect(badge).toHaveAttribute('src', expectedSrc);
+  });
+
   it('re-renders the list from fresh SWR data after a framework is added', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
 
