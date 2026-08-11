@@ -1,8 +1,8 @@
 'use client';
 
-import { Icons } from '@gideon-defender/ui/icons';
+import { BrandLogo } from '@gideon-defender/ui/brand-logo';
 import { Card, CardContent, CardHeader, CardTitle } from '@gideon-defender/ui/card';
-import { Loader2, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -21,14 +21,18 @@ export default function DeviceCallbackPage() {
 
     if (!callbackPort || !state) {
       setStatus('error');
-      setErrorMessage('Missing required parameters. Please try signing in again from the OpenComp agent.');
+      setErrorMessage(
+        'Missing required parameters. Please try signing in again from the OpenComp agent.',
+      );
       return;
     }
 
     const port = Number.parseInt(callbackPort, 10);
     if (Number.isNaN(port) || port < 1 || port > 65535) {
       setStatus('error');
-      setErrorMessage('Invalid callback port. Please try signing in again from the OpenComp agent.');
+      setErrorMessage(
+        'Invalid callback port. Please try signing in again from the OpenComp agent.',
+      );
       return;
     }
 
@@ -72,7 +76,9 @@ export default function DeviceCallbackPage() {
       <main className="flex flex-1 items-center justify-center p-6">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center space-y-3 pt-10">
-            <Icons.Logo className="h-10 w-10 mx-auto" />
+            <div className="mx-auto">
+              <BrandLogo iconSize={40} />
+            </div>
             <CardTitle className="text-xl tracking-tight text-card-foreground">
               {status === 'redirecting' && 'Completing sign-in...'}
               {status === 'success' && 'Sign-in complete!'}
@@ -96,11 +102,7 @@ export default function DeviceCallbackPage() {
                 </p>
               </div>
             )}
-            {status === 'error' && (
-              <p className="text-sm text-destructive">
-                {errorMessage}
-              </p>
-            )}
+            {status === 'error' && <p className="text-sm text-destructive">{errorMessage}</p>}
           </CardContent>
         </Card>
       </main>

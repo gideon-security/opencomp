@@ -19,7 +19,6 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { openai } from '@ai-sdk/openai';
 import {
   streamText,
   convertToModelMessages,
@@ -39,7 +38,7 @@ import { AssistantChatService } from './assistant-chat.service';
 import { buildTools } from './assistant-chat-tools';
 import type { AssistantChatMessage } from './assistant-chat.types';
 import { RolesService } from '../roles/roles.service';
-import { ASSISTANT_OPENAI_PROVIDER_OPTIONS } from './openai-options';
+import { resolveAssistantChatModel } from './assistant-chat-model';
 import { getAITelemetry } from '../inference-tracing';
 import { resolveAssistantChatContext } from './assistant-chat-context';
 
@@ -80,7 +79,8 @@ export class AssistantChatController {
   ) {
     // @Res() bypasses NestJS exception filters, so we must handle errors manually
     try {
-      if (!process.env.OPENAI_API_KEY) {
+      const modelConfig = resolveAssistantChatModel();
+      if (!modelConfig) {
         res
           .status(HttpStatus.SERVICE_UNAVAILABLE)
           .json({ message: 'AI service not configured' });
@@ -119,11 +119,11 @@ Important:
 `;
 
       const result = streamText({
-        model: openai('gpt-5'),
+        model: modelConfig.model,
         system: systemPrompt,
         messages: await convertToModelMessages(messages),
         tools,
-        providerOptions: ASSISTANT_OPENAI_PROVIDER_OPTIONS,
+        providerOptions: modelConfig.providerOptions,
         stopWhen: stepCountIs(5),
         experimental_telemetry: getAITelemetry('grc-assistant'),
       });

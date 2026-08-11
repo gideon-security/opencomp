@@ -6,6 +6,7 @@
     "dependencies": {
         "@1password/sdk": "0.4.0",
         "@ai-sdk/anthropic": "^3.0.75",
+        "@ai-sdk/google": "^3.0.68",
         "@ai-sdk/groq": "^3.0.38",
         "@ai-sdk/openai": "^3.0.62",
         "@aws-sdk/client-acm": "^3.948.0",

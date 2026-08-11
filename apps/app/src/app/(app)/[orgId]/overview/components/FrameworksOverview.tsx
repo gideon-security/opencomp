@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { usePermissions } from '@/hooks/use-permissions';
+import { useFrameworks } from '@/hooks/use-frameworks';
 import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import { AddFrameworkModal } from './AddFrameworkModal';
 import type { FrameworkInstanceWithComplianceScore } from './types';
@@ -88,6 +89,7 @@ export function FrameworksOverview({
   const [isAddFrameworkModalOpen, setIsAddFrameworkModalOpen] = useState(false);
   const { hasPermission } = usePermissions();
   const { orgId } = useParams<{ orgId: string }>();
+  const { frameworks } = useFrameworks({ initialData: frameworksWithControls });
 
   const complianceMap = new Map(
     frameworksWithCompliance?.map((f) => [f.frameworkInstance.id, f.complianceScore]) ?? [],
@@ -95,7 +97,7 @@ export function FrameworksOverview({
 
   const availableFrameworksToAdd = allFrameworks.filter(
     (framework) =>
-      !frameworksWithControls.some(
+      !frameworks.some(
         (fc) =>
           fc.framework?.id === framework.id ||
           fc.customFramework?.id === framework.id,
@@ -122,7 +124,7 @@ export function FrameworksOverview({
         <div className="h-[300px]">
           <ScrollArea className="h-full">
             <div className="space-y-0 pr-4">
-              {frameworksWithControls.map((framework, index) => {
+              {frameworks.map((framework, index) => {
                 const complianceScore = complianceMap.get(framework.id) ?? 0;
                 const badgeSrc = mapFrameworkToBadge(framework);
                 const displayName =
@@ -185,7 +187,7 @@ export function FrameworksOverview({
                         </div>
                       </div>
                     </Link>
-                    {index < frameworksWithControls.length - 1 && (
+                    {index < frameworks.length - 1 && (
                       <div className="border-t border-muted/30" />
                     )}
                   </div>

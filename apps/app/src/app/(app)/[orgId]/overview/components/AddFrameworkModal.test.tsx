@@ -1,9 +1,17 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  setMockPermissions,
+  ADMIN_PERMISSIONS,
+  AUDITOR_PERMISSIONS,
+  mockHasPermission,
+} from '@/test-utils/mocks/permissions';
 
-const mockUseSession = vi.fn();
-vi.mock('@/utils/auth-client', () => ({
-  useSession: () => mockUseSession(),
+vi.mock('@/hooks/use-permissions', () => ({
+  usePermissions: () => ({
+    permissions: {},
+    hasPermission: mockHasPermission,
+  }),
 }));
 
 const mockAddFrameworks = vi.fn();
@@ -88,12 +96,12 @@ const defaultProps = {
 describe('AddFrameworkModal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseSession.mockReturnValue({ data: { user: { role: 'admin' }, session: {} } });
+    setMockPermissions(ADMIN_PERMISSIONS);
   });
 
   describe('Permission gating', () => {
-    it('enables the "Add Selected" button once a framework is selected, for admin users', () => {
-      mockUseSession.mockReturnValue({ data: { user: { role: 'admin' }, session: {} } });
+    it('enables the "Add Selected" button once a framework is selected, for users with framework:create', () => {
+      setMockPermissions(ADMIN_PERMISSIONS);
 
       render(<AddFrameworkModal {...defaultProps} />);
 
@@ -104,8 +112,8 @@ describe('AddFrameworkModal', () => {
       expect(addButton).not.toBeDisabled();
     });
 
-    it('calls addFrameworks when an admin submits selected frameworks', async () => {
-      mockUseSession.mockReturnValue({ data: { user: { role: 'admin' }, session: {} } });
+    it('calls addFrameworks when a user with framework:create submits selected frameworks', async () => {
+      setMockPermissions(ADMIN_PERMISSIONS);
       mockAddFrameworks.mockResolvedValue({ frameworksAdded: 1 });
 
       render(<AddFrameworkModal {...defaultProps} />);
@@ -117,8 +125,8 @@ describe('AddFrameworkModal', () => {
       expect(mockAddFrameworks).toHaveBeenCalledWith(['fw-1']);
     });
 
-    it('shows a contact-account-manager message instead of adding frameworks for non-admin users', async () => {
-      mockUseSession.mockReturnValue({ data: { user: { role: 'member' }, session: {} } });
+    it('shows a contact-account-manager message instead of adding frameworks for users without framework:create', async () => {
+      setMockPermissions(AUDITOR_PERMISSIONS);
 
       render(<AddFrameworkModal {...defaultProps} />);
 
@@ -131,10 +139,8 @@ describe('AddFrameworkModal', () => {
       expect(mockAddFrameworks).not.toHaveBeenCalled();
     });
 
-    it('allows impersonating staff to add frameworks even without the admin role', async () => {
-      mockUseSession.mockReturnValue({
-        data: { user: { role: 'member' }, session: { impersonatedBy: 'staff_1' } },
-      });
+    it('allows adding frameworks when framework:create is granted (e.g. admin/owner role)', async () => {
+      setMockPermissions(ADMIN_PERMISSIONS);
       mockAddFrameworks.mockResolvedValue({ frameworksAdded: 1 });
 
       render(<AddFrameworkModal {...defaultProps} />);

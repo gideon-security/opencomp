@@ -10,10 +10,10 @@ import {
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
 import type { FrameworkEditorFramework } from '@db';
-import { useSession } from '@/utils/auth-client';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useFrameworks } from '@/hooks/use-frameworks';
+import { usePermissions } from '@/hooks/use-permissions';
 
 type Props = {
   onOpenChange: (isOpen: boolean) => void;
@@ -29,9 +29,8 @@ export function AddFrameworkModal({
   availableFrameworks,
 }: Props) {
   const { addFrameworks } = useFrameworks();
-  const { data: session } = useSession();
-  const isImpersonating = typeof (session?.session as Record<string, unknown>)?.impersonatedBy === 'string';
-  const canAddFramework = session?.user?.role === 'admin' || isImpersonating;
+  const { hasPermission } = usePermissions();
+  const canAddFramework = hasPermission('framework', 'create');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showContactMessage, setShowContactMessage] = useState(false);

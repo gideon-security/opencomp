@@ -1,5 +1,6 @@
 'use client';
 
+import { BrandLogo } from '@gideon-defender/ui/brand-logo';
 import { Button } from '@gideon-defender/ui/button';
 import { Icons } from '@gideon-defender/ui/icons';
 import { Sheet, SheetContent } from '@gideon-defender/ui/sheet';
@@ -23,7 +24,7 @@ export function MobileMenu() {
       </div>
       <SheetContent side="left" className="-ml-2 rounded-sm border-none">
         <div className="mb-8 ml-2">
-          <Icons.Logo />
+          <BrandLogo />
         </div>
 
         <MainMenu onSelect={() => setOpen(false)} />

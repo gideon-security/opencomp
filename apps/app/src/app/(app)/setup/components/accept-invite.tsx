@@ -2,8 +2,8 @@
 
 import { completeInvitation } from '@/actions/organization/accept-invitation';
 import { authClient } from '@/utils/auth-client';
+import { BrandLogo } from '@gideon-defender/ui/brand-logo';
 import { Button } from '@gideon-defender/ui/button';
-import { Icons } from '@gideon-defender/ui/icons';
 import { Loader2 } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import Link from 'next/link';
@@ -52,7 +52,7 @@ export function AcceptInvite({
     <div className="bg-card relative w-full max-w-[440px] rounded-sm border p-8 shadow-lg">
       <div className="mb-8 flex justify-center">
         <Link href="/">
-          <Icons.Logo />
+          <BrandLogo iconSize={40} />
         </Link>
       </div>
 

@@ -2,6 +2,7 @@ import { LoginForm } from '@/components/login-form';
 import { env } from '@/env.mjs';
 import { auth } from '@/utils/auth';
 import { getSafeRedirectPath } from '@/utils/auth-callback';
+import { BrandLogo } from '@gideon-defender/ui/brand-logo';
 import {
   Card,
   CardContent,
@@ -10,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@gideon-defender/ui/card';
-import { Icons } from '@gideon-defender/ui/icons';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import Link from 'next/link';
@@ -53,7 +53,9 @@ export default async function Page({
       <main className="flex flex-1 items-center justify-center p-6">
         <Card className="w-full max-w-lg">
           <CardHeader className="text-center space-y-3 pt-10">
-            <Icons.Logo className="h-10 w-10 mx-auto" />
+            <div className="mx-auto">
+              <BrandLogo iconSize={40} />
+            </div>
             <CardTitle className="text-2xl tracking-tight text-card-foreground">
               Get Started with OpenComp
             </CardTitle>
