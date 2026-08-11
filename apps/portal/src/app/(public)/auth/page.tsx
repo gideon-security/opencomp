@@ -1,5 +1,6 @@
 import { LoginForm } from '@/app/components/login-form';
 import { OtpSignIn } from '@/app/components/otp';
+import { BrandLogo } from '@gideon-defender/ui/brand-logo';
 import { Button } from '@gideon-defender/ui/button';
 import {
   Card,
@@ -9,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@gideon-defender/ui/card';
-import { Icons } from '@gideon-defender/ui/icons';
 import { ArrowRight } from '@trycompai/design-system/icons';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -49,7 +49,9 @@ export default async function Page({
       <main className="flex flex-1 items-center justify-center p-6">
         <Card className="w-full max-w-lg">
           <CardHeader className="text-center space-y-3 pt-10">
-            <Icons.Logo className="h-10 w-10 mx-auto" />
+            <div className="mx-auto">
+              <BrandLogo iconSize={40} />
+            </div>
             <CardTitle className="text-2xl tracking-tight text-card-foreground">
               Employee Portal
             </CardTitle>

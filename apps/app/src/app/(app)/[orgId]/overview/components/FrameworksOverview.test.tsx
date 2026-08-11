@@ -14,6 +14,11 @@ vi.mock('@/hooks/use-permissions', () => ({
   }),
 }));
 
+const mockFrameworksData: { id: string; framework: { id: string; name: string } }[] = [];
+vi.mock('@/hooks/use-frameworks', () => ({
+  useFrameworks: () => ({ frameworks: mockFrameworksData }),
+}));
+
 vi.mock('./AddFrameworkModal', () => ({
   AddFrameworkModal: () => <div data-testid="add-framework-modal" />,
 }));
@@ -52,6 +57,7 @@ const baseProps = {
 describe('FrameworksOverview permission gating', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockFrameworksData.length = 0;
   });
 
   it('shows "Add Framework" button when user has framework:create permission', () => {
@@ -74,6 +80,10 @@ describe('FrameworksOverview permission gating', () => {
 
   it('renders PCI DSS badge for PCI DSS Level 1 framework instances', () => {
     setMockPermissions({});
+    mockFrameworksData.push({
+      id: 'fi_pci_level_1',
+      framework: { id: 'fw_pci_level_1', name: 'PCI DSS Level 1' },
+    } as never);
 
     render(
       <FrameworksOverview
@@ -99,6 +109,10 @@ describe('FrameworksOverview permission gating', () => {
 
   it('renders PCI DSS badge for PCI DSS framework name variants', () => {
     setMockPermissions({});
+    mockFrameworksData.push({
+      id: 'fi_pci_variant',
+      framework: { id: 'fw_pci_variant', name: 'PCI DSS v4.0 Level 1' },
+    } as never);
 
     render(
       <FrameworksOverview
@@ -120,5 +134,20 @@ describe('FrameworksOverview permission gating', () => {
 
     const badge = screen.getByAltText('PCI DSS v4.0 Level 1');
     expect(badge).toHaveAttribute('src', '/badges/pci-dss.svg');
+  });
+
+  it('re-renders the list from fresh SWR data after a framework is added', () => {
+    setMockPermissions(ADMIN_PERMISSIONS);
+
+    const { rerender } = render(<FrameworksOverview {...baseProps} />);
+    expect(screen.queryByText('ISO 27001')).not.toBeInTheDocument();
+
+    mockFrameworksData.push({
+      id: 'fi_iso_27001',
+      framework: { id: 'fw_iso_27001', name: 'ISO 27001' },
+    } as never);
+
+    rerender(<FrameworksOverview {...baseProps} />);
+    expect(screen.getByText('ISO 27001')).toBeInTheDocument();
   });
 });

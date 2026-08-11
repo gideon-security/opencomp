@@ -1,7 +1,7 @@
 'use client';
 
+import { BrandLogo } from '@gideon-defender/ui/brand-logo';
 import { Button } from '@gideon-defender/ui/button';
-import { Icons } from '@gideon-defender/ui/icons';
 import Link from 'next/link';
 
 export function InviteStatusCard({
@@ -20,7 +20,7 @@ export function InviteStatusCard({
   return (
     <div className="bg-card relative w-full max-w-[480px] rounded-sm border p-10 shadow-lg">
       <div className="flex flex-col items-center gap-6 text-center">
-        <Icons.Logo />
+        <BrandLogo iconSize={40} />
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
         <p className="mx-auto max-w-[48ch] text-base leading-relaxed text-muted-foreground">
           {description}

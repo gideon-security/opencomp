@@ -5,6 +5,7 @@ export * from './alert-dialog';
 export * from './animated-size-container';
 export * from './avatar';
 export * from './badge';
+export * from './brand-logo';
 export * from './breadcrumb';
 export * from './button';
 export * from './calendar';

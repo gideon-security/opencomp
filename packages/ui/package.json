@@ -148,6 +148,10 @@
       "types": "./dist/components/badge.d.ts",
       "import": "./dist/components/badge.js"
     },
+    "./brand-logo": {
+      "types": "./dist/components/brand-logo.d.ts",
+      "import": "./dist/components/brand-logo.js"
+    },
     "./breadcrumb": {
       "types": "./dist/components/breadcrumb.d.ts",
       "import": "./dist/components/breadcrumb.js"
