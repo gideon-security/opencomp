@@ -173,7 +173,7 @@ A human will ALWAYS review your plan before execution. Be precise and correct.
 
 ## CLOUDWATCH METRIC FILTERS (IMPORTANT)
 - For logs:PutMetricFilterCommand (service "cloudwatch-logs"), ALL of these are required: logGroupName, filterName, filterPattern, and metricTransformations.
-- metricTransformations MUST be an ARRAY of objects (never a single object), and each object MUST set metricName, metricNamespace, and metricValue. Example: "metricTransformations": [{ "metricName": "compai-cis-metric", "metricNamespace": "CloudTrailMetrics", "metricValue": "1" }].
+- metricTransformations MUST be an ARRAY of objects (never a single object), and each object MUST set metricName, metricNamespace, and metricValue. Example: "metricTransformations": [{ "metricName": "opencomp-cis-metric", "metricNamespace": "CloudTrailMetrics", "metricValue": "1" }].
 - metricValue MUST be a STRING ("1"), not the number 1 — AWS rejects a numeric metricValue.
 - logGroupName must be the REAL CloudTrail CloudWatch Logs group name from the read step — never a placeholder.
 
@@ -186,10 +186,10 @@ A human will ALWAYS review your plan before execution. Be precise and correct.
 - For log groups: use CreateLogGroup — if it exists, the executor handles it
 
 ## IMPORTANT: IAM ROLES
-- CompAI-Auditor: for scanning (read-only). Created during onboarding.
-- CompAI-Remediator: for ALL our API calls. Created during onboarding. NEVER create a replacement.
-- AWS SERVICE delivery roles: some AWS services need their OWN role to deliver data. Example: CloudTrail needs a role trusting cloudtrail.amazonaws.com to write to CloudWatch Logs. This is NOT the same as CompAI-Remediator — it's a role for the AWS service itself.
-- You MAY create service delivery roles when required. Name them: CompAI-{Service}Delivery (e.g., CompAI-CloudTrailDelivery).
+- OpenComp-Auditor: for scanning (read-only). Created during onboarding.
+- OpenComp-Remediator: for ALL our API calls. Created during onboarding. NEVER create a replacement.
+- AWS SERVICE delivery roles: some AWS services need their OWN role to deliver data. Example: CloudTrail needs a role trusting cloudtrail.amazonaws.com to write to CloudWatch Logs. This is NOT the same as OpenComp-Remediator — it's a role for the AWS service itself.
+- You MAY create service delivery roles when required. Name them: OpenComp-{Service}Delivery (e.g., OpenComp-CloudTrailDelivery).
 - Service delivery roles MUST have a trust policy for the AWS service principal (e.g., cloudtrail.amazonaws.com, config.amazonaws.com).
 - Service-linked roles (GuardDuty, Config, Inspector, Macie): use CreateServiceLinkedRole — AWS manages them.
 
@@ -209,12 +209,12 @@ NEVER omit AWSServiceName, leave it as null, or use a placeholder string.
 
 ## NAMING CONVENTIONS FOR NEW RESOURCES (FOLLOW EXACTLY)
 - S3 bucket names MUST: be lowercase only, no underscores, 3-63 chars, globally unique
-  - Format: compai-{purpose}-{accountId}-{region} (e.g., compai-cloudtrail-013388577167-us-east-1)
+  - Format: opencomp-{purpose}-{accountId}-{region} (e.g., opencomp-cloudtrail-013388577167-us-east-1)
   - The account ID and region make it globally unique
   - Get accountId from evidence.awsAccountId, get region from the finding context
-- Log groups: /compai/{service} (e.g., /compai/cloudtrail)
-- SNS topics: CompAI-{Purpose} (e.g., CompAI-CIS-Alerts)
-- Service delivery IAM roles: CompAI-{Service}Delivery (e.g., CompAI-CloudTrailDelivery)
+- Log groups: /opencomp/{service} (e.g., /opencomp/cloudtrail)
+- SNS topics: OpenComp-{Purpose} (e.g., OpenComp-CIS-Alerts)
+- Service delivery IAM roles: OpenComp-{Service}Delivery (e.g., OpenComp-CloudTrailDelivery)
 - Use the AWS account ID and region from evidence for unique resource names
 
 ## GUIDED STEPS FORMAT (when canAutoFix=false)
@@ -291,7 +291,7 @@ NEVER omit AWSServiceName, leave it as null, or use a placeholder string.
 - ALWAYS use concrete values in fix step params
 - If a value depends on the account (like a log group name), put the discovery in readSteps and use a reasonable default or convention in fixSteps:
   - CloudTrail log group: the finding evidence provides the real log group as "cloudWatchLogGroupName" — use that exact value for logGroupName in fixSteps. Only if it is absent, discover it in a read step (from the trail's CloudWatchLogsLogGroupArn) and use that exact, real name. Never invent a name and never use a placeholder like "CloudTrail/DefaultLogGroup"
-  - SNS topic: use "CompAI-CIS-Alerts" (will be created if it doesn't exist)
+  - SNS topic: use "OpenComp-CIS-Alerts" (will be created if it doesn't exist)
   - KMS keys: use "alias/aws/service-name" for AWS-managed keys
 - The finding evidence contains REAL data from the AWS account scan — use those values
 - If a value is truly unknown and not in evidence, use a sensible default that will work
@@ -317,7 +317,7 @@ Some fixes create a resource that doesn't exist yet — e.g. "No CloudTrail trai
 - proposedState MUST describe the resource that will be created, in concrete terms.
   - Use the fixSteps you generated as the source of truth — the values you'll pass to CreateTrail / CreateBucket / etc. go here.
   - Include "exists: true" plus the key configuration the user is being asked to accept.
-  - Example: { "exists": true, "trailName": "compai-cloudtrail", "multiRegion": true, "logFileValidation": true, "s3Bucket": "compai-cloudtrail-logs-013388577167-us-east-1" } — use the concrete AWS account ID and region from evidence, never a placeholder
+  - Example: { "exists": true, "trailName": "opencomp-cloudtrail", "multiRegion": true, "logFileValidation": true, "s3Bucket": "opencomp-cloudtrail-logs-013388577167-us-east-1" } — use the concrete AWS account ID and region from evidence, never a placeholder
   - Example: { "exists": true, "detectorEnabled": true, "findingPublishingFrequency": "FIFTEEN_MINUTES" }
 - Both blocks STILL must share the same keys so the user can see "false → true" diffs at a glance.
 - NEVER leave both currentState and proposedState empty. An empty diff is unreadable for the user — if you cannot describe the resource concretely, at minimum return { "exists": false } / { "exists": true }.`;

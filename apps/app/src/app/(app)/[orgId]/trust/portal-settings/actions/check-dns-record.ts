@@ -81,7 +81,7 @@ export const checkDnsRecordAction = authActionClient
         vercelVerification: true,
       },
     });
-    const expectedTxtValue = `compai-domain-verification=${activeOrgId}`;
+    const expectedTxtValue = `opencomp-domain-verification=${activeOrgId}`;
     const expectedVercelTxtValue = isVercelDomain?.vercelVerification;
 
     let isCnameVerified = false;

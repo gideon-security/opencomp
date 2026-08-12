@@ -341,7 +341,7 @@ export function TrustPortalDomain({
                                     size="icon"
                                     type="button"
                                     onClick={() =>
-                                      handleCopy(`compai-domain-verification=${orgId}`, 'Name')
+                                      handleCopy(`opencomp-domain-verification=${orgId}`, 'Name')
                                     }
                                     className="h-6 w-6 shrink-0"
                                   >
@@ -352,14 +352,14 @@ export function TrustPortalDomain({
                               <td>
                                 <div className="flex items-center justify-between gap-2">
                                   <span className="min-w-0 break-all">
-                                    compai-domain-verification={orgId}
+                                    opencomp-domain-verification={orgId}
                                   </span>
                                   <Button
                                     variant="ghost"
                                     size="icon"
                                     type="button"
                                     onClick={() =>
-                                      handleCopy(`compai-domain-verification=${orgId}`, 'Value')
+                                      handleCopy(`opencomp-domain-verification=${orgId}`, 'Value')
                                     }
                                     className="h-6 w-6 shrink-0"
                                   >
@@ -479,7 +479,7 @@ export function TrustPortalDomain({
                                 size="icon"
                                 type="button"
                                 onClick={() =>
-                                  handleCopy(`compai-domain-verification=${orgId}`, 'Name')
+                                  handleCopy(`opencomp-domain-verification=${orgId}`, 'Name')
                                 }
                                 className="h-6 w-6 shrink-0"
                               >
@@ -491,14 +491,14 @@ export function TrustPortalDomain({
                             <div className="mb-1 font-medium">Value:</div>
                             <div className="flex items-center justify-between gap-2">
                               <span className="min-w-0 break-all">
-                                compai-domain-verification={orgId}
+                                opencomp-domain-verification={orgId}
                               </span>
                               <Button
                                 variant="ghost"
                                 size="icon"
                                 type="button"
                                 onClick={() =>
-                                  handleCopy(`compai-domain-verification=${orgId}`, 'Value')
+                                  handleCopy(`opencomp-domain-verification=${orgId}`, 'Value')
                                 }
                                 className="h-6 w-6 shrink-0"
                               >

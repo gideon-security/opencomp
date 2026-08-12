@@ -33,7 +33,7 @@ const MODEL = anthropic('claude-opus-4-8');
 // natural language with no SDK-call shape to validate, so the strongest
 // model is overkill — we just need clear instructions.
 const FALLBACK_MODEL = anthropic('claude-sonnet-4-6');
-const REMEDIATION_ROLE_NAME = 'CompAI-Remediator';
+const REMEDIATION_ROLE_NAME = 'OpenComp-Remediator';
 
 export interface FindingContext {
   title: string;
@@ -224,7 +224,7 @@ OVERESTIMATE. Better to have 5 extra permissions than to miss one.`,
 
       return {
         ...object,
-        fixScript: `aws iam put-role-policy --role-name ${REMEDIATION_ROLE_NAME} --policy-name CompAI-AutoFix --policy-document '${policy}'`,
+        fixScript: `aws iam put-role-policy --role-name ${REMEDIATION_ROLE_NAME} --policy-name OpenComp-AutoFix --policy-document '${policy}'`,
       };
     } catch (err) {
       this.logger.error(
@@ -259,7 +259,7 @@ OVERESTIMATE. Better to have 5 extra permissions than to miss one.`,
           Action: actions,
           Resource: '*',
         },
-        fixScript: `aws iam put-role-policy --role-name ${REMEDIATION_ROLE_NAME} --policy-name CompAI-AutoFix --policy-document '${policy}'`,
+        fixScript: `aws iam put-role-policy --role-name ${REMEDIATION_ROLE_NAME} --policy-name OpenComp-AutoFix --policy-document '${policy}'`,
       };
     }
   }

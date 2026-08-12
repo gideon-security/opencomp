@@ -184,7 +184,7 @@ export class CloudWatchAdapter implements AwsServiceAdapter {
               title: `${check.name} — metric filter missing`,
               description: `No CloudWatch metric filter found for CIS ${check.id} (${check.name}). A metric filter matching keywords [${check.keywords.join(', ')}] is required.`,
               severity: 'medium',
-              remediation: `Step 1: Create a CloudWatch Logs metric filter using logs:PutMetricFilterCommand with ${logGroupClause}, filterName set to "compai-cis-${check.id}-${check.name.toLowerCase().replace(/\s+/g, '-')}", filterPattern set to the required CIS pattern for ${check.name} matching keywords [${check.keywords.join(', ')}], and metricTransformations containing metricName, metricNamespace "CloudTrailMetrics", and metricValue "1". Step 2: Create an SNS topic using sns:CreateTopicCommand with Name "compai-cis-alerts" if one does not already exist. Step 3: Create a CloudWatch alarm using cloudwatch:PutMetricAlarmCommand with AlarmName "compai-cis-${check.id}-alarm", MetricName matching the filter metric, Namespace "CloudTrailMetrics", Statistic "Sum", Period 300, EvaluationPeriods 1, Threshold 1, ComparisonOperator "GreaterThanOrEqualToThreshold", and AlarmActions set to the SNS topic ARN. Rollback by deleting the alarm with cloudwatch:DeleteAlarmsCommand, deleting the metric filter with logs:DeleteMetricFilterCommand, and optionally deleting the SNS topic with sns:DeleteTopicCommand.`,
+              remediation: `Step 1: Create a CloudWatch Logs metric filter using logs:PutMetricFilterCommand with ${logGroupClause}, filterName set to "opencomp-cis-${check.id}-${check.name.toLowerCase().replace(/\s+/g, '-')}", filterPattern set to the required CIS pattern for ${check.name} matching keywords [${check.keywords.join(', ')}], and metricTransformations containing metricName, metricNamespace "CloudTrailMetrics", and metricValue "1". Step 2: Create an SNS topic using sns:CreateTopicCommand with Name "opencomp-cis-alerts" if one does not already exist. Step 3: Create a CloudWatch alarm using cloudwatch:PutMetricAlarmCommand with AlarmName "opencomp-cis-${check.id}-alarm", MetricName matching the filter metric, Namespace "CloudTrailMetrics", Statistic "Sum", Period 300, EvaluationPeriods 1, Threshold 1, ComparisonOperator "GreaterThanOrEqualToThreshold", and AlarmActions set to the SNS topic ARN. Rollback by deleting the alarm with cloudwatch:DeleteAlarmsCommand, deleting the metric filter with logs:DeleteMetricFilterCommand, and optionally deleting the SNS topic with sns:DeleteTopicCommand.`,
               evidence: {
                 keywords: check.keywords,
                 filterFound: false,
@@ -214,7 +214,7 @@ export class CloudWatchAdapter implements AwsServiceAdapter {
               title: `${check.name} — no metric transformation`,
               description: `Metric filter for CIS ${check.id} (${check.name}) exists but has no metric transformation configured.`,
               severity: 'medium',
-              remediation: `Step 1: Update the existing metric filter using logs:PutMetricFilterCommand with ${updateLogGroupClause}, filterName set to the existing filter name, filterPattern preserved, and metricTransformations containing metricName "compai-cis-${check.id}-metric", metricNamespace "CloudTrailMetrics", and metricValue "1". Step 2: Create an SNS topic using sns:CreateTopicCommand with Name "compai-cis-alerts" if one does not already exist. Step 3: Create a CloudWatch alarm using cloudwatch:PutMetricAlarmCommand with AlarmName "compai-cis-${check.id}-alarm", MetricName "compai-cis-${check.id}-metric", Namespace "CloudTrailMetrics", Statistic "Sum", Period 300, EvaluationPeriods 1, Threshold 1, ComparisonOperator "GreaterThanOrEqualToThreshold", and AlarmActions set to the SNS topic ARN. Rollback by deleting the alarm with cloudwatch:DeleteAlarmsCommand and removing the metric transformation by calling logs:PutMetricFilterCommand with the original filter settings.`,
+              remediation: `Step 1: Update the existing metric filter using logs:PutMetricFilterCommand with ${updateLogGroupClause}, filterName set to the existing filter name, filterPattern preserved, and metricTransformations containing metricName "opencomp-cis-${check.id}-metric", metricNamespace "CloudTrailMetrics", and metricValue "1". Step 2: Create an SNS topic using sns:CreateTopicCommand with Name "opencomp-cis-alerts" if one does not already exist. Step 3: Create a CloudWatch alarm using cloudwatch:PutMetricAlarmCommand with AlarmName "opencomp-cis-${check.id}-alarm", MetricName "opencomp-cis-${check.id}-metric", Namespace "CloudTrailMetrics", Statistic "Sum", Period 300, EvaluationPeriods 1, Threshold 1, ComparisonOperator "GreaterThanOrEqualToThreshold", and AlarmActions set to the SNS topic ARN. Rollback by deleting the alarm with cloudwatch:DeleteAlarmsCommand and removing the metric transformation by calling logs:PutMetricFilterCommand with the original filter settings.`,
               evidence: {
                 filterName: matchingFilter.filterName,
                 logGroupName: updateLogGroup ?? undefined,
@@ -235,7 +235,7 @@ export class CloudWatchAdapter implements AwsServiceAdapter {
               title: `${check.name} — alarm missing`,
               description: `Metric filter for CIS ${check.id} (${check.name}) exists with metric "${metricName}", but no CloudWatch alarm is configured for it.`,
               severity: 'medium',
-              remediation: `Step 1: Create an SNS topic using sns:CreateTopicCommand with Name "compai-cis-alerts" if one does not already exist. Step 2: Create a CloudWatch alarm using cloudwatch:PutMetricAlarmCommand with AlarmName "compai-cis-${check.id}-alarm", MetricName "${metricName}", Namespace "CloudTrailMetrics", Statistic "Sum", Period 300, EvaluationPeriods 1, Threshold 1, ComparisonOperator "GreaterThanOrEqualToThreshold", and AlarmActions set to the SNS topic ARN. Rollback by deleting the alarm with cloudwatch:DeleteAlarmsCommand and optionally deleting the SNS topic with sns:DeleteTopicCommand.`,
+              remediation: `Step 1: Create an SNS topic using sns:CreateTopicCommand with Name "opencomp-cis-alerts" if one does not already exist. Step 2: Create a CloudWatch alarm using cloudwatch:PutMetricAlarmCommand with AlarmName "opencomp-cis-${check.id}-alarm", MetricName "${metricName}", Namespace "CloudTrailMetrics", Statistic "Sum", Period 300, EvaluationPeriods 1, Threshold 1, ComparisonOperator "GreaterThanOrEqualToThreshold", and AlarmActions set to the SNS topic ARN. Rollback by deleting the alarm with cloudwatch:DeleteAlarmsCommand and optionally deleting the SNS topic with sns:DeleteTopicCommand.`,
               evidence: {
                 filterName: matchingFilter.filterName,
                 metricName,
@@ -319,7 +319,7 @@ export class CloudWatchAdapter implements AwsServiceAdapter {
     // Check common namespaces — customers may use any of these
     const namespaces = [
       'CloudTrailMetrics',
-      'CompAI-CIS-Metrics',
+      'opencomp-cis-Metrics',
       'CISBenchmark',
     ];
     try {

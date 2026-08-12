@@ -58,7 +58,7 @@ export const githubAppManifest: IntegrationManifest = {
   baseUrl: 'https://api.github.com',
   defaultHeaders: {
     Accept: 'application/vnd.github.v3+json',
-    'User-Agent': 'CompAI-Integration',
+    'User-Agent': 'OpenComp-Integration',
   },
 
   auth: {

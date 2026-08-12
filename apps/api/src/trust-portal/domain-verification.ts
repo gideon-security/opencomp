@@ -1,7 +1,7 @@
 export interface DomainVerificationInputs {
   /** Did the DNS CNAME record resolve and match a known Vercel target? */
   isCnameVerified: boolean;
-  /** Did the DNS TXT record at the root match `compai-domain-verification=<orgId>`? */
+  /** Did the DNS TXT record at the root match `opencomp-domain-verification=<orgId>`? */
   isTxtVerified: boolean;
   /** Did the DNS TXT at `_vercel` match the token Vercel gave us? */
   isVercelTxtVerified: boolean;

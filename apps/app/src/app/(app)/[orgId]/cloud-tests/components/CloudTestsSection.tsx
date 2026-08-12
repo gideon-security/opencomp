@@ -1320,7 +1320,7 @@ function RemediationSetupDialog({
               <input
                 id="remediation-role-arn"
                 type="text"
-                placeholder="arn:aws:iam::123456789012:role/CompAI-Remediator"
+                placeholder="arn:aws:iam::123456789012:role/OpenComp-Remediator"
                 value={roleArn}
                 onChange={(e) => {
                   setRoleArn(e.target.value);

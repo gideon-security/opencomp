@@ -337,7 +337,7 @@ export class RemediationService {
             )
             .filter((p) => !UNSUPPORTED_S3_ACL_PERMISSIONS.has(p))
             .sort();
-          // Check permissions by reading the ACTUAL policies on CompAI-Remediator
+          // Check permissions by reading the ACTUAL policies on OpenComp-Remediator
           let missingPermissions: string[] | undefined;
           let permissionFixScript: string | undefined;
           try {
@@ -346,7 +346,7 @@ export class RemediationService {
               region,
             );
             this.logger.log(
-              `CompAI-Remediator has ${existingActions.size} actions. Needed: ${permissionsList.length}`,
+              `OpenComp-Remediator has ${existingActions.size} actions. Needed: ${permissionsList.length}`,
             );
             const missing = permissionsList.filter(
               (p) => !this.isPermissionCovered(p, existingActions),
@@ -740,7 +740,7 @@ export class RemediationService {
       const permissionInfo = parseAwsPermissionError(errorMessage);
 
       // If permission error, build script with ALL needed permissions (not just the one that failed)
-      // This prevents overwriting CompAI-AutoFix with a partial list
+      // This prevents overwriting OpenComp-AutoFix with a partial list
       let permissionError:
         | { missingActions: string[]; fixScript?: string }
         | undefined;
@@ -1037,8 +1037,8 @@ export class RemediationService {
     const sorted = [...new Set(permissions)].sort();
     return [
       'aws iam put-role-policy',
-      '  --role-name CompAI-Remediator',
-      '  --policy-name CompAI-AutoFix',
+      '  --role-name OpenComp-Remediator',
+      '  --policy-name OpenComp-AutoFix',
       `  --policy-document '${JSON.stringify({ Version: '2012-10-17', Statement: [{ Effect: 'Allow', Action: sorted, Resource: '*' }] })}'`,
     ].join(' \\\n');
   }
@@ -1051,7 +1051,7 @@ export class RemediationService {
   }
 
   /**
-   * Read the ACTUAL IAM policies attached to CompAI-Remediator and return
+   * Read the ACTUAL IAM policies attached to OpenComp-Remediator and return
    * a Set of all allowed actions. This is deterministic — no simulation.
    */
   private async getExistingRolePermissions(
@@ -1074,7 +1074,7 @@ export class RemediationService {
     });
 
     const actions = new Set<string>();
-    const roleName = 'CompAI-Remediator';
+    const roleName = 'OpenComp-Remediator';
 
     try {
       // List all inline policies

@@ -1147,7 +1147,7 @@ export class TrustPortalService {
       }
     }
 
-    const expectedTxtValue = `compai-domain-verification=${organizationId}`;
+    const expectedTxtValue = `opencomp-domain-verification=${organizationId}`;
     const expectedVercelTxtValue = liveVercelVerification;
 
     // Node's resolve(host, 'TXT') returns string[][] — each inner array is one TXT record

@@ -60,7 +60,7 @@ describe('classifyExecuteResult', () => {
         guidedOnly: true,
         guidedSteps: [
           'Open AWS Console → CloudTrail',
-          'Create a new multi-region trail named compai-cloudtrail',
+          'Create a new multi-region trail named opencomp-cloudtrail',
         ],
       }),
     ).toEqual({
@@ -68,7 +68,7 @@ describe('classifyExecuteResult', () => {
       reason: 'Plan still invalid after AI repair.',
       guidedSteps: [
         'Open AWS Console → CloudTrail',
-        'Create a new multi-region trail named compai-cloudtrail',
+        'Create a new multi-region trail named opencomp-cloudtrail',
       ],
     });
   });
