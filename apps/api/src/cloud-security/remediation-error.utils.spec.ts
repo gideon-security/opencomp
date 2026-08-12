@@ -11,7 +11,7 @@ describe('parseAwsPermissionError', () => {
 
   it('detects "not authorized to perform" pattern', () => {
     const msg =
-      'User: arn:aws:sts::123456789012:assumed-role/CompAI-Remediator/session is not authorized to perform: guardduty:CreateDetector on resource: *';
+      'User: arn:aws:sts::123456789012:assumed-role/OpenComp-Remediator/session is not authorized to perform: guardduty:CreateDetector on resource: *';
     const result = parseAwsPermissionError(msg);
     expect(result.isPermissionError).toBe(true);
     expect(result.missingActions).toContain('guardduty:CreateDetector');

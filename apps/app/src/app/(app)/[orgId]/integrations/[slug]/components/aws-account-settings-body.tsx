@@ -277,7 +277,7 @@ export function AwsAccountSettingsBody({
               label: '',
               type: 'text',
               required: true,
-              placeholder: 'arn:aws:iam::123456789012:role/CompAI-Auditor',
+              placeholder: 'arn:aws:iam::123456789012:role/OpenComp-Auditor',
             }}
             value={roleArn}
             onChange={(v) => setRoleArn(v as string)}
@@ -330,7 +330,7 @@ export function AwsAccountSettingsBody({
               label: '',
               type: 'text',
               required: false,
-              placeholder: 'arn:aws:iam::123456789012:role/CompAI-Remediator',
+              placeholder: 'arn:aws:iam::123456789012:role/OpenComp-Remediator',
             }}
             value={remediationRoleArn}
             onChange={(v) => setRemediationRoleArn(v as string)}

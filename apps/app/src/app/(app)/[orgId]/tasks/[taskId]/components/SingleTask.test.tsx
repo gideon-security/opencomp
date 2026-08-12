@@ -69,6 +69,17 @@ vi.mock('../hooks/use-task-activity', () => ({
   }),
 }));
 
+// Mock useAuditLogs (real hook runs SWR with a 10s refresh interval whose
+// timers fire after the jsdom env tears down -> unhandled `document` errors)
+vi.mock('@/hooks/use-audit-logs', () => ({
+  useAuditLogs: () => ({
+    logs: [],
+    isLoading: false,
+    error: undefined,
+    mutate: vi.fn(),
+  }),
+}));
+
 // Mock useActiveMember
 vi.mock('@/utils/auth-client', () => ({
   useActiveMember: () => ({

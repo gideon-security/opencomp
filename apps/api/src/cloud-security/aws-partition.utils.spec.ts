@@ -16,10 +16,10 @@ describe('aws partition utils', () => {
 
   it('parses commercial and GovCloud role ARNs', () => {
     expect(
-      parseAwsRoleArn('arn:aws:iam::123456789012:role/CompAI-Auditor'),
+      parseAwsRoleArn('arn:aws:iam::123456789012:role/OpenComp-Auditor'),
     ).toEqual({ partition: 'aws', accountId: '123456789012' });
     expect(
-      parseAwsRoleArn('arn:aws-us-gov:iam::123456789012:role/CompAI-Auditor'),
+      parseAwsRoleArn('arn:aws-us-gov:iam::123456789012:role/OpenComp-Auditor'),
     ).toEqual({ partition: 'aws-us-gov', accountId: '123456789012' });
   });
 
@@ -27,7 +27,7 @@ describe('aws partition utils', () => {
     expect(
       validateAwsPartitionConfig({
         partition: 'aws-us-gov',
-        roleArn: 'arn:aws:iam::123456789012:role/CompAI-Auditor',
+        roleArn: 'arn:aws:iam::123456789012:role/OpenComp-Auditor',
         regions: ['us-gov-west-1', 'us-east-1'],
       }),
     ).toEqual([
@@ -40,7 +40,7 @@ describe('aws partition utils', () => {
     expect(
       validateAwsPartitionConfig({
         partition: 'aws',
-        roleArn: 'arn:aws:iam::123456789012:role/CompAI-Auditor',
+        roleArn: 'arn:aws:iam::123456789012:role/OpenComp-Auditor',
         regions: ['us-east-1', 'us-west-2'],
       }),
     ).toEqual([]);
@@ -48,7 +48,7 @@ describe('aws partition utils', () => {
     expect(
       validateAwsPartitionConfig({
         partition: 'aws-us-gov',
-        roleArn: 'arn:aws-us-gov:iam::123456789012:role/CompAI-Auditor',
+        roleArn: 'arn:aws-us-gov:iam::123456789012:role/OpenComp-Auditor',
         regions: ['us-gov-west-1', 'us-gov-east-1'],
       }),
     ).toEqual([]);

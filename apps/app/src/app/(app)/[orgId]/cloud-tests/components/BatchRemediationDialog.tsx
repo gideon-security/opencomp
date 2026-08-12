@@ -121,7 +121,7 @@ function FindingPermissions({
   }, [permissions]);
 
   const script = [
-    'ROLE="CompAI-Remediator" POLICY="CompAI-BatchPermissions"',
+    'ROLE="OpenComp-Remediator" POLICY="OpenComp-BatchPermissions"',
     `NEW='${JSON.stringify(permissions)}'`,
     'CUR=$(aws iam get-role-policy --role-name "$ROLE" --policy-name "$POLICY" --query \'PolicyDocument.Statement[0].Action\' --output json 2>/dev/null || echo \'[]\')',
     'MERGED=$(echo "$CUR $NEW" | jq -s \'add | unique\')',
@@ -222,8 +222,8 @@ function MissingPermsBanner({
   const newPermsJson = JSON.stringify(allMissing);
   const script = [
     '# Merge new permissions with existing (won\'t overwrite)',
-    'ROLE="CompAI-Remediator"',
-    'POLICY="CompAI-BatchPermissions"',
+    'ROLE="OpenComp-Remediator"',
+    'POLICY="OpenComp-BatchPermissions"',
     `NEW_PERMS='${newPermsJson}'`,
     '',
     '# Get existing permissions (empty array if policy doesn\'t exist yet)',

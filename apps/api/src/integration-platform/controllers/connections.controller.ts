@@ -102,10 +102,10 @@ class CreateConnectionDto {
     example: {
       connectionName: 'Production AWS',
       awsType: 'aws-commercial',
-      roleArn: 'arn:aws:iam::123456789012:role/CompAI-Auditor',
+      roleArn: 'arn:aws:iam::123456789012:role/OpenComp-Auditor',
       externalId: 'org_abc123',
       regions: ['us-east-1', 'us-west-2'],
-      remediationRoleArn: 'arn:aws:iam::123456789012:role/CompAI-Remediator',
+      remediationRoleArn: 'arn:aws:iam::123456789012:role/OpenComp-Remediator',
       awsScanMode: 'comp_scanners',
     },
   })
@@ -183,7 +183,7 @@ class UpdateConnectionCredentialsDto {
     type: 'object',
     additionalProperties: true,
     example: {
-      roleArn: 'arn:aws:iam::123456789012:role/CompAI-Auditor',
+      roleArn: 'arn:aws:iam::123456789012:role/OpenComp-Auditor',
       externalId: 'org_abc123',
     },
   })

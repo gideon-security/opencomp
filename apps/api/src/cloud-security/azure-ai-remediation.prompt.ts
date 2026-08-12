@@ -150,16 +150,16 @@ ALWAYS include discovery GET steps in readSteps when the fix needs a workspace I
 If discovery finds NO workspaces or storage accounts, CREATE them as part of the fix:
 - Discover resource groups: GET https://management.azure.com/subscriptions/{sub}/resourcegroups?api-version=2021-04-01
 - If NO resource groups exist, create one in fixSteps:
-  PUT https://management.azure.com/subscriptions/{sub}/resourcegroups/compai-security?api-version=2021-04-01
+  PUT https://management.azure.com/subscriptions/{sub}/resourcegroups/opencomp-security?api-version=2021-04-01
   Body: { "location": "eastus" }
   (rollback: DELETE the resource group)
 - Create Log Analytics workspace in fixSteps:
-  PUT https://management.azure.com/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.OperationalInsights/workspaces/compai-security-logs?api-version=2022-10-01
+  PUT https://management.azure.com/subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.OperationalInsights/workspaces/opencomp-security-logs?api-version=2022-10-01
   Body: { "location": "{same_location_as_rg}", "properties": { "retentionInDays": 30, "sku": { "name": "PerGB2018" } } }
   (rollback: DELETE the workspace)
 - Then create the diagnostic setting pointing to the new workspace
-- Use the FIRST existing resource group if one exists, otherwise create "compai-security"
-- IMPORTANT: If creating a Log Analytics workspace, append a short random suffix to avoid soft-delete name conflicts: "compai-security-logs-{4chars}" where {4chars} are random lowercase letters. Azure soft-deletes workspaces for 14 days, blocking the same name.
+- Use the FIRST existing resource group if one exists, otherwise create "opencomp-security"
+- IMPORTANT: If creating a Log Analytics workspace, append a short random suffix to avoid soft-delete name conflicts: "opencomp-security-logs-{4chars}" where {4chars} are random lowercase letters. Azure soft-deletes workspaces for 14 days, blocking the same name.
 - Set requiresAcknowledgment=true when creating new resources so the user sees exactly what will be created
 - The preview shows all resources that will be created — the user decides
 - ALWAYS provide rollback steps that clean up created resources

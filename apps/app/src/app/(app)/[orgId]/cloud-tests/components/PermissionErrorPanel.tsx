@@ -63,7 +63,7 @@ function buildAwsFixScript(actions: string[]): string | null {
     Version: '2012-10-17',
     Statement: [{ Effect: 'Allow', Action: actions, Resource: '*' }],
   });
-  return `aws iam put-role-policy --role-name CompAI-Remediator --policy-name CompAI-AutoFix --policy-document '${policy}'`;
+  return `aws iam put-role-policy --role-name OpenComp-Remediator --policy-name OpenComp-AutoFix --policy-document '${policy}'`;
 }
 
 function isAzureError(error: string): boolean {

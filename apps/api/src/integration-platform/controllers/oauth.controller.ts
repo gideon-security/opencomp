@@ -676,7 +676,7 @@ export class OAuthController {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             Accept: 'application/vnd.github+json',
-            'User-Agent': 'CompAI-Integration',
+            'User-Agent': 'OpenComp-Integration',
           },
         },
       );

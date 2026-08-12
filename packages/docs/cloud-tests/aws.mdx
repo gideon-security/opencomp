@@ -18,7 +18,7 @@ Once connected, OpenComp scans the regions you select and produces findings mapp
 - **Auth model**: AWS STS `AssumeRole` from a OpenComp–managed principal into a role in your account
 - **External ID**: Required in the trust policy so only a specific OpenComp organization can assume the role
 - **Permissions**: `SecurityAudit` + `ViewOnlyAccess` managed policies, plus two small inline policies for Cost Explorer reads and SSM document metadata
-- **Optional auto-remediation**: A separate role (`CompAI-Remediator`) can be created to enable auto-fix actions — this role is **only used when you explicitly trigger a fix**. The audit role stays read-only.
+- **Optional auto-remediation**: A separate role (`OpenComp-Remediator`) can be created to enable auto-fix actions — this role is **only used when you explicitly trigger a fix**. The audit role stays read-only.
 
 ## Prerequisites
 
@@ -39,7 +39,7 @@ The OpenComp UI walks you through the full flow and displays the exact CloudShel
   <Step title="Run the script in AWS CloudShell">
     Open [AWS CloudShell](https://console.aws.amazon.com/cloudshell) in the account you want to scan and paste the script. It:
 
-    - Creates an IAM role named `CompAI-Auditor`
+    - Creates an IAM role named `OpenComp-Auditor`
     - Attaches `SecurityAudit` and `ViewOnlyAccess` managed policies
     - Adds small inline policies for `ce:GetCostAndUsage` and `ssm:GetDocument` / `ssm:DescribeDocument` / `ssm:ListDocuments`
     - Sets a trust policy that only allows OpenComp to assume the role when the correct External ID is supplied
@@ -49,7 +49,7 @@ The OpenComp UI walks you through the full flow and displays the exact CloudShel
     Copy the Role ARN from the script output and paste it into the OpenComp connection form. Choose the regions you want scanned. The External ID is already filled in.
   </Step>
   <Step title="(Optional) Enable auto-remediation">
-    If you want OpenComp to be able to apply fixes, run the second CloudShell script shown in the UI. It creates a separate `CompAI-Remediator` role with narrower write permissions for the specific services that support auto-fix.
+    If you want OpenComp to be able to apply fixes, run the second CloudShell script shown in the UI. It creates a separate `OpenComp-Remediator` role with narrower write permissions for the specific services that support auto-fix.
   </Step>
   <Step title="Save and run your first scan">
     Click **Save and Connect**. OpenComp validates the role, then queues an initial scan across all selected regions.
@@ -108,7 +108,7 @@ Findings are mapped to the controls used by:
 </Accordion>
 
 <Accordion title="Auto-remediation isn't available" icon="wrench">
-  Auto-remediation requires the separate `CompAI-Remediator` role. Run the second CloudShell script shown in the UI, then paste its Role ARN into the **Remediation Role ARN** field.
+  Auto-remediation requires the separate `OpenComp-Remediator` role. Run the second CloudShell script shown in the UI, then paste its Role ARN into the **Remediation Role ARN** field.
 </Accordion>
 
 ## Support

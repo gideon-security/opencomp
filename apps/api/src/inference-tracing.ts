@@ -8,7 +8,7 @@ export async function initTracing(): Promise<void> {
   if (!process.env.CATALYST_OTLP_TOKEN) return;
 
   tracing = await setup({
-    serviceName: 'compai-api',
+    serviceName: 'opencomp-api',
     modules: { aiSdk: ai },
   });
 

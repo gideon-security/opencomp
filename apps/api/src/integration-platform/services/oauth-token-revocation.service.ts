@@ -95,7 +95,7 @@ export class OAuthTokenRevocationService {
 
     const headers: Record<string, string> = {
       Accept: 'application/json',
-      'User-Agent': 'CompAI-Integration',
+      'User-Agent': 'OpenComp-Integration',
     };
 
     if (revokeConfig.auth === 'basic') {

@@ -44,12 +44,12 @@ describe('normalizeFixPlan — AWS remediation edge cases', () => {
         makeStep({
           service: 's3',
           command: 'PutBucketAclCommand',
-          params: { Bucket: 'compai-cloudtrail-123-us-east-1', ACL: 'private' },
+          params: { Bucket: 'opencomp-cloudtrail-123-us-east-1', ACL: 'private' },
         }),
         makeStep({
           service: 'cloudtrail',
           command: 'CreateTrailCommand',
-          params: { Name: 'compai-cloudtrail', S3BucketName: 'logs' },
+          params: { Name: 'opencomp-cloudtrail', S3BucketName: 'logs' },
         }),
       ],
     });
@@ -158,10 +158,10 @@ describe('normalizeFixPlan — CreateLogGroup logGroupName backfill (CS-787)', (
       service: 'cloudtrail',
       command: 'UpdateTrailCommand',
       params: {
-        Name: 'compai-trail',
+        Name: 'opencomp-trail',
         CloudWatchLogsLogGroupArn: logGroupArn,
         CloudWatchLogsRoleArn:
-          'arn:aws:iam::123456789012:role/CompAI-CloudTrailDelivery',
+          'arn:aws:iam::123456789012:role/opencomp-cloudtrailDelivery',
       },
     });
 
@@ -175,7 +175,7 @@ describe('normalizeFixPlan — CreateLogGroup logGroupName backfill (CS-787)', (
     makeStep({
       service: 'cloudtrail',
       command: 'UpdateTrailCommand',
-      params: { Name: 'compai-trail' },
+      params: { Name: 'opencomp-trail' },
     });
 
   it('leaves an OMITTED logGroupName unfilled when no trail ARN exists (no orphan group / false success — CS-787)', () => {
@@ -328,7 +328,7 @@ describe('normalizeFixPlan — CreateLogGroup logGroupName backfill (CS-787)', (
         makeStep({
           service: 'cloudtrail',
           command: 'CreateTrailCommand',
-          params: { Name: 'compai-trail', S3BucketName: 'compai-logs' },
+          params: { Name: 'opencomp-trail', S3BucketName: 'opencomp-logs' },
         }),
       ],
     });

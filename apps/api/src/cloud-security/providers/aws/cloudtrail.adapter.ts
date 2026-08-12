@@ -32,7 +32,7 @@ export class CloudTrailAdapter implements AwsServiceAdapter {
             'No CloudTrail trails exist. API activity is not being logged.',
           severity: 'critical',
           remediation:
-            'Create a multi-region trail using cloudtrail:CreateTrailCommand with Name set to "compai-cloudtrail", S3BucketName set to the target logging bucket, IsMultiRegionTrail set to true, and EnableLogFileValidation set to true. Then start logging with cloudtrail:StartLoggingCommand using the trail Name. Rollback by calling cloudtrail:StopLoggingCommand and then cloudtrail:DeleteTrailCommand with the trail Name.',
+            'Create a multi-region trail using cloudtrail:CreateTrailCommand with Name set to "opencomp-cloudtrail", S3BucketName set to the target logging bucket, IsMultiRegionTrail set to true, and EnableLogFileValidation set to true. Then start logging with cloudtrail:StartLoggingCommand using the trail Name. Rollback by calling cloudtrail:StopLoggingCommand and then cloudtrail:DeleteTrailCommand with the trail Name.',
           passed: false,
           accountId,
         }),

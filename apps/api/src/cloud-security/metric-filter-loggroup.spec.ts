@@ -37,14 +37,14 @@ describe('applyResolvedMetricFilterLogGroup', () => {
     const other: AwsCommandStep = {
       service: 'sns',
       command: 'CreateTopicCommand',
-      params: { Name: 'compai-cis-alerts' },
+      params: { Name: 'opencomp-cis-alerts' },
       purpose: 'create topic',
     };
     const steps = [other, putMetricFilterStep({ logGroupName: '' })];
     applyResolvedMetricFilterLogGroup(steps, {
       cloudWatchLogGroupName: 'my-ct-logs',
     });
-    expect(steps[0].params).toEqual({ Name: 'compai-cis-alerts' }); // untouched
+    expect(steps[0].params).toEqual({ Name: 'opencomp-cis-alerts' }); // untouched
     expect(steps[1].params.logGroupName).toBe('my-ct-logs');
   });
 

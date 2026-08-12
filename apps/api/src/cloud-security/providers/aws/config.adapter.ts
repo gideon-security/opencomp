@@ -64,7 +64,7 @@ export class ConfigAdapter implements AwsServiceAdapter {
           severity: 'high',
           resourceId: `arn:aws:config:${region}`,
           remediation:
-            'Step 1: Create a service-linked role using iam:CreateServiceLinkedRoleCommand with AWSServiceName set to "config.amazonaws.com" (skip if the role already exists). Step 2: Create a configuration recorder using config-service:PutConfigurationRecorderCommand with ConfigurationRecorder containing name "compai-config-recorder", roleARN set to the Config service role ARN, and recordingGroup set to exactly { allSupported: true, includeGlobalResourceTypes: true }. Do NOT include recordingStrategy, exclusionByResourceTypes, or resourceTypes in recordingGroup — allSupported:true is mutually exclusive with those and AWS rejects the request with a ValidationException. Step 3: Create a delivery channel using config-service:PutDeliveryChannelCommand with DeliveryChannel containing name "compai-delivery-channel" and s3BucketName set to the target bucket. Step 4: Start the recorder using config-service:StartConfigurationRecorderCommand with ConfigurationRecorderName "compai-config-recorder". Rollback by calling config-service:StopConfigurationRecorderCommand with ConfigurationRecorderName "compai-config-recorder".',
+            'Step 1: Create a service-linked role using iam:CreateServiceLinkedRoleCommand with AWSServiceName set to "config.amazonaws.com" (skip if the role already exists). Step 2: Create a configuration recorder using config-service:PutConfigurationRecorderCommand with ConfigurationRecorder containing name "opencomp-config-recorder", roleARN set to the Config service role ARN, and recordingGroup set to exactly { allSupported: true, includeGlobalResourceTypes: true }. Do NOT include recordingStrategy, exclusionByResourceTypes, or resourceTypes in recordingGroup — allSupported:true is mutually exclusive with those and AWS rejects the request with a ValidationException. Step 3: Create a delivery channel using config-service:PutDeliveryChannelCommand with DeliveryChannel containing name "opencomp-delivery-channel" and s3BucketName set to the target bucket. Step 4: Start the recorder using config-service:StartConfigurationRecorderCommand with ConfigurationRecorderName "opencomp-config-recorder". Rollback by calling config-service:StopConfigurationRecorderCommand with ConfigurationRecorderName "opencomp-config-recorder".',
         }),
       );
       return findings;
@@ -149,7 +149,7 @@ export class ConfigAdapter implements AwsServiceAdapter {
           severity: 'medium',
           resourceId: `arn:aws:config:${region}`,
           remediation:
-            'Use config-service:PutDeliveryChannelCommand with DeliveryChannel containing name "compai-delivery-channel" and s3BucketName set to the target logging bucket. Rollback by calling config-service:DeleteDeliveryChannelCommand with DeliveryChannelName "compai-delivery-channel". Note: the configuration recorder must be stopped before deleting a delivery channel.',
+            'Use config-service:PutDeliveryChannelCommand with DeliveryChannel containing name "opencomp-delivery-channel" and s3BucketName set to the target logging bucket. Rollback by calling config-service:DeleteDeliveryChannelCommand with DeliveryChannelName "opencomp-delivery-channel". Note: the configuration recorder must be stopped before deleting a delivery channel.',
         }),
       );
       return findings;

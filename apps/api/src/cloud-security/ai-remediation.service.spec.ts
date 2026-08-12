@@ -442,7 +442,7 @@ describe('AiRemediationService.generateManualSteps', () => {
       object: {
         guidedSteps: [
           'Open AWS Console → CloudTrail → Trails.',
-          'Click "Create trail" and name it compai-cloudtrail.',
+          'Click "Create trail" and name it opencomp-cloudtrail.',
           'Enable multi-region and log file validation, then Save.',
         ],
         reason:
@@ -699,7 +699,7 @@ describe('AiRemediationService MODEL calls omit temperature (opus-4-8 regression
     generateObjectMock.mockResolvedValueOnce({
       object: basePlan({
         fixSteps: [
-          { service: 'cloudtrail', command: 'CreateTrailCommand', params: { Name: 'compai-cloudtrail' }, purpose: 'Create trail' },
+          { service: 'cloudtrail', command: 'CreateTrailCommand', params: { Name: 'opencomp-cloudtrail' }, purpose: 'Create trail' },
         ],
       }),
     });
