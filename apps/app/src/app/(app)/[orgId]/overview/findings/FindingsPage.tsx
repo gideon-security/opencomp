@@ -9,6 +9,7 @@ import {
   PageLayout,
 } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 /**
@@ -17,6 +18,7 @@ import { useState } from 'react';
  * state into the FindingsTab sheet.
  */
 export function FindingsPage({ orgId }: { orgId: string }) {
+  const t = useTranslations('overview');
   const [createOpen, setCreateOpen] = useState(false);
   const { hasPermission } = usePermissions();
   const canCreate = hasPermission('finding', 'create');
@@ -25,7 +27,7 @@ export function FindingsPage({ orgId }: { orgId: string }) {
     <PageLayout
       header={
         <PageHeader
-          title="Overview"
+          title={t('findings.pageTitle')}
           tabs={<OverviewTabs />}
           actions={
             canCreate ? (
@@ -34,7 +36,7 @@ export function FindingsPage({ orgId }: { orgId: string }) {
                 iconLeft={<Add size={16} />}
                 onClick={() => setCreateOpen(true)}
               >
-                Add finding
+                {t('findings.addFinding')}
               </Button>
             ) : null
           }

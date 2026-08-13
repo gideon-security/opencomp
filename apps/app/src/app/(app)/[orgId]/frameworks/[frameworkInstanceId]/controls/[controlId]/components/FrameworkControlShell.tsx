@@ -21,6 +21,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { DocumentsTable } from './DocumentsTable';
 import { LinkDocumentTypeSheet } from './LinkDocumentTypeSheet';
@@ -61,6 +62,7 @@ interface Props {
 
 export function FrameworkControlShell({ orgId, frameworkInstanceId, control, breadcrumbs, documentRows }: Props) {
   const [activeTab, setActiveTab] = useState('policies');
+  const t = useTranslations('frameworks');
 
   const linkedPolicyIds = control.policies.map((p) => p.id);
   const linkedTaskIds = control.tasks.map((t) => t.id);
@@ -98,9 +100,15 @@ export function FrameworkControlShell({ orgId, frameworkInstanceId, control, bre
       >
         <Stack gap="lg">
           <TabsList variant="underline">
-            <TabsTrigger value="policies">Policies ({control.policies.length})</TabsTrigger>
-            <TabsTrigger value="tasks">Tasks ({control.tasks.length})</TabsTrigger>
-            <TabsTrigger value="documents">Documents ({documentRows.length})</TabsTrigger>
+            <TabsTrigger value="policies">
+              {t('controls.policiesTab', { count: control.policies.length })}
+            </TabsTrigger>
+            <TabsTrigger value="tasks">
+              {t('controls.tasksTab', { count: control.tasks.length })}
+            </TabsTrigger>
+            <TabsTrigger value="documents">
+              {t('controls.documentsTab', { count: documentRows.length })}
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="policies">

@@ -14,6 +14,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { TrashCan } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -37,6 +38,8 @@ export function DocumentsTable({
   rows: DocumentTypeRow[];
 }) {
   const { hasPermission } = usePermissions();
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const router = useRouter();
   const [pending, setPending] = useState<string | null>(null);
 
@@ -50,10 +53,14 @@ export function DocumentsTable({
         `/v1/controls/${controlId}/document-types/${formType}?frameworkInstanceId=${frameworkInstanceId}`,
       );
       if (response.error) throw new Error(response.error);
-      toast.success('Document unlinked');
+      toast.success(t('controls.documentUnlinked'));
       router.refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to unlink document');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t('controls.failedToUnlinkDocument'),
+      );
     } finally {
       setPending(null);
     }
@@ -62,7 +69,7 @@ export function DocumentsTable({
   if (rows.length === 0) {
     return (
       <div className="flex h-32 items-center justify-center">
-        <Text variant="muted">No required documents yet.</Text>
+        <Text variant="muted">{t('controls.noRequiredDocuments')}</Text>
       </div>
     );
   }
@@ -71,9 +78,9 @@ export function DocumentsTable({
     <Table variant="bordered">
       <TableHeader>
         <TableRow>
-          <TableHead>Document Type</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Submissions</TableHead>
+          <TableHead>{t('controls.documentTypeHeader')}</TableHead>
+          <TableHead>{tCommon('common.status')}</TableHead>
+          <TableHead>{t('controls.submissionsHeader')}</TableHead>
           {canUpdate ? <TableHead /> : null}
         </TableRow>
       </TableHeader>
@@ -82,10 +89,10 @@ export function DocumentsTable({
           const label = getDocumentTypeLabel(row.formType);
           const satisfied = row.submissionCount > 0;
           const badgeLabel = row.isNotRelevant
-            ? 'Not relevant'
+            ? t('controls.notRelevant')
             : satisfied
-              ? 'Submitted'
-              : 'Missing';
+              ? t('controls.submitted')
+              : t('controls.missing');
           const badgeVariant = row.isNotRelevant
             ? 'secondary'
             : satisfied

@@ -1,17 +1,12 @@
 'use client';
 
 import {
-  FINDING_SEVERITY_CONFIG,
-  FINDING_STATUS_CONFIG,
   useFindingActions,
   useFindingHistory,
   type Finding,
   type FindingHistoryEntry,
 } from '@/hooks/use-findings-api';
 
-function capitalize(s: string) {
-  return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
-}
 import { Comments } from '@/components/comments/Comments';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useSession } from '@/utils/auth-client';
@@ -42,6 +37,7 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { Copy } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -106,11 +102,43 @@ function targetHref(f: Finding, orgId: string): string | null {
   return null;
 }
 
-const LEGACY_SCOPE_LABELS: Record<string, string> = {
-  people: 'People › Directory',
-  people_tasks: 'People › Tasks',
-  people_devices: 'People › Devices',
-  people_chart: 'People › Org chart',
+type SeverityLabelKey =
+  | 'findings.severityLow'
+  | 'findings.severityMedium'
+  | 'findings.severityHigh'
+  | 'findings.severityCritical';
+
+const SEVERITY_LABEL_KEYS: Record<FindingSeverity, SeverityLabelKey> = {
+  low: 'findings.severityLow',
+  medium: 'findings.severityMedium',
+  high: 'findings.severityHigh',
+  critical: 'findings.severityCritical',
+};
+
+type StatusLabelKey =
+  | 'findings.statusOpen'
+  | 'findings.statusReadyForReview'
+  | 'findings.statusNeedsRevision'
+  | 'findings.statusClosed';
+
+const STATUS_LABEL_KEYS: Record<FindingStatus, StatusLabelKey> = {
+  open: 'findings.statusOpen',
+  ready_for_review: 'findings.statusReadyForReview',
+  needs_revision: 'findings.statusNeedsRevision',
+  closed: 'findings.statusClosed',
+};
+
+type LegacyScopeKey =
+  | 'findings.legacyScopeDirectory'
+  | 'findings.legacyScopeTasks'
+  | 'findings.legacyScopeDevices'
+  | 'findings.legacyScopeOrgChart';
+
+const LEGACY_SCOPE_KEYS: Record<string, LegacyScopeKey> = {
+  people: 'findings.legacyScopeDirectory',
+  people_tasks: 'findings.legacyScopeTasks',
+  people_devices: 'findings.legacyScopeDevices',
+  people_chart: 'findings.legacyScopeOrgChart',
 };
 
 /**
@@ -119,7 +147,7 @@ const LEGACY_SCOPE_LABELS: Record<string, string> = {
  * so owners/admins can see where the finding was originally filed — otherwise
  * legacy people-scope findings all look identical under `area='people'`.
  */
-function legacyScopeLabelFromHistory(
+function legacyScopeFromHistory(
   history: FindingHistoryEntry[] | undefined,
 ): string | null {
   if (!history || history.length === 0) return null;
@@ -129,23 +157,7 @@ function legacyScopeLabelFromHistory(
     .find((e) => e.data?.action === 'created');
   const scope = createdEntry?.data?.findingScope;
   if (!scope) return null;
-  return LEGACY_SCOPE_LABELS[scope] ?? scope;
-}
-
-function targetLabel(f: Finding): string {
-  if (f.task) return `Task: ${f.task.title}`;
-  if (f.policy) return `Policy: ${f.policy.name}`;
-  if (f.vendor) return `Vendor: ${f.vendor.name}`;
-  if (f.risk) return `Risk: ${f.risk.title}`;
-  if (f.member) return `Person: ${f.member.user.name ?? f.member.user.email}`;
-  if (f.device) return `Device: ${f.device.name || f.device.hostname}`;
-  if (f.evidenceSubmission) return `Document: ${f.evidenceSubmission.formType}`;
-  if (f.evidenceFormType) return `Document: ${f.evidenceFormType}`;
-  if (f.area === 'risks') return 'Risks (general)';
-  if (f.area === 'vendors') return 'Vendors (general)';
-  if (f.area === 'policies') return 'Policies (general)';
-  if (f.area) return `Area: ${f.area}`;
-  return 'Finding';
+  return scope;
 }
 
 export function FindingDetailSheet({
@@ -156,6 +168,7 @@ export function FindingDetailSheet({
   onSaved,
   onDeleted,
 }: FindingDetailSheetProps) {
+  const t = useTranslations('overview');
   const { hasPermission } = usePermissions();
   const { data: session } = useSession();
   const canUpdate = hasPermission('finding', 'update');
@@ -185,11 +198,42 @@ export function FindingDetailSheet({
 
   if (!finding) return null;
 
+  const targetLabel = (f: Finding): string => {
+    if (f.task) return t('findings.taskTarget', { name: f.task.title });
+    if (f.policy) return t('findings.policyTarget', { name: f.policy.name });
+    if (f.vendor) return t('findings.vendorTarget', { name: f.vendor.name });
+    if (f.risk) return t('findings.riskTarget', { name: f.risk.title });
+    if (f.member)
+      return t('findings.personTarget', {
+        name: f.member.user.name ?? f.member.user.email,
+      });
+    if (f.device)
+      return t('findings.deviceTarget', {
+        name: f.device.name || f.device.hostname,
+      });
+    if (f.evidenceSubmission)
+      return t('findings.documentTarget', {
+        name: f.evidenceSubmission.formType,
+      });
+    if (f.evidenceFormType)
+      return t('findings.documentTarget', { name: f.evidenceFormType });
+    if (f.area === 'risks') return t('findings.areaRisks');
+    if (f.area === 'vendors') return t('findings.areaVendors');
+    if (f.area === 'policies') return t('findings.areaPolicies');
+    if (f.area) return t('findings.areaTarget', { name: f.area });
+    return t('findings.finding');
+  };
+
   const href = targetHref(finding, organizationId);
   const history: FindingHistoryEntry[] = Array.isArray(historyData?.data)
     ? historyData.data
     : [];
-  const legacyScopeLabel = legacyScopeLabelFromHistory(history);
+  const legacyScope = legacyScopeFromHistory(history);
+  const legacyScopeLabel = legacyScope
+    ? LEGACY_SCOPE_KEYS[legacyScope]
+      ? t(LEGACY_SCOPE_KEYS[legacyScope])
+      : legacyScope
+    : null;
 
   const contentChanged = canEditContent && content !== finding.content;
   const isDirty =
@@ -211,12 +255,12 @@ export function FindingDetailSheet({
             ? revisionNote || null
             : undefined,
       });
-      toast.success('Finding updated');
+      toast.success(t('findings.updatedSuccess'));
       onSaved?.();
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to update finding',
+        error instanceof Error ? error.message : t('findings.updateError'),
       );
     } finally {
       setSaving(false);
@@ -227,30 +271,27 @@ export function FindingDetailSheet({
     setDeleting(true);
     try {
       await deleteFinding(finding.id);
-      toast.success('Finding deleted');
+      toast.success(t('findings.deletedSuccess'));
       setConfirmDeleteOpen(false);
       onDeleted?.();
       onOpenChange(false);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to delete finding',
+        error instanceof Error ? error.message : t('findings.deleteError'),
       );
     } finally {
       setDeleting(false);
     }
   };
 
-  const statusCfg = FINDING_STATUS_CONFIG[finding.status];
-  const severityCfg = FINDING_SEVERITY_CONFIG[finding.severity];
-
   const handleCopyShareLink = async () => {
     if (typeof window === 'undefined') return;
     const shareUrl = `${window.location.origin}/${organizationId}/overview/findings?open=${finding.id}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
-      toast.success('Link copied — share it with your team');
+      toast.success(t('findings.linkCopied'));
     } catch {
-      toast.error('Could not copy link to clipboard');
+      toast.error(t('findings.copyLinkError'));
     }
   };
 
@@ -258,15 +299,19 @@ export function FindingDetailSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Finding details</SheetTitle>
+          <SheetTitle>{t('findings.detailTitle')}</SheetTitle>
         </SheetHeader>
         <SheetBody>
           <Stack gap="lg">
             <Stack gap="xs">
               <HStack justify="between" align="center">
                 <HStack gap="xs" align="center">
-                  <Badge variant="secondary">{severityCfg.label}</Badge>
-                  <Badge variant="outline">{statusCfg.label}</Badge>
+                  <Badge variant="secondary">
+                    {t(SEVERITY_LABEL_KEYS[finding.severity])}
+                  </Badge>
+                  <Badge variant="outline">
+                    {t(STATUS_LABEL_KEYS[finding.status])}
+                  </Badge>
                 </HStack>
                 <Button
                   variant="ghost"
@@ -274,7 +319,7 @@ export function FindingDetailSheet({
                   iconLeft={<Copy size={14} />}
                   onClick={handleCopyShareLink}
                 >
-                  Copy link
+                  {t('findings.copyLink')}
                 </Button>
               </HStack>
               <Text size="sm" weight="medium">
@@ -282,7 +327,7 @@ export function FindingDetailSheet({
               </Text>
               {legacyScopeLabel && (
                 <p className="text-xs text-muted-foreground">
-                  Originally logged against{' '}
+                  {t('findings.originallyLoggedAgainst')}{' '}
                   <span className="font-medium text-foreground">
                     {legacyScopeLabel}
                   </span>
@@ -293,13 +338,15 @@ export function FindingDetailSheet({
                   href={href}
                   className="text-xs text-primary underline-offset-2 hover:underline"
                 >
-                  Open linked item →
+                  {t('findings.openLinkedItem')}
                 </Link>
               )}
             </Stack>
 
             <Stack gap="xs">
-              <label className="text-sm font-medium">Content</label>
+              <label className="text-sm font-medium">
+                {t('findings.content')}
+              </label>
               {canEditContent ? (
                 <Textarea
                   value={content}
@@ -315,7 +362,7 @@ export function FindingDetailSheet({
 
             <HStack gap="sm">
               <div className="flex-1"><Stack gap="xs">
-                <label className="text-sm font-medium">Severity</label>
+                <label className="text-sm font-medium">{t('findings.severity')}</label>
                 <Select
                   value={severity}
                   onValueChange={(v) =>
@@ -324,26 +371,26 @@ export function FindingDetailSheet({
                   disabled={!canUpdate}
                 >
                   <SelectTrigger>
-                    {FINDING_SEVERITY_CONFIG[severity].label}
+                    {t(SEVERITY_LABEL_KEYS[severity])}
                   </SelectTrigger>
                   <SelectContent>
                     {SEVERITY_OPTIONS.map((s) => (
                       <SelectItem key={s} value={s}>
-                        {capitalize(s)}
+                        {t(SEVERITY_LABEL_KEYS[s])}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </Stack></div>
               <div className="flex-1"><Stack gap="xs">
-                <label className="text-sm font-medium">Status</label>
+                <label className="text-sm font-medium">{t('common.status')}</label>
                 <Select
                   value={status}
                   onValueChange={(v) => v && setStatus(v as FindingStatus)}
                   disabled={!canUpdate}
                 >
                   <SelectTrigger>
-                    {FINDING_STATUS_CONFIG[status].label}
+                    {t(STATUS_LABEL_KEYS[status])}
                   </SelectTrigger>
                   <SelectContent>
                     {allowedStatusOptions({
@@ -352,7 +399,7 @@ export function FindingDetailSheet({
                       isPlatformAdmin,
                     }).map((s) => (
                       <SelectItem key={s} value={s}>
-                        {FINDING_STATUS_CONFIG[s].label}
+                        {t(STATUS_LABEL_KEYS[s])}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -362,12 +409,14 @@ export function FindingDetailSheet({
 
             {status === FindingStatus.needs_revision && (
               <Stack gap="xs">
-                <label className="text-sm font-medium">Revision note</label>
+                <label className="text-sm font-medium">
+                  {t('findings.revisionNote')}
+                </label>
                 <Textarea
                   value={revisionNote}
                   onChange={(e) => setRevisionNote(e.target.value)}
                   rows={3}
-                  placeholder="What needs to change?"
+                  placeholder={t('findings.revisionNotePlaceholder')}
                   disabled={!canUpdate}
                 />
               </Stack>
@@ -381,7 +430,7 @@ export function FindingDetailSheet({
                   onClick={() => setConfirmDeleteOpen(true)}
                   disabled={deleting}
                 >
-                  Delete
+                  {t('common.delete')}
                 </Button>
               ) : (
                 <span />
@@ -392,7 +441,7 @@ export function FindingDetailSheet({
                   size="sm"
                   onClick={() => onOpenChange(false)}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   size="sm"
@@ -400,14 +449,14 @@ export function FindingDetailSheet({
                   loading={saving}
                   onClick={handleSave}
                 >
-                  Save
+                  {t('common.save')}
                 </Button>
               </HStack>
             </HStack>
 
             <Stack gap="xs">
               <Text size="sm" weight="medium">
-                Comments
+                {t('findings.comments')}
               </Text>
               {finding ? (
                 <Comments
@@ -421,11 +470,11 @@ export function FindingDetailSheet({
 
             <Stack gap="xs">
               <Text size="sm" weight="medium">
-                Activity
+                {t('findings.activity')}
               </Text>
               {history.length === 0 ? (
                 <Text size="xs" variant="muted">
-                  No activity recorded yet.
+                  {t('findings.noActivity')}
                 </Text>
               ) : (
                 <div className="divide-y divide-border rounded-md border border-border bg-muted/30">
@@ -433,7 +482,7 @@ export function FindingDetailSheet({
                     <div key={entry.id} className="p-3">
                       <p className="text-xs text-balance">
                         <strong>
-                          {entry.user?.name || entry.user?.email || 'Someone'}
+                          {entry.user?.name || entry.user?.email || t('findings.someone')}
                         </strong>{' '}
                         {entry.description}
                       </p>
@@ -452,20 +501,19 @@ export function FindingDetailSheet({
       <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete finding?</AlertDialogTitle>
+            <AlertDialogTitle>{t('findings.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This permanently removes the finding and its activity history.
-              This action cannot be undone.
+              {t('findings.deleteDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>{t('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={handleDelete}
               disabled={deleting}
             >
-              {deleting ? 'Deleting…' : 'Delete'}
+              {deleting ? t('findings.deleting') : t('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

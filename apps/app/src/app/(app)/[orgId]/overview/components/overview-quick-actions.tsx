@@ -5,6 +5,7 @@ import {
   PolicyAcknowledgmentInvalidationDialog,
 } from '@/components/policies/PolicyAcknowledgmentInvalidationDialog';
 import type { Policy } from '@db';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -56,6 +57,7 @@ export function usePublishAllPoliciesAction({
   unpublishedPolicies: PublishablePolicy[];
 }) {
   const router = useRouter();
+  const t = useTranslations('overview');
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const isPublishingRef = useRef(false);
@@ -82,11 +84,11 @@ export function usePublishAllPoliciesAction({
         throw new Error('Failed to publish policies');
       }
 
-      toast.success('All policies published!');
+      toast.success(t('quickActions.publishAllSuccess'));
       setIsConfirmDialogOpen(false);
       router.refresh();
     } catch {
-      toast.error('Failed to publish policies.');
+      toast.error(t('quickActions.publishAllError'));
     } finally {
       isPublishingRef.current = false;
       setIsLoading(false);
@@ -109,8 +111,8 @@ export function usePublishAllPoliciesAction({
   const publishAllPoliciesDialog = (
     <PolicyAcknowledgmentInvalidationDialog
       acknowledgmentCount={bulkAcknowledgmentInvalidations}
-      actionDescription="Publishing these policies"
-      confirmText="Publish and invalidate"
+      actionDescription={t('quickActions.publishingDescription')}
+      confirmText={t('quickActions.publishAndInvalidate')}
       isLoading={isLoading}
       onConfirm={() => void handlePublishAllPolicies()}
       onOpenChange={setIsConfirmDialogOpen}

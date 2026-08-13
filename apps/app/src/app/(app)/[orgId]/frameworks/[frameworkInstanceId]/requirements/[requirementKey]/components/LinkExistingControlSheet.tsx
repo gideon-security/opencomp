@@ -14,6 +14,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Link as LinkIcon } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -32,6 +33,7 @@ export function LinkExistingControlSheet({
   const { hasPermission } = usePermissions();
   const { controls } = useControls();
   const router = useRouter();
+  const t = useTranslations('frameworks');
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -69,12 +71,12 @@ export function LinkExistingControlSheet({
         { controlIds: Array.from(selected) },
       );
       if (response.error) throw new Error(response.error);
-      toast.success('Controls linked');
+      toast.success(t('requirements.controlsLinked'));
       setIsOpen(false);
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to link controls',
+        error instanceof Error ? error.message : t('requirements.controlsLinkFailed'),
       );
     } finally {
       setIsSubmitting(false);
@@ -88,17 +90,17 @@ export function LinkExistingControlSheet({
         iconLeft={<LinkIcon size={16} />}
         onClick={() => setIsOpen(true)}
       >
-        Link Control
+        {t('requirements.linkControlButton')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Link Existing Controls</SheetTitle>
+            <SheetTitle>{t('requirements.linkExistingTitle')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
             {options.length === 0 ? (
               <Text size="sm" variant="muted">
-                No additional controls available to link.
+                {t('requirements.noAdditionalControls')}
               </Text>
             ) : (
               <div className="space-y-2">
@@ -126,8 +128,7 @@ export function LinkExistingControlSheet({
                     onClick={handleSubmit}
                     disabled={selected.size === 0 || isSubmitting}
                   >
-                    Link {selected.size || ''} Control
-                    {selected.size === 1 ? '' : 's'}
+                    {t('requirements.linkCount', { count: selected.size })}
                   </Button>
                 </div>
               </div>

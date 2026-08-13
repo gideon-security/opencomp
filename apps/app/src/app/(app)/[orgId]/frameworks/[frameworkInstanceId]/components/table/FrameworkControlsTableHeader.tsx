@@ -3,6 +3,7 @@
 import { Button } from '@gideon-defender/ui/button';
 import { TableHead, TableHeader, TableRow } from '@gideon-defender/ui/table';
 import { ArrowDown, ArrowUp } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 
@@ -21,6 +22,8 @@ type Props = {
 };
 
 export function FrameworkControlsTableHeader({ table, loading }: Props) {
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -62,7 +65,7 @@ export function FrameworkControlsTableHeader({ table, loading }: Props) {
               variant="ghost"
               onClick={() => createSortQuery('name')}
             >
-              <span>{'Control'}</span>
+              <span>{t('controlsTable.columnControl')}</span>
               {'name' === column && value === 'asc' && <ArrowDown size={16} />}
               {'name' === column && value === 'desc' && <ArrowUp size={16} />}
             </Button>
@@ -76,7 +79,7 @@ export function FrameworkControlsTableHeader({ table, loading }: Props) {
               variant="ghost"
               onClick={() => createSortQuery('category')}
             >
-              <span>{'Category'}</span>
+              <span>{t('controlsTable.columnCategory')}</span>
               {'category' === column && value === 'asc' && <ArrowDown size={16} />}
               {'category' === column && value === 'desc' && <ArrowUp size={16} />}
             </Button>
@@ -90,7 +93,7 @@ export function FrameworkControlsTableHeader({ table, loading }: Props) {
               variant="ghost"
               onClick={() => createSortQuery('status')}
             >
-              <span>{'Status'}</span>
+              <span>{tCommon('common.status')}</span>
               {'status' === column && value === 'asc' && <ArrowDown size={16} />}
               {'status' === column && value === 'desc' && <ArrowUp size={16} />}
             </Button>

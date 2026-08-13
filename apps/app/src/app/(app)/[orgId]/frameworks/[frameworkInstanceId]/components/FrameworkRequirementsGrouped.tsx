@@ -15,6 +15,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { ChevronDown, ChevronRight, Search } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 import { useCallback, useMemo, useState } from 'react';
@@ -55,6 +56,7 @@ export function FrameworkRequirementsGrouped({
     frameworkInstanceId: string;
   }>();
   const router = useRouter();
+  const t = useTranslations('frameworks');
 
   const handleRowClick = useCallback(
     (requirementId: string) => {
@@ -158,7 +160,7 @@ export function FrameworkRequirementsGrouped({
               <Search size={16} />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search requirements..."
+              placeholder={t('requirements.searchRequirementsPlaceholder')}
               value={searchTerm}
               onChange={handleSearchChange}
             />
@@ -173,7 +175,7 @@ export function FrameworkRequirementsGrouped({
         />
         {!isSearching && (
           <Button variant="ghost" onClick={handleToggleAll}>
-            {allExpanded ? 'Collapse All' : 'Expand All'}
+            {allExpanded ? t('controlsTable.collapseAll') : t('controlsTable.expandAll')}
           </Button>
         )}
       </div>
@@ -185,7 +187,7 @@ export function FrameworkRequirementsGrouped({
             <TableRow>
               <TableCell colSpan={REQUIREMENTS_TABLE_COLUMN_COUNT}>
                 <Text size="sm" variant="muted">
-                  No requirements found.
+                  {t('requirements.noRequirementsFound')}
                 </Text>
               </TableCell>
             </TableRow>

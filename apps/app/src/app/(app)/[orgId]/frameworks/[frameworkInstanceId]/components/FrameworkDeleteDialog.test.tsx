@@ -7,6 +7,9 @@ import {
   NO_PERMISSIONS,
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -108,7 +111,7 @@ describe('FrameworkDeleteDialog', () => {
 
       render(<FrameworkDeleteDialog {...defaultProps} />);
 
-      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      const deleteButton = screen.getByRole('button', { name: 'common.delete' });
       expect(deleteButton).not.toBeDisabled();
     });
 
@@ -117,7 +120,7 @@ describe('FrameworkDeleteDialog', () => {
 
       render(<FrameworkDeleteDialog {...defaultProps} />);
 
-      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      const deleteButton = screen.getByRole('button', { name: 'common.delete' });
       expect(deleteButton).toBeDisabled();
     });
 
@@ -126,7 +129,7 @@ describe('FrameworkDeleteDialog', () => {
 
       render(<FrameworkDeleteDialog {...defaultProps} />);
 
-      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      const deleteButton = screen.getByRole('button', { name: 'common.delete' });
       expect(deleteButton).toBeDisabled();
     });
 
@@ -145,9 +148,9 @@ describe('FrameworkDeleteDialog', () => {
 
       render(<FrameworkDeleteDialog {...defaultProps} />);
 
-      expect(screen.getByText('Delete Framework')).toBeInTheDocument();
+      expect(screen.getByText('instance.deleteDialogTitle')).toBeInTheDocument();
       expect(
-        screen.getByText(/are you sure you want to delete this framework/i),
+        screen.getByText('instance.deleteDialogDescription'),
       ).toBeInTheDocument();
     });
 
@@ -156,7 +159,7 @@ describe('FrameworkDeleteDialog', () => {
 
       render(<FrameworkDeleteDialog {...defaultProps} />);
 
-      const cancelButton = screen.getByRole('button', { name: /cancel/i });
+      const cancelButton = screen.getByRole('button', { name: 'common.cancel' });
       expect(cancelButton).not.toBeDisabled();
     });
 
@@ -167,7 +170,7 @@ describe('FrameworkDeleteDialog', () => {
         <FrameworkDeleteDialog {...defaultProps} isOpen={false} />,
       );
 
-      expect(screen.queryByText('Delete Framework')).not.toBeInTheDocument();
+      expect(screen.queryByText('instance.deleteDialogTitle')).not.toBeInTheDocument();
     });
   });
 });

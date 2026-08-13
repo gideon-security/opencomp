@@ -17,6 +17,7 @@ import {
   TabsTrigger,
 } from '@trycompai/design-system';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import type { ControlProgressResponse } from '../data/getOrganizationControlProgress';
 import { PoliciesTable } from './PoliciesTable';
 import { RequirementsTable } from './RequirementsTable';
@@ -45,6 +46,7 @@ export function SingleControl({
 }: SingleControlProps) {
   const params = useParams<{ orgId: string; controlId: string }>();
   const orgIdFromParams = params.orgId;
+  const t = useTranslations('controls');
 
   if (!control || !controlProgress) {
     return <SingleControlSkeleton />;
@@ -54,9 +56,11 @@ export function SingleControl({
     <Tabs defaultValue="policies">
       <Stack gap="lg">
         <TabsList variant="underline">
-          <TabsTrigger value="policies">Policies ({relatedPolicies.length})</TabsTrigger>
-          <TabsTrigger value="tasks">Tasks ({relatedTasks.length})</TabsTrigger>
-          <TabsTrigger value="requirements">Requirements ({control.requirementsMapped.length})</TabsTrigger>
+          <TabsTrigger value="policies">{t('tabPolicies', { count: relatedPolicies.length })}</TabsTrigger>
+          <TabsTrigger value="tasks">{t('tabTasks', { count: relatedTasks.length })}</TabsTrigger>
+          <TabsTrigger value="requirements">
+            {t('tabRequirements', { count: control.requirementsMapped.length })}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="policies">

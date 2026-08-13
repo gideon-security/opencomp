@@ -4,6 +4,7 @@ import type { OrganizationFromMe } from '@/types';
 import { authClient } from '@/utils/auth-client';
 import { OrganizationSelector } from '@trycompai/design-system';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 interface OrganizationSwitcherProps {
@@ -45,6 +46,7 @@ export function OrganizationSwitcher({
   logoUrls = {},
   modal = true,
 }: OrganizationSwitcherProps) {
+  const t = useTranslations('nav');
   const router = useRouter();
 
   const [isSwitching, setIsSwitching] = useState(false);
@@ -82,11 +84,11 @@ export function OrganizationSwitcher({
       organizations={selectorOrgs}
       value={organization?.id}
       onValueChange={handleOrgChange}
-      createLabel="Create organization"
+      createLabel={t('createOrganization')}
       onCreate={handleCreateOrganization}
       loading={isExecuting}
       modal={modal}
-      placeholder="Select organization"
+      placeholder={t('selectOrganization')}
       hotkey="o"
     />
   );

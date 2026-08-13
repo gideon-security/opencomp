@@ -2,17 +2,20 @@ import { serverApi } from '@/lib/api-server';
 import type { FrameworkEditorFramework } from '@db';
 import { PageHeader, PageLayout } from '@trycompai/design-system';
 import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
+import { getTranslations } from 'next-intl/server';
 import { FrameworksTable } from './components/FrameworksTable';
 import { FrameworksPageActions } from './components/FrameworksPageActions';
 
 export async function generateMetadata() {
-  return { title: 'Frameworks' };
+  const t = await getTranslations('frameworks');
+  return { title: t('list.title') };
 }
 
 type FrameworkWithScore = FrameworkInstanceWithControls & { complianceScore: number };
 
 export default async function FrameworksPage({ params }: { params: Promise<{ orgId: string }> }) {
   const { orgId: organizationId } = await params;
+  const t = await getTranslations('frameworks');
 
   const [frameworksRes, availableRes] = await Promise.all([
     serverApi.get<{ data: FrameworkWithScore[] }>('/v1/frameworks?includeControls=true&includeScores=true'),
@@ -40,7 +43,7 @@ export default async function FrameworksPage({ params }: { params: Promise<{ org
     <PageLayout
       header={
         <PageHeader
-          title="Frameworks"
+          title={t('list.title')}
           actions={
             <FrameworksPageActions availableFrameworks={availableToAdd} />
           }

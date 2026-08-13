@@ -13,6 +13,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Link as LinkIcon } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -28,6 +29,7 @@ export function LinkTaskSheet({
   alreadyLinkedTaskIds: string[];
 }) {
   const { hasPermission } = usePermissions();
+  const t = useTranslations('frameworks');
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,12 +69,12 @@ export function LinkTaskSheet({
         { taskIds: Array.from(selected) },
       );
       if (response.error) throw new Error(response.error);
-      toast.success('Tasks linked');
+      toast.success(t('controls.tasksLinked'));
       setIsOpen(false);
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to link tasks',
+        error instanceof Error ? error.message : t('controls.failedToLinkTasks'),
       );
     } finally {
       setIsSubmitting(false);
@@ -86,21 +88,21 @@ export function LinkTaskSheet({
         iconLeft={<LinkIcon size={16} />}
         onClick={() => setIsOpen(true)}
       >
-        Link Task
+        {t('controls.linkTask')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Link Existing Tasks</SheetTitle>
+            <SheetTitle>{t('controls.linkExistingTasksTitle')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
             {isLoading ? (
               <Text size="sm" variant="muted">
-                Loading tasks…
+                {t('controls.loadingTasks')}
               </Text>
             ) : options.length === 0 ? (
               <Text size="sm" variant="muted">
-                No additional tasks available to link.
+                {t('controls.noAdditionalTasks')}
               </Text>
             ) : (
               <div className="space-y-2">
@@ -123,8 +125,9 @@ export function LinkTaskSheet({
                     onClick={handleSubmit}
                     disabled={selected.size === 0 || isSubmitting}
                   >
-                    Link {selected.size || ''} Task
-                    {selected.size === 1 ? '' : 's'}
+                    {t('controls.linkTaskCount', {
+                      count: selected.size,
+                    })}
                   </Button>
                 </div>
               </div>

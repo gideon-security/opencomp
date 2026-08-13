@@ -7,6 +7,9 @@ import {
   AUDITOR_PERMISSIONS,
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -58,13 +61,13 @@ describe('EditCustomFrameworkSheet', () => {
   it('renders nothing when the user lacks framework:update', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     renderSheet();
-    expect(screen.queryByText('Edit Custom Framework')).not.toBeInTheDocument();
+    expect(screen.queryByText('instance.editFrameworkTitle')).not.toBeInTheDocument();
   });
 
   it('pre-fills the form with the current name and description', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     renderSheet();
-    expect(screen.getByText('Edit Custom Framework')).toBeInTheDocument();
+    expect(screen.getByText('instance.editFrameworkTitle')).toBeInTheDocument();
     expect(screen.getByDisplayValue('CMMC')).toBeInTheDocument();
     expect(
       screen.getByDisplayValue('Original description'),
@@ -82,7 +85,7 @@ describe('EditCustomFrameworkSheet', () => {
     const nameInput = screen.getByDisplayValue('CMMC');
     await user.clear(nameInput);
     await user.type(nameInput, 'CSC/CPRT');
-    await user.click(screen.getByRole('button', { name: /save changes/i }));
+    await user.click(screen.getByRole('button', { name: 'instance.saveChanges' }));
 
     await waitFor(() => {
       expect(updateCustomFramework).toHaveBeenCalledWith('frm_1', {
@@ -102,9 +105,9 @@ describe('EditCustomFrameworkSheet', () => {
     const nameInput = screen.getByDisplayValue('CMMC');
     await user.clear(nameInput);
     await user.type(nameInput, '   ');
-    await user.click(screen.getByRole('button', { name: /save changes/i }));
+    await user.click(screen.getByRole('button', { name: 'instance.saveChanges' }));
 
-    expect(await screen.findByText('Name is required')).toBeInTheDocument();
+    expect(await screen.findByText('instance.frameworkNameRequired')).toBeInTheDocument();
     expect(updateCustomFramework).not.toHaveBeenCalled();
   });
 });

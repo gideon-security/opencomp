@@ -3,8 +3,6 @@
 import { useApiSWR } from '@/hooks/use-api-swr';
 import {
   extractOrgFrameworkTypes,
-  FINDING_SEVERITY_CONFIG,
-  FINDING_STATUS_CONFIG,
   FINDING_TYPE_LABELS,
   useOrganizationFindings,
   type Finding,
@@ -37,45 +35,39 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Search, WarningAlt } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CreateFindingSheet } from './CreateFindingSheet';
 import { FindingDetailSheet } from './FindingDetailSheet';
 
-const STATUS_OPTIONS: { value: FindingStatus | 'all'; label: string }[] = [
-  { value: 'all', label: 'All statuses' },
-  { value: FindingStatus.open, label: 'Open' },
-  { value: FindingStatus.ready_for_review, label: 'Ready for review' },
-  { value: FindingStatus.needs_revision, label: 'Needs revision' },
-  { value: FindingStatus.closed, label: 'Closed' },
-];
+type SeverityLabelKey =
+  | 'findings.severityLow'
+  | 'findings.severityMedium'
+  | 'findings.severityHigh'
+  | 'findings.severityCritical';
 
-const SEVERITY_OPTIONS: { value: FindingSeverity | 'all'; label: string }[] = [
-  { value: 'all', label: 'All severities' },
-  { value: FindingSeverity.critical, label: 'Critical' },
-  { value: FindingSeverity.high, label: 'High' },
-  { value: FindingSeverity.medium, label: 'Medium' },
-  { value: FindingSeverity.low, label: 'Low' },
-];
+type StatusLabelKey =
+  | 'findings.statusOpen'
+  | 'findings.statusReadyForReview'
+  | 'findings.statusNeedsRevision'
+  | 'findings.statusClosed';
+
+const SEVERITY_LABEL_KEYS: Record<FindingSeverity, SeverityLabelKey> = {
+  low: 'findings.severityLow',
+  medium: 'findings.severityMedium',
+  high: 'findings.severityHigh',
+  critical: 'findings.severityCritical',
+};
+
+const STATUS_LABEL_KEYS: Record<FindingStatus, StatusLabelKey> = {
+  open: 'findings.statusOpen',
+  ready_for_review: 'findings.statusReadyForReview',
+  needs_revision: 'findings.statusNeedsRevision',
+  closed: 'findings.statusClosed',
+};
 
 const capitalize = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
-
-function targetLabel(f: Finding): string {
-  if (f.task) return `Task: ${f.task.title}`;
-  if (f.policy) return `Policy: ${f.policy.name}`;
-  if (f.vendor) return `Vendor: ${f.vendor.name}`;
-  if (f.risk) return `Risk: ${f.risk.title}`;
-  if (f.member) return `Person: ${f.member.user.name ?? f.member.user.email}`;
-  if (f.device) return `Device: ${f.device.name || f.device.hostname}`;
-  if (f.evidenceSubmission)
-    return `Document: ${f.evidenceSubmission.formType.replace(/-/g, ' ')}`;
-  if (f.evidenceFormType) return `Document: ${f.evidenceFormType.replace(/-/g, ' ')}`;
-  if (f.area === 'risks') return 'Risks (general)';
-  if (f.area === 'vendors') return 'Vendors (general)';
-  if (f.area === 'policies') return 'Policies (general)';
-  if (f.area) return `Area: ${capitalize(f.area)}`;
-  return '—';
-}
 
 const SEVERITY_VARIANT: Record<FindingSeverity, 'default' | 'secondary' | 'destructive' | 'outline'> = {
   low: 'outline',
@@ -115,8 +107,56 @@ export function FindingsTab({
   const [severityFilter, setSeverityFilter] = useState<FindingSeverity | 'all'>('all');
   const [frameworkFilter, setFrameworkFilter] = useState<FindingType | 'all'>('all');
 
+  const t = useTranslations('overview');
   const { hasPermission } = usePermissions();
   const canCreate = hasPermission('finding', 'create');
+
+  const statusOptions: { value: FindingStatus | 'all'; label: string }[] = [
+    { value: 'all', label: t('findings.allStatuses') },
+    { value: FindingStatus.open, label: t('findings.statusOpen') },
+    { value: FindingStatus.ready_for_review, label: t('findings.statusReadyForReview') },
+    { value: FindingStatus.needs_revision, label: t('findings.statusNeedsRevision') },
+    { value: FindingStatus.closed, label: t('findings.statusClosed') },
+  ];
+
+  const severityOptions: { value: FindingSeverity | 'all'; label: string }[] = [
+    { value: 'all', label: t('findings.allSeverities') },
+    { value: FindingSeverity.critical, label: t('findings.severityCritical') },
+    { value: FindingSeverity.high, label: t('findings.severityHigh') },
+    { value: FindingSeverity.medium, label: t('findings.severityMedium') },
+    { value: FindingSeverity.low, label: t('findings.severityLow') },
+  ];
+
+  const targetLabel = useCallback(
+    (f: Finding): string => {
+      if (f.task) return t('findings.taskTarget', { name: f.task.title });
+      if (f.policy) return t('findings.policyTarget', { name: f.policy.name });
+      if (f.vendor) return t('findings.vendorTarget', { name: f.vendor.name });
+      if (f.risk) return t('findings.riskTarget', { name: f.risk.title });
+      if (f.member)
+        return t('findings.personTarget', {
+          name: f.member.user.name ?? f.member.user.email,
+        });
+      if (f.device)
+        return t('findings.deviceTarget', {
+          name: f.device.name || f.device.hostname,
+        });
+      if (f.evidenceSubmission)
+        return t('findings.documentTarget', {
+          name: f.evidenceSubmission.formType.replace(/-/g, ' '),
+        });
+      if (f.evidenceFormType)
+        return t('findings.documentTarget', {
+          name: f.evidenceFormType.replace(/-/g, ' '),
+        });
+      if (f.area === 'risks') return t('findings.areaRisks');
+      if (f.area === 'vendors') return t('findings.areaVendors');
+      if (f.area === 'policies') return t('findings.areaPolicies');
+      if (f.area) return t('findings.areaTarget', { name: capitalize(f.area) });
+      return '—';
+    },
+    [t],
+  );
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -141,13 +181,13 @@ export function FindingsTab({
     { value: FindingType | 'all'; label: string }[]
   >(
     () => [
-      { value: 'all', label: 'All frameworks' },
+      { value: 'all', label: t('findings.allFrameworks') },
       ...extractOrgFrameworkTypes(frameworksData).map((type) => ({
         value: type,
         label: FINDING_TYPE_LABELS[type],
       })),
     ],
-    [frameworksData],
+    [frameworksData, t],
   );
 
   // Support deep links (e.g. emails + in-app notifications) that land on
@@ -193,15 +233,15 @@ export function FindingsTab({
     });
 
     return result;
-  }, [findings, statusFilter, severityFilter, frameworkFilter, searchQuery]);
+  }, [findings, statusFilter, severityFilter, frameworkFilter, searchQuery, targetLabel]);
 
   const statusLabel =
-    STATUS_OPTIONS.find((o) => o.value === statusFilter)?.label ?? 'Status';
+    statusOptions.find((o) => o.value === statusFilter)?.label ?? t('common.status');
   const severityLabel =
-    SEVERITY_OPTIONS.find((o) => o.value === severityFilter)?.label ?? 'Severity';
+    severityOptions.find((o) => o.value === severityFilter)?.label ?? t('findings.severity');
   const frameworkLabel =
     frameworkOptions.find((o) => o.value === frameworkFilter)?.label ??
-    'Framework';
+    t('findings.framework');
 
   const hasAnyFinding = findings.length > 0;
 
@@ -215,7 +255,7 @@ export function FindingsTab({
                 <Search size={16} />
               </InputGroupAddon>
               <InputGroupInput
-                placeholder="Search findings..."
+                placeholder={t('findings.searchFindings')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -230,10 +270,12 @@ export function FindingsTab({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Status">{statusLabel}</SelectValue>
+                  <SelectValue placeholder={t('common.status')}>
+                    {statusLabel}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {STATUS_OPTIONS.map((opt) => (
+                  {statusOptions.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
                       {opt.label}
                     </SelectItem>
@@ -249,10 +291,12 @@ export function FindingsTab({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Severity">{severityLabel}</SelectValue>
+                  <SelectValue placeholder={t('findings.severity')}>
+                    {severityLabel}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {SEVERITY_OPTIONS.map((opt) => (
+                  {severityOptions.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
                       {opt.label}
                     </SelectItem>
@@ -268,7 +312,9 @@ export function FindingsTab({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Framework">{frameworkLabel}</SelectValue>
+                  <SelectValue placeholder={t('findings.framework')}>
+                    {frameworkLabel}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {frameworkOptions.map((opt) => (
@@ -289,32 +335,26 @@ export function FindingsTab({
             <EmptyMedia variant="icon">
               <WarningAlt size={24} />
             </EmptyMedia>
-            <EmptyTitle>No findings yet</EmptyTitle>
-            <EmptyDescription>
-              Findings are raised by your auditor when something in your compliance
-              program needs attention. They&apos;ll show up here so your team can act
-              on them.
-            </EmptyDescription>
+            <EmptyTitle>{t('findings.emptyTitle')}</EmptyTitle>
+            <EmptyDescription>{t('findings.emptyDescription')}</EmptyDescription>
           </EmptyHeader>
         </Empty>
       ) : filtered.length === 0 ? (
         <Empty>
           <EmptyHeader>
-            <EmptyTitle>No findings match your filters</EmptyTitle>
-            <EmptyDescription>
-              Try clearing the search or changing the status/severity filter.
-            </EmptyDescription>
+            <EmptyTitle>{t('findings.filterEmptyTitle')}</EmptyTitle>
+            <EmptyDescription>{t('findings.filterEmptyDescription')}</EmptyDescription>
           </EmptyHeader>
         </Empty>
       ) : (
         <Table variant="bordered">
           <TableHeader>
             <TableRow>
-              <TableHead>Target</TableHead>
-              <TableHead>Finding</TableHead>
-              <TableHead>Severity</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Updated</TableHead>
+              <TableHead>{t('findings.target')}</TableHead>
+              <TableHead>{t('findings.finding')}</TableHead>
+              <TableHead>{t('findings.severity')}</TableHead>
+              <TableHead>{t('common.status')}</TableHead>
+              <TableHead>{t('common.updated')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -344,12 +384,12 @@ export function FindingsTab({
                 </TableCell>
                 <TableCell>
                   <Badge variant={SEVERITY_VARIANT[f.severity]}>
-                    {FINDING_SEVERITY_CONFIG[f.severity].label}
+                    {t(SEVERITY_LABEL_KEYS[f.severity])}
                   </Badge>
                 </TableCell>
                 <TableCell>
                   <Badge variant={STATUS_VARIANT[f.status]}>
-                    {FINDING_STATUS_CONFIG[f.status].label}
+                    {t(STATUS_LABEL_KEYS[f.status])}
                   </Badge>
                 </TableCell>
                 <TableCell>

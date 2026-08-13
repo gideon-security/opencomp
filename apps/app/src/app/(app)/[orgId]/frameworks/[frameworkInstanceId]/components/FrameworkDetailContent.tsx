@@ -22,6 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useMemo, useState } from 'react';
@@ -56,6 +57,7 @@ export function FrameworkDetailContent({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations('frameworks');
   const { hasPermission, permissions } = usePermissions();
   const complianceTimelineEnabled = useFeatureFlag('is-timeline-enabled');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -71,7 +73,8 @@ export function FrameworkDetailContent({
     controls: framework.controls ?? [],
   };
 
-  const frameworkName = framework.framework?.name ?? framework.customFramework?.name ?? 'Framework';
+  const frameworkName =
+    framework.framework?.name ?? framework.customFramework?.name ?? t('instance.framework');
   const frameworkDescription =
     framework.framework?.description ?? framework.customFramework?.description ?? '';
 
@@ -141,7 +144,7 @@ export function FrameworkDetailContent({
             title={frameworkName}
             breadcrumbs={[
               {
-                label: 'Frameworks',
+                label: t('instance.frameworks'),
                 href: `/${orgId}/frameworks`,
                 props: { render: <Link href={`/${orgId}/frameworks`} /> },
               },
@@ -167,7 +170,7 @@ export function FrameworkDetailContent({
                           }}
                         >
                           <Edit size={16} className="mr-2" />
-                          Edit Framework
+                          {t('instance.editFramework')}
                         </DropdownMenuItem>
                       )}
                       {canDeleteFramework && (
@@ -179,7 +182,7 @@ export function FrameworkDetailContent({
                           className="text-destructive focus:text-destructive"
                         >
                           <TrashCan size={16} className="mr-2" />
-                          Delete Framework
+                          {t('instance.deleteFramework')}
                         </DropdownMenuItem>
                       )}
                     </DropdownMenuContent>
@@ -191,16 +194,16 @@ export function FrameworkDetailContent({
               <TabsList variant="underline">
                 {complianceTimelineEnabled && (
                   <TabsTrigger value="progress">
-                    Progress <TabBadge>{compliancePct}%</TabBadge>
+                    {t('instance.tabProgress')} <TabBadge>{compliancePct}%</TabBadge>
                   </TabsTrigger>
                 )}
                 <TabsTrigger value="controls">
-                  Controls <TabBadge>{controlsCount}</TabBadge>
+                  {t('instance.tabControls')} <TabBadge>{controlsCount}</TabBadge>
                 </TabsTrigger>
                 <TabsTrigger value="requirements">
-                  Requirements <TabBadge>{requirementsCount}</TabBadge>
+                  {t('instance.tabRequirements')} <TabBadge>{requirementsCount}</TabBadge>
                 </TabsTrigger>
-                <TabsTrigger value="history">History</TabsTrigger>
+                <TabsTrigger value="history">{t('instance.tabHistory')}</TabsTrigger>
               </TabsList>
             }
           >

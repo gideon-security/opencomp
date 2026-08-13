@@ -14,6 +14,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Link as LinkIcon } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -32,6 +33,7 @@ export function LinkRequirementSheet({
   frameworkInstanceId: string;
 }) {
   const { hasPermission } = usePermissions();
+  const t = useTranslations('frameworks');
   const router = useRouter();
   const { frameworks } = useFrameworks();
   const [isOpen, setIsOpen] = useState(false);
@@ -66,7 +68,7 @@ export function LinkRequirementSheet({
       const opts: RequirementOption[] = [];
       for (const resp of responses) {
         if (!resp.data) continue;
-        const fwName = resp.data.framework?.name ?? 'Framework';
+        const fwName = resp.data.framework?.name ?? t('instance.framework');
         for (const req of resp.data.requirementDefinitions ?? []) {
           opts.push({
             id: req.id,
@@ -104,12 +106,12 @@ export function LinkRequirementSheet({
         { requirementIds: Array.from(selected) },
       );
       if (response.error) throw new Error(response.error);
-      toast.success('Requirements linked');
+      toast.success(t('instance.requirementsLinkedToast'));
       setIsOpen(false);
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to link requirements',
+        error instanceof Error ? error.message : t('instance.linkRequirementsFailed'),
       );
     } finally {
       setIsSubmitting(false);
@@ -123,21 +125,21 @@ export function LinkRequirementSheet({
         iconLeft={<LinkIcon size={16} />}
         onClick={() => setIsOpen(true)}
       >
-        Link Requirement
+        {t('instance.linkRequirementButton')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Link Existing Requirements</SheetTitle>
+            <SheetTitle>{t('instance.linkExistingRequirementsTitle')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
             {isLoading ? (
               <Text size="sm" variant="muted">
-                Loading requirements…
+                {t('instance.loadingRequirements')}
               </Text>
             ) : options.length === 0 ? (
               <Text size="sm" variant="muted">
-                No requirements available from other frameworks.
+                {t('instance.noRequirementsAvailable')}
               </Text>
             ) : (
               <div className="space-y-2">
@@ -157,7 +159,9 @@ export function LinkRequirementSheet({
                           : opt.name}
                       </div>
                       <Text size="xs" variant="muted">
-                        from {opt.frameworkName}
+                        {t('instance.fromFramework', {
+                          frameworkName: opt.frameworkName,
+                        })}
                       </Text>
                     </div>
                   </label>
@@ -167,8 +171,7 @@ export function LinkRequirementSheet({
                     onClick={handleSubmit}
                     disabled={selected.size === 0 || isSubmitting}
                   >
-                    Link {selected.size || ''} Requirement
-                    {selected.size === 1 ? '' : 's'}
+                    {t('instance.linkRequirementSubmit', { count: selected.size })}
                   </Button>
                 </div>
               </div>

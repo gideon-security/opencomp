@@ -1,9 +1,7 @@
 'use client';
 
-import type { StatusType } from '@/components/status-indicator';
 import {
   type EvidenceSubmissionInfo,
-  type RequirementArtifactCounts,
   getControlProgressPercent,
   getControlStatus,
   getRequirementArtifactCounts,
@@ -24,6 +22,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Search } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { ExpandableDescription } from './ExpandableDescription';
@@ -37,14 +36,6 @@ import {
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
-interface RequirementItem extends FrameworkEditorRequirement {
-  mappedControlsCount: number;
-  satisfiedControlsCount: number;
-  compliancePercent: number;
-  controlStatuses: StatusType[];
-  artifactCounts: RequirementArtifactCounts;
-}
-
 export function FrameworkRequirements({
   requirementDefinitions,
   frameworkInstanceWithControls,
@@ -56,6 +47,7 @@ export function FrameworkRequirements({
   tasks?: (Task & { controls: Control[] })[];
   evidenceSubmissions?: EvidenceSubmissionInfo[];
 }) {
+  const t = useTranslations('frameworks');
   const router = useRouter();
   const { orgId, frameworkInstanceId } = useParams<{
     orgId: string;
@@ -151,7 +143,7 @@ export function FrameworkRequirements({
             <Search size={16} />
           </InputGroupAddon>
           <InputGroupInput
-            placeholder="Search requirements..."
+            placeholder={t('requirements.searchRequirementsPlaceholder')}
             value={searchTerm}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
               setSearchTerm(event.target.value)
@@ -181,7 +173,7 @@ export function FrameworkRequirements({
             <TableRow>
               <TableCell colSpan={REQUIREMENTS_TABLE_COLUMN_COUNT}>
                 <Text size="sm" variant="muted">
-                  No requirements found.
+                  {t('requirements.noRequirementsFound')}
                 </Text>
               </TableCell>
             </TableRow>

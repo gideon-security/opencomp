@@ -4,6 +4,7 @@ import { Button } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
 import { Dialog } from '@gideon-defender/ui/dialog';
 import type { FrameworkEditorFramework } from '@db';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { usePermissions } from '@/hooks/use-permissions';
 import { AddFrameworkModal } from '@/app/(app)/[orgId]/overview/components/AddFrameworkModal';
@@ -19,6 +20,7 @@ interface FrameworksPageActionsProps {
 export function FrameworksPageActions({ availableFrameworks }: FrameworksPageActionsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { hasPermission } = usePermissions();
+  const t = useTranslations('frameworks');
 
   if (!hasPermission('framework', 'create')) {
     return null;
@@ -32,7 +34,7 @@ export function FrameworksPageActions({ availableFrameworks }: FrameworksPageAct
         iconLeft={<Add size={16} />}
         onClick={() => setIsModalOpen(true)}
       >
-        Add Framework
+        {t('list.addButton')}
       </Button>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         {isModalOpen && (

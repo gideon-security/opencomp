@@ -1,7 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { UpdateAvailableBanner } from '../UpdateAvailableBanner';
 import type { FrameworkUpdateStatus } from '@/types/framework-versioning';
+
+mockNextIntl();
 
 const statusWithUpdate: FrameworkUpdateStatus = {
   updateAvailable: true,
@@ -45,7 +48,7 @@ describe('UpdateAvailableBanner', () => {
         onReview={vi.fn()}
       />,
     );
-    expect(screen.getByText(/Update available/i)).toBeInTheDocument();
+    expect(screen.getByText('instance.updateAvailable')).toBeInTheDocument();
     expect(screen.getByText(/1\.0\.0.*2\.0\.0/i)).toBeInTheDocument();
   });
 
@@ -58,7 +61,7 @@ describe('UpdateAvailableBanner', () => {
       />,
     );
     expect(
-      screen.getByRole('button', { name: /review update/i }),
+      screen.getByRole('button', { name: 'instance.reviewUpdate' }),
     ).toBeInTheDocument();
   });
 
@@ -71,7 +74,7 @@ describe('UpdateAvailableBanner', () => {
       />,
     );
     expect(
-      screen.queryByRole('button', { name: /review update/i }),
+      screen.queryByRole('button', { name: 'instance.reviewUpdate' }),
     ).not.toBeInTheDocument();
   });
 
@@ -84,7 +87,7 @@ describe('UpdateAvailableBanner', () => {
         onReview={onReview}
       />,
     );
-    fireEvent.click(screen.getByRole('button', { name: /review update/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'instance.reviewUpdate' }));
     expect(onReview).toHaveBeenCalledTimes(1);
   });
 
@@ -108,7 +111,7 @@ describe('UpdateAvailableBanner', () => {
         hasActiveAudit={true}
       />,
     );
-    expect(screen.getByText(/Active audit in progress/i)).toBeInTheDocument();
+    expect(screen.getByText('instance.activeAuditWarning')).toBeInTheDocument();
   });
 
   it('does not show active audit warning when hasActiveAudit is false', () => {
@@ -121,7 +124,7 @@ describe('UpdateAvailableBanner', () => {
       />,
     );
     expect(
-      screen.queryByText(/Active audit in progress/i),
+      screen.queryByText('instance.activeAuditWarning'),
     ).not.toBeInTheDocument();
   });
 });

@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
 import type { Finding } from '@/hooks/use-findings-api';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({ permissions: {}, hasPermission: mockHasPermission }),
@@ -144,7 +147,7 @@ describe('FindingsTab framework filter', () => {
 
     // "All frameworks" labels both the trigger's current value and the reset
     // option, so it renders more than once.
-    expect(screen.getAllByText('All frameworks').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('findings.allFrameworks').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('SOC 2')).toBeInTheDocument();
     // The bug: ISO 42001 findings could not be filtered because the filter
     // list was hardcoded to SOC 2 / ISO 27001.

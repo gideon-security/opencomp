@@ -3,6 +3,7 @@
 import { useApiSWR } from '@/hooks/use-api-swr';
 import { Alert, AlertAction, AlertTitle, Button } from '@trycompai/design-system';
 import { ArrowRight, Close } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import type { NudgeState } from './types';
@@ -44,6 +45,7 @@ function OffboardingNudgeView({
   members: PendingMember[];
   onDismiss: () => void;
 }) {
+  const t = useTranslations('overview');
   const link =
     members.length === 1
       ? `/${orgId}/people/${members[0].memberId}?tab=offboarding`
@@ -53,21 +55,19 @@ function OffboardingNudgeView({
     <Alert variant="warning">
       <AlertTitle>
         <span className="text-foreground">
-          {`${members.length} employee${members.length !== 1 ? 's' : ''} require${
-            members.length === 1 ? 's' : ''
-          } offboarding completion`}
+          {t('nudges.offboardingBody', { count: members.length })}
         </span>
       </AlertTitle>
       <div className="col-start-2 pt-1">
         <Button iconRight={<ArrowRight />} render={<Link href={link} />}>
-          View details
+          {t('common.seeDetails')}
         </Button>
       </div>
       <AlertAction>
         <button
           type="button"
           onClick={onDismiss}
-          aria-label="Dismiss"
+          aria-label={t('common.dismiss')}
           className="rounded-md p-1 opacity-70 transition-opacity hover:opacity-100"
         >
           <Close size={16} />

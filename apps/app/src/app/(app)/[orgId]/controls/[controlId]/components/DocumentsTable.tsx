@@ -13,6 +13,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 export interface DocumentTypeWithStatus {
@@ -31,6 +32,8 @@ interface DocumentsTableProps {
 export function DocumentsTable({ documents, orgId }: DocumentsTableProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
+  const t = useTranslations('controls');
+  const tCommon = useTranslations('overview');
 
   const filteredDocuments = useMemo(() => {
     if (!searchTerm.trim()) return documents;
@@ -55,7 +58,7 @@ export function DocumentsTable({ documents, orgId }: DocumentsTableProps) {
             <Search size={16} />
           </InputGroupAddon>
           <InputGroupInput
-            placeholder="Search documents..."
+            placeholder={t('searchDocuments')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -65,10 +68,10 @@ export function DocumentsTable({ documents, orgId }: DocumentsTableProps) {
       <Table variant="bordered">
         <TableHeader>
           <TableRow>
-            <TableHead>Document</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Last Submitted</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>{t('columnDocument')}</TableHead>
+            <TableHead>{t('columnCategory')}</TableHead>
+            <TableHead>{t('columnLastSubmitted')}</TableHead>
+            <TableHead>{tCommon('common.status')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -76,7 +79,7 @@ export function DocumentsTable({ documents, orgId }: DocumentsTableProps) {
             <TableRow>
               <TableCell colSpan={4}>
                 <Text size="sm" variant="muted">
-                  No documents linked.
+                  {t('noDocumentsLinked')}
                 </Text>
               </TableCell>
             </TableRow>
@@ -99,7 +102,7 @@ export function DocumentsTable({ documents, orgId }: DocumentsTableProps) {
                 <TableCell>
                   {doc.lastSubmittedAt
                     ? new Date(doc.lastSubmittedAt).toLocaleDateString()
-                    : 'Never'}
+                    : t('never')}
                 </TableCell>
                 <TableCell>
                   <StatusIndicator

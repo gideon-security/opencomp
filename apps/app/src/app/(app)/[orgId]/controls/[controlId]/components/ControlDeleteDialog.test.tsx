@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   ADMIN_PERMISSIONS,
@@ -7,6 +8,8 @@ import {
   NO_PERMISSIONS,
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -142,10 +145,8 @@ describe('ControlDeleteDialog', () => {
 
       render(<ControlDeleteDialog {...defaultProps} />);
 
-      expect(screen.getByText('Delete Control')).toBeInTheDocument();
-      expect(
-        screen.getByText(/are you sure you want to delete this control/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText('deleteControl')).toBeInTheDocument();
+      expect(screen.getByText('deleteConfirmation')).toBeInTheDocument();
     });
 
     it('renders the cancel button that is always enabled', () => {
@@ -164,7 +165,7 @@ describe('ControlDeleteDialog', () => {
         <ControlDeleteDialog {...defaultProps} isOpen={false} />,
       );
 
-      expect(screen.queryByText('Delete Control')).not.toBeInTheDocument();
+      expect(screen.queryByText('deleteControl')).not.toBeInTheDocument();
     });
   });
 });

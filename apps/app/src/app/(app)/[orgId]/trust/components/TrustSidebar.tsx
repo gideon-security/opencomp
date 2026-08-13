@@ -3,6 +3,7 @@
 import { AppShellNav, AppShellNavItem } from '@trycompai/design-system';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 interface TrustSidebarProps {
   orgId: string;
@@ -16,12 +17,13 @@ type TrustNavItem = {
 };
 
 export function TrustSidebar({ orgId }: TrustSidebarProps) {
+  const t = useTranslations('nav');
   const pathname = usePathname() ?? '';
 
   const items: TrustNavItem[] = [
-    { id: 'overview', label: 'Overview', path: `/${orgId}/trust` },
-    { id: 'access-requests', label: 'Access Requests', path: `/${orgId}/trust/access-requests` },
-    { id: 'settings', label: 'Settings', path: `/${orgId}/trust/settings` },
+    { id: 'overview', label: t('overview'), path: `/${orgId}/trust` },
+    { id: 'access-requests', label: t('accessRequests'), path: `/${orgId}/trust/access-requests` },
+    { id: 'settings', label: t('settings'), path: `/${orgId}/trust/settings` },
   ];
 
   const isPathActive = (path: string) => {

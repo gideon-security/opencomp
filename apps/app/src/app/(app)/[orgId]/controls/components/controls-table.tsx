@@ -17,6 +17,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { ArrowDown, ArrowUp } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ControlWithRelations } from '../data/queries';
 import { StatusIndicator } from '@/components/status-indicator';
@@ -42,6 +43,8 @@ export function ControlsTable({ promises }: ControlsTableProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { hasPermission } = usePermissions();
+  const t = useTranslations('controls');
+  const tCommon = useTranslations('overview');
   const [search, setSearch] = React.useState('');
   const [sortDirection, setSortDirection] = React.useState<SortDirection>('asc');
   const [page, setPage] = React.useState(1);
@@ -112,10 +115,10 @@ export function ControlsTable({ promises }: ControlsTableProps) {
   return (
     <div className="flex flex-col gap-4">
       <DataTableHeader>
-        <DataTableSearch placeholder="Search controls..." value={search} onChange={setSearch} />
+        <DataTableSearch placeholder={t('searchPlaceholder')} value={search} onChange={setSearch} />
         <DataTableFilters>
           {hasPermission('control', 'create') && (
-            <Button onClick={handleOpenCreateControl}>Create Control</Button>
+            <Button onClick={handleOpenCreateControl}>{t('createControl')}</Button>
           )}
         </DataTableFilters>
       </DataTableHeader>
@@ -134,11 +137,11 @@ export function ControlsTable({ promises }: ControlsTableProps) {
           <TableRow>
             <TableHead>
               <HStack gap="xs" align="center" style={{ cursor: 'pointer' }} onClick={handleSortByName}>
-                <span>Control Name</span>
+                <span>{t('controlName')}</span>
                 <SortIcon direction={sortDirection} />
               </HStack>
             </TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>{tCommon('common.status')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -146,7 +149,7 @@ export function ControlsTable({ promises }: ControlsTableProps) {
             <TableRow>
               <TableCell colSpan={2}>
                 <Text size="sm" variant="muted">
-                  No controls found.
+                  {t('noControlsFound')}
                 </Text>
               </TableCell>
             </TableRow>

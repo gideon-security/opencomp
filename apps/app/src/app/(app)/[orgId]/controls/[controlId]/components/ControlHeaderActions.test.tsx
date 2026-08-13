@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   mockHasPermission,
@@ -7,6 +8,8 @@ import {
   AUDITOR_PERMISSIONS,
   NO_PERMISSIONS,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -120,7 +123,7 @@ describe('ControlHeaderActions', () => {
 
       render(<ControlHeaderActions control={mockControl} />);
 
-      expect(screen.getByText('Delete')).toBeInTheDocument();
+      expect(screen.getByText('common.delete')).toBeInTheDocument();
       expect(screen.getByTestId('trash-icon')).toBeInTheDocument();
     });
 

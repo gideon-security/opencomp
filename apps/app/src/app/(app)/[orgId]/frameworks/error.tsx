@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 
 export default function ErrorPage({
@@ -9,15 +10,16 @@ export default function ErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const tCommon = useTranslations('overview');
   useEffect(() => {
     console.error('app/(app)/(dashboard)/[orgId]/frameworks/error.tsx', error);
   }, [error]);
 
   return (
     <div>
-      <h2>Something went wrong!</h2>
+      <h2>{tCommon('common.errorOccurred')}</h2>
       <button onClick={reset} type="button">
-        Try again
+        {tCommon('common.tryAgain')}
       </button>
     </div>
   );

@@ -3,15 +3,19 @@
 import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
 import { StatusIndicator } from '@/components/status-indicator';
 import { ColumnDef } from '@tanstack/react-table';
+import { useTranslations } from 'next-intl';
 import { ControlWithRelations } from '../data/queries';
 import { getControlStatus } from '../lib/utils';
 
-export function getControlColumns(): ColumnDef<ControlWithRelations>[] {
+export function getControlColumns(
+  t: ReturnType<typeof useTranslations<'controls'>>,
+  tCommon: ReturnType<typeof useTranslations<'overview'>>,
+): ColumnDef<ControlWithRelations>[] {
   return [
     {
       id: 'name',
       accessorKey: 'name',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Control Name" />,
+      header: ({ column }) => <DataTableColumnHeader column={column} title={t('controlName')} />,
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2">
@@ -20,8 +24,8 @@ export function getControlColumns(): ColumnDef<ControlWithRelations>[] {
         );
       },
       meta: {
-        label: 'Control Name',
-        placeholder: 'Search for a control...',
+        label: t('controlName'),
+        placeholder: t('searchForAControl'),
         variant: 'text',
       },
       enableColumnFilter: true,
@@ -34,7 +38,9 @@ export function getControlColumns(): ColumnDef<ControlWithRelations>[] {
     {
       id: 'status',
       accessorKey: '',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={tCommon('common.status')} />
+      ),
       cell: ({ row }) => {
         const control = row.original;
         const status = getControlStatus(control);
@@ -42,8 +48,8 @@ export function getControlColumns(): ColumnDef<ControlWithRelations>[] {
         return <StatusIndicator status={status} />;
       },
       meta: {
-        label: 'Status',
-        placeholder: 'Search status...',
+        label: tCommon('common.status'),
+        placeholder: t('searchStatus'),
         variant: 'text',
       },
       enableSorting: false,

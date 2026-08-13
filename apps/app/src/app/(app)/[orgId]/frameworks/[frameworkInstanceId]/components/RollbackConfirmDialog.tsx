@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
   Text,
 } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import type { SyncHistoryItem } from '@/types/framework-versioning';
 
 interface RollbackConfirmDialogProps {
@@ -28,6 +29,8 @@ export function RollbackConfirmDialog({
   isRollingBack,
   onConfirm,
 }: RollbackConfirmDialogProps) {
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   if (!item) return null;
 
   return (
@@ -35,25 +38,28 @@ export function RollbackConfirmDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Roll back to v{item.fromVersion.version}?
+            {t('instance.rollbackDialogTitle', {
+              version: item.fromVersion.version,
+            })}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            This will revert the sync from v{item.fromVersion.version} to
-            v{item.toVersion.version}. Items added by that sync will be
-            removed, archived items will be restored, and any content edits
-            you made since the sync will be kept.
+            {t('instance.rollbackDialogDescription', {
+              from: item.fromVersion.version,
+              to: item.toVersion.version,
+            })}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <Text size="sm" variant="muted">
-          Rollback will be blocked if any task created by the sync has been
-          completed, or if any policy created by the sync has been published.
+          {t('instance.rollbackDialogBlocked')}
         </Text>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isRollingBack}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isRollingBack}>
+            {tCommon('common.cancel')}
+          </AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} disabled={isRollingBack}>
-            {isRollingBack ? 'Rolling back...' : 'Confirm rollback'}
+            {isRollingBack ? t('instance.rollingBack') : t('instance.confirmRollback')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

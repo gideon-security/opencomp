@@ -1,7 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { usePublishAllPoliciesAction } from './overview-quick-actions';
+
+mockNextIntl();
 
 const { mockRefresh } = vi.hoisted(() => ({
   mockRefresh: vi.fn(),

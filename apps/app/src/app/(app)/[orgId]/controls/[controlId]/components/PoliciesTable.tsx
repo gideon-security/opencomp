@@ -14,6 +14,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 interface PoliciesTableProps {
@@ -24,6 +25,8 @@ interface PoliciesTableProps {
 export function PoliciesTable({ policies, orgId }: PoliciesTableProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
+  const t = useTranslations('controls');
+  const tCommon = useTranslations('overview');
 
   const filteredPolicies = useMemo(() => {
     if (!searchTerm.trim()) return policies;
@@ -48,7 +51,7 @@ export function PoliciesTable({ policies, orgId }: PoliciesTableProps) {
             <Search size={16} />
           </InputGroupAddon>
           <InputGroupInput
-            placeholder="Search policies..."
+            placeholder={t('searchPolicies')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -58,9 +61,9 @@ export function PoliciesTable({ policies, orgId }: PoliciesTableProps) {
       <Table variant="bordered">
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Created At</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>{tCommon('common.name')}</TableHead>
+            <TableHead>{t('columnCreatedAt')}</TableHead>
+            <TableHead>{tCommon('common.status')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -68,7 +71,7 @@ export function PoliciesTable({ policies, orgId }: PoliciesTableProps) {
             <TableRow>
               <TableCell colSpan={3}>
                 <Text size="sm" variant="muted">
-                  No policies found.
+                  {t('noPoliciesFound')}
                 </Text>
               </TableCell>
             </TableRow>

@@ -21,6 +21,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Launch, Search } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -39,22 +40,6 @@ interface RequirementControlsTableProps {
   frameworkInstanceId: string;
 }
 
-function getStatusBadge(status: string): {
-  label: string;
-  variant: 'default' | 'secondary' | 'destructive';
-} {
-  switch (status) {
-    case 'completed':
-      return { label: 'Satisfied', variant: 'default' };
-    case 'in_progress':
-      return { label: 'In Progress', variant: 'secondary' };
-    case 'not_relevant':
-      return { label: 'Not Relevant', variant: 'secondary' };
-    default:
-      return { label: 'Not Started', variant: 'destructive' };
-  }
-}
-
 export function RequirementControlsTable({
   controls,
   tasks,
@@ -63,9 +48,27 @@ export function RequirementControlsTable({
 }: RequirementControlsTableProps) {
   const { orgId } = useParams<{ orgId: string }>();
   const router = useRouter();
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  const getStatusBadge = (status: string): {
+    label: string;
+    variant: 'default' | 'secondary' | 'destructive';
+  } => {
+    switch (status) {
+      case 'completed':
+        return { label: t('requirements.statusSatisfied'), variant: 'default' };
+      case 'in_progress':
+        return { label: t('requirements.statusInProgress'), variant: 'secondary' };
+      case 'not_relevant':
+        return { label: t('requirements.statusNotRelevant'), variant: 'secondary' };
+      default:
+        return { label: t('requirements.statusNotStarted'), variant: 'destructive' };
+    }
+  };
 
   const filteredControls = useMemo(() => {
     if (!controls?.length) return [];
@@ -100,7 +103,7 @@ export function RequirementControlsTable({
   if (!controls?.length) {
     return (
       <div className="flex h-32 items-center justify-center">
-        <Text variant="muted">No controls mapped to this requirement.</Text>
+        <Text variant="muted">{t('requirements.noControlsMapped')}</Text>
       </div>
     );
   }
@@ -113,7 +116,7 @@ export function RequirementControlsTable({
             <Search size={16} />
           </InputGroupAddon>
           <InputGroupInput
-            placeholder="Search controls..."
+            placeholder={t('requirements.searchControlsPlaceholder')}
             value={searchTerm}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
           />
@@ -136,13 +139,13 @@ export function RequirementControlsTable({
       >
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Compliance</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Policies</TableHead>
-            <TableHead>Tasks</TableHead>
-            <TableHead>Documents</TableHead>
+            <TableHead>{tCommon('common.name')}</TableHead>
+            <TableHead>{tCommon('common.description')}</TableHead>
+            <TableHead>{t('requirements.tableHeaderCompliance')}</TableHead>
+            <TableHead>{tCommon('common.status')}</TableHead>
+            <TableHead>{t('requirements.tableHeaderPolicies')}</TableHead>
+            <TableHead>{t('requirements.tableHeaderTasks')}</TableHead>
+            <TableHead>{t('requirements.tableHeaderDocuments')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -150,7 +153,7 @@ export function RequirementControlsTable({
             <TableRow>
               <TableCell colSpan={7}>
                 <Text size="sm" variant="muted">
-                  No controls found.
+                  {t('requirements.noControlsFound')}
                 </Text>
               </TableCell>
             </TableRow>

@@ -1,6 +1,7 @@
 import { OnboardingLayout } from '@/components/onboarding/OnboardingLayout';
 import { auth } from '@/utils/auth';
 import { db } from '@db/server';
+import { getTranslations } from 'next-intl/server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { AcceptInvite } from '../../setup/components/accept-invite';
@@ -14,6 +15,7 @@ interface InvitePageProps {
 
 export default async function InvitePage({ params }: InvitePageProps) {
   const { code } = await params;
+  const t = await getTranslations('invite');
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -41,10 +43,10 @@ export default async function InvitePage({ params }: InvitePageProps) {
       <OnboardingLayout variant="setup" currentOrganization={null}>
         <div className="flex min-h-[calc(100dvh-80px)] w-full items-center justify-center p-4">
           <InviteStatusCard
-            title="Invite not found"
-            description="This invitation code does not exist. Please check the link or ask your admin to resend the invite."
+            title={t('inviteNotFound')}
+            description={t('inviteNotFoundDescription')}
             primaryHref="/"
-            primaryLabel="Go home"
+            primaryLabel={t('goHome')}
           />
         </div>
       </OnboardingLayout>
@@ -72,14 +74,14 @@ export default async function InvitePage({ params }: InvitePageProps) {
       <OnboardingLayout variant="setup" currentOrganization={null}>
         <div className="flex min-h-[calc(100dvh-80px)] w-full items-center justify-center p-4">
           <InviteStatusCard
-            title={invitation.status === 'accepted' ? 'Invite already accepted' : 'Invite expired'}
+            title={invitation.status === 'accepted' ? t('inviteAlreadyAccepted') : t('inviteExpired')}
             description={
               invitation.status === 'accepted'
-                ? 'This invitation has already been accepted. If you believe this is a mistake, contact your organization admin.'
-                : 'This invitation has expired. Please ask your organization admin to send a new invite.'
+                ? t('inviteAlreadyAcceptedDescription')
+                : t('inviteExpiredDescription')
             }
             primaryHref="/"
-            primaryLabel="Go home"
+            primaryLabel={t('goHome')}
           />
         </div>
       </OnboardingLayout>

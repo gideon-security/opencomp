@@ -5,6 +5,7 @@ import {
   PageHeaderDescription,
   PageLayout,
 } from '@trycompai/design-system';
+import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { RequirementControls } from './components/RequirementControls';
 import { AddCustomControlSheet } from './components/AddCustomControlSheet';
@@ -22,6 +23,8 @@ export default async function RequirementPage({ params }: PageProps) {
   const { orgId: organizationId, frameworkInstanceId, requirementKey } =
     await params;
 
+  const t = await getTranslations('frameworks');
+
   const [frameworkRes, requirementRes] = await Promise.all([
     serverApi.get<any>(`/v1/frameworks/${frameworkInstanceId}`),
     serverApi.get<any>(
@@ -36,7 +39,7 @@ export default async function RequirementPage({ params }: PageProps) {
   const framework = frameworkRes.data;
   const reqData = requirementRes.data;
   const frameworkName =
-    framework.framework?.name ?? framework.customFramework?.name ?? 'Framework';
+    framework.framework?.name ?? framework.customFramework?.name ?? t('requirements.frameworkFallback');
   const requirement = reqData.requirement;
   // Whether this specific requirement is custom — NOT whether its framework is.
   // A platform framework (e.g. ISO 27001) can carry per-instance custom
@@ -53,12 +56,12 @@ export default async function RequirementPage({ params }: PageProps) {
       <PageHeader
         title={title}
         breadcrumbs={[
-          { label: 'Frameworks', href: `/${organizationId}/frameworks` },
+          { label: t('requirements.breadcrumbFrameworks'), href: `/${organizationId}/frameworks` },
           {
             label: frameworkName,
             href: `/${organizationId}/frameworks/${frameworkInstanceId}`,
           },
-          { label: identifier ?? 'Requirement', isCurrent: true },
+          { label: identifier ?? t('requirements.breadcrumbRequirement'), isCurrent: true },
         ]}
       >
         {showNameAsDescription ? (

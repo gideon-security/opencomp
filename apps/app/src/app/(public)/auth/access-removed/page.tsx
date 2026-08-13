@@ -1,4 +1,5 @@
 import { SignOut } from '@/components/sign-out';
+import { getTranslations } from 'next-intl/server';
 
 /**
  * Shown to a signed-in user who has no active organization membership but was
@@ -10,19 +11,15 @@ import { SignOut } from '@/components/sign-out';
  * after being offboarded. The primary action is therefore "sign out" so they
  * can sign back in with their current account.
  */
-export default function AccessRemovedPage() {
+export default async function AccessRemovedPage() {
+  const t = await getTranslations('auth');
+
   return (
     <div className="flex min-h-dvh items-center justify-center p-4">
       <div className="w-full max-w-lg space-y-6 rounded-lg border p-8 text-center">
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {'Your access was removed'}
-          </h1>
-          <p className="text-muted-foreground">
-            {
-              'This account is no longer a member of any organization. If your company recently changed email domains or offboarded this account, sign out and sign back in with your current account. Otherwise, contact your administrator to be re-invited.'
-            }
-          </p>
+          <h1 className="text-2xl font-semibold tracking-tight">{t('accessRemovedTitle')}</h1>
+          <p className="text-muted-foreground">{t('accessRemovedDescription')}</p>
         </div>
 
         <div className="flex justify-center">

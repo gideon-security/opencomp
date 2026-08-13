@@ -22,18 +22,17 @@ import {
 import { Input } from '@gideon-defender/ui/input';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-const schema = z.object({
-  name: z.string().min(1, 'Name is required').max(200),
-  description: z.string().min(1, 'Description is required').max(4000),
-});
-
-type FormValues = z.infer<typeof schema>;
+type FormValues = {
+  name: string;
+  description: string;
+};
 
 export function AddCustomControlSheet({
   frameworkInstanceId,
@@ -47,8 +46,22 @@ export function AddCustomControlSheet({
   const { hasPermission } = usePermissions();
   const { createControl } = useControls();
   const router = useRouter();
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const schema = useMemo(
+    () =>
+      z.object({
+        name: z.string().min(1, t('requirements.nameRequired')).max(200),
+        description: z
+          .string()
+          .min(1, t('requirements.descriptionRequired'))
+          .max(4000),
+      }),
+    [t],
+  );
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -71,13 +84,13 @@ export function AddCustomControlSheet({
             : { requirementId, frameworkInstanceId },
         ],
       });
-      toast.success('Control created');
+      toast.success(t('requirements.controlCreated'));
       setIsOpen(false);
       form.reset();
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to create control',
+        error instanceof Error ? error.message : t('requirements.controlCreateFailed'),
       );
     } finally {
       setIsSubmitting(false);
@@ -91,12 +104,12 @@ export function AddCustomControlSheet({
         iconLeft={<Add size={16} />}
         onClick={() => setIsOpen(true)}
       >
-        Add Control
+        {t('requirements.addControlButton')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Add Custom Control</SheetTitle>
+            <SheetTitle>{t('requirements.addCustomControlTitle')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
             <Form {...form}>
@@ -109,9 +122,9 @@ export function AddCustomControlSheet({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>{tCommon('common.name')}</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Access Control" />
+                        <Input {...field} placeholder={t('requirements.controlNamePlaceholder')} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -122,12 +135,12 @@ export function AddCustomControlSheet({
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>{tCommon('common.description')}</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
                           className="min-h-[120px]"
-                          placeholder="Describe what this control enforces..."
+                          placeholder={t('requirements.controlDescriptionPlaceholder')}
                         />
                       </FormControl>
                       <FormMessage />
@@ -136,7 +149,7 @@ export function AddCustomControlSheet({
                 />
                 <div className="flex justify-end">
                   <Button type="submit" disabled={isSubmitting}>
-                    Add Control
+                    {t('requirements.addControlButton')}
                   </Button>
                 </div>
               </form>

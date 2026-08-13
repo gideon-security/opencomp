@@ -11,6 +11,7 @@ import {
   ChartTooltipContent,
 } from '@gideon-defender/ui/chart';
 import { Info } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface PoliciesChartData {
   published: number;
@@ -28,13 +29,14 @@ const CHART_COLORS = {
 
 // Custom tooltip component for the pie chart
 const StatusTooltip = ({ active, payload }: any) => {
+  const t = useTranslations('overview');
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
       <div className="bg-background rounded-sm border p-2 shadow-md">
         <p className="text-xs font-medium">{data.name}</p>
         <p className="text-xs">
-          Count: <span className="font-medium">{data.value}</span>
+          {t('charts.count')}: <span className="font-medium">{data.value}</span>
         </p>
       </div>
     );
@@ -43,29 +45,30 @@ const StatusTooltip = ({ active, payload }: any) => {
 };
 
 export function PoliciesChart({ data }: PoliciesChartProps) {
+  const t = useTranslations('overview');
   const chartData = React.useMemo(() => {
     if (!data) return [];
     const items = [
       {
-        name: 'Published',
+        name: t('charts.published'),
         value: data.published,
         fill: CHART_COLORS.score,
       },
       {
-        name: 'Draft',
+        name: t('charts.draft'),
         value: data.draft,
         fill: CHART_COLORS.remaining,
       },
     ];
     return items.filter((item) => item.value > 0);
-  }, [data]);
+  }, [data, t]);
 
   if (!data) {
     return (
       <Card className="flex flex-col overflow-hidden border">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">Policies</CardTitle>
+            <CardTitle className="flex items-center gap-2">{t('charts.policies')}</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="flex flex-1 items-center justify-center py-10">
@@ -73,7 +76,7 @@ export function PoliciesChart({ data }: PoliciesChartProps) {
             <div className="text-muted-foreground flex justify-center">
               <Info className="h-10 w-10 opacity-30" />
             </div>
-            <p className="text-muted-foreground text-center text-sm">No data available</p>
+            <p className="text-muted-foreground text-center text-sm">{t('common.noData')}</p>
           </div>
         </CardContent>
       </Card>
@@ -82,7 +85,7 @@ export function PoliciesChart({ data }: PoliciesChartProps) {
 
   const chartConfig = {
     value: {
-      label: 'Policy Status',
+      label: t('charts.policyStatus'),
     },
   } satisfies ChartConfig;
 
@@ -134,7 +137,7 @@ export function PoliciesChart({ data }: PoliciesChartProps) {
                         y={(viewBox.cy || 0) + 18}
                         className="fill-muted-foreground text-[9px] select-none"
                       >
-                        Policies
+                        {t('charts.policies')}
                       </tspan>
                     </text>
                     <circle

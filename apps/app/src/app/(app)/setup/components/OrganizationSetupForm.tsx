@@ -3,6 +3,7 @@
 import { AnimatedWrapper } from '@/components/animated-wrapper';
 import { LogoSpinner } from '@/components/logo-spinner';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@gideon-defender/ui/form';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useOnboardingForm } from '../hooks/useOnboardingForm';
@@ -21,6 +22,7 @@ export function OrganizationSetupForm({
   currentStep,
   hasOtherOrgs = false,
 }: OrganizationSetupFormProps) {
+  const t = useTranslations('setup');
   const [isLoadingFrameworks, setIsLoadingFrameworks] = useState(false);
   const router = useRouter();
 
@@ -104,7 +106,7 @@ export function OrganizationSetupForm({
           </AnimatedWrapper>
           <AnimatedWrapper delay={1000} animationKey={`subtitle-${step.key}`}>
             <p className="text-md md:text-lg text-muted-foreground flex items-center flex-wrap">
-              Our AI will personalize the platform based on your answers.
+              {t('aiPersonalization')}
             </p>
           </AnimatedWrapper>
         </div>

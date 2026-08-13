@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   ADMIN_PERMISSIONS,
@@ -7,6 +8,8 @@ import {
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
 import type { Finding } from '@/hooks/use-findings-api';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({ permissions: {}, hasPermission: mockHasPermission }),
@@ -95,7 +98,7 @@ describe('FindingsTab', () => {
 
     render(<FindingsTab organizationId="org_1" />);
 
-    expect(screen.getByText(/no findings yet/i)).toBeInTheDocument();
+    expect(screen.getByText('findings.emptyTitle')).toBeInTheDocument();
   });
 
   it('renders the linked item title', () => {
@@ -107,7 +110,7 @@ describe('FindingsTab', () => {
 
     render(<FindingsTab organizationId="org_1" />);
 
-    expect(screen.getByText(/task: upload mfa evidence/i)).toBeInTheDocument();
+    expect(screen.getByText('findings.taskTarget')).toBeInTheDocument();
     expect(
       screen.getByText(/evidence missing a timestamp/i),
     ).toBeInTheDocument();

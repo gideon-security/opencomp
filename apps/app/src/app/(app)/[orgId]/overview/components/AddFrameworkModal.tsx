@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
 import type { FrameworkEditorFramework } from '@db';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useFrameworks } from '@/hooks/use-frameworks';
@@ -29,6 +30,7 @@ export function AddFrameworkModal({
   availableFrameworks,
 }: Props) {
   const { addFrameworks } = useFrameworks();
+  const t = useTranslations('overview');
   const { hasPermission } = usePermissions();
   const canAddFramework = hasPermission('framework', 'create');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -48,13 +50,11 @@ export function AddFrameworkModal({
     try {
       const result = await addFrameworks(selectedIds);
       const count = result?.frameworksAdded ?? 0;
-      toast.success(
-        `Successfully added ${count} framework${count > 1 ? 's' : ''}`,
-      );
+      toast.success(t('frameworks.addedSuccess', { count }));
       onOpenChange(false);
     } catch (err) {
       toast.error(
-        err instanceof Error ? err.message : 'Failed to add frameworks',
+        err instanceof Error ? err.message : t('frameworks.addFailed'),
       );
     } finally {
       setIsSubmitting(false);
@@ -77,12 +77,12 @@ export function AddFrameworkModal({
     <DialogContent className="max-w-md">
       <DialogHeader className="space-y-2">
         <DialogTitle className="text-base font-medium">
-          Add Frameworks
+          {t('frameworks.addTitle')}
         </DialogTitle>
         <DialogDescription className="text-muted-foreground text-sm">
           {availableFrameworks.length > 0
-            ? 'Select the compliance frameworks to add to your organization.'
-            : 'No new frameworks are available to add at this time.'}
+            ? t('frameworks.addDescription')
+            : t('frameworks.noNewAvailable')}
         </DialogDescription>
       </DialogHeader>
 
@@ -106,8 +106,8 @@ export function AddFrameworkModal({
           {showContactMessage && (
             <Alert
               variant="info"
-              title="Contact your account manager"
-              description="To add frameworks to your organization, please reach out to your account manager."
+              title={t('frameworks.contactManagerTitle')}
+              description={t('frameworks.contactManagerDescription')}
             />
           )}
 
@@ -118,7 +118,7 @@ export function AddFrameworkModal({
               onClick={() => handleOpenChange(false)}
               disabled={isSubmitting}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               size="sm"
@@ -126,7 +126,7 @@ export function AddFrameworkModal({
               loading={isSubmitting}
               onClick={handleSubmit}
             >
-              Add Selected
+              {t('frameworks.addSelected')}
             </Button>
           </DialogFooter>
         </div>
@@ -135,7 +135,7 @@ export function AddFrameworkModal({
       {!isSubmitting && availableFrameworks.length === 0 && (
         <div className="py-6 text-center">
           <div className="text-muted-foreground text-sm">
-            All available frameworks are already enabled in your organization.
+            {t('frameworks.allEnabled')}
           </div>
           <DialogFooter className="mt-6 border-t pt-4">
             <Button
@@ -143,7 +143,7 @@ export function AddFrameworkModal({
               size="sm"
               onClick={() => handleOpenChange(false)}
             >
-              Close
+              {t('common.close')}
             </Button>
           </DialogFooter>
         </div>
@@ -153,7 +153,7 @@ export function AddFrameworkModal({
         <div className="flex items-center justify-center py-8">
           <Spinner />
           <span className="text-muted-foreground ml-3 text-sm">
-            Adding frameworks...
+            {t('frameworks.adding')}
           </span>
         </div>
       )}

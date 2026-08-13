@@ -3,10 +3,12 @@
 import type { onboardOrganization } from '@/trigger/tasks/onboarding/onboard-organization';
 import { useRun } from '@gideon-defender/trigger-react';
 import { CheckCircle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export function OnboardingStatus({ runId }: { runId: string }) {
+  const t = useTranslations('setup');
   const { run, error, isLoading } = useRun<typeof onboardOrganization>(runId, {
     refreshInterval: 1000,
   });
@@ -29,7 +31,7 @@ export function OnboardingStatus({ runId }: { runId: string }) {
       {run?.status === 'COMPLETED' && (
         <div className="flex flex-col items-center justify-center">
           <CheckCircle className="h-4 w-4 text-green-500" />
-          <p className="text-muted-foreground text-sm">Redirecting</p>
+          <p className="text-muted-foreground text-sm">{t('redirecting')}</p>
         </div>
       )}
     </div>

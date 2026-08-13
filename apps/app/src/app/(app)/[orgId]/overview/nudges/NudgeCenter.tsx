@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { ChevronDown, ChevronUp } from '@trycompai/design-system/icons';
 import type { ReactNode } from 'react';
 
@@ -22,6 +23,7 @@ export function NudgeCenter({
   onToggle: () => void;
   children: ReactNode;
 }) {
+  const t = useTranslations('overview');
   const peekLayers = Math.min(count - 1, MAX_PEEK_LAYERS);
 
   const toggle = (positionClass: string) => (
@@ -34,12 +36,12 @@ export function NudgeCenter({
       {expanded ? (
         <>
           <ChevronUp size={14} />
-          Show less
+          {t('common.less')}
         </>
       ) : (
         <>
           <ChevronDown size={14} />
-          {count} notices
+          {t('nudges.noticesCount', { count })}
         </>
       )}
     </button>

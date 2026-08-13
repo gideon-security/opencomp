@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem } from '@gideon-defender/ui/form
 import { Input } from '@gideon-defender/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Mail } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -30,6 +31,7 @@ export function MagicLinkSignIn({
   redirectTo,
   onMagicLinkSubmit,
 }: MagicLinkSignInProps) {
+  const t = useTranslations('auth');
   const [isLoading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,7 +52,7 @@ export function MagicLinkSignIn({
     });
 
     if (error) {
-      toast.error('Error sending email - try again?');
+      toast.error(t('errorSendingEmail'));
       setLoading(false);
     } else if (onMagicLinkSubmit) {
       onMagicLinkSubmit(email);
@@ -68,7 +70,7 @@ export function MagicLinkSignIn({
               <FormItem>
                 <FormControl>
                   <Input
-                    placeholder="name@example.com"
+                    placeholder={t('emailPlaceholder')}
                     {...field}
                     autoFocus
                     className="h-11"
@@ -92,7 +94,7 @@ export function MagicLinkSignIn({
             ) : (
               <>
                 <Mail className="h-4 w-4" />
-                Continue with email
+                {t('continueWithEmail')}
               </>
             )}
           </Button>

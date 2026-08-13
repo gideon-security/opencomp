@@ -1,5 +1,6 @@
 import { withSentryConfig } from '@sentry/nextjs';
 import { withBotId } from 'botid/next/config';
+import createNextIntlPlugin from 'next-intl/plugin';
 import type { NextConfig } from 'next';
 import path from 'path';
 
@@ -143,13 +144,15 @@ const config: NextConfig = {
   },
 };
 
-export default withSentryConfig(withBotId(config), {
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
+
+export default withSentryConfig(withBotId(withNextIntl(config)), {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: "comp-ai",
+  org: "gideon-defender",
 
-  project: "comp",
+  project: "opencomp",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,

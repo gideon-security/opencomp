@@ -22,27 +22,30 @@ import {
 import { Input } from '@gideon-defender/ui/input';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-const schema = z.object({
-  name: z.string().min(1, 'Name is required').max(120),
-  description: z.string().max(2000),
-  version: z.string().max(40).optional(),
-});
-
-type FormValues = z.infer<typeof schema>;
-
 export function CreateCustomFrameworkSheet() {
   const { hasPermission } = usePermissions();
   const { createCustomFramework } = useFrameworks();
   const router = useRouter();
   const params = useParams<{ orgId: string }>();
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const schema = z.object({
+    name: z.string().min(1, t('list.nameRequired')).max(120),
+    description: z.string().max(2000),
+    version: z.string().max(40).optional(),
+  });
+
+  type FormValues = z.infer<typeof schema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -57,7 +60,7 @@ export function CreateCustomFrameworkSheet() {
     setIsSubmitting(true);
     try {
       const created = await createCustomFramework(values);
-      toast.success('Custom framework created');
+      toast.success(t('list.createdToast'));
       setIsOpen(false);
       form.reset();
       if (created?.id && params?.orgId) {
@@ -65,7 +68,7 @@ export function CreateCustomFrameworkSheet() {
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to create framework',
+        error instanceof Error ? error.message : t('list.createError'),
       );
     } finally {
       setIsSubmitting(false);
@@ -79,12 +82,12 @@ export function CreateCustomFrameworkSheet() {
         iconLeft={<Add size={16} />}
         onClick={() => setIsOpen(true)}
       >
-        Add Custom Framework
+        {t('list.addCustomButton')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Create Custom Framework</SheetTitle>
+            <SheetTitle>{t('list.createSheetTitle')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
             <Form {...form}>
@@ -97,11 +100,11 @@ export function CreateCustomFrameworkSheet() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>{tCommon('common.name')}</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
-                          placeholder="Internal Controls Framework"
+                          placeholder={t('list.namePlaceholder')}
                         />
                       </FormControl>
                       <FormMessage />
@@ -113,12 +116,12 @@ export function CreateCustomFrameworkSheet() {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>{tCommon('common.description')}</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
                           className="min-h-[100px]"
-                          placeholder="Describe what this framework covers..."
+                          placeholder={t('list.descriptionPlaceholder')}
                         />
                       </FormControl>
                       <FormMessage />
@@ -130,7 +133,7 @@ export function CreateCustomFrameworkSheet() {
                   name="version"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Version</FormLabel>
+                      <FormLabel>{t('list.versionLabel')}</FormLabel>
                       <FormControl>
                         <Input {...field} placeholder="1.0" />
                       </FormControl>
@@ -140,7 +143,7 @@ export function CreateCustomFrameworkSheet() {
                 />
                 <div className="flex justify-end">
                   <Button type="submit" disabled={isSubmitting}>
-                    Create Framework
+                    {t('list.createButton')}
                   </Button>
                 </div>
               </form>

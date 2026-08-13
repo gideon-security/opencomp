@@ -1,15 +1,17 @@
 'use client';
 
 import { canAccessRoute, type UserPermissions } from '@/lib/permissions';
+import type { NavMessageKey } from '@/i18n/keys';
 import type { Organization } from '@db';
 import { AppShellNav, AppShellNavItem } from '@trycompai/design-system';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 interface NavItem {
   id: string;
   path: string;
-  name: string;
+  nameKey: NavMessageKey;
   hidden?: boolean;
 }
 
@@ -36,25 +38,26 @@ export function AppSidebar({
   permissions,
   canAccessAuditorView,
 }: AppSidebarProps) {
+  const t = useTranslations('nav');
   const pathname = usePathname() ?? '';
 
   const navItems: NavItem[] = [
     {
       id: 'overview',
       path: `/${organization.id}/overview`,
-      name: 'Overview',
+      nameKey: 'overview',
       hidden: !canAccessRoute(permissions, 'overview'),
     },
     {
       id: 'frameworks',
       path: `/${organization.id}/frameworks`,
-      name: 'Frameworks',
+      nameKey: 'frameworks',
       hidden: !canAccessRoute(permissions, 'frameworks'),
     },
     {
       id: 'auditor',
       path: `/${organization.id}/auditor`,
-      name: 'Auditor View',
+      nameKey: 'auditorView',
       // CS-189: visibility is scoped to built-in `auditor` role or a custom
       // org role that explicitly grants audit:read. Owner/admin's implicit
       // permissions alone are not enough — see `canAccessAuditorView` in
@@ -64,55 +67,55 @@ export function AppSidebar({
     {
       id: 'policies',
       path: `/${organization.id}/policies`,
-      name: 'Policies',
+      nameKey: 'policies',
       hidden: !canAccessRoute(permissions, 'policies'),
     },
     {
       id: 'tasks',
       path: `/${organization.id}/tasks`,
-      name: 'Evidence',
+      nameKey: 'evidence',
       hidden: !canAccessRoute(permissions, 'tasks'),
     },
     {
       id: 'documents',
       path: `/${organization.id}/documents`,
-      name: 'Documents',
+      nameKey: 'documents',
       hidden: !canAccessRoute(permissions, 'documents'),
     },
     {
       id: 'people',
       path: `/${organization.id}/people/all`,
-      name: 'People',
+      nameKey: 'people',
       hidden: !canAccessRoute(permissions, 'people'),
     },
     {
       id: 'risk',
       path: `/${organization.id}/risk`,
-      name: 'Risks',
+      nameKey: 'risks',
       hidden: !canAccessRoute(permissions, 'risk'),
     },
     {
       id: 'vendors',
       path: `/${organization.id}/vendors`,
-      name: 'Vendors',
+      nameKey: 'vendors',
       hidden: !canAccessRoute(permissions, 'vendors'),
     },
     {
       id: 'questionnaire',
       path: `/${organization.id}/questionnaire`,
-      name: 'Questionnaire',
+      nameKey: 'questionnaire',
       hidden: !isQuestionnaireEnabled || !canAccessRoute(permissions, 'questionnaire'),
     },
     {
       id: 'integrations',
       path: `/${organization.id}/integrations`,
-      name: 'Integrations',
+      nameKey: 'integrations',
       hidden: !canAccessRoute(permissions, 'integrations'),
     },
     {
       id: 'tests',
       path: `/${organization.id}/cloud-tests`,
-      name: 'Cloud Tests',
+      nameKey: 'cloudTests',
       hidden: !canAccessRoute(permissions, 'cloud-tests'),
     },
   ];
@@ -141,7 +144,7 @@ export function AppSidebar({
       {visibleItems.map((item) => (
         <Link key={item.id} href={item.path}>
           <AppShellNavItem isActive={isPathActive(item.path)}>
-            {item.name}
+            {t(item.nameKey)}
           </AppShellNavItem>
         </Link>
       ))}

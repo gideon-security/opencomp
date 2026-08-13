@@ -4,6 +4,7 @@ import { useOrganizationFindings } from '@/hooks/use-findings-api';
 import { useFeatureFlag } from '@gideon-defender/analytics';
 import { FindingStatus } from '@db';
 import { TabsList, TabsTrigger, Tabs } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 
@@ -13,6 +14,7 @@ import { useParams, usePathname } from 'next/navigation';
  * other's data.
  */
 export function OverviewTabs() {
+  const t = useTranslations('overview');
   const { orgId } = useParams<{ orgId: string }>();
   const pathname = usePathname();
   const isTimelineEnabled = useFeatureFlag('is-timeline-enabled');
@@ -43,14 +45,15 @@ export function OverviewTabs() {
           nativeButton={false}
           render={<Link href={overviewHref} prefetch />}
         >
-          Overview
+          {t('overviewPage.overview')}
         </TabsTrigger>
         <TabsTrigger
           value="findings"
           nativeButton={false}
           render={<Link href={findingsHref} prefetch />}
         >
-          Findings{openCount > 0 ? ` (${openCount})` : ''}
+          {t('overviewPage.findings')}
+          {openCount > 0 ? ` (${openCount})` : ''}
         </TabsTrigger>
         {isTimelineEnabled && (
           <TabsTrigger
@@ -58,7 +61,7 @@ export function OverviewTabs() {
             nativeButton={false}
             render={<Link href={timelineHref} prefetch />}
           >
-            Timeline
+            {t('overviewPage.timeline')}
           </TabsTrigger>
         )}
       </TabsList>

@@ -8,6 +8,7 @@ import type {
   RequirementMap,
   Task,
 } from '@db';
+import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { FrameworkControlShell } from './components/FrameworkControlShell';
 
@@ -34,6 +35,7 @@ interface PageProps {
 
 export default async function FrameworkControlPage({ params }: PageProps) {
   const { orgId, frameworkInstanceId, controlId } = await params;
+  const t = await getTranslations('frameworks');
 
   const [controlRes, frameworkRes] = await Promise.all([
     serverApi.get<ControlDetail>(
@@ -47,7 +49,8 @@ export default async function FrameworkControlPage({ params }: PageProps) {
   }
 
   const control = controlRes.data;
-  const frameworkName = frameworkRes.data?.framework?.name ?? 'Framework';
+  const frameworkName =
+    frameworkRes.data?.framework?.name ?? t('controls.frameworkFallback');
 
   const matchedRequirement = control.requirementsMapped?.find(
     (rm) => rm.frameworkInstanceId === frameworkInstanceId,
@@ -60,7 +63,7 @@ export default async function FrameworkControlPage({ params }: PageProps) {
     : undefined;
 
   const breadcrumbs = [
-    { label: 'Frameworks', href: `/${orgId}/frameworks` },
+    { label: t('controls.frameworksBreadcrumb'), href: `/${orgId}/frameworks` },
     {
       label: frameworkName,
       href: `/${orgId}/frameworks/${frameworkInstanceId}`,

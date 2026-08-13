@@ -29,7 +29,7 @@
   ],
   "keywords": [
     "cache",
-    "comp-ai",
+    "opencomp",
     "key-value",
     "redis",
     "rate-limit"
@@ -42,7 +42,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/comp-ai/comp.git",
+    "url": "git+https://github.com/gideon-security/opencomp.git",
     "directory": "packages/kv"
   },
   "scripts": {

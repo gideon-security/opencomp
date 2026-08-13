@@ -1,6 +1,7 @@
 'use client';
 
 import { Badge, Button, Text } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useFrameworkSyncHistory } from '@/hooks/use-framework-sync-history';
@@ -51,33 +52,45 @@ function HistoryItemRow({
   onRollback,
   isRollingBack,
 }: HistoryItemRowProps) {
+  const t = useTranslations('frameworks');
   const isSync = item.kind === 'SYNC';
   const wasRolledBack = !!item.rolledBackByOperationId;
   const actorName = item.performedBy?.user?.name
     ?? item.performedBy?.user?.email
     ?? null;
-  const actionVerb = isSync ? 'Synced' : 'Rolled back';
+  const actionVerb = isSync ? t('instance.synced') : t('instance.rolledBack');
 
   return (
     <div className="flex items-start justify-between gap-4 rounded-md border px-4 py-3">
       <div className="flex flex-col gap-1 min-w-0">
         <div className="flex items-center gap-2">
           <Badge variant={isSync ? 'secondary' : 'outline'}>
-            {isSync ? 'Sync' : 'Rollback'}
+            {isSync ? t('instance.sync') : t('instance.rollback')}
           </Badge>
           <Text size="sm" weight="medium">
             v{item.fromVersion.version} → v{item.toVersion.version}
           </Text>
           {wasRolledBack && (
-            <Badge variant="outline">Rolled back</Badge>
+            <Badge variant="outline">{t('instance.rolledBack')}</Badge>
           )}
         </div>
         <Text size="sm" variant="muted">
-          {actionVerb}{actorName ? ` by ${actorName}` : ''} on {formatDate(item.performedAt)}
+          {actorName
+            ? t('instance.actionWithActor', {
+                verb: actionVerb,
+                actor: actorName,
+                date: formatDate(item.performedAt),
+              })
+            : t('instance.actionOnDate', {
+                verb: actionVerb,
+                date: formatDate(item.performedAt),
+              })}
         </Text>
         {item.rollbackExpiresAt && isWithinRollbackWindow(item) && !wasRolledBack && (
           <Text size="sm" variant="muted">
-            Rollback available until {formatDate(item.rollbackExpiresAt)}
+            {t('instance.rollbackAvailableUntil', {
+              date: formatDate(item.rollbackExpiresAt),
+            })}
           </Text>
         )}
       </div>
@@ -89,7 +102,7 @@ function HistoryItemRow({
             disabled={isRollingBack}
             onClick={() => onRollback(item.id)}
           >
-            {isRollingBack ? 'Rolling back...' : 'Rollback'}
+            {isRollingBack ? t('instance.rollingBack') : t('instance.rollback')}
           </Button>
         </div>
       )}
@@ -103,6 +116,8 @@ export function SyncHistorySection({
   frameworkInstanceId,
   permissions,
 }: SyncHistorySectionProps) {
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const { data: history, isLoading } = useFrameworkSyncHistory(frameworkInstanceId);
   const { rollback, isRollingBack } = useFrameworkRollback(frameworkInstanceId);
   const [pendingRollback, setPendingRollback] = useState<SyncHistoryItem | null>(null);
@@ -134,11 +149,15 @@ export function SyncHistorySection({
     if (!pendingRollback) return;
     try {
       await rollback(pendingRollback.id);
-      toast.success(`Rolled back to v${pendingRollback.fromVersion.version}`);
+      toast.success(
+        t('instance.rolledBackToVersion', {
+          version: pendingRollback.fromVersion.version,
+        }),
+      );
       setPendingRollback(null);
     } catch (err) {
       toast.error(
-        err instanceof Error ? err.message : 'Failed to roll back framework',
+        err instanceof Error ? err.message : t('instance.rollbackFailed'),
       );
     }
   };
@@ -163,7 +182,7 @@ export function SyncHistorySection({
             variant="ghost"
             onClick={() => setShowAll((v) => !v)}
           >
-            {showAll ? 'Show less' : `Show ${hiddenCount} more`}
+            {showAll ? tCommon('common.less') : t('instance.showMoreCount', { count: hiddenCount })}
           </Button>
         </div>
       )}

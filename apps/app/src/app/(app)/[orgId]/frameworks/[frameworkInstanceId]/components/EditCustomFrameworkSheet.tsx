@@ -22,19 +22,11 @@ import {
 import { Input } from '@gideon-defender/ui/input';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-
-const schema = z.object({
-  // trim() runs before min(1), so whitespace-only names are rejected and the
-  // stored value is trimmed.
-  name: z.string().trim().min(1, 'Name is required').max(120),
-  description: z.string().max(2000),
-});
-
-type FormValues = z.infer<typeof schema>;
 
 interface EditCustomFrameworkSheetProps {
   isOpen: boolean;
@@ -51,7 +43,18 @@ export function EditCustomFrameworkSheet({
 }: EditCustomFrameworkSheetProps) {
   const { updateCustomFramework } = useFrameworks();
   const { hasPermission } = usePermissions();
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const schema = z.object({
+    // trim() runs before min(1), so whitespace-only names are rejected and the
+    // stored value is trimmed.
+    name: z.string().trim().min(1, t('instance.frameworkNameRequired')).max(120),
+    description: z.string().max(2000),
+  });
+
+  type FormValues = z.infer<typeof schema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -79,12 +82,12 @@ export function EditCustomFrameworkSheet({
     setIsSubmitting(true);
     try {
       await updateCustomFramework(frameworkInstance.id, values);
-      toast.success('Custom framework updated');
+      toast.success(t('instance.customFrameworkUpdatedToast'));
       onUpdated?.();
       onClose();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to update framework',
+        error instanceof Error ? error.message : t('instance.updateFrameworkFailed'),
       );
     } finally {
       setIsSubmitting(false);
@@ -95,7 +98,7 @@ export function EditCustomFrameworkSheet({
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Edit Custom Framework</SheetTitle>
+          <SheetTitle>{t('instance.editFrameworkTitle')}</SheetTitle>
         </SheetHeader>
         <SheetBody>
           <Form {...form}>
@@ -108,11 +111,11 @@ export function EditCustomFrameworkSheet({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>{tCommon('common.name')}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="Internal Controls Framework"
+                        placeholder={t('instance.frameworkNamePlaceholder')}
                       />
                     </FormControl>
                     <FormMessage />
@@ -124,12 +127,12 @@ export function EditCustomFrameworkSheet({
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>{tCommon('common.description')}</FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
                         className="min-h-[100px]"
-                        placeholder="Describe what this framework covers..."
+                        placeholder={t('instance.describeFrameworkPlaceholder')}
                       />
                     </FormControl>
                     <FormMessage />
@@ -138,7 +141,7 @@ export function EditCustomFrameworkSheet({
               />
               <div className="flex justify-end">
                 <Button type="submit" disabled={isSubmitting}>
-                  Save Changes
+                  {t('instance.saveChanges')}
                 </Button>
               </div>
             </form>

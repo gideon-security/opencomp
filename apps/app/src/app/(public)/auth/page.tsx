@@ -13,12 +13,14 @@ import {
 } from '@gideon-defender/ui/card';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-export const metadata: Metadata = {
-  title: 'Login | OpenComp',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('auth');
+  return { title: t('pageTitle') };
+}
 
 export default async function Page({
   searchParams,
@@ -44,6 +46,8 @@ export default async function Page({
     redirect('/');
   }
 
+  const t = await getTranslations('auth');
+
   const showGoogle = !!(env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET);
   const showGithub = !!(env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET);
   const showMicrosoft = !!(env.AUTH_MICROSOFT_CLIENT_ID && env.AUTH_MICROSOFT_CLIENT_SECRET);
@@ -57,10 +61,10 @@ export default async function Page({
               <BrandLogo iconSize={40} />
             </div>
             <CardTitle className="text-2xl tracking-tight text-card-foreground">
-              Get Started with OpenComp
+              {t('heroTitle')}
             </CardTitle>
             <CardDescription className="text-base text-muted-foreground px-4">
-              {`Automate SOC 2, ISO 27001 and GDPR compliance with AI.`}
+              {t('heroTagline')}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pb-6 px-8">
@@ -74,21 +78,24 @@ export default async function Page({
           </CardContent>
           <CardFooter className="pb-10">
             <p className="w-full px-6 text-center text-xs text-muted-foreground">
-              By clicking continue, you acknowledge that you have read and agree to the{' '}
-              <Link
-                href="https://gideondefender.com/terms-and-conditions"
-                className="underline hover:text-primary"
-              >
-                Terms and Conditions
-              </Link>{' '}
-              and{' '}
-              <Link
-                href="https://gideondefender.com/privacy-policy"
-                className="underline hover:text-primary"
-              >
-                Privacy Policy
-              </Link>
-              .
+              {t.rich('termsAgreement', {
+                terms: (chunk) => (
+                  <Link
+                    href="https://gideondefender.com/terms-and-conditions"
+                    className="underline hover:text-primary"
+                  >
+                    {chunk}
+                  </Link>
+                ),
+                privacy: (chunk) => (
+                  <Link
+                    href="https://gideondefender.com/privacy-policy"
+                    className="underline hover:text-primary"
+                  >
+                    {chunk}
+                  </Link>
+                ),
+              })}
             </p>
           </CardFooter>
         </Card>
