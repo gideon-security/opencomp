@@ -1,5 +1,6 @@
 import { serverApi } from '@/lib/api-server';
 import { PageLayout } from '@trycompai/design-system';
+import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { RiskPageClient } from './components/RiskPageClient';
@@ -61,7 +62,8 @@ export default async function RiskPage({ searchParams, params }: PageProps) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('risk');
   return {
-    title: 'Risk Overview',
+    title: t('detail.metadataTitle'),
   };
 }

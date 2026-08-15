@@ -1,6 +1,5 @@
 'use client';
 
-import { createRiskSchema } from '@/actions/schema';
 import { DepartmentSelect } from '@/components/DepartmentSelect';
 import { SelectAssignee } from '@/components/SelectAssignee';
 import { useRiskActions } from '@/hooks/use-risks';
@@ -24,11 +23,12 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { ArrowRight } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
-import type { z } from 'zod';
+import { z } from 'zod';
 
 interface CreateRiskProps {
   assignees: (Member & { user: User })[];
@@ -39,14 +39,36 @@ export function CreateRisk({ assignees, onSuccess }: CreateRiskProps) {
   const { createRisk } = useRiskActions();
   const { mutate } = useSWRConfig();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations('risk');
+  const tCommon = useTranslations('overview');
+
+  const schema = z.object({
+    title: z
+      .string({ error: t('create.nameRequired') })
+      .min(1, { message: t('create.nameMinLength') })
+      .max(100, { message: t('create.nameMaxLength') }),
+    description: z
+      .string({ error: t('create.descriptionRequired') })
+      .min(1, { message: t('create.descriptionMinLength') })
+      .max(255, { message: t('create.descriptionMaxLength') }),
+    category: z.nativeEnum(RiskCategory, { error: t('create.categoryRequired') }),
+    department: z
+      .string({ error: t('create.departmentRequired') })
+      .trim()
+      .min(1, { message: t('create.departmentRequired') })
+      .max(64, { message: t('create.departmentMaxLength') }),
+    assigneeId: z.string().optional().nullable(),
+  });
+
+  type FormValues = z.infer<typeof schema>;
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<z.infer<typeof createRiskSchema>>({
-    resolver: zodResolver(createRiskSchema),
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       title: '',
       description: '',
@@ -56,15 +78,15 @@ export function CreateRisk({ assignees, onSuccess }: CreateRiskProps) {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof createRiskSchema>) => {
+  const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     try {
       await createRisk(data);
-      toast.success('Risk created successfully');
+      toast.success(t('create.createdToast'));
       onSuccess?.();
       mutate((key) => Array.isArray(key) && key[0] === 'risks', undefined, { revalidate: true });
     } catch {
-      toast.error('Failed to create risk');
+      toast.error(t('create.createFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -74,23 +96,23 @@ export function CreateRisk({ assignees, onSuccess }: CreateRiskProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="flex h-full flex-col">
       <FieldGroup>
         <Field>
-          <FieldLabel htmlFor="title">Risk Title</FieldLabel>
+          <FieldLabel htmlFor="title">{t('create.riskTitle')}</FieldLabel>
           <Input
             id="title"
             {...register('title')}
             autoFocus
-            placeholder="A short, descriptive title for the risk."
+            placeholder={t('create.riskTitlePlaceholder')}
             autoCorrect="off"
           />
           <FieldError errors={[errors.title]} />
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="description">Description</FieldLabel>
+          <FieldLabel htmlFor="description">{tCommon('common.description')}</FieldLabel>
           <Textarea
             id="description"
             {...register('description')}
-            placeholder="A detailed description of the risk, its potential impact, and its causes."
+            placeholder={t('create.descriptionPlaceholder')}
           />
           <FieldError errors={[errors.description]} />
         </Field>
@@ -100,10 +122,10 @@ export function CreateRisk({ assignees, onSuccess }: CreateRiskProps) {
           control={control}
           render={({ field }) => (
             <Field>
-              <FieldLabel>Category</FieldLabel>
+              <FieldLabel>{t('create.category')}</FieldLabel>
               <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
+                  <SelectValue placeholder={t('create.selectCategory')} />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.values(RiskCategory).map((category) => {
@@ -130,7 +152,7 @@ export function CreateRisk({ assignees, onSuccess }: CreateRiskProps) {
           control={control}
           render={({ field }) => (
             <Field>
-              <FieldLabel>Department</FieldLabel>
+              <FieldLabel>{t('create.department')}</FieldLabel>
               <DepartmentSelect
                 value={field.value || ''}
                 onChange={field.onChange}
@@ -146,7 +168,7 @@ export function CreateRisk({ assignees, onSuccess }: CreateRiskProps) {
           control={control}
           render={({ field }) => (
             <Field>
-              <FieldLabel>Assignee</FieldLabel>
+              <FieldLabel>{t('create.assignee')}</FieldLabel>
               <SelectAssignee
                 assigneeId={field.value ?? null}
                 assignees={assignees}
@@ -163,7 +185,7 @@ export function CreateRisk({ assignees, onSuccess }: CreateRiskProps) {
       <SheetFooter>
         <HStack justify="end">
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Creating...' : 'Create'}
+            {isSubmitting ? t('create.creating') : t('create.create')}
             {!isSubmitting && <ArrowRight size={16} className="ml-2" />}
           </Button>
         </HStack>

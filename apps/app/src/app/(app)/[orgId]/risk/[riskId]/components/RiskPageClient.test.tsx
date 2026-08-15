@@ -1,10 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   mockHasPermission,
   ADMIN_PERMISSIONS,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -259,7 +262,7 @@ describe('RiskPageClient permission gating', () => {
 
     // shortTaskId takes last 6 chars, uppercased — falls back to 'Task'
     // since the mocked useTaskItems returns an empty list.
-    expect(screen.getByRole('heading', { name: 'Task' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'detail.taskFallback' })).toBeInTheDocument();
   });
 
   it('renders the breadcrumb regardless of user permissions', () => {

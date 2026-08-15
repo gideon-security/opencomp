@@ -1,7 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 const mockPost = vi.fn();
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-api', () => ({
   useApi: () => ({
@@ -35,9 +38,9 @@ describe('CreateRisk', () => {
 
   it('renders the create risk form', () => {
     render(<CreateRisk assignees={assignees} />);
-    expect(screen.getByLabelText(/risk title/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /create/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/create\.riskTitle/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/common\.description/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /create\.create/i })).toBeInTheDocument();
   });
 
   it('calls api.post on submit and shows success toast', async () => {
@@ -46,13 +49,13 @@ describe('CreateRisk', () => {
 
     render(<CreateRisk assignees={assignees} onSuccess={onSuccess} />);
 
-    fireEvent.change(screen.getByLabelText(/risk title/i), {
+    fireEvent.change(screen.getByLabelText(/create\.riskTitle/i), {
       target: { value: 'Test Risk' },
     });
-    fireEvent.change(screen.getByLabelText(/description/i), {
+    fireEvent.change(screen.getByLabelText(/common\.description/i), {
       target: { value: 'Test description' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /create/i }));
+    fireEvent.click(screen.getByRole('button', { name: /create\.create/i }));
 
     await waitFor(() => {
       expect(mockPost).toHaveBeenCalledWith(
@@ -65,7 +68,7 @@ describe('CreateRisk', () => {
     });
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Risk created successfully');
+      expect(toast.success).toHaveBeenCalledWith('create.createdToast');
       expect(onSuccess).toHaveBeenCalled();
     });
   });
@@ -75,16 +78,16 @@ describe('CreateRisk', () => {
 
     render(<CreateRisk assignees={assignees} />);
 
-    fireEvent.change(screen.getByLabelText(/risk title/i), {
+    fireEvent.change(screen.getByLabelText(/create\.riskTitle/i), {
       target: { value: 'Test Risk' },
     });
-    fireEvent.change(screen.getByLabelText(/description/i), {
+    fireEvent.change(screen.getByLabelText(/common\.description/i), {
       target: { value: 'Test description' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /create/i }));
+    fireEvent.click(screen.getByRole('button', { name: /create\.create/i }));
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Failed to create risk');
+      expect(toast.error).toHaveBeenCalledWith('create.createFailed');
     });
   });
 });

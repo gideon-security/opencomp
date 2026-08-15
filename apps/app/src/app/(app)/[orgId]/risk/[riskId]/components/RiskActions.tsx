@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@trycompai/design-system';
 import { Settings } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
@@ -26,6 +27,8 @@ export function RiskActions({ riskId, orgId }: { riskId: string; orgId: string }
   const { mutate: globalMutate } = useSWRConfig();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const t = useTranslations('risk');
+  const tCommon = useTranslations('overview');
 
   const { mutate: refreshRisk } = useRisk(riskId);
 
@@ -34,7 +37,7 @@ export function RiskActions({ riskId, orgId }: { riskId: string; orgId: string }
   const handleConfirm = async () => {
     setIsConfirmOpen(false);
     setIsRegenerating(true);
-    toast.info('Regenerating risk mitigation...');
+    toast.info(t('detail.regeneratingToast'));
 
     try {
       const response = await fetch(`/api/risks/${riskId}/regenerate-mitigation`, {
@@ -42,9 +45,9 @@ export function RiskActions({ riskId, orgId }: { riskId: string; orgId: string }
       });
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || 'Request failed');
+        throw new Error(data.error || tCommon('common.errorOccurred'));
       }
-      toast.success('Regeneration triggered. This may take a moment.');
+      toast.success(t('detail.regenerationTriggered'));
       refreshRisk();
       globalMutate(
         (key) => Array.isArray(key) && key[0] === 'risks',
@@ -60,7 +63,7 @@ export function RiskActions({ riskId, orgId }: { riskId: string; orgId: string }
         { revalidate: true },
       );
     } catch {
-      toast.error('Failed to trigger mitigation regeneration');
+      toast.error(t('detail.regenTriggerFailed'));
     } finally {
       setIsRegenerating(false);
     }
@@ -74,7 +77,7 @@ export function RiskActions({ riskId, orgId }: { riskId: string; orgId: string }
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setIsConfirmOpen(true)}>
-            Regenerate Risk Mitigation
+            {t('detail.regenerateRiskMitigation')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -82,16 +85,13 @@ export function RiskActions({ riskId, orgId }: { riskId: string; orgId: string }
       <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Regenerate Mitigation</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will generate a fresh mitigation comment for this risk and mark it closed.
-              Continue?
-            </AlertDialogDescription>
+            <AlertDialogTitle>{t('detail.regenerateMitigation')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('detail.regenerateConfirmation')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isRegenerating}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isRegenerating}>{tCommon('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirm} disabled={isRegenerating}>
-              {isRegenerating ? 'Working...' : 'Confirm'}
+              {isRegenerating ? t('detail.working') : t('detail.confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

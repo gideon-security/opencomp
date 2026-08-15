@@ -10,7 +10,7 @@ import {
   type RisksQueryParams,
 } from '@/hooks/use-risks';
 import { getSortingStateParser } from '@/lib/parsers';
-import { getRiskLevelFromScore, getRiskScore, LEVEL_LABEL } from '@/lib/risk-score';
+import { getRiskLevelFromScore, getRiskScore } from '@/lib/risk-score';
 import {
   interpolatedResidualScore,
   previewResidual,
@@ -59,6 +59,7 @@ import {
 } from '@trycompai/design-system';
 import { OverflowMenuVertical, Search, TrashCan } from '@trycompai/design-system/icons';
 import { ArrowDown, ArrowUp, ArrowUpDown, Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import {
   parseAsString,
@@ -114,23 +115,50 @@ function currentSeverityScore(risk: {
 }
 
 
-const STATUS_LABEL: Record<string, string> = {
-  open: 'Open',
-  pending: 'Pending',
-  closed: 'Closed',
-  archived: 'Archived',
-};
+export type RiskListTranslator = ReturnType<typeof useTranslations<'risk'>>;
 
-function getStatusBadge(status: string) {
+function statusLabel(t: RiskListTranslator, status: string): string {
   switch (status) {
     case 'open':
-      return <Badge variant="outline">Open</Badge>;
+      return t('list.statusOpen');
     case 'pending':
-      return <Badge variant="secondary">Pending</Badge>;
+      return t('list.statusPending');
     case 'closed':
-      return <Badge variant="default">Resolved</Badge>;
+      return t('list.statusClosed');
+    case 'archived':
+      return t('list.statusArchived');
     default:
-      return <Badge variant="outline">{status}</Badge>;
+      return status;
+  }
+}
+
+function severityLabel(t: RiskListTranslator, level: string): string {
+  switch (level) {
+    case 'very-low':
+      return t('list.severityVeryLow');
+    case 'low':
+      return t('list.severityLow');
+    case 'medium':
+      return t('list.severityMedium');
+    case 'high':
+      return t('list.severityHigh');
+    case 'very-high':
+      return t('list.severityVeryHigh');
+    default:
+      return level;
+  }
+}
+
+function getStatusBadge(status: string, t: RiskListTranslator) {
+  switch (status) {
+    case 'open':
+      return <Badge variant="outline">{t('list.statusOpen')}</Badge>;
+    case 'pending':
+      return <Badge variant="secondary">{t('list.statusPending')}</Badge>;
+    case 'closed':
+      return <Badge variant="default">{t('list.statusResolved')}</Badge>;
+    default:
+      return <Badge variant="outline">{statusLabel(t, status)}</Badge>;
   }
 }
 
@@ -158,6 +186,8 @@ export const RisksTable = ({
   const router = useRouter();
   const { hasPermission } = usePermissions();
   const { deleteRisk } = useRiskActions();
+  const t = useTranslations('risk');
+  const tCommon = useTranslations('overview');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [riskToDelete, setRiskToDelete] = useState<RiskRow | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -314,7 +344,7 @@ export const RisksTable = ({
       .map((item) => ({
         id: item.id,
         title: item.name,
-        description: 'Being researched and created by AI...',
+        description: t('list.beingResearched'),
         category: 'other' as const,
         department: null,
         status: 'open' as const,
@@ -337,7 +367,7 @@ export const RisksTable = ({
       .map((item) => ({
         id: item.id,
         title: item.name,
-        description: 'Being researched and created by AI...',
+        description: t('list.beingResearched'),
         category: 'other' as const,
         department: null,
         status: 'open' as const,
@@ -356,7 +386,7 @@ export const RisksTable = ({
       }));
 
     return [...risksWithStatus, ...pendingRisks, ...tempRisks];
-  }, [risks, itemsInfo, itemStatuses, orgId, isActive, onboardingRunId]);
+  }, [risks, itemsInfo, itemStatuses, orgId, isActive, onboardingRunId, t]);
 
   // Calculate assessment progress
   const assessmentProgress = useMemo(() => {
@@ -427,12 +457,12 @@ export const RisksTable = ({
     setIsDeleting(true);
     try {
       await deleteRisk(riskToDelete.id);
-      toast.success('Risk deleted successfully');
+      toast.success(t('list.deleteSuccess'));
       setDeleteDialogOpen(false);
       setRiskToDelete(null);
       mutateRisks();
     } catch {
-      toast.error('Failed to delete risk');
+      toast.error(t('list.deleteFailed'));
     } finally {
       setIsDeleting(false);
     }
@@ -440,10 +470,10 @@ export const RisksTable = ({
 
   const isEmpty = mergedRisks.length === 0;
   const showEmptyState = isEmpty && onboardingRunId && isActive;
-  const emptyTitle = title ? 'No risks found' : 'No risks yet';
+  const emptyTitle = title ? t('list.noRisksFound') : t('list.noRisksYet');
   const emptyDescription = title
-    ? 'Try adjusting your search.'
-    : 'Create your first risk to get started.';
+    ? t('list.tryAdjustingSearch')
+    : t('list.createFirstRisk');
   const pageSizeOptions = [10, 25, 50, 100];
 
   if (showEmptyState) {
@@ -463,7 +493,7 @@ export const RisksTable = ({
                 <Search size={16} />
               </InputGroupAddon>
               <InputGroupInput
-                placeholder="Search risks..."
+                placeholder={t('list.searchPlaceholder')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value || null)}
               />
@@ -475,21 +505,21 @@ export const RisksTable = ({
               onValueChange={(v) => setSeverityFilter(v === 'all' ? null : v)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Severity">
+                <SelectValue placeholder={t('list.severity')}>
                   {(value: string) =>
                     value && value !== 'all'
-                      ? LEVEL_LABEL[value as keyof typeof LEVEL_LABEL] ?? value
-                      : 'All severities'
+                      ? severityLabel(t, value)
+                      : t('list.allSeverities')
                   }
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All severities</SelectItem>
-                <SelectItem value="very-high">Very high</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="very-low">Very low</SelectItem>
+                <SelectItem value="all">{t('list.allSeverities')}</SelectItem>
+                <SelectItem value="very-high">{t('list.severityVeryHigh')}</SelectItem>
+                <SelectItem value="high">{t('list.severityHigh')}</SelectItem>
+                <SelectItem value="medium">{t('list.severityMedium')}</SelectItem>
+                <SelectItem value="low">{t('list.severityLow')}</SelectItem>
+                <SelectItem value="very-low">{t('list.severityVeryLow')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -499,20 +529,20 @@ export const RisksTable = ({
               onValueChange={(v) => setStatusFilter(v === 'all' ? null : v)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Status">
+                <SelectValue placeholder={tCommon('common.status')}>
                   {(value: string) =>
                     value && value !== 'all'
-                      ? STATUS_LABEL[value] ?? value
-                      : 'All statuses'
+                      ? statusLabel(t, value)
+                      : t('list.allStatuses')
                   }
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All statuses</SelectItem>
-                <SelectItem value="open">Open</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="closed">Closed</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
+                <SelectItem value="all">{t('list.allStatuses')}</SelectItem>
+                <SelectItem value="open">{t('list.statusOpen')}</SelectItem>
+                <SelectItem value="pending">{t('list.statusPending')}</SelectItem>
+                <SelectItem value="closed">{t('list.statusClosed')}</SelectItem>
+                <SelectItem value="archived">{t('list.statusArchived')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -522,19 +552,19 @@ export const RisksTable = ({
               onValueChange={(v) => setAssigneeFilter(v === 'all' ? null : v)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Owner">
+                <SelectValue placeholder={t('list.owner')}>
                   {(value: string) => {
-                    if (!value || value === 'all') return 'All owners';
+                    if (!value || value === 'all') return t('list.allOwners');
                     const a = assignees.find((m) => m.id === value);
-                    return a?.user?.name || a?.user?.email || 'Unknown';
+                    return a?.user?.name || a?.user?.email || t('list.unknown');
                   }}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All owners</SelectItem>
+                <SelectItem value="all">{t('list.allOwners')}</SelectItem>
                 {assignees.map((a) => (
                   <SelectItem key={a.id} value={a.id}>
-                    {a.user?.name || a.user?.email || 'Unknown'}
+                    {a.user?.name || a.user?.email || t('list.unknown')}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -551,7 +581,7 @@ export const RisksTable = ({
                 void setAssigneeFilter(null);
               }}
             >
-              Clear filters
+              {t('list.clearFilters')}
             </Button>
           )}
         </div>
@@ -566,24 +596,24 @@ export const RisksTable = ({
               <span className="text-sm font-medium text-primary">
                 {assessmentProgress
                   ? assessmentProgress.completed === 0
-                    ? 'Researching and creating risks'
-                    : 'Assessing risks and generating mitigation plans'
+                    ? t('list.researchingAndCreating')
+                    : t('list.assessingRisks')
                   : progress
                     ? progress.completed === 0
-                      ? 'Researching and creating risks'
-                      : 'Assessing risks and generating mitigation plans'
-                    : 'Researching and creating risks'}
+                      ? t('list.researchingAndCreating')
+                      : t('list.assessingRisks')
+                    : t('list.researchingAndCreating')}
               </span>
               <span className="text-xs text-muted-foreground">
                 {assessmentProgress
                   ? assessmentProgress.completed === 0
-                    ? 'AI is analyzing your organization...'
-                    : `${assessmentProgress.completed}/${assessmentProgress.total} risks assessed`
+                    ? t('list.analyzingOrg')
+                    : t('list.risksAssessed', { completed: assessmentProgress.completed, total: assessmentProgress.total })
                   : progress
                     ? progress.completed === 0
-                      ? 'AI is analyzing your organization...'
-                      : `${progress.completed}/${progress.total} risks created`
-                    : 'AI is analyzing your organization...'}
+                      ? t('list.analyzingOrg')
+                      : t('list.risksCreated', { completed: progress.completed, total: progress.total })
+                    : t('list.analyzingOrg')}
               </span>
             </div>
           </div>
@@ -620,26 +650,26 @@ export const RisksTable = ({
                       onClick={() => handleSort('title')}
                       className="flex items-center hover:text-foreground"
                     >
-                      RISK
+                      {t('list.headerRisk')}
                       {getSortIcon('title')}
                     </button>
                   </TableHead>
-                  <TableHead>SEVERITY</TableHead>
-                  <TableHead>INHERENT RISK</TableHead>
-                  <TableHead>CURRENT RISK</TableHead>
-                  <TableHead>STATUS</TableHead>
-                  <TableHead>OWNER</TableHead>
+                  <TableHead>{t('list.headerSeverity')}</TableHead>
+                  <TableHead>{t('list.headerInherentRisk')}</TableHead>
+                  <TableHead>{t('list.headerCurrentRisk')}</TableHead>
+                  <TableHead>{t('list.headerStatus')}</TableHead>
+                  <TableHead>{t('list.headerOwner')}</TableHead>
                   <TableHead>
                     <button
                       type="button"
                       onClick={() => handleSort('updatedAt')}
                       className="flex items-center hover:text-foreground"
                     >
-                      UPDATED
+                      {t('list.headerUpdated')}
                       {getSortIcon('updatedAt')}
                     </button>
                   </TableHead>
-                  {hasPermission('risk', 'delete') && <TableHead>ACTIONS</TableHead>}
+                  {hasPermission('risk', 'delete') && <TableHead>{t('list.headerActions')}</TableHead>}
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -677,7 +707,7 @@ export const RisksTable = ({
                         return (
                           <>
                             <TableCell>
-                              <Text>{LEVEL_LABEL[level]}</Text>
+                              <Text>{severityLabel(t, level)}</Text>
                             </TableCell>
                             <TableCell>
                               <RiskScoreBadge score={inherentScore} />
@@ -688,9 +718,9 @@ export const RisksTable = ({
                           </>
                         );
                       })()}
-                      <TableCell>{getStatusBadge(risk.status)}</TableCell>
+                      <TableCell>{getStatusBadge(risk.status, t)}</TableCell>
                       <TableCell>
-                        <Text>{risk.assignee?.user?.name || 'Unassigned'}</Text>
+                        <Text>{risk.assignee?.user?.name || t('list.unassigned')}</Text>
                       </TableCell>
                       <TableCell>
                         <Text>{formatDate(risk.updatedAt)}</Text>
@@ -715,7 +745,7 @@ export const RisksTable = ({
                                   }}
                                 >
                                   <TrashCan size={16} />
-                                  Delete
+                                  {tCommon('common.delete')}
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -733,20 +763,19 @@ export const RisksTable = ({
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete Risk</AlertDialogTitle>
+              <AlertDialogTitle>{t('list.deleteTitle')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete "{riskToDelete?.title}"? This action cannot be
-                undone.
+                {t('list.deleteConfirmation', { title: riskToDelete?.title ?? '' })}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+              <AlertDialogCancel disabled={isDeleting}>{tCommon('common.cancel')}</AlertDialogCancel>
               <AlertDialogAction
                 variant="destructive"
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
               >
-                {isDeleting ? 'Deleting...' : 'Delete'}
+                {isDeleting ? t('list.deleting') : tCommon('common.delete')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
