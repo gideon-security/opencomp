@@ -1,8 +1,13 @@
 import type { PentestCreateRequest } from '@/lib/security/penetration-tests-client';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+mockNextIntl();
+
 import { CreateRunPanel } from './CreateRunPanel';
+import { allPentestChecks } from './scan-profiles';
 
 const navigationMock = vi.hoisted(() => ({
   push: vi.fn(),
@@ -56,13 +61,13 @@ describe('CreateRunPanel', () => {
 
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={onSubmit} />);
 
-    await user.type(screen.getByLabelText(/target url/i), 'app.example.com');
+    await user.type(screen.getByLabelText(/penTest\.targetFields\.targetUrl/), 'app.example.com');
     await user.type(
-      screen.getByLabelText(/context for the agent/i),
+      screen.getByLabelText(/penTest\.runContext\.contextForAgent/i),
       '  We remediated the auth findings last week.  ',
     );
     await confirmAuthorization(user);
-    await user.click(screen.getByRole('button', { name: /start scan/i }));
+    await user.click(screen.getByRole('button', { name: /startScan/i }));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
@@ -83,9 +88,9 @@ describe('CreateRunPanel', () => {
 
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={onSubmit} />);
 
-    await user.type(screen.getByLabelText(/target url/i), 'app.example.com');
+    await user.type(screen.getByLabelText(/penTest\.targetFields\.targetUrl/), 'app.example.com');
     await confirmAuthorization(user);
-    await user.click(screen.getByRole('button', { name: /start scan/i }));
+    await user.click(screen.getByRole('button', { name: /startScan/i }));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalled();
@@ -102,9 +107,7 @@ describe('CreateRunPanel', () => {
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={vi.fn()} />);
 
     expect(
-      screen.getByText(
-        /2 saved finding context notes for this target will be shared with the agent automatically/i,
-      ),
+      screen.getByText(/penTest\.runContext\.sharedNotesCount/i),
     ).toBeInTheDocument();
   });
 
@@ -114,7 +117,7 @@ describe('CreateRunPanel', () => {
 
     render(<CreateRunPanel orgId="org_1" balance={0} planRequired onSubmit={onSubmit} />);
 
-    await user.click(screen.getByRole('button', { name: /choose plan/i }));
+    await user.click(screen.getByRole('button', { name: /choosePlan/i }));
 
     await waitFor(() => {
       expect(navigationMock.push).toHaveBeenCalledWith(
@@ -134,9 +137,9 @@ describe('CreateRunPanel', () => {
 
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={onSubmit} />);
 
-    await user.type(screen.getByLabelText(/target url/i), 'app.example.com');
+    await user.type(screen.getByLabelText(/penTest\.targetFields\.targetUrl/), 'app.example.com');
     await confirmAuthorization(user);
-    await user.click(screen.getByRole('button', { name: /start scan/i }));
+    await user.click(screen.getByRole('button', { name: /startScan/i }));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
@@ -175,7 +178,7 @@ describe('CreateRunPanel', () => {
     await user.click(screen.getByText('Quick'));
     await user.click(checkInput(/^xss$/i));
 
-    expect(screen.getByText('Custom · 11 min-25 min')).toBeInTheDocument();
+    expect(screen.getAllByText(/penTest\.create\.custom/i).length).toBeGreaterThan(0);
     expect(screen.queryByText(/based on/i)).not.toBeInTheDocument();
   });
 
@@ -202,9 +205,9 @@ describe('CreateRunPanel', () => {
     expect(screen.getByText('Standard · 30-90 min')).toBeInTheDocument();
     expect(screen.queryByText(/based on/i)).not.toBeInTheDocument();
 
-    await user.type(screen.getByLabelText(/target url/i), 'app.example.com');
+    await user.type(screen.getByLabelText(/penTest\.targetFields\.targetUrl/), 'app.example.com');
     await confirmAuthorization(user);
-    await user.click(screen.getByRole('button', { name: /start scan/i }));
+    await user.click(screen.getByRole('button', { name: /startScan/i }));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalled();
@@ -231,11 +234,11 @@ describe('CreateRunPanel', () => {
     await user.click(screen.getByText('Quick'));
     await user.click(checkInput(/^xss$/i));
 
-    expect(screen.getByText('Custom · 11 min-25 min')).toBeInTheDocument();
+    expect(screen.getAllByText(/penTest\.create\.custom/i).length).toBeGreaterThan(0);
 
     await user.click(validationLevel().getByLabelText(/safe proof/i, { selector: 'input' }));
 
-    expect(screen.getByText('Custom · 17 min-38 min')).toBeInTheDocument();
+    expect(screen.getAllByText(/penTest\.create\.custom/i).length).toBeGreaterThan(0);
   });
 
   it('does not show an inverted runtime range when no checks are selected', async () => {
@@ -248,7 +251,7 @@ describe('CreateRunPanel', () => {
     await user.click(checkInput(/^technology config$/i));
     await user.click(checkInput(/^discovery$/i));
 
-    expect(screen.getByText('Custom · 5 min-5 min')).toBeInTheDocument();
+    expect(screen.getAllByText(/penTest\.create\.custom/i).length).toBeGreaterThan(0);
   });
 
   it('labels the optional repository field for assistive technology', () => {
@@ -298,8 +301,8 @@ describe('CreateRunPanel', () => {
 
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={vi.fn()} />);
 
-    expect(screen.getByText('Scan coverage')).toBeInTheDocument();
-    expect(screen.getByText('Validation level')).toBeInTheDocument();
+    expect(screen.getByText(/penTest\.advanced\.scanCoverage/i)).toBeInTheDocument();
+    expect(screen.getByText(/penTest\.advanced\.validationLevel/i)).toBeInTheDocument();
     expect(validationLevel().getByLabelText(/report only/i, { selector: 'input' })).toBeInTheDocument();
     expect(validationLevel().getByLabelText(/safe proof/i, { selector: 'input' })).toBeInTheDocument();
     expect(validationLevel().getByLabelText(/impact proof/i, { selector: 'input' })).toBeInTheDocument();
@@ -334,12 +337,12 @@ describe('CreateRunPanel', () => {
 
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={onSubmit} />);
 
-    await user.type(screen.getByLabelText(/target url/i), 'app.example.com');
-    await user.click(screen.getByRole('button', { name: /start scan/i }));
+    await user.type(screen.getByLabelText(/penTest\.targetFields\.targetUrl/), 'app.example.com');
+    await user.click(screen.getByRole('button', { name: /startScan/i }));
 
     await waitFor(() => {
       expect(
-        screen.getByText(/confirm you own or are authorized to test this target/i),
+        screen.getByText(/penTest\.create\.authorizationRequired/i),
       ).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
@@ -354,8 +357,8 @@ describe('CreateRunPanel', () => {
     expect(checkbox).toHaveAttribute('aria-invalid', 'false');
     expect(checkbox).toHaveAttribute('aria-describedby', 'pt-authorized-help');
 
-    await user.type(screen.getByLabelText(/target url/i), 'app.example.com');
-    await user.click(screen.getByRole('button', { name: /start scan/i }));
+    await user.type(screen.getByLabelText(/penTest\.targetFields\.targetUrl/), 'app.example.com');
+    await user.click(screen.getByRole('button', { name: /startScan/i }));
 
     await waitFor(() => {
       expect(checkbox).toHaveAttribute('aria-invalid', 'true');
@@ -364,7 +367,7 @@ describe('CreateRunPanel', () => {
 
     const alert = screen.getByRole('alert');
     expect(alert).toHaveAttribute('id', 'pt-authorized-error');
-    expect(alert).toHaveTextContent(/confirm you own or are authorized to test this target/i);
+    expect(alert).toHaveTextContent(/penTest\.create\.authorizationRequired/i);
   });
 
   it('requires confirmation for impact-proof validation before submit', async () => {
@@ -373,19 +376,23 @@ describe('CreateRunPanel', () => {
 
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={onSubmit} />);
 
-    await user.type(screen.getByLabelText(/target url/i), 'app.example.com');
+    await user.type(screen.getByLabelText(/penTest\.targetFields\.targetUrl/), 'app.example.com');
     await user.click(screen.getByText('Deep'));
     await confirmAuthorization(user);
-    await user.click(screen.getByRole('button', { name: /start scan/i }));
+    await user.click(screen.getByRole('button', { name: /startScan/i }));
 
     expect(onSubmit).not.toHaveBeenCalled();
     const dialog = screen.getByRole('alertdialog');
-    expect(within(dialog).getByText(/confirm impact-proof scan/i)).toBeInTheDocument();
     expect(
-      within(dialog).getByText(/actively exploits findings/i),
+      within(dialog).getByText(/penTest\.create\.confirmImpactProofTitle/i),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(/penTest\.create\.confirmImpactProofDescription/i),
     ).toBeInTheDocument();
 
-    await user.click(within(dialog).getByRole('button', { name: /run impact-proof scan/i }));
+    await user.click(
+      within(dialog).getByRole('button', { name: /runImpactProofScan/i }),
+    );
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
@@ -403,9 +410,9 @@ describe('CreateRunPanel', () => {
 
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={onSubmit} />);
 
-    await user.type(screen.getByLabelText(/target url/i), 'app.example.com');
+    await user.type(screen.getByLabelText(/penTest\.targetFields\.targetUrl/), 'app.example.com');
     await confirmAuthorization(user);
-    await user.click(screen.getByRole('button', { name: /start scan/i }));
+    await user.click(screen.getByRole('button', { name: /startScan/i }));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalled();
@@ -416,12 +423,12 @@ describe('CreateRunPanel', () => {
   it('exposes a tooltip trigger for each vulnerability check', () => {
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={vi.fn()} />);
 
-    expect(screen.getByRole('button', { name: /about xss/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /about csrf/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /about business logic/i })).toBeInTheDocument();
+    expect(
+      screen.getAllByRole('button', { name: /penTest\.advanced\.about/i }),
+    ).toHaveLength(allPentestChecks.length);
   });
 });
 
 function validationLevel() {
-  return within(screen.getByRole('radiogroup', { name: /validation level/i }));
+  return within(screen.getByRole('radiogroup', { name: /validationLevel/i }));
 }

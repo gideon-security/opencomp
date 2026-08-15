@@ -1,6 +1,11 @@
 'use client';
 
-import type { PentestCheck, PentestCreateRequest } from '@/lib/security/penetration-tests-client';
+import type {
+  EvidenceLevel,
+  PentestCheck,
+  PentestCreateRequest,
+  ScanDepth,
+} from '@/lib/security/penetration-tests-client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AlertDialog,
@@ -14,6 +19,7 @@ import {
   Button,
 } from '@trycompai/design-system';
 import { ArrowRight } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
 import { useMemo, useState } from 'react';
@@ -43,42 +49,16 @@ interface CreateRunPanelProps {
   quotaLabel?: 'Plan';
 }
 
-const createRunSchema = z.object({
-  targetUrl: z.string().min(1, 'Target URL is required.'),
-  repoUrl: z.string().optional(),
-  selectedProfile: z.enum(['quick', 'standard', 'deep']),
-  scanDepth: z.enum(['quick', 'standard', 'deep']),
-  evidenceLevel: z.enum(['report_only', 'safe_proof', 'impact_proof']),
-  checks: z
-    .array(
-      z.enum([
-        'discovery',
-        'secrets_info_disclosure',
-        'technology_config',
-        'xss',
-        'injection',
-        'authentication',
-        'authorization',
-        'idor_bola',
-        'ssrf_xxe',
-        'csrf',
-        'race_conditions',
-        'business_logic',
-      ]),
-    )
-    .min(1, 'Select at least one check.'),
-  authorized: z
-    .boolean()
-    .refine((value) => value === true, {
-      message: 'Confirm you own or are authorized to test this target.',
-    }),
-  additionalContext: z
-    .string()
-    .max(4000, 'Keep context under 4000 characters.')
-    .optional(),
-});
-
-export type CreateRunForm = z.infer<typeof createRunSchema>;
+export type CreateRunForm = {
+  targetUrl: string;
+  repoUrl?: string | undefined;
+  selectedProfile: ScanProfileId;
+  scanDepth: ScanDepth;
+  evidenceLevel: EvidenceLevel;
+  checks: PentestCheck[];
+  authorized: boolean;
+  additionalContext?: string | undefined;
+};
 
 export function CreateRunPanel({
   orgId,
@@ -89,11 +69,50 @@ export function CreateRunPanel({
   quotaLabel = 'Plan',
 }: CreateRunPanelProps) {
   const router = useRouter();
+  const t = useTranslations('security');
+  const tCommon = useTranslations('overview');
+
+  const createRunSchema = z.object({
+    targetUrl: z.string().min(1, t('penTest.create.targetUrlRequired')),
+    repoUrl: z.string().optional(),
+    selectedProfile: z.enum(['quick', 'standard', 'deep']),
+    scanDepth: z.enum(['quick', 'standard', 'deep']),
+    evidenceLevel: z.enum(['report_only', 'safe_proof', 'impact_proof']),
+    checks: z
+      .array(
+        z.enum([
+          'discovery',
+          'secrets_info_disclosure',
+          'technology_config',
+          'xss',
+          'injection',
+          'authentication',
+          'authorization',
+          'idor_bola',
+          'ssrf_xxe',
+          'csrf',
+          'race_conditions',
+          'business_logic',
+        ]),
+      )
+      .min(1, t('penTest.create.selectAtLeastOneCheck')),
+    authorized: z
+      .boolean()
+      .refine((value) => value === true, {
+        message: t('penTest.create.authorizationRequired'),
+      }),
+    additionalContext: z
+      .string()
+      .max(4000, t('penTest.create.contextTooLong'))
+      .optional(),
+  });
+
+  type CreateRunFormValues = z.infer<typeof createRunSchema>;
   const [advancedOpen, setAdvancedOpen] = useState(true);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const canCreate = balance === undefined ? true : balance > 0;
   const standardDefaults = scanProfiles.standard;
-  const form = useForm<CreateRunForm>({
+  const form = useForm<CreateRunFormValues>({
     resolver: zodResolver(createRunSchema),
     defaultValues: {
       targetUrl: '',
@@ -129,7 +148,9 @@ export function CreateRunPanel({
     [checks, effectiveMode, evidenceLevel],
   );
   const effectiveLabel =
-    effectiveMode === 'custom' ? 'Custom' : effectiveMode[0].toUpperCase() + effectiveMode.slice(1);
+    effectiveMode === 'custom'
+      ? t('penTest.create.custom')
+      : effectiveMode[0].toUpperCase() + effectiveMode.slice(1);
 
   const handleCancel = () => {
     router.push(`/${orgId}/security/penetration-tests`);
@@ -152,12 +173,12 @@ export function CreateRunPanel({
     });
   };
 
-  const handleSubmitForm = async (values: CreateRunForm, confirmed = false) => {
+  const handleSubmitForm = async (values: CreateRunFormValues, confirmed = false) => {
     if (!canCreate) {
       toast.error(
         planRequired
-          ? 'Start a plan or free trial to run penetration tests.'
-          : 'No pentest runs remaining. Choose a plan to continue.',
+          ? t('penTest.create.planRequiredError')
+          : t('penTest.create.noRunsRemainingError'),
       );
       router.push(`/${orgId}/settings/billing/add-ons/penetration-tests`);
       return;
@@ -177,7 +198,7 @@ export function CreateRunPanel({
 
     const normalized = normalizeUrl(values.targetUrl);
     if (!normalized) {
-      toast.error('Target URL is required.');
+      toast.error(t('penTest.create.targetUrlRequired'));
       return;
     }
 
@@ -222,18 +243,20 @@ export function CreateRunPanel({
           className="rounded-[var(--radius)] border border-border bg-card p-4 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.12)] sm:p-8"
         >
           <div className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
-            New scan
+            {t('penTest.create.newScan')}
           </div>
-          <div className="mb-1 text-[20px] font-normal">Start a penetration test</div>
+          <div className="mb-1 text-[20px] font-normal">
+            {t('penTest.create.startPentest')}
+          </div>
           <p className="mb-5 text-xs leading-relaxed text-muted-foreground">
-            Findings stream in as they're discovered. You don't need to keep this page open.
+            {t('penTest.create.findingsStreamIn')}
           </p>
 
           {!canCreate && (
             <div className="mb-5 rounded border border-destructive/40 bg-destructive/5 p-3.5 text-xs leading-relaxed text-destructive">
               {planRequired
-                ? 'Start a plan or free trial to run penetration tests.'
-                : 'No pentest runs remaining. Choose a plan to continue.'}
+                ? t('penTest.create.planRequiredError')
+                : t('penTest.create.noRunsRemainingError')}
             </div>
           )}
 
@@ -281,7 +304,7 @@ export function CreateRunPanel({
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <div className="w-full sm:w-auto">
               <Button type="button" variant="outline" onClick={handleCancel} disabled={isSubmitting}>
-                Cancel
+                {tCommon('common.cancel')}
               </Button>
             </div>
             <div className="w-full sm:w-auto">
@@ -291,7 +314,9 @@ export function CreateRunPanel({
                 disabled={isSubmitting}
                 iconRight={canCreate ? <ArrowRight /> : undefined}
               >
-                {canCreate ? `Start scan (${quotaLabel})` : 'Choose plan'}
+                {canCreate
+                  ? t('penTest.create.startScan', { quota: quotaLabel })
+                  : t('penTest.create.choosePlan')}
               </Button>
             </div>
           </div>
@@ -301,18 +326,15 @@ export function CreateRunPanel({
       <AlertDialog open={confirmationOpen} onOpenChange={setConfirmationOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm impact-proof scan</AlertDialogTitle>
+            <AlertDialogTitle>{t('penTest.create.confirmImpactProofTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Impact-proof validation actively exploits findings to demonstrate real-world
-              impact. This may trigger WAF alerts, rate limits, or temporary service
-              degradation on the target. Proceed only if you've coordinated with the target
-              owner.
+              {t('penTest.create.confirmImpactProofDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{tCommon('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirmSubmit}>
-              Run impact-proof scan
+              {t('penTest.create.runImpactProofScan')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

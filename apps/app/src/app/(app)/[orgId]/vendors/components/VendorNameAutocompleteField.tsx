@@ -5,6 +5,7 @@ import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
 import { Input } from '@gideon-defender/ui/input';
 import type { GlobalVendors } from '@db';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { CreateVendorFormValues } from './create-vendor-form-schema';
@@ -35,6 +36,7 @@ export function VendorNameAutocompleteField({ form }: Props) {
   const [searchResults, setSearchResults] = useState<GlobalVendors[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const t = useTranslations('vendor');
 
   const api = useApi();
 
@@ -120,7 +122,7 @@ export function VendorNameAutocompleteField({ form }: Props) {
           <FormControl>
             <div className="relative">
               <Input
-                placeholder={'Search or enter vendor name...'}
+                placeholder={t('create.searchOrEnterName')}
                 value={searchQuery}
                 onChange={(e) => {
                   const val = e.target.value;

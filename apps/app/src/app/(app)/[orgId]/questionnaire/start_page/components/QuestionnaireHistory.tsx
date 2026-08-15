@@ -20,6 +20,7 @@ import {
 import { Close, Search } from '@trycompai/design-system/icons';
 import { formatDistanceToNow } from 'date-fns';
 import { Building2, CheckCircle2, ChevronLeft, ChevronRight, FileSpreadsheet, FileText, Filter, Globe2, Loader2, Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -49,6 +50,7 @@ interface QuestionnaireHistoryProps {
 export function QuestionnaireHistory({ questionnaires: initialQuestionnaires, orgId }: QuestionnaireHistoryProps) {
   const router = useRouter();
   const filterSectionRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations('questionnaire');
 
   const { questionnaires, deleteQuestionnaire } = useQuestionnaires({
     fallbackData: initialQuestionnaires,
@@ -83,9 +85,9 @@ export function QuestionnaireHistory({ questionnaires: initialQuestionnaires, or
               <FileText className="h-6 w-6 text-muted-foreground" />
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-medium text-foreground">No questionnaires yet</p>
+              <p className="text-sm font-medium text-foreground">{t('overview.noQuestionnairesYet')}</p>
               <p className="text-xs text-muted-foreground">
-                Create your first questionnaire to see it here
+                {t('overview.createFirstQuestionnaire')}
               </p>
             </div>
           </div>
@@ -103,7 +105,7 @@ export function QuestionnaireHistory({ questionnaires: initialQuestionnaires, or
               <Search size={16} />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search by filename..."
+              placeholder={t('overview.searchByFilename')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -113,7 +115,7 @@ export function QuestionnaireHistory({ questionnaires: initialQuestionnaires, or
               onClick={() => setSearchQuery('')}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               type="button"
-              aria-label="Clear search"
+              aria-label={t('overview.clearSearch')}
             >
               <Close size={14} />
             </button>
@@ -135,19 +137,19 @@ export function QuestionnaireHistory({ questionnaires: initialQuestionnaires, or
               <SelectItem value="all">
                 <div className="flex items-center gap-2">
                   <Globe2 className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span>All Sources</span>
+                  <span>{t('overview.allSources')}</span>
                 </div>
               </SelectItem>
               <SelectItem value="internal">
                 <div className="flex items-center gap-2">
                   <Building2 className="h-3.5 w-3.5 text-primary" />
-                  <span>Dashboard</span>
+                  <span>{t('overview.dashboard')}</span>
                 </div>
               </SelectItem>
               <SelectItem value="external">
                 <div className="flex items-center gap-2">
                   <Globe2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                  <span>Trust Center</span>
+                  <span>{t('overview.trustCenter')}</span>
                 </div>
               </SelectItem>
             </SelectContent>
@@ -159,7 +161,7 @@ export function QuestionnaireHistory({ questionnaires: initialQuestionnaires, or
       {searchQuery && (
         <div className="animate-in fade-in duration-500 ease-out">
           <p className="text-sm text-muted-foreground">
-            {totalFiltered} {totalFiltered === 1 ? 'result' : 'results'} found
+            {t('overview.resultsFound', { count: totalFiltered })}
           </p>
         </div>
       )}
@@ -172,9 +174,9 @@ export function QuestionnaireHistory({ questionnaires: initialQuestionnaires, or
               <FileText className="h-6 w-6 text-muted-foreground" />
             </div>
             <div className="space-y-1">
-              <p className="text-sm font-medium text-foreground">No questionnaires found</p>
+              <p className="text-sm font-medium text-foreground">{t('overview.noQuestionnairesFound')}</p>
               <p className="text-xs text-muted-foreground">
-                {searchQuery ? 'Try a different search term' : 'Create your first questionnaire to see it here'}
+                {searchQuery ? t('overview.tryDifferentSearch') : t('overview.createFirstQuestionnaire')}
               </p>
             </div>
           </div>
@@ -216,7 +218,7 @@ export function QuestionnaireHistory({ questionnaires: initialQuestionnaires, or
               <SelectItem value="10">10</SelectItem>
             </SelectContent>
           </Select>
-          <span>per page</span>
+          <span>{t('overview.perPage')}</span>
         </div>
 
         {totalPages > 1 && (
@@ -265,6 +267,8 @@ function QuestionnaireHistoryItem({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
+  const t = useTranslations('questionnaire');
+  const tCommon = useTranslations('overview');
 
   const answeredCount = questionnaire.questions.filter((q: { answer: string | null }) => q.answer).length;
   const totalQuestions = questionnaire.questions.length;
@@ -286,10 +290,10 @@ function QuestionnaireHistoryItem({
 
     try {
       await onDelete(questionnaire.id);
-      toast.success('Questionnaire deleted successfully');
+      toast.success(t('overview.deleteSuccess'));
       setIsDeleteDialogOpen(false);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'An error occurred while deleting the questionnaire');
+      toast.error(error instanceof Error ? error.message : t('overview.deleteError'));
     } finally {
       setIsDeleting(false);
     }
@@ -339,7 +343,7 @@ function QuestionnaireHistoryItem({
                   {isParsing ? (
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <div className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-                      Parsing...
+                      {t('overview.parsing')}
                     </span>
                   ) : (
                     <>
@@ -360,7 +364,7 @@ function QuestionnaireHistoryItem({
                           <span className={`text-[10px] font-medium uppercase tracking-wide ${
                             isCompleted ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground'
                           }`}>
-                            {isCompleted ? 'Complete' : 'Answered'}
+                            {isCompleted ? t('overview.complete') : t('overview.answered')}
                           </span>
                           <span className={`font-semibold tabular-nums ${
                             isCompleted ? 'text-green-700 dark:text-green-400' : 'text-foreground'
@@ -374,14 +378,14 @@ function QuestionnaireHistoryItem({
                           className="gap-1 px-2 py-0.5 text-[10px] font-medium bg-blue-400/10 text-blue-700 dark:text-blue-400 hover:bg-blue-500/20 ring-1 ring-blue-500/20"
                         >
                           <Globe2 className="h-2.5 w-2.5" />
-                          Trust Center
+                          {t('overview.trustCenter')}
                         </Badge>
                       ) : (
                         <Badge
                           className="gap-1 px-2 py-0.5 text-[10px] font-medium bg-primary/10 text-primary hover:bg-primary/20 ring-1 ring-primary/20"
                         >
                           <Building2 className="h-2.5 w-2.5" />
-                          Dashboard
+                          {t('overview.dashboard')}
                         </Badge>
                       )}
                     </>
@@ -402,7 +406,7 @@ function QuestionnaireHistoryItem({
             disabled={isParsing || isDeleting}
           >
             <Trash2 className="h-4 w-4" />
-            <span className="sr-only">Delete questionnaire</span>
+            <span className="sr-only">{t('overview.deleteQuestionnaire')}</span>
           </Button>
         </div>
       </Card>
@@ -410,21 +414,20 @@ function QuestionnaireHistoryItem({
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Questionnaire</AlertDialogTitle>
+            <AlertDialogTitle>{t('overview.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete <strong>{questionnaire.filename}</strong>? This action
-              cannot be undone and will permanently delete all questions and answers.
+              {t('overview.deleteConfirmation', { filename: questionnaire.filename })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>{tCommon('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}
               variant="destructive"
               loading={isDeleting}
             >
-              Delete
+              {tCommon('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

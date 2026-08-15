@@ -2,6 +2,7 @@
 
 import { Button, cn } from '@trycompai/design-system';
 import { Close, Document, Upload } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import type { FileRejection } from 'react-dropzone';
 import Dropzone from 'react-dropzone';
 
@@ -25,6 +26,7 @@ export function QuestionnaireUpload({
   parseStatus,
   hasResults = false,
 }: QuestionnaireUploadProps) {
+  const t = useTranslations('questionnaire');
   return (
     <div className="flex flex-col gap-6">
         {selectedFile ? (
@@ -79,10 +81,10 @@ export function QuestionnaireUpload({
                   <Upload size={40} />
                   <div className="text-center space-y-1">
                     <p className="text-sm font-medium text-foreground">
-                      {isDragActive ? 'Drop file here' : 'Drag & drop or click to select'}
+                      {isDragActive ? t('view.dropFileHere') : t('view.dragDrop')}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      PDF, XLSX, CSV (max 100MB)
+                      {t('view.fileFormats')}
                     </p>
                   </div>
                 </div>
@@ -102,17 +104,17 @@ export function QuestionnaireUpload({
             >
               {isLoading
                 ? parseStatus === 'uploading'
-                  ? 'Uploading your file...'
+                  ? t('view.uploading')
                   : parseStatus === 'starting'
-                    ? 'Getting ready...'
+                    ? t('view.gettingReady')
                     : parseStatus === 'queued'
-                      ? 'Almost ready...'
+                      ? t('view.almostReady')
                       : parseStatus === 'analyzing'
-                        ? 'Reading your document...'
+                        ? t('view.readingDocument')
                         : parseStatus === 'processing'
-                          ? 'Finding questions...'
-                          : 'Almost done...'
-                : 'Analyze Questionnaire'}
+                          ? t('view.findingQuestions')
+                          : t('view.almostDone')
+                : t('view.analyzeQuestionnaire')}
             </Button>
           </div>
         </div>

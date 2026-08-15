@@ -2,6 +2,7 @@ import { AppOnboarding } from '@/components/app-onboarding';
 import { serverApi } from '@/lib/api-server';
 import { SecondaryMenu } from '@gideon-defender/ui/secondary-menu';
 import type { Member, User } from '@db';
+import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 import { CreateVendorSheet } from '../components/create-vendor-sheet';
 
@@ -22,6 +23,7 @@ export default async function Layout({
   params: Promise<{ orgId: string }>;
 }) {
   const { orgId } = await params;
+  const t = await getTranslations('vendor');
 
   const [vendorsRes, membersRes] = await Promise.all([
     serverApi.get<VendorsResponse>('/v1/vendors'),
@@ -45,30 +47,25 @@ export default async function Layout({
         <Suspense fallback={<div>Loading...</div>}>
           <div className="mt-8">
             <AppOnboarding
-              title={'Vendor Management'}
-              description={
-                "Manage your vendors and ensure your organization's supply chain is secure and compliant."
-              }
-              cta={'Add vendor'}
+              title={t('list.onboardingTitle')}
+              description={t('list.onboardingDescriptionBackup')}
+              cta={t('list.onboardingCta')}
               imageSrcDark="/onboarding/vendor-management.webp"
               imageSrcLight="/onboarding/vendor-management-light.webp"
-              imageAlt="Vendor Management"
+              imageAlt={t('list.imageAlt')}
               sheetName="createVendorSheet"
               faqs={[
                 {
-                  questionKey: 'What is vendor management?',
-                  answerKey:
-                    'Vendor management is the process of managing, and controlling relationships and agreements with third-party suppliers of goods and services.',
+                  questionKey: t('list.faq1Question'),
+                  answerKey: t('list.faq1Answer'),
                 },
                 {
-                  questionKey: 'Why is vendor management important?',
-                  answerKey:
-                    'It helps to ensure that you are getting the most value from your vendors, while also minimizing risks and maintaining compliance.',
+                  questionKey: t('list.faq2Question'),
+                  answerKey: t('list.faq2Answer'),
                 },
                 {
-                  questionKey: 'What are the key steps in vendor management?',
-                  answerKey:
-                    'The key steps include vendor selection, contract negotiation, performance monitoring, risk management, and relationship management.',
+                  questionKey: t('list.faq3Question'),
+                  answerKey: t('list.faq3Answer'),
                 },
               ]}
             />

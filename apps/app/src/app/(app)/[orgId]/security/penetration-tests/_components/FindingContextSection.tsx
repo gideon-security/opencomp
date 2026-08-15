@@ -4,20 +4,11 @@ import { usePermissions } from '@/hooks/use-permissions';
 import type { PentestIssue } from '@/lib/security/penetration-tests-client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Textarea } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { usePentestFindingContexts } from '../hooks/use-pentest-finding-contexts';
-
-const findingContextSchema = z.object({
-  context: z
-    .string()
-    .trim()
-    .min(1, 'Context is required.')
-    .max(2000, 'Keep context under 2000 characters.'),
-});
-
-type FindingContextForm = z.infer<typeof findingContextSchema>;
 
 interface FindingContextSectionProps {
   orgId: string;
@@ -39,7 +30,20 @@ export function FindingContextSection({
   runId,
   targetUrl,
 }: FindingContextSectionProps) {
+  const t = useTranslations('security');
+  const tCommon = useTranslations('overview');
   const { hasPermission } = usePermissions();
+
+  const findingContextSchema = z.object({
+    context: z
+      .string()
+      .trim()
+      .min(1, t('penTest.findingContext.contextRequired'))
+      .max(2000, t('penTest.findingContext.contextTooLong')),
+  });
+
+  type FindingContextForm = z.infer<typeof findingContextSchema>;
+
   const canEdit = hasPermission('pentest', 'update');
   const { contextByIssueId, isSaving, saveContext, removeContext } =
     usePentestFindingContexts(orgId, targetUrl);
@@ -68,9 +72,13 @@ export function FindingContextSection({
         runId: resolvedRunId,
         context: values.context,
       });
-      toast.success('Context saved — future scans of this target will include it');
+      toast.success(t('penTest.findingContext.savedToast'));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to save context');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t('penTest.findingContext.unableToSaveToast'),
+      );
     }
   });
 
@@ -78,22 +86,23 @@ export function FindingContextSection({
     try {
       await removeContext(issue.id);
       form.reset({ context: '' });
-      toast.success('Context removed');
+      toast.success(t('penTest.findingContext.removedToast'));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Unable to remove context');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t('penTest.findingContext.unableToRemoveToast'),
+      );
     }
   };
 
   return (
     <section className="rounded-[var(--radius)] border border-border bg-card p-5">
       <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-        Retest context
+        {t('penTest.findingContext.retestContext')}
       </div>
       <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-        Explain this finding — e.g. why it&apos;s accepted by design or how it was
-        remediated. Notes are shared with the testing agent on future scans of this
-        target, so retests take your context into account instead of re-flagging
-        blindly.
+        {t('penTest.findingContext.retestContextDescription')}
       </p>
 
       {canEdit ? (
@@ -101,7 +110,7 @@ export function FindingContextSection({
           <Textarea
             size="full"
             rows={4}
-            placeholder="e.g. Read access to appConfiguration is accepted by design — the collection holds non-secret bootstrap config and writes are restricted to privileged users."
+            placeholder={t('penTest.findingContext.placeholder')}
             disabled={isSaving || !resolvedRunId}
             {...form.register('context')}
           />
@@ -117,7 +126,9 @@ export function FindingContextSection({
               loading={isSaving}
               disabled={isSaving || !form.formState.isDirty || !resolvedRunId}
             >
-              {existing ? 'Update context' : 'Save context'}
+              {existing
+                ? t('penTest.findingContext.updateContext')
+                : t('penTest.findingContext.saveContext')}
             </Button>
             {existing ? (
               <Button
@@ -127,12 +138,12 @@ export function FindingContextSection({
                 disabled={isSaving}
                 onClick={() => void handleRemove()}
               >
-                Remove
+                {tCommon('common.remove')}
               </Button>
             ) : null}
             {existing ? (
               <span className="text-[11px] text-muted-foreground">
-                Included in future scans of this target
+                {t('penTest.findingContext.includedInFutureScans')}
               </span>
             ) : null}
           </div>

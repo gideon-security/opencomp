@@ -2,6 +2,7 @@
 
 import { ScrollArea } from '@gideon-defender/ui/scroll-area';
 import { Search } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import type { QuestionAnswer } from './types';
 import { QuestionnaireResultsCards } from './QuestionnaireResultsCards';
 import { QuestionnaireResultsHeader } from './QuestionnaireResultsHeader';
@@ -74,6 +75,7 @@ export function QuestionnaireResults({
   answeredCount,
   progressPercentage,
 }: QuestionnaireResultsProps) {
+  const t = useTranslations('questionnaire');
   return (
     <div className="flex flex-col gap-4 min-w-0">
       <QuestionnaireResultsHeader
@@ -151,8 +153,8 @@ export function QuestionnaireResults({
                 ) : (
                   <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
                     <Search className="h-8 w-8 mb-3 opacity-40" />
-                    <p className="text-sm font-medium">No matches found</p>
-                    <p className="text-xs">Try a different search term</p>
+                    <p className="text-sm font-medium">{t('results.noMatches')}</p>
+                    <p className="text-xs">{t('overview.tryDifferentSearch')}</p>
                   </div>
                 )}
               </div>

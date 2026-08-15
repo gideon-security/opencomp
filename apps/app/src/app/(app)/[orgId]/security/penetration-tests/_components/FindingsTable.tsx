@@ -2,6 +2,7 @@
 
 import { cn } from '@trycompai/design-system/cn';
 import type { PentestIssue } from '@/lib/security/penetration-tests-client';
+import { useTranslations } from 'next-intl';
 import { SevChip } from './SevChip';
 import { SEVERITY_INDEX } from './severity';
 
@@ -21,6 +22,7 @@ export function FindingsTable({
   emptyState,
   className,
 }: FindingsTableProps) {
+  const t = useTranslations('security');
   const sorted = [...issues].sort(
     (a, b) =>
       (SEVERITY_INDEX[a.severity] ?? 99) - (SEVERITY_INDEX[b.severity] ?? 99),
@@ -40,10 +42,10 @@ export function FindingsTable({
       <table className="w-full border-collapse text-sm">
         <thead className="bg-muted/50">
           <tr className="text-left text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-            <th className="px-3 py-2 font-semibold">Severity</th>
-            <th className="px-3 py-2 font-semibold">CVSS</th>
-            <th className="px-3 py-2 font-semibold">Title</th>
-            <th className="px-3 py-2 font-semibold">Affected</th>
+            <th className="px-3 py-2 font-semibold">{t('penTest.findingsTable.severity')}</th>
+            <th className="px-3 py-2 font-semibold">{t('penTest.findingsTable.cvss')}</th>
+            <th className="px-3 py-2 font-semibold">{t('penTest.findingsTable.title')}</th>
+            <th className="px-3 py-2 font-semibold">{t('penTest.findingsTable.affected')}</th>
             <th className="w-8 px-3 py-2" />
           </tr>
         </thead>

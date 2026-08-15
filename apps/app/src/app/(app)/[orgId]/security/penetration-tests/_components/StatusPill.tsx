@@ -1,4 +1,5 @@
 import { cn } from '@trycompai/design-system/cn';
+import { useTranslations } from 'next-intl';
 
 type StatusKind =
   | 'provisioning'
@@ -23,37 +24,28 @@ interface StatusPillProps {
   className?: string;
 }
 
-const STATUS_CONFIG: Record<
-  StatusKind,
-  { label: string; dotClass: string; textClass: string }
-> = {
+const STATUS_CONFIG: Record<StatusKind, { dotClass: string; textClass: string }> = {
   provisioning: {
-    label: 'Provisioning',
     dotClass: 'bg-muted-foreground animate-pulse',
     textClass: 'text-muted-foreground',
   },
   cloning: {
-    label: 'Cloning',
     dotClass: 'bg-muted-foreground animate-pulse',
     textClass: 'text-muted-foreground',
   },
   running: {
-    label: 'Running',
     dotClass: 'bg-[var(--pt-pulse)] animate-pulse',
     textClass: 'text-foreground',
   },
   completed: {
-    label: 'Completed',
     dotClass: 'bg-primary',
     textClass: 'text-foreground',
   },
   failed: {
-    label: 'Failed',
     dotClass: 'bg-destructive',
     textClass: 'text-destructive',
   },
   cancelled: {
-    label: 'Cancelled',
     dotClass: 'bg-muted-foreground',
     textClass: 'text-muted-foreground',
   },
@@ -63,13 +55,13 @@ const STATUS_CONFIG: Record<
 // show "Unknown" than to silently render an unrelated status (e.g.
 // previously this defaulted to "Provisioning", which would mislead
 // users into thinking the scan was still starting up).
-const CONFIG_UNKNOWN: { label: string; dotClass: string; textClass: string } = {
-  label: 'Unknown',
+const CONFIG_UNKNOWN: { dotClass: string; textClass: string } = {
   dotClass: 'bg-muted-foreground',
   textClass: 'text-muted-foreground',
 };
 
 export function StatusPill({ status, className }: StatusPillProps) {
+  const t = useTranslations('security');
   const config = STATUS_CONFIG[status as StatusKind] ?? CONFIG_UNKNOWN;
 
   return (
@@ -82,7 +74,29 @@ export function StatusPill({ status, className }: StatusPillProps) {
       )}
     >
       <span className={cn('h-1.5 w-1.5 rounded-full', config.dotClass)} />
-      {config.label}
+      {statusLabel(t, status)}
     </span>
   );
+}
+
+function statusLabel(
+  t: ReturnType<typeof useTranslations<'security'>>,
+  status: StatusKind | string,
+): string {
+  switch (status) {
+    case 'provisioning':
+      return t('penTest.status.provisioning');
+    case 'cloning':
+      return t('penTest.status.cloning');
+    case 'running':
+      return t('penTest.status.running');
+    case 'completed':
+      return t('penTest.status.completed');
+    case 'failed':
+      return t('penTest.status.failed');
+    case 'cancelled':
+      return t('penTest.status.cancelled');
+    default:
+      return t('penTest.status.unknown');
+  }
 }

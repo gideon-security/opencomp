@@ -14,6 +14,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
 
 import { UpdateTitleAndDescriptionForm } from './update-title-and-description-form';
@@ -30,6 +31,7 @@ export function UpdateTitleAndDescriptionSheet({
   onOpenChange,
 }: UpdateTitleAndDescriptionSheetProps) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const t = useTranslations('vendor');
 
   const handleSuccess = useCallback(() => {
     onOpenChange(false);
@@ -40,8 +42,8 @@ export function UpdateTitleAndDescriptionSheet({
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Update Vendor</SheetTitle>
-            <SheetDescription>Update the details of your vendor</SheetDescription>
+            <SheetTitle>{t('create.updateVendor')}</SheetTitle>
+            <SheetDescription>{t('create.updateVendorDescription')}</SheetDescription>
           </SheetHeader>
           <SheetBody>
             <UpdateTitleAndDescriptionForm vendor={vendor} onSuccess={handleSuccess} />
@@ -55,7 +57,7 @@ export function UpdateTitleAndDescriptionSheet({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>Update Vendor</DrawerTitle>
+          <DrawerTitle>{t('create.updateVendor')}</DrawerTitle>
         </DrawerHeader>
         <div className="p-4">
           <UpdateTitleAndDescriptionForm vendor={vendor} onSuccess={handleSuccess} />

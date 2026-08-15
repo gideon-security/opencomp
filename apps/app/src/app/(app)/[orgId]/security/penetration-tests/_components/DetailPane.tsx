@@ -1,6 +1,7 @@
 'use client';
 
 import { ErrorFilled, InProgress } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import type {
   PentestAgentEvent,
   PentestIssue,
@@ -43,6 +44,8 @@ export function DetailPane({
   onDownloadMarkdown,
   onDownloadPdf,
 }: DetailPaneProps) {
+  const t = useTranslations('security');
+
   if (selectedFinding) {
     return (
       <FindingDetail
@@ -68,8 +71,10 @@ export function DetailPane({
       <div className="flex h-full items-center justify-center px-8 text-center">
         <div className="max-w-md space-y-2 text-sm text-muted-foreground">
           <ErrorFilled className="mx-auto h-8 w-8 text-destructive" />
-          <p className="font-medium text-foreground">Unable to load scan</p>
-          <p>{error?.message ?? 'No scan found for this organization.'}</p>
+          <p className="font-medium text-foreground">
+            {t('penTest.detail.unableToLoadScan')}
+          </p>
+          <p>{error?.message ?? t('penTest.detail.noScanFound')}</p>
         </div>
       </div>
     );

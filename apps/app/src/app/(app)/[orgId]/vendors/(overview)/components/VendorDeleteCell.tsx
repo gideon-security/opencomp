@@ -11,6 +11,7 @@ import {
 import { Button } from '@gideon-defender/ui/button';
 import { useVendorActions, type Vendor } from '@/hooks/use-vendors';
 import { Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import * as React from 'react';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
@@ -24,6 +25,8 @@ export const VendorDeleteCell: React.FC<VendorDeleteCellProps> = ({ vendor }) =>
   const { mutate } = useSWRConfig();
   const [isRemoveAlertOpen, setIsRemoveAlertOpen] = React.useState(false);
   const [isDeleting, setIsDeleting] = React.useState(false);
+  const t = useTranslations('vendor');
+  const tCommon = useTranslations('overview');
 
   const handleDeleteClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -31,7 +34,7 @@ export const VendorDeleteCell: React.FC<VendorDeleteCellProps> = ({ vendor }) =>
 
     try {
       await deleteVendor(vendor.id);
-      toast.success(`Vendor "${vendor.name}" has been deleted.`);
+      toast.success(t('list.deletedToast', { name: vendor.name }));
       setIsRemoveAlertOpen(false);
       mutate(
         (key) =>
@@ -41,7 +44,7 @@ export const VendorDeleteCell: React.FC<VendorDeleteCellProps> = ({ vendor }) =>
         { revalidate: true },
       );
     } catch {
-      toast.error('Failed to delete vendor.');
+      toast.error(t('list.deleteFailedDot'));
     }
 
     setIsDeleting(false);
@@ -59,22 +62,21 @@ export const VendorDeleteCell: React.FC<VendorDeleteCellProps> = ({ vendor }) =>
           }}
         >
           <Trash2 className="h-4 w-4" />
-          <span className="sr-only">Delete {vendor.name}</span>
+          <span className="sr-only">{t('list.deleteTitle')} {vendor.name}</span>
         </Button>
       </div>
       <AlertDialog open={isRemoveAlertOpen} onOpenChange={setIsRemoveAlertOpen}>
         <AlertDialogContent onClick={(e) => e.stopPropagation()}>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Vendor</AlertDialogTitle>
+            <AlertDialogTitle>{t('list.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete <strong>{vendor.name}</strong>? This action cannot be
-              undone.
+              {t('list.deleteConfirmation', { name: vendor.name })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{tCommon('common.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteClick} disabled={isDeleting}>
-              {isDeleting ? 'Deleting...' : 'Delete'}
+              {isDeleting ? t('list.deleting') : tCommon('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

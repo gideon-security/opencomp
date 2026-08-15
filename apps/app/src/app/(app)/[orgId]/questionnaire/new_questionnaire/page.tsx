@@ -3,6 +3,7 @@ import { AppOnboarding } from '@/components/app-onboarding';
 import PageWithBreadcrumb from '@/components/pages/PageWithBreadcrumb';
 import { serverApi } from '@/lib/api-server';
 import { auth } from '@/utils/auth';
+import { getTranslations } from 'next-intl/server';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { QuestionnaireParser } from '../components/QuestionnaireParser';
@@ -23,6 +24,7 @@ export default async function NewQuestionnairePage() {
   if (!session?.user?.id || !session?.session?.activeOrganizationId) {
     return notFound();
   }
+  const t = await getTranslations('questionnaire');
 
   const flags = await getFeatureFlags(session.user.id);
   const isFeatureEnabled = flags['ai-vendor-questionnaire'] === true;
@@ -43,37 +45,32 @@ export default async function NewQuestionnairePage() {
     return (
       <PageWithBreadcrumb
         breadcrumbs={[
-          { label: 'Overview', href: `/${organizationId}/questionnaire` },
-          { label: 'New Questionnaire', current: true },
+          { label: t('tabs.title'), href: `/${organizationId}/questionnaire` },
+          { label: t('overview.newQuestionnaire'), current: true },
         ]}
       >
         <AppOnboarding
-          title={'Security Questionnaire'}
-          description={
-            "Automatically answer security questionnaires with the information we have about your company. Upload questionnaires from vendors and we'll extract the questions and provide answers based on your policies and organizational details."
-          }
+          title={t('tabs.securityQuestionnaire')}
+          description={t('tabs.onboardingDescription')}
           ctaDisabled={true}
-          cta={'Publish policies'}
-          ctaTooltip="To use this feature you need to publish policies first"
+          cta={t('tabs.publishPolicies')}
+          ctaTooltip={t('tabs.publishPoliciesTooltip')}
           href={`/${organizationId}/policies`}
           imageSrcLight="/questionaire/tmp-questionaire-empty-state.png"
           imageSrcDark="/questionaire/tmp-questionaire-empty-state.png"
-          imageAlt="Security Questionnaire"
+          imageAlt={t('tabs.imageAlt')}
           faqs={[
             {
-              questionKey: 'What is a security questionnaire?',
-              answerKey:
-                "A security questionnaire is a document used by vendors and partners to assess your organization's security practices and compliance posture.",
+              questionKey: t('tabs.faq1Question'),
+              answerKey: t('tabs.faq1Answer'),
             },
             {
-              questionKey: 'Why do I need published policies?',
-              answerKey:
-                "Published policies are used to get accurate answers. The system uses your organization's policies and context to answer questionnaire questions automatically.",
+              questionKey: t('tabs.faq2Question'),
+              answerKey: t('tabs.faq2Answer'),
             },
             {
-              questionKey: 'How does it work?',
-              answerKey:
-                'Upload a questionnaire file, our AI will extract the questions and find answers based on your published policies and context. You can review and edit answers before exporting.',
+              questionKey: t('tabs.faq3Question'),
+              answerKey: t('tabs.faq3Answer'),
             },
           ]}
         />
@@ -84,8 +81,8 @@ export default async function NewQuestionnairePage() {
   return (
     <PageWithBreadcrumb
       breadcrumbs={[
-        { label: 'Security Questionnaire', href: `/${organizationId}/questionnaire` },
-        { label: 'New Questionnaire', current: true },
+        { label: t('tabs.securityQuestionnaire'), href: `/${organizationId}/questionnaire` },
+        { label: t('overview.newQuestionnaire'), current: true },
       ]}
     >
       <QuestionnaireParser />

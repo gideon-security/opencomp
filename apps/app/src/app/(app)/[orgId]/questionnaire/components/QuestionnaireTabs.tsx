@@ -15,6 +15,7 @@ import { ContextSection } from '../knowledge-base/context/components';
 import { ManualAnswersSection } from '../knowledge-base/manual-answers/components';
 import { PublishedPoliciesSection } from '../knowledge-base/published-policies/components';
 import { QuestionnaireOverview } from '../start_page/components';
+import { useTranslations } from 'next-intl';
 import type {
   ContextEntry,
   KBDocument,
@@ -44,37 +45,33 @@ export function QuestionnaireTabs({
   manualAnswers,
   documents,
 }: QuestionnaireTabsProps) {
+  const t = useTranslations('questionnaire');
   // Show onboarding if no published policies exist
   if (!hasPublishedPolicies) {
     return (
-      <PageLayout header={<PageHeader title="Questionnaires" />}>
+      <PageLayout header={<PageHeader title={t('tabs.title')} />}>
         <AppOnboarding
-          title={'Security Questionnaire'}
-          description={
-            "Automatically answer security questionnaires with the information we have about your company. Upload questionnaires from vendors and we'll extract the questions and provide answers based on your policies and organizational details."
-          }
+          title={t('tabs.securityQuestionnaire')}
+          description={t('tabs.onboardingDescription')}
           ctaDisabled={false}
-          cta={'Publish policies'}
-          ctaTooltip="To use this feature you need to publish policies first"
+          cta={t('tabs.publishPolicies')}
+          ctaTooltip={t('tabs.publishPoliciesTooltip')}
           href={`/${organizationId}/policies`}
           imageSrcLight="/questionaire/tmp-questionaire-empty-state.png"
           imageSrcDark="/questionaire/tmp-questionaire-empty-state.png"
-          imageAlt="Security Questionnaire"
+          imageAlt={t('tabs.imageAlt')}
           faqs={[
             {
-              questionKey: 'What is a security questionnaire?',
-              answerKey:
-                "A security questionnaire is a document used by vendors and partners to assess your organization's security practices and compliance posture.",
+              questionKey: t('tabs.faq1Question'),
+              answerKey: t('tabs.faq1Answer'),
             },
             {
-              questionKey: 'Why do I need published policies?',
-              answerKey:
-                "Published policies are used to get accurate answers. The system uses your organization's policies and context to answer questionnaire questions automatically.",
+              questionKey: t('tabs.faq2Question'),
+              answerKey: t('tabs.faq2Answer'),
             },
             {
-              questionKey: 'How does it work?',
-              answerKey:
-                'Upload a questionnaire file, our AI will extract the questions and find answers based on your published policies and context. You can review and edit answers before exporting.',
+              questionKey: t('tabs.faq3Question'),
+              answerKey: t('tabs.faq3Answer'),
             },
           ]}
         />
@@ -87,11 +84,11 @@ export function QuestionnaireTabs({
       <PageLayout
         header={
           <PageHeader
-            title="Questionnaires"
+            title={t('tabs.title')}
             tabs={
               <TabsList variant="underline">
-                <TabsTrigger value="questionnaires">Security Questionnaire</TabsTrigger>
-                <TabsTrigger value="knowledge-base">Knowledge Base</TabsTrigger>
+                <TabsTrigger value="questionnaires">{t('tabs.securityQuestionnaire')}</TabsTrigger>
+                <TabsTrigger value="knowledge-base">{t('tabs.knowledgeBase')}</TabsTrigger>
               </TabsList>
             }
           />

@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@trycompai/design-system';
 import { Edit, OverflowMenuVertical, Renew } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -35,6 +36,8 @@ export function VendorActions({
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isAssessmentConfirmOpen, setIsAssessmentConfirmOpen] = useState(false);
   const [isAssessmentSubmitting, setIsAssessmentSubmitting] = useState(false);
+  const t = useTranslations('vendor');
+  const tCommon = useTranslations('overview');
   const [isRegenerating, setIsRegenerating] = useState(false);
 
   // Get SWR mutate function to refresh vendor data after mutations
@@ -44,13 +47,13 @@ export function VendorActions({
   const handleConfirm = async () => {
     setIsConfirmOpen(false);
     setIsRegenerating(true);
-    toast.info('Regenerating vendor risk mitigation...');
+    toast.info(t('detail.regeneratingVendorMitigation'));
     try {
       await regenerateMitigation(vendorId);
-      toast.success('Regeneration triggered. This may take a moment.');
+      toast.success(t('detail.regenerationTriggered'));
       refreshVendor();
     } catch {
-      toast.error('Failed to trigger mitigation regeneration');
+      toast.error(t('detail.regenTriggerFailed'));
     } finally {
       setIsRegenerating(false);
     }
@@ -59,17 +62,17 @@ export function VendorActions({
   const handleAssessmentConfirm = async () => {
     setIsAssessmentConfirmOpen(false);
     setIsAssessmentSubmitting(true);
-    toast.info('Regenerating vendor risk assessment...');
+    toast.info(t('detail.regeneratingVendorRisk'));
     try {
       const result = await triggerAssessment(vendorId);
-      toast.success('Assessment regeneration triggered. This may take a moment.');
+      toast.success(t('detail.assessmentRegenerationTriggeredFull'));
       refreshVendor();
       // Notify parent with run info for real-time tracking
       if (result.runId && result.publicAccessToken) {
         onAssessmentTriggered?.(result.runId, result.publicAccessToken);
       }
     } catch {
-      toast.error('Failed to trigger risk assessment regeneration');
+      toast.error(t('detail.riskAssessmentRegenFailed'));
     } finally {
       setIsAssessmentSubmitting(false);
     }
@@ -86,15 +89,15 @@ export function VendorActions({
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={onOpenEditSheet}>
             <Edit size={16} />
-            Edit
+            {t('detail.edit')}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsConfirmOpen(true)}>
             <Renew size={16} />
-            Mitigation
+            {t('detail.mitigation')}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsAssessmentConfirmOpen(true)}>
             <Renew size={16} />
-            Assessment
+            {t('detail.assessment')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -102,18 +105,17 @@ export function VendorActions({
       <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Regenerate Mitigation</AlertDialogTitle>
+            <AlertDialogTitle>{t('detail.regenerateMitigationDialog')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will generate a fresh risk mitigation comment for this vendor and mark it
-              assessed. Continue?
+              {t('detail.regenerateMitigationDialogDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isRegenerating}>
-              Cancel
+              {tCommon('common.cancel')}
             </AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirm} disabled={isRegenerating}>
-              {isRegenerating ? 'Working\u2026' : 'Confirm'}
+              {isRegenerating ? t('detail.working') : t('detail.confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -122,20 +124,20 @@ export function VendorActions({
       <AlertDialog open={isAssessmentConfirmOpen} onOpenChange={setIsAssessmentConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Regenerate Assessment</AlertDialogTitle>
+            <AlertDialogTitle>{t('detail.regenerateAssessmentDialog')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will regenerate the risk assessment for this vendor. Continue?
+              {t('detail.regenerateAssessmentDialogDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isAssessmentSubmitting}>
-              Cancel
+              {tCommon('common.cancel')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleAssessmentConfirm}
               disabled={isAssessmentSubmitting}
             >
-              {isAssessmentSubmitting ? 'Working\u2026' : 'Confirm'}
+              {isAssessmentSubmitting ? t('detail.working') : t('detail.confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

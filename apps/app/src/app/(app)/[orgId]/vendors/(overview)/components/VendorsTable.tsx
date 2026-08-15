@@ -49,6 +49,7 @@ import {
 } from '@trycompai/design-system';
 import { OverflowMenuVertical, Search, TrashCan } from '@trycompai/design-system/icons';
 import { ArrowDown, ArrowUp, ArrowUpDown, Loader2, UserIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -112,16 +113,28 @@ const ACTIVE_STATUSES: Array<'pending' | 'processing' | 'created' | 'assessing'>
   'assessing',
 ];
 
-const CATEGORY_MAP: Record<string, string> = {
-  cloud: 'Cloud',
-  infrastructure: 'Infrastructure',
-  software_as_a_service: 'SaaS',
-  finance: 'Finance',
-  marketing: 'Marketing',
-  sales: 'Sales',
-  hr: 'HR',
-  other: 'Other',
-};
+function categoryLabel(t: ReturnType<typeof useTranslations<'vendor'>>, category: string): string {
+  switch (category) {
+    case 'cloud':
+      return t('list.categoryCloud');
+    case 'infrastructure':
+      return t('list.categoryInfrastructure');
+    case 'software_as_a_service':
+      return t('list.categorySaaS');
+    case 'finance':
+      return t('list.categoryFinance');
+    case 'marketing':
+      return t('list.categoryMarketing');
+    case 'sales':
+      return t('list.categorySales');
+    case 'hr':
+      return t('list.categoryHr');
+    case 'other':
+      return t('list.categoryOther');
+    default:
+      return category;
+  }
+}
 
 interface VendorsTableProps {
   vendors: Vendor[];
@@ -204,6 +217,8 @@ export function VendorsTable({
   const router = useRouter();
   const { hasPermission } = usePermissions();
   const { deleteVendor } = useVendorActions();
+  const t = useTranslations('vendor');
+  const tCommon = useTranslations('overview');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [vendorToDelete, setVendorToDelete] = useState<VendorRow | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -485,11 +500,11 @@ export function VendorsTable({
     setIsDeleting(true);
     try {
       await deleteVendor(vendorToDelete.id);
-      toast.success('Vendor deleted successfully');
+      toast.success(t('list.deleteSuccess'));
       setDeleteDialogOpen(false);
       setVendorToDelete(null);
     } catch {
-      toast.error('Failed to delete vendor');
+      toast.error(t('list.deleteFailed'));
     } finally {
       setIsDeleting(false);
     }
@@ -497,17 +512,17 @@ export function VendorsTable({
 
   const isEmpty = mergedVendors.length === 0;
   const showEmptyState = isEmpty && onboardingRunId && isActive;
-  const emptyTitle = searchQuery ? 'No vendors found' : 'No vendors yet';
+  const emptyTitle = searchQuery ? t('list.noVendorsFound') : t('list.noVendorsYet');
   const emptyDescription = searchQuery
-    ? 'Try adjusting your search.'
-    : 'Create your first vendor to get started.';
+    ? t('list.tryAdjustingSearch')
+    : t('list.createFirstVendor');
 
   if (showEmptyState) {
     return (
       <OnboardingLoadingAnimation
         itemType="vendors"
-        title="AI is working on your vendors"
-        description="Our AI is analyzing your organization and creating vendor assessments. This may take a few moments."
+        title={t('list.aiWorkingOnVendors')}
+        description={t('list.aiWorkingOnVendorsDescription')}
       />
     );
   }
@@ -522,7 +537,7 @@ export function VendorsTable({
               <Search size={16} />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search vendors..."
+              placeholder={t('list.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -539,24 +554,24 @@ export function VendorsTable({
               <span className="text-sm font-medium text-primary">
                 {assessmentProgress
                   ? assessmentProgress.completed === 0
-                    ? 'Researching and creating vendors'
-                    : 'Assessing vendors and generating risk assessments'
+                    ? t('list.researchingAndCreating')
+                    : t('list.assessingVendors')
                   : progress
                     ? progress.completed === 0
-                      ? 'Researching and creating vendors'
-                      : 'Assessing vendors and generating risk assessments'
-                    : 'Researching and creating vendors'}
+                      ? t('list.researchingAndCreating')
+                      : t('list.assessingVendors')
+                    : t('list.researchingAndCreating')}
               </span>
               <span className="text-xs text-muted-foreground">
                 {assessmentProgress
                   ? assessmentProgress.completed === 0
-                    ? 'AI is analyzing your organization...'
-                    : `${assessmentProgress.completed}/${assessmentProgress.total} vendors assessed`
+                    ? t('list.analyzingOrg')
+                    : t('list.vendorsAssessed', { completed: assessmentProgress.completed, total: assessmentProgress.total })
                   : progress
                     ? progress.completed === 0
-                      ? 'AI is analyzing your organization...'
-                      : `${progress.completed}/${progress.total} vendors created`
-                    : 'AI is analyzing your organization...'}
+                      ? t('list.analyzingOrg')
+                      : t('list.vendorsCreated', { completed: progress.completed, total: progress.total })
+                    : t('list.analyzingOrg')}
               </span>
             </div>
           </div>
@@ -593,34 +608,34 @@ export function VendorsTable({
                     onClick={() => handleSort('name')}
                     className="flex items-center hover:text-foreground"
                   >
-                    NAME
-                    {getSortIcon('name')}
-                  </button>
-                </TableHead>
-                <TableHead>STATUS</TableHead>
-                <TableHead>
-                  <button
-                    type="button"
-                    onClick={() => handleSort('inherentRisk')}
-                    className="flex items-center hover:text-foreground"
-                  >
-                    INHERENT RISK
-                    {getSortIcon('inherentRisk')}
-                  </button>
-                </TableHead>
-                <TableHead>
-                  <button
-                    type="button"
-                    onClick={() => handleSort('residualRisk')}
-                    className="flex items-center hover:text-foreground"
-                  >
-                    CURRENT RISK
-                    {getSortIcon('residualRisk')}
-                  </button>
-                </TableHead>
-                <TableHead>CATEGORY</TableHead>
-                <TableHead>OWNER</TableHead>
-                {hasPermission('vendor', 'delete') && <TableHead>ACTIONS</TableHead>}
+                      NAME
+                      {getSortIcon('name')}
+                    </button>
+                  </TableHead>
+                  <TableHead>{t('list.headerStatus')}</TableHead>
+                  <TableHead>
+                    <button
+                      type="button"
+                      onClick={() => handleSort('inherentRisk')}
+                      className="flex items-center hover:text-foreground"
+                    >
+                      {t('list.headerInherentRisk')}
+                      {getSortIcon('inherentRisk')}
+                    </button>
+                  </TableHead>
+                  <TableHead>
+                    <button
+                      type="button"
+                      onClick={() => handleSort('residualRisk')}
+                      className="flex items-center hover:text-foreground"
+                    >
+                      {t('list.headerCurrentRisk')}
+                      {getSortIcon('residualRisk')}
+                    </button>
+                  </TableHead>
+                  <TableHead>{t('list.headerCategory')}</TableHead>
+                  <TableHead>{t('list.headerOwner')}</TableHead>
+                  {hasPermission('vendor', 'delete') && <TableHead>{t('list.headerActions')}</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -663,7 +678,7 @@ export function VendorsTable({
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {CATEGORY_MAP[vendor.category] || vendor.category}
+                        {categoryLabel(t, vendor.category)}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -681,7 +696,7 @@ export function VendorsTable({
                             </AvatarFallback>
                           </Avatar>
                           <Text size="sm">
-                            {vendor.assignee.user?.name || vendor.assignee.user?.email || 'Unknown'}
+                            {vendor.assignee.user?.name || vendor.assignee.user?.email || t('list.unknownUser')}
                           </Text>
                         </HStack>
                       ) : (
@@ -690,7 +705,7 @@ export function VendorsTable({
                             <UserIcon className="text-muted-foreground h-3 w-3" />
                           </div>
                           <Text size="sm" variant="muted">
-                            None
+                            {tCommon('common.none')}
                           </Text>
                         </HStack>
                       )}
@@ -715,7 +730,7 @@ export function VendorsTable({
                                 }}
                               >
                                 <TrashCan size={16} />
-                                Delete
+                                {tCommon('common.delete')}
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -733,20 +748,19 @@ export function VendorsTable({
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete Vendor</AlertDialogTitle>
+              <AlertDialogTitle>{t('list.deleteTitle')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete "{vendorToDelete?.name}"? This action cannot be
-                undone.
+                {t('list.deleteConfirmation', { name: vendorToDelete?.name ?? '' })}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+              <AlertDialogCancel disabled={isDeleting}>{tCommon('common.cancel')}</AlertDialogCancel>
               <AlertDialogAction
                 variant="destructive"
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
               >
-                {isDeleting ? 'Deleting...' : 'Delete'}
+                {isDeleting ? t('list.deleting') : tCommon('common.delete')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

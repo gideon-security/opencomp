@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { ReportPage } from './report-page';
 
 const COUNTERS: Array<{ n: number; l: string; c: string }> = [
@@ -9,6 +12,7 @@ const COUNTERS: Array<{ n: number; l: string; c: string }> = [
 ];
 
 export function ReportExecSummary() {
+  const t = useTranslations('security');
   return (
     <ReportPage>
       <div
@@ -20,11 +24,10 @@ export function ReportExecSummary() {
           marginBottom: 8,
         }}
       >
-        1. EXECUTIVE SUMMARY
+        {t('penTest.report.execSummary')}
       </div>
       <div style={{ fontSize: 7, color: '#333', marginBottom: 10, lineHeight: 1.45 }}>
-        This penetration test was conducted on the staging environment to identify security
-        vulnerabilities and misconfigurations that could be exploited by malicious actors.
+        {t('penTest.report.execSummaryBody')}
       </div>
       <div
         style={{
@@ -41,7 +44,7 @@ export function ReportExecSummary() {
           marginBottom: 12,
         }}
       >
-        OVERALL RISK · HIGH
+        {t('penTest.report.overallRisk')} · HIGH
       </div>
       <div
         style={{
@@ -52,7 +55,7 @@ export function ReportExecSummary() {
           marginBottom: 6,
         }}
       >
-        KEY FINDINGS
+        {t('penTest.report.keyFindings')}
       </div>
       <ul
         style={{

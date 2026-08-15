@@ -21,6 +21,7 @@ import { ResidualAcceptanceCard } from '@/components/risks/acceptance/ResidualAc
 import { TreatmentPlanTab } from '@/components/risks/treatment-plan/TreatmentPlanTab';
 import type { Member, RiskTreatmentType, User, Vendor } from '@db';
 import { CommentEntityType } from '@db';
+import { useTranslations } from 'next-intl';
 import type { Prisma } from '@db';
 import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -91,6 +92,7 @@ export function VendorDetailTabs({
     discardVendorAutoLinkRun,
   } = useVendorActions();
   const { hasPermission } = usePermissions();
+  const t = useTranslations('vendor');
   const canUpdate = hasPermission('vendor', 'update');
   const canUpdateTask = hasPermission('task', 'update');
   const { updateTaskItem } = useTaskItemActions();
@@ -198,14 +200,14 @@ export function VendorDetailTabs({
       setAssessmentToken(null);
       setIsRegenerating(false);
     } else if (isFailureRunStatus(assessmentRun.status)) {
-      toast.error('Risk assessment failed. Please try again.');
+      toast.error(t('detail.riskAssessmentFailed'));
       void refreshVendor();
       void refreshTaskItems();
       setAssessmentRunId(null);
       setAssessmentToken(null);
       setIsRegenerating(false);
     }
-  }, [assessmentRun?.status, refreshVendor, refreshTaskItems]);
+  }, [assessmentRun?.status, refreshVendor, refreshTaskItems, t]);
 
   const isRiskAssessmentGenerating = useMemo(() => {
     const items = taskItemsData?.data?.data ?? [];
@@ -241,10 +243,10 @@ export function VendorDetailTabs({
         await updateVendor(vendorId, { name: titleValue.trim() });
         refreshVendor();
       }
-      toast.success('Title updated');
+      toast.success(t('detail.titleUpdated'));
       setIsEditingTitle(false);
     } catch {
-      toast.error('Failed to update title');
+      toast.error(t('detail.titleUpdateFailed'));
     }
   };
 
@@ -259,11 +261,11 @@ export function VendorDetailTabs({
     if (descriptionValue === (resolvedVendor.description || '')) { setIsEditingDescription(false); return; }
     try {
       await updateVendor(vendorId, { description: descriptionValue.trim() });
-      toast.success('Description updated');
+      toast.success(t('detail.descriptionUpdated'));
       setIsEditingDescription(false);
       refreshVendor();
     } catch {
-      toast.error('Failed to update description');
+      toast.error(t('detail.descriptionUpdateFailed'));
     }
   };
 
@@ -273,7 +275,7 @@ export function VendorDetailTabs({
       const handle = await regenerateMitigation(vendorId);
       setRegenRun(handle);
     } catch {
-      toast.error('Failed to trigger mitigation regeneration');
+      toast.error(t('detail.regenTriggerFailed'));
       setIsMitigationLoading(false);
     }
   };
@@ -283,13 +285,13 @@ export function VendorDetailTabs({
       setRegenRun(null);
       setIsMitigationLoading(false);
       if (result.success) {
-        toast.success('Treatment plan regenerated.');
+        toast.success(t('detail.treatmentPlanRegenerated'));
         void refreshVendor();
       } else {
-        toast.error(result.reason ?? 'Failed to regenerate the treatment plan.');
+        toast.error(result.reason ?? t('detail.treatmentPlanRegenFailed'));
       }
     },
-    [refreshVendor],
+    [refreshVendor, t],
   );
 
   const handleUpdateStrategy = async (strategy: RiskTreatmentType) => {
@@ -315,7 +317,7 @@ export function VendorDetailTabs({
       if (!res.ok) throw new Error('unlink failed');
       await refreshVendor();
     } catch {
-      toast.error('Failed to unlink task');
+      toast.error(t('detail.unlinkTaskFailed'));
     }
   };
 
@@ -340,10 +342,10 @@ export function VendorDetailTabs({
 
   const handleRegenerateAssessment = async () => {
     setIsAssessmentLoading(true);
-    toast.info('Regenerating vendor risk assessment...');
+    toast.info(t('detail.regeneratingVendorRisk'));
     try {
       const result = await triggerAssessment(vendorId);
-      toast.success('Assessment regeneration triggered.');
+      toast.success(t('detail.assessmentRegenerationTriggered'));
       if (result.runId && result.publicAccessToken) {
         setIsRegenerating(true);
         void setActiveTab('risk-assessment');
@@ -351,7 +353,7 @@ export function VendorDetailTabs({
       }
       refreshVendor();
     } catch {
-      toast.error('Failed to trigger risk assessment regeneration');
+      toast.error(t('detail.riskAssessmentRegenFailed'));
     } finally {
       setIsAssessmentLoading(false);
     }
@@ -390,13 +392,13 @@ export function VendorDetailTabs({
         items={
           isViewingTask && taskItemId
             ? [
-                { label: 'Vendors', href: `/${orgId}/vendors`, props: { render: <Link href={`/${orgId}/vendors`} /> } },
+                { label: t('detail.breadcrumbVendors'), href: `/${orgId}/vendors`, props: { render: <Link href={`/${orgId}/vendors`} /> } },
                 { label: resolvedVendor.name, href: `/${orgId}/vendors/${vendorId}`, props: { render: <Link href={`/${orgId}/vendors/${vendorId}`} /> } },
-                { label: 'Tasks', href: `/${orgId}/vendors/${vendorId}?tab=tasks`, props: { render: <Link href={`/${orgId}/vendors/${vendorId}?tab=tasks`} /> } },
-                { label: selectedTaskTitle || 'Task', isCurrent: true },
+                { label: t('detail.breadcrumbTasks'), href: `/${orgId}/vendors/${vendorId}?tab=tasks`, props: { render: <Link href={`/${orgId}/vendors/${vendorId}?tab=tasks`} /> } },
+                { label: selectedTaskTitle || t('detail.taskFallback'), isCurrent: true },
               ]
             : [
-                { label: 'Vendors', href: `/${orgId}/vendors`, props: { render: <Link href={`/${orgId}/vendors`} /> } },
+                { label: t('detail.breadcrumbVendors'), href: `/${orgId}/vendors`, props: { render: <Link href={`/${orgId}/vendors`} /> } },
                 { label: resolvedVendor.name, isCurrent: true },
               ]
         }
@@ -421,7 +423,7 @@ export function VendorDetailTabs({
               onClick={(isViewingTask ? canUpdateTask : canUpdate) ? startEditingTitle : undefined}
               className={`text-2xl font-semibold tracking-tight ${(isViewingTask ? canUpdateTask : canUpdate) ? 'cursor-pointer rounded px-1 -mx-1 hover:bg-muted/50 transition-colors' : ''}`}
             >
-              {isViewingTask ? (selectedTaskTitle || 'Task') : resolvedVendor.name}
+              {isViewingTask ? (selectedTaskTitle || t('detail.taskFallback')) : resolvedVendor.name}
             </h1>
           )}
           {!isViewingTask && !isRegenerating && !isVendorInProgress && (
@@ -433,7 +435,7 @@ export function VendorDetailTabs({
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
               </span>
-              <span className="text-[11px] font-medium text-primary">Researching</span>
+              <span className="text-[11px] font-medium text-primary">{t('detail.researching')}</span>
             </div>
           )}
         </div>
@@ -468,7 +470,7 @@ export function VendorDetailTabs({
                 onClick={startEditingDescription}
                 style={canUpdate ? { cursor: 'pointer' } : undefined}
               >
-                {resolvedVendor.description || (canUpdate ? 'Add a description...' : '')}
+                {resolvedVendor.description || (canUpdate ? t('detail.addDescription') : '')}
               </Text>
             )
           )}
@@ -483,14 +485,14 @@ export function VendorDetailTabs({
         <Tabs value={activeTab} onValueChange={(next) => void setActiveTab(String(next))}>
           <Stack gap="lg">
             <TabsList variant="underline">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="treatment-plan">Treatment Plan</TabsTrigger>
-              <TabsTrigger value="risk-matrix">Risk Matrix</TabsTrigger>
-              <TabsTrigger value="risk-assessment">Risk Assessment</TabsTrigger>
-              <TabsTrigger value="tasks">Tasks</TabsTrigger>
-              <TabsTrigger value="comments">Comments</TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
+              <TabsTrigger value="overview">{t('detail.tabOverview')}</TabsTrigger>
+              <TabsTrigger value="treatment-plan">{t('detail.tabTreatmentPlan')}</TabsTrigger>
+              <TabsTrigger value="risk-matrix">{t('detail.tabRiskMatrix')}</TabsTrigger>
+              <TabsTrigger value="risk-assessment">{t('detail.tabRiskAssessment')}</TabsTrigger>
+              <TabsTrigger value="tasks">{t('detail.tabTasks')}</TabsTrigger>
+              <TabsTrigger value="comments">{t('detail.tabComments')}</TabsTrigger>
+              <TabsTrigger value="activity">{t('detail.tabActivity')}</TabsTrigger>
+              <TabsTrigger value="settings">{t('detail.tabSettings')}</TabsTrigger>
             </TabsList>
 
             {activeTab === 'overview' && (
@@ -544,7 +546,7 @@ export function VendorDetailTabs({
                   ownerId={resolvedVendor.assigneeId}
                   acceptorOptions={assignees.map((member) => ({
                     id: member.id,
-                    name: member.user?.name ?? member.user?.email ?? 'Unknown',
+                    name: member.user?.name ?? member.user?.email ?? t('detail.unknown'),
                   }))}
                   canUpdate={canUpdate}
                 />
@@ -587,7 +589,7 @@ export function VendorDetailTabs({
                     >
                       <VendorRiskAssessmentView
                         source={{
-                          title: 'Risk Assessment',
+                          title: t('detail.riskAssessmentTitle'),
                           description: JSON.stringify(riskAssessmentData),
                           createdAt: (riskAssessmentUpdatedAt ?? resolvedVendor.updatedAt).toISOString(),
                           entityType: 'vendor',
@@ -602,7 +604,7 @@ export function VendorDetailTabs({
                       {showSkeleton ? (
                         <VendorRiskAssessmentSkeleton />
                       ) : (
-                        <Text variant="muted" size="sm">No risk assessment found yet.</Text>
+                        <Text variant="muted" size="sm">{t('detail.noRiskAssessment')}</Text>
                       )}
                     </div>
                   )}
@@ -635,9 +637,9 @@ export function VendorDetailTabs({
                 {canUpdate && (
                   <HStack justify="between" align="center">
                     <Stack gap="none">
-                      <Text size="sm" weight="medium">Regenerate Risk Assessment</Text>
+                      <Text size="sm" weight="medium">{t('detail.regenerateRiskAssessment')}</Text>
                       <Text size="xs" variant="muted">
-                        Generate or regenerate the AI risk assessment for this vendor
+                        {t('detail.regenerateAssessmentDescription')}
                       </Text>
                     </Stack>
                     <Button
@@ -647,7 +649,7 @@ export function VendorDetailTabs({
                       disabled={isAssessmentLoading}
                       loading={isAssessmentLoading}
                     >
-                      Regenerate Assessment
+                      {t('detail.regenerateAssessment')}
                     </Button>
                   </HStack>
                 )}

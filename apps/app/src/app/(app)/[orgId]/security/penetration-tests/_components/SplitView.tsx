@@ -8,6 +8,7 @@ import type {
 } from '@/lib/security/penetration-tests-client';
 import { cn } from '@trycompai/design-system/cn';
 import { ArrowLeft } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -45,6 +46,7 @@ interface SplitViewProps {
  */
 export function SplitView({ orgId, selectedRunId, mode = 'default' }: SplitViewProps) {
   const router = useRouter();
+  const t = useTranslations('security');
   const [selectedFinding, setSelectedFinding] = useState<PentestIssue | null>(null);
 
   const { reports, isLoading: listLoading } = usePenetrationTests(orgId);
@@ -98,7 +100,7 @@ export function SplitView({ orgId, selectedRunId, mode = 'default' }: SplitViewP
       const result = await createReport(payload);
       return { id: result.id };
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to start scan');
+      toast.error(err instanceof Error ? err.message : t('penTest.split.failedToStartScan'));
       throw err;
     }
   };
@@ -109,6 +111,7 @@ export function SplitView({ orgId, selectedRunId, mode = 'default' }: SplitViewP
       orgId,
       path: `/v1/security-penetration-tests/${encodeURIComponent(selectedRun.id)}/report`,
       filename: `penetration-test-${selectedRun.id}.md`,
+      unableToDownloadMessage: t('penTest.split.unableToDownloadReport'),
     });
   };
 
@@ -118,6 +121,7 @@ export function SplitView({ orgId, selectedRunId, mode = 'default' }: SplitViewP
       orgId,
       path: `/v1/security-penetration-tests/${encodeURIComponent(selectedRun.id)}/pdf`,
       filename: `penetration-test-${selectedRun.id}.pdf`,
+      unableToDownloadMessage: t('penTest.split.unableToDownloadReport'),
     });
   };
 
@@ -129,6 +133,7 @@ export function SplitView({ orgId, selectedRunId, mode = 'default' }: SplitViewP
       orgId,
       path: `/v1/security-penetration-tests/${encodeURIComponent(runId)}/report`,
       filename: `penetration-test-${runId}.md`,
+      unableToDownloadMessage: t('penTest.split.unableToDownloadReport'),
     });
 
   const handleDownloadPdfById = (runId: string) =>
@@ -136,6 +141,7 @@ export function SplitView({ orgId, selectedRunId, mode = 'default' }: SplitViewP
       orgId,
       path: `/v1/security-penetration-tests/${encodeURIComponent(runId)}/pdf`,
       filename: `penetration-test-${runId}.pdf`,
+      unableToDownloadMessage: t('penTest.split.unableToDownloadReport'),
     });
 
   const goToCreate = () => router.push(`/${orgId}/security/penetration-tests/new`);
@@ -213,7 +219,7 @@ export function SplitView({ orgId, selectedRunId, mode = 'default' }: SplitViewP
               className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4" />
-              Scans
+              {t('penTest.split.scans')}
             </button>
           </div>
         )}
@@ -259,10 +265,12 @@ async function downloadArtifact({
   orgId,
   path,
   filename,
+  unableToDownloadMessage,
 }: {
   orgId: string;
   path: string;
   filename?: string;
+  unableToDownloadMessage: string;
 }) {
   // Derive the Accept header from the filename's extension, not from
   // whether `filename` is set — both Markdown and PDF callers pass a
@@ -289,7 +297,7 @@ async function downloadArtifact({
     document.body.removeChild(link);
     window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
   } catch (err) {
-    toast.error(err instanceof Error ? err.message : 'Unable to download report');
+    toast.error(err instanceof Error ? err.message : unableToDownloadMessage);
   }
 }
 

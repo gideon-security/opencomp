@@ -4,6 +4,7 @@ import { Button } from '@gideon-defender/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@gideon-defender/ui/table';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { BookOpen, ChevronDown, ChevronUp, Link as LinkIcon, Loader2, Zap, Pencil } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import type { QuestionAnswer } from './types';
 import { deduplicateSources } from '../utils/deduplicate-sources';
@@ -53,14 +54,16 @@ export function QuestionnaireResultsTable({
   onAnswerSingleQuestion,
   onToggleSource,
 }: QuestionnaireResultsTableProps) {
+  const t = useTranslations('questionnaire');
+  const tCommon = useTranslations('overview');
   return (
     <div className="border border-border rounded-lg overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/30 hover:bg-muted/30">
             <TableHead className="w-12 text-xs font-semibold pl-6">#</TableHead>
-            <TableHead className="w-1/2 text-xs font-semibold">Question</TableHead>
-            <TableHead className="w-1/2 text-xs font-semibold pr-6">Answer</TableHead>
+            <TableHead className="w-1/2 text-xs font-semibold">{t('results.question')}</TableHead>
+            <TableHead className="w-1/2 text-xs font-semibold pr-6">{t('results.answer')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -121,10 +124,10 @@ export function QuestionnaireResultsTable({
                           {isSaving && savingIndex === safeIndex ? (
                             <>
                               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              Saving...
+                              {t('results.saving')}
                             </>
                           ) : (
-                            'Save'
+                            tCommon('common.save')
                           )}
                         </Button>
                         <Button 
@@ -133,7 +136,7 @@ export function QuestionnaireResultsTable({
                           variant="outline"
                           disabled={isSaving && savingIndex === safeIndex}
                         >
-                          Cancel
+                          {tCommon('common.cancel')}
                         </Button>
                       </div>
                     </div>
@@ -143,7 +146,7 @@ export function QuestionnaireResultsTable({
                         <div 
                           className="group relative cursor-pointer rounded-md p-2 -m-2 border border-transparent transition-colors duration-150 ease-in-out hover:bg-muted/30 hover:border-primary/30"
                           onClick={() => onEditAnswer(safeIndex)}
-                          title="Click to edit"
+                          title={t('results.clickToEdit')}
                         >
                           <div className="flex items-start justify-between gap-2">
                             <p className="text-sm text-muted-foreground leading-relaxed flex-1 transition-colors duration-150 group-hover:text-foreground/80">
@@ -155,17 +158,17 @@ export function QuestionnaireResultsTable({
                       ) : isProcessing ? (
                         <div className="flex items-center justify-end gap-2 py-2 min-h-[40px]">
                           <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
-                          <span className="text-sm text-muted-foreground">Finding answer...</span>
+                          <span className="text-sm text-muted-foreground">{t('results.findingAnswer')}</span>
                         </div>
                       ) : isQueued ? (
                         <div className="flex items-center justify-end gap-2 py-2 min-h-[40px]">
                           <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />
-                          <span className="text-sm text-muted-foreground">Finding answer...</span>
+                          <span className="text-sm text-muted-foreground">{t('results.findingAnswer')}</span>
                         </div>
                       ) : qa.failedToGenerate ? (
                         <div className="flex items-center justify-between gap-4">
                           <p className="text-sm text-muted-foreground italic">
-                            Could not find an answer
+                            {t('results.couldNotFindAnswer')}
                           </p>
                           <Button
                             onClick={(e) => {
@@ -175,7 +178,7 @@ export function QuestionnaireResultsTable({
                             variant="outline"
                             size="sm"
                           >
-                            Write Answer
+                            {t('results.writeAnswer')}
                           </Button>
                         </div>
                       ) : (
@@ -188,7 +191,7 @@ export function QuestionnaireResultsTable({
                             variant="outline"
                             size="sm"
                           >
-                            Write Answer
+                            {t('results.writeAnswer')}
                           </Button>
                           <Button
                             onClick={(e) => {
@@ -202,7 +205,7 @@ export function QuestionnaireResultsTable({
                             size="sm"
                           >
                             <Zap className="size-4" />
-                            Auto-Fill
+                            {t('results.autoFill')}
                           </Button>
                         </div>
                       )}
@@ -218,12 +221,12 @@ export function QuestionnaireResultsTable({
                             <BookOpen className="mr-1.5 h-3 w-3" />
                             {expandedSources.has(safeIndex) ? (
                               <>
-                                Hide sources ({uniqueSources.length})
+                                {t('results.hideSources', { count: uniqueSources.length })}
                                 <ChevronUp className="ml-1 h-3 w-3" />
                               </>
                             ) : (
                               <>
-                                Show sources ({uniqueSources.length})
+                                {t('results.showSources', { count: uniqueSources.length })}
                                 <ChevronDown className="ml-1 h-3 w-3" />
                               </>
                             )}

@@ -2,6 +2,7 @@
 
 import { Button } from '@trycompai/design-system';
 import { Link, Rocket, Settings } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 
 interface EmptyStateProps {
   onCreateClick: () => void;
@@ -11,56 +12,58 @@ interface EmptyStateProps {
   quotaLabel?: 'Plan';
 }
 
-const STEPS = [
-  {
-    title: 'Connect target',
-    description: 'Point the scanner at a URL you own. HTTPS required.',
-    Icon: Link,
-  },
-  {
-    title: 'Add code context',
-    description:
-      'Optionally attach a public repository — we use it to write better remediation steps.',
-    Icon: Settings,
-  },
-  {
-    title: 'Scan runs automatically',
-    description:
-      'Probing typically takes 1–3 hours. You get a compliance-grade report when it finishes.',
-    Icon: Rocket,
-  },
-];
-
 export function EmptyState({
   onCreateClick,
   balance,
   planRequired,
   quotaLabel = 'Plan',
 }: EmptyStateProps) {
+  const t = useTranslations('security');
   const canCreate = balance === undefined ? true : balance > 0;
   const tagline = planRequired
-    ? 'Start a plan or 14-day free trial to run your first scan.'
-    : 'Automated black-box pen testing. Start a scan to see findings here.';
+    ? t('penTest.emptyState.taglinePlanRequired')
+    : t('penTest.emptyState.taglineDefault');
+  const STEPS = [
+    {
+      title: t('penTest.emptyState.step1Title'),
+      description: t('penTest.emptyState.step1Description'),
+      Icon: Link,
+    },
+    {
+      title: t('penTest.emptyState.step2Title'),
+      description: t('penTest.emptyState.step2Description'),
+      Icon: Settings,
+    },
+    {
+      title: t('penTest.emptyState.step3Title'),
+      description: t('penTest.emptyState.step3Description'),
+      Icon: Rocket,
+    },
+  ];
   return (
     <div className="mx-auto flex h-full max-w-3xl flex-col items-start justify-center gap-6 px-4 py-10 md:px-8 md:py-12">
       <div>
         <div className="mb-3 inline-flex items-center gap-2">
-          <h1 className="text-[26px] font-medium tracking-[-0.02em]">Penetration Tests</h1>
+          <h1 className="text-[26px] font-medium tracking-[-0.02em]">
+            {t('penTest.emptyState.title')}
+          </h1>
           <span className="rounded-full border border-border bg-background px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-            New
+            {t('penTest.emptyState.newBadge')}
           </span>
         </div>
         <p className="max-w-xl text-sm text-muted-foreground">{tagline}</p>
       </div>
 
       <Button onClick={onCreateClick}>
-        {canCreate ? `+ New Scan (${quotaLabel})` : 'View plans'}
+        {canCreate
+          ? t('penTest.emptyState.newScanButton', { quota: quotaLabel })
+          : t('penTest.emptyState.viewPlans')}
       </Button>
 
       <div className="w-full rounded-[var(--radius)] border border-border bg-background">
         <div className="border-b border-border px-5 py-3">
           <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-            How it works
+            {t('penTest.emptyState.howItWorks')}
           </p>
         </div>
         <ol className="divide-y divide-border">

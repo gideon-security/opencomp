@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -94,7 +97,7 @@ describe('CreateVendorSheet', () => {
     );
 
     expect(
-      screen.getByRole('button', { name: /add vendor/i }),
+      screen.getByRole('button', { name: /create\.addVendor/i }),
     ).toBeInTheDocument();
   });
 
@@ -105,6 +108,6 @@ describe('CreateVendorSheet', () => {
       <CreateVendorSheet assignees={mockAssignees} organizationId="org-1" />,
     );
 
-    expect(screen.getByText('Add Vendor')).toBeInTheDocument();
+    expect(screen.getByText('create.addVendor')).toBeInTheDocument();
   });
 });

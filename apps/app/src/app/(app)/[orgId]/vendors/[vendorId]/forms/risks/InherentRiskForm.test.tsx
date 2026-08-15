@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -105,8 +108,8 @@ describe('InherentRiskForm', () => {
 
     render(<InherentRiskForm vendorId="vendor-1" />);
 
-    expect(screen.getByText('Inherent Probability')).toBeInTheDocument();
-    expect(screen.getByText('Inherent Impact')).toBeInTheDocument();
+    expect(screen.getByText('risk.inherentProbability')).toBeInTheDocument();
+    expect(screen.getByText('risk.inherentImpact')).toBeInTheDocument();
   });
 
   it('enables submit when user has only vendor:update permission', () => {

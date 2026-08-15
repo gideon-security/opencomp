@@ -2,6 +2,7 @@
 
 import { QuestionnaireView } from '../../components/QuestionnaireView';
 import { useQuestionnaireDetail } from '../../hooks/useQuestionnaireDetail';
+import { useTranslations } from 'next-intl';
 
 interface QuestionnaireDetailClientProps {
   questionnaireId: string;
@@ -23,6 +24,7 @@ export function QuestionnaireDetailClient({
   initialQuestions,
   filename,
 }: QuestionnaireDetailClientProps) {
+  const t = useTranslations('questionnaire');
   const {
     results,
     searchQuery,
@@ -102,7 +104,7 @@ export function QuestionnaireDetailClient({
       onExport={handleExport}
       onToggleSource={handleToggleSource}
       filename={filename}
-      description="Review and manage answers for this questionnaire"
+      description={t('view.reviewAndManage')}
     />
   );
 }
