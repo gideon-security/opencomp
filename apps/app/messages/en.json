@@ -114,7 +114,34 @@
     "no": "No",
     "previous": "Previous",
     "skipForNow": "Skip for now",
-    "yesCancel": "Yes, cancel"
+    "yesCancel": "Yes, cancel",
+    "tracker": {
+      "stepPolicies": "Tailoring Policies",
+      "stepVendors": "Creating Vendors",
+      "stepRisks": "Creating Risks",
+      "stepLinkage": "Linking to Controls",
+      "stepVendorMitigations": "Assessing Vendors",
+      "stepRiskMitigations": "Assessing Risks",
+      "tailoringPoliciesProgress": "Tailoring Policies... ({completed}/{total})",
+      "tailoringPoliciesEllipsis": "Tailoring Policies...",
+      "initializingEllipsis": "Initializing...",
+      "setupComplete": "Setup Complete",
+      "settingUpOrg": "Setting up your organization",
+      "orgReady": "Your organization is ready!",
+      "checkingStatus": "Checking onboarding status",
+      "statusUnavailable": "Status Unavailable",
+      "couldNotRetrieveStatus": "Could not retrieve status",
+      "allStepsCompleted": "All onboarding steps have been completed successfully.",
+      "setupNeedsAttention": "Setup needs attention",
+      "setupNeedsAttentionDescription": "Something went wrong while tailoring your environment. Retry the onboarding job or contact support for help.",
+      "retrySetup": "Retry setup",
+      "contactSupport": "Contact support",
+      "unknownStatusTitle": "Unknown Status",
+      "statusLabel": "Status: {status}",
+      "ariaExpand": "Expand",
+      "ariaClose": "Close",
+      "ariaMinimize": "Minimize"
+    }
   },
   "overview": {
     "common": {
@@ -1685,5 +1712,22 @@
       "clearLog": "Clear Log",
       "deleteConnectionConfirm": "Are you sure you want to delete this connection?"
     }
+  },
+  "status": {
+    "draft": "Draft",
+    "published": "Published",
+    "archived": "Archived",
+    "in_progress": "In Progress",
+    "needs_review": "Needs Review",
+    "open": "Open",
+    "pending": "Pending",
+    "closed": "Closed",
+    "not_started": "Not Started",
+    "completed": "Completed",
+    "todo": "Todo",
+    "in_review": "In Review",
+    "done": "Done",
+    "not_relevant": "Not relevant",
+    "failed": "Failed"
   }
 }

@@ -114,7 +114,34 @@
     "no": "No",
     "previous": "Anterior",
     "skipForNow": "Omitir por ahora",
-    "yesCancel": "Sí, cancelar"
+    "yesCancel": "Sí, cancelar",
+    "tracker": {
+      "stepPolicies": "Adaptando políticas",
+      "stepVendors": "Creando proveedores",
+      "stepRisks": "Creando riesgos",
+      "stepLinkage": "Vinculando a controles",
+      "stepVendorMitigations": "Evaluando proveedores",
+      "stepRiskMitigations": "Evaluando riesgos",
+      "tailoringPoliciesProgress": "Adaptando políticas... ({completed}/{total})",
+      "tailoringPoliciesEllipsis": "Adaptando políticas...",
+      "initializingEllipsis": "Inicializando...",
+      "setupComplete": "Configuración completa",
+      "settingUpOrg": "Configurando tu organización",
+      "orgReady": "¡Tu organización está lista!",
+      "checkingStatus": "Comprobando el estado de la incorporación",
+      "statusUnavailable": "Estado no disponible",
+      "couldNotRetrieveStatus": "No se pudo obtener el estado",
+      "allStepsCompleted": "Todos los pasos de incorporación se completaron correctamente.",
+      "setupNeedsAttention": "La configuración necesita atención",
+      "setupNeedsAttentionDescription": "Algo salió mal al adaptar tu entorno. Reintenta el trabajo de incorporación o contacta a soporte para obtener ayuda.",
+      "retrySetup": "Reintentar configuración",
+      "contactSupport": "Contactar a soporte",
+      "unknownStatusTitle": "Estado desconocido",
+      "statusLabel": "Estado: {status}",
+      "ariaExpand": "Expandir",
+      "ariaClose": "Cerrar",
+      "ariaMinimize": "Minimizar"
+    }
   },
   "overview": {
     "common": {
@@ -1685,5 +1712,22 @@
       "clearLog": "Borrar registro",
       "deleteConnectionConfirm": "¿Seguro que quieres eliminar esta conexión?"
     }
+  },
+  "status": {
+    "draft": "Borrador",
+    "published": "Publicado",
+    "archived": "Archivado",
+    "in_progress": "En curso",
+    "needs_review": "Requiere revisión",
+    "open": "Abierto",
+    "pending": "Pendiente",
+    "closed": "Cerrado",
+    "not_started": "No iniciado",
+    "completed": "Completado",
+    "todo": "Por hacer",
+    "in_review": "En revisión",
+    "done": "Hecho",
+    "not_relevant": "No relevante",
+    "failed": "Fallido"
   }
 }
