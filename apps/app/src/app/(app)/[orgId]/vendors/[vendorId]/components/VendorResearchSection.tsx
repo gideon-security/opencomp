@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import type { Prisma } from '@db';
 import { Button } from '@trycompai/design-system';
 import { Launch } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
@@ -59,6 +60,7 @@ interface VendorResearchProps {
 }
 
 export function VendorResearchBadges({ riskAssessmentData }: VendorResearchProps) {
+  const t = useTranslations('vendor');
   const { certifications } = useVendorResearchData(riskAssessmentData);
 
   if (certifications.length === 0) return null;
@@ -103,7 +105,7 @@ export function VendorResearchBadges({ riskAssessmentData }: VendorResearchProps
       })}
       {withoutIcons > 0 && (
         <span className="text-xs text-muted-foreground">
-          +{withoutIcons} more
+          {t('detail.moreCount', { count: withoutIcons })}
         </span>
       )}
     </div>

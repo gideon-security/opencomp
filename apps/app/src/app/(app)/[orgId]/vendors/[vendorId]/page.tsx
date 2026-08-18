@@ -1,6 +1,7 @@
 import { serverApi } from '@/lib/api-server';
 import { PageLayout } from '@trycompai/design-system';
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { VendorDetailTabs } from './components/VendorDetailTabs';
 
@@ -77,7 +78,8 @@ export default async function VendorPage({ params, searchParams }: PageProps) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('vendor');
   return {
-    title: 'Vendors',
+    title: t('list.title'),
   };
 }
