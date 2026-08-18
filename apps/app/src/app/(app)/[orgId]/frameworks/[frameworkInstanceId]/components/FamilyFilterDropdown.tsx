@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Text } from '@trycompai/design-system';
+import { Button } from '@trycompai/design-system';
 import {
   Checkbox,
   CheckboxCheckedFilled,
@@ -53,7 +53,7 @@ export function FamilyFilterDropdown({
     : t('instance.families');
 
   const filteredFamilies = allFamilyNames.filter((f) =>
-    getFamilyDisplayLabel(f).toLowerCase().includes(searchTerm.toLowerCase()),
+    getFamilyDisplayLabel(f, t).toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -97,7 +97,7 @@ export function FamilyFilterDropdown({
                   onClick={() => onToggleFamily(family)}
                 >
                   <Icon size={16} className={isSelected ? 'text-primary' : 'text-muted-foreground'} />
-                  <span className="flex-1 truncate text-sm">{getFamilyDisplayLabel(family)}</span>
+                  <span className="flex-1 truncate text-sm">{getFamilyDisplayLabel(family, t)}</span>
                   <span className="text-xs text-muted-foreground tabular-nums">{familyCounts.get(family) ?? 0}</span>
                 </button>
               );

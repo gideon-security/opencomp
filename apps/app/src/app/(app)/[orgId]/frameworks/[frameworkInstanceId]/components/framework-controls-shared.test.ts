@@ -5,6 +5,7 @@ import {
   buildControlItems,
   buildRequirementMap,
   compareRequirementsByOrder,
+  type FrameworksTranslator,
   getStatusBadge,
   groupByFamily,
   groupRequirementsByFamily,
@@ -53,38 +54,40 @@ function makeRequirement(overrides: Partial<FrameworkEditorRequirement> = {}) {
 // getStatusBadge
 // ---------------------------------------------------------------------------
 
+const t = ((key: string) => key) as unknown as FrameworksTranslator;
+
 describe('getStatusBadge', () => {
-  it('returns Satisfied / default for completed', () => {
-    expect(getStatusBadge('completed')).toEqual({
-      label: 'Satisfied',
+  it('returns statusSatisfied / default for completed', () => {
+    expect(getStatusBadge('completed', t)).toEqual({
+      label: 'requirements.statusSatisfied',
       variant: 'default',
     });
   });
 
-  it('returns In Progress / secondary for in_progress', () => {
-    expect(getStatusBadge('in_progress')).toEqual({
-      label: 'In Progress',
+  it('returns statusInProgress / secondary for in_progress', () => {
+    expect(getStatusBadge('in_progress', t)).toEqual({
+      label: 'requirements.statusInProgress',
       variant: 'secondary',
     });
   });
 
-  it('returns Not Relevant / secondary for not_relevant', () => {
-    expect(getStatusBadge('not_relevant')).toEqual({
-      label: 'Not Relevant',
+  it('returns statusNotRelevant / secondary for not_relevant', () => {
+    expect(getStatusBadge('not_relevant', t)).toEqual({
+      label: 'requirements.statusNotRelevant',
       variant: 'secondary',
     });
   });
 
-  it('returns Not Started / destructive for not_started', () => {
-    expect(getStatusBadge('not_started')).toEqual({
-      label: 'Not Started',
+  it('returns statusNotStarted / destructive for not_started', () => {
+    expect(getStatusBadge('not_started', t)).toEqual({
+      label: 'requirements.statusNotStarted',
       variant: 'destructive',
     });
   });
 
-  it('returns Not Started / destructive for any unrecognized status', () => {
-    expect(getStatusBadge('draft')).toEqual({
-      label: 'Not Started',
+  it('returns statusNotStarted / destructive for any unrecognized status', () => {
+    expect(getStatusBadge('draft', t)).toEqual({
+      label: 'requirements.statusNotStarted',
       variant: 'destructive',
     });
   });

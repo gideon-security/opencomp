@@ -9,27 +9,34 @@ import {
 } from '@/lib/control-compliance';
 import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import type { Control, FrameworkEditorRequirement, Task } from '@db';
+import type { useTranslations } from 'next-intl';
 
 export const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
+
+/** Translator scoped to the `frameworks` namespace, as returned by `useTranslations('frameworks')`. */
+export type FrameworksTranslator = ReturnType<typeof useTranslations<'frameworks'>>;
 
 export interface ControlItem {
   control: FrameworkInstanceWithControls['controls'][number];
   requirements: Array<{ id: string; name: string; identifier: string }>;
 }
 
-export function getStatusBadge(status: StatusType): {
+export function getStatusBadge(
+  status: StatusType,
+  t: FrameworksTranslator,
+): {
   label: string;
   variant: 'default' | 'secondary' | 'destructive';
 } {
   switch (status) {
     case 'completed':
-      return { label: 'Satisfied', variant: 'default' };
+      return { label: t('requirements.statusSatisfied'), variant: 'default' };
     case 'in_progress':
-      return { label: 'In Progress', variant: 'secondary' };
+      return { label: t('requirements.statusInProgress'), variant: 'secondary' };
     case 'not_relevant':
-      return { label: 'Not Relevant', variant: 'secondary' };
+      return { label: t('requirements.statusNotRelevant'), variant: 'secondary' };
     default:
-      return { label: 'Not Started', variant: 'destructive' };
+      return { label: t('requirements.statusNotStarted'), variant: 'destructive' };
   }
 }
 
@@ -57,9 +64,6 @@ export function buildControlItems(
 
 /** Sentinel value for uncategorized controls — avoids collision with a real family named "Other". */
 export const UNCATEGORIZED_FAMILY = '__uncategorized__';
-
-/** Display label for the uncategorized family group. */
-export const UNCATEGORIZED_FAMILY_LABEL = 'Other';
 
 export interface FamilyGroup {
   family: string;
@@ -104,8 +108,8 @@ export function groupByFamily(items: ControlItem[]): FamilyGroup[] {
 }
 
 /** Returns the display label for a family key (handles the uncategorized sentinel). */
-export function getFamilyDisplayLabel(family: string): string {
-  return family === UNCATEGORIZED_FAMILY ? UNCATEGORIZED_FAMILY_LABEL : family;
+export function getFamilyDisplayLabel(family: string, t: FrameworksTranslator): string {
+  return family === UNCATEGORIZED_FAMILY ? t('controls.uncategorizedFamily') : family;
 }
 
 // ---------------------------------------------------------------------------

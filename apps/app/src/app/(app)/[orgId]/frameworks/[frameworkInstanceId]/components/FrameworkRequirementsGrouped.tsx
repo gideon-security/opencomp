@@ -225,6 +225,7 @@ function RequirementFamilySection({
   frameworkInstanceId: string;
   onRowClick: (requirementId: string) => void;
 }) {
+  const t = useTranslations('frameworks');
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
 
   return (
@@ -244,7 +245,7 @@ function RequirementFamilySection({
             aria-expanded={expanded}
           >
             <ChevronIcon size={16} />
-            <span>{getFamilyDisplayLabel(group.family)}</span>
+            <span>{getFamilyDisplayLabel(group.family, t)}</span>
             <span className="text-muted-foreground text-sm font-normal">
               ({group.items.length})
             </span>

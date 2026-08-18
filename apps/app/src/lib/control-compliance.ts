@@ -1,5 +1,6 @@
 import { StatusType } from '@/components/status-indicator';
 import type { Control, Task } from '@db';
+import type { useTranslations } from 'next-intl';
 
 export type SelectedPolicy = {
   status: string | null;
@@ -91,27 +92,34 @@ export interface RequirementStatusBadge {
   variant: RequirementStatusVariant;
 }
 
-export function getRequirementStatus(controlStatuses: StatusType[]): RequirementStatusBadge {
+/**
+ * Requires the caller's `frameworks` translator (e.g. `useTranslations('frameworks')`)
+ * so badge labels are localized; keys mirror the ones under `frameworks.requirements`.
+ */
+export function getRequirementStatus(
+  controlStatuses: StatusType[],
+  t: ReturnType<typeof useTranslations<'frameworks'>>,
+): RequirementStatusBadge {
   if (controlStatuses.length === 0) {
-    return { label: 'No Controls', variant: 'secondary' };
+    return { label: t('requirements.statusNoControls'), variant: 'secondary' };
   }
 
   const allCompleted = controlStatuses.every((s) => s === 'completed');
   if (allCompleted) {
-    return { label: 'Satisfied', variant: 'default' };
+    return { label: t('requirements.statusSatisfied'), variant: 'default' };
   }
 
   const allNotRelevant = controlStatuses.every((s) => s === 'not_relevant');
   if (allNotRelevant) {
-    return { label: 'Not Relevant', variant: 'secondary' };
+    return { label: t('requirements.statusNotRelevant'), variant: 'secondary' };
   }
 
   const allNotStarted = controlStatuses.every((s) => s === 'not_started');
   if (allNotStarted) {
-    return { label: 'Not Started', variant: 'destructive' };
+    return { label: t('requirements.statusNotStarted'), variant: 'destructive' };
   }
 
-  return { label: 'In Progress', variant: 'secondary' };
+  return { label: t('requirements.statusInProgress'), variant: 'secondary' };
 }
 
 export function getControlProgressPercent(

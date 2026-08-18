@@ -11,6 +11,7 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 
 interface AppShellRailNavProps {
@@ -20,6 +21,7 @@ interface AppShellRailNavProps {
 export function AppShellRailNav({ organizationId }: AppShellRailNavProps) {
   const router = useRouter();
   const pathname = usePathname() ?? '';
+  const t = useTranslations('nav');
 
   const orgBase = `/${organizationId}`;
 
@@ -30,49 +32,49 @@ export function AppShellRailNav({ organizationId }: AppShellRailNavProps) {
   const items = [
     {
       href: `${orgBase}/overview`,
-      label: 'Overview',
+      label: t('overview'),
       icon: <Gauge />,
       isActive: isActivePrefix(`${orgBase}/overview`),
     },
     {
       href: `${orgBase}/policies`,
-      label: 'Policies',
+      label: t('policies'),
       icon: <NotebookText />,
       isActive: isActivePrefix(`${orgBase}/policies`),
     },
     {
       href: `${orgBase}/tasks`,
-      label: 'Evidence',
+      label: t('evidence'),
       icon: <ListCheck />,
       isActive: isActivePrefix(`${orgBase}/tasks`),
     },
     {
       href: `${orgBase}/people/all`,
-      label: 'People',
+      label: t('people'),
       icon: <Users />,
       isActive: isActivePrefix(`${orgBase}/people`),
     },
     {
       href: `${orgBase}/vendors`,
-      label: 'Vendors',
+      label: t('vendors'),
       icon: <Store />,
       isActive: isActivePrefix(`${orgBase}/vendors`),
     },
     {
       href: `${orgBase}/integrations`,
-      label: 'Integrations',
+      label: t('integrations'),
       icon: <Zap />,
       isActive: isActivePrefix(`${orgBase}/integrations`),
     },
     {
       href: `${orgBase}/cloud-tests`,
-      label: 'Cloud Tests',
+      label: t('cloudTests'),
       icon: <FlaskConical />,
       isActive: isActivePrefix(`${orgBase}/cloud-tests`),
     },
     {
       href: `${orgBase}/settings`,
-      label: 'Settings',
+      label: t('settings'),
       icon: <Settings />,
       isActive: isActivePrefix(`${orgBase}/settings`),
     },

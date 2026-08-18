@@ -118,7 +118,7 @@ export function FrameworkRequirements({
         item.identifier?.toLowerCase().includes(lowerSearch) ||
         item.description?.toLowerCase().includes(lowerSearch),
     );
-  }, [items, searchTerm]);
+  }, [sortedItems, searchTerm]);
 
   const pageCount = Math.max(1, Math.ceil(filteredItems.length / pageSize));
   const paginatedItems = useMemo(
@@ -179,7 +179,7 @@ export function FrameworkRequirements({
             </TableRow>
           ) : (
             paginatedItems.map((item) => {
-              const status = getRequirementStatus(item.controlStatuses);
+              const status = getRequirementStatus(item.controlStatuses, t);
               const identifier = item.identifier?.trim();
 
               return (

@@ -3,6 +3,7 @@
 import { getRequirementStatus } from '@/lib/control-compliance';
 import { Badge, TableCell, TableRow, Text } from '@trycompai/design-system';
 import { Launch } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { ExpandableDescription } from './ExpandableDescription';
 import type { RequirementItem } from './framework-controls-shared';
@@ -18,7 +19,8 @@ export function GroupedRequirementRow({
   frameworkInstanceId: string;
   onRowClick: (requirementId: string) => void;
 }) {
-  const status = getRequirementStatus(item.controlStatuses);
+  const t = useTranslations('frameworks');
+  const status = getRequirementStatus(item.controlStatuses, t);
   const identifier = item.identifier?.trim();
   const href = `/${orgId}/frameworks/${frameworkInstanceId}/requirements/${item.id}`;
 

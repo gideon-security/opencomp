@@ -158,7 +158,7 @@ export function FrameworkControls({
                 documentTypes,
                 evidenceSubmissions,
               );
-              const badge = getStatusBadge(status);
+              const badge = getStatusBadge(status, t);
               const compliancePercent = getControlProgressPercent(
                 policies,
                 tasks,
