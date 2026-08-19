@@ -13,6 +13,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Link as LinkIcon } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -26,6 +27,7 @@ export function LinkRequirementForControlSheet({
   alreadyLinkedRequirementIds: string[];
 }) {
   const { hasPermission } = usePermissions();
+  const t = useTranslations('frameworks');
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -78,14 +80,14 @@ export function LinkRequirementForControlSheet({
         { requirements: mappings },
       );
       if (response.error) throw new Error(response.error);
-      toast.success('Requirements linked');
+      toast.success(t('controls.requirementsLinked'));
       setIsOpen(false);
       router.refresh();
     } catch (error) {
       toast.error(
         error instanceof Error
           ? error.message
-          : 'Failed to link requirements',
+          : t('controls.failedToLinkRequirements'),
       );
     } finally {
       setIsSubmitting(false);
@@ -99,21 +101,21 @@ export function LinkRequirementForControlSheet({
         iconLeft={<LinkIcon size={16} />}
         onClick={() => setIsOpen(true)}
       >
-        Link Requirement
+        {t('controls.linkRequirement')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Link Existing Requirements</SheetTitle>
+            <SheetTitle>{t('controls.linkExistingRequirementsTitle')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
             {isLoading ? (
               <Text size="sm" variant="muted">
-                Loading requirements…
+                {t('controls.loadingRequirements')}
               </Text>
             ) : options.length === 0 ? (
               <Text size="sm" variant="muted">
-                No additional requirements available to link.
+                {t('controls.noAdditionalRequirements')}
               </Text>
             ) : (
               <div className="space-y-2">
@@ -133,7 +135,9 @@ export function LinkRequirementForControlSheet({
                           : opt.name}
                       </div>
                       <Text size="xs" variant="muted">
-                        from {opt.frameworkName}
+                        {t('controls.requirementFrom', {
+                          framework: opt.frameworkName,
+                        })}
                       </Text>
                     </div>
                   </label>
@@ -143,8 +147,9 @@ export function LinkRequirementForControlSheet({
                     onClick={handleSubmit}
                     disabled={selected.size === 0 || isSubmitting}
                   >
-                    Link {selected.size || ''} Requirement
-                    {selected.size === 1 ? '' : 's'}
+                    {t('controls.linkRequirementCount', {
+                      count: selected.size,
+                    })}
                   </Button>
                 </div>
               </div>

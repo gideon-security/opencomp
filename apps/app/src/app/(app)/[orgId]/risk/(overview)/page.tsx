@@ -2,6 +2,7 @@ import { AppOnboarding } from '@/components/app-onboarding';
 import { CreateRiskSheet } from '@/components/sheets/create-risk-sheet';
 import { serverApi } from '@/lib/api-server';
 import { PageHeader, PageLayout } from '@trycompai/design-system';
+import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { RisksTable } from './RisksTable';
 
@@ -57,6 +58,7 @@ export default async function RiskRegisterPage(props: {
   searchParams: Promise<Record<string, string>>;
 }) {
   const { orgId } = await props.params;
+  const t = await getTranslations('risk');
 
   const [risksResult, peopleResult, onboardingResult] = await Promise.all([
     serverApi.get<RisksApiResponse>('/v1/risks?perPage=50'),
@@ -112,32 +114,27 @@ export default async function RiskRegisterPage(props: {
   if (isEmpty && !isOnboardingActive) {
     return (
       <PageLayout padding="sm" container={false}>
-        <PageHeader title="Risks" actions={<CreateRiskSheet assignees={assignees as any} />} />
+        <PageHeader title={t('list.title')} actions={<CreateRiskSheet assignees={assignees as any} />} />
         <AppOnboarding
-          title={'Risk Management'}
-          description={
-            "Identify, assess, and mitigate risks to protect your organization's assets and ensure compliance."
-          }
-          cta={'Create risk'}
+          title={t('list.onboardingTitle')}
+          description={t('list.onboardingDescription')}
+          cta={t('list.onboardingCta')}
           imageSrcLight="/onboarding/risk-light.webp"
           imageSrcDark="/onboarding/risk-dark.webp"
-          imageAlt="Risk Management"
+          imageAlt={t('list.onboardingImageAlt')}
           sheetName="create-risk-sheet"
           faqs={[
             {
-              questionKey: 'What is risk management?',
-              answerKey:
-                "Risk management is the process of identifying, assessing, and controlling threats to an organization's capital and earnings.",
+              questionKey: t('list.faq1q'),
+              answerKey: t('list.faq1a'),
             },
             {
-              questionKey: 'Why is risk management important?',
-              answerKey:
-                'It helps organizations protect their assets, ensure stability, and achieve their objectives by minimizing potential disruptions.',
+              questionKey: t('list.faq2q'),
+              answerKey: t('list.faq2a'),
             },
             {
-              questionKey: 'What are the key steps in risk management?',
-              answerKey:
-                'The key steps are risk identification, risk analysis, risk evaluation, risk treatment, and risk monitoring and review.',
+              questionKey: t('list.faq3q'),
+              answerKey: t('list.faq3a'),
             },
           ]}
         />
@@ -147,7 +144,7 @@ export default async function RiskRegisterPage(props: {
 
   return (
     <PageLayout>
-      <PageHeader title="Risks" actions={<CreateRiskSheet assignees={assignees as any} />} />
+      <PageHeader title={t('list.title')} actions={<CreateRiskSheet assignees={assignees as any} />} />
       <RisksTable
         risks={risks as any}
         pageCount={pageCount}
@@ -160,7 +157,8 @@ export default async function RiskRegisterPage(props: {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('risk');
   return {
-    title: 'Risks',
+    title: t('list.title'),
   };
 }

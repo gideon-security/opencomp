@@ -22,19 +22,12 @@ import {
 import { Input } from '@gideon-defender/ui/input';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-
-const schema = z.object({
-  identifier: z.string().min(1, 'Identifier is required').max(80),
-  name: z.string().min(1, 'Name is required').max(200),
-  description: z.string().max(4000),
-});
-
-type FormValues = z.infer<typeof schema>;
 
 export function AddCustomRequirementSheet({
   frameworkInstanceId,
@@ -42,9 +35,19 @@ export function AddCustomRequirementSheet({
   frameworkInstanceId: string;
 }) {
   const { hasPermission } = usePermissions();
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const schema = z.object({
+    identifier: z.string().min(1, t('instance.identifierRequired')).max(80),
+    name: z.string().min(1, t('instance.nameRequired')).max(200),
+    description: z.string().max(4000),
+  });
+
+  type FormValues = z.infer<typeof schema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -69,13 +72,13 @@ export function AddCustomRequirementSheet({
         values,
       );
       if (response.error) throw new Error(response.error);
-      toast.success('Requirement added');
+      toast.success(t('instance.requirementAddedToast'));
       setIsOpen(false);
       form.reset();
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to add requirement',
+        error instanceof Error ? error.message : t('instance.addRequirementFailed'),
       );
     } finally {
       setIsSubmitting(false);
@@ -89,12 +92,12 @@ export function AddCustomRequirementSheet({
         iconLeft={<Add size={16} />}
         onClick={() => setIsOpen(true)}
       >
-        Add Requirement
+        {t('instance.addRequirementButton')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Add Custom Requirement</SheetTitle>
+            <SheetTitle>{t('instance.addCustomRequirementTitle')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
             <Form {...form}>
@@ -107,9 +110,12 @@ export function AddCustomRequirementSheet({
                   name="identifier"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Identifier</FormLabel>
+                      <FormLabel>{t('instance.identifier')}</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="10.3" />
+                        <Input
+                          {...field}
+                          placeholder={t('instance.identifierPlaceholder')}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -120,9 +126,12 @@ export function AddCustomRequirementSheet({
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>{tCommon('common.name')}</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Access Review" />
+                        <Input
+                          {...field}
+                          placeholder={t('instance.namePlaceholder')}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -133,12 +142,12 @@ export function AddCustomRequirementSheet({
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>{tCommon('common.description')}</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
                           className="min-h-[120px]"
-                          placeholder="Describe the requirement..."
+                          placeholder={t('instance.describeRequirementPlaceholder')}
                         />
                       </FormControl>
                       <FormMessage />
@@ -147,7 +156,7 @@ export function AddCustomRequirementSheet({
                 />
                 <div className="flex justify-end">
                   <Button type="submit" disabled={isSubmitting}>
-                    Add Requirement
+                    {t('instance.addRequirementButton')}
                   </Button>
                 </div>
               </form>

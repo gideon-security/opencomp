@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import type {
   PentestAgentEvent,
   PentestIssue,
@@ -27,6 +28,7 @@ export function RunningDetail({
   events,
   onOpenFinding,
 }: RunningDetailProps) {
+  const t = useTranslations('security');
   const counts = tallySeverities(issues);
   // Pass the run id so the highlights hook resets its `seenRef` when
   // the user switches to a different scan — otherwise IDs from the
@@ -63,34 +65,44 @@ export function RunningDetail({
             {run.targetUrl}
           </h1>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
-            <span>Started {formatReportDate(run.createdAt)}</span>
+            <span>
+              {t('penTest.running.started', {
+                date: formatReportDate(run.createdAt),
+              })}
+            </span>
             {run.updatedAt && run.updatedAt !== run.createdAt ? (
-              <span>Last update {formatReportDate(run.updatedAt)}</span>
+              <span>
+                {t('penTest.running.lastUpdate', {
+                  date: formatReportDate(run.updatedAt),
+                })}
+              </span>
             ) : null}
-            {run.repoUrl ? <span>Repo: {run.repoUrl}</span> : null}
+            {run.repoUrl ? (
+              <span>{t('penTest.running.repo', { url: run.repoUrl })}</span>
+            ) : null}
           </div>
         </header>
 
         <section className="space-y-2">
           <h2 className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-            Scan progress
+            {t('penTest.running.scanProgress')}
           </h2>
           <AgentProgressGrid total={totalAgents} done={completedAgents} />
           <div className="font-mono text-[11px] text-muted-foreground">
-            Running · {elapsedLabel} elapsed
+            {t('penTest.running.runningElapsed', { elapsed: elapsedLabel })}
           </div>
         </section>
 
         <section className="space-y-2">
           <h2 className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-            Live severity tally
+            {t('penTest.running.liveSeverityTally')}
           </h2>
           <SevTally counts={counts} size="mid" />
         </section>
 
         <section className="space-y-2">
           <h2 className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-            Findings ({issues.length})
+            {t('penTest.running.findings', { count: issues.length })}
           </h2>
           <FindingsTable
             issues={issues}
@@ -98,7 +110,7 @@ export function RunningDetail({
             highlightedIds={highlighted}
             emptyState={
               <div className="rounded-[var(--radius)] border border-dashed border-border bg-background p-10 text-center text-sm text-muted-foreground">
-                Scanning. New findings will appear here as agents discover them.
+                {t('penTest.running.scanningNote')}
               </div>
             }
           />

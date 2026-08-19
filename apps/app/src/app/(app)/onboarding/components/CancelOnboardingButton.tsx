@@ -2,6 +2,7 @@
 
 import { Button } from '@gideon-defender/ui/button';
 import { useAction } from 'next-safe-action/hooks';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { cancelOnboarding } from '../actions/cancel-onboarding';
@@ -15,6 +16,7 @@ export function CancelOnboardingButton({
   organizationId,
   hasOtherOrgs,
 }: CancelOnboardingButtonProps) {
+  const t = useTranslations('onboarding');
   const [confirming, setConfirming] = useState(false);
 
   const cancelAction = useAction(cancelOnboarding, {
@@ -23,12 +25,12 @@ export function CancelOnboardingButton({
         const target = data.fallbackOrgId ? `/${data.fallbackOrgId}` : '/setup';
         window.location.assign(target);
       } else {
-        toast.error(data?.error || 'Failed to cancel');
+        toast.error(data?.error || t('failedToCancel'));
         setConfirming(false);
       }
     },
     onError: ({ error }) => {
-      toast.error(error.serverError || 'Failed to cancel');
+      toast.error(error.serverError || t('failedToCancel'));
       setConfirming(false);
     },
   });
@@ -43,14 +45,14 @@ export function CancelOnboardingButton({
         className="text-muted-foreground"
         onClick={() => setConfirming(true)}
       >
-        Cancel
+        {t('cancel')}
       </Button>
     );
   }
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-muted-foreground">Delete this org?</span>
+      <span className="text-sm text-muted-foreground">{t('deleteThisOrg')}</span>
       <Button
         type="button"
         variant="destructive"
@@ -58,7 +60,7 @@ export function CancelOnboardingButton({
         disabled={cancelAction.isExecuting}
         onClick={() => cancelAction.execute({ organizationId })}
       >
-        {cancelAction.isExecuting ? 'Canceling...' : 'Yes, cancel'}
+        {cancelAction.isExecuting ? t('canceling') : t('yesCancel')}
       </Button>
       <Button
         type="button"
@@ -66,7 +68,7 @@ export function CancelOnboardingButton({
         size="sm"
         onClick={() => setConfirming(false)}
       >
-        No
+        {t('no')}
       </Button>
     </div>
   );

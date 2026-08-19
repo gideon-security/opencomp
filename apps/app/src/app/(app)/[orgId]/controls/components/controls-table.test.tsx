@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   mockHasPermission,
@@ -7,6 +8,8 @@ import {
   AUDITOR_PERMISSIONS,
   NO_PERMISSIONS,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -120,7 +123,7 @@ describe('ControlsTable', () => {
 
       render(<ControlsTable promises={mockPromises as any} />);
 
-      const createButton = screen.getByText('Create Control');
+      const createButton = screen.getByText('createControl');
       expect(createButton).toBeInTheDocument();
     });
 
@@ -129,7 +132,7 @@ describe('ControlsTable', () => {
 
       render(<ControlsTable promises={mockPromises as any} />);
 
-      expect(screen.queryByText('Create Control')).not.toBeInTheDocument();
+      expect(screen.queryByText('createControl')).not.toBeInTheDocument();
     });
 
     it('hides "Create Control" button when user has no permissions', () => {
@@ -137,7 +140,7 @@ describe('ControlsTable', () => {
 
       render(<ControlsTable promises={mockPromises as any} />);
 
-      expect(screen.queryByText('Create Control')).not.toBeInTheDocument();
+      expect(screen.queryByText('createControl')).not.toBeInTheDocument();
     });
 
     it('checks the correct resource and action for create permission', () => {
@@ -164,7 +167,7 @@ describe('ControlsTable', () => {
 
       render(<ControlsTable promises={mockPromises as any} />);
 
-      expect(screen.getByPlaceholderText('Search controls...')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('searchPlaceholder')).toBeInTheDocument();
     });
   });
 });

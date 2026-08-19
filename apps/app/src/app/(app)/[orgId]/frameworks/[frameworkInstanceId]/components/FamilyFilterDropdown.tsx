@@ -1,12 +1,13 @@
 'use client';
 
-import { Button, Text } from '@trycompai/design-system';
+import { Button } from '@trycompai/design-system';
 import {
   Checkbox,
   CheckboxCheckedFilled,
   Close,
   Filter,
 } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { getFamilyDisplayLabel } from './framework-controls-shared';
 
@@ -25,6 +26,7 @@ export function FamilyFilterDropdown({
   onToggleFamily,
   onClear,
 }: FamilyFilterDropdownProps) {
+  const t = useTranslations('frameworks');
   const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
@@ -46,10 +48,12 @@ export function FamilyFilterDropdown({
   }, [open]);
 
   const hasFilter = selectedFamilies.size > 0;
-  const label = hasFilter ? `Families (${selectedFamilies.size})` : 'Families';
+  const label = hasFilter
+    ? t('instance.familiesSelected', { count: selectedFamilies.size })
+    : t('instance.families');
 
   const filteredFamilies = allFamilyNames.filter((f) =>
-    getFamilyDisplayLabel(f).toLowerCase().includes(searchTerm.toLowerCase()),
+    getFamilyDisplayLabel(f, t).toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -74,7 +78,7 @@ export function FamilyFilterDropdown({
         <div className="absolute left-0 top-full z-50 mt-1 w-64 rounded-md border bg-background shadow-lg">
           <input
             type="text"
-            placeholder="Search families..."
+            placeholder={t('instance.searchFamiliesPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full border-b border-border bg-transparent px-3 py-1.5 text-sm outline-none"
@@ -93,13 +97,15 @@ export function FamilyFilterDropdown({
                   onClick={() => onToggleFamily(family)}
                 >
                   <Icon size={16} className={isSelected ? 'text-primary' : 'text-muted-foreground'} />
-                  <span className="flex-1 truncate text-sm">{getFamilyDisplayLabel(family)}</span>
+                  <span className="flex-1 truncate text-sm">{getFamilyDisplayLabel(family, t)}</span>
                   <span className="text-xs text-muted-foreground tabular-nums">{familyCounts.get(family) ?? 0}</span>
                 </button>
               );
             })}
             {filteredFamilies.length === 0 && (
-              <p className="text-muted-foreground py-3 text-center text-xs">No matching families.</p>
+              <p className="text-muted-foreground py-3 text-center text-xs">
+                {t('instance.noMatchingFamilies')}
+              </p>
             )}
           </div>
         </div>

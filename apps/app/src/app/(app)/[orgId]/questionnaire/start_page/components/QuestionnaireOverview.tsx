@@ -3,6 +3,7 @@
 import { Card, CardContent } from '@gideon-defender/ui';
 import { Button } from '@gideon-defender/ui/button';
 import { FileText, Plus } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import type { QuestionnaireListItem } from '../../components/types';
@@ -15,6 +16,7 @@ interface QuestionnaireOverviewProps {
 export function QuestionnaireOverview({ questionnaires }: QuestionnaireOverviewProps) {
   const params = useParams();
   const orgId = params.orgId as string;
+  const t = useTranslations('questionnaire');
 
   return (
     <div className="flex flex-col gap-8">
@@ -27,16 +29,16 @@ export function QuestionnaireOverview({ questionnaires }: QuestionnaireOverviewP
                 <FileText className="h-8 w-8 text-primary" />
               </div>
               <div className="text-center space-y-1">
-                <h3 className="text-lg font-semibold text-foreground">Answer New Questionnaire</h3>
+                <h3 className="text-lg font-semibold text-foreground">{t('overview.answerNewQuestionnaire')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Upload a questionnaire file to extract questions and generate answers
+                  {t('overview.answerNewDescription')}
                 </p>
               </div>
             </div>
             <Button size="lg" asChild>
               <Link href={`/${orgId}/questionnaire/new_questionnaire`}>
                 <Plus className="mr-2 h-4 w-4" />
-                New Questionnaire
+                {t('overview.newQuestionnaire')}
               </Link>
             </Button>
           </div>
@@ -46,9 +48,9 @@ export function QuestionnaireOverview({ questionnaires }: QuestionnaireOverviewP
       {/* History Section */}
       <div className="flex flex-col gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-foreground">History</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t('overview.history')}</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            View and manage your previously parsed questionnaires
+            {t('overview.historyDescription')}
           </p>
         </div>
         <QuestionnaireHistory questionnaires={questionnaires} orgId={orgId} />

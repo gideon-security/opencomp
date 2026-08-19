@@ -9,6 +9,8 @@ import { GeistMono } from 'geist/font/mono';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { headers } from 'next/headers';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Toaster } from 'sonner';
 import { Providers } from './providers';
@@ -79,12 +81,14 @@ export default async function Layout({ children }: { children: React.ReactNode }
   const session = await auth.api.getSession({
     headers: await headers(),
   });
+  const locale = await getLocale();
+  const messages = await getMessages();
 
   const dubIsEnabled = env.DUB_API_KEY !== undefined;
   const dubReferUrl = env.DUB_REFER_URL;
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         {dubIsEnabled && dubReferUrl && (
           <DubAnalytics
@@ -95,9 +99,11 @@ export default async function Layout({ children }: { children: React.ReactNode }
         )}
       </head>
       <body className={cn(`${GeistMono.variable} ${font.variable}`, 'antialiased')}>
-        <NuqsAdapter>
-          <Providers session={session}>{children}</Providers>
-        </NuqsAdapter>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <NuqsAdapter>
+            <Providers session={session}>{children}</Providers>
+          </NuqsAdapter>
+        </NextIntlClientProvider>
         <Toaster richColors />
         <VercelAnalytics />
       </body>

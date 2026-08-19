@@ -1,4 +1,7 @@
+'use client';
+
 import { Link } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import type { UseFormReturn } from 'react-hook-form';
 import type { CreateRunForm } from './CreateRunPanel';
 
@@ -7,6 +10,8 @@ interface CreateRunTargetFieldsProps {
 }
 
 export function CreateRunTargetFields({ form }: CreateRunTargetFieldsProps) {
+  const t = useTranslations('security');
+
   return (
     <>
       <div className="mb-4">
@@ -14,7 +19,7 @@ export function CreateRunTargetFields({ form }: CreateRunTargetFieldsProps) {
           htmlFor="pt-target-url"
           className="mb-1.5 block text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground"
         >
-          Target URL
+          {t('penTest.targetFields.targetUrl')}
         </label>
         <div className="flex h-9 items-center gap-1.5 rounded border border-border bg-background px-3">
           <span className="shrink-0 font-mono text-xs text-muted-foreground">https://</span>
@@ -28,8 +33,7 @@ export function CreateRunTargetFields({ form }: CreateRunTargetFieldsProps) {
           />
         </div>
         <p className="mt-1 text-[11px] text-muted-foreground">
-          Must be reachable from the scanner - localhost and private IPs are rejected.
-          External, unauthenticated scan — we don't log in.
+          {t('penTest.targetFields.targetHint')}
         </p>
       </div>
 
@@ -38,9 +42,9 @@ export function CreateRunTargetFields({ form }: CreateRunTargetFieldsProps) {
           htmlFor="pt-repo-url"
           className="mb-1.5 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground"
         >
-          <span>Repository</span>
+          <span>{t('penTest.targetFields.repository')}</span>
           <span className="font-normal normal-case tracking-normal text-muted-foreground">
-            (optional)
+            {t('penTest.targetFields.optional')}
           </span>
         </label>
         <div className="flex h-9 items-center gap-1.5 rounded border border-border bg-background px-3">
@@ -53,7 +57,7 @@ export function CreateRunTargetFields({ form }: CreateRunTargetFieldsProps) {
           />
         </div>
         <p className="mt-1 text-[11px] text-muted-foreground">
-          Public repositories only. We use source context to write better remediation steps.
+          {t('penTest.targetFields.repoHint')}
         </p>
       </div>
     </>

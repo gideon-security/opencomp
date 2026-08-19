@@ -6,6 +6,7 @@ import {
   Download,
   Renew,
 } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import type {
   PentestAgentEvent,
   PentestIssue,
@@ -38,6 +39,7 @@ export function CompletedDetail({
   onDownloadPdf,
   onReRun,
 }: CompletedDetailProps) {
+  const t = useTranslations('security');
   const counts = tallySeverities(issues);
   const isClean = issues.length === 0;
 
@@ -68,36 +70,46 @@ export function CompletedDetail({
                     onClick={onDownloadMarkdown}
                   >
                     <Document className="h-3.5 w-3.5" />
-                    Markdown
+                    {t('penTest.completed.markdown')}
                   </Button>
                   <Button variant="outline" size="sm" onClick={onDownloadPdf}>
                     <Download className="h-3.5 w-3.5" />
-                    PDF
+                    {t('penTest.completed.pdf')}
                   </Button>
                 </>
               ) : null}
               {onReRun ? (
                 <Button size="sm" onClick={onReRun}>
                   <Renew className="h-3.5 w-3.5" />
-                  Re-run scan
+                  {t('penTest.completed.reRunScan')}
                 </Button>
               ) : null}
             </div>
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
-            <span>Started {formatReportDate(run.createdAt)}</span>
+            <span>
+              {t('penTest.completed.started', {
+                date: formatReportDate(run.createdAt),
+              })}
+            </span>
             {/* Suppress "Last update" when it matches "Started". Maced
                 doesn't always bump `updatedAt` on completion, so showing
                 two identical timestamps is just noise. We'll re-show this
                 line once we either (a) Maced fixes the bug, or (b) we
                 persist completion time from the webhook payload. */}
             {run.updatedAt && run.updatedAt !== run.createdAt ? (
-              <span>Last update {formatReportDate(run.updatedAt)}</span>
+              <span>
+                {t('penTest.completed.lastUpdate', {
+                  date: formatReportDate(run.updatedAt),
+                })}
+              </span>
             ) : null}
-            {run.repoUrl ? <span>Repo: {run.repoUrl}</span> : null}
+            {run.repoUrl ? (
+              <span>{t('penTest.completed.repo', { url: run.repoUrl })}</span>
+            ) : null}
             {run.testMode ? (
               <span className="rounded bg-muted px-1.5 py-0.5 font-bold uppercase tracking-[0.08em] text-muted-foreground">
-                Test mode
+                {t('penTest.completed.testMode')}
               </span>
             ) : null}
           </div>
@@ -116,7 +128,7 @@ export function CompletedDetail({
             <SevTally counts={counts} size="hero" />
             <section className="space-y-2">
               <h2 className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-                Findings ({issues.length})
+                {t('penTest.completed.findings', { count: issues.length })}
               </h2>
               <FindingsTable issues={issues} onRowClick={onOpenFinding} />
             </section>

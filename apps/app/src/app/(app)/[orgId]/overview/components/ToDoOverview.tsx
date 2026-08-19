@@ -17,6 +17,7 @@ import {
   Upload,
   UserMinus,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
@@ -50,6 +51,7 @@ export function ToDoOverview({
   onboardingTriggerJobId: string | null;
 }) {
   const { hasPermission } = usePermissions();
+  const t = useTranslations('overview');
   const [activeTab, setActiveTab] = useState(
     unpublishedPolicies.length === 0 ? 'tasks' : 'policies',
   );
@@ -85,7 +87,7 @@ export function ToDoOverview({
     <Card className="flex flex-col h-full">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">{'Quick Actions'}</CardTitle>
+          <CardTitle className="flex items-center gap-2">{t('todo.title')}</CardTitle>
         </div>
 
         <div className="bg-secondary/50 relative mt-2 h-1 w-full overflow-hidden rounded-full">
@@ -102,15 +104,15 @@ export function ToDoOverview({
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="policies" className="flex items-center gap-2">
               <FileText className="h-3 w-3" />
-              Policies ({remainingPolicies})
+              {t('todo.policiesCount', { count: remainingPolicies })}
             </TabsTrigger>
             <TabsTrigger value="tasks" className="flex items-center gap-2">
               <Upload className="h-3 w-3" />
-              Tasks ({remainingTasks})
+              {t('todo.tasksCount', { count: remainingTasks })}
             </TabsTrigger>
             <TabsTrigger value="offboarding" className="flex items-center gap-2">
               <UserMinus className="h-3 w-3" />
-              Offboarding ({pendingOffboardings.length})
+              {t('todo.offboardingCount', { count: pendingOffboardings.length })}
             </TabsTrigger>
           </TabsList>
 
@@ -124,11 +126,11 @@ export function ToDoOverview({
                   className="flex items-center gap-2 w-full"
                   disabled={isOnboardingInProgress || isPublishing}
                   title={
-                    isOnboardingInProgress ? 'Please wait for onboarding to complete' : undefined
+                    isOnboardingInProgress ? t('todo.waitForOnboarding') : undefined
                   }
                 >
                   <Play className="h-3 w-3" />
-                  {isOnboardingInProgress ? 'Onboarding in progress...' : 'Publish All Policies'}
+                  {isOnboardingInProgress ? t('todo.onboardingInProgress') : t('todo.publishAllPolicies')}
                 </Button>
               </div>
             )}
@@ -136,7 +138,7 @@ export function ToDoOverview({
             {unpublishedPolicies.length === 0 ? (
               <div className="flex items-center justify-center gap-2 rounded-lg bg-accent p-3">
                 <CheckCircle2 className="h-4 w-4" />
-                <span className="text-sm">All policies are published!</span>
+                <span className="text-sm">{t('todo.allPoliciesPublished')}</span>
               </div>
             ) : (
               <div className="h-[300px]">
@@ -154,7 +156,7 @@ export function ToDoOverview({
                                 {policy.name}
                               </span>
                               <span className="text-xs text-muted-foreground capitalize">
-                                Status: {formatQuickActionStatus(policy.status)}
+                                {t('common.status')}: {formatQuickActionStatus(policy.status)}
                               </span>
                             </div>
                           </div>
@@ -179,7 +181,7 @@ export function ToDoOverview({
             {incompleteTasks.length === 0 ? (
               <div className="flex items-center justify-center gap-2 rounded-lg bg-accent p-3">
                 <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span className="text-sm text-primary">All tasks are completed!</span>
+                <span className="text-sm text-primary">{t('todo.allTasksCompleted')}</span>
               </div>
             ) : (
               <div className="h-[300px]">
@@ -197,7 +199,7 @@ export function ToDoOverview({
                                 {task.title}
                               </span>
                               <span className="text-xs text-muted-foreground capitalize">
-                                Status: {formatQuickActionStatus(task.status)}
+                                {t('common.status')}: {formatQuickActionStatus(task.status)}
                               </span>
                             </div>
                           </div>
@@ -221,16 +223,16 @@ export function ToDoOverview({
           <TabsContent value="offboarding" className="mt-4">
             {isPendingLoading ? (
               <div className="flex items-center justify-center gap-2 rounded-lg bg-accent p-3">
-                <span className="text-sm text-muted-foreground">Loading offboardings...</span>
+                <span className="text-sm text-muted-foreground">{t('todo.loadingOffboardings')}</span>
               </div>
             ) : pendingError ? (
               <div className="flex items-center justify-center gap-2 rounded-lg bg-accent p-3">
-                <span className="text-sm text-destructive">Failed to load offboardings</span>
+                <span className="text-sm text-destructive">{t('todo.failedToLoadOffboardings')}</span>
               </div>
             ) : pendingOffboardings.length === 0 ? (
               <div className="flex items-center justify-center gap-2 rounded-lg bg-accent p-3">
                 <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span className="text-sm text-primary">No pending offboardings</span>
+                <span className="text-sm text-primary">{t('todo.noPendingOffboardings')}</span>
               </div>
             ) : (
               <div className="h-[300px]">
@@ -245,10 +247,13 @@ export function ToDoOverview({
                             </div>
                             <div className="flex min-w-0 flex-1 flex-col">
                               <span className="text-sm font-medium text-foreground">
-                                Complete offboarding for {member.name}
+                                {t('todo.completeOffboardingFor', { name: member.name })}
                               </span>
                               <span className="text-xs text-muted-foreground">
-                                {member.completedItems}/{member.totalItems} tasks done
+                                {t('todo.tasksDone', {
+                                  current: member.completedItems,
+                                  total: member.totalItems,
+                                })}
                               </span>
                             </div>
                           </div>

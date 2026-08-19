@@ -1,6 +1,10 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { Meta, ReportPage } from './report-page';
 
 export function ReportCover() {
+  const t = useTranslations('security');
   return (
     <ReportPage>
       <div
@@ -16,7 +20,9 @@ export function ReportCover() {
         }}
       >
         <span>C O M P&nbsp;&nbsp;A I</span>
-        <span style={{ color: '#777' }}>CONFIDENTIAL</span>
+        <span style={{ color: '#777' }}>
+          {t('penTest.report.confidentiality')}
+        </span>
       </div>
       <div style={{ fontSize: 7, color: '#777', marginBottom: 4, fontFamily: 'var(--font-mono)' }}>
         yourapp.example.com
@@ -31,9 +37,11 @@ export function ReportCover() {
           color: '#111',
         }}
       >
-        Web Application Penetration Test
+        {t('penTest.report.title')}
       </div>
-      <div style={{ fontSize: 8, color: '#555', marginBottom: 28 }}>Security Assessment Report</div>
+      <div style={{ fontSize: 8, color: '#555', marginBottom: 28 }}>
+        {t('penTest.report.subtitle')}
+      </div>
       <div
         style={{
           fontSize: 6,
@@ -45,13 +53,13 @@ export function ReportCover() {
           marginBottom: 12,
         }}
       >
-        PENETRATION TEST REPORT
+        {t('penTest.report.reportType')}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 4, fontSize: 7, color: '#333' }}>
-        <Meta label="Assessment Period" value="May 5, 2026 — May 5, 2026" />
-        <Meta label="Report Date" value="May 5, 2026" />
-        <Meta label="Version" value="1.0" />
-        <Meta label="Reference" value="pentest-1777989012736" />
+        <Meta label={t('penTest.report.assessmentPeriod')} value="May 5, 2026 — May 5, 2026" />
+        <Meta label={t('penTest.report.reportDate')} value="May 5, 2026" />
+        <Meta label={t('penTest.report.version')} value="1.0" />
+        <Meta label={t('penTest.report.reference')} value="pentest-1777989012736" />
       </div>
       <div
         style={{
@@ -62,7 +70,7 @@ export function ReportCover() {
           color: '#888',
         }}
       >
-        <span>OpenComp — Penetration Test Report</span>
+        <span>{t('penTest.report.footerLabel')}</span>
         <span>1 of 33</span>
       </div>
     </ReportPage>

@@ -6,6 +6,9 @@ import {
   AUDITOR_PERMISSIONS,
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({

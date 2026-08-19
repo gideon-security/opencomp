@@ -1,6 +1,9 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { mockHasPermission, setMockPermissions } from '@/test-utils/mocks/permissions';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({ permissions: {}, hasPermission: mockHasPermission }),
@@ -87,61 +90,61 @@ describe('OverviewNudges', () => {
 
   it('shows the trust nudge when enabled, not configured, and user can update', () => {
     render(<OverviewNudges orgId="org_123" server={server()} />);
-    expect(screen.getByText('Set up your Trust Portal')).toBeInTheDocument();
+    expect(screen.getByText('nudges.trustSetupTitle')).toBeInTheDocument();
   });
 
   it('hides the trust nudge when already configured', () => {
     render(<OverviewNudges orgId="org_123" server={server({ isConfigured: true })} />);
-    expect(screen.queryByText('Set up your Trust Portal')).not.toBeInTheDocument();
+    expect(screen.queryByText('nudges.trustSetupTitle')).not.toBeInTheDocument();
   });
 
   it('hides the trust nudge when the feature flag is off', () => {
     render(<OverviewNudges orgId="org_123" server={server({ isTrustNdaEnabled: false })} />);
-    expect(screen.queryByText('Set up your Trust Portal')).not.toBeInTheDocument();
+    expect(screen.queryByText('nudges.trustSetupTitle')).not.toBeInTheDocument();
   });
 
   it('hides the trust nudge without trust:update', () => {
     setMockPermissions({ trust: ['read'] });
     render(<OverviewNudges orgId="org_123" server={server()} />);
-    expect(screen.queryByText('Set up your Trust Portal')).not.toBeInTheDocument();
+    expect(screen.queryByText('nudges.trustSetupTitle')).not.toBeInTheDocument();
   });
 
   it('collapses to the top nudge with a stack control when several apply', () => {
     setOffboarding([{ memberId: 'm1', name: 'Jo' }]);
     render(<OverviewNudges orgId="org_123" server={server()} />);
     // Offboarding (priority 10) is shown; trust waits behind the stack.
-    expect(screen.getByText(/offboarding completion/)).toBeInTheDocument();
-    expect(screen.queryByText('Set up your Trust Portal')).not.toBeInTheDocument();
+    expect(screen.getByText('nudges.offboardingBody')).toBeInTheDocument();
+    expect(screen.queryByText('nudges.trustSetupTitle')).not.toBeInTheDocument();
     // The user is told more are waiting.
-    expect(screen.getByText('2 notices')).toBeInTheDocument();
+    expect(screen.getByText('nudges.noticesCount')).toBeInTheDocument();
   });
 
   it('expands the stack to reveal every waiting nudge, then collapses', () => {
     setOffboarding([{ memberId: 'm1', name: 'Jo' }]);
     render(<OverviewNudges orgId="org_123" server={server()} />);
 
-    fireEvent.click(screen.getByText('2 notices'));
-    expect(screen.getByText(/offboarding completion/)).toBeInTheDocument();
-    expect(screen.getByText('Set up your Trust Portal')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('nudges.noticesCount'));
+    expect(screen.getByText('nudges.offboardingBody')).toBeInTheDocument();
+    expect(screen.getByText('nudges.trustSetupTitle')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Show less'));
-    expect(screen.queryByText('Set up your Trust Portal')).not.toBeInTheDocument();
-    expect(screen.getByText('2 notices')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('common.less'));
+    expect(screen.queryByText('nudges.trustSetupTitle')).not.toBeInTheDocument();
+    expect(screen.getByText('nudges.noticesCount')).toBeInTheDocument();
   });
 
   it('shows no stack control when only one nudge applies', () => {
     render(<OverviewNudges orgId="org_123" server={server()} />);
-    expect(screen.getByText('Set up your Trust Portal')).toBeInTheDocument();
-    expect(screen.queryByText(/\d+ notices/)).not.toBeInTheDocument();
+    expect(screen.getByText('nudges.trustSetupTitle')).toBeInTheDocument();
+    expect(screen.queryByText('nudges.noticesCount')).not.toBeInTheDocument();
   });
 
   it('dismissing the trust nudge hides it and persists', () => {
     const { unmount } = render(<OverviewNudges orgId="org_123" server={server()} />);
-    fireEvent.click(screen.getByLabelText('Dismiss'));
-    expect(screen.queryByText('Set up your Trust Portal')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText('common.dismiss'));
+    expect(screen.queryByText('nudges.trustSetupTitle')).not.toBeInTheDocument();
     unmount();
     render(<OverviewNudges orgId="org_123" server={server()} />);
-    expect(screen.queryByText('Set up your Trust Portal')).not.toBeInTheDocument();
+    expect(screen.queryByText('nudges.trustSetupTitle')).not.toBeInTheDocument();
   });
 
   it('dismissing offboarding hides it for the session without persisting', () => {
@@ -150,16 +153,16 @@ describe('OverviewNudges', () => {
     const { unmount } = render(
       <OverviewNudges orgId="org_123" server={server({ isConfigured: true })} />,
     );
-    expect(screen.getByText(/offboarding completion/)).toBeInTheDocument();
+    expect(screen.getByText('nudges.offboardingBody')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByLabelText('Dismiss'));
-    expect(screen.queryByText(/offboarding completion/)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText('common.dismiss'));
+    expect(screen.queryByText('nudges.offboardingBody')).not.toBeInTheDocument();
     expect(window.localStorage.getItem('overview-nudge-dismissed:offboarding:org_123')).toBeNull();
 
     // Not persisted → reappears on remount.
     unmount();
     render(<OverviewNudges orgId="org_123" server={server({ isConfigured: true })} />);
-    expect(screen.getByText(/offboarding completion/)).toBeInTheDocument();
+    expect(screen.getByText('nudges.offboardingBody')).toBeInTheDocument();
   });
 
   it('renders nothing while offboarding is loading and trust is ineligible', () => {
@@ -175,7 +178,7 @@ describe('OverviewNudges', () => {
     // isConfigured: true → trust off; no offboarding → framework is the only nudge.
     render(<OverviewNudges orgId="org_123" server={server({ isConfigured: true })} />);
     expect(screen.getByText('framework updates available')).toBeInTheDocument();
-    expect(screen.queryByText(/\d+ notices/)).not.toBeInTheDocument();
+    expect(screen.queryByText('nudges.noticesCount')).not.toBeInTheDocument();
   });
 
   it('orders framework updates last in the stack (offboarding, trust, framework)', () => {
@@ -184,15 +187,15 @@ describe('OverviewNudges', () => {
     render(<OverviewNudges orgId="org_123" server={server()} />);
 
     // Collapsed: only offboarding (priority 10) on top; the other two wait.
-    expect(screen.getByText(/offboarding completion/)).toBeInTheDocument();
+    expect(screen.getByText('nudges.offboardingBody')).toBeInTheDocument();
     expect(screen.queryByText('framework updates available')).not.toBeInTheDocument();
-    expect(screen.queryByText('Set up your Trust Portal')).not.toBeInTheDocument();
-    expect(screen.getByText('3 notices')).toBeInTheDocument();
+    expect(screen.queryByText('nudges.trustSetupTitle')).not.toBeInTheDocument();
+    expect(screen.getByText('nudges.noticesCount')).toBeInTheDocument();
 
     // Expanded: all three shown, framework updates rendered after the trust nudge.
-    fireEvent.click(screen.getByText('3 notices'));
-    expect(screen.getByText(/offboarding completion/)).toBeInTheDocument();
-    const trustEl = screen.getByText('Set up your Trust Portal');
+    fireEvent.click(screen.getByText('nudges.noticesCount'));
+    expect(screen.getByText('nudges.offboardingBody')).toBeInTheDocument();
+    const trustEl = screen.getByText('nudges.trustSetupTitle');
     const frameworkEl = screen.getByText('framework updates available');
     expect(
       trustEl.compareDocumentPosition(frameworkEl) & Node.DOCUMENT_POSITION_FOLLOWING,
@@ -204,6 +207,6 @@ describe('OverviewNudges', () => {
     mockUseFrameworkUpdateStatuses.mockReturnValue({ data: undefined, error: undefined });
     render(<OverviewNudges orgId="org_123" server={server()} />);
     // offboarding + trust = 2; framework not ready, so it doesn't inflate the count.
-    expect(screen.getByText('2 notices')).toBeInTheDocument();
+    expect(screen.getByText('nudges.noticesCount')).toBeInTheDocument();
   });
 });

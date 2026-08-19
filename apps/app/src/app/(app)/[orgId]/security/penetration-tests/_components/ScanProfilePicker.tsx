@@ -1,4 +1,7 @@
+'use client';
+
 import { RadioGroup, RadioGroupItem } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import type { ScanProfileId } from './scan-profiles';
 
 interface ScanProfilePickerProps {
@@ -8,6 +11,9 @@ interface ScanProfilePickerProps {
   onChange: (value: ScanProfileId) => void;
 }
 
+// Profile titles/descriptions are treated as scan-profile data (mirrors
+// scan-profiles.ts, which is intentionally not translated) — the labels
+// describing the control itself are translated below.
 const profileOptions: Array<{
   id: ScanProfileId;
   title: string;
@@ -36,11 +42,12 @@ export function ScanProfilePicker({
   runtimeEstimate,
   onChange,
 }: ScanProfilePickerProps) {
+  const t = useTranslations('security');
   return (
     <div className="mb-5">
       <div className="mb-2 flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
         <div className="text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
-          Scan preset
+          {t('penTest.profilePicker.scanPreset')}
         </div>
         <div className="font-mono text-[11px] text-foreground">
           {headerLabel} · {runtimeEstimate}
@@ -53,7 +60,7 @@ export function ScanProfilePicker({
             onChange(nextValue);
           }
         }}
-        aria-label="Scan preset"
+        aria-label={t('penTest.profilePicker.scanPreset')}
       >
         <div className="grid gap-2 sm:grid-cols-3">
           {profileOptions.map((profile) => (

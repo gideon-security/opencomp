@@ -3,6 +3,7 @@
 import { Button } from '@gideon-defender/ui/button';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { BookOpen, ChevronDown, ChevronUp, Link as LinkIcon, Loader2, Pencil } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import type { QuestionAnswer } from './types';
 import { deduplicateSources } from '../utils/deduplicate-sources';
@@ -52,6 +53,8 @@ export function QuestionnaireResultsCards({
   onAnswerSingleQuestion,
   onToggleSource,
 }: QuestionnaireResultsCardsProps) {
+  const t = useTranslations('questionnaire');
+  const tCommon = useTranslations('overview');
   return (
     <div className="lg:hidden space-y-4">
       {filteredResults.map((qa, index) => {
@@ -89,13 +92,13 @@ export function QuestionnaireResultsCards({
           >
             <div className="flex flex-col gap-2">
               <span className="text-xs font-medium text-muted-foreground tabular-nums">
-                Question {safeIndex + 1}
+                {t('results.questionLabel', { count: safeIndex + 1 })}
               </span>
               <p className="text-sm font-medium text-foreground">{qa.question}</p>
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="text-xs font-medium text-muted-foreground">Answer</span>
+              <span className="text-xs font-medium text-muted-foreground">{t('results.answer')}</span>
               {isEditing ? (
                 <div className="space-y-2">
                   <Textarea
@@ -113,10 +116,10 @@ export function QuestionnaireResultsCards({
                       {isSaving && savingIndex === safeIndex ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Saving...
+                          {t('results.saving')}
                         </>
                       ) : (
-                        'Save'
+                        tCommon('common.save')
                       )}
                     </Button>
                     <Button 
@@ -125,7 +128,7 @@ export function QuestionnaireResultsCards({
                       variant="outline"
                       disabled={isSaving && savingIndex === safeIndex}
                     >
-                      Cancel
+                      {tCommon('common.cancel')}
                     </Button>
                   </div>
                 </div>
@@ -135,7 +138,7 @@ export function QuestionnaireResultsCards({
                     <div
                       className="group relative rounded-xs p-3 bg-muted/30 border border-border/30 cursor-pointer transition-colors duration-150 ease-in-out hover:bg-muted/50 hover:border-primary/40"
                       onClick={() => onEditAnswer(safeIndex)}
-                      title="Click to edit"
+                      title={t('results.clickToEdit')}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <p className="text-sm text-foreground flex-1 leading-relaxed transition-colors duration-150 group-hover:text-foreground/90">{qa.answer}</p>
@@ -145,12 +148,12 @@ export function QuestionnaireResultsCards({
                   ) : isProcessing ? (
                     <div className="flex items-center gap-2 p-3 rounded-xs bg-muted/30 border border-border/30 min-h-[44px]">
                       <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
-                      <span className="text-sm text-muted-foreground">Finding answer...</span>
+                      <span className="text-sm text-muted-foreground">{t('results.findingAnswer')}</span>
                     </div>
                   ) : isQueued ? (
                     <div className="flex items-center gap-2 p-3 rounded-xs bg-muted/30 border border-border/30 min-h-[44px]">
                       <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />
-                      <span className="text-sm text-muted-foreground">Finding answer...</span>
+                      <span className="text-sm text-muted-foreground">{t('results.findingAnswer')}</span>
                     </div>
                   ) : (
                     <div className="flex flex-col gap-2">
@@ -167,13 +170,13 @@ export function QuestionnaireResultsCards({
                           }
                           className="w-full justify-center"
                         >
-                          Answer
+                          {t('results.answer')}
                         </Button>
                       )}
                       {qa.failedToGenerate && (
                         <div className="p-2 rounded-xs bg-muted/30 border border-border/30">
                           <p className="text-xs text-muted-foreground text-center">
-                            Insufficient information in policies. Please write answer manually.
+                            {t('results.insufficientInfo')}
                           </p>
                         </div>
                       )}
@@ -183,7 +186,7 @@ export function QuestionnaireResultsCards({
                         onClick={() => onEditAnswer(safeIndex)}
                         className="w-full justify-center"
                       >
-                        Write Answer
+                        {t('results.writeAnswer')}
                       </Button>
                     </div>
                   )}
@@ -202,12 +205,12 @@ export function QuestionnaireResultsCards({
                   <BookOpen className="mr-1 h-3 w-3" />
                   {expandedSources.has(safeIndex) ? (
                     <>
-                      Hide sources ({uniqueSources.length})
+                      {t('results.hideSources', { count: uniqueSources.length })}
                       <ChevronUp className="ml-1 h-3 w-3" />
                     </>
                   ) : (
                     <>
-                      Show sources ({uniqueSources.length})
+                      {t('results.showSources', { count: uniqueSources.length })}
                       <ChevronDown className="ml-1 h-3 w-3" />
                     </>
                   )}

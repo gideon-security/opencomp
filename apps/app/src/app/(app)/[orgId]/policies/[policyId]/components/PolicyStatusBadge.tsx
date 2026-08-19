@@ -3,6 +3,7 @@
 import { getStatusTranslation, type StatusType } from '@/components/status-indicator';
 import { Badge } from '@gideon-defender/ui/badge';
 import type { PolicyStatus } from '@db';
+import { useTranslations } from 'next-intl';
 
 interface PolicyStatusBadgeProps {
   status: PolicyStatus;
@@ -10,15 +11,17 @@ interface PolicyStatusBadgeProps {
 }
 
 export function PolicyStatusBadge({ status, isArchived }: PolicyStatusBadgeProps) {
+  const t = useTranslations('status');
+
   if (isArchived) {
     return (
       <Badge variant="secondary" className="bg-muted text-muted-foreground hover:bg-muted">
-        Archived
+        {t('archived')}
       </Badge>
     );
   }
 
-  const statusLabel = getStatusTranslation(status as StatusType);
+  const statusLabel = getStatusTranslation(status as StatusType, t);
 
   const getBadgeProps = () => {
     switch (status) {

@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from '@trycompai/design-system';
 import { Maximize } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 interface ExpandableDescriptionProps {
@@ -26,13 +27,15 @@ export function ExpandableDescription({
   identifier,
   name,
 }: ExpandableDescriptionProps) {
+  const t = useTranslations('frameworks');
   const [isOpen, setIsOpen] = useState(false);
 
   if (!description) {
     return <span className="block truncate text-sm">—</span>;
   }
 
-  const heading = [identifier?.trim(), name].filter(Boolean).join(' · ') || 'Requirement';
+  const heading =
+    [identifier?.trim(), name].filter(Boolean).join(' · ') || t('instance.requirement');
 
   return (
     <div className="group relative flex items-center">
@@ -41,8 +44,8 @@ export function ExpandableDescription({
       </span>
       <button
         type="button"
-        aria-label="Read full description"
-        title="Read full description"
+        aria-label={t('instance.readFullDescription')}
+        title={t('instance.readFullDescription')}
         className="text-muted-foreground hover:text-foreground absolute right-0 top-1/2 -translate-y-1/2 rounded-xs p-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
         onClick={(e) => {
           // The row is a navigation target — don't follow it when expanding.

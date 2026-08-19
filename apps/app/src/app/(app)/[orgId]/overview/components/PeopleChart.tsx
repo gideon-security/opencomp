@@ -11,6 +11,7 @@ import {
   ChartTooltipContent,
 } from '@gideon-defender/ui/chart';
 import { Info } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface PeopleChartData {
   completed: number;
@@ -27,29 +28,30 @@ const CHART_COLORS = {
 };
 
 export function PeopleChart({ data }: PeopleChartProps) {
+  const t = useTranslations('overview');
   const chartData = React.useMemo(() => {
     if (!data) return [];
     const items = [
       {
-        name: 'Compliant',
+        name: t('charts.compliant'),
         value: data.completed,
         fill: CHART_COLORS.completed,
       },
       {
-        name: 'Remaining',
+        name: t('charts.remaining'),
         value: data.remaining,
         fill: CHART_COLORS.remaining,
       },
     ];
     return items.filter((item) => item.value > 0);
-  }, [data]);
+  }, [data, t]);
 
   if (!data) {
     return (
       <Card className="flex flex-col overflow-hidden border">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">People</CardTitle>
+            <CardTitle className="flex items-center gap-2">{t('charts.people')}</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="flex flex-1 items-center justify-center py-10">
@@ -57,7 +59,7 @@ export function PeopleChart({ data }: PeopleChartProps) {
             <div className="text-muted-foreground flex justify-center">
               <Info className="h-10 w-10 opacity-30" />
             </div>
-            <p className="text-muted-foreground text-center text-sm">No data available</p>
+            <p className="text-muted-foreground text-center text-sm">{t('common.noData')}</p>
           </div>
         </CardContent>
       </Card>
@@ -66,7 +68,7 @@ export function PeopleChart({ data }: PeopleChartProps) {
 
   const chartConfig = {
     value: {
-      label: 'People Status',
+      label: t('charts.peopleStatus'),
     },
   } satisfies ChartConfig;
 
@@ -118,7 +120,7 @@ export function PeopleChart({ data }: PeopleChartProps) {
                         y={(viewBox.cy || 0) + 18}
                         className="fill-muted-foreground text-[9px] select-none"
                       >
-                        People
+                        {t('charts.people')}
                       </tspan>
                     </text>
                     <circle

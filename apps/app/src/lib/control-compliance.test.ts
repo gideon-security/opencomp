@@ -1,4 +1,5 @@
 import type { Control, Task } from '@db';
+import type { useTranslations } from 'next-intl';
 import { describe, expect, it } from 'vitest';
 import {
   getControlProgressPercent,
@@ -99,44 +100,46 @@ describe('getControlStatus', () => {
 });
 
 describe('getRequirementStatus', () => {
-  it('returns "No Controls" when there are no controls mapped to the requirement', () => {
-    expect(getRequirementStatus([])).toEqual({
-      label: 'No Controls',
+  const t = ((key: string) => key) as unknown as ReturnType<typeof useTranslations<'frameworks'>>;
+
+  it('returns "statusNoControls" when there are no controls mapped to the requirement', () => {
+    expect(getRequirementStatus([], t)).toEqual({
+      label: 'requirements.statusNoControls',
       variant: 'secondary',
     });
   });
 
-  it('returns "Satisfied" when every control is completed', () => {
-    expect(getRequirementStatus(['completed', 'completed'])).toEqual({
-      label: 'Satisfied',
+  it('returns "statusSatisfied" when every control is completed', () => {
+    expect(getRequirementStatus(['completed', 'completed'], t)).toEqual({
+      label: 'requirements.statusSatisfied',
       variant: 'default',
     });
   });
 
-  it('returns "Not Started" when every control is not_started', () => {
-    expect(getRequirementStatus(['not_started', 'not_started'])).toEqual({
-      label: 'Not Started',
+  it('returns "statusNotStarted" when every control is not_started', () => {
+    expect(getRequirementStatus(['not_started', 'not_started'], t)).toEqual({
+      label: 'requirements.statusNotStarted',
       variant: 'destructive',
     });
   });
 
-  it('returns "Not Relevant" when every control is not_relevant', () => {
-    expect(getRequirementStatus(['not_relevant', 'not_relevant'])).toEqual({
-      label: 'Not Relevant',
+  it('returns "statusNotRelevant" when every control is not_relevant', () => {
+    expect(getRequirementStatus(['not_relevant', 'not_relevant'], t)).toEqual({
+      label: 'requirements.statusNotRelevant',
       variant: 'secondary',
     });
   });
 
-  it('returns "In Progress" when at least one control is in_progress (even if none are completed)', () => {
-    expect(getRequirementStatus(['in_progress', 'not_started'])).toEqual({
-      label: 'In Progress',
+  it('returns "statusInProgress" when at least one control is in_progress (even if none are completed)', () => {
+    expect(getRequirementStatus(['in_progress', 'not_started'], t)).toEqual({
+      label: 'requirements.statusInProgress',
       variant: 'secondary',
     });
   });
 
-  it('returns "In Progress" when some controls are completed but not all', () => {
-    expect(getRequirementStatus(['completed', 'not_started'])).toEqual({
-      label: 'In Progress',
+  it('returns "statusInProgress" when some controls are completed but not all', () => {
+    expect(getRequirementStatus(['completed', 'not_started'], t)).toEqual({
+      label: 'requirements.statusInProgress',
       variant: 'secondary',
     });
   });

@@ -12,6 +12,7 @@ import {
   Stack,
   Text,
 } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import type { UpdatePreview } from '@/types/framework-versioning';
 
 interface SyncConfirmDialogProps {
@@ -69,6 +70,8 @@ export function SyncConfirmDialog({
   isSyncing,
   onConfirm,
 }: SyncConfirmDialogProps) {
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const { added, archived, updated, linkChanges } = countChanges(preview);
 
   return (
@@ -76,52 +79,64 @@ export function SyncConfirmDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Sync to v{preview.toVersion.version}?
+            {t('instance.syncDialogTitle', {
+              version: preview.toVersion.version,
+            })}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            This will apply the following changes to your framework instance.
-            This action can be rolled back within the rollback window.
+            {t('instance.syncDialogDescription')}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <Stack gap="2">
           {added > 0 && (
             <Text size="sm">
-              <span className="font-medium">{added}</span> item
-              {added !== 1 ? 's' : ''} will be added
+              {t.rich('instance.changesWillBeAdded', {
+                count: added,
+                b: (chunks) => <span className="font-medium">{chunks}</span>,
+              })}
             </Text>
           )}
           {archived > 0 && (
             <Text size="sm">
-              <span className="font-medium">{archived}</span> item
-              {archived !== 1 ? 's' : ''} will be archived
+              {t.rich('instance.changesWillBeArchived', {
+                count: archived,
+                b: (chunks) => <span className="font-medium">{chunks}</span>,
+              })}
             </Text>
           )}
           {updated > 0 && (
             <Text size="sm">
-              <span className="font-medium">{updated}</span> item
-              {updated !== 1 ? 's' : ''} will be updated
+              {t.rich('instance.changesWillBeUpdated', {
+                count: updated,
+                b: (chunks) => <span className="font-medium">{chunks}</span>,
+              })}
             </Text>
           )}
           {linkChanges > 0 && (
             <Text size="sm">
-              <span className="font-medium">{linkChanges}</span> link
-              {linkChanges !== 1 ? 's' : ''} will be rewired
+              {t.rich('instance.changesLinksRewired', {
+                count: linkChanges,
+                b: (chunks) => <span className="font-medium">{chunks}</span>,
+              })}
             </Text>
           )}
           {preview.controls.updatedPreserved.length > 0 && (
             <Text size="sm" variant="muted">
-              {preview.controls.updatedPreserved.length} control edit
-              {preview.controls.updatedPreserved.length !== 1 ? 's' : ''} you
-              made will be preserved
+              {t.rich('instance.controlEditsPreserved', {
+                count: preview.controls.updatedPreserved.length,
+                b: (chunks) => <span className="font-medium">{chunks}</span>,
+              })}
             </Text>
           )}
         </Stack>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isSyncing}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isSyncing}>
+            {tCommon('common.cancel')}
+          </AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} disabled={isSyncing}>
-            {isSyncing ? 'Syncing...' : 'Confirm sync'}
+            {isSyncing ? t('instance.syncing') : t('instance.confirmSync')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

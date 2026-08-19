@@ -13,6 +13,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Link as LinkIcon } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -28,6 +29,7 @@ export function LinkPolicySheet({
   alreadyLinkedPolicyIds: string[];
 }) {
   const { hasPermission } = usePermissions();
+  const t = useTranslations('frameworks');
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,12 +69,12 @@ export function LinkPolicySheet({
         { policyIds: Array.from(selected) },
       );
       if (response.error) throw new Error(response.error);
-      toast.success('Policies linked');
+      toast.success(t('controls.policiesLinked'));
       setIsOpen(false);
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to link policies',
+        error instanceof Error ? error.message : t('controls.failedToLinkPolicies'),
       );
     } finally {
       setIsSubmitting(false);
@@ -86,21 +88,21 @@ export function LinkPolicySheet({
         iconLeft={<LinkIcon size={16} />}
         onClick={() => setIsOpen(true)}
       >
-        Link Policy
+        {t('controls.linkPolicy')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Link Existing Policies</SheetTitle>
+            <SheetTitle>{t('controls.linkExistingPoliciesTitle')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
             {isLoading ? (
               <Text size="sm" variant="muted">
-                Loading policies…
+                {t('controls.loadingPolicies')}
               </Text>
             ) : options.length === 0 ? (
               <Text size="sm" variant="muted">
-                No additional policies available to link.
+                {t('controls.noAdditionalPolicies')}
               </Text>
             ) : (
               <div className="space-y-2">
@@ -123,8 +125,9 @@ export function LinkPolicySheet({
                     onClick={handleSubmit}
                     disabled={selected.size === 0 || isSubmitting}
                   >
-                    Link {selected.size || ''} Polic
-                    {selected.size === 1 ? 'y' : 'ies'}
+                    {t('controls.linkPolicyCount', {
+                      count: selected.size,
+                    })}
                   </Button>
                 </div>
               </div>

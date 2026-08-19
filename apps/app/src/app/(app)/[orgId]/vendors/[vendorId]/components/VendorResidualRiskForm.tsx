@@ -8,6 +8,7 @@ import { Slider } from '@gideon-defender/ui/slider';
 import { Impact, Likelihood } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useQueryState } from 'nuqs';
 import { useForm } from 'react-hook-form';
@@ -50,6 +51,8 @@ export function VendorResidualRiskForm({
   const { updateRisk } = useRiskMutations();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [_, setOpen] = useQueryState('residual-risk-sheet');
+  const t = useTranslations('vendor');
+  const tCommon = useTranslations('overview');
 
   const form = useForm<z.infer<typeof updateResidualRiskSchema>>({
     resolver: zodResolver(updateResidualRiskSchema),
@@ -67,10 +70,10 @@ export function VendorResidualRiskForm({
         residualLikelihood: mapNumericToLikelihood(data.probability),
         residualImpact: mapNumericToImpact(data.impact),
       });
-      toast.success('Residual risk updated successfully');
+      toast.success(t('risk.residualRiskUpdated'));
       setOpen(null);
     } catch {
-      toast.error('Failed to update residual risk');
+      toast.error(t('risk.residualRiskUpdateFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -84,7 +87,7 @@ export function VendorResidualRiskForm({
           name="probability"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{'Probability'}</FormLabel>
+              <FormLabel>{t('risk.probability')}</FormLabel>
               <FormControl>
                 <Slider
                   min={1}
@@ -105,7 +108,7 @@ export function VendorResidualRiskForm({
           name="impact"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{'Impact'}</FormLabel>
+              <FormLabel>{t('risk.impact')}</FormLabel>
               <FormControl>
                 <Slider
                   min={1}
@@ -130,7 +133,7 @@ export function VendorResidualRiskForm({
             {isSubmitting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              'Save'
+              tCommon('common.save')
             )}
           </Button>
         </div>

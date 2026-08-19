@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -196,7 +199,7 @@ describe('VendorsTable', () => {
       />,
     );
 
-    expect(screen.getByText('ACTIONS')).toBeInTheDocument();
+    expect(screen.getByText('list.headerActions')).toBeInTheDocument();
   });
 
   it('renders delete action trigger per row when user has vendor:delete permission', () => {
@@ -239,7 +242,7 @@ describe('VendorsTable', () => {
     );
 
     expect(screen.getByText('Acme Corp')).toBeInTheDocument();
-    expect(screen.getByText('Cloud')).toBeInTheDocument();
+    expect(screen.getByText('list.categoryCloud')).toBeInTheDocument();
   });
 
   it('renders the INHERENT RISK column with a numeric score for assessed vendors', () => {
@@ -254,7 +257,7 @@ describe('VendorsTable', () => {
     );
 
     // Column header
-    expect(screen.getByText('INHERENT RISK')).toBeInTheDocument();
+    expect(screen.getByText('list.headerInherentRisk')).toBeInTheDocument();
     // Acme Corp (possible × moderate) → raw 9 → score 4/10
     expect(screen.getByText('4/10')).toBeInTheDocument();
   });
@@ -270,13 +273,13 @@ describe('VendorsTable', () => {
       />,
     );
 
-    expect(screen.getByText('CURRENT RISK')).toBeInTheDocument();
+    expect(screen.getByText('list.headerCurrentRisk')).toBeInTheDocument();
 
     const headers = screen
       .getAllByRole('columnheader')
       .map((h) => (h.textContent || '').toUpperCase());
-    const inherentIdx = headers.findIndex((h) => h.includes('INHERENT RISK'));
-    const residualIdx = headers.findIndex((h) => h.includes('CURRENT RISK'));
+    const inherentIdx = headers.findIndex((h) => h.includes('LIST.HEADERINHERENTRISK'));
+    const residualIdx = headers.findIndex((h) => h.includes('LIST.HEADERCURRENTRISK'));
     expect(inherentIdx).toBeGreaterThanOrEqual(0);
     expect(residualIdx).toBe(inherentIdx + 1);
   });

@@ -17,6 +17,7 @@ import {
   SheetTitle,
 } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
 import { CreateVendorForm } from './create-vendor-form';
 
@@ -30,6 +31,7 @@ export function CreateVendorSheet({
   const { hasPermission } = usePermissions();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [isOpen, setIsOpen] = useState(false);
+  const t = useTranslations('vendor');
 
   const handleSuccess = useCallback(() => {
     setIsOpen(false);
@@ -39,7 +41,7 @@ export function CreateVendorSheet({
 
   const trigger = (
     <Button iconLeft={<Add size={16} />} onClick={() => setIsOpen(true)}>
-      Add Vendor
+      {t('create.addVendor')}
     </Button>
   );
 
@@ -50,7 +52,7 @@ export function CreateVendorSheet({
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>Create Vendor</SheetTitle>
+              <SheetTitle>{t('create.createVendor')}</SheetTitle>
             </SheetHeader>
             <SheetBody>
               <CreateVendorForm
@@ -71,7 +73,7 @@ export function CreateVendorSheet({
       <Drawer open={isOpen} onOpenChange={setIsOpen}>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle>Create Vendor</DrawerTitle>
+            <DrawerTitle>{t('create.createVendor')}</DrawerTitle>
           </DrawerHeader>
           <div className="p-4">
             <CreateVendorForm

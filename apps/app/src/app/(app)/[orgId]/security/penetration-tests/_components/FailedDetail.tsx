@@ -3,6 +3,7 @@
 import type { PentestRun } from '@/lib/security/penetration-tests-client';
 import { Button } from '@trycompai/design-system';
 import { Renew, Warning } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { formatReportDate } from '../lib';
 import { StatusPill } from './StatusPill';
 
@@ -12,7 +13,8 @@ interface FailedDetailProps {
 }
 
 export function FailedDetail({ run, onRetry }: FailedDetailProps) {
-  const reason = run.failedReason ?? run.error ?? 'Unknown error';
+  const t = useTranslations('security');
+  const reason = run.failedReason ?? run.error ?? t('penTest.failedDetail.unknownError');
 
   return (
     <div className="min-h-0 overflow-y-auto">
@@ -24,8 +26,8 @@ export function FailedDetail({ run, onRetry }: FailedDetailProps) {
           </div>
           <h1 className="truncate text-[26px] font-medium tracking-[-0.02em]">{run.targetUrl}</h1>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
-            <span>Started {formatReportDate(run.createdAt)}</span>
-            <span>Failed {formatReportDate(run.updatedAt)}</span>
+            <span>{t('penTest.failedDetail.started', { date: formatReportDate(run.createdAt) })}</span>
+            <span>{t('penTest.failedDetail.failed', { date: formatReportDate(run.updatedAt) })}</span>
           </div>
         </header>
 
@@ -34,7 +36,7 @@ export function FailedDetail({ run, onRetry }: FailedDetailProps) {
             <Warning className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
             <div className="flex-1 space-y-2">
               <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-destructive">
-                Run error
+                {t('penTest.failedDetail.runError')}
               </div>
               <p className="text-sm leading-relaxed text-destructive">{reason}</p>
             </div>
@@ -45,7 +47,7 @@ export function FailedDetail({ run, onRetry }: FailedDetailProps) {
           <div>
             <Button onClick={onRetry}>
               <Renew className="h-3.5 w-3.5" />
-              Retry scan
+              {t('penTest.failedDetail.retryScan')}
             </Button>
           </div>
         ) : null}

@@ -7,7 +7,7 @@ export async function Sidebar() {
     <aside className="bg-background sticky top-0 hidden h-dvh w-16 shrink-0 flex-col items-center justify-between border-r py-4 md:flex">
       <div className="flex flex-col items-center justify-center gap-4">
         <Link href="/">
-          <Icons.Logo size={32} />
+          <Icons.Logo width={32} height={32} />
         </Link>
         <MainMenu />
       </div>

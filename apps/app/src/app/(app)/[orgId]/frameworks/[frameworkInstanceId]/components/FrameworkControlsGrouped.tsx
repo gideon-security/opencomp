@@ -18,6 +18,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { ChevronDown, ChevronRight, Search } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 import { useCallback, useMemo, useState } from 'react';
@@ -33,7 +34,6 @@ import {
   buildRequirementMap,
   getFamilyDisplayLabel,
   groupByFamily,
-  type ControlItem,
   type FamilyGroup,
 } from './framework-controls-shared';
 import { GroupedControlRow } from './GroupedControlRow';
@@ -53,6 +53,7 @@ export function FrameworkControlsGrouped({
 }) {
   const { orgId, frameworkInstanceId } = useParams<{ orgId: string; frameworkInstanceId: string }>();
   const router = useRouter();
+  const t = useTranslations('frameworks');
 
   const handleRowClick = useCallback(
     (controlId: string) => {
@@ -146,7 +147,9 @@ export function FrameworkControlsGrouped({
 
   return (
     <div className="space-y-4">
-      <Heading level="2">Controls ({filteredItems.length})</Heading>
+      <Heading level="2">
+        {t('controlsTable.controlsCount', { count: filteredItems.length })}
+      </Heading>
       <div className="flex items-center gap-3">
         <div className="w-full max-w-sm">
           <InputGroup>
@@ -154,7 +157,7 @@ export function FrameworkControlsGrouped({
               <Search size={16} />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search controls..."
+              placeholder={t('controlsTable.searchPlaceholder')}
               value={searchTerm}
               onChange={handleSearchChange}
             />
@@ -169,20 +172,20 @@ export function FrameworkControlsGrouped({
         />
         {!isSearching && (
           <Button variant="ghost" onClick={handleToggleAll}>
-            {allExpanded ? 'Collapse All' : 'Expand All'}
+            {allExpanded ? t('controlsTable.collapseAll') : t('controlsTable.expandAll')}
           </Button>
         )}
       </div>
       <Table variant="bordered">
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Requirement</TableHead>
-            <TableHead>Compliance</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Policies</TableHead>
-            <TableHead>Tasks</TableHead>
-            <TableHead>Documents</TableHead>
+            <TableHead>{t('controlsTable.columnName')}</TableHead>
+            <TableHead>{t('controlsTable.columnRequirement')}</TableHead>
+            <TableHead>{t('controlsTable.columnCompliance')}</TableHead>
+            <TableHead>{t('controlsTable.columnStatus')}</TableHead>
+            <TableHead>{t('controlsTable.columnPolicies')}</TableHead>
+            <TableHead>{t('controlsTable.columnTasks')}</TableHead>
+            <TableHead>{t('controlsTable.columnDocuments')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -190,7 +193,7 @@ export function FrameworkControlsGrouped({
             <TableRow>
               <TableCell colSpan={COLUMN_COUNT}>
                 <Text size="sm" variant="muted">
-                  No controls found.
+                  {t('controlsTable.noControls')}
                 </Text>
               </TableCell>
             </TableRow>
@@ -234,6 +237,7 @@ function FamilySection({
   frameworkInstanceId: string;
   onRowClick: (controlId: string) => void;
 }) {
+  const t = useTranslations('frameworks');
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
 
   return (
@@ -253,7 +257,7 @@ function FamilySection({
             aria-expanded={expanded}
           >
             <ChevronIcon size={16} />
-            <span>{getFamilyDisplayLabel(group.family)}</span>
+            <span>{getFamilyDisplayLabel(group.family, t)}</span>
             <span className="text-muted-foreground text-sm font-normal">
               ({group.items.length})
             </span>

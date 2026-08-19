@@ -1,6 +1,10 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { FieldRow, ReportPage } from './report-page';
 
 export function ReportDetailPage() {
+  const t = useTranslations('security');
   return (
     <ReportPage>
       <div
@@ -39,9 +43,9 @@ export function ReportDetailPage() {
       >
         CORS Misconfiguration with Credentials
       </div>
-      <FieldRow label="AFFECTED ASSETS" value="enterprise-api.example.com" />
+      <FieldRow label={t('penTest.report.affectedAssets')} value="enterprise-api.example.com" />
       <FieldRow
-        label="DESCRIPTION"
+        label={t('penTest.report.description')}
         value="The endpoint has a critical CORS misconfiguration allowing cross-origin requests from any domain while also permitting credentials."
       />
       <div
@@ -53,7 +57,7 @@ export function ReportDetailPage() {
           marginBottom: 3,
         }}
       >
-        EVIDENCE
+        {t('penTest.report.evidence')}
       </div>
       <pre
         style={{
@@ -74,7 +78,7 @@ Access-Control-Allow-Credentials: true
 Access-Control-Allow-Methods: GET, POST,`}
       </pre>
       <FieldRow
-        label="REMEDIATION"
+        label={t('penTest.report.remediation')}
         value="Immediately change Access-Control-Allow-Origin from wildcard to a specific allowlist of trusted domains."
       />
       <div

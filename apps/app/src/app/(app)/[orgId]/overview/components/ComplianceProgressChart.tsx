@@ -11,6 +11,7 @@ import {
   ChartTooltipContent,
 } from '@gideon-defender/ui/chart';
 import { Info } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface ComplianceProgressData {
   score: number;
@@ -27,31 +28,32 @@ const CHART_COLORS = {
 };
 
 export function ComplianceProgressChart({ data }: ComplianceProgressChartProps) {
+  const t = useTranslations('overview');
   const chartData = React.useMemo(() => {
     if (!data) return [];
     const items = [
       {
-        name: 'Completed',
+        name: t('charts.completed'),
         value: data.score,
         text: `${data.score}%`,
         fill: CHART_COLORS.score,
       },
       {
-        name: 'Remaining',
+        name: t('charts.remaining'),
         value: data.remaining,
         text: `${data.remaining} / 100%`,
         fill: CHART_COLORS.remaining,
       },
     ];
     return items.filter((item) => item.value > 0);
-  }, [data]);
+  }, [data, t]);
 
   if (!data) {
     return (
       <Card className="flex flex-col overflow-hidden border">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">Compliance Progress</CardTitle>
+            <CardTitle className="flex items-center gap-2">{t('charts.complianceTitle')}</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="flex flex-1 items-center justify-center py-10">
@@ -59,7 +61,7 @@ export function ComplianceProgressChart({ data }: ComplianceProgressChartProps) 
             <div className="text-muted-foreground flex justify-center">
               <Info className="h-10 w-10 opacity-30" />
             </div>
-            <p className="text-muted-foreground text-center text-sm">No data available</p>
+            <p className="text-muted-foreground text-center text-sm">{t('common.noData')}</p>
           </div>
         </CardContent>
       </Card>
@@ -68,7 +70,7 @@ export function ComplianceProgressChart({ data }: ComplianceProgressChartProps) 
 
   const chartConfig = {
     value: {
-      label: 'Overall Progress',
+      label: t('charts.overallProgress'),
     },
   } satisfies ChartConfig;
 
@@ -120,7 +122,7 @@ export function ComplianceProgressChart({ data }: ComplianceProgressChartProps) 
                         y={(viewBox.cy || 0) + 18}
                         className="fill-muted-foreground text-[9px] select-none"
                       >
-                        Overall
+                        {t('charts.overall')}
                       </tspan>
                     </text>
                     <circle

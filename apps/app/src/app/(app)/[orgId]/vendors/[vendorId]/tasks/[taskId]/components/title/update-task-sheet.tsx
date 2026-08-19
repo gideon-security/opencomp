@@ -12,6 +12,7 @@ import type { Member, Task, User } from '@db';
 import { TaskStatus } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -36,6 +37,8 @@ export function UpdateTaskSheet({ task, assignees, onClose }: UpdateTaskSheetPro
   const params = useParams<{ taskId: string }>();
   const { updateTask } = useTaskMutations();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations('vendor');
+  const tCommon = useTranslations('overview');
 
   const form = useForm<z.infer<typeof updateTaskSheetSchema>>({
     resolver: zodResolver(updateTaskSheetSchema),
@@ -57,10 +60,10 @@ export function UpdateTaskSheet({ task, assignees, onClose }: UpdateTaskSheetPro
         status: data.status,
         assigneeId: data.assigneeId,
       });
-      toast.success('Task updated successfully');
+      toast.success(t('task.taskUpdated'));
       onClose?.();
     } catch {
-      toast.error('Failed to update task');
+      toast.error(t('task.taskUpdateFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -98,7 +101,7 @@ export function UpdateTaskSheet({ task, assignees, onClose }: UpdateTaskSheetPro
           <div>
             <Accordion type="multiple" defaultValue={['task']}>
               <AccordionItem value="task">
-                <AccordionTrigger>Task Details</AccordionTrigger>
+                <AccordionTrigger>{t('task.taskDetails')}</AccordionTrigger>
                 <AccordionContent>
                   <div className="space-y-4">
                     <FormField
@@ -106,13 +109,13 @@ export function UpdateTaskSheet({ task, assignees, onClose }: UpdateTaskSheetPro
                       name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Title</FormLabel>
+                          <FormLabel>{t('task.title')}</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
                               autoFocus
                               className="mt-3"
-                              placeholder="Enter title"
+                              placeholder={t('task.enterTitle')}
                               autoCorrect="off"
                             />
                           </FormControl>
@@ -126,9 +129,9 @@ export function UpdateTaskSheet({ task, assignees, onClose }: UpdateTaskSheetPro
                       name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Description</FormLabel>
+                          <FormLabel>{tCommon('common.description')}</FormLabel>
                           <FormControl>
-                            <Textarea {...field} className="mt-3" placeholder="Enter description" />
+                            <Textarea {...field} className="mt-3" placeholder={t('task.enterDescription')} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -140,7 +143,7 @@ export function UpdateTaskSheet({ task, assignees, onClose }: UpdateTaskSheetPro
                       name="status"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Status</FormLabel>
+                          <FormLabel>{tCommon('common.status')}</FormLabel>
                           <FormControl>
                             <Select
                               value={field.value}
@@ -150,7 +153,7 @@ export function UpdateTaskSheet({ task, assignees, onClose }: UpdateTaskSheetPro
                               }}
                             >
                               <SelectTrigger>
-                                <SelectValue placeholder="Select status">
+                                <SelectValue placeholder={t('task.selectStatus')}>
                                   {field.value && renderStatus(field.value)}
                                 </SelectValue>
                               </SelectTrigger>
@@ -178,7 +181,7 @@ export function UpdateTaskSheet({ task, assignees, onClose }: UpdateTaskSheetPro
                       name="assigneeId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Assignee</FormLabel>
+                          <FormLabel>{t('create.assignee')}</FormLabel>
                           <FormControl>
                             <SelectAssignee
                               assigneeId={field.value}
@@ -201,7 +204,7 @@ export function UpdateTaskSheet({ task, assignees, onClose }: UpdateTaskSheetPro
           <div className="mt-4 flex justify-end">
             <Button type="submit" variant="default" disabled={isSubmitting}>
               <div className="flex items-center justify-center">
-                Update
+                {t('task.update')}
                 <ArrowRightIcon className="ml-2 h-4 w-4" />
               </div>
             </Button>

@@ -3,6 +3,7 @@
 import { updateSidebarState } from '@/actions/sidebar';
 import Chat from '@/components/ai/chat';
 import { CheckoutCompleteDialog } from '@/components/dialogs/checkout-complete-dialog';
+import { LanguageSwitcher } from '@/components/language-switcher';
 import { NotificationBell } from '@/components/notifications/notification-bell';
 import { OrganizationSwitcher } from '@/components/organization-switcher';
 import { SidebarProvider, useSidebar } from '@/context/sidebar-context';
@@ -44,6 +45,7 @@ import { useTheme } from 'next-themes';
 import { BrandLogo } from '@gideon-defender/ui/brand-logo';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Suspense, useCallback, useRef, useState } from 'react';
 import { AdminSidebar } from '../admin/components/AdminSidebar';
 import { ImpersonationBanner } from '../admin/components/ImpersonationBanner';
@@ -106,6 +108,7 @@ function AppShellWrapperContent({
   user,
   isAdmin,
 }: AppShellWrapperContentProps) {
+  const t = useTranslations('nav');
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
@@ -133,6 +136,7 @@ function AppShellWrapperContent({
   );
 
   const searchGroups = getAppShellSearchGroups({
+    t,
     organizationId: organization.id,
     router,
     permissions,
@@ -168,7 +172,7 @@ function AppShellWrapperContent({
               />
             </HStack>
           }
-          centerContent={<CommandSearch groups={searchGroups} placeholder="Search..." />}
+          centerContent={<CommandSearch groups={searchGroups} placeholder={t('search')} />}
           endContent={
             <AppShellUserMenu>
               <AppShellAIChatTrigger />
@@ -203,13 +207,13 @@ function AppShellWrapperContent({
                     <Link href={`/${organization.id}/settings`}>
                       <DropdownMenuItem>
                         <Settings size={16} />
-                        Settings
+                        {t('settings')}
                       </DropdownMenuItem>
                     </Link>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <div className="flex items-center justify-between px-2 py-1.5">
-                    <Text size="sm">Theme</Text>
+                    <Text size="sm">{t('theme')}</Text>
                     <ThemeSwitcher
                       size="sm"
                       value={(theme ?? 'system') as 'light' | 'dark' | 'system'}
@@ -217,6 +221,10 @@ function AppShellWrapperContent({
                       onChange={(value) => setTheme(value)}
                       showSystem
                     />
+                  </div>
+                  <div className="flex items-center justify-between px-2 py-1.5">
+                    <Text size="sm">{t('language')}</Text>
+                    <LanguageSwitcher />
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -231,7 +239,7 @@ function AppShellWrapperContent({
                     }}
                   >
                     <Logout size={16} />
-                    Log out
+                    {t('logOut')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -245,7 +253,7 @@ function AppShellWrapperContent({
                 href={`/${organization.id}/overview`}
                 isActive={!isSettingsActive && !isTrustActive && !isSecurityActive && !isAdminActive}
                 icon={<Badge className="size-5" />}
-                label="Compliance"
+                label={t('compliance')}
               />
             )}
             {isTrustNdaEnabled && hasAnyPermission(permissions, [{ resource: 'trust', action: 'read' }]) && (
@@ -253,7 +261,7 @@ function AppShellWrapperContent({
                 href={`/${organization.id}/trust`}
                 isActive={isTrustActive}
                 icon={<Globe className="size-5" />}
-                label="Trust"
+                label={t('trust')}
               />
             )}
             {isSecurityEnabled && canAccessRoute(permissions, 'penetration-tests') ? (
@@ -261,7 +269,7 @@ function AppShellWrapperContent({
                 href={`/${organization.id}/security`}
                 isActive={isSecurityActive}
                 icon={<ManageProtection className="size-5" />}
-                label="Security"
+                label={t('security')}
               />
             ) : null}
             {!isOnlyAuditor && canAccessRoute(permissions, 'settings') && (
@@ -269,7 +277,7 @@ function AppShellWrapperContent({
                 href={`/${organization.id}/settings`}
                 isActive={isSettingsActive}
                 icon={<Settings className="size-5" />}
-                label="Settings"
+                label={t('settings')}
               />
             )}
             {isAdmin && (
@@ -277,7 +285,7 @@ function AppShellWrapperContent({
                 href={`/${organization.id}/admin`}
                 isActive={!!isAdminActive}
                 icon={<Locked className="size-5" />}
-                label="Admin"
+                label={t('admin')}
               />
             )}
           </AppShellRail>
@@ -286,14 +294,14 @@ function AppShellWrapperContent({
               <AppShellSidebarHeader
                 title={
                   isAdminActive
-                    ? 'Admin'
+                    ? t('admin')
                     : isSettingsActive
-                      ? 'Settings'
+                      ? t('settings')
                       : isTrustActive
-                        ? 'Trust'
+                        ? t('trust')
                         : isSecurityActive
-                          ? 'Security'
-                          : 'Compliance'
+                          ? t('security')
+                          : t('compliance')
                 }
               />
               {isAdminActive && isAdmin ? (

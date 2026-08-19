@@ -8,6 +8,7 @@ import {
   Time,
 } from '@trycompai/design-system/icons';
 import { useFeatureFlag } from '@gideon-defender/analytics';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import {
   useTimelines,
@@ -30,30 +31,36 @@ function formatDate(date: string | Date | null): string {
   });
 }
 
-function getTimeRemaining(endDate: string | null): string | null {
+type TimeRemaining =
+  | { status: 'overdue' }
+  | { status: 'days'; count: number }
+  | { status: 'weeks'; count: number };
+
+function getTimeRemaining(endDate: string | null): TimeRemaining | null {
   if (!endDate) return null;
   const now = new Date();
   const end = new Date(endDate);
   const diffMs = end.getTime() - now.getTime();
-  if (diffMs <= 0) return 'Overdue';
+  if (diffMs <= 0) return { status: 'overdue' };
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays === 1) return '1 day remaining';
-  if (diffDays < 7) return `${diffDays} days remaining`;
+  if (diffDays === 1) return { status: 'days', count: 1 };
+  if (diffDays < 7) return { status: 'days', count: diffDays };
   const diffWeeks = Math.ceil(diffDays / 7);
-  if (diffWeeks === 1) return '1 week remaining';
-  return `${diffWeeks} weeks remaining`;
+  if (diffWeeks === 1) return { status: 'weeks', count: 1 };
+  return { status: 'weeks', count: diffWeeks };
 }
 
 export function FrameworkTimeline({
   frameworkInstanceId,
 }: FrameworkTimelineProps) {
+  const t = useTranslations('frameworks');
   const isTimelineEnabled = useFeatureFlag('is-timeline-enabled');
   const { timelines } = useTimelines();
 
   if (!isTimelineEnabled) return null;
 
   const timeline = timelines.find(
-    (t) => t.frameworkInstanceId === frameworkInstanceId,
+    (tl) => tl.frameworkInstanceId === frameworkInstanceId,
   );
 
   if (!timeline || timeline.phases.length === 0) return null;
@@ -76,11 +83,14 @@ export function FrameworkTimeline({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-baseline justify-between">
-        <Heading level="2">Compliance Timeline</Heading>
+        <Heading level="2">{t('instance.complianceTimeline')}</Heading>
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           {currentPhaseIndex > 0 && (
             <span>
-              Phase {currentPhaseIndex} of {sortedPhases.length}
+              {t('instance.phaseXOfY', {
+                current: currentPhaseIndex,
+                total: sortedPhases.length,
+              })}
               {currentPhase && (
                 <span className="ml-1 font-medium text-foreground">
                   · {currentPhase.name}
@@ -89,11 +99,11 @@ export function FrameworkTimeline({
             </span>
           )}
           {estCompletion && timeline.status !== 'COMPLETED' && (
-            <span>· Est. completion {estCompletion}</span>
+            <span>· {t('instance.estCompletion', { date: estCompletion })}</span>
           )}
           {timeline.status === 'COMPLETED' && timeline.completedAt && (
             <span className="text-primary">
-              Completed {formatDate(timeline.completedAt)}
+              {t('instance.completedOn', { date: formatDate(timeline.completedAt) })}
             </span>
           )}
         </div>
@@ -121,6 +131,7 @@ function PhaseCard({
 }) {
   const [markingReady, setMarkingReady] = useState(false);
   const [markedReady, setMarkedReady] = useState(false);
+  const t = useTranslations('frameworks');
   const { mutate } = useTimelines();
 
   const isCompleted = phase.status === 'COMPLETED';
@@ -178,7 +189,7 @@ function PhaseCard({
           {(markedReady || phase.readyForReview) && (
             <div className="mt-2 flex items-center gap-2 rounded-md bg-primary/10 px-3 py-1.5 text-xs text-primary">
               <CheckmarkFilled size={14} />
-              <span>Marked ready for review</span>
+              <span>{t('instance.markedReadyForReview')}</span>
             </div>
           )}
         </div>
@@ -190,7 +201,7 @@ function PhaseCard({
               onClick={handleMarkReady}
               loading={markingReady}
             >
-              Mark Ready for Review
+              {t('instance.markReadyForReview')}
             </Button>
           </div>
         )}
@@ -215,28 +226,33 @@ function StatusIcon({ status }: { status: TimelinePhase['status'] }) {
 }
 
 function StatusBadge({ status }: { status: TimelinePhase['status'] }) {
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   if (status === 'COMPLETED') {
-    return <Badge variant="default">Completed</Badge>;
+    return <Badge variant="default">{tCommon('common.completed')}</Badge>;
   }
   if (status === 'IN_PROGRESS') {
-    return <Badge variant="secondary">In Progress</Badge>;
+    return <Badge variant="secondary">{t('instance.inProgress')}</Badge>;
   }
-  return <Badge variant="secondary">Pending</Badge>;
+  return <Badge variant="secondary">{t('instance.pending')}</Badge>;
 }
 
 function PhaseMetadata({ phase }: { phase: TimelinePhase }) {
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const isCompleted = phase.status === 'COMPLETED';
   const isActive = phase.status === 'IN_PROGRESS';
   const isPending = phase.status === 'PENDING';
+  const timeRemaining = getTimeRemaining(phase.endDate);
 
   return (
     <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
       <span className="inline-flex items-center gap-1">
         <Time size={12} />
-        {phase.durationWeeks} {phase.durationWeeks === 1 ? 'week' : 'weeks'}
+        {t('instance.weekDuration', { count: phase.durationWeeks })}
       </span>
       {isCompleted && phase.completedAt && (
-        <span>Completed {formatDate(phase.completedAt)}</span>
+        <span>{t('instance.completedOn', { date: formatDate(phase.completedAt) })}</span>
       )}
       {isCompleted && phase.startDate && phase.endDate && (
         <span>
@@ -246,23 +262,27 @@ function PhaseMetadata({ phase }: { phase: TimelinePhase }) {
       {isActive && (
         <>
           {phase.startDate && (
-            <span>Started {formatDate(phase.startDate)}</span>
+            <span>{t('instance.startedOn', { date: formatDate(phase.startDate) })}</span>
           )}
           {phase.endDate && (
-            <span>Due {formatDate(phase.endDate)}</span>
+            <span>{t('instance.dueOn', { date: formatDate(phase.endDate) })}</span>
           )}
-          {getTimeRemaining(phase.endDate) && (
+          {timeRemaining && (
             <span className="font-medium text-primary">
-              {getTimeRemaining(phase.endDate)}
+              {timeRemaining.status === 'overdue'
+                ? tCommon('common.overdue')
+                : timeRemaining.status === 'days'
+                  ? t('instance.timeRemainingDays', { count: timeRemaining.count })
+                  : t('instance.timeRemainingWeeks', { count: timeRemaining.count })}
             </span>
           )}
         </>
       )}
       {isPending && phase.startDate && (
-        <span>Est. {formatDate(phase.startDate)}</span>
+        <span>{t('instance.estDate', { date: formatDate(phase.startDate) })}</span>
       )}
       {isPending && phase.endDate && (
-        <span>Est. {formatDate(phase.endDate)}</span>
+        <span>{t('instance.estDate', { date: formatDate(phase.endDate) })}</span>
       )}
     </div>
   );

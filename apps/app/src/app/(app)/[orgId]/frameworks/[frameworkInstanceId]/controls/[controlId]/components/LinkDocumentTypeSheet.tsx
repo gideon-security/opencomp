@@ -13,6 +13,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Link as LinkIcon } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -31,6 +32,7 @@ export function LinkDocumentTypeSheet({
   alreadyLinkedFormTypes: string[];
 }) {
   const { hasPermission } = usePermissions();
+  const t = useTranslations('frameworks');
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,12 +71,12 @@ export function LinkDocumentTypeSheet({
         { formTypes: Array.from(selected) },
       );
       if (response.error) throw new Error(response.error);
-      toast.success('Documents linked');
+      toast.success(t('controls.documentsLinked'));
       setIsOpen(false);
       router.refresh();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Failed to link documents',
+        error instanceof Error ? error.message : t('controls.failedToLinkDocuments'),
       );
     } finally {
       setIsSubmitting(false);
@@ -88,17 +90,17 @@ export function LinkDocumentTypeSheet({
         iconLeft={<LinkIcon size={16} />}
         onClick={() => setIsOpen(true)}
       >
-        Link Document
+        {t('controls.linkDocument')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Link Required Documents</SheetTitle>
+            <SheetTitle>{t('controls.linkRequiredDocumentsTitle')}</SheetTitle>
           </SheetHeader>
           <SheetBody>
             {options.length === 0 ? (
               <Text size="sm" variant="muted">
-                All document types are already linked.
+                {t('controls.allDocumentTypesLinked')}
               </Text>
             ) : (
               <div className="space-y-2">
@@ -123,8 +125,9 @@ export function LinkDocumentTypeSheet({
                     onClick={handleSubmit}
                     disabled={selected.size === 0 || isSubmitting}
                   >
-                    Link {selected.size || ''} Document
-                    {selected.size === 1 ? '' : 's'}
+                    {t('controls.linkDocumentCount', {
+                      count: selected.size,
+                    })}
                   </Button>
                 </div>
               </div>

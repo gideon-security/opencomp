@@ -17,6 +17,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { SyncConfirmDialog } from '../../components/SyncConfirmDialog';
@@ -47,6 +48,8 @@ interface ChangeGroup {
   rows: ChangeRow[];
 }
 
+export type FrameworkTranslator = ReturnType<typeof useTranslations<'frameworks'>>;
+
 export function ReviewUpdateContent({
   orgId,
   frameworkInstanceId,
@@ -54,6 +57,7 @@ export function ReviewUpdateContent({
   initialPreview,
 }: Props) {
   const router = useRouter();
+  const t = useTranslations('frameworks');
   const { hasPermission } = usePermissions();
   const { sync, isSyncing } = useFrameworkSync(frameworkInstanceId);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -67,7 +71,7 @@ export function ReviewUpdateContent({
   const canApply = hasPermission('framework', 'update');
   const frameworkHref = `/${orgId}/frameworks/${frameworkInstanceId}`;
 
-  const groups = useMemo<ChangeGroup[]>(() => buildGroups(preview), [preview]);
+  const groups = useMemo<ChangeGroup[]>(() => buildGroups(preview, t), [preview, t]);
 
   // Summary counts: link removals/adds fold into the Removed / New totals.
   const edges = preview.edges ?? {
@@ -125,10 +129,10 @@ export function ReviewUpdateContent({
     if (!preview.toVersion.id) return;
     try {
       await sync(preview.toVersion.id);
-      toast.success(`Synced to v${preview.toVersion.version}`);
+      toast.success(t('reviewUpdate.syncedToVersion', { version: preview.toVersion.version }));
       router.push(frameworkHref);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to apply update');
+      toast.error(err instanceof Error ? err.message : t('reviewUpdate.applyFailed'));
     } finally {
       setConfirmOpen(false);
     }
@@ -149,36 +153,39 @@ export function ReviewUpdateContent({
         <PageHeader
           title={`${frameworkName} v${preview.toVersion.version}`}
           backHref={frameworkHref}
-          backLabel={`Back to ${frameworkName}`}
+          backLabel={t('reviewUpdate.backToFramework', { name: frameworkName })}
         >
           <PageHeaderDescription>
-            Reviewing update from v{preview.fromVersion.version} to v{preview.toVersion.version}
+            {t('reviewUpdate.reviewingUpdate', {
+              fromVersion: preview.fromVersion.version,
+              toVersion: preview.toVersion.version,
+            })}
             {preview.releaseNotes ? ` — ${preview.releaseNotes}` : ''}
           </PageHeaderDescription>
         </PageHeader>
       </div>
 
       <div className="grid shrink-0 grid-cols-2 gap-4 md:grid-cols-4">
-        <StatCard label="New" value={addedTotal} tone="positive" />
-        <StatCard label="Removed" value={removedTotal} tone="danger" />
-        <StatCard label="Modified" value={modifiedCount + preservedCount} />
-        <StatCard label="Links affected" value={linksTotal} />
+        <StatCard label={t('reviewUpdate.statNew')} value={addedTotal} tone="positive" />
+        <StatCard label={t('reviewUpdate.statRemoved')} value={removedTotal} tone="danger" />
+        <StatCard label={t('reviewUpdate.statModified')} value={modifiedCount + preservedCount} />
+        <StatCard label={t('reviewUpdate.statLinksAffected')} value={linksTotal} />
       </div>
 
       <div className="shrink-0">
         <Tabs value={filter} onValueChange={(v) => setFilter(v as FilterKey)}>
           <TabsList variant="underline">
             <TabsTrigger value="all">
-              All <TabBadge count={totalChanges} />
+              {t('reviewUpdate.tabAll')} <TabBadge count={totalChanges} />
             </TabsTrigger>
             <TabsTrigger value="added">
-              Added <TabBadge count={addedTotal} />
+              {t('reviewUpdate.tabAdded')} <TabBadge count={addedTotal} />
             </TabsTrigger>
             <TabsTrigger value="removed">
-              Removed <TabBadge count={removedTotal} />
+              {t('reviewUpdate.tabRemoved')} <TabBadge count={removedTotal} />
             </TabsTrigger>
             <TabsTrigger value="modified">
-              Modified <TabBadge count={modifiedCount + preservedCount} />
+              {t('reviewUpdate.tabModified')} <TabBadge count={modifiedCount + preservedCount} />
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -187,7 +194,7 @@ export function ReviewUpdateContent({
       <div className="min-h-0 flex-1 overflow-y-auto pr-2">
         {showEmpty ? (
           <div className="rounded-md border border-dashed p-8 text-center">
-            <Text variant="muted">No changes in this category.</Text>
+            <Text variant="muted">{t('reviewUpdate.noChangesInCategory')}</Text>
           </div>
         ) : (
           <div className="flex flex-col gap-8">
@@ -219,11 +226,11 @@ export function ReviewUpdateContent({
       <div className="-mx-4 shrink-0 border-t bg-background px-4 py-4 md:-mx-6 md:px-6">
         <HStack justify="between" align="center">
           <Text size="sm" variant="muted">
-            Apply will update your framework instance. You can roll back within 14 days.
+            {t('reviewUpdate.applyNotice')}
           </Text>
           <HStack gap="sm">
             <Button variant="outline" size="lg" onClick={() => router.push(frameworkHref)}>
-              Cancel
+              {t('reviewUpdate.cancel')}
             </Button>
             <Button
               variant="default"
@@ -232,8 +239,8 @@ export function ReviewUpdateContent({
               onClick={() => setConfirmOpen(true)}
             >
               {isSyncing
-                ? 'Applying…'
-                : `Apply ${totalChanges} change${totalChanges !== 1 ? 's' : ''}`}
+                ? t('reviewUpdate.applying')
+                : t('reviewUpdate.applyChanges', { count: totalChanges })}
             </Button>
           </HStack>
         </HStack>
@@ -286,14 +293,15 @@ function TabBadge({ count }: { count: number }) {
 }
 
 function ItemRow({ row }: { row: ChangeRow }) {
+  const t = useTranslations('frameworks');
   const badge =
     row.kind === 'added'
-      ? { label: 'Added', variant: 'default' as const }
+      ? { label: t('reviewUpdate.itemAdded'), variant: 'default' as const }
       : row.kind === 'removed'
-        ? { label: 'Removed', variant: 'destructive' as const }
+        ? { label: t('reviewUpdate.itemRemoved'), variant: 'destructive' as const }
         : row.kind === 'modified'
-          ? { label: 'Modified', variant: 'secondary' as const }
-          : { label: 'Preserved', variant: 'outline' as const };
+          ? { label: t('reviewUpdate.itemModified'), variant: 'secondary' as const }
+          : { label: t('reviewUpdate.itemPreserved'), variant: 'outline' as const };
 
   const markerTone =
     row.kind === 'added'
@@ -357,6 +365,7 @@ function LinkChangesBlock({
   edges: UpdatePreview['edges'];
   show: 'both' | 'added' | 'removed';
 }) {
+  const t = useTranslations('frameworks');
   const rows: LinkRow[] = [];
   const wantAdded = show === 'both' || show === 'added';
   const wantRemoved = show === 'both' || show === 'removed';
@@ -369,7 +378,7 @@ function LinkChangesBlock({
         arrow: '→',
         right: `${e.requirementIdentifier ? `${e.requirementIdentifier} — ` : ''}${e.requirementName}`,
         kind: 'added',
-        label: 'Requirement linked',
+        label: t('reviewUpdate.linkRequirementAdded'),
       }),
     );
     edges.controlPolicy.added.forEach((e, i) =>
@@ -379,7 +388,7 @@ function LinkChangesBlock({
         arrow: '→',
         right: e.policyName,
         kind: 'added',
-        label: 'Policy linked',
+        label: t('reviewUpdate.linkPolicyAdded'),
       }),
     );
     edges.controlTask.added.forEach((e, i) =>
@@ -389,7 +398,7 @@ function LinkChangesBlock({
         arrow: '→',
         right: e.taskName,
         kind: 'added',
-        label: 'Task linked',
+        label: t('reviewUpdate.linkTaskAdded'),
       }),
     );
     (edges.controlDocumentType?.added ?? []).forEach((e, i) =>
@@ -399,7 +408,7 @@ function LinkChangesBlock({
         arrow: '→',
         right: e.formType.replace(/_/g, ' '),
         kind: 'added',
-        label: 'Document type linked',
+        label: t('reviewUpdate.linkDocumentTypeAdded'),
       }),
     );
   }
@@ -412,7 +421,7 @@ function LinkChangesBlock({
         arrow: '→',
         right: `${e.requirementIdentifier ? `${e.requirementIdentifier} — ` : ''}${e.requirementName}`,
         kind: 'removed',
-        label: 'Requirement unlinked',
+        label: t('reviewUpdate.linkRequirementRemoved'),
       }),
     );
     edges.controlPolicy.removed.forEach((e, i) =>
@@ -422,7 +431,7 @@ function LinkChangesBlock({
         arrow: '→',
         right: e.policyName,
         kind: 'removed',
-        label: 'Policy unlinked',
+        label: t('reviewUpdate.linkPolicyRemoved'),
       }),
     );
     edges.controlTask.removed.forEach((e, i) =>
@@ -432,7 +441,7 @@ function LinkChangesBlock({
         arrow: '→',
         right: e.taskName,
         kind: 'removed',
-        label: 'Task unlinked',
+        label: t('reviewUpdate.linkTaskRemoved'),
       }),
     );
     (edges.controlDocumentType?.removed ?? []).forEach((e, i) =>
@@ -442,7 +451,7 @@ function LinkChangesBlock({
         arrow: '→',
         right: e.formType.replace(/_/g, ' '),
         kind: 'removed',
-        label: 'Document type unlinked',
+        label: t('reviewUpdate.linkDocumentTypeRemoved'),
       }),
     );
   }
@@ -453,7 +462,7 @@ function LinkChangesBlock({
     <div className="flex flex-col gap-3">
       <HStack justify="between" align="center">
         <Text size="sm" weight="medium" variant="muted">
-          LINK CHANGES
+          {t('reviewUpdate.linkChangesTitle')}
         </Text>
         <Badge variant="outline">{rows.length}</Badge>
       </HStack>
@@ -467,6 +476,7 @@ function LinkChangesBlock({
 }
 
 function LinkRowItem({ row }: { row: LinkRow }) {
+  const t = useTranslations('frameworks');
   const markerTone =
     row.kind === 'added'
       ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400'
@@ -502,7 +512,7 @@ function LinkRowItem({ row }: { row: LinkRow }) {
         </div>
       </HStack>
       <Badge variant={row.kind === 'added' ? 'default' : 'destructive'}>
-        {row.kind === 'added' ? 'Added' : 'Removed'}
+        {row.kind === 'added' ? t('reviewUpdate.itemAdded') : t('reviewUpdate.itemRemoved')}
       </Badge>
     </div>
   );
@@ -511,53 +521,59 @@ function LinkRowItem({ row }: { row: LinkRow }) {
 export function describeRequirementChanges(
   from: UpdatePreview['requirements']['updated'][number]['from'],
   to: UpdatePreview['requirements']['updated'][number]['to'],
+  t: FrameworkTranslator,
 ): string {
   const changes: string[] = [];
-  if (from.name !== to.name) changes.push('Name updated');
-  if (from.identifier !== to.identifier) changes.push('Identifier updated');
-  if (from.description !== to.description) changes.push('Description updated');
+  if (from.name !== to.name) changes.push(t('reviewUpdate.nameUpdated'));
+  if (from.identifier !== to.identifier) changes.push(t('reviewUpdate.identifierUpdated'));
+  if (from.description !== to.description) changes.push(t('reviewUpdate.descriptionUpdated'));
   const fromFamily = from.requirementFamily ?? null;
   const toFamily = to.requirementFamily ?? null;
   if (fromFamily !== toFamily) {
     if (!fromFamily && toFamily) {
-      changes.push(`Requirement family set to "${toFamily}"`);
+      changes.push(t('reviewUpdate.familySetTo', { family: toFamily }));
     } else if (fromFamily && !toFamily) {
-      changes.push('Requirement family removed');
+      changes.push(t('reviewUpdate.familyRemoved'));
     } else {
-      changes.push(`Requirement family changed from "${fromFamily}" to "${toFamily}"`);
+      changes.push(
+        t('reviewUpdate.familyChanged', { from: fromFamily ?? '', to: toFamily ?? '' }),
+      );
     }
   }
-  return changes.join('. ') || 'Modified';
+  return changes.join('. ') || t('reviewUpdate.modifiedFallback');
 }
 
 export function describeControlChanges(
   from: UpdatePreview['controls']['updatedApplied'][number]['manifestFrom'],
   to: UpdatePreview['controls']['updatedApplied'][number]['manifestTo'],
+  t: FrameworkTranslator,
 ): string {
   const changes: string[] = [];
-  if (from.name !== to.name) changes.push('Name updated');
-  if (from.description !== to.description) changes.push('Description updated');
+  if (from.name !== to.name) changes.push(t('reviewUpdate.nameUpdated'));
+  if (from.description !== to.description) changes.push(t('reviewUpdate.descriptionUpdated'));
   const fromFamily = from.controlFamily ?? null;
   const toFamily = to.controlFamily ?? null;
   if (fromFamily !== toFamily) {
     if (!fromFamily && toFamily) {
-      changes.push(`Control family set to "${toFamily}"`);
+      changes.push(t('reviewUpdate.controlFamilySetTo', { family: toFamily }));
     } else if (fromFamily && !toFamily) {
-      changes.push('Control family removed');
+      changes.push(t('reviewUpdate.controlFamilyRemoved'));
     } else {
-      changes.push(`Control family changed from "${fromFamily}" to "${toFamily}"`);
+      changes.push(
+        t('reviewUpdate.controlFamilyChanged', { from: fromFamily ?? '', to: toFamily ?? '' }),
+      );
     }
   }
-  return changes.join('. ') || 'Modified';
+  return changes.join('. ') || t('reviewUpdate.modifiedFallback');
 }
 
-function buildGroups(preview: UpdatePreview): ChangeGroup[] {
+function buildGroups(preview: UpdatePreview, t: FrameworkTranslator): ChangeGroup[] {
   const out: ChangeGroup[] = [];
 
   // Removed
   if (preview.requirements.removed.length) {
     out.push({
-      title: 'REMOVED REQUIREMENTS',
+      title: t('reviewUpdate.groupRemovedRequirements'),
       kind: 'removed',
       rows: preview.requirements.removed.map((r) => ({
         key: `req-rem-${r.id}`,
@@ -570,7 +586,7 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
   }
   if (preview.controls.archived.length) {
     out.push({
-      title: 'REMOVED CONTROLS',
+      title: t('reviewUpdate.groupRemovedControls'),
       kind: 'removed',
       rows: preview.controls.archived.map(({ instanceId, manifest }) => ({
         key: `ctl-rem-${instanceId}`,
@@ -582,7 +598,7 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
   }
   if (preview.policies.archived.length) {
     out.push({
-      title: 'REMOVED POLICIES',
+      title: t('reviewUpdate.groupRemovedPolicies'),
       kind: 'removed',
       rows: preview.policies.archived.map(({ instanceId, manifest }) => ({
         key: `pol-rem-${instanceId}`,
@@ -594,7 +610,7 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
   }
   if (preview.tasks.archived.length) {
     out.push({
-      title: 'REMOVED TASKS',
+      title: t('reviewUpdate.groupRemovedTasks'),
       kind: 'removed',
       rows: preview.tasks.archived.map(({ instanceId, manifest }) => ({
         key: `tsk-rem-${instanceId}`,
@@ -608,7 +624,7 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
   // Added
   if (preview.requirements.added.length) {
     out.push({
-      title: 'NEW REQUIREMENTS',
+      title: t('reviewUpdate.groupNewRequirements'),
       kind: 'added',
       rows: preview.requirements.added.map((r) => ({
         key: `req-add-${r.id}`,
@@ -621,7 +637,7 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
   }
   if (preview.controls.added.length) {
     out.push({
-      title: 'NEW CONTROLS',
+      title: t('reviewUpdate.groupNewControls'),
       kind: 'added',
       rows: preview.controls.added.map((c) => ({
         key: `ctl-add-${c.id}`,
@@ -633,7 +649,7 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
   }
   if (preview.policies.added.length) {
     out.push({
-      title: 'NEW POLICIES',
+      title: t('reviewUpdate.groupNewPolicies'),
       kind: 'added',
       rows: preview.policies.added.map((p) => ({
         key: `pol-add-${p.id}`,
@@ -645,12 +661,12 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
   }
   if (preview.tasks.added.length) {
     out.push({
-      title: 'NEW TASKS',
+      title: t('reviewUpdate.groupNewTasks'),
       kind: 'added',
-      rows: preview.tasks.added.map((t) => ({
-        key: `tsk-add-${t.id}`,
-        name: t.name,
-        description: t.description,
+      rows: preview.tasks.added.map((task) => ({
+        key: `tsk-add-${task.id}`,
+        name: task.name,
+        description: task.description,
         kind: 'added' as const,
       })),
     });
@@ -659,34 +675,34 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
   // Modified
   if (preview.requirements.updated.length) {
     out.push({
-      title: 'MODIFIED REQUIREMENTS',
+      title: t('reviewUpdate.groupModifiedRequirements'),
       kind: 'modified',
       rows: preview.requirements.updated.map(({ from, to }) => ({
         key: `req-mod-${to.id}`,
         identifier: to.identifier,
         name: to.name,
         description: to.description,
-        changeSummary: describeRequirementChanges(from, to),
+        changeSummary: describeRequirementChanges(from, to, t),
         kind: 'modified' as const,
       })),
     });
   }
   if (preview.controls.updatedApplied.length) {
     out.push({
-      title: 'MODIFIED CONTROLS',
+      title: t('reviewUpdate.groupModifiedControls'),
       kind: 'modified',
       rows: preview.controls.updatedApplied.map(({ instance, manifestFrom, manifestTo }) => ({
         key: `ctl-mod-${instance.id}`,
         name: manifestTo.name,
         description: manifestTo.description,
-        changeSummary: describeControlChanges(manifestFrom, manifestTo),
+        changeSummary: describeControlChanges(manifestFrom, manifestTo, t),
         kind: 'modified' as const,
       })),
     });
   }
   if (preview.policies.updatedApplied.length) {
     out.push({
-      title: 'MODIFIED POLICIES',
+      title: t('reviewUpdate.groupModifiedPolicies'),
       kind: 'modified',
       rows: preview.policies.updatedApplied.map(({ instance, manifestTo }) => ({
         key: `pol-mod-${instance.id}`,
@@ -698,7 +714,7 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
   }
   if (preview.tasks.updatedApplied.length) {
     out.push({
-      title: 'MODIFIED TASKS',
+      title: t('reviewUpdate.groupModifiedTasks'),
       kind: 'modified',
       rows: preview.tasks.updatedApplied.map(({ instance, manifestTo }) => ({
         key: `tsk-mod-${instance.id}`,
@@ -715,7 +731,7 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
     preservedRows.push({
       key: `ctl-pres-${instance.id}`,
       name: instance.name,
-      description: 'Your edits are kept. Template changed underneath.',
+      description: t('reviewUpdate.preservedEditsKept'),
       kind: 'preserved',
     });
   }
@@ -723,7 +739,7 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
     preservedRows.push({
       key: `tsk-pres-${instance.id}`,
       name: instance.title,
-      description: 'Your edits are kept. Template changed underneath.',
+      description: t('reviewUpdate.preservedEditsKept'),
       kind: 'preserved',
     });
   }
@@ -731,7 +747,7 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
     preservedRows.push({
       key: `pol-pres-${instance.id}`,
       name: instance.name,
-      description: 'Your edits are kept. Template changed underneath.',
+      description: t('reviewUpdate.preservedEditsKept'),
       kind: 'preserved',
     });
   }
@@ -739,12 +755,12 @@ function buildGroups(preview: UpdatePreview): ChangeGroup[] {
     preservedRows.push({
       key: `pol-draft-${instance.id}`,
       name: instance.name,
-      description: 'Published — a new draft version will be created with the template update.',
+      description: t('reviewUpdate.preservedDraftAdded'),
       kind: 'preserved',
     });
   }
   if (preservedRows.length) {
-    out.push({ title: 'YOUR EDITS PRESERVED', kind: 'preserved', rows: preservedRows });
+    out.push({ title: t('reviewUpdate.groupPreservedEdits'), kind: 'preserved', rows: preservedRows });
   }
 
   return out;

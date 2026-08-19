@@ -1,3 +1,5 @@
+'use client';
+
 import type { EvidenceLevel, PentestCheck } from '@/lib/security/penetration-tests-client';
 import {
   Checkbox,
@@ -9,6 +11,7 @@ import {
   TooltipTrigger,
 } from '@trycompai/design-system';
 import { Information } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import {
   allPentestChecks,
   checkDescriptions,
@@ -36,6 +39,7 @@ export function ScanAdvancedOptions({
   onEvidenceLevelChange,
   onChecksChange,
 }: ScanAdvancedOptionsProps) {
+  const t = useTranslations('security');
   const hasDiscoveryDependentChecks = checks.some((check) => check !== 'discovery');
 
   const handleToggleCheck = (check: PentestCheck, checked: boolean) => {
@@ -58,14 +62,14 @@ export function ScanAdvancedOptions({
       >
         <span>
           <span className="block text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
-            Scan coverage
+            {t('penTest.advanced.scanCoverage')}
           </span>
           <span className="mt-1 block text-xs text-muted-foreground">
-            What we'll check and how we'll validate it
+            {t('penTest.advanced.whatWeCheck')}
           </span>
         </span>
         <span className="font-mono text-[11px] text-muted-foreground">
-          {open ? 'Hide' : 'Show'}
+          {open ? t('penTest.advanced.hide') : t('penTest.advanced.show')}
         </span>
       </button>
 
@@ -74,7 +78,7 @@ export function ScanAdvancedOptions({
           <div className="border-t border-border px-3.5 py-3">
             <fieldset className="mb-4">
               <legend className="mb-2 text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
-                Validation level
+                {t('penTest.advanced.validationLevel')}
               </legend>
               <RadioGroup
                 value={evidenceLevel}
@@ -83,7 +87,7 @@ export function ScanAdvancedOptions({
                     onEvidenceLevelChange(nextValue);
                   }
                 }}
-                aria-label="Validation level"
+                aria-label={t('penTest.advanced.validationLevel')}
               >
                 <div className="grid gap-2 sm:grid-cols-3">
                   {evidenceOptions.map((option) => (
@@ -105,7 +109,7 @@ export function ScanAdvancedOptions({
 
             <fieldset>
               <legend className="mb-2 text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
-                Checks
+                {t('penTest.advanced.checks')}
               </legend>
               <div className="grid gap-2 sm:grid-cols-2">
                 {allPentestChecks.map((check) => {
@@ -127,7 +131,9 @@ export function ScanAdvancedOptions({
                       <span className="flex-1">{checkLabels[check]}</span>
                       <Tooltip>
                         <TooltipTrigger
-                          aria-label={`About ${checkLabels[check]}`}
+                          aria-label={t('penTest.advanced.about', {
+                            check: checkLabels[check],
+                          })}
                           onClick={(event) => event.preventDefault()}
                         >
                           <span className="flex text-muted-foreground hover:text-foreground">

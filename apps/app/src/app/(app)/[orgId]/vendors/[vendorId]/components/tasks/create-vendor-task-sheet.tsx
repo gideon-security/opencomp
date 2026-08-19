@@ -13,12 +13,14 @@ import {
   SheetTitle,
 } from '@trycompai/design-system';
 import { useQueryState } from 'nuqs';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 
 export function CreateVendorTaskSheet() {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [queryOpen] = useQueryState('create-vendor-task-sheet');
   const [isOpen, setIsOpen] = useState(false);
+  const t = useTranslations('vendor');
 
   useEffect(() => {
     setIsOpen(Boolean(queryOpen));
@@ -37,7 +39,7 @@ export function CreateVendorTaskSheet() {
       <Sheet open={isOpen} onOpenChange={handleOpenChange}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Create Vendor Task</SheetTitle>
+            <SheetTitle>{t('task.createVendorTask')}</SheetTitle>
           </SheetHeader>
           <SheetBody>{/* <CreateVendorTaskForm assignees={assignees} onSuccess={handleSuccess} /> */}</SheetBody>
         </SheetContent>
@@ -49,7 +51,7 @@ export function CreateVendorTaskSheet() {
     <Drawer open={isOpen} onOpenChange={handleOpenChange}>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>Create Vendor Task</DrawerTitle>
+          <DrawerTitle>{t('task.createVendorTask')}</DrawerTitle>
         </DrawerHeader>
         <div className="p-4">{/* <CreateVendorTaskForm assignees={assignees} onSuccess={handleSuccess} /> */}</div>
       </DrawerContent>

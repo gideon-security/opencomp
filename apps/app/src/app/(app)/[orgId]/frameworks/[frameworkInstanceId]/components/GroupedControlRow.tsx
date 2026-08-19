@@ -10,6 +10,7 @@ import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import type { Control, Task } from '@db';
 import { Badge, TableCell, TableRow, Text } from '@trycompai/design-system';
 import { Launch } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { getStatusBadge } from './framework-controls-shared';
 
@@ -30,11 +31,12 @@ export function GroupedControlRow({
   frameworkInstanceId: string;
   onRowClick: (controlId: string) => void;
 }) {
+  const t = useTranslations('frameworks');
   const policies = control.policies ?? [];
   const documentTypes = control.controlDocumentTypes ?? [];
   const counts = getRequirementArtifactCounts([control], tasks, evidenceSubmissions);
   const status = getControlStatus(policies, tasks, control.id, documentTypes, evidenceSubmissions);
-  const badge = getStatusBadge(status);
+  const badge = getStatusBadge(status, t);
   const compliancePercent = getControlProgressPercent(
     policies,
     tasks,

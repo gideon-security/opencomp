@@ -11,6 +11,7 @@ import {
   ChartTooltipContent,
 } from '@gideon-defender/ui/chart';
 import { Info } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface TasksChartData {
   done: number;
@@ -27,29 +28,30 @@ const CHART_COLORS = {
 };
 
 export function TasksChart({ data }: TasksChartProps) {
+  const t = useTranslations('overview');
   const chartData = React.useMemo(() => {
     if (!data) return [];
     const items = [
       {
-        name: 'Compliant',
+        name: t('charts.compliant'),
         value: data.done,
         fill: CHART_COLORS.done,
       },
       {
-        name: 'Remaining',
+        name: t('charts.remaining'),
         value: data.remaining,
         fill: CHART_COLORS.remaining,
       },
     ];
     return items.filter((item) => item.value > 0);
-  }, [data]);
+  }, [data, t]);
 
   if (!data) {
     return (
       <Card className="flex flex-col overflow-hidden border">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">Tasks</CardTitle>
+            <CardTitle className="flex items-center gap-2">{t('charts.tasks')}</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="flex flex-1 items-center justify-center py-10">
@@ -57,7 +59,7 @@ export function TasksChart({ data }: TasksChartProps) {
             <div className="text-muted-foreground flex justify-center">
               <Info className="h-10 w-10 opacity-30" />
             </div>
-            <p className="text-muted-foreground text-center text-sm">No data available</p>
+            <p className="text-muted-foreground text-center text-sm">{t('common.noData')}</p>
           </div>
         </CardContent>
       </Card>
@@ -66,7 +68,7 @@ export function TasksChart({ data }: TasksChartProps) {
 
   const chartConfig = {
     value: {
-      label: 'Task Status',
+      label: t('charts.taskStatus'),
     },
   } satisfies ChartConfig;
 
@@ -118,7 +120,7 @@ export function TasksChart({ data }: TasksChartProps) {
                         y={(viewBox.cy || 0) + 18}
                         className="fill-muted-foreground text-[9px] select-none"
                       >
-                        Tasks
+                        {t('charts.tasks')}
                       </tspan>
                     </text>
                     <circle

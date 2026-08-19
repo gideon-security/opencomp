@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -98,10 +101,8 @@ describe('VendorResidualRiskChart', () => {
 
     render(<VendorResidualRiskChart vendor={mockVendor} />);
 
-    expect(capturedProps.title).toBe('Residual Risk');
-    expect(capturedProps.description).toBe(
-      'Risk level after the treatment plan is applied. The dashed cell is the suggestion computed from your strategy and linked task completion.',
-    );
+    expect(capturedProps.title).toBe('detail.residualRiskChartTitle');
+    expect(capturedProps.description).toBe('detail.residualRiskChartDescription');
     expect(capturedProps.riskId).toBe('vendor-1');
     expect(capturedProps.activeLikelihood).toBe('unlikely');
     expect(capturedProps.activeImpact).toBe('minor');

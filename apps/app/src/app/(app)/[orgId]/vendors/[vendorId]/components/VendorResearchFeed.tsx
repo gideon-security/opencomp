@@ -3,6 +3,7 @@
 import { Text } from '@trycompai/design-system';
 import { Checkmark } from '@trycompai/design-system/icons';
 import { motion } from 'motion/react';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 
 export type MessageType = 'searching' | 'found' | 'analyzing' | 'error';
@@ -371,6 +372,7 @@ export function VendorResearchFeed({
   const assessments = findings.filter((f) => f.kind === 'assessment');
   const news = findings.filter((f) => f.kind === 'news');
   const totalFindings = findings.length;
+  const t = useTranslations('vendor');
 
   const pendingIndices = useMemo(() => {
     const indices: number[] = [];
@@ -410,7 +412,7 @@ export function VendorResearchFeed({
         <div className="flex items-center gap-3">
           {totalFindings > 0 && (
             <span className="text-xs text-muted-foreground tabular-nums">
-              {totalFindings} {totalFindings === 1 ? 'finding' : 'findings'}
+              {t('detail.findingsCount', { count: totalFindings })}
             </span>
           )}
         </div>
@@ -427,7 +429,7 @@ export function VendorResearchFeed({
           />
         )}
         <CategoryCard
-          label="Certifications"
+          label={t('detail.researchCertifications')}
           items={certs}
           isActive={isActive}
           color="success"
@@ -435,7 +437,7 @@ export function VendorResearchFeed({
           cardRef={setCardRef(0)}
         />
         <CategoryCard
-          label="Security Links"
+          label={t('detail.researchSecurityLinks')}
           items={links}
           isActive={isActive}
           color="primary"
@@ -443,7 +445,7 @@ export function VendorResearchFeed({
           cardRef={setCardRef(1)}
         />
         <CategoryCard
-          label="Security Assessment"
+          label={t('detail.researchSecurityAssessment')}
           items={assessments}
           isActive={isActive}
           color="success"
@@ -451,7 +453,7 @@ export function VendorResearchFeed({
           cardRef={setCardRef(2)}
         />
         <CategoryCard
-          label="Recent News"
+          label={t('detail.researchRecentNews')}
           items={news}
           isActive={isActive}
           color="primary"

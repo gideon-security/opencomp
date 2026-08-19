@@ -15,10 +15,12 @@ import {
   Warning,
 } from '@carbon/icons-react';
 import { canAccessRoute, type UserPermissions } from '@/lib/permissions';
+import type { NavMessageKey } from '@/i18n/keys';
 import type { CommandSearchGroup } from '@trycompai/design-system';
 import type { ReactNode } from 'react';
 
 interface AppShellSearchGroupsParams {
+  t: (key: NavMessageKey) => string;
   organizationId: string;
   router: {
     push: (href: string) => void;
@@ -61,6 +63,7 @@ const createNavItem = ({
 });
 
 export const getAppShellSearchGroups = ({
+  t,
   organizationId,
   router,
   permissions,
@@ -79,7 +82,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'overview',
-            label: 'Overview',
+            label: t('overview'),
             icon: <Dashboard size={16} />,
             path: `/${organizationId}/overview`,
             keywords: ['dashboard', 'home', 'overview'],
@@ -91,7 +94,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'frameworks',
-            label: 'Frameworks',
+            label: t('frameworks'),
             icon: <Security size={16} />,
             path: `/${organizationId}/frameworks`,
             keywords: ['frameworks', 'compliance', 'standards'],
@@ -105,7 +108,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'auditor',
-            label: 'Auditor View',
+            label: t('auditorView'),
             icon: <TaskComplete size={16} />,
             path: `/${organizationId}/auditor`,
             keywords: ['audit', 'review'],
@@ -117,7 +120,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'policies',
-            label: 'Policies',
+            label: t('policies'),
             icon: <Policy size={16} />,
             path: `/${organizationId}/policies`,
             keywords: ['policy', 'documents'],
@@ -129,7 +132,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'evidence',
-            label: 'Evidence',
+            label: t('evidence'),
             icon: <ListChecked size={16} />,
             path: `/${organizationId}/tasks`,
             keywords: ['tasks', 'evidence', 'artifacts'],
@@ -141,7 +144,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'trust',
-            label: 'Trust',
+            label: t('trust'),
             icon: <Task size={16} />,
             path: `/${organizationId}/trust`,
             keywords: ['trust center', 'portal'],
@@ -153,7 +156,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'security',
-            label: 'Security',
+            label: t('security'),
             icon: <Security size={16} />,
             path: `/${organizationId}/security`,
             keywords: ['security', 'vulnerability', 'reports'],
@@ -165,7 +168,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'documents',
-            label: 'Documents',
+            label: t('documents'),
             icon: <Catalog size={16} />,
             path: `/${organizationId}/documents`,
             keywords: ['company', 'tasks', 'forms', 'evidence submissions', 'documents'],
@@ -177,7 +180,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'people',
-            label: 'People',
+            label: t('people'),
             icon: <Group size={16} />,
             path: `/${organizationId}/people/all`,
             keywords: ['users', 'team', 'members', 'employees'],
@@ -189,7 +192,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'risks',
-            label: 'Risks',
+            label: t('risks'),
             icon: <Warning size={16} />,
             path: `/${organizationId}/risk`,
             keywords: ['risk management', 'assessment'],
@@ -201,7 +204,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'vendors',
-            label: 'Vendors',
+            label: t('vendors'),
             icon: <ShoppingBag size={16} />,
             path: `/${organizationId}/vendors`,
             keywords: ['suppliers', 'third party'],
@@ -213,7 +216,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'questionnaire',
-            label: 'Questionnaire',
+            label: t('questionnaire'),
             icon: <Document size={16} />,
             path: `/${organizationId}/questionnaire`,
             keywords: ['survey', 'questions'],
@@ -225,7 +228,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'integrations',
-            label: 'Integrations',
+            label: t('integrations'),
             icon: <Integration size={16} />,
             path: `/${organizationId}/integrations`,
             keywords: ['connect', 'apps', 'services'],
@@ -237,7 +240,7 @@ export const getAppShellSearchGroups = ({
       ? [
           createNavItem({
             id: 'cloud-tests',
-            label: 'Cloud Tests',
+            label: t('cloudTests'),
             icon: <Chemistry size={16} />,
             path: `/${organizationId}/cloud-tests`,
             keywords: ['testing', 'cloud', 'infrastructure'],
@@ -252,7 +255,7 @@ export const getAppShellSearchGroups = ({
       ? [
           {
             id: 'navigation',
-            label: 'Navigation',
+            label: t('navigation'),
             items: baseItems,
           },
         ]
@@ -261,11 +264,11 @@ export const getAppShellSearchGroups = ({
       ? [
           {
             id: 'settings',
-            label: 'Settings',
+            label: t('settings'),
             items: [
               createNavItem({
                 id: 'settings-general',
-                label: 'General Settings',
+                label: t('generalSettings'),
                 icon: <Settings size={16} />,
                 path: `/${organizationId}/settings`,
                 keywords: ['preferences', 'configuration'],

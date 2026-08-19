@@ -10,12 +10,13 @@ import { Textarea } from '@gideon-defender/ui/textarea';
 import { type Member, type User, VendorCategory, VendorStatus } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
+import { z } from 'zod';
 import { VendorNameAutocompleteField } from './VendorNameAutocompleteField';
-import { createVendorSchema, type CreateVendorFormValues } from './create-vendor-form-schema';
 
 export function CreateVendorForm({
   assignees,
@@ -29,8 +30,24 @@ export function CreateVendorForm({
   const { mutate } = useSWRConfig();
   const { createVendor } = useVendorActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations('vendor');
+  const tCommon = useTranslations('overview');
 
   const pendingWebsiteRef = useRef<string | null>(null);
+
+  const createVendorSchema = z.object({
+    name: z.string().trim().min(1, t('create.nameRequired')),
+    website: z
+      .union([z.string().url(t('create.urlInvalidCreate')), z.literal('')])
+      .transform((value) => (value === '' ? undefined : value))
+      .optional(),
+    description: z.string().optional(),
+    category: z.nativeEnum(VendorCategory),
+    status: z.nativeEnum(VendorStatus),
+    assigneeId: z.string().optional(),
+  });
+
+  type CreateVendorFormValues = z.infer<typeof createVendorSchema>;
 
   const form = useForm<CreateVendorFormValues>({
     resolver: zodResolver(createVendorSchema),
@@ -80,11 +97,11 @@ export function CreateVendorForm({
         { revalidate: true },
       );
 
-      toast.success('Vendor created successfully');
+      toast.success(t('create.vendorCreated'));
       onSuccess?.();
     } catch (error) {
       pendingWebsiteRef.current = null;
-      toast.error(error instanceof Error ? error.message : 'Failed to create vendor');
+      toast.error(error instanceof Error ? error.message : t('create.vendorCreateFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -102,9 +119,9 @@ export function CreateVendorForm({
               name="website"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{'Website'}</FormLabel>
+                  <FormLabel>{t('create.website')}</FormLabel>
                   <FormControl>
-                    <Input {...field} className="mt-3" placeholder={'https://example.com'} />
+                    <Input {...field} className="mt-3" placeholder={t('create.websitePlaceholder')} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,12 +132,12 @@ export function CreateVendorForm({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{'Description'}</FormLabel>
+                  <FormLabel>{tCommon('common.description')}</FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}
                       className="mt-3 min-h-[80px]"
-                      placeholder={'Enter a description for the vendor...'}
+                      placeholder={t('create.vendorDescriptionPlaceholder2')}
                     />
                   </FormControl>
                   <FormMessage />
@@ -132,12 +149,12 @@ export function CreateVendorForm({
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{'Category'}</FormLabel>
+                  <FormLabel>{t('create.category')}</FormLabel>
                   <FormControl>
                     <div className="mt-3">
                       <Select {...field} value={field.value} onValueChange={field.onChange}>
                         <SelectTrigger>
-                          <SelectValue placeholder={'Select a category...'} />
+                          <SelectValue placeholder={t('create.selectCategory')} />
                         </SelectTrigger>
                         <SelectContent>
                           {Object.values(VendorCategory).map((category) => {
@@ -165,12 +182,12 @@ export function CreateVendorForm({
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{'Status'}</FormLabel>
+                  <FormLabel>{t('create.status')}</FormLabel>
                   <FormControl>
                     <div className="mt-3">
                       <Select {...field} value={field.value} onValueChange={field.onChange}>
                         <SelectTrigger>
-                          <SelectValue placeholder={'Select a status...'} />
+                          <SelectValue placeholder={t('create.selectStatus')} />
                         </SelectTrigger>
                         <SelectContent>
                           {Object.values(VendorStatus).map((status) => {
@@ -198,7 +215,7 @@ export function CreateVendorForm({
               name="assigneeId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{'Assignee'}</FormLabel>
+                  <FormLabel>{t('create.assignee')}</FormLabel>
                   <FormControl>
                     <div className="mt-3">
                       <SelectAssignee
@@ -218,7 +235,7 @@ export function CreateVendorForm({
           <div className="mt-4 flex justify-end">
             <Button type="submit" variant="default" disabled={isSubmitting}>
               <div className="flex items-center justify-center">
-                {'Create Vendor'}
+                {t('create.createVendor')}
                 <ArrowRightIcon className="ml-2 h-4 w-4" />
               </div>
             </Button>

@@ -1,5 +1,8 @@
 import { render, renderHook, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 // The live posthog-js value is controlled per-test. `undefined` simulates a
 // client whose /ingest/flags request is blocked (ad blocker, privacy browser,
@@ -117,7 +120,7 @@ describe('OverviewTabs timeline gating', () => {
       </ServerFeatureFlagsProvider>,
     );
 
-    expect(screen.getByText('Timeline')).toBeInTheDocument();
+    expect(screen.getByText('overviewPage.timeline')).toBeInTheDocument();
   });
 
   it('hides the Timeline tab when the flag is off everywhere', () => {
@@ -129,7 +132,7 @@ describe('OverviewTabs timeline gating', () => {
       </ServerFeatureFlagsProvider>,
     );
 
-    expect(screen.queryByText('Timeline')).not.toBeInTheDocument();
+    expect(screen.queryByText('overviewPage.timeline')).not.toBeInTheDocument();
   });
 
   it('shows the Timeline tab from the live client flag without server flags', () => {
@@ -137,6 +140,6 @@ describe('OverviewTabs timeline gating', () => {
 
     render(<OverviewTabs />);
 
-    expect(screen.getByText('Timeline')).toBeInTheDocument();
+    expect(screen.getByText('overviewPage.timeline')).toBeInTheDocument();
   });
 });

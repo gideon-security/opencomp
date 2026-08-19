@@ -16,6 +16,7 @@ import {
 } from '@trycompai/design-system';
 import { ArrowDown, ArrowUp, ArrowsVertical, Search } from '@trycompai/design-system/icons';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
@@ -76,15 +77,6 @@ function getFrameworkBadge(name: string): string | null {
   return null;
 }
 
-function getFrameworkStatus(complianceScore: number): {
-  label: string;
-  variant: 'default' | 'secondary' | 'destructive';
-} {
-  if (complianceScore >= 100) return { label: 'Compliant', variant: 'default' };
-  if (complianceScore > 0) return { label: 'In Progress', variant: 'secondary' };
-  return { label: 'Not Started', variant: 'destructive' };
-}
-
 function SortIcon({
   column,
   sortColumn,
@@ -110,6 +102,8 @@ export function FrameworksTable({
   organizationId,
 }: FrameworksTableProps) {
   const router = useRouter();
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortColumn, setSortColumn] = useState<SortColumn>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -167,7 +161,7 @@ export function FrameworksTable({
             <Search size={16} />
           </InputGroupAddon>
           <InputGroupInput
-            placeholder="Search frameworks..."
+            placeholder={t('list.searchPlaceholder')}
             value={searchTerm}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
           />
@@ -176,7 +170,7 @@ export function FrameworksTable({
 
       {filteredAndSorted.length === 0 ? (
         <div className="flex h-32 items-center justify-center">
-          <Text variant="muted">No frameworks found.</Text>
+          <Text variant="muted">{t('list.noFrameworks')}</Text>
         </div>
       ) : (
         <Table variant="bordered">
@@ -189,11 +183,11 @@ export function FrameworksTable({
                   style={{ cursor: 'pointer' }}
                   onClick={() => handleSort('name')}
                 >
-                  <span>Framework</span>
+                  <span>{t('list.tableFramework')}</span>
                   <SortIcon column="name" sortColumn={sortColumn} sortDirection={sortDirection} />
                 </HStack>
               </TableHead>
-              <TableHead>Description</TableHead>
+              <TableHead>{tCommon('common.description')}</TableHead>
               <TableHead>
                 <HStack
                   gap="xs"
@@ -201,7 +195,7 @@ export function FrameworksTable({
                   style={{ cursor: 'pointer' }}
                   onClick={() => handleSort('compliance')}
                 >
-                  <span>Compliance</span>
+                  <span>{t('list.tableCompliance')}</span>
                   <SortIcon
                     column="compliance"
                     sortColumn={sortColumn}
@@ -216,7 +210,7 @@ export function FrameworksTable({
                   style={{ cursor: 'pointer' }}
                   onClick={() => handleSort('controls')}
                 >
-                  <span>Controls</span>
+                  <span>{t('list.tableControls')}</span>
                   <SortIcon
                     column="controls"
                     sortColumn={sortColumn}
@@ -224,14 +218,19 @@ export function FrameworksTable({
                   />
                 </HStack>
               </TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{tCommon('common.status')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredAndSorted.map((fw) => {
               const score = complianceMap[fw.id] ?? 0;
               const roundedScore = Math.round(score);
-              const status = getFrameworkStatus(score);
+              const status =
+                score >= 100
+                  ? { label: t('list.statusCompliant'), variant: 'default' as const }
+                  : score > 0
+                    ? { label: t('list.statusInProgress'), variant: 'secondary' as const }
+                    : { label: t('list.statusNotStarted'), variant: 'destructive' as const };
               const name = frameworkName(fw);
               const description = frameworkDescription(fw);
               const badgeSrc = getFrameworkBadge(name);

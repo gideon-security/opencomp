@@ -9,6 +9,7 @@ import type {
   RequirementMap,
   Task,
 } from '@db';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ControlHeaderActions } from './components/ControlHeaderActions';
@@ -36,6 +37,7 @@ interface ControlPageProps {
 
 export default async function ControlPage({ params }: ControlPageProps) {
   const { controlId, orgId } = await Promise.resolve(params);
+  const t = await getTranslations('controls');
 
   const controlRes = await serverApi.get<ControlDetail>(
     `/v1/controls/${controlId}`,
@@ -58,7 +60,7 @@ export default async function ControlPage({ params }: ControlPageProps) {
       <Breadcrumb
         items={[
           {
-            label: 'Controls',
+            label: t('breadcrumbControls'),
             href: `/${orgId}/controls`,
             props: { render: <Link href={`/${orgId}/controls`} /> },
           },

@@ -1,6 +1,7 @@
 import { Button } from '@gideon-defender/ui/button';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 interface OnboardingFormActionsProps {
@@ -24,6 +25,7 @@ export function OnboardingFormActions({
   onPrefillAll,
   hasOtherOrgs = false,
 }: OnboardingFormActionsProps) {
+  const t = useTranslations('setup');
   // Check if we're on localhost - use useState/useEffect to avoid hydration mismatch
   const [isLocalhost, setIsLocalhost] = useState(false);
 
@@ -48,7 +50,7 @@ export function OnboardingFormActions({
           onClick={() => { window.location.assign('/'); }}
           disabled={isSubmitting}
         >
-          Cancel
+          {t('cancel')}
         </Button>
       )}
       {isLocalhost && onPrefillAll && stepIndex === 0 && (
@@ -59,7 +61,7 @@ export function OnboardingFormActions({
           onClick={onPrefillAll}
           disabled={isSubmitting}
         >
-          Complete
+          {t('complete')}
         </Button>
       )}
       <AnimatePresence>
@@ -78,7 +80,7 @@ export function OnboardingFormActions({
               onClick={onBack}
               disabled={isSubmitting || stepIndex === 0} // stepIndex === 0 check is redundant due to conditional rendering but good for safety
             >
-              Previous
+              {t('previous')}
             </Button>
           </motion.div>
         )}
@@ -107,7 +109,7 @@ export function OnboardingFormActions({
               className="flex items-center gap-2"
             >
               {isOnboarding && <Loader2 className="h-4 w-4 animate-spin" />}
-              Complete
+              {t('complete')}
             </motion.span>
           </Button>
         ) : (
@@ -126,7 +128,7 @@ export function OnboardingFormActions({
               transition={{ duration: 0.2 }}
               className="flex items-center"
             >
-              Continue
+              {t('continue')}
             </motion.span>
           </Button>
         )}

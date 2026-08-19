@@ -1,6 +1,7 @@
 import { AppOnboarding } from '@/components/app-onboarding';
 import { serverApi } from '@/lib/api-server';
 import { PageHeader, PageLayout } from '@trycompai/design-system';
+import { getTranslations } from 'next-intl/server';
 import { CreateVendorSheet } from '../components/create-vendor-sheet';
 import { VendorsTable } from './components/VendorsTable';
 
@@ -33,6 +34,7 @@ export default async function Page({
   params: Promise<{ orgId: string }>;
 }) {
   const { orgId } = await params;
+  const t = await getTranslations('vendor');
 
   const [vendorsResult, peopleResult, onboardingResult] = await Promise.all([
     serverApi.get<VendorsApiResponse>('/v1/vendors'),
@@ -63,34 +65,31 @@ export default async function Page({
       <PageLayout
         header={
           <PageHeader
-            title="Vendors"
+            title={t('list.title')}
             actions={<CreateVendorSheet assignees={assignees as any} organizationId={orgId} />}
           />
         }
       >
         <AppOnboarding
-          title={'Vendor Management'}
-          description={'Manage your vendors and ensure your organization is protected.'}
-          cta={'Add vendor'}
+          title={t('list.onboardingTitle')}
+          description={t('list.onboardingDescription')}
+          cta={t('list.onboardingCta')}
           imageSrcLight="/onboarding/vendor-light.webp"
           imageSrcDark="/onboarding/vendor-dark.webp"
-          imageAlt="Vendor Management"
+          imageAlt={t('list.imageAlt')}
           sheetName="createVendorSheet"
           faqs={[
             {
-              questionKey: 'What is vendor management?',
-              answerKey:
-                'Vendor management is the process of managing, and controlling relationships and agreements with third-party suppliers of goods and services.',
+              questionKey: t('list.faq1Question'),
+              answerKey: t('list.faq1Answer'),
             },
             {
-              questionKey: 'Why is vendor management important?',
-              answerKey:
-                'It helps to ensure that you are getting the most value from your vendors, while also minimizing risks and maintaining compliance.',
+              questionKey: t('list.faq2Question'),
+              answerKey: t('list.faq2Answer'),
             },
             {
-              questionKey: 'What are the key steps in vendor management?',
-              answerKey:
-                'The key steps include vendor selection, contract negotiation, performance monitoring, risk management, and relationship management.',
+              questionKey: t('list.faq3Question'),
+              answerKey: t('list.faq3Answer'),
             },
           ]}
         />
@@ -102,7 +101,7 @@ export default async function Page({
     <PageLayout
       header={
         <PageHeader
-          title="Vendors"
+          title={t('list.title')}
           actions={<CreateVendorSheet assignees={assignees as any} organizationId={orgId} />}
         />
       }

@@ -9,6 +9,7 @@ import {
 } from '@gideon-defender/ui/dropdown-menu';
 import type { Control } from '@db';
 import { MoreVertical, Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { ControlDeleteDialog } from './ControlDeleteDialog';
 import { usePermissions } from '@/hooks/use-permissions';
@@ -21,6 +22,7 @@ export function ControlHeaderActions({ control }: ControlHeaderActionsProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { hasPermission } = usePermissions();
+  const tCommon = useTranslations('overview');
 
   const canDelete = hasPermission('control', 'delete');
 
@@ -43,7 +45,7 @@ export function ControlHeaderActions({ control }: ControlHeaderActionsProps) {
             className="text-destructive focus:text-destructive"
           >
             <Trash2 className="mr-2 h-4 w-4" />
-            Delete
+            {tCommon('common.delete')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

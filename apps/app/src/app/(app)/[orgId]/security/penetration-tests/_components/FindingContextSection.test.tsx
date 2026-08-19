@@ -2,9 +2,13 @@ import type {
   PentestFindingContext,
   PentestIssue,
 } from '@/lib/security/penetration-tests-client';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+mockNextIntl();
+
 import { FindingContextSection } from './FindingContextSection';
 
 const permissionsMock = vi.hoisted(() => ({
@@ -85,7 +89,7 @@ describe('FindingContextSection', () => {
   it('renders nothing for read-only users when there is no saved note', () => {
     renderSection();
 
-    expect(screen.queryByText(/retest context/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^penTest\.findingContext\.retestContext$/)).not.toBeInTheDocument();
   });
 
   it('shows the saved note read-only to users without pentest:update', () => {
@@ -93,13 +97,15 @@ describe('FindingContextSection', () => {
 
     renderSection();
 
-    expect(screen.getByText(/retest context/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/^penTest\.findingContext\.retestContext$/),
+    ).toBeInTheDocument();
     expect(
       screen.getByText('Accepted by design — non-secret bootstrap config.'),
     ).toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: /save context/i }),
+      screen.queryByRole('button', { name: /saveContext/i }),
     ).not.toBeInTheDocument();
   });
 
@@ -114,7 +120,7 @@ describe('FindingContextSection', () => {
       screen.getByRole('textbox'),
       'Accepted by design — reads are non-sensitive.',
     );
-    await user.click(screen.getByRole('button', { name: /save context/i }));
+    await user.click(screen.getByRole('button', { name: /saveContext/i }));
 
     await waitFor(() => {
       expect(contextsMock.saveContext).toHaveBeenCalledWith({
@@ -147,7 +153,7 @@ describe('FindingContextSection', () => {
       screen.getByRole('textbox'),
       'Accepted by design — reads are non-sensitive.',
     );
-    await user.click(screen.getByRole('button', { name: /save context/i }));
+    await user.click(screen.getByRole('button', { name: /saveContext/i }));
 
     await waitFor(() => {
       expect(contextsMock.saveContext).toHaveBeenCalledWith({
@@ -167,10 +173,10 @@ describe('FindingContextSection', () => {
     renderSection();
 
     expect(
-      screen.getByRole('button', { name: /update context/i }),
+      screen.getByRole('button', { name: /updateContext/i }),
     ).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: /^remove$/i }));
+    await user.click(screen.getByRole('button', { name: /common\.remove/i }));
 
     await waitFor(() => {
       expect(contextsMock.removeContext).toHaveBeenCalledWith('issue_1');

@@ -30,6 +30,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Launch, Search } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -50,6 +51,7 @@ export function FrameworkControls({
     frameworkInstanceId: string;
   }>();
   const router = useRouter();
+  const t = useTranslations('frameworks');
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
@@ -104,7 +106,7 @@ export function FrameworkControls({
             <Search size={16} />
           </InputGroupAddon>
           <InputGroupInput
-            placeholder="Search controls..."
+            placeholder={t('controlsTable.searchPlaceholder')}
             value={searchTerm}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
           />
@@ -126,13 +128,13 @@ export function FrameworkControls({
       >
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Requirement</TableHead>
-            <TableHead>Compliance</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Policies</TableHead>
-            <TableHead>Tasks</TableHead>
-            <TableHead>Documents</TableHead>
+            <TableHead>{t('controlsTable.columnName')}</TableHead>
+            <TableHead>{t('controlsTable.columnRequirement')}</TableHead>
+            <TableHead>{t('controlsTable.columnCompliance')}</TableHead>
+            <TableHead>{t('controlsTable.columnStatus')}</TableHead>
+            <TableHead>{t('controlsTable.columnPolicies')}</TableHead>
+            <TableHead>{t('controlsTable.columnTasks')}</TableHead>
+            <TableHead>{t('controlsTable.columnDocuments')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -140,7 +142,7 @@ export function FrameworkControls({
             <TableRow>
               <TableCell colSpan={7}>
                 <Text size="sm" variant="muted">
-                  No controls found.
+                  {t('controlsTable.noControls')}
                 </Text>
               </TableCell>
             </TableRow>
@@ -156,7 +158,7 @@ export function FrameworkControls({
                 documentTypes,
                 evidenceSubmissions,
               );
-              const badge = getStatusBadge(status);
+              const badge = getStatusBadge(status, t);
               const compliancePercent = getControlProgressPercent(
                 policies,
                 tasks,

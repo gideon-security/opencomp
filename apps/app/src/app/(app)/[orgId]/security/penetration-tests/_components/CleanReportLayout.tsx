@@ -2,6 +2,7 @@
 
 import { Button } from '@trycompai/design-system';
 import { Document, Download } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import type {
   PentestAgentEvent,
   PentestRun,
@@ -45,30 +46,30 @@ export function CleanReportLayout({
   onDownloadPdf,
   onReRun,
 }: CleanReportLayoutProps) {
+  const t = useTranslations('security');
   const durationMs = computeDurationMs(run.createdAt, run.updatedAt);
 
   return (
     <div className="space-y-6">
-      <HeroRow run={run} durationMs={durationMs} />
+      <HeroRow run={run} durationMs={durationMs} t={t} />
 
-      <SeveritySummaryLine />
+      <SeveritySummaryLine t={t} />
 
       <AttachToAuditCta
         onDownloadMarkdown={onDownloadMarkdown}
         onDownloadPdf={onDownloadPdf}
+        t={t}
       />
 
       {onReRun ? (
         <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>
-            Re-run for an updated attestation when your stack changes.
-          </span>
+          <span>{t('penTest.cleanReport.reRunForAttestation')}</span>
           <button
             type="button"
             onClick={onReRun}
             className="font-medium text-foreground hover:underline"
           >
-            Re-run scan →
+            {t('penTest.cleanReport.reRunScan')}
           </button>
         </div>
       ) : null}
@@ -79,9 +80,10 @@ export function CleanReportLayout({
 interface HeroRowProps {
   run: PentestRun;
   durationMs: number;
+  t: ReturnType<typeof useTranslations<'security'>>;
 }
 
-function HeroRow({ run, durationMs }: HeroRowProps) {
+function HeroRow({ run, durationMs, t }: HeroRowProps) {
   return (
     <section>
       {/* Single-column hero. Hierarchy comes from size (32px headline
@@ -91,7 +93,7 @@ function HeroRow({ run, durationMs }: HeroRowProps) {
           rendering only duplicates of those values once Maced's
           stale-`updatedAt` data forced us to hide the timestamp. */}
       <h2 className="text-[32px] font-normal leading-[1.1] tracking-[-0.02em]">
-        No findings reported in this scan
+        {t('penTest.cleanReport.noFindings')}
       </h2>
       <p className="mt-2 truncate font-mono text-xs text-muted-foreground">
         <span className="text-foreground">{run.targetUrl}</span>
@@ -102,21 +104,26 @@ function HeroRow({ run, durationMs }: HeroRowProps) {
             The real duration is in the `pentest.completed` webhook
             payload; persisting it is a follow-up. */}
         {durationMs >= 60_000
-          ? ` · Completed in ${formatDurationLabel(durationMs)}`
+          ? t('penTest.cleanReport.completedIn', {
+              duration: formatDurationLabel(durationMs),
+            })
           : ''}
       </p>
       <p className="mt-3 max-w-prose text-xs text-muted-foreground">
-        The downloaded report is the complete assessment record —
-        always reference it for full context.
+        {t('penTest.cleanReport.reportNote')}
       </p>
     </section>
   );
 }
 
-function SeveritySummaryLine() {
+function SeveritySummaryLine({
+  t,
+}: {
+  t: ReturnType<typeof useTranslations<'security'>>;
+}) {
   return (
     <div className="font-mono text-[11px] text-muted-foreground">
-      0 critical · 0 high · 0 medium · 0 low · 0 info
+      {t('penTest.cleanReport.severitySummary')}
     </div>
   );
 }
@@ -124,19 +131,23 @@ function SeveritySummaryLine() {
 interface AttachToAuditCtaProps {
   onDownloadMarkdown: () => void;
   onDownloadPdf: () => void;
+  t: ReturnType<typeof useTranslations<'security'>>;
 }
 
 function AttachToAuditCta({
   onDownloadMarkdown,
   onDownloadPdf,
+  t,
 }: AttachToAuditCtaProps) {
   return (
     <section className="rounded-[var(--radius)] bg-muted/40 p-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <h3 className="text-base font-medium">Attach to audit</h3>
+          <h3 className="text-base font-medium">
+            {t('penTest.cleanReport.attachToAudit')}
+          </h3>
           <p className="mt-1 text-xs text-muted-foreground">
-            Timestamped, evidence-grade output for audits and security reviews.
+            {t('penTest.cleanReport.attachToAuditDescription')}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -146,11 +157,11 @@ function AttachToAuditCta({
               users toward a format that may not match their workflow. */}
           <Button variant="outline" onClick={onDownloadMarkdown}>
             <Document className="h-3.5 w-3.5" />
-            Markdown
+            {t('penTest.cleanReport.markdown')}
           </Button>
           <Button variant="outline" onClick={onDownloadPdf}>
             <Download className="h-3.5 w-3.5" />
-            PDF
+            {t('penTest.cleanReport.pdf')}
           </Button>
         </div>
       </div>

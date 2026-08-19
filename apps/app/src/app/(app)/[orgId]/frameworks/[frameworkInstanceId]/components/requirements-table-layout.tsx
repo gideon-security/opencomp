@@ -1,4 +1,7 @@
+'use client';
+
 import { TableHead, TableHeader, TableRow } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import type { CSSProperties } from 'react';
 
 interface RequirementsTableColumn {
@@ -9,15 +12,15 @@ interface RequirementsTableColumn {
 }
 
 const REQUIREMENTS_TABLE_COLUMNS = [
-  { id: 'identifier', label: 'Identifier', width: '10%' },
-  { id: 'name', label: 'Name', width: '19%' },
-  { id: 'description', label: 'Description', width: '22%' },
-  { id: 'compliance', label: 'Compliance', width: '13%' },
-  { id: 'status', label: 'Status', width: '11%' },
-  { id: 'controls', label: 'Controls', width: '7%' },
-  { id: 'policies', label: 'Policies', width: '6.5%' },
-  { id: 'tasks', label: 'Tasks', width: '5.5%' },
-  { id: 'documents', label: 'Docs', title: 'Documents', width: '6%' },
+  { id: 'identifier', label: 'controlsTable.columnIdentifier', width: '10%' },
+  { id: 'name', label: 'controlsTable.columnName', width: '19%' },
+  { id: 'description', label: 'controlsTable.columnDescription', width: '22%' },
+  { id: 'compliance', label: 'controlsTable.columnCompliance', width: '13%' },
+  { id: 'status', label: 'controlsTable.columnStatus', width: '11%' },
+  { id: 'controls', label: 'controlsTable.columnControls', width: '7%' },
+  { id: 'policies', label: 'controlsTable.columnPolicies', width: '6.5%' },
+  { id: 'tasks', label: 'controlsTable.columnTasks', width: '5.5%' },
+  { id: 'documents', label: 'controlsTable.columnDocs', title: 'controlsTable.columnDocuments', width: '6%' },
 ] as const satisfies readonly RequirementsTableColumn[];
 
 export const REQUIREMENTS_TABLE_COLUMN_COUNT = REQUIREMENTS_TABLE_COLUMNS.length;
@@ -37,6 +40,7 @@ export function RequirementsTableColumnGroup() {
 }
 
 export function RequirementsTableHeader() {
+  const t = useTranslations('frameworks');
   return (
     <TableHeader>
       <TableRow>
@@ -44,9 +48,9 @@ export function RequirementsTableHeader() {
           <TableHead
             key={column.id}
             style={{ width: column.width }}
-            title={'title' in column ? column.title : undefined}
+            title={'title' in column ? t(column.title) : undefined}
           >
-            {column.label}
+            {t(column.label)}
           </TableHead>
         ))}
       </TableRow>

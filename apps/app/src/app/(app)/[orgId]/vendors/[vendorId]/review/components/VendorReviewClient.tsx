@@ -3,6 +3,7 @@
 import { VendorRiskAssessmentView } from '@/components/vendor-risk-assessment/VendorRiskAssessmentView';
 import { useTaskItems } from '@/hooks/use-task-items';
 import { useVendor, type VendorResponse } from '@/hooks/use-vendors';
+import { useTranslations } from 'next-intl';
 import { useEffect, useMemo } from 'react';
 
 interface VendorReviewClientProps {
@@ -18,6 +19,7 @@ export function VendorReviewClient({
   vendorId,
   initialVendor,
 }: VendorReviewClientProps) {
+  const t = useTranslations('vendor');
   // Use SWR for real-time updates with polling (5s default)
   const { vendor: swrVendor } = useVendor(vendorId, {
     initialData: initialVendor,
@@ -73,7 +75,7 @@ export function VendorReviewClient({
     return (
       <VendorRiskAssessmentView
         source={{
-          title: 'Risk Assessment',
+          title: t('detail.riskAssessmentTitle'),
           description: JSON.stringify(riskAssessmentData),
           createdAt: riskAssessmentUpdatedAt ?? vendor.updatedAt,
           entityType: 'vendor',
@@ -94,11 +96,10 @@ export function VendorReviewClient({
           </div>
           <div className="flex flex-col items-center gap-1.5 text-center">
             <p className="text-sm font-medium text-foreground">
-              Analyzing vendor risk profile
+              {t('detail.analyzingRiskProfile')}
             </p>
             <p className="text-sm text-muted-foreground max-w-md">
-              We're researching this vendor and generating a comprehensive risk
-              assessment. This typically takes 3-8 minutes.
+              {t('detail.analyzingRiskProfileDescription')}
             </p>
           </div>
         </div>
@@ -111,7 +112,7 @@ export function VendorReviewClient({
     <div className="rounded-lg border border-border bg-card p-8">
       <div className="flex flex-col items-center gap-3 text-center">
         <p className="text-sm text-muted-foreground">
-          No risk assessment available for this vendor.
+          {t('detail.noRiskAssessmentAvailable')}
         </p>
       </div>
     </div>

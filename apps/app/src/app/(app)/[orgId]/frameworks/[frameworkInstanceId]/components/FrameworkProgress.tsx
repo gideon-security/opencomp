@@ -7,6 +7,7 @@ import {
   getControlStatus,
   getFrameworkAggregatePercent,
 } from '@/lib/control-compliance';
+import { useTranslations } from 'next-intl';
 import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function FrameworkProgress({ framework, tasks, evidenceSubmissions }: Props) {
+  const t = useTranslations('frameworks');
   const allControls = framework.controls ?? [];
   const totalControls = allControls.length;
 
@@ -39,15 +41,15 @@ export function FrameworkProgress({ framework, tasks, evidenceSubmissions }: Pro
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-6 text-sm">
-        <Badge variant={variant}>{percent}% compliant</Badge>
+        <Badge variant={variant}>{t('instance.percentCompliant', { percent })}</Badge>
         <Text size="sm" variant="muted">
-          {compliantControls} completed
+          {t('instance.controlsCompleted', { count: compliantControls })}
         </Text>
         <Text size="sm" variant="muted">
-          {remaining} remaining
+          {t('instance.controlsRemaining', { count: remaining })}
         </Text>
         <Text size="sm" variant="muted">
-          {totalControls} total controls
+          {t('instance.totalControls', { count: totalControls })}
         </Text>
       </div>
       <div className="h-2 w-full rounded-full bg-muted/50">

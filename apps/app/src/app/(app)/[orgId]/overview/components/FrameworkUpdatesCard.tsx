@@ -12,6 +12,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { ChevronUp, Upgrade } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -21,6 +22,7 @@ import { useState } from 'react';
  * updates, so it's safe to mount unconditionally.
  */
 export function FrameworkUpdatesCard() {
+  const t = useTranslations('overview');
   const { data: statuses } = useFrameworkUpdateStatuses();
   const { hasPermission } = usePermissions();
   const router = useRouter();
@@ -42,12 +44,14 @@ export function FrameworkUpdatesCard() {
               <Upgrade size={16} />
             </div>
             <Text size="sm" weight="medium">
-              {count} framework {count === 1 ? 'update' : 'updates'} available
+              {t('findings.updatesAvailable', { count })}
             </Text>
-            <Badge variant="default">NEW</Badge>
+            <Badge variant="default">{t('findings.newLabel')}</Badge>
           </HStack>
           <CollapsibleTrigger className="flex cursor-pointer items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {open ? `Hide ${count}` : `Show ${count}`}
+            {open
+              ? t('findings.hideCount', { count })
+              : t('findings.showCount', { count })}
             <ChevronUp
               size={16}
               className={`transition-transform ${open ? '' : 'rotate-180'}`}
@@ -66,7 +70,7 @@ export function FrameworkUpdatesCard() {
               >
                 <HStack gap="4" align="center">
                   <Text size="sm" weight="medium">
-                    {status.frameworkName ?? 'Framework'}
+                    {status.frameworkName ?? t('findings.framework')}
                   </Text>
                   <Text size="sm" variant="muted">
                     v{status.currentVersion?.version ?? '—'} → v
@@ -83,7 +87,7 @@ export function FrameworkUpdatesCard() {
                       )
                     }
                   >
-                    Review update
+                    {t('findings.reviewUpdate')}
                   </Button>
                 )}
               </div>

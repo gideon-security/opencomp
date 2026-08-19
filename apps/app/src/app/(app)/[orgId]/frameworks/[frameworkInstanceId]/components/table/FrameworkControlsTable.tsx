@@ -3,6 +3,7 @@
 import { Loading } from '@/components/tables/risk-tasks/loading';
 import { Table, TableBody, TableCell, TableRow } from '@gideon-defender/ui/table';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { useTranslations } from 'next-intl';
 import { Suspense } from 'react';
 import {
   FrameworkControlsTableColumns,
@@ -15,6 +16,7 @@ interface DataTableProps {
 }
 
 export function FrameworkControlsTable({ data }: DataTableProps) {
+  const t = useTranslations('frameworks');
   const columns = FrameworkControlsTableColumns();
 
   const table = useReactTable({
@@ -46,7 +48,7 @@ export function FrameworkControlsTable({ data }: DataTableProps) {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No controls found.
+                  {t('controlsTable.noControls')}
                 </TableCell>
               </TableRow>
             )}

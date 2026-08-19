@@ -1,8 +1,12 @@
+'use client';
+
 import { CardContent, CardHeader, CardTitle } from '@gideon-defender/ui/card';
 
 import { Card } from '@gideon-defender/ui/card';
+import { useTranslations } from 'next-intl';
 
 export const SingleControlSkeleton = () => {
+  const t = useTranslations('controls');
   return (
     <div className="mx-auto max-w-[1200px]">
       <div className="space-y-8">
@@ -17,7 +21,7 @@ export const SingleControlSkeleton = () => {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Domain</CardTitle>
+              <CardTitle>{t('domain')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="bg-muted h-4 w-1/2 animate-pulse rounded-sm" />

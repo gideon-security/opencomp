@@ -4,6 +4,7 @@ import { Catalog, Group, ListChecked, Policy } from '@carbon/icons-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@gideon-defender/ui/card';
 import { Button } from '@trycompai/design-system';
 import { ArrowRight } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 
 export function ComplianceOverview({
@@ -30,12 +31,16 @@ export function ComplianceOverview({
   completedMembers: number;
 }) {
   const router = useRouter();
+  const t = useTranslations('overview');
 
   const metrics = [
     {
       id: 'policies',
-      label: 'Policies',
-      subtitle: `${publishedPolicies}/${totalPolicies} policies published`,
+      label: t('overviewPage.metricsPolicies'),
+      subtitle: t('overviewPage.policiesPublished', {
+        done: publishedPolicies,
+        total: totalPolicies,
+      }),
       percentage: getPercentage(publishedPolicies, totalPolicies),
       icon: Policy,
       total: totalPolicies,
@@ -43,8 +48,11 @@ export function ComplianceOverview({
     },
     {
       id: 'tasks',
-      label: 'Evidence',
-      subtitle: `${doneTasks}/${totalTasks} evidence tasks complete`,
+      label: t('overviewPage.metricsEvidence'),
+      subtitle: t('overviewPage.evidenceTasksComplete', {
+        done: doneTasks,
+        total: totalTasks,
+      }),
       percentage: getPercentage(doneTasks, totalTasks),
       icon: ListChecked,
       total: totalTasks,
@@ -52,8 +60,11 @@ export function ComplianceOverview({
     },
     {
       id: 'documents',
-      label: 'Documents',
-      subtitle: `${completedDocuments}/${totalDocuments} documents up to date`,
+      label: t('overviewPage.metricsDocuments'),
+      subtitle: t('overviewPage.documentsUpToDate', {
+        done: completedDocuments,
+        total: totalDocuments,
+      }),
       percentage: getPercentage(completedDocuments, totalDocuments),
       icon: Catalog,
       total: totalDocuments,
@@ -61,8 +72,11 @@ export function ComplianceOverview({
     },
     {
       id: 'people',
-      label: 'People',
-      subtitle: `${completedMembers}/${totalMembers} people complete`,
+      label: t('overviewPage.metricsPeople'),
+      subtitle: t('overviewPage.peopleComplete', {
+        done: completedMembers,
+        total: totalMembers,
+      }),
       percentage: getPercentage(completedMembers, totalMembers),
       icon: Group,
       total: totalMembers,
@@ -76,7 +90,9 @@ export function ComplianceOverview({
     <Card className="flex h-full flex-col overflow-hidden border">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">Overall Compliance Progress</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            {t('overviewPage.overallComplianceProgress')}
+          </CardTitle>
         </div>
         <div className="bg-secondary/50 relative mt-2 h-1 w-full overflow-hidden rounded-full">
           <div
@@ -103,7 +119,7 @@ export function ComplianceOverview({
                     {metric.percentage < 100 && (
                       <div className="mt-1 md:hidden">
                         <Button variant="link" onClick={() => router.push(metric.href)}>
-                          Continue
+                          {t('common.continue')}
                         </Button>
                       </div>
                     )}
@@ -118,7 +134,7 @@ export function ComplianceOverview({
                         iconRight={<ArrowRight size={14} />}
                         onClick={() => router.push(metric.href)}
                       >
-                        Continue
+                        {t('common.continue')}
                       </Button>
                     </div>
                   )}

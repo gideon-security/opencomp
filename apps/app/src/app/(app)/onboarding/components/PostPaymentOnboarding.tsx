@@ -8,6 +8,7 @@ import { Button } from '@gideon-defender/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@gideon-defender/ui/form';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertCircle, Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePostPaymentOnboarding } from '../hooks/usePostPaymentOnboarding';
 import { CancelOnboardingButton } from './CancelOnboardingButton';
@@ -48,6 +49,8 @@ export function PostPaymentOnboarding({
     initialData,
     userEmail,
   });
+
+  const t = useTranslations('onboarding');
 
   const isLocal = process.env.NODE_ENV !== 'production';
 
@@ -165,7 +168,7 @@ export function PostPaymentOnboarding({
           </AnimatedWrapper>
           <AnimatedWrapper delay={1000} animationKey={`subtitle-${step?.key}`}>
             <p className="text-md md:text-lg text-muted-foreground flex items-center flex-wrap">
-              Our AI will personalize the platform based on your answers.
+              {t('aiPersonalize')}
             </p>
           </AnimatedWrapper>
         </div>
@@ -235,7 +238,7 @@ export function PostPaymentOnboarding({
                 >
                   <AlertCircle className="h-4 w-4 text-destructive shrink-0" />
                 </motion.div>
-                <p className="text-sm text-destructive">Please fix the invalid URL format</p>
+                <p className="text-sm text-destructive">{t('invalidUrl')}</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -260,7 +263,7 @@ export function PostPaymentOnboarding({
                     onClick={handleBack}
                     disabled={isOnboarding || isLoading}
                   >
-                    Previous
+                    {t('previous')}
                   </Button>
                 </motion.div>
               )}
@@ -282,7 +285,7 @@ export function PostPaymentOnboarding({
                     disabled={isOnboarding || isFinalizing || isLoading}
                     data-testid="onboarding-skip-button"
                   >
-                    Skip for now
+                    {t('skipForNow')}
                   </Button>
                 </motion.div>
               )}
@@ -301,7 +304,7 @@ export function PostPaymentOnboarding({
                   onClick={completeNow}
                   disabled={isOnboarding || isFinalizing || isLoading}
                 >
-                  Complete
+                  {t('complete')}
                 </Button>
               </motion.div>
             )}
@@ -329,7 +332,7 @@ export function PostPaymentOnboarding({
                     className="flex items-center gap-2"
                   >
                     {isOnboarding && <Loader2 className="h-4 w-4 animate-spin" />}
-                    Complete
+                    {t('complete')}
                   </motion.span>
                 </Button>
               ) : (
@@ -349,7 +352,7 @@ export function PostPaymentOnboarding({
                     transition={{ duration: 0.2 }}
                     className="flex items-center"
                   >
-                    Continue
+                    {t('continue')}
                   </motion.span>
                 </Button>
               )}

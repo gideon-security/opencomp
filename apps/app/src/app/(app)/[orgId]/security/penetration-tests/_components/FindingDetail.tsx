@@ -9,6 +9,7 @@ import {
   TabsTrigger,
 } from '@trycompai/design-system';
 import { ArrowLeft, Copy } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { PentestIssue } from '@/lib/security/penetration-tests-client';
 import { FindingContextSection } from './FindingContextSection';
@@ -23,13 +24,13 @@ interface FindingDetailProps {
 }
 
 const TABS = [
-  { value: 'summary', label: 'Summary' },
-  { value: 'poc', label: 'PoC' },
-  { value: 'impact', label: 'Impact' },
-  { value: 'remediation', label: 'Remediation' },
-  { value: 'validation', label: 'Validation' },
-  { value: 'attack', label: 'Attack path' },
-  { value: 'evidence', label: 'Evidence' },
+  { value: 'summary' },
+  { value: 'poc' },
+  { value: 'impact' },
+  { value: 'remediation' },
+  { value: 'validation' },
+  { value: 'attack' },
+  { value: 'evidence' },
 ] as const;
 
 export function FindingDetail({
@@ -39,6 +40,7 @@ export function FindingDetail({
   targetUrl,
   onBack,
 }: FindingDetailProps) {
+  const t = useTranslations('security');
   const accentBar = SEVERITY_BAR_VAR[issue.severity];
   const eyebrowFg = SEVERITY_FG_VAR[issue.severity];
 
@@ -48,7 +50,7 @@ export function FindingDetail({
         <div>
           <Button variant="ghost" size="sm" onClick={onBack}>
             <ArrowLeft className="h-3.5 w-3.5" />
-            Back to findings
+            {t('penTest.findingDetail.backToFindings')}
           </Button>
         </div>
 
@@ -76,7 +78,7 @@ export function FindingDetail({
         </header>
 
         {/* KV strip */}
-        <KVStrip issue={issue} />
+        <KVStrip issue={issue} t={t} />
 
         {/* Customer context shared with the agent on future scans */}
         <FindingContextSection
@@ -89,9 +91,9 @@ export function FindingDetail({
         {/* Tabs */}
         <Tabs defaultValue="summary">
           <TabsList>
-            {TABS.map((t) => (
-              <TabsTrigger key={t.value} value={t.value}>
-                {t.label}
+            {TABS.map((tab) => (
+              <TabsTrigger key={tab.value} value={tab.value}>
+                {tabLabel(t, tab.value)}
               </TabsTrigger>
             ))}
           </TabsList>
@@ -99,7 +101,7 @@ export function FindingDetail({
           <TabsContent value="summary">
             <div className="mt-4">
               <Prose
-                text={issue.description ?? issue.summary ?? 'No summary provided.'}
+                text={issue.description ?? issue.summary ?? t('penTest.findingDetail.noSummary')}
               />
             </div>
           </TabsContent>
@@ -109,41 +111,42 @@ export function FindingDetail({
               {/* Use truthiness (`||`) rather than `??` so empty-string
                   values from upstream still render the fallback message. */}
               <CopyableBlock
-                content={issue.proofOfConcept || 'No proof of concept recorded.'}
+                content={issue.proofOfConcept || t('penTest.findingDetail.noPoc')}
                 empty={!issue.proofOfConcept}
+                t={t}
               />
             </div>
           </TabsContent>
 
           <TabsContent value="impact">
             <div className="mt-4">
-              <Prose text={issue.impact ?? 'No impact statement recorded.'} />
+              <Prose text={issue.impact ?? t('penTest.findingDetail.noImpact')} />
             </div>
           </TabsContent>
 
           <TabsContent value="remediation">
             <div className="mt-4">
               <Prose
-                text={issue.remediation ?? 'No remediation guidance recorded.'}
+                text={issue.remediation ?? t('penTest.findingDetail.noRemediation')}
               />
             </div>
           </TabsContent>
 
           <TabsContent value="validation">
             <div className="mt-4">
-              <ValidationSection issue={issue} />
+              <ValidationSection issue={issue} t={t} />
             </div>
           </TabsContent>
 
           <TabsContent value="attack">
             <p className="mt-4 text-sm text-muted-foreground">
-              Attack-path analysis not surfaced in this view yet.
+              {t('penTest.findingDetail.attackPathNote')}
             </p>
           </TabsContent>
 
           <TabsContent value="evidence">
             <p className="mt-4 text-sm text-muted-foreground">
-              Evidence (HTTP transcripts, screenshots, code snippets) coming soon.
+              {t('penTest.findingDetail.evidenceNote')}
             </p>
           </TabsContent>
         </Tabs>
@@ -152,16 +155,25 @@ export function FindingDetail({
   );
 }
 
-function KVStrip({ issue }: { issue: PentestIssue }) {
+function KVStrip({
+  issue,
+  t,
+}: {
+  issue: PentestIssue;
+  t: ReturnType<typeof useTranslations<'security'>>;
+}) {
   const cells = [
-    { label: 'Status', value: issue.status },
-    { label: 'Affected', value: issue.affectedEndpoint ?? '—' },
+    { label: t('penTest.findingDetail.status'), value: issue.status },
     {
-      label: 'CVSS',
+      label: t('penTest.findingDetail.affected'),
+      value: issue.affectedEndpoint ?? '—',
+    },
+    {
+      label: t('penTest.findingDetail.cvss'),
       value:
         typeof issue.cvssScore === 'number' ? issue.cvssScore.toFixed(1) : '—',
     },
-    { label: 'CWE', value: issue.cweId ?? '—' },
+    { label: t('penTest.findingDetail.cwe'), value: issue.cweId ?? '—' },
   ];
   return (
     <div className="grid grid-cols-2 overflow-hidden rounded-[var(--radius)] border border-border md:grid-cols-4">
@@ -193,16 +205,18 @@ function Prose({ text }: { text: string }) {
 function CopyableBlock({
   content,
   empty,
+  t,
 }: {
   content: string;
   empty: boolean;
+  t: ReturnType<typeof useTranslations<'security'>>;
 }) {
   const onCopy = async () => {
     try {
       await navigator.clipboard.writeText(content);
-      toast.success('Copied to clipboard');
+      toast.success(t('penTest.finding.copiedToClipboard'));
     } catch {
-      toast.error('Unable to copy');
+      toast.error(t('penTest.finding.unableToCopy'));
     }
   };
   if (empty) {
@@ -215,7 +229,7 @@ function CopyableBlock({
       <div className="absolute right-2 top-2 z-10">
         <Button variant="outline" size="sm" onClick={() => void onCopy()}>
           <Copy className="h-3.5 w-3.5" />
-          Copy
+          {t('penTest.findingDetail.copy')}
         </Button>
       </div>
       <pre className="overflow-x-auto rounded-[var(--radius)] border border-border bg-muted/50 p-4 pr-20 font-mono text-xs leading-relaxed">
@@ -225,12 +239,18 @@ function CopyableBlock({
   );
 }
 
-function ValidationSection({ issue }: { issue: PentestIssue }) {
+function ValidationSection({
+  issue,
+  t,
+}: {
+  issue: PentestIssue;
+  t: ReturnType<typeof useTranslations<'security'>>;
+}) {
   const steps = extractValidationSteps(issue);
   if (steps.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        No validation steps recorded for this finding.
+        {t('penTest.findingDetail.noValidationSteps')}
       </p>
     );
   }
@@ -255,4 +275,26 @@ function ValidationSection({ issue }: { issue: PentestIssue }) {
 // shows up on future payloads. For now returns empty.
 function extractValidationSteps(_issue: PentestIssue): string[] {
   return [];
+}
+
+function tabLabel(
+  t: ReturnType<typeof useTranslations<'security'>>,
+  value: (typeof TABS)[number]['value'],
+): string {
+  switch (value) {
+    case 'summary':
+      return t('penTest.findingDetail.tabSummary');
+    case 'poc':
+      return t('penTest.findingDetail.tabPoc');
+    case 'impact':
+      return t('penTest.findingDetail.tabImpact');
+    case 'remediation':
+      return t('penTest.findingDetail.tabRemediation');
+    case 'validation':
+      return t('penTest.findingDetail.tabValidation');
+    case 'attack':
+      return t('penTest.findingDetail.tabAttack');
+    case 'evidence':
+      return t('penTest.findingDetail.tabEvidence');
+  }
 }

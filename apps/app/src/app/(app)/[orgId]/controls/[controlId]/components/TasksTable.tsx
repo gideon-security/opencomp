@@ -14,6 +14,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 interface TasksTableProps {
@@ -24,6 +25,8 @@ interface TasksTableProps {
 export function TasksTable({ tasks, orgId }: TasksTableProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
+  const t = useTranslations('controls');
+  const tCommon = useTranslations('overview');
 
   // Filter tasks data based on search term
   const filteredTasks = useMemo(() => {
@@ -50,7 +53,7 @@ export function TasksTable({ tasks, orgId }: TasksTableProps) {
             <Search size={16} />
           </InputGroupAddon>
           <InputGroupInput
-            placeholder="Search tasks..."
+            placeholder={t('searchTasks')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -60,9 +63,9 @@ export function TasksTable({ tasks, orgId }: TasksTableProps) {
       <Table variant="bordered">
         <TableHeader>
           <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>{t('columnTitle')}</TableHead>
+            <TableHead>{tCommon('common.description')}</TableHead>
+            <TableHead>{tCommon('common.status')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -70,7 +73,7 @@ export function TasksTable({ tasks, orgId }: TasksTableProps) {
             <TableRow>
               <TableCell colSpan={3}>
                 <Text size="sm" variant="muted">
-                  No tasks found.
+                  {t('noTasksFound')}
                 </Text>
               </TableCell>
             </TableRow>

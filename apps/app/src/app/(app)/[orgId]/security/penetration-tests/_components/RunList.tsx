@@ -4,6 +4,7 @@ import type { PentestRun } from '@/lib/security/penetration-tests-client';
 import { Progress } from '@trycompai/design-system';
 import { cn } from '@trycompai/design-system/cn';
 import { Add } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { formatReportDate } from '../lib';
 import { StatusPill } from './StatusPill';
@@ -30,10 +31,11 @@ export function RunList({
   quotaLabel = 'Plan',
 }: RunListProps) {
   const router = useRouter();
+  const t = useTranslations('security');
   const canCreate = balance === undefined ? true : balance > 0;
   const newButtonTitle = !canCreate
-    ? 'Choose a plan or start a free trial to continue scanning.'
-    : 'Start a new scan';
+    ? t('penTest.runList.noAllowanceTitle')
+    : t('penTest.runList.startNewScan');
   return (
     <aside className="flex h-full min-h-0 w-full xl:w-[340px] xl:shrink-0 flex-col border-r border-border bg-background">
       {/* Header — matches "Scans  6   Filter  Sort" from the design */}
@@ -43,7 +45,7 @@ export function RunList({
           onClick={() => router.push(`/${orgId}/security/penetration-tests`)}
           className="flex items-center gap-2 text-left"
         >
-          <span className="text-sm font-medium">Scans</span>
+          <span className="text-sm font-medium">{t('penTest.runList.scans')}</span>
           <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px] tabular-nums text-muted-foreground">
             {runs.length}
           </span>
@@ -59,19 +61,25 @@ export function RunList({
             )}
           >
             <Add className="h-3 w-3" />
-            New
+            {t('penTest.runList.new')}
           </button>
         </div>
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto">
         {runs.length === 0 ? (
           <div className="flex h-full items-center justify-center px-6 py-10 text-center text-sm text-muted-foreground">
-            No scans yet.
+            {t('penTest.runList.noScansYet')}
           </div>
         ) : (
           <ul role="list" className="divide-y divide-border">
             {runs.map((run) => (
-              <RunRow key={run.id} orgId={orgId} run={run} selected={run.id === selectedRunId} />
+              <RunRow
+                key={run.id}
+                orgId={orgId}
+                run={run}
+                selected={run.id === selectedRunId}
+                t={t}
+              />
             ))}
           </ul>
         )}
@@ -82,6 +90,7 @@ export function RunList({
           planRequired={Boolean(planRequired)}
           quotaLabel={quotaLabel}
           orgId={orgId}
+          t={t}
         />
       )}
     </aside>
@@ -93,6 +102,7 @@ interface QuotaFooterProps {
   planRequired: boolean;
   quotaLabel: 'Plan';
   orgId: string;
+  t: ReturnType<typeof useTranslations<'security'>>;
 }
 
 /**
@@ -101,15 +111,12 @@ interface QuotaFooterProps {
  * actions. Falls back to a "Contact support" mailto when the user is at
  * zero so they have a clear next step.
  */
-function QuotaFooter({ balance, planRequired, quotaLabel, orgId }: QuotaFooterProps) {
+function QuotaFooter({ balance, planRequired, quotaLabel, orgId, t }: QuotaFooterProps) {
   if (balance > 0) {
     return (
       <div className="border-t border-border px-4 py-3">
         <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-          <span>
-            <span className="font-mono tabular-nums text-foreground">{balance}</span> scan
-            {balance === 1 ? '' : 's'} remaining
-          </span>
+          <span>{t('penTest.runList.quotaRemaining', { count: balance })}</span>
           <span className="text-[10px] uppercase tracking-[0.06em]">{quotaLabel}</span>
         </div>
       </div>
@@ -119,15 +126,17 @@ function QuotaFooter({ balance, planRequired, quotaLabel, orgId }: QuotaFooterPr
   return (
     <div className="border-t border-border px-4 py-3">
       <div className="text-[11px] font-medium">
-        {planRequired ? 'Plan required' : 'No scans available'}
+        {planRequired
+          ? t('penTest.runList.planRequired')
+          : t('penTest.runList.noScansAvailable')}
       </div>
       <div className="mt-0.5 text-[11px] text-muted-foreground">
-        Choose a plan or start a free trial to keep scanning —{' '}
+        {t('penTest.runList.choosePlanLead')}{' '}
         <a
           href={`/${orgId}/settings/billing/add-ons/penetration-tests`}
           className="underline hover:text-foreground"
         >
-          view plans
+          {t('penTest.runList.viewPlans')}
         </a>
         .
       </div>
@@ -139,9 +148,10 @@ interface RunRowProps {
   orgId: string;
   run: PentestRun;
   selected: boolean;
+  t: ReturnType<typeof useTranslations<'security'>>;
 }
 
-function RunRow({ orgId, run, selected }: RunRowProps) {
+function RunRow({ orgId, run, selected, t }: RunRowProps) {
   const router = useRouter();
   const inProgress = isRunInProgress(run.status);
   const shortId = toShortId(run.id);
@@ -190,13 +200,13 @@ function RunRow({ orgId, run, selected }: RunRowProps) {
           {(elapsedLabel || etaLabel) && (
             <div className="text-right font-mono text-[10px] text-muted-foreground">
               {elapsedLabel}
-              {etaLabel ? ` · eta ~${etaLabel}` : ''}
+              {etaLabel ? ` · ${t('penTest.runList.etaLabel', { eta: etaLabel })}` : ''}
             </div>
           )}
         </div>
       ) : run.status === 'failed' || run.status === 'cancelled' ? (
         <div className="text-[11px] text-destructive">
-          {run.failedReason ?? run.error ?? 'Error'}
+          {run.failedReason ?? run.error ?? t('penTest.runList.error')}
         </div>
       ) : null}
     </li>

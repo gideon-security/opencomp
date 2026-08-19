@@ -40,7 +40,6 @@ OpenComp is the fastest way to get compliant with frameworks like SOC 2, ISO 270
 - [Next.js](https://nextjs.org/?ref=gideondefender.com)
 - [Prisma](https://prisma.io/?ref=gideondefender.com)
 - [Tailwind CSS](https://tailwindcss.com/?ref=gideondefender.com)
-- [Upstash](https://upstash.com/?ref=gideondefender.com)
 
 ## Contact us
 
@@ -202,12 +201,8 @@ Some environment variables may not load correctly from `.env` — in such cases,
     opencomp/apps/portal/src/app/lib/auth.ts
     ```
 
-#### 2. Redis (Upstash)
+#### 2. Redis
 
-- Go to [https://console.upstash.com](https://console.upstash.com)
-- Create a Redis database
-- Copy the **Redis URL** and **TOKEN**
-- Add them to your `.env` file, or hard-code them if the environment variables are not being recognized in:
   ```
   opencomp/packages/kv/src/index.ts
   ```
@@ -338,7 +333,7 @@ This repository uses semantic-release to automatically publish packages to npm w
 
 - `@gideon-defender/db` - Database utilities with Prisma client
 - `@gideon-defender/email` - Email templates and components
-- `@gideon-defender/kv` - Key-value store utilities using Upstash Redis
+- `@gideon-defender/kv` - Key-value store utilities using Redis
 - `@gideon-defender/ui` - UI component library with Tailwind CSS
 
 ### Setup

@@ -2,6 +2,7 @@
 
 import { Button } from '@trycompai/design-system';
 import { Add, ArrowRight } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import type { PentestRun } from '@/lib/security/penetration-tests-client';
 import {
@@ -266,6 +267,7 @@ function PostureOverview({
   const scansLast30d = countWithin(completed, 30 * 24 * 60 * 60 * 1000);
   const recentScans = sortByUpdatedDesc(runs).slice(0, 6);
   const staleTargets = computeStaleTargets(completed, targets);
+  const t = useTranslations('security');
 
   return (
     <div className="min-h-0 overflow-y-auto">
@@ -273,22 +275,28 @@ function PostureOverview({
         <header className="flex flex-wrap items-end justify-between gap-3 pb-3">
           <div>
             <h1 className="text-[28px] font-medium tracking-[-0.02em]">
-              Overview
+              {t('penTest.overview.title')}
             </h1>
             <p className="mt-1 font-mono text-xs text-muted-foreground">
               <span className="tabular-nums">{completed.length}</span>{' '}
-              completed scan{completed.length === 1 ? '' : 's'}
+              {t('penTest.overview.completedScansUnit', {
+                count: completed.length,
+              })}
               {' · '}
-              <span className="tabular-nums">{targets.length}</span> target
-              {targets.length === 1 ? '' : 's'} covered
+              <span className="tabular-nums">{targets.length}</span>{' '}
+              {t('penTest.overview.targetsCoveredUnit', {
+                count: targets.length,
+              })}
               {lastScan
-                ? ` · last sweep ${relativeTime(lastScan.updatedAt)}`
+                ? t('penTest.overview.lastSweep', {
+                    time: relativeTime(t, lastScan.updatedAt),
+                  })
                 : ''}
             </p>
           </div>
           <Button onClick={onCreateClick} disabled={!canCreate}>
             <Add className="h-3.5 w-3.5" />
-            New scan
+            {t('penTest.create.newScan')}
           </Button>
         </header>
 
@@ -306,8 +314,8 @@ function PostureOverview({
           targets={targets.length}
           avgDurationMs={avgDuration}
           scansLast30d={scansLast30d}
+          t={t}
         />
-
         <RecentScansSection orgId={orgId} runs={recentScans} />
 
         <StaleCoverageSection orgId={orgId} stale={staleTargets} />
@@ -329,31 +337,32 @@ function StatBand({
   targets,
   avgDurationMs: avgMs,
   scansLast30d,
-}: StatBandProps) {
+  t,
+}: StatBandProps & { t: ReturnType<typeof useTranslations<'security'>> }) {
   return (
     <section className="border-b-2 border-border pb-6">
       <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
         <StatCell
-          label="Completed scans"
+          label={t('penTest.overview.completedScans')}
           value={String(completed)}
-          subline="across all targets"
+          subline={t('penTest.overview.acrossAllTargets')}
         />
         <StatCell
-          label="Coverage"
+          label={t('penTest.overview.coverage')}
           value={String(targets)}
-          subline={`distinct target${targets === 1 ? '' : 's'} scanned`}
+          subline={t('penTest.overview.distinctTargetsScanned', { count: targets })}
           divider
         />
         <StatCell
-          label="Avg duration"
+          label={t('penTest.overview.avgDuration')}
           value={avgMs > 0 ? formatDurationLabel(avgMs) : '—'}
-          subline="per completed scan"
+          subline={t('penTest.overview.perCompletedScan')}
           divider
         />
         <StatCell
-          label="Cadence"
+          label={t('penTest.overview.cadenceTitle')}
           value={String(scansLast30d)}
-          subline={cadenceLabel(scansLast30d)}
+          subline={cadenceLabel(t, scansLast30d)}
           divider
         />
       </div>

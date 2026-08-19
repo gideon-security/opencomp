@@ -16,6 +16,7 @@ import {
   SheetTitle,
 } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
 import { CreateRisk } from '../forms/risks/create-risk-form';
 
@@ -23,6 +24,7 @@ export function CreateRiskSheet({ assignees }: { assignees: (Member & { user: Us
   const { hasPermission } = usePermissions();
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [isOpen, setIsOpen] = useState(false);
+  const t = useTranslations('risk');
 
   const handleSuccess = useCallback(() => {
     setIsOpen(false);
@@ -32,7 +34,7 @@ export function CreateRiskSheet({ assignees }: { assignees: (Member & { user: Us
 
   const trigger = (
     <Button iconLeft={<Add size={16} />} onClick={() => setIsOpen(true)}>
-      Create Risk
+      {t('create.createButton')}
     </Button>
   );
 
@@ -43,7 +45,7 @@ export function CreateRiskSheet({ assignees }: { assignees: (Member & { user: Us
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetContent>
             <SheetHeader>
-              <SheetTitle>Create New Risk</SheetTitle>
+              <SheetTitle>{t('create.createNewTitle')}</SheetTitle>
             </SheetHeader>
             <SheetBody>
               <CreateRisk assignees={assignees} onSuccess={handleSuccess} />
@@ -60,7 +62,7 @@ export function CreateRiskSheet({ assignees }: { assignees: (Member & { user: Us
       <Drawer open={isOpen} onOpenChange={setIsOpen}>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle>Create New Risk</DrawerTitle>
+            <DrawerTitle>{t('create.createNewTitle')}</DrawerTitle>
           </DrawerHeader>
           <div className="p-4">
             <CreateRisk assignees={assignees} onSuccess={handleSuccess} />

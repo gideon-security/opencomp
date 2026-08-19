@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar'
 import { Badge } from '@gideon-defender/ui/badge';
 import type { ColumnDef, Row } from '@tanstack/react-table';
 import { Loader2, UserIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useVendorOnboardingStatus } from './vendor-onboarding-context';
 import { VendorDeleteCell } from './VendorDeleteCell';
@@ -17,6 +18,7 @@ function VendorNameCell({ row, orgId }: { row: Row<VendorRow>; orgId: string }) 
   const isAssessing = row.original.isAssessing || status === 'assessing';
   const isResearching = row.original.status === 'in_progress';
   const isResolved = row.original.status === 'assessed';
+  const t = useTranslations('vendor');
 
   if ((isPending || isAssessing) && !isResolved) {
     return (
@@ -35,7 +37,7 @@ function VendorNameCell({ row, orgId }: { row: Row<VendorRow>; orgId: string }) 
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
           </span>
-          Researching
+          <span className="capitalize">{t('list.researching')}</span>
         </span>
       )}
     </div>
@@ -49,12 +51,13 @@ function VendorStatusCell({ row }: { row: Row<VendorRow> }) {
   const isPending = row.original.isPending || status === 'pending' || status === 'processing';
   const isAssessing = row.original.isAssessing || status === 'assessing';
   const isResolved = row.original.status === 'assessed';
+  const t = useTranslations('vendor');
 
   if (isPending && !isResolved) {
     return (
       <div className="flex items-center gap-2">
         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-        <span className="text-muted-foreground text-sm">Creating...</span>
+        <span className="text-muted-foreground text-sm">{t('list.creating')}</span>
       </div>
     );
   }
@@ -62,7 +65,7 @@ function VendorStatusCell({ row }: { row: Row<VendorRow> }) {
     return (
       <div className="flex items-center gap-2">
         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-        <span className="text-muted-foreground text-sm">Assessing...</span>
+        <span className="text-muted-foreground text-sm">{t('list.assessing')}</span>
       </div>
     );
   }
@@ -70,26 +73,53 @@ function VendorStatusCell({ row }: { row: Row<VendorRow> }) {
     return (
       <div className="flex items-center gap-2">
         <Loader2 className="h-4 w-4 animate-spin text-primary" />
-        <span className="text-primary text-sm">Researching...</span>
+        <span className="text-primary text-sm">{t('list.researchingEllipsis')}</span>
       </div>
     );
   }
   return <VendorStatus status={row.original.status} />;
 }
 
-export const columns = (orgId: string): ColumnDef<VendorRow>[] => [
+function categoryLabel(t: ReturnType<typeof useTranslations<'vendor'>>, category: string): string {
+  switch (category) {
+    case 'cloud':
+      return t('list.categoryCloud');
+    case 'infrastructure':
+      return t('list.categoryInfrastructure');
+    case 'software_as_a_service':
+      return t('list.categorySaaS');
+    case 'finance':
+      return t('list.categoryFinance');
+    case 'marketing':
+      return t('list.categoryMarketing');
+    case 'sales':
+      return t('list.categorySales');
+    case 'hr':
+      return t('list.categoryHr');
+    case 'other':
+      return t('list.categoryOther');
+    default:
+      return category;
+  }
+}
+
+export const columns = (
+  orgId: string,
+  t: ReturnType<typeof useTranslations<'vendor'>>,
+  tCommon: ReturnType<typeof useTranslations<'overview'>>,
+): ColumnDef<VendorRow>[] => [
   {
     id: 'name',
     accessorKey: 'name',
     header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title="Vendor Name" />;
+      return <DataTableColumnHeader column={column} title={t('list.columnVendorName')} />;
     },
     cell: ({ row }) => {
       return <VendorNameCell row={row} orgId={orgId} />;
     },
     meta: {
-      label: 'Vendor Name',
-      placeholder: 'Search for vendor name...',
+      label: t('list.columnVendorName'),
+      placeholder: t('list.searchForVendorName'),
       variant: 'text',
     },
     size: 250,
@@ -101,14 +131,14 @@ export const columns = (orgId: string): ColumnDef<VendorRow>[] => [
     id: 'status',
     accessorKey: 'status',
     header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title="Status" />;
+      return <DataTableColumnHeader column={column} title={tCommon('common.status')} />;
     },
     cell: ({ row }) => {
       return <VendorStatusCell row={row} />;
     },
     meta: {
-      label: 'Status',
-      placeholder: 'Search by status...',
+      label: tCommon('common.status'),
+      placeholder: t('list.searchByStatus'),
       variant: 'select',
     },
   },
@@ -116,29 +146,18 @@ export const columns = (orgId: string): ColumnDef<VendorRow>[] => [
     id: 'category',
     accessorKey: 'category',
     header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title="Category" />;
+      return <DataTableColumnHeader column={column} title={t('create.category')} />;
     },
     cell: ({ row }) => {
-      const categoryMap: Record<string, string> = {
-        cloud: 'Cloud',
-        infrastructure: 'Infrastructure',
-        software_as_a_service: 'SaaS',
-        finance: 'Finance',
-        marketing: 'Marketing',
-        sales: 'Sales',
-        hr: 'HR',
-        other: 'Other',
-      };
-
       return (
         <Badge variant="marketing" className="w-fit">
-          {categoryMap[row.original.category] || row.original.category}
+          {categoryLabel(t, row.original.category)}
         </Badge>
       );
     },
     meta: {
-      label: 'Category',
-      placeholder: 'Search by category...',
+      label: t('create.category'),
+      placeholder: t('list.searchByCategory'),
       variant: 'select',
     },
   },
@@ -146,7 +165,7 @@ export const columns = (orgId: string): ColumnDef<VendorRow>[] => [
     id: 'assignee',
     accessorKey: 'assignee',
     header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title="Assignee" />;
+      return <DataTableColumnHeader column={column} title={t('create.assignee')} />;
     },
     enableSorting: false,
     cell: ({ row }) => {
@@ -157,7 +176,7 @@ export const columns = (orgId: string): ColumnDef<VendorRow>[] => [
             <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-full">
               <UserIcon className="text-muted-foreground h-4 w-4" />
             </div>
-            <p className="text-muted-foreground text-sm font-medium">None</p>
+            <p className="text-muted-foreground text-sm font-medium">{tCommon('common.none')}</p>
           </div>
         );
       }
@@ -178,14 +197,14 @@ export const columns = (orgId: string): ColumnDef<VendorRow>[] => [
           <p className="text-sm font-medium">
             {row.original.assignee.user?.name ||
               row.original.assignee.user?.email ||
-              'Unknown User'}
+              t('list.unknownUser')}
           </p>
         </div>
       );
     },
     meta: {
-      label: 'Assignee',
-      placeholder: 'Search by assignee...',
+      label: t('create.assignee'),
+      placeholder: t('list.searchByAssignee'),
       variant: 'select',
     },
   },

@@ -29,6 +29,7 @@ import {
   FileSpreadsheet,
   FileText as FileTextIcon,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import type { QuestionAnswer } from './types';
 
 interface QuestionnaireResultsHeaderProps {
@@ -65,22 +66,21 @@ export function QuestionnaireResultsHeader({
   onAutoAnswer,
   onExport,
 }: QuestionnaireResultsHeaderProps) {
+  const t = useTranslations('questionnaire');
+  const tCommon = useTranslations('overview');
   return (
     <>
       <div className="flex flex-col gap-4">
         <AlertDialog open={showExitDialog} onOpenChange={onShowExitDialogChange}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Exit questionnaire session?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This will discard all questions and answers. Make sure to export your work before
-                exiting if you want to keep it.
-              </AlertDialogDescription>
+              <AlertDialogTitle>{t('results.exitTitle')}</AlertDialogTitle>
+              <AlertDialogDescription>{t('results.exitDescription')}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogCancel>{tCommon('common.cancel')}</AlertDialogCancel>
               <AlertDialogAction variant="destructive" onClick={onExit}>
-                Exit and Discard
+                {t('results.exitAndDiscard')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -90,7 +90,7 @@ export function QuestionnaireResultsHeader({
           {/* Total Questions */}
           <div className="px-4 py-3.5 border-l-2 border-l-primary/40">
             <div className="text-muted-foreground mb-1 text-[10px] font-medium uppercase tracking-widest">
-              Questions
+              {t('results.questions')}
             </div>
             <div className="text-foreground text-2xl font-semibold tabular-nums tracking-tight">
               {totalCount}
@@ -100,7 +100,7 @@ export function QuestionnaireResultsHeader({
           {/* Answered */}
           <div className="px-4 py-3.5 border-l-2 border-l-emerald-500/40">
             <div className="text-muted-foreground mb-1 text-[10px] font-medium uppercase tracking-widest">
-              Answered
+              {t('results.answered')}
             </div>
             <div className="text-foreground text-2xl font-semibold tabular-nums tracking-tight">
               {answeredCount}
@@ -110,7 +110,7 @@ export function QuestionnaireResultsHeader({
           {/* Progress */}
           <div className="px-4 py-3.5 border-l-2 border-l-blue-500/40">
             <div className="text-muted-foreground mb-1 text-[10px] font-medium uppercase tracking-widest">
-              Progress
+              {t('results.progress')}
             </div>
             <div className="text-foreground text-2xl font-semibold tabular-nums tracking-tight">
               {progressPercentage}%
@@ -125,7 +125,7 @@ export function QuestionnaireResultsHeader({
                 <Search size={16} />
               </InputGroupAddon>
               <InputGroupInput
-                placeholder="Search questions..."
+                placeholder={t('results.searchQuestions')}
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
               />
@@ -142,28 +142,28 @@ export function QuestionnaireResultsHeader({
               loading={isAutoAnswering}
               iconLeft={!isAutoAnswering ? <Flash size={16} /> : undefined}
             >
-              Auto-Fill All
+              {t('results.autoFillAll')}
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <CompButton variant="outline" size="default" disabled={isExporting}>
                   <Download className="size-4" />
-                  Export
+                  {t('results.export')}
                   <ChevronDown className="size-4" />
                 </CompButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => onExport('xlsx')} disabled={isExporting}>
                   <FileSpreadsheet className="mr-2 h-4 w-4" />
-                  Excel
+                  {t('results.excel')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onExport('csv')} disabled={isExporting}>
                   <FileTextIcon className="mr-2 h-4 w-4" />
-                  CSV
+                  {t('results.csv')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onExport('pdf')} disabled={isExporting}>
                   <File className="mr-2 h-4 w-4" />
-                  PDF
+                  {t('results.pdf')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

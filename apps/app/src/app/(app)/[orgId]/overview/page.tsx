@@ -3,6 +3,7 @@ import { serverApi } from '@/lib/api-server';
 import { auth } from '@/utils/auth';
 import type { FrameworkEditorFramework, Policy, Task } from '@db';
 import { PageHeader, PageLayout } from '@trycompai/design-system';
+import { getTranslations } from 'next-intl/server';
 import { headers } from 'next/headers';
 import { Overview } from './components/Overview';
 import { OverviewTabs } from './components/OverviewTabs';
@@ -10,7 +11,8 @@ import { OverviewNudges } from './nudges/OverviewNudges';
 import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 
 export async function generateMetadata() {
-  return { title: 'Overview' };
+  const t = await getTranslations('overview');
+  return { title: t('overviewPage.title') };
 }
 
 type FrameworkWithScore = FrameworkInstanceWithControls & { complianceScore: number };
@@ -39,6 +41,7 @@ export default async function OverviewPage({ params }: { params: Promise<{ orgId
 
   const requestHeaders = await headers();
   const session = await auth.api.getSession({ headers: requestHeaders });
+  const t = await getTranslations('overview');
 
   const [scoresRes, frameworksRes, availableRes, settingsRes] = await Promise.all([
     serverApi.get<ScoresResponse>('/v1/frameworks/scores'),
@@ -77,7 +80,7 @@ export default async function OverviewPage({ params }: { params: Promise<{ orgId
         orgId={organizationId}
         server={{ trust: { isTrustNdaEnabled, isConfigured: isTrustConfigured } }}
       />
-      <PageLayout header={<PageHeader title="Overview" tabs={<OverviewTabs />} />}>
+      <PageLayout header={<PageHeader title={t('overviewPage.title')} tabs={<OverviewTabs />} />}>
         <Overview
         frameworksWithControls={frameworksWithControls}
         frameworksWithCompliance={frameworksWithCompliance}

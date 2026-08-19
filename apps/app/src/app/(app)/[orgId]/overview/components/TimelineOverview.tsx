@@ -9,6 +9,7 @@ import {
 import { Checkmark } from '@trycompai/design-system/icons';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useTimelines, type Timeline } from '@/hooks/use-timelines';
 import { TimelinePhaseBar } from './TimelinePhaseBar';
 
@@ -26,11 +27,17 @@ const STATUS_VARIANT: Record<
   COMPLETED: 'default',
 };
 
-const STATUS_LABEL: Record<Timeline['status'], string> = {
-  DRAFT: 'Draft',
-  ACTIVE: 'Active',
-  PAUSED: 'Paused',
-  COMPLETED: 'Completed',
+type TimelineStatusKey =
+  | 'timeline.statusDraft'
+  | 'timeline.statusActive'
+  | 'timeline.statusPaused'
+  | 'timeline.statusCompleted';
+
+const STATUS_LABEL: Record<Timeline['status'], TimelineStatusKey> = {
+  DRAFT: 'timeline.statusDraft',
+  ACTIVE: 'timeline.statusActive',
+  PAUSED: 'timeline.statusPaused',
+  COMPLETED: 'timeline.statusCompleted',
 };
 
 function formatDate(date: string | Date | null): string {
@@ -119,12 +126,13 @@ function FrameworkTimelines({
 }) {
   // Year = how many cycles exist for this framework type (past + current)
   const year = group.pastCycles.length + 1;
+  const t = useTranslations('overview');
 
   return (
     <TimelineCard
       timeline={group.current}
       orgId={orgId}
-      cycleLabel={`Year ${year}`}
+      cycleLabel={t('timeline.yearLabel', { count: year })}
     />
   );
 }
@@ -140,8 +148,9 @@ function TimelineCard({
 }) {
   const isDraft = timeline.status === 'DRAFT';
   const isCompleted = timeline.status === 'COMPLETED';
+  const t = useTranslations('overview');
   const frameworkName =
-    timeline.frameworkInstance?.framework.name ?? 'Unknown Framework';
+    timeline.frameworkInstance?.framework.name ?? t('timeline.unknownFramework');
   const nextCycle = getNextCycleDate(timeline);
 
   const titleContent = (
@@ -156,7 +165,7 @@ function TimelineCard({
   const statusBadge = (
     <Badge variant={STATUS_VARIANT[timeline.status]}>
       {isCompleted && <Checkmark size={12} />}
-      {STATUS_LABEL[timeline.status]}
+      {t(STATUS_LABEL[timeline.status])}
     </Badge>
   );
 
@@ -173,12 +182,12 @@ function TimelineCard({
 
         {isDraft && (
           <div className="mt-3">
-            <Text size="xs" variant="muted">Awaiting start date</Text>
+            <Text size="xs" variant="muted">{t('timeline.awaitingStartDate')}</Text>
           </div>
         )}
         {isCompleted && nextCycle && (
           <div className="mt-3">
-            <Text size="xs" variant="muted">Next cycle: {nextCycle}</Text>
+            <Text size="xs" variant="muted">{t('timeline.nextCycle', { date: nextCycle })}</Text>
           </div>
         )}
       </Card>

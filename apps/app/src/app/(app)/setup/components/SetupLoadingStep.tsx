@@ -3,6 +3,7 @@
 import { AiWorkPreviewAuthentic } from '@/components/ai-work-preview-authentic';
 import { Button } from '@gideon-defender/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -11,6 +12,7 @@ interface SetupLoadingStepProps {
 }
 
 export function SetupLoadingStep({ organizationId }: SetupLoadingStepProps) {
+  const t = useTranslations('setup');
   const router = useRouter();
   const [canContinue, setCanContinue] = useState(false);
 
@@ -59,13 +61,13 @@ export function SetupLoadingStep({ organizationId }: SetupLoadingStepProps) {
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground">
                 {canContinue
-                  ? 'AI is working in the background (this will take 2-7 minutes)'
-                  : 'AI workspace setup in progress... (2-7 minutes)'}
+                  ? t('aiWorkingBackground')
+                  : t('aiSetupInProgress')}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 {canContinue
-                  ? "You can safely continue - we'll notify you when everything is ready"
-                  : 'Analyzing your infrastructure and compliance requirements'}
+                  ? t('safeToContinue')
+                  : t('analyzingInfrastructure')}
               </p>
             </div>
             <Button
@@ -78,7 +80,7 @@ export function SetupLoadingStep({ organizationId }: SetupLoadingStepProps) {
               }
             >
               <>
-                Continue to Plans
+                {t('continueToPlans')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </>
             </Button>

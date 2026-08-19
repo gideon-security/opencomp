@@ -3,6 +3,7 @@
 import { FrameworkPill } from '@/components/framework-pill';
 import { useApi } from '@/hooks/use-api';
 import type { FrameworkEditorFramework } from '@db';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
 
@@ -15,6 +16,7 @@ interface FrameworkSelectionProps {
 }
 
 export function FrameworkSelection({ value, onChange, onLoadingChange }: FrameworkSelectionProps) {
+  const t = useTranslations('setup');
   const api = useApi();
   const onChangeRef = useRef(onChange);
   const valueRef = useRef(value);
@@ -31,7 +33,7 @@ export function FrameworkSelection({ value, onChange, onLoadingChange }: Framewo
       if (response.error || !response.data) {
         throw new Error(
           response.error ||
-            `Failed to load frameworks (HTTP ${response.status})`,
+            t('frameworkLoadError', { status: response.status }),
         );
       }
       return Array.isArray(response.data.data) ? response.data.data : [];
@@ -65,18 +67,18 @@ export function FrameworkSelection({ value, onChange, onLoadingChange }: Framewo
 
   if (error) {
     const message =
-      error instanceof Error ? error.message : 'Something went wrong.';
+      error instanceof Error ? error.message : t('somethingWentWrong');
     return (
       <div className="flex flex-col items-start gap-2">
         <p className="text-sm text-destructive">
-          We couldn't load the compliance frameworks. {message}
+          {t('frameworkLoadErrorDescription', { message })}
         </p>
         <button
           type="button"
           onClick={() => mutate()}
           className="text-sm underline hover:no-underline"
         >
-          Try again
+          {t('tryAgain')}
         </button>
       </div>
     );

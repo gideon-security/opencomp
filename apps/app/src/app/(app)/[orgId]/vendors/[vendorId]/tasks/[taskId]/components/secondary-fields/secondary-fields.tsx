@@ -10,6 +10,7 @@ import type { Member, Task, User } from '@db';
 import { TaskStatus } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon, Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -30,12 +31,13 @@ export default function SecondaryFields({
   task: Task & { assignee: { user: User } | null };
   assignees: (Member & { user: User })[];
 }) {
+  const t = useTranslations('vendor');
   return (
     <div className="space-y-4">
       <Card>
         <CardHeader>
           <CardTitle>
-            <div className="flex items-center justify-between gap-2">Task Details</div>
+            <div className="flex items-center justify-between gap-2">{t('task.taskDetails')}</div>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -57,6 +59,8 @@ function TaskSecondaryFieldsForm({
 }) {
   const { updateTask } = useTaskMutations();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations('vendor');
+  const tCommon = useTranslations('overview');
 
   const form = useForm<z.infer<typeof secondaryFieldsSchema>>({
     resolver: zodResolver(secondaryFieldsSchema),
@@ -76,9 +80,9 @@ function TaskSecondaryFieldsForm({
         status: data.status,
         assigneeId: data.assigneeId,
       });
-      toast.success('Task updated successfully');
+      toast.success(t('task.taskUpdated'));
     } catch {
-      toast.error('Failed to update task');
+      toast.error(t('task.taskUpdateFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -121,7 +125,7 @@ function TaskSecondaryFieldsForm({
             name="assigneeId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Assignee</FormLabel>
+                <FormLabel>{t('create.assignee')}</FormLabel>
                 <FormControl>
                   <SelectAssignee
                     assigneeId={field.value}
@@ -141,7 +145,7 @@ function TaskSecondaryFieldsForm({
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel>{tCommon('common.status')}</FormLabel>
                 <FormControl>
                   <Select
                     value={field.value}
@@ -151,7 +155,7 @@ function TaskSecondaryFieldsForm({
                     }}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select status">
+                      <SelectValue placeholder={t('task.selectStatus')}>
                         {field.value && renderStatus(field.value)}
                       </SelectValue>
                     </SelectTrigger>
@@ -174,7 +178,7 @@ function TaskSecondaryFieldsForm({
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <div className="flex items-center">
-                Save
+                {tCommon('common.save')}
                 <ArrowRightIcon className="ml-2 h-4 w-4" />
               </div>
             )}

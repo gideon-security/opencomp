@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -138,9 +141,9 @@ describe('CreateVendorTaskForm', () => {
 
     render(<CreateVendorTaskForm assignees={mockAssignees} />);
 
-    expect(screen.getByText('Task Title')).toBeInTheDocument();
-    expect(screen.getByText('Description')).toBeInTheDocument();
-    expect(screen.getByText('Assignee')).toBeInTheDocument();
+    expect(screen.getByText('task.taskTitle')).toBeInTheDocument();
+    expect(screen.getByText('common.description')).toBeInTheDocument();
+    expect(screen.getByText('create.assignee')).toBeInTheDocument();
   });
 
   it('enables submit when user has only task:create permission', () => {

@@ -1,11 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -108,7 +111,7 @@ describe('AddFrameworkModal', () => {
       const checkbox = screen.getByTestId('framework-checkbox-fw-1');
       fireEvent.click(checkbox);
 
-      const addButton = screen.getByRole('button', { name: /add selected/i });
+      const addButton = screen.getByRole('button', { name: 'frameworks.addSelected' });
       expect(addButton).not.toBeDisabled();
     });
 
@@ -119,9 +122,9 @@ describe('AddFrameworkModal', () => {
       render(<AddFrameworkModal {...defaultProps} />);
 
       fireEvent.click(screen.getByTestId('framework-checkbox-fw-1'));
-      fireEvent.click(screen.getByRole('button', { name: /add selected/i }));
+      fireEvent.click(screen.getByRole('button', { name: 'frameworks.addSelected' }));
 
-      await screen.findByRole('button', { name: /add selected/i });
+      await screen.findByRole('button', { name: 'frameworks.addSelected' });
       expect(mockAddFrameworks).toHaveBeenCalledWith(['fw-1']);
     });
 
@@ -131,10 +134,10 @@ describe('AddFrameworkModal', () => {
       render(<AddFrameworkModal {...defaultProps} />);
 
       fireEvent.click(screen.getByTestId('framework-checkbox-fw-1'));
-      fireEvent.click(screen.getByRole('button', { name: /add selected/i }));
+      fireEvent.click(screen.getByRole('button', { name: 'frameworks.addSelected' }));
 
       expect(
-        await screen.findByText('Contact your account manager'),
+        await screen.findByText('frameworks.contactManagerTitle'),
       ).toBeInTheDocument();
       expect(mockAddFrameworks).not.toHaveBeenCalled();
     });
@@ -146,9 +149,9 @@ describe('AddFrameworkModal', () => {
       render(<AddFrameworkModal {...defaultProps} />);
 
       fireEvent.click(screen.getByTestId('framework-checkbox-fw-1'));
-      fireEvent.click(screen.getByRole('button', { name: /add selected/i }));
+      fireEvent.click(screen.getByRole('button', { name: 'frameworks.addSelected' }));
 
-      await screen.findByRole('button', { name: /add selected/i });
+      await screen.findByRole('button', { name: 'frameworks.addSelected' });
       expect(mockAddFrameworks).toHaveBeenCalledWith(['fw-1']);
     });
   });
@@ -158,9 +161,9 @@ describe('AddFrameworkModal', () => {
 
       render(<AddFrameworkModal {...defaultProps} />);
 
-      expect(screen.getByText('Add Frameworks')).toBeInTheDocument();
+      expect(screen.getByText('frameworks.addTitle')).toBeInTheDocument();
       expect(
-        screen.getByText(/select the compliance frameworks/i),
+        screen.getByText('frameworks.addDescription'),
       ).toBeInTheDocument();
     });
 
@@ -182,7 +185,7 @@ describe('AddFrameworkModal', () => {
       );
 
       expect(
-        screen.getByText(/all available frameworks are already enabled/i),
+        screen.getByText('frameworks.allEnabled'),
       ).toBeInTheDocument();
     });
 
@@ -190,7 +193,7 @@ describe('AddFrameworkModal', () => {
 
       render(<AddFrameworkModal {...defaultProps} />);
 
-      const addButton = screen.getByRole('button', { name: /add selected/i });
+      const addButton = screen.getByRole('button', { name: 'frameworks.addSelected' });
       expect(addButton).toBeDisabled();
     });
   });

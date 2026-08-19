@@ -4,21 +4,26 @@ import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar'
 import { Badge } from '@gideon-defender/ui/badge';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Loader2, UserIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { RiskRow } from '../../RisksTable';
+import { RiskListTranslator, RiskRow } from '../../RisksTable';
 import { useRiskOnboardingStatus } from '../risk-onboarding-context';
 
-export const columns = (orgId: string): ColumnDef<RiskRow>[] => [
+export const columns = (
+  orgId: string,
+  t: RiskListTranslator,
+  tCommon: ReturnType<typeof useTranslations<'overview'>>,
+): ColumnDef<RiskRow>[] => [
   {
     id: 'title',
     accessorKey: 'title',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Risk" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} title={t('list.columnRisk')} />,
     cell: ({ row }) => {
       return <RiskNameCell row={row} orgId={orgId} />;
     },
     meta: {
-      label: 'Risk',
-      placeholder: 'Search for a risk...',
+      label: t('list.columnRisk'),
+      placeholder: t('list.searchForARisk'),
       variant: 'text',
     },
     size: 250,
@@ -30,12 +35,14 @@ export const columns = (orgId: string): ColumnDef<RiskRow>[] => [
   {
     id: 'status',
     accessorKey: 'status',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title={tCommon('common.status')} />
+    ),
     cell: ({ row }) => {
-      return <RiskStatusCell row={row} />;
+      return <RiskStatusCell row={row} t={t} />;
     },
     meta: {
-      label: 'Status',
+      label: tCommon('common.status'),
     },
     enableColumnFilter: true,
     enableSorting: true,
@@ -43,7 +50,9 @@ export const columns = (orgId: string): ColumnDef<RiskRow>[] => [
   {
     id: 'department',
     accessorKey: 'department',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Department" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title={t('list.columnDepartment')} />
+    ),
     cell: ({ row }) => {
       return (
         <Badge variant="marketing" className="w-fit uppercase">
@@ -52,7 +61,7 @@ export const columns = (orgId: string): ColumnDef<RiskRow>[] => [
       );
     },
     meta: {
-      label: 'Department',
+      label: t('list.columnDepartment'),
     },
     enableColumnFilter: true,
     enableSorting: true,
@@ -60,7 +69,9 @@ export const columns = (orgId: string): ColumnDef<RiskRow>[] => [
   {
     id: 'assignee',
     accessorKey: 'assignee.user.name',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Assignee" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title={t('list.columnAssignee')} />
+    ),
     enableSorting: false,
     cell: ({ row }) => {
       const user = row.original.assignee?.user;
@@ -70,7 +81,7 @@ export const columns = (orgId: string): ColumnDef<RiskRow>[] => [
             <div className="bg-muted flex h-8 w-8 items-center justify-center rounded-full">
               <UserIcon className="text-muted-foreground h-4 w-4" />
             </div>
-            <p className="text-muted-foreground text-sm font-medium">None</p>
+            <p className="text-muted-foreground text-sm font-medium">{tCommon('common.none')}</p>
           </div>
         );
       }
@@ -95,7 +106,7 @@ export const columns = (orgId: string): ColumnDef<RiskRow>[] => [
       );
     },
     meta: {
-      label: 'Assignee',
+      label: t('list.columnAssignee'),
     },
     enableColumnFilter: true,
   },
@@ -130,7 +141,7 @@ function RiskNameCell({ row, orgId }: { row: { original: RiskRow }; orgId: strin
   );
 }
 
-function RiskStatusCell({ row }: { row: { original: RiskRow } }) {
+function RiskStatusCell({ row, t }: { row: { original: RiskRow }; t: RiskListTranslator }) {
   const risk = row.original;
   const status = useRiskOnboardingStatus(risk.id);
   const isPending = risk.isPending;
@@ -147,10 +158,10 @@ function RiskStatusCell({ row }: { row: { original: RiskRow } }) {
   if (isPending || isActive) {
     const statusText =
       status === 'pending' || status === 'processing' || isPending
-        ? 'Creating...'
+        ? t('list.statusCreating')
         : status === 'assessing' || isAssessing
-          ? 'Assessing...'
-          : 'Processing...';
+          ? t('list.statusAssessing')
+          : t('list.statusProcessing');
 
     return (
       <div className="flex items-center gap-2">

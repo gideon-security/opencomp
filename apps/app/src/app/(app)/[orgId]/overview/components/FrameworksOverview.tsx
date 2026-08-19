@@ -6,6 +6,7 @@ import { Dialog } from '@gideon-defender/ui/dialog';
 import { ScrollArea } from '@gideon-defender/ui/scroll-area';
 import type { FrameworkEditorFramework } from '@db';
 import { Add } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -99,6 +100,7 @@ export function FrameworksOverview({
   organizationId,
 }: FrameworksOverviewProps) {
   const [isAddFrameworkModalOpen, setIsAddFrameworkModalOpen] = useState(false);
+  const t = useTranslations('overview');
   const { hasPermission } = usePermissions();
   const { orgId } = useParams<{ orgId: string }>();
   const { frameworks } = useFrameworks({ initialData: frameworksWithControls });
@@ -120,7 +122,7 @@ export function FrameworksOverview({
     <Card className="flex flex-col overflow-hidden border h-full">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">{'Frameworks'}</CardTitle>
+          <CardTitle className="flex items-center gap-2">{t('frameworks.title')}</CardTitle>
         </div>
 
         <div className="bg-secondary/50 relative mt-2 h-1 w-full overflow-hidden rounded-full">
@@ -192,7 +194,9 @@ export function FrameworksOverview({
                                 />
                               </div>
                               <span className="text-xs text-muted-foreground tabular-nums text-right mt-1">
-                                {Math.round(complianceScore)}% compliant
+                                {t('frameworks.compliant', {
+                                  percent: Math.round(complianceScore),
+                                })}
                               </span>
                             </div>
                           </div>
@@ -215,7 +219,7 @@ export function FrameworksOverview({
           <div className="flex justify-center w-full">
             <Button variant="outline" onClick={() => setIsAddFrameworkModalOpen(true)}>
               <Add size={16} className="mr-2" />
-              Add Framework
+              {t('frameworks.addButton')}
             </Button>
           </div>
         </CardFooter>

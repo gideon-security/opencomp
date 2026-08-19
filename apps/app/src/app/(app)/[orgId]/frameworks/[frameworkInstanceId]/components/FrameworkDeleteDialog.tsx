@@ -13,6 +13,7 @@ import {
 import { Form } from '@gideon-defender/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { usePermissions } from '@/hooks/use-permissions';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -40,6 +41,8 @@ export function FrameworkDeleteDialog({
 }: FrameworkDeleteDialogProps) {
   const { deleteFramework } = useFrameworks();
   const { hasPermission } = usePermissions();
+  const t = useTranslations('frameworks');
+  const tCommon = useTranslations('overview');
   const canDeleteFramework = hasPermission('framework', 'delete');
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,15 +54,15 @@ export function FrameworkDeleteDialog({
     },
   });
 
-  const handleSubmit = async (_values: FormValues) => {
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
       await deleteFramework(frameworkInstance.id);
-      toast.info('Framework deleted! Redirecting to overview...');
+      toast.info(t('instance.deletedRedirecting'));
       onClose();
       router.push(`/${frameworkInstance.organizationId}/overview`);
     } catch {
-      toast.error('Failed to delete framework.');
+      toast.error(t('instance.deleteFailed'));
       setIsSubmitting(false);
     }
   };
@@ -68,16 +71,16 @@ export function FrameworkDeleteDialog({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete Framework</DialogTitle>
+          <DialogTitle>{t('instance.deleteDialogTitle')}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete this framework? This action cannot be undone.
+            {t('instance.deleteDialogDescription')}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <DialogFooter className="gap-2">
               <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
-                Cancel
+                {tCommon('common.cancel')}
               </Button>
               <Button
                 type="submit"
@@ -86,7 +89,7 @@ export function FrameworkDeleteDialog({
                 loading={isSubmitting}
                 iconLeft={!isSubmitting ? <TrashCan size={14} /> : undefined}
               >
-                {isSubmitting ? 'Deleting...' : 'Delete'}
+                {isSubmitting ? t('instance.deleting') : tCommon('common.delete')}
               </Button>
             </DialogFooter>
           </form>

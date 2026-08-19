@@ -13,6 +13,7 @@ import { Form } from '@gideon-defender/ui/form';
 import { Control } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -38,6 +39,8 @@ export function ControlDeleteDialog({ isOpen, onClose, control }: ControlDeleteD
   const { hasPermission } = usePermissions();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations('controls');
+  const tCommon = useTranslations('overview');
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -46,15 +49,15 @@ export function ControlDeleteDialog({ isOpen, onClose, control }: ControlDeleteD
     },
   });
 
-  const handleSubmit = async (_values: FormValues) => {
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
       await deleteControl(control.id);
-      toast.info('Control deleted! Redirecting to controls list...');
+      toast.info(t('controlDeletedRedirecting'));
       onClose();
       router.push(`/${control.organizationId}/controls`);
     } catch {
-      toast.error('Failed to delete control.');
+      toast.error(t('controlDeleteFailed'));
       setIsSubmitting(false);
     }
   };
@@ -63,27 +66,25 @@ export function ControlDeleteDialog({ isOpen, onClose, control }: ControlDeleteD
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete Control</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete this control? This action cannot be undone.
-          </DialogDescription>
+          <DialogTitle>{t('deleteControl')}</DialogTitle>
+          <DialogDescription>{t('deleteConfirmation')}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <DialogFooter className="gap-2">
               <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
-                Cancel
+                {tCommon('common.cancel')}
               </Button>
               <Button type="submit" variant="destructive" disabled={isSubmitting || !hasPermission('control', 'delete')} className="gap-2">
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
                     <span className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                    Deleting...
+                    {t('deleting')}
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
                     <Trash2 className="h-3 w-3" />
-                    Delete
+                    {tCommon('common.delete')}
                   </span>
                 )}
               </Button>

@@ -4,6 +4,7 @@ import { usePermissions } from '@/hooks/use-permissions';
 import { useVendor, useVendorActions } from '@/hooks/use-vendors';
 import { RiskMatrixChart } from '@/components/risks/charts/RiskMatrixChart';
 import type { Vendor } from '@db';
+import { useTranslations } from 'next-intl';
 
 interface InherentRiskChartProps {
   vendor: Vendor;
@@ -13,12 +14,13 @@ export function VendorInherentRiskChart({ vendor }: InherentRiskChartProps) {
   const { updateVendor } = useVendorActions();
   const { mutate } = useVendor(vendor.id);
   const { hasPermission } = usePermissions();
+  const t = useTranslations('vendor');
 
   return (
     <RiskMatrixChart
-      title={'Inherent Risk'}
-      description={'Select the inherent risk level for this vendor'}
-      titleInfo="Inherent risk = the raw risk before any controls or mitigations. Used as the starting point for residual computation."
+      title={t('detail.inherentRiskChartTitle')}
+      description={t('detail.selectInherentRisk')}
+      titleInfo={t('detail.inherentRiskTitleInfo')}
       riskId={vendor.id}
       activeLikelihood={vendor.inherentProbability}
       activeImpact={vendor.inherentImpact}

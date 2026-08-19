@@ -1,6 +1,7 @@
 'use client';
 
 import { usePermissions } from '@/hooks/use-permissions';
+import type { NavMessageKey } from '@/i18n/keys';
 import { Badge } from '@gideon-defender/ui/badge';
 import { Button } from '@gideon-defender/ui/button';
 import { cn } from '@gideon-defender/ui/cn';
@@ -21,13 +22,14 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 // Define menu item types with icon component
 type MenuItem = {
   id: string;
   path: string;
-  name: string;
+  nameKey: NavMessageKey;
   disabled: boolean;
   icon: React.FC<{ size?: number }>;
   protected: boolean;
@@ -80,7 +82,7 @@ export function MainMenu({
     {
       id: 'overview',
       path: '/:organizationId/overview',
-      name: 'Overview',
+      nameKey: 'overview',
       disabled: false,
       icon: Gauge,
       protected: false,
@@ -88,7 +90,7 @@ export function MainMenu({
     {
       id: 'frameworks',
       path: '/:organizationId/frameworks',
-      name: 'Frameworks',
+      nameKey: 'frameworks',
       disabled: false,
       icon: Gauge,
       protected: false,
@@ -96,7 +98,7 @@ export function MainMenu({
     {
       id: 'auditor',
       path: '/:organizationId/auditor',
-      name: 'Auditor View',
+      nameKey: 'auditorView',
       disabled: false,
       icon: ClipboardCheck,
       protected: false,
@@ -105,7 +107,7 @@ export function MainMenu({
     {
       id: 'controls',
       path: '/:organizationId/controls',
-      name: 'Controls',
+      nameKey: 'controls',
       disabled: false,
       icon: ShieldEllipsis,
       protected: false,
@@ -114,7 +116,7 @@ export function MainMenu({
     {
       id: 'policies',
       path: '/:organizationId/policies',
-      name: 'Policies',
+      nameKey: 'policies',
       disabled: false,
       icon: NotebookText,
       protected: false,
@@ -122,7 +124,7 @@ export function MainMenu({
     {
       id: 'tasks',
       path: '/:organizationId/tasks',
-      name: 'Evidence',
+      nameKey: 'evidence',
       disabled: false,
       icon: ListCheck,
       protected: false,
@@ -130,7 +132,7 @@ export function MainMenu({
     {
       id: 'trust',
       path: '/:organizationId/trust',
-      name: 'Trust',
+      nameKey: 'trust',
       disabled: false,
       icon: ShieldCheck,
       protected: false,
@@ -139,7 +141,7 @@ export function MainMenu({
     {
       id: 'people',
       path: '/:organizationId/people/all',
-      name: 'People',
+      nameKey: 'people',
       disabled: false,
       icon: Users,
       protected: false,
@@ -147,7 +149,7 @@ export function MainMenu({
     {
       id: 'risk',
       path: '/:organizationId/risk',
-      name: 'Risks',
+      nameKey: 'risks',
       disabled: false,
       icon: Icons.Risk,
       protected: false,
@@ -155,7 +157,7 @@ export function MainMenu({
     {
       id: 'vendors',
       path: '/:organizationId/vendors',
-      name: 'Vendors',
+      nameKey: 'vendors',
       disabled: false,
       icon: Store,
       protected: false,
@@ -163,7 +165,7 @@ export function MainMenu({
     {
       id: 'questionnaire',
       path: '/:organizationId/questionnaire',
-      name: 'Questionnaire',
+      nameKey: 'questionnaire',
       disabled: false,
       icon: FileTextIcon,
       protected: false,
@@ -172,7 +174,7 @@ export function MainMenu({
     {
       id: 'integrations',
       path: '/:organizationId/integrations',
-      name: 'Integrations',
+      nameKey: 'integrations',
       disabled: false,
       icon: Zap,
       protected: false,
@@ -181,7 +183,7 @@ export function MainMenu({
     {
       id: 'tests',
       path: '/:organizationId/cloud-tests',
-      name: 'Cloud Tests',
+      nameKey: 'cloudTests',
       disabled: false,
       icon: FlaskConical,
       protected: false,
@@ -189,7 +191,7 @@ export function MainMenu({
     {
       id: 'settings',
       path: '/:organizationId/settings',
-      name: 'Settings',
+      nameKey: 'settings',
       disabled: false,
       icon: Icons.Settings,
       protected: true,
@@ -299,6 +301,7 @@ const Item = ({
   onItemClick,
   itemRef,
 }: ItemProps) => {
+  const t = useTranslations('nav');
   const Icon = item.icon;
   const linkDisabled = disabled || item.disabled;
   const itemPath = item.path.replace(':organizationId', organizationId ?? '');
@@ -319,10 +322,10 @@ const Item = ({
                 disabled
               >
                 {isCollapsed && <Icon size={16} />}
-                {!isCollapsed && <span className="truncate">Coming Soon</span>}
+                {!isCollapsed && <span className="truncate">{t('comingSoon')}</span>}
               </Button>
             </TooltipTrigger>
-            {isCollapsed && <TooltipContent side="right">Coming Soon</TooltipContent>}
+            {isCollapsed && <TooltipContent side="right">{t('comingSoon')}</TooltipContent>}
           </Tooltip>
         </TooltipProvider>
       </div>
@@ -344,7 +347,7 @@ const Item = ({
                 {isCollapsed && <Icon size={16} />}
                 {!isCollapsed && (
                   <>
-                    <span className="flex-1 truncate text-left">{item.name}</span>
+                    <span className="flex-1 truncate text-left">{t(item.nameKey)}</span>
                     {item.badge && (
                       <Badge variant={item.badge.variant} className="ml-auto text-xs">
                         {item.badge.text}
@@ -358,7 +361,7 @@ const Item = ({
           {isCollapsed && (
             <TooltipContent side="right" sideOffset={8}>
               <div className="flex items-center gap-2">
-                {item.name}
+                {t(item.nameKey)}
                 {item.badge && (
                   <Badge variant={item.badge.variant} className="text-xs">
                     {item.badge.text}

@@ -3,15 +3,15 @@
 import { useVendorActions } from '@/hooks/use-vendors';
 import { Button } from '@gideon-defender/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
-import type { Vendor } from '@db';
+import { VendorCategory, VendorStatus, type Vendor } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input, Stack, Textarea } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
-import type { z } from 'zod';
-import { updateVendorSchema } from '../../actions/schema';
+import { z } from 'zod';
 
 interface UpdateTitleAndDescriptionFormProps {
   vendor: Vendor;
@@ -25,8 +25,25 @@ export function UpdateTitleAndDescriptionForm({
   const { updateVendor } = useVendorActions();
   const { mutate: globalMutate } = useSWRConfig();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations('vendor');
+  const tCommon = useTranslations('overview');
 
-  const form = useForm<z.infer<typeof updateVendorSchema>>({
+  const updateVendorSchema = z.object({
+    id: z.string(),
+    name: z.string().min(1, t('create.nameRequired')),
+    description: z.string().optional(),
+    category: z.nativeEnum(VendorCategory),
+    status: z.nativeEnum(VendorStatus),
+    assigneeId: z.string().nullable(),
+    website: z
+      .union([z.string().url(t('create.urlInvalid')), z.literal('')])
+      .optional(),
+    isSubProcessor: z.boolean().optional(),
+  });
+
+  type FormValues = z.infer<typeof updateVendorSchema>;
+
+  const form = useForm<FormValues>({
     resolver: zodResolver(updateVendorSchema),
     defaultValues: {
       id: vendor.id,
@@ -39,7 +56,7 @@ export function UpdateTitleAndDescriptionForm({
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof updateVendorSchema>) => {
+  const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     try {
       await updateVendor(data.id, {
@@ -51,7 +68,7 @@ export function UpdateTitleAndDescriptionForm({
         website: data.website === '' ? undefined : data.website,
       });
 
-      toast.success('Vendor updated successfully');
+      toast.success(t('create.vendorUpdated'));
       globalMutate(
         (key) =>
           (Array.isArray(key) && key[0]?.includes('/v1/vendors')) ||
@@ -61,7 +78,7 @@ export function UpdateTitleAndDescriptionForm({
       );
       onSuccess?.();
     } catch {
-      toast.error('Failed to update vendor');
+      toast.error(t('create.vendorUpdateFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -76,12 +93,12 @@ export function UpdateTitleAndDescriptionForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{tCommon('common.name')}</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     autoFocus
-                    placeholder="A short, descriptive name for the vendor."
+                    placeholder={t('create.vendorNamePlaceholder')}
                     autoCorrect="off"
                   />
                 </FormControl>
@@ -94,12 +111,12 @@ export function UpdateTitleAndDescriptionForm({
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>{tCommon('common.description')}</FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
                     value={field.value ?? ''}
-                    placeholder="A detailed description of the vendor and its services."
+                    placeholder={t('create.vendorDescriptionPlaceholder')}
                   />
                 </FormControl>
                 <FormMessage />
@@ -111,12 +128,12 @@ export function UpdateTitleAndDescriptionForm({
             name="website"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Website</FormLabel>
+                <FormLabel>{t('create.website')}</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     value={field.value ?? ''}
-                    placeholder="https://example.com"
+                    placeholder={t('create.websitePlaceholder')}
                     autoCorrect="off"
                     inputMode="url"
                   />
@@ -127,7 +144,7 @@ export function UpdateTitleAndDescriptionForm({
           />
           <div className="flex justify-end pt-4">
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : 'Save'}
+              {isSubmitting ? t('create.saving') : tCommon('common.save')}
             </Button>
           </div>
         </Stack>

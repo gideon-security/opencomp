@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -209,7 +212,7 @@ describe('RisksTable permission gating', () => {
 
     render(<RisksTable {...defaultProps} />);
 
-    expect(screen.getByText('ACTIONS')).toBeInTheDocument();
+    expect(screen.getByText('list.headerActions')).toBeInTheDocument();
   });
 
   it('hides ACTIONS column header for auditor without risk:delete', () => {
@@ -217,7 +220,7 @@ describe('RisksTable permission gating', () => {
 
     render(<RisksTable {...defaultProps} />);
 
-    expect(screen.queryByText('ACTIONS')).not.toBeInTheDocument();
+    expect(screen.queryByText('list.headerActions')).not.toBeInTheDocument();
   });
 
   it('hides ACTIONS column when user has no permissions', () => {
@@ -225,7 +228,7 @@ describe('RisksTable permission gating', () => {
 
     render(<RisksTable {...defaultProps} />);
 
-    expect(screen.queryByText('ACTIONS')).not.toBeInTheDocument();
+    expect(screen.queryByText('list.headerActions')).not.toBeInTheDocument();
   });
 
   it('renders core table columns regardless of permissions', () => {
@@ -233,13 +236,13 @@ describe('RisksTable permission gating', () => {
 
     render(<RisksTable {...defaultProps} />);
 
-    expect(screen.getByText('RISK')).toBeInTheDocument();
-    expect(screen.getByText('SEVERITY')).toBeInTheDocument();
-    expect(screen.getByText('INHERENT RISK')).toBeInTheDocument();
-    expect(screen.getByText('CURRENT RISK')).toBeInTheDocument();
-    expect(screen.getByText('STATUS')).toBeInTheDocument();
-    expect(screen.getByText('OWNER')).toBeInTheDocument();
-    expect(screen.getByText('UPDATED')).toBeInTheDocument();
+    expect(screen.getByText('list.headerRisk')).toBeInTheDocument();
+    expect(screen.getByText('list.headerSeverity')).toBeInTheDocument();
+    expect(screen.getByText('list.headerInherentRisk')).toBeInTheDocument();
+    expect(screen.getByText('list.headerCurrentRisk')).toBeInTheDocument();
+    expect(screen.getByText('list.headerStatus')).toBeInTheDocument();
+    expect(screen.getByText('list.headerOwner')).toBeInTheDocument();
+    expect(screen.getByText('list.headerUpdated')).toBeInTheDocument();
   });
 
   it('renders SEVERITY label + RISK SCORE number, both from current state', () => {
@@ -253,7 +256,7 @@ describe('RisksTable permission gating', () => {
     // → severity label "Low" (score 4 → low band) + numeric "4/10".
     // The severity filter dropdown also contains "Low" as an option, so
     // we expect at least one (row + dropdown option).
-    expect(screen.getAllByText('Low').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('list.severityLow').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('4/10').length).toBeGreaterThanOrEqual(1);
   });
 
@@ -262,7 +265,7 @@ describe('RisksTable permission gating', () => {
 
     render(<RisksTable {...defaultProps} />);
 
-    expect(screen.getByPlaceholderText('Search risks...')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('list.searchPlaceholder')).toBeInTheDocument();
   });
 
   it('shows row action menu (dropdown trigger) when admin has risk:delete', () => {
@@ -288,6 +291,6 @@ describe('RisksTable permission gating', () => {
 
     render(<RisksTable {...defaultProps} risks={[]} />);
 
-    expect(screen.getByText('No risks yet')).toBeInTheDocument();
+    expect(screen.getByText('list.noRisksYet')).toBeInTheDocument();
   });
 });

@@ -18,6 +18,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 interface RequirementsTableProps {
@@ -33,6 +34,8 @@ interface RequirementsTableProps {
 export function RequirementsTable({ requirements, orgId }: RequirementsTableProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
+  const t = useTranslations('controls');
+  const tCommon = useTranslations('overview');
 
   // Filter requirements data based on search term
   const filteredRequirements = useMemo(() => {
@@ -64,7 +67,7 @@ export function RequirementsTable({ requirements, orgId }: RequirementsTableProp
             <Search size={16} />
           </InputGroupAddon>
           <InputGroupInput
-            placeholder="Search requirements..."
+            placeholder={t('searchRequirements')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -74,9 +77,9 @@ export function RequirementsTable({ requirements, orgId }: RequirementsTableProp
       <Table variant="bordered">
         <TableHeader>
           <TableRow>
-            <TableHead>Identifier</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Description</TableHead>
+            <TableHead>{t('columnIdentifier')}</TableHead>
+            <TableHead>{tCommon('common.name')}</TableHead>
+            <TableHead>{tCommon('common.description')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -84,7 +87,7 @@ export function RequirementsTable({ requirements, orgId }: RequirementsTableProp
             <TableRow>
               <TableCell colSpan={3}>
                 <Text size="sm" variant="muted">
-                  No requirements found.
+                  {t('noRequirementsFound')}
                 </Text>
               </TableCell>
             </TableRow>

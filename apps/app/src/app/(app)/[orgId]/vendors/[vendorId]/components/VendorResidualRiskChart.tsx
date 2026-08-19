@@ -6,6 +6,7 @@ import { usePermissions } from '@/hooks/use-permissions';
 import { useVendor, useVendorActions } from '@/hooks/use-vendors';
 import { suggestedResidual } from '@/lib/suggested-residual';
 import { VendorStatus, type TaskStatus, type Vendor } from '@db';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 
 interface ResidualRiskChartProps {
@@ -16,6 +17,7 @@ export function VendorResidualRiskChart({ vendor }: ResidualRiskChartProps) {
   const { updateVendor, triggerAssessment } = useVendorActions();
   const { mutate } = useVendor(vendor.id);
   const { hasPermission } = usePermissions();
+  const t = useTranslations('vendor');
 
   const canUpdate = hasPermission('vendor', 'update');
 
@@ -23,14 +25,14 @@ export function VendorResidualRiskChart({ vendor }: ResidualRiskChartProps) {
     return (
       <NotAssessedState
         disabled={!canUpdate}
-        description="Run the AI risk assessment to enable a suggested residual based on the vendor's data handling, exposure, and compliance posture."
+        description={t('detail.residualRiskEmptyDescription')}
         onAssess={async () => {
           try {
             await triggerAssessment(vendor.id);
-            toast.success('Risk assessment started. This may take a moment.');
+            toast.success(t('detail.riskAssessmentStarted'));
             await mutate();
           } catch {
-            toast.error('Failed to start risk assessment');
+            toast.error(t('detail.riskAssessmentStartFailed'));
           }
         }}
       />
@@ -53,11 +55,9 @@ export function VendorResidualRiskChart({ vendor }: ResidualRiskChartProps) {
 
   return (
     <RiskMatrixChart
-      title={'Residual Risk'}
-      description={
-        'Risk level after the treatment plan is applied. The dashed cell is the suggestion computed from your strategy and linked task completion.'
-      }
-      titleInfo="Residual risk = remaining risk after the treatment plan's mitigations are in place. Compare against Inherent to see the impact of your controls."
+      title={t('detail.residualRiskChartTitle')}
+      description={t('detail.residualRiskChartDescription')}
+      titleInfo={t('detail.residualRiskTitleInfo')}
       riskId={vendor.id}
       activeLikelihood={vendor.residualProbability}
       activeImpact={vendor.residualImpact}

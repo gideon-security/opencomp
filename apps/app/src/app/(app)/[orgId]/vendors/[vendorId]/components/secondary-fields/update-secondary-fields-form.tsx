@@ -7,14 +7,14 @@ import { Button } from '@gideon-defender/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
 import { Input } from '@gideon-defender/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
-import { Member, type User, type Vendor, VendorCategory } from '@db';
+import { Member, type User, type Vendor, VendorCategory, VendorStatus as VendorStatusEnum } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import type { z } from 'zod';
-import { updateVendorSchema } from '../../actions/schema';
+import { z } from 'zod';
 
 export function UpdateSecondaryFieldsForm({
   vendor,
@@ -27,8 +27,25 @@ export function UpdateSecondaryFieldsForm({
 }) {
   const { updateVendor } = useVendorActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations('vendor');
+  const tCommon = useTranslations('overview');
 
-  const form = useForm<z.infer<typeof updateVendorSchema>>({
+  const updateVendorSchema = z.object({
+    id: z.string(),
+    name: z.string().min(1, t('create.nameRequired')),
+    description: z.string().optional(),
+    category: z.nativeEnum(VendorCategory),
+    status: z.nativeEnum(VendorStatusEnum),
+    assigneeId: z.string().nullable(),
+    website: z
+      .union([z.string().url(t('create.urlInvalid')), z.literal('')])
+      .optional(),
+    isSubProcessor: z.boolean().optional(),
+  });
+
+  type FormValues = z.infer<typeof updateVendorSchema>;
+
+  const form = useForm<FormValues>({
     resolver: zodResolver(updateVendorSchema),
     defaultValues: {
       id: vendor.id,
@@ -42,7 +59,7 @@ export function UpdateSecondaryFieldsForm({
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof updateVendorSchema>) => {
+  const onSubmit = async (data: FormValues) => {
     // Explicitly set assigneeId to null if it's an empty string (representing "None")
     const finalAssigneeId = data.assigneeId === '' ? null : data.assigneeId;
 
@@ -57,10 +74,10 @@ export function UpdateSecondaryFieldsForm({
         website: data.website,
         isSubProcessor: data.isSubProcessor,
       });
-      toast.success('Vendor updated successfully');
+      toast.success(t('create.vendorUpdated'));
       onUpdate?.();
     } catch {
-      toast.error('Failed to update vendor');
+      toast.error(t('create.vendorUpdateFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -75,7 +92,7 @@ export function UpdateSecondaryFieldsForm({
             name="assigneeId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{'Assignee'}</FormLabel>
+                <FormLabel>{t('create.assignee')}</FormLabel>
                 <FormControl>
                   <SelectAssignee
                     disabled={isSubmitting}
@@ -94,11 +111,11 @@ export function UpdateSecondaryFieldsForm({
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{'Status'}</FormLabel>
+                <FormLabel>{t('create.status')}</FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder={'Select a status...'}>
+                      <SelectValue placeholder={t('create.selectStatus')}>
                         {field.value && <VendorStatus status={field.value} />}
                       </SelectValue>
                     </SelectTrigger>
@@ -120,11 +137,11 @@ export function UpdateSecondaryFieldsForm({
             name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{'Category'}</FormLabel>
+                <FormLabel>{t('create.category')}</FormLabel>
                 <FormControl>
                   <Select {...field} value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder={'Select a category...'} />
+                      <SelectValue placeholder={t('create.selectCategory')} />
                     </SelectTrigger>
                     <SelectContent>
                       {Object.values(VendorCategory).map((category) => {
@@ -151,11 +168,11 @@ export function UpdateSecondaryFieldsForm({
             name="website"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{'Website'}</FormLabel>
+                <FormLabel>{t('create.website')}</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="https://example.com"
+                    placeholder={t('create.websitePlaceholder')}
                     disabled={isSubmitting}
                     type="url"
                   />
@@ -167,7 +184,7 @@ export function UpdateSecondaryFieldsForm({
         </div>
         <div className="mt-4 flex justify-end">
           <Button type="submit" variant="default" disabled={isSubmitting}>
-            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
+            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : tCommon('common.save')}
           </Button>
         </div>
       </form>

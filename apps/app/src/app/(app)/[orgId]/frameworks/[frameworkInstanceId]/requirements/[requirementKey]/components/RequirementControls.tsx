@@ -7,6 +7,7 @@ import {
 } from '@/lib/control-compliance';
 import type { Control, RequirementMap, Task } from '@db';
 import { Badge, Heading, Text } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { RequirementControlsTable } from './table/RequirementControlsTable';
 
 type ControlWithRelations = Control & {
@@ -27,6 +28,7 @@ export function RequirementControls({
   evidenceSubmissions = [],
   frameworkInstanceId,
 }: RequirementControlsProps) {
+  const t = useTranslations('frameworks');
   const controls = relatedControls.map((rc) => rc.control);
   const totalControls = controls.length;
   const compliantControls = controls.filter(
@@ -49,15 +51,15 @@ export function RequirementControls({
       {totalControls > 0 && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-6 text-sm">
-            <Badge variant={variant}>{percent}% compliant</Badge>
+            <Badge variant={variant}>{t('requirements.compliant', { percent })}</Badge>
             <Text size="sm" variant="muted">
-              {compliantControls} completed
+              {t('requirements.controlsCompleted', { count: compliantControls })}
             </Text>
             <Text size="sm" variant="muted">
-              {remaining} remaining
+              {t('requirements.controlsRemaining', { count: remaining })}
             </Text>
             <Text size="sm" variant="muted">
-              {totalControls} total controls
+              {t('requirements.totalControls', { count: totalControls })}
             </Text>
           </div>
           <div className="h-2 w-full rounded-full bg-muted/50">
@@ -70,7 +72,7 @@ export function RequirementControls({
       )}
 
       <div className="flex items-center gap-2">
-        <Heading level="3">Controls</Heading>
+        <Heading level="3">{t('requirements.controlsTitle')}</Heading>
         <span className="text-muted-foreground bg-muted/50 rounded-xs px-2 py-1 text-xs tabular-nums">
           {totalControls}
         </span>

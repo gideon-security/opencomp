@@ -8,6 +8,9 @@ import {
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -166,7 +169,7 @@ describe('ToDoOverview', () => {
 
       render(<ToDoOverview {...defaultProps} />);
 
-      expect(screen.getByRole('button', { name: /publish all policies/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'todo.publishAllPolicies' })).toBeInTheDocument();
     });
 
     it('hides "Publish All Policies" button when user lacks policy:update permission (auditor)', () => {
@@ -175,7 +178,7 @@ describe('ToDoOverview', () => {
       render(<ToDoOverview {...defaultProps} />);
 
       expect(
-        screen.queryByRole('button', { name: /publish all policies/i }),
+        screen.queryByRole('button', { name: 'todo.publishAllPolicies' }),
       ).not.toBeInTheDocument();
     });
 
@@ -185,7 +188,7 @@ describe('ToDoOverview', () => {
       render(<ToDoOverview {...defaultProps} />);
 
       expect(
-        screen.queryByRole('button', { name: /publish all policies/i }),
+        screen.queryByRole('button', { name: 'todo.publishAllPolicies' }),
       ).not.toBeInTheDocument();
     });
 
@@ -204,7 +207,7 @@ describe('ToDoOverview', () => {
 
       render(<ToDoOverview {...defaultProps} />);
 
-      expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+      expect(screen.getByText('todo.title')).toBeInTheDocument();
     });
 
     it('renders policy list when there are unpublished policies', () => {
@@ -229,7 +232,7 @@ describe('ToDoOverview', () => {
 
       render(<ToDoOverview {...defaultProps} unpublishedPolicies={[]} remainingPolicies={0} />);
 
-      expect(screen.getByText('All policies are published!')).toBeInTheDocument();
+      expect(screen.getByText('todo.allPoliciesPublished')).toBeInTheDocument();
     });
 
     it('does not show publish button even with permissions when no unpublished policies', () => {
@@ -238,7 +241,7 @@ describe('ToDoOverview', () => {
       render(<ToDoOverview {...defaultProps} unpublishedPolicies={[]} remainingPolicies={0} />);
 
       expect(
-        screen.queryByRole('button', { name: /publish all policies/i }),
+        screen.queryByRole('button', { name: 'todo.publishAllPolicies' }),
       ).not.toBeInTheDocument();
     });
 
@@ -258,7 +261,7 @@ describe('ToDoOverview', () => {
 
       render(<ToDoOverview {...defaultProps} />);
 
-      await user.click(screen.getByRole('button', { name: /publish all policies/i }));
+      await user.click(screen.getByRole('button', { name: 'todo.publishAllPolicies' }));
 
       expect(screen.getByTestId('acknowledgment-dialog')).toHaveTextContent('2');
       expect(fetch).not.toHaveBeenCalled();
@@ -286,7 +289,7 @@ describe('ToDoOverview', () => {
         />,
       );
 
-      await user.click(screen.getByRole('button', { name: /publish all policies/i }));
+      await user.click(screen.getByRole('button', { name: 'todo.publishAllPolicies' }));
 
       expect(screen.queryByTestId('acknowledgment-dialog')).not.toBeInTheDocument();
       expect(fetch).toHaveBeenCalledOnce();

@@ -14,6 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { usePermissions } from '@/hooks/use-permissions';
 import {
@@ -38,6 +39,7 @@ export function FrameworkOverview({
 }: FrameworkOverviewProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const t = useTranslations('frameworks');
   const { hasPermission } = usePermissions();
 
   const allControls = frameworkInstanceWithControls.controls;
@@ -67,7 +69,7 @@ export function FrameworkOverview({
   const frameworkDisplayName =
     frameworkInstanceWithControls.framework?.name ??
     frameworkInstanceWithControls.customFramework?.name ??
-    'Framework';
+    t('instance.framework');
   const frameworkDisplayDescription =
     frameworkInstanceWithControls.framework?.description ??
     frameworkInstanceWithControls.customFramework?.description ??
@@ -101,7 +103,7 @@ export function FrameworkOverview({
                     className="text-destructive focus:text-destructive"
                   >
                     <TrashCan size={16} className="mr-2" />
-                    Delete Framework
+                    {t('instance.deleteFramework')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -118,10 +120,18 @@ export function FrameworkOverview({
       )}
 
       <div className="flex items-center gap-6 text-sm">
-        <Badge variant={getComplianceBadgeVariant()}>{compliancePercentage}% compliant</Badge>
-        <Text size="sm" variant="muted">{compliantControls} completed</Text>
-        <Text size="sm" variant="muted">{inProgressControls} remaining</Text>
-        <Text size="sm" variant="muted">{totalControls} total controls</Text>
+        <Badge variant={getComplianceBadgeVariant()}>
+          {t('instance.percentCompliant', { percent: compliancePercentage })}
+        </Badge>
+        <Text size="sm" variant="muted">
+          {t('instance.controlsCompleted', { count: compliantControls })}
+        </Text>
+        <Text size="sm" variant="muted">
+          {t('instance.controlsRemaining', { count: inProgressControls })}
+        </Text>
+        <Text size="sm" variant="muted">
+          {t('instance.totalControls', { count: totalControls })}
+        </Text>
       </div>
 
       <div className="h-2 w-full rounded-full bg-muted/50">

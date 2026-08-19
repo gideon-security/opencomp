@@ -7,6 +7,7 @@ import {
   Document,
   Download,
 } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import type { PentestRun } from '@/lib/security/penetration-tests-client';
 import { formatReportDate } from '../lib';
@@ -28,28 +29,33 @@ export function LatestAssessment({
   onDownloadPdf,
 }: LatestAssessmentProps) {
   const router = useRouter();
+  const t = useTranslations('security');
   const durationMs =
     new Date(run.updatedAt).getTime() - new Date(run.createdAt).getTime();
   return (
     <section className="rounded-[var(--radius)] border-2 border-border bg-card p-5">
       <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-        Latest assessment
+        {t('penTest.overview.latestAssessment')}
       </div>
       <div className="mt-2 truncate text-base font-medium">{run.targetUrl}</div>
       <p className="mt-1 font-mono text-xs text-muted-foreground">
         {formatReportDate(run.updatedAt)}
-        {durationMs > 0 ? ` · ran in ${formatDurationLabel(durationMs)}` : ''}
+        {durationMs > 0
+          ? t('penTest.overview.ranIn', {
+              duration: formatDurationLabel(durationMs),
+            })
+          : ''}
         {' · '}
         {run.id}
       </p>
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <Button onClick={() => onDownloadMarkdown(run.id)}>
           <Document className="h-3.5 w-3.5" />
-          Download Markdown
+          {t('penTest.overview.downloadMarkdown')}
         </Button>
         <Button variant="outline" onClick={() => onDownloadPdf(run.id)}>
           <Download className="h-3.5 w-3.5" />
-          PDF
+          {t('penTest.overview.pdf')}
         </Button>
         <button
           type="button"
@@ -60,7 +66,7 @@ export function LatestAssessment({
           }
           className="ml-auto font-mono text-[11px] text-muted-foreground hover:text-foreground"
         >
-          View detail →
+          {t('penTest.overview.viewDetail')}
         </button>
       </div>
     </section>
@@ -75,11 +81,12 @@ export function RecentScansSection({
   runs: PentestRun[];
 }) {
   const router = useRouter();
+  const t = useTranslations('security');
   if (runs.length === 0) return null;
   return (
     <section>
       <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
-        Recent scans · {runs.length}
+        {t('penTest.overview.recentScans', { count: runs.length })}
       </div>
       <div className="divide-y divide-border rounded-[var(--radius)] border border-border">
         {runs.map((run) => (
@@ -98,7 +105,7 @@ export function RecentScansSection({
               {displayHost(run.targetUrl)}
             </span>
             <span className="font-mono text-[11px] text-muted-foreground">
-              {relativeTime(run.updatedAt)}
+              {relativeTime(t, run.updatedAt)}
             </span>
             <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
@@ -116,10 +123,11 @@ export function StaleCoverageSection({
   stale: { targetUrl: string; lastScanAt: string | null }[];
 }) {
   const router = useRouter();
+  const t = useTranslations('security');
   return (
     <section>
       <div className="mb-2 font-mono text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
-        Stale coverage · {stale.length}
+        {t('penTest.overview.staleCoverage', { count: stale.length })}
       </div>
       {stale.length === 0 ? (
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -127,7 +135,7 @@ export function StaleCoverageSection({
             className="h-3.5 w-3.5"
             style={{ color: 'var(--pt-sev-low-fg)' }}
           />
-          All targets scanned in the last 14 days.
+          {t('penTest.overview.allTargetsScanned')}
         </div>
       ) : (
         <div className="divide-y divide-border rounded-[var(--radius)] border border-border">
@@ -140,7 +148,11 @@ export function StaleCoverageSection({
                 {displayHost(targetUrl)}
               </span>
               <span className="font-mono text-[11px] text-muted-foreground">
-                {lastScanAt ? `last ${relativeTime(lastScanAt)}` : 'never'}
+                {lastScanAt
+                  ? t('penTest.overview.lastScan', {
+                      time: relativeTime(t, lastScanAt),
+                    })
+                  : t('penTest.overview.never')}
               </span>
               <button
                 type="button"
@@ -149,7 +161,7 @@ export function StaleCoverageSection({
                 }
                 className="rounded border border-border px-2 py-1 font-mono text-[11px] hover:bg-muted"
               >
-                Scan now
+                {t('penTest.overview.scanNow')}
               </button>
             </div>
           ))}
@@ -234,27 +246,43 @@ export function formatDurationLabel(ms: number): string {
   return `${totalMin}m`;
 }
 
-export function cadenceLabel(scansLast30d: number): string {
-  if (scansLast30d === 0) return 'no scans in the last 30 days';
-  if (scansLast30d >= 30) return 'multiple scans/day';
+export function cadenceLabel(
+  t: ReturnType<typeof useTranslations<'security'>>,
+  scansLast30d: number,
+): string {
+  if (scansLast30d === 0) return t('penTest.overview.cadence.noScans');
+  if (scansLast30d >= 30) return t('penTest.overview.cadence.multiplePerDay');
   const intervalDays = Math.round(30 / scansLast30d);
-  if (intervalDays === 1) return 'about 1 scan/day';
-  return `about 1 scan every ${intervalDays} days`;
+  if (intervalDays === 1) return t('penTest.overview.cadence.onePerDay');
+  return t('penTest.overview.cadence.everyNDays', { count: intervalDays });
 }
 
-export function relativeTime(iso: string): string {
+export function relativeTime(
+  t: ReturnType<typeof useTranslations<'security'>>,
+  iso: string,
+): string {
   const ms = Date.now() - new Date(iso).getTime();
   if (!Number.isFinite(ms) || ms < 0) return '—';
   const minutes = Math.floor(ms / 60_000);
-  if (minutes < 60) return minutes < 1 ? 'just now' : `${minutes} min ago`;
+  if (minutes < 60) {
+    return minutes < 1
+      ? t('penTest.overview.relativeTime.justNow')
+      : t('penTest.overview.relativeTime.minAgo', { count: minutes });
+  }
   const hours = Math.floor(ms / 3_600_000);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) {
+    return t('penTest.overview.relativeTime.hoursAgo', { count: hours });
+  }
   const days = Math.floor(ms / 86_400_000);
-  if (days < 7) return `${days}d ago`;
+  if (days < 7) {
+    return t('penTest.overview.relativeTime.daysAgo', { count: days });
+  }
   const weeks = Math.floor(days / 7);
-  if (weeks < 5) return `${weeks}w ago`;
+  if (weeks < 5) {
+    return t('penTest.overview.relativeTime.weeksAgo', { count: weeks });
+  }
   const months = Math.floor(days / 30);
-  return `${months}mo ago`;
+  return t('penTest.overview.relativeTime.monthsAgo', { count: months });
 }
 
 export function displayHost(url: string): string {

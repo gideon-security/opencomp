@@ -8,6 +8,7 @@ import { Button } from '@gideon-defender/ui/button';
 import { Card, CardContent, CardDescription, CardTitle } from '@gideon-defender/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@gideon-defender/ui/collapsible';
 import { CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 interface LoginFormProps {
@@ -25,6 +26,7 @@ export function LoginForm({
   showGithub,
   showMicrosoft,
 }: LoginFormProps) {
+  const t = useTranslations('auth');
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [magicLinkState, setMagicLinkState] = useState({ sent: false, email: '' });
 
@@ -39,16 +41,14 @@ export function LoginForm({
           <CheckCircle2 className="h-16 w-16 text-primary" />
           <div className="space-y-2">
             <CardTitle className="text-2xl font-semibold text-card-foreground">
-              Magic link sent
+              {t('magicLinkSent')}
             </CardTitle>
             <CardDescription className="text-sm text-muted-foreground">
-              Check your inbox at{' '}
-              <span className="font-semibold text-foreground">{magicLinkState.email}</span> for a
-              magic link to sign in.
+              {t('checkInbox', { email: magicLinkState.email })}
             </CardDescription>
           </div>
           <Button variant="link" onClick={() => setMagicLinkState({ sent: false, email: '' })}>
-            Use another method
+            {t('useAnotherMethod')}
           </Button>
         </CardContent>
       </Card>
@@ -104,7 +104,7 @@ export function LoginForm({
                 size="sm"
                 className="relative px-4 text-sm text-muted-foreground bg-background hover:bg-muted"
               >
-                More options
+                {t('moreOptions')}
                 {isOptionsOpen ? (
                   <ChevronUp className="ml-1 h-4 w-4 transition-transform duration-200" />
                 ) : (

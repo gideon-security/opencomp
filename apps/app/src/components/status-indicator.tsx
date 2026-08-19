@@ -1,4 +1,7 @@
+'use client';
+
 import { cn } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 
 // Consolidated status types from Prisma schema
 export const STATUS_TYPES = [
@@ -61,42 +64,19 @@ export const STATUS_COLORS: Record<StatusType, string> = {
   failed: 'bg-red-600 dark:bg-red-400',
 } as const;
 
-// Updated status translation mapping
-export const getStatusTranslation = (status: StatusType) => {
-  switch (status) {
-    case 'draft':
-      return 'Draft';
-    case 'todo':
-      return 'Todo';
-    case 'in_progress':
-      return 'In Progress';
-    case 'in_review':
-      return 'In Review';
-    case 'done':
-      return 'Done';
-    case 'published':
-      return 'Published';
-    case 'archived':
-      return 'Archived';
-    case 'needs_review':
-      return 'Needs Review';
-    case 'open':
-      return 'Open';
-    case 'pending':
-      return 'Pending';
-    case 'closed':
-      return 'Closed';
-    case 'not_relevant':
-      return 'Not relevant';
-
-    default: {
-      // Fallback for unmapped statuses
-      // Cast status to string to handle potential 'never' type inferred by TS
-      const statusString = status as string;
-      const fallback = statusString.replace(/_/g, ' ');
-      return fallback.charAt(0).toUpperCase() + fallback.slice(1);
-    }
+// Localized status label, keyed off the `status` i18n namespace (mirrors STATUS_TYPES).
+export const getStatusTranslation = (
+  status: StatusType,
+  t: ReturnType<typeof useTranslations<'status'>>,
+) => {
+  if ((STATUS_TYPES as readonly string[]).includes(status)) {
+    return t(status);
   }
+
+  // Fallback for unmapped statuses
+  const statusString = status as string;
+  const fallback = statusString.replace(/_/g, ' ');
+  return fallback.charAt(0).toUpperCase() + fallback.slice(1);
 };
 
 interface StatusIndicatorProps {
@@ -106,6 +86,8 @@ interface StatusIndicatorProps {
 }
 
 export function StatusIndicator({ status, className, withLabel = true }: StatusIndicatorProps) {
+  const t = useTranslations('status');
+
   // Handle null or undefined status
   if (!status) {
     return (
@@ -118,7 +100,7 @@ export function StatusIndicator({ status, className, withLabel = true }: StatusI
 
   // Proceed with valid status
   const colorClass = STATUS_COLORS[status] ?? 'bg-gray-400 dark:bg-gray-500';
-  const label = getStatusTranslation(status);
+  const label = getStatusTranslation(status, t);
 
   return (
     <div className={cn('flex items-center gap-2 text-sm', className)}>

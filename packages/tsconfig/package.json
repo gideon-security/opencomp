@@ -17,7 +17,7 @@
     "README.md"
   ],
   "keywords": [
-    "comp-ai",
+    "opencomp",
     "configuration",
     "tsconfig",
     "typescript"
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/comp-ai/comp.git",
+    "url": "git+https://github.com/gideon-security/opencomp.git",
     "directory": "packages/tsconfig"
   }
 }

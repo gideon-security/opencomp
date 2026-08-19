@@ -1,5 +1,6 @@
 import { TaskOverview } from '@/components/risks/tasks/task-overview';
 import { serverApi } from '@/lib/api-server';
+import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
@@ -31,7 +32,8 @@ export default async function RiskPage({ params }: PageProps) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('risk');
   return {
-    title: 'Task Overview',
+    title: t('detail.taskMetadataTitle'),
   };
 }

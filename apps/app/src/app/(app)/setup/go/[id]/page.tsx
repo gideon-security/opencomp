@@ -1,6 +1,7 @@
 import { LogoSpinner } from '@/components/logo-spinner';
 import { TriggerTokenProvider } from '@/components/trigger-token-provider';
 import { serverApi } from '@/lib/api-server';
+import { getTranslations } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { OnboardingStatus } from './components/onboarding-status';
 
@@ -13,6 +14,7 @@ interface OnboardingResponse {
 }
 
 export default async function RunPage({ params }: PageProps) {
+  const t = await getTranslations('setup');
   const { id } = await params;
   const cookieStore = await cookies();
   const publicAccessToken = cookieStore.get('publicAccessToken')?.value || undefined;
@@ -29,9 +31,9 @@ export default async function RunPage({ params }: PageProps) {
         <div className="bg-card relative w-full max-w-[440px] border p-8 shadow-lg">
           <div className="flex flex-col justify-center space-y-4">
             <div className="flex flex-col justify-center gap-2 text-center">
-              <h2 className="text-xl font-semibold tracking-tight">Onboarding Not Found</h2>
+              <h2 className="text-xl font-semibold tracking-tight">{t('onboardingNotFound')}</h2>
               <p className="text-muted-foreground text-sm">
-                No onboarding process found for this organization.
+                {t('onboardingNotFoundDescription')}
               </p>
             </div>
           </div>
@@ -48,10 +50,10 @@ export default async function RunPage({ params }: PageProps) {
             <div className="flex flex-col justify-center gap-2">
               <LogoSpinner />
               <h2 className="text-center text-xl font-semibold tracking-tight">
-                Onboarding in progress
+                {t('onboardingInProgress')}
               </h2>
               <p className="text-muted-foreground text-center text-sm">
-                This may take a few minutes.
+                {t('onboardingInProgressDescription')}
               </p>
               <div className="flex flex-col items-center justify-center">
                 <OnboardingStatus runId={id} />

@@ -25,6 +25,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -85,6 +86,7 @@ export function RiskPageClient({
   const isViewingTask = Boolean(taskItemId);
   const canUpdate = hasPermission('risk', 'update');
   const canUpdateTask = hasPermission('task', 'update');
+  const t = useTranslations('risk');
   const { data: taskItemsData, mutate: mutateTaskItems } = useTaskItems(riskId, 'risk', 1, 50);
   const { updateTaskItem } = useTaskItemActions();
   const selectedTaskTitle = useMemo(() => {
@@ -133,10 +135,10 @@ export function RiskPageClient({
         await updateRisk(riskId, { title: titleValue.trim() });
         mutateRisk();
       }
-      toast.success('Title updated');
+      toast.success(t('detail.titleUpdated'));
       setIsEditingTitle(false);
     } catch {
-      toast.error('Failed to update title');
+      toast.error(t('detail.titleUpdateFailed'));
     }
   };
 
@@ -153,11 +155,11 @@ export function RiskPageClient({
     }
     try {
       await updateRisk(riskId, { description: descriptionValue.trim() });
-      toast.success('Description updated');
+      toast.success(t('detail.descriptionUpdated'));
       setIsEditingDescription(false);
       mutateRisk();
     } catch {
-      toast.error('Failed to update description');
+      toast.error(t('detail.descriptionUpdateFailed'));
     }
   };
 
@@ -180,7 +182,7 @@ export function RiskPageClient({
       // point we clear isRegenerating + refetch the risk for the new prose.
       setRegenRun(handle);
     } catch {
-      toast.error('Failed to trigger mitigation regeneration');
+      toast.error(t('detail.regenTriggerFailed'));
       setIsRegenerating(false);
     }
   };
@@ -190,13 +192,13 @@ export function RiskPageClient({
       setRegenRun(null);
       setIsRegenerating(false);
       if (result.success) {
-        toast.success('Treatment plan regenerated.');
+        toast.success(t('detail.treatmentPlanRegenerated'));
         void mutateRisk();
       } else {
-        toast.error(result.reason ?? 'Failed to regenerate the treatment plan.');
+        toast.error(result.reason ?? t('detail.treatmentPlanRegenFailed'));
       }
     },
-    [mutateRisk],
+    [mutateRisk, t],
   );
 
   const handleSuggest = async () => {
@@ -217,7 +219,7 @@ export function RiskPageClient({
       if (!res.ok) throw new Error('unlink failed');
       await mutateRisk();
     } catch {
-      toast.error('Failed to unlink task');
+      toast.error(t('detail.unlinkTaskFailed'));
     }
   };
 
@@ -241,13 +243,13 @@ export function RiskPageClient({
         items={
           taskItemId
             ? [
-                { label: 'Risks', href: `/${orgId}/risk`, props: { render: <Link href={`/${orgId}/risk`} /> } },
+                { label: t('list.title'), href: `/${orgId}/risk`, props: { render: <Link href={`/${orgId}/risk`} /> } },
                 { label: risk.title, href: `/${orgId}/risk/${riskId}`, props: { render: <Link href={`/${orgId}/risk/${riskId}`} /> } },
-                { label: 'Tasks', href: `/${orgId}/risk/${riskId}?tab=tasks`, props: { render: <Link href={`/${orgId}/risk/${riskId}?tab=tasks`} /> } },
-                { label: selectedTaskTitle || 'Task', isCurrent: true },
+                { label: t('detail.tabTasks'), href: `/${orgId}/risk/${riskId}?tab=tasks`, props: { render: <Link href={`/${orgId}/risk/${riskId}?tab=tasks`} /> } },
+                { label: selectedTaskTitle || t('detail.taskFallback'), isCurrent: true },
               ]
             : [
-                { label: 'Risks', href: `/${orgId}/risk`, props: { render: <Link href={`/${orgId}/risk`} /> } },
+                { label: t('list.title'), href: `/${orgId}/risk`, props: { render: <Link href={`/${orgId}/risk`} /> } },
                 { label: risk.title, isCurrent: true },
               ]
         }
@@ -272,7 +274,7 @@ export function RiskPageClient({
               onClick={(isViewingTask ? canUpdateTask : canUpdate) ? startEditingTitle : undefined}
               className={`text-2xl font-semibold tracking-tight ${(isViewingTask ? canUpdateTask : canUpdate) ? 'cursor-pointer rounded px-1 -mx-1 hover:bg-muted/50 transition-colors' : ''}`}
             >
-              {taskItemId ? (selectedTaskTitle || 'Task') : risk.title}
+              {taskItemId ? (selectedTaskTitle || t('detail.taskFallback')) : risk.title}
             </h1>
           )}
         </HStack>
@@ -307,7 +309,7 @@ export function RiskPageClient({
               onClick={startEditingDescription}
               style={canUpdate ? { cursor: 'pointer' } : undefined}
             >
-              {risk.description || (canUpdate ? 'Add a description...' : '')}
+              {risk.description || (canUpdate ? t('detail.addDescription') : '')}
             </Text>
           )
         )}
@@ -319,13 +321,13 @@ export function RiskPageClient({
         <Tabs value={activeTab} onValueChange={(next) => void setActiveTab(String(next))}>
           <Stack gap="lg">
             <TabsList variant="underline">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="treatment-plan">Treatment Plan</TabsTrigger>
-              <TabsTrigger value="risk-matrix">Risk Matrix</TabsTrigger>
-              <TabsTrigger value="tasks">Tasks</TabsTrigger>
-              <TabsTrigger value="comments">Comments</TabsTrigger>
-              <TabsTrigger value="activity">Activity</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
+              <TabsTrigger value="overview">{t('detail.tabOverview')}</TabsTrigger>
+              <TabsTrigger value="treatment-plan">{t('detail.tabTreatmentPlan')}</TabsTrigger>
+              <TabsTrigger value="risk-matrix">{t('detail.tabRiskMatrix')}</TabsTrigger>
+              <TabsTrigger value="tasks">{t('detail.tabTasks')}</TabsTrigger>
+              <TabsTrigger value="comments">{t('detail.tabComments')}</TabsTrigger>
+              <TabsTrigger value="activity">{t('detail.tabActivity')}</TabsTrigger>
+              <TabsTrigger value="settings">{t('detail.tabSettings')}</TabsTrigger>
             </TabsList>
 
             {activeTab === 'overview' && (
@@ -387,7 +389,7 @@ export function RiskPageClient({
                     ownerId={risk.assigneeId}
                     acceptorOptions={assignees.map((member) => ({
                       id: member.id,
-                      name: member.user?.name ?? member.user?.email ?? 'Unknown',
+                      name: member.user?.name ?? member.user?.email ?? t('list.unknown'),
                     }))}
                     canUpdate={canUpdate}
                   />
@@ -424,7 +426,7 @@ export function RiskPageClient({
 
             {activeTab === 'settings' && (
               <TabsContent value="settings">
-                <Text size="sm" variant="muted">No settings yet.</Text>
+                <Text size="sm" variant="muted">{t('detail.noSettingsYet')}</Text>
               </TabsContent>
             )}
           </Stack>

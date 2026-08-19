@@ -15,6 +15,7 @@ import { Member, User } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { ArrowRightIcon, CalendarIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
@@ -22,19 +23,21 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-const createVendorTaskFormSchema = z.object({
-  title: z.string().min(1, { message: 'Title is required' }),
-  description: z.string().min(1, { message: 'Description is required' }),
-  dueDate: z.date().optional(),
-  assigneeId: z.string().optional(),
-});
-
 export function CreateVendorTaskForm({ assignees }: { assignees: (Member & { user: User })[] }) {
   const { hasPermission } = usePermissions();
   const [_, setCreateVendorTaskSheet] = useQueryState('create-vendor-task-sheet');
   const params = useParams<{ vendorId: string }>();
   const { createTask } = useTaskMutations();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations('vendor');
+  const tCommon = useTranslations('overview');
+
+  const createVendorTaskFormSchema = z.object({
+    title: z.string().min(1, { message: t('task.titleRequired') }),
+    description: z.string().min(1, { message: t('task.descriptionRequired') }),
+    dueDate: z.date().optional(),
+    assigneeId: z.string().optional(),
+  });
 
   const form = useForm<z.infer<typeof createVendorTaskFormSchema>>({
     resolver: zodResolver(createVendorTaskFormSchema),
@@ -55,10 +58,10 @@ export function CreateVendorTaskForm({ assignees }: { assignees: (Member & { use
         assigneeId: data.assigneeId || null,
         vendorId: params.vendorId,
       });
-      toast.success('Task created successfully');
+      toast.success(t('task.taskCreated'));
       setCreateVendorTaskSheet(null);
     } catch {
-      toast.error('Failed to create task');
+      toast.error(t('task.taskCreateFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -71,7 +74,7 @@ export function CreateVendorTaskForm({ assignees }: { assignees: (Member & { use
           <div>
             <Accordion type="multiple" defaultValue={['task']}>
               <AccordionItem value="task">
-                <AccordionTrigger>{'Task Details'}</AccordionTrigger>
+                <AccordionTrigger>{t('task.taskDetails')}</AccordionTrigger>
                 <AccordionContent>
                   <div className="space-y-4">
                     <FormField
@@ -79,13 +82,13 @@ export function CreateVendorTaskForm({ assignees }: { assignees: (Member & { use
                       name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{'Task Title'}</FormLabel>
+                          <FormLabel>{t('task.taskTitle')}</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
                               autoFocus
                               className="mt-3"
-                              placeholder={'A short, descriptive title for the task.'}
+                              placeholder={t('task.taskTitlePlaceholder')}
                               autoCorrect="off"
                             />
                           </FormControl>
@@ -99,14 +102,12 @@ export function CreateVendorTaskForm({ assignees }: { assignees: (Member & { use
                       name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{'Description'}</FormLabel>
+                          <FormLabel>{tCommon('common.description')}</FormLabel>
                           <FormControl>
                             <Textarea
                               {...field}
                               className="mt-3 min-h-[80px]"
-                              placeholder={
-                                'Provide a detailed description of what needs to be done.'
-                              }
+                              placeholder={t('task.taskDescriptionPlaceholder')}
                             />
                           </FormControl>
                           <FormMessage />
@@ -119,7 +120,7 @@ export function CreateVendorTaskForm({ assignees }: { assignees: (Member & { use
                       name="dueDate"
                       render={({ field }) => (
                         <FormItem className="flex flex-col">
-                          <FormLabel>{'Due Date'}</FormLabel>
+                          <FormLabel>{t('task.dueDate')}</FormLabel>
                           <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
@@ -133,7 +134,7 @@ export function CreateVendorTaskForm({ assignees }: { assignees: (Member & { use
                                   {field.value ? (
                                     format(field.value, 'PPP')
                                   ) : (
-                                    <span>{'Pick a date'}</span>
+                                    <span>{t('task.pickDate')}</span>
                                   )}
                                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                 </Button>
@@ -159,7 +160,7 @@ export function CreateVendorTaskForm({ assignees }: { assignees: (Member & { use
                       name="assigneeId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{'Assignee'}</FormLabel>
+                          <FormLabel>{t('create.assignee')}</FormLabel>
                           <FormControl>
                             <SelectAssignee
                               assignees={assignees}
@@ -181,7 +182,7 @@ export function CreateVendorTaskForm({ assignees }: { assignees: (Member & { use
           <div className="mt-4 flex justify-end">
             <Button type="submit" variant="default" disabled={isSubmitting || !hasPermission('task', 'create')}>
               <div className="flex items-center justify-center">
-                {'Create'}
+                {t('task.create')}
                 <ArrowRightIcon className="ml-2 h-4 w-4" />
               </div>
             </Button>

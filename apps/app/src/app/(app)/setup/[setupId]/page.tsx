@@ -1,6 +1,7 @@
 import { MinimalHeader } from '@/components/layout/MinimalHeader';
 import { auth } from '@/utils/auth';
 import { db } from '@db/server';
+import { getTranslations } from 'next-intl/server';
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -8,9 +9,12 @@ import { OnboardingSidebar } from '../components/OnboardingSidebar';
 import { OrganizationSetupForm } from '../components/OrganizationSetupForm';
 import { getSetupSession } from '../lib/setup-session';
 
-export const metadata: Metadata = {
-  title: 'Setup Your Organization | OpenComp',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('setup');
+  return {
+    title: `${t('setupYourOrganization')} | OpenComp`,
+  };
+}
 
 interface SetupPageProps {
   params: Promise<{ setupId: string }>;

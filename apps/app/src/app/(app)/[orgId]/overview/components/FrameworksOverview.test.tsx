@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -63,19 +66,19 @@ describe('FrameworksOverview permission gating', () => {
   it('shows "Add Framework" button when user has framework:create permission', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<FrameworksOverview {...baseProps} />);
-    expect(screen.getByRole('button', { name: /add framework/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'frameworks.addButton' })).toBeInTheDocument();
   });
 
   it('hides "Add Framework" button when user lacks framework:create permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<FrameworksOverview {...baseProps} />);
-    expect(screen.queryByRole('button', { name: /add framework/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'frameworks.addButton' })).not.toBeInTheDocument();
   });
 
   it('hides "Add Framework" button when user has no permissions', () => {
     setMockPermissions({});
     render(<FrameworksOverview {...baseProps} />);
-    expect(screen.queryByRole('button', { name: /add framework/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'frameworks.addButton' })).not.toBeInTheDocument();
   });
 
   it('renders PCI DSS badge for PCI DSS Level 1 framework instances', () => {

@@ -5,6 +5,7 @@ import { buildAuthCallbackUrl } from '@/utils/auth-callback';
 import { Button } from '@gideon-defender/ui/button';
 import { Icons } from '@gideon-defender/ui/icons';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 interface GithubSignInProps {
@@ -13,6 +14,7 @@ interface GithubSignInProps {
 }
 
 export function GithubSignIn({ inviteCode, redirectTo }: GithubSignInProps) {
+  const t = useTranslations('auth');
   const [isLoading, setLoading] = useState(false);
 
   const handleSignIn = async () => {
@@ -38,7 +40,7 @@ export function GithubSignIn({ inviteCode, redirectTo }: GithubSignInProps) {
       ) : (
         <>
           <Icons.Github className="h-4 w-4" />
-          Continue with GitHub
+          {t('continueWithGithub')}
         </>
       )}
     </Button>
