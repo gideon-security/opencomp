@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { MfaSetupHelp } from '../../../tasks/[taskId]/components/browser-automations/MfaSetupHelp';
 import { useTotpStatus } from '../../../tasks/[taskId]/hooks/useTotpStatus';
 import { methodOf, statusMeta, type Connection } from './connection-format';
+import { useTranslations } from 'next-intl';
 
 interface ManageConnectionSheetProps {
   connection: Connection | null;
@@ -67,6 +68,8 @@ export function ManageConnectionSheet({
   onClearTotp,
   onRemove,
 }: ManageConnectionSheetProps) {
+  const t = useTranslations('settings');
+  const tCommon = useTranslations('overview');
   const [name, setName] = useState('');
   const [showCredForm, setShowCredForm] = useState(false);
   const [username, setUsername] = useState('');
@@ -149,7 +152,7 @@ export function ManageConnectionSheet({
             </span>
             {!canManage && (
               <span className="inline-flex items-center rounded-sm bg-muted px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-                View only
+                {t('connections.viewOnly')}
               </span>
             )}
           </div>
@@ -164,17 +167,17 @@ export function ManageConnectionSheet({
           <div className="flex flex-col gap-5">
             {/* Facts */}
             <div className="divide-y divide-border rounded-md border border-border">
-              <FactRow label="Method">{method === 'password' ? 'Password' : 'SSO'}</FactRow>
-              <FactRow label="Connected as">{connection.loginIdentity || '—'}</FactRow>
-              <FactRow label="Automations">{automationCount}</FactRow>
-              <FactRow label="Status">
+              <FactRow label={t('connections.method')}>{method === 'password' ? t('connections.password') : 'SSO'}</FactRow>
+              <FactRow label={t('connections.connectedAs')}>{connection.loginIdentity || '—'}</FactRow>
+              <FactRow label={t('connections.automations')}>{automationCount}</FactRow>
+              <FactRow label={t('connections.statusLabel')}>
                 <span style={{ color: meta.color }}>{meta.label}</span>
               </FactRow>
               {secured && (
-                <FactRow label="Credentials">
+                <FactRow label={t('connections.credentials')}>
                   <span className="inline-flex items-center gap-1.5 text-muted-foreground">
                     <Locked size={11} />
-                    Secured by 1Password
+                    {t('connections.securedBy1Password')}
                   </span>
                 </FactRow>
               )}
@@ -184,26 +187,26 @@ export function ManageConnectionSheet({
               <>
                 {/* Session */}
                 <section className="flex flex-col gap-2">
-                  <SectionLabel>Session</SectionLabel>
+                  <SectionLabel>{t('connections.session')}</SectionLabel>
                   <Button
                     variant={attention ? 'default' : 'outline'}
                     width="full"
                     disabled={busy}
                     onClick={() => onReconnect(connection)}
                   >
-                    Reconnect
+                    {t('connections.reconnect')}
                   </Button>
                   <p className="text-[10.5px] leading-relaxed text-muted-foreground">
-                    Signs in again in a live browser and refreshes the saved session.
+                    {t('connections.reconnectDescription')}
                   </p>
                 </section>
 
                 {/* Details */}
                 <section className="flex flex-col gap-3">
-                  <SectionLabel>Details</SectionLabel>
+                  <SectionLabel>{t('connections.details')}</SectionLabel>
 
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-[11px] text-muted-foreground">Name</span>
+                    <span className="text-[11px] text-muted-foreground">{t('connections.nameLabel')}</span>
                     <div className="flex gap-2">
                       <div className="flex-1">
                         <Input
@@ -217,7 +220,7 @@ export function ManageConnectionSheet({
                         disabled={!nameChanged || busy}
                         onClick={() => onRename(connection, name.trim())}
                       >
-                        Save
+                        {t('connections.saveButton')}
                       </Button>
                     </div>
                   </div>
@@ -225,16 +228,16 @@ export function ManageConnectionSheet({
                   {/* Login — password connections only (SSO has no stored password). */}
                   {method === 'password' && (
                     <div className="flex flex-col gap-1.5">
-                      <span className="text-[11px] text-muted-foreground">Login</span>
+                      <span className="text-[11px] text-muted-foreground">{t('connections.loginLabel')}</span>
                       {!showCredForm ? (
                         <>
                           <div>
                             <Button variant="outline" onClick={() => setShowCredForm(true)}>
-                              Change login
+                              {t('connections.changeLogin')}
                             </Button>
                           </div>
                           <p className="text-[10.5px] leading-relaxed text-muted-foreground">
-                            Rotated the account? Store the new email and password here.
+                            {t('connections.changeLoginDescription')}
                           </p>
                         </>
                       ) : (
@@ -242,14 +245,14 @@ export function ManageConnectionSheet({
                           <Input
                             value={username}
                             onChange={(event) => setUsername(event.target.value)}
-                            placeholder="New email / username"
+                            placeholder={t('connections.newEmailUsername')}
                             autoComplete="off"
                           />
                           <Input
                             type="password"
                             value={password}
                             onChange={(event) => setPassword(event.target.value)}
-                            placeholder="New password"
+                            placeholder={t('connections.newPassword')}
                             autoComplete="new-password"
                           />
                           <div className="flex gap-2">
@@ -262,10 +265,10 @@ export function ManageConnectionSheet({
                                 })
                               }
                             >
-                              Save login
+                              {t('connections.saveLogin')}
                             </Button>
                             <Button variant="ghost" onClick={() => setShowCredForm(false)}>
-                              Cancel
+                              {tCommon('common.cancel')}
                             </Button>
                           </div>
                         </div>
@@ -279,13 +282,13 @@ export function ManageConnectionSheet({
                     <div className="flex flex-col gap-2 border-t border-border pt-3">
                       <div className="flex items-start justify-between gap-2.5">
                         <div className="min-w-0">
-                          <div className="text-[12px] text-foreground">Automatic 2FA</div>
+                          <div className="text-[12px] text-foreground">{t('connections.automatic2fa')}</div>
                           <div className="mt-px text-[10.5px] leading-relaxed text-muted-foreground">
                             {totpError
-                              ? "Couldn't check the 2FA status — try reopening this panel."
+                              ? t('connections.totpError')
                               : totpConfigured
-                                ? 'On — codes are generated at each run.'
-                                : `Not set up — a run pauses if ${connection.hostname} asks for a code.`}
+                                ? t('connections.totpConfigured')
+                                : t('connections.totpNotSetUp', { hostname: connection.hostname })}
                           </div>
                         </div>
                         {totpLoading ? (
@@ -319,7 +322,7 @@ export function ManageConnectionSheet({
                         !totpError && (
                           <div>
                             <Button variant="outline" onClick={() => setTotpAdding(true)}>
-                              Add authenticator key
+                              {t('connections.addAuthenticatorKey')}
                             </Button>
                           </div>
                         )}
@@ -327,7 +330,7 @@ export function ManageConnectionSheet({
                       {!totpAdding && totpConfigured && (
                         <div className="flex items-center gap-3">
                           <Button variant="outline" onClick={() => setTotpAdding(true)}>
-                            Replace key
+                            {t('connections.replaceKey')}
                           </Button>
                           <button
                             type="button"
@@ -335,7 +338,7 @@ export function ManageConnectionSheet({
                             onClick={handleTurnOffTotp}
                             className="cursor-pointer text-[11px] text-destructive hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            Turn off
+                            {t('connections.turnOff')}
                           </button>
                         </div>
                       )}
@@ -346,11 +349,11 @@ export function ManageConnectionSheet({
                             type="password"
                             value={totpSeed}
                             onChange={(event) => setTotpSeed(event.target.value)}
-                            placeholder="Authenticator setup key (e.g. JBSW Y3DP EHPK 3PXP)"
+                            placeholder={t('connections.authenticatorKeyPlaceholder')}
                             autoComplete="off"
                           />
                           <p className="text-[10.5px] leading-relaxed text-muted-foreground">
-                            The long one-time setup key — not the rotating 6-digit code.
+                            {t('connections.authenticatorKeyHint')}
                           </p>
                           <MfaSetupHelp hostname={connection.hostname} />
                           <div className="flex gap-2">
@@ -358,7 +361,7 @@ export function ManageConnectionSheet({
                               disabled={!totpSeed.trim() || busy}
                               onClick={handleSaveTotp}
                             >
-                              Save key
+                              {t('connections.saveKey')}
                             </Button>
                             <Button
                               variant="ghost"
@@ -367,7 +370,7 @@ export function ManageConnectionSheet({
                                 setTotpSeed('');
                               }}
                             >
-                              Cancel
+                              {tCommon('common.cancel')}
                             </Button>
                           </div>
                         </div>
@@ -388,11 +391,11 @@ export function ManageConnectionSheet({
             {!confirmingRemove ? (
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="text-[12px] text-foreground">Remove connection</div>
+                  <div className="text-[12px] text-foreground">{t('connections.removeConnection')}</div>
                   {automationCount > 0 && (
                     <div className="mt-0.5 text-[10.5px] text-muted-foreground">
-                      {automationCount} {automationCount === 1 ? 'automation relies' : 'automations rely'}{' '}
-                      on it
+                      {automationCount} {automationCount === 1 ? t('connections.automationRelies') : t('connections.automationsRely')}{' '}
+                      {t('connections.onIt')}
                     </div>
                   )}
                 </div>
@@ -401,24 +404,22 @@ export function ManageConnectionSheet({
                   size="sm"
                   onClick={() => setConfirmingRemove(true)}
                 >
-                  Remove…
+                  {t('connections.removeEllipsis')}
                 </Button>
               </div>
             ) : (
               <div className="flex flex-col gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3">
                 <p className="text-[11.5px] leading-relaxed text-foreground">
                   {automationCount > 0
-                    ? `Remove this connection? ${automationCount} automation${
-                        automationCount === 1 ? '' : 's'
-                      } that rely on it stop running until it's reconnected.`
-                    : "Remove this connection? Anything that relies on it stops working until it's reconnected."}
+                    ? t('connections.removeConfirmWithAutomations', { count: automationCount })
+                    : t('connections.removeConfirmWithoutAutomations')}
                 </p>
                 <div className="flex gap-2">
                   <Button variant="destructive" disabled={busy} onClick={() => onRemove(connection)}>
-                    Remove
+                    {t('connections.removeButton')}
                   </Button>
                   <Button variant="ghost" onClick={() => setConfirmingRemove(false)}>
-                    Cancel
+                    {tCommon('common.cancel')}
                   </Button>
                 </div>
               </div>
@@ -427,7 +428,7 @@ export function ManageConnectionSheet({
         ) : !canManage ? (
           <SheetFooter>
             <p className="text-[11px] leading-relaxed text-muted-foreground">
-              You have view access. Ask an admin to reconnect, rename, or remove this connection.
+              {t('connections.viewOnlyMessage')}
             </p>
           </SheetFooter>
         ) : null}

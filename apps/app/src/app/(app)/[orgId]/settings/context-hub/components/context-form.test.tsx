@@ -36,8 +36,9 @@ describe('ContextForm', () => {
     mockGet.mockResolvedValue({ data: { data: [], count: 0, pageCount: 0 } });
   });
 
-  it('renders create form when no entry is provided', () => {
+  it('renders create form when no entry is provided', async () => {
     render(<ContextForm />);
+    await waitFor(() => expect(mockGet).toHaveBeenCalled());
     expect(screen.getByLabelText(/question/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/answer/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /create/i })).toBeInTheDocument();

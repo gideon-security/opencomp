@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 vi.mock('sonner', () => ({
@@ -87,7 +87,12 @@ async function openDeleteDialog() {
 // confirm action specifically.
 async function confirmDelete() {
   const dialog = await screen.findByTestId('alert-dialog');
-  fireEvent.click(within(dialog).getByRole('button', { name: /^delete$/i }));
+  await act(async () => {
+    fireEvent.click(within(dialog).getByRole('button', { name: /^delete$/i }));
+    // Flush the microtask queue so the async delete handler's state updates
+    // (which run after `await deleteComment()`) land inside this act() call.
+    await Promise.resolve();
+  });
 }
 
 describe('CommentItem delete error handling', () => {

@@ -115,5 +115,9 @@ describe('PoliciesTab', () => {
     expect(mockPost).toHaveBeenCalledWith(
       '/v1/admin/organizations/org_1/policies/pol_1/regenerate',
     );
+
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: /regenerate/i })).not.toBeInTheDocument(),
+    );
   });
 });

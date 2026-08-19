@@ -78,6 +78,7 @@ describe('MembersTab', () => {
       />,
     );
 
+    await waitFor(() => expect(mockGet).toHaveBeenCalled());
     expect(screen.getByText('Alice Owner')).toBeInTheDocument();
     expect(screen.getByText('Bob Admin')).toBeInTheDocument();
     expect(screen.getByText('alice@acme.com')).toBeInTheDocument();
@@ -128,6 +129,7 @@ describe('MembersTab', () => {
       />,
     );
 
+    await waitFor(() => expect(mockGet).toHaveBeenCalled());
     expect(
       screen.getByRole('button', { name: /invite member/i }),
     ).toBeInTheDocument();
@@ -143,6 +145,7 @@ describe('MembersTab', () => {
       />,
     );
 
+    await waitFor(() => expect(mockGet).toHaveBeenCalled());
     const loginButtons = screen.getAllByRole('button', { name: /login as/i });
     expect(loginButtons).toHaveLength(2);
   });
@@ -180,6 +183,7 @@ describe('MembersTab', () => {
       fireEvent.click(loginButtons[0]);
 
       expect(authClient.admin.impersonateUser).not.toHaveBeenCalled();
+      await waitFor(() => expect(mockGet).toHaveBeenCalled());
     });
 
     it('shows confirmation dialog when Login As is clicked', async () => {

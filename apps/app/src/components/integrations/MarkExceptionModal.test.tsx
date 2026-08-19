@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const postMock = vi.fn();
@@ -150,8 +150,10 @@ describe('MarkExceptionModal', () => {
     fireEvent.click(
       screen.getByRole('button', { name: /^Mark as exception$/ }),
     );
-    await Promise.resolve();
-    await Promise.resolve();
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
     expect(postMock).toHaveBeenCalledWith(
       '/v1/cloud-security/findings/icx_1/exception',
       expect.objectContaining({
@@ -181,8 +183,10 @@ describe('MarkExceptionModal', () => {
     fireEvent.click(
       screen.getByRole('button', { name: /^Mark as exception$/ }),
     );
-    await Promise.resolve();
-    await Promise.resolve();
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
     expect(onMarked).not.toHaveBeenCalled();
   });
 });

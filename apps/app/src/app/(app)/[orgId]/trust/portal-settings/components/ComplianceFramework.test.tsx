@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ComplianceFramework } from './ComplianceFramework';
 
@@ -36,7 +36,10 @@ describe('ComplianceFramework drag-and-drop permission gate', () => {
 
   it('uploads a dropped certificate when editable', async () => {
     const { onFileUpload } = renderRow({ disabled: false });
-    dropPdf();
+    await act(async () => {
+      dropPdf();
+      await Promise.resolve();
+    });
     expect(onFileUpload).toHaveBeenCalledTimes(1);
   });
 

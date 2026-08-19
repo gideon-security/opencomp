@@ -13,6 +13,7 @@ import {
 } from '@gideon-defender/ui/alert-dialog';
 import { Button } from '@gideon-defender/ui/button';
 import { Card } from '@gideon-defender/ui';
+import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, ExternalLink, PenTool, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -31,6 +32,8 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
   const params = useParams();
   const orgId = params.orgId as string;
   const sectionRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations('settings');
+  const tCommon = useTranslations('overview');
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteAllDialogOpen, setDeleteAllDialogOpen] = useState(false);
@@ -61,12 +64,12 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
     setIsDeleting(true);
     try {
       await deleteAnswer(answerIdToDelete);
-      toast.success('Manual answer deleted successfully');
+      toast.success(t('manualAnswers.deleteSuccess'));
       setDeleteDialogOpen(false);
       setAnswerIdToDelete(null);
     } catch (error) {
       console.error('Error deleting manual answer:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to delete manual answer');
+      toast.error(error instanceof Error ? error.message : t('manualAnswers.deleteFailed'));
     } finally {
       setIsDeleting(false);
     }
@@ -80,11 +83,11 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
     setIsDeletingAll(true);
     try {
       await deleteAll();
-      toast.success('All manual answers deleted successfully');
+      toast.success(t('manualAnswers.deleteAllSuccess'));
       setDeleteAllDialogOpen(false);
     } catch (error) {
       console.error('Error deleting all manual answers:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to delete all manual answers');
+      toast.error(error instanceof Error ? error.message : t('manualAnswers.deleteAllFailed'));
     } finally {
       setIsDeletingAll(false);
     }
@@ -140,7 +143,7 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
           <AccordionTrigger className="px-6 py-4 hover:no-underline">
             <div className="flex items-center gap-2">
               <PenTool className="h-5 w-5 text-muted-foreground" />
-              <span className="text-base font-semibold">Manual Answers</span>
+              <span className="text-base font-semibold">{t('manualAnswers.title')}</span>
               <span className="text-sm text-muted-foreground">
                 ({manualAnswers.length})
               </span>
@@ -149,7 +152,7 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
           <AccordionContent className="px-6 pb-4">
             {manualAnswers.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">
-                No manual answers yet. Answers you write manually in questionnaires will appear here.
+                {t('manualAnswers.noAnswersYet')}
               </div>
             ) : (
               <div className="flex flex-col gap-4">
@@ -190,7 +193,7 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeleting ? 'Deleting...' : 'Delete'}
+                      {isDeleting ? t('manualAnswers.deleting') : tCommon('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -212,7 +215,7 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
               disabled={isDeletingAll}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isDeletingAll ? 'Deleting...' : 'Delete All'}
+                      {isDeletingAll ? t('manualAnswers.deleting') : t('manualAnswers.deleteAll')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

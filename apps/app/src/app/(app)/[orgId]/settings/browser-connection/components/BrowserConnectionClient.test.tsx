@@ -4,10 +4,13 @@ import {
   mockHasPermission,
   setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { fireEvent, render, screen } from '@testing-library/react';
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Connection } from './connection-format';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({ permissions: {}, hasPermission: mockHasPermission }),
@@ -27,9 +30,10 @@ vi.mock('@trycompai/design-system', () => ({
   Button: ({
     children,
     iconLeft,
+    loading,
     ...props
   }: ButtonHTMLAttributes<HTMLButtonElement> & { iconLeft?: ReactNode; loading?: boolean }) => (
-    <button {...props}>
+    <button disabled={loading || props.disabled} {...props}>
       {iconLeft}
       {children}
     </button>
@@ -109,7 +113,7 @@ describe('BrowserConnectionClient permission gating', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<BrowserConnectionClient organizationId="org-1" initialProfiles={[]} />);
 
-    expect(screen.getByText(/no connections yet/i)).toBeInTheDocument();
+    expect(screen.getByText('connections.noConnectionsYet')).toBeInTheDocument();
     expect(screen.queryByTestId('table')).not.toBeInTheDocument();
   });
 
@@ -121,7 +125,7 @@ describe('BrowserConnectionClient permission gating', () => {
     render(<BrowserConnectionClient organizationId="org-1" initialProfiles={[profile]} />);
 
     expect(await screen.findByTestId('table')).toHaveTextContent('1 rows');
-    expect(screen.queryByText(/no connections yet/i)).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.noConnectionsYet')).not.toBeInTheDocument();
   });
 
   it('opens the shared connect flow when "Connect a vendor" is clicked', () => {

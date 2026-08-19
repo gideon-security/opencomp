@@ -18,6 +18,7 @@ import { Card } from '@gideon-defender/ui';
 import { ChevronLeft, ChevronRight, Download, FileText, Loader2, Trash2, Upload } from 'lucide-react';
 import { useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { usePagination } from '../../hooks/usePagination';
 import { format } from 'date-fns';
 import { useDocumentProcessing } from '../hooks/useDocumentProcessing';
@@ -42,6 +43,8 @@ export function AdditionalDocumentsSection({
   const { hasPermission } = usePermissions();
   const canManageQuestionnaire = hasPermission('questionnaire', 'create');
   const sectionRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations('settings');
+  const tCommon = useTranslations('overview');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({});
   const [downloadingIds, setDownloadingIds] = useState<Set<string>>(new Set());
@@ -63,7 +66,7 @@ export function AdditionalDocumentsSection({
   const handleProcessingComplete = useCallback(() => {
     setActiveProcessingRun(null);
     void revalidate();
-    toast.success('Document processing completed');
+      toast.success(t('additionalDocs.uploadCompleted'));
   }, [revalidate]);
 
   const handleDeletionComplete = useCallback(() => {
@@ -125,10 +128,10 @@ export function AdditionalDocumentsSection({
           uploadedDocumentIds.push(result.id);
           newProgress[file.name] = 100;
           setUploadProgress({ ...newProgress });
-          toast.success(`Successfully uploaded ${file.name}`);
+          toast.success(t('additionalDocs.uploadSuccess', { name: file.name }));
         } catch (error) {
           console.error(`Error uploading ${file.name}:`, error);
-          toast.error(`Failed to upload ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          toast.error(t('additionalDocs.uploadFailed', { name: file.name, error: error instanceof Error ? error.message : t('additionalDocs.unknownError') }));
           delete newProgress[file.name];
           setUploadProgress({ ...newProgress });
         }
@@ -143,7 +146,7 @@ export function AdditionalDocumentsSection({
               token: processResult.publicAccessToken,
               documentIds: uploadedDocumentIds,
             });
-            toast.success(processResult.message || 'Processing documents...');
+            toast.success(processResult.message || t('additionalDocs.processingDocuments'));
           }
         } catch (error) {
           console.error('Failed to trigger document processing:', error);
@@ -153,7 +156,7 @@ export function AdditionalDocumentsSection({
       await revalidate();
     } catch (error) {
       console.error('Error during file upload:', error);
-      toast.error('An error occurred during file upload');
+      toast.error(t('additionalDocs.uploadError'));
     } finally {
       setIsUploading(false);
       setUploadProgress({});
@@ -173,10 +176,10 @@ export function AdditionalDocumentsSection({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      toast.success(`Downloading ${fileName}...`);
+      toast.success(t('additionalDocs.downloadStarted', { name: fileName }));
     } catch (error) {
       console.error('Error downloading file:', error);
-      toast.error(error instanceof Error ? error.message : 'An error occurred while downloading the file');
+      toast.error(error instanceof Error ? error.message : t('additionalDocs.downloadError'));
     } finally {
       setDownloadingIds((prev) => {
         const newSet = new Set(prev);
@@ -206,10 +209,10 @@ export function AdditionalDocumentsSection({
           documentIds: [documentToDelete.id],
         });
       }
-      toast.success(`Successfully deleted ${documentToDelete.name}`);
+      toast.success(t('additionalDocs.deleteSuccess', { name: documentToDelete.name }));
     } catch (error) {
       console.error('Error deleting document:', error);
-      toast.error(error instanceof Error ? error.message : 'An error occurred while deleting the document');
+      toast.error(error instanceof Error ? error.message : t('additionalDocs.deleteDocumentError'));
     } finally {
       setDeletingId(null);
       setDocumentToDelete(null);
@@ -288,7 +291,7 @@ export function AdditionalDocumentsSection({
               disabled={!!deletingId}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deletingId ? 'Deleting...' : 'Delete'}
+              {deletingId ? t('manualAnswers.deleting') : tCommon('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -7,6 +7,9 @@ import {
   NO_PERMISSIONS,
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -199,7 +202,7 @@ describe('PlatformIntegrations', () => {
 
       render(<PlatformIntegrations {...defaultProps} />);
 
-      expect(screen.getByText('Connect')).toBeInTheDocument();
+      expect(screen.getByText('connect')).toBeInTheDocument();
     });
 
     it('does not render Connect button when user lacks integration:create permission', () => {
@@ -207,7 +210,7 @@ describe('PlatformIntegrations', () => {
 
       render(<PlatformIntegrations {...defaultProps} />);
 
-      expect(screen.queryByText('Connect')).not.toBeInTheDocument();
+      expect(screen.queryByText('connect')).not.toBeInTheDocument();
     });
 
     it('does not render Connect button when user has no permissions at all', () => {
@@ -215,7 +218,7 @@ describe('PlatformIntegrations', () => {
 
       render(<PlatformIntegrations {...defaultProps} />);
 
-      expect(screen.queryByText('Connect')).not.toBeInTheDocument();
+      expect(screen.queryByText('connect')).not.toBeInTheDocument();
     });
 
     it('checks the correct resource and action for create permission', () => {
@@ -280,7 +283,7 @@ describe('PlatformIntegrations', () => {
 
       render(<PlatformIntegrations {...defaultProps} />);
 
-      expect(screen.queryByText('Connect')).not.toBeInTheDocument();
+      expect(screen.queryByText('connect')).not.toBeInTheDocument();
     });
   });
 
@@ -335,9 +338,7 @@ describe('PlatformIntegrations', () => {
 
       render(<PlatformIntegrations {...defaultProps} />);
 
-      expect(toast.success).toHaveBeenCalledWith(
-        'Google Workspace connected successfully!',
-      );
+      expect(toast.success).toHaveBeenCalledWith('connectedSuccess');
     });
 
     it('does not show a toast for non-sync providers beyond the connected-success one', async () => {
@@ -389,9 +390,7 @@ describe('PlatformIntegrations', () => {
 
       render(<PlatformIntegrations {...defaultProps} />);
 
-      expect(toast.success).toHaveBeenCalledWith(
-        'GitHub connected successfully!',
-      );
+      expect(toast.success).toHaveBeenCalledWith('connectedSuccess');
       expect(toast.info).not.toHaveBeenCalled();
     });
   });
