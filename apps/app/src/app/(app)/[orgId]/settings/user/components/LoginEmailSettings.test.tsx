@@ -15,8 +15,12 @@ vi.mock('sonner', () => ({
 }));
 
 vi.mock('@trycompai/design-system', () => ({
-  Button: ({ children, ...props }: HTMLAttributes<HTMLButtonElement> & { disabled?: boolean; type?: 'submit' | 'button' }) => (
-    <button {...props}>{children}</button>
+  Button: ({
+    children,
+    loading,
+    ...props
+  }: HTMLAttributes<HTMLButtonElement> & { disabled?: boolean; loading?: boolean; type?: 'submit' | 'button' }) => (
+    <button disabled={loading || props.disabled} {...props}>{children}</button>
   ),
   Input: (props: HTMLAttributes<HTMLInputElement>) => <input {...props} />,
   Label: ({ children, ...props }: LabelHTMLAttributes<HTMLLabelElement>) => (

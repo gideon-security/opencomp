@@ -1,5 +1,6 @@
 import PageWithBreadcrumb from '@/components/pages/PageWithBreadcrumb';
 import { serverApi } from '@/lib/api-server';
+import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { QuestionnaireDetailClient } from './components/QuestionnaireDetailClient';
 
@@ -22,6 +23,7 @@ export default async function QuestionnaireDetailPage({
   params: Promise<{ questionnaireId: string; orgId: string }>;
 }) {
   const { questionnaireId, orgId } = await params;
+  const t = await getTranslations('questionnaire');
 
   // GET /v1/questionnaire/:id returns questionnaire fields flat (no data wrapper)
   const result = await serverApi.get<QuestionnaireApiResponse>(
@@ -37,7 +39,7 @@ export default async function QuestionnaireDetailPage({
   return (
     <PageWithBreadcrumb
       breadcrumbs={[
-        { label: 'Overview', href: `/${orgId}/questionnaire` },
+        { label: t('tabs.knowledgeBase'), href: `/${orgId}/questionnaire` },
         { label: questionnaire.filename, current: true },
       ]}
     >

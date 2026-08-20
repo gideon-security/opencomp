@@ -1,5 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 vi.mock('@trycompai/design-system', () => ({
   Button: ({ children, onClick, disabled }: any) => (
@@ -52,8 +55,8 @@ describe('ConnectionsTable — permanence states', () => {
     );
     expect(screen.getByText('Stays signed in')).toBeInTheDocument();
     expect(screen.getByText(/Signs back in on its own/i)).toBeInTheDocument();
-    expect(screen.queryByText('Make permanent')).not.toBeInTheDocument();
-    expect(screen.queryByText('Reconnect')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.makePermanent')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.reconnect')).not.toBeInTheDocument();
   });
 
   it('flags a password connection with no key as at-risk and offers Make permanent', () => {
@@ -69,7 +72,7 @@ describe('ConnectionsTable — permanence states', () => {
     expect(screen.getByText('Signed in for now')).toBeInTheDocument();
     expect(screen.getByText(/Add your authenticator key/i)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Make permanent'));
+    fireEvent.click(screen.getByText('connections.makePermanent'));
     expect(onMakePermanent).toHaveBeenCalledWith(
       expect.objectContaining({ id: 'bap_1' }),
     );
@@ -86,7 +89,7 @@ describe('ConnectionsTable — permanence states', () => {
     );
     expect(screen.getByText('Signed in')).toBeInTheDocument();
     expect(screen.getByText(/Signs in through SSO/i)).toBeInTheDocument();
-    expect(screen.queryByText('Make permanent')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.makePermanent')).not.toBeInTheDocument();
   });
 
   it('offers Reconnect for a paused connection', () => {
@@ -100,7 +103,7 @@ describe('ConnectionsTable — permanence states', () => {
       />,
     );
     expect(screen.getByText('Reconnect needed')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('Reconnect'));
+    fireEvent.click(screen.getByText('connections.reconnect'));
     expect(onReconnect).toHaveBeenCalledWith(
       expect.objectContaining({ id: 'bap_1' }),
     );
@@ -115,9 +118,9 @@ describe('ConnectionsTable — permanence states', () => {
         statusesLoading
       />,
     );
-    expect(screen.getByText('Checking…')).toBeInTheDocument();
+    expect(screen.getByText('connections.checking')).toBeInTheDocument();
     // We don't know yet, so don't prompt to add a key.
-    expect(screen.queryByText('Make permanent')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.makePermanent')).not.toBeInTheDocument();
   });
 
   it('shows "Status unavailable" (not at-risk) when the status could not be read', () => {
@@ -130,9 +133,9 @@ describe('ConnectionsTable — permanence states', () => {
         statusesLoading={false}
       />,
     );
-    expect(screen.getByText('Status unavailable')).toBeInTheDocument();
+    expect(screen.getByText('connections.statusUnavailable')).toBeInTheDocument();
     // Must not prompt to add a key we can't confirm is missing.
-    expect(screen.queryByText('Make permanent')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.makePermanent')).not.toBeInTheDocument();
     expect(screen.queryByText('Signed in for now')).not.toBeInTheDocument();
   });
 
@@ -145,8 +148,8 @@ describe('ConnectionsTable — permanence states', () => {
         totpStatuses={{ bap_1: false }}
       />,
     );
-    expect(screen.queryByText('Reconnect')).not.toBeInTheDocument();
-    expect(screen.queryByText('Make permanent')).not.toBeInTheDocument();
-    expect(screen.getByText('Manage')).toBeInTheDocument();
+    expect(screen.queryByText('connections.reconnect')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.makePermanent')).not.toBeInTheDocument();
+    expect(screen.getByText('connections.manage')).toBeInTheDocument();
   });
 });

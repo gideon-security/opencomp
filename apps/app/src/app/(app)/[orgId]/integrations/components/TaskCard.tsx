@@ -2,6 +2,7 @@
 
 import { Skeleton } from '@gideon-defender/ui/skeleton';
 import { ArrowRight, Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -15,10 +16,11 @@ interface RelevantTask {
 
 export function TaskCard({ task, orgId }: { task: RelevantTask; orgId: string }) {
   const [isNavigating, setIsNavigating] = useState(false);
+  const t = useTranslations('integrations.list');
 
   const handleCardClick = () => {
     setIsNavigating(true);
-    toast.success('Opening task automation...', { duration: 1000 });
+    toast.success(t('openingTaskAutomation'), { duration: 1000 });
 
     // Navigate directly using the task ID we already have
     const url = `/${orgId}/tasks/${task.taskId}/automation/new?prompt=${encodeURIComponent(task.prompt)}`;
@@ -34,9 +36,9 @@ export function TaskCard({ task, orgId }: { task: RelevantTask; orgId: string })
         <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-3 rounded-xl">
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
           <div className="text-center space-y-1">
-            <p className="text-sm font-medium text-foreground">Opening task...</p>
+            <p className="text-sm font-medium text-foreground">{t('openingTask')}</p>
             <p className="text-xs text-muted-foreground">
-              Redirecting to automation with prompt pre-filled
+              {t('redirectingToAutomation')}
             </p>
           </div>
         </div>

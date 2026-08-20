@@ -30,7 +30,7 @@ describe('OrganizationDetail — background-check toggle', () => {
     patchMock.mockResolvedValue({ data: { success: true } });
   });
 
-  it('shows the toggle in its current state', () => {
+  it('shows the toggle in its current state', async () => {
     render(
       <OrganizationDetail
         org={baseOrg}
@@ -38,6 +38,8 @@ describe('OrganizationDetail — background-check toggle', () => {
         hasAccess={true}
       />,
     );
+
+    await screen.findByText(/activity will appear here when changes are made/i);
 
     const toggle = screen.getByRole('switch', {
       name: /require background checks/i,

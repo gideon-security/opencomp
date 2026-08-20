@@ -92,5 +92,7 @@ describe('VendorsTab', () => {
     expect(mockPost).toHaveBeenCalledWith(
       '/v1/admin/organizations/org_1/vendors/vnd_1/trigger-assessment',
     );
+
+    await waitFor(() => expect(buttons[0]).not.toBeDisabled());
   });
 });

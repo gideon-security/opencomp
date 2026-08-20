@@ -16,6 +16,7 @@ import { methodOf, permanenceStateOf, type Connection } from './connection-forma
 import { ConnectionsTable } from './ConnectionsTable';
 import { MakePermanentSheet } from './MakePermanentSheet';
 import { ManageConnectionSheet } from './ManageConnectionSheet';
+import { useTranslations } from 'next-intl';
 
 interface BrowserConnectionClientProps {
   organizationId: string;
@@ -43,6 +44,7 @@ export function BrowserConnectionClient({
   const canConnect = hasPermission('integration', 'create');
   const canUpdate = hasPermission('integration', 'update');
   const canDelete = hasPermission('integration', 'delete');
+  const t = useTranslations('settings');
 
   const [profiles, setProfiles] = useState<Connection[]>(initialProfiles);
   const [flow, setFlow] = useState<ActiveFlow | null>(null);
@@ -88,7 +90,7 @@ export function BrowserConnectionClient({
     // apiClient resolves (doesn't throw) on an HTTP error — surface it and keep
     // the connections we already have instead of blanking the list to "none".
     if (res.error) {
-      toast.error('Could not load connections. Please refresh.');
+      toast.error(t('connections.loadError'));
       return;
     }
     setProfiles(Array.isArray(res.data) ? res.data : []);
@@ -137,19 +139,19 @@ export function BrowserConnectionClient({
           { displayName: name },
         );
         if (res.error) {
-          toast.error(res.error || 'Could not rename.');
+          toast.error(res.error || t('connections.renameFailed'));
           return;
         }
         await fetchProfiles();
         setManageOpen(false);
-        toast.success('Connection renamed.');
+        toast.success(t('connections.renamed'));
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : 'Could not rename.');
+        toast.error(err instanceof Error ? err.message : t('connections.renameFailed'));
       } finally {
         setBusy(false);
       }
     },
-    [fetchProfiles],
+    [fetchProfiles, t],
   );
 
   const handleChangeLogin = useCallback(
@@ -161,19 +163,19 @@ export function BrowserConnectionClient({
           creds,
         );
         if (res.error) {
-          toast.error(res.error || 'Could not update the login.');
+          toast.error(res.error || t('connections.loginUpdateFailed'));
           return;
         }
         await fetchProfiles();
         setManageOpen(false);
-        toast.success('Login updated. Reconnect to verify it works.');
+        toast.success(t('connections.loginUpdated'));
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : 'Could not update the login.');
+        toast.error(err instanceof Error ? err.message : t('connections.loginUpdateFailed'));
       } finally {
         setBusy(false);
       }
     },
-    [fetchProfiles],
+    [fetchProfiles, t],
   );
 
   const handleSetTotp = useCallback(async (connection: Connection, totpSeed: string) => {
@@ -184,17 +186,17 @@ export function BrowserConnectionClient({
         { totpSeed },
       );
       if (res.error) {
-        toast.error(res.error || 'Could not save the authenticator key.');
+        toast.error(res.error || t('connections.authenticatorKeyFailed'));
         return;
       }
       await mutateTotpStatuses();
-      toast.success('Automatic 2FA is on. Scheduled runs generate the code for you.');
+      toast.success(t('connections.authenticatorKeyOn'));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not save the authenticator key.');
+      toast.error(err instanceof Error ? err.message : t('connections.authenticatorKeyFailed'));
     } finally {
       setBusy(false);
     }
-  }, [mutateTotpStatuses]);
+  }, [mutateTotpStatuses, t]);
 
   const handleClearTotp = useCallback(async (connection: Connection) => {
     setBusy(true);
@@ -203,17 +205,17 @@ export function BrowserConnectionClient({
         `/v1/browserbase/profiles/${connection.id}/totp`,
       );
       if (res.error) {
-        toast.error(res.error || 'Could not turn off automatic 2FA.');
+        toast.error(res.error || t('connections.totpSaveFailed'));
         return;
       }
       await mutateTotpStatuses();
       toast.success('Automatic 2FA turned off.');
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not turn off automatic 2FA.');
+      toast.error(err instanceof Error ? err.message : t('connections.totpClearFailed'));
     } finally {
       setBusy(false);
     }
-  }, [mutateTotpStatuses]);
+  }, [mutateTotpStatuses, t]);
 
   const handleMakePermanent = useCallback((connection: Connection) => {
     setManageOpen(false);
@@ -233,7 +235,7 @@ export function BrowserConnectionClient({
         { totpSeed },
       );
       if (res.error) {
-        toast.error(res.error || 'Could not save the authenticator key.');
+        toast.error(res.error || t('connections.authenticatorKeyFailed'));
         return false;
       }
       // The POST succeeded — refresh the row states, but never fail the save if
@@ -252,19 +254,19 @@ export function BrowserConnectionClient({
           `/v1/browserbase/profiles/${connection.id}`,
         );
         if (res.error) {
-          toast.error(res.error || 'Could not remove.');
+          toast.error(res.error || t('connections.removeFailed'));
           return;
         }
         await fetchProfiles();
         setManageOpen(false);
-        toast.success('Connection removed.');
+        toast.success(t('connections.removed'));
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : 'Could not remove.');
+        toast.error(err instanceof Error ? err.message : t('connections.removeFailed'));
       } finally {
         setBusy(false);
       }
     },
-    [fetchProfiles],
+    [fetchProfiles, t],
   );
 
   // Connect / reconnect take over the whole panel via the shared flow — the same
@@ -283,8 +285,8 @@ export function BrowserConnectionClient({
         // this page and never collides with a task's in-flight connect.
         taskId={CONNECT_FLOW_KEY}
         reconnect={reconnect}
-        onConnected={() => handleFlowDone('Connection added.')}
-        onReconnected={() => handleFlowDone('Connection reconnected.')}
+        onConnected={() => handleFlowDone(t('connections.connectionAdded'))}
+        onReconnected={() => handleFlowDone(t('connections.connectionReconnected'))}
         onCancel={() => setFlow(null)}
       />
     );
@@ -348,12 +350,11 @@ export function BrowserConnectionClient({
             <div className="min-w-0 flex-1 basis-[260px]">
               <div className="text-[13px] text-foreground">
                 {atRisk.length === 1
-                  ? '1 connection can stay signed in on its own'
-                  : `${atRisk.length} connections can stay signed in on their own`}
+                  ? t('connections.atRiskSingle')
+                  : t('connections.atRiskPlural', { count: atRisk.length })}
               </div>
               <div className="mt-0.5 text-[12px] leading-relaxed text-muted-foreground">
-                Add an authenticator setup key and OpenComp generates the 6-digit code at
-                every run — no manual re-sign-ins.
+                {t('connections.atRiskDescription')}
               </div>
             </div>
             <div className="ml-auto flex items-center gap-1.5">
@@ -362,7 +363,7 @@ export function BrowserConnectionClient({
                 variant="outline"
                 onClick={() => atRisk[0] && handleMakePermanent(atRisk[0])}
               >
-                Make permanent
+                {t('connections.makePermanent')}
               </Button>
               <button
                 type="button"
@@ -379,15 +380,14 @@ export function BrowserConnectionClient({
         {profiles.length === 0 ? (
         <div className="grid place-items-center rounded-lg border border-dashed border-border py-16 text-center">
           <div className="max-w-[320px]">
-            <div className="text-sm text-foreground">No connections yet</div>
+            <div className="text-sm text-foreground">{t('connections.noConnectionsYet')}</div>
             <p className="mt-1 text-[12.5px] text-muted-foreground">
-              Connect a vendor login so OpenComp can sign in and capture evidence for your
-              browser automations.
+              {t('connections.noConnectionsDescription')}
             </p>
             {canConnect && (
               <div className="mt-4">
                 <Button onClick={openConnect} iconLeft={<Add size={14} />}>
-                  Connect a vendor
+                  {t('connections.connectVendor')}
                 </Button>
               </div>
             )}

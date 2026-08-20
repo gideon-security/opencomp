@@ -30,7 +30,7 @@ vi.mock('sonner', () => ({
 
 // Mock next/image
 vi.mock('next/image', () => ({
-  default: ({ alt, ...props }: { alt: string; src: string }) => (
+  default: ({ alt, fill, ...props }: { alt: string; src: string; fill?: boolean }) => (
     <img alt={alt} {...props} />
   ),
 }));

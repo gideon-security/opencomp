@@ -13,6 +13,7 @@ import { useVendors } from '@/hooks/use-vendors';
 import { Badge } from '@gideon-defender/ui/badge';
 import { Button } from '@gideon-defender/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gideon-defender/ui/card';
+import { useTranslations } from 'next-intl';
 import {
   Dialog,
   DialogContent,
@@ -116,6 +117,7 @@ const shouldReplaceProviderConnection = (
 };
 
 export function PlatformIntegrations({ className, taskTemplates }: PlatformIntegrationsProps) {
+  const t = useTranslations('integrations.list');
   const { orgId } = useParams<{ orgId: string }>();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -149,11 +151,11 @@ export function PlatformIntegrations({ className, taskTemplates }: PlatformInteg
         if (result.authorizationUrl) {
           window.location.href = result.authorizationUrl;
         } else {
-          toast.error(result.error || 'Failed to start connection');
+          toast.error(result.error || t('connectionError'));
           setConnectingProvider(null);
         }
       } catch {
-        toast.error('Failed to start connection');
+        toast.error(t('connectionError'));
         setConnectingProvider(null);
       }
       return;
@@ -320,7 +322,7 @@ export function PlatformIntegrations({ className, taskTemplates }: PlatformInteg
     const provider = providers.find((p) => p.id === providerSlug);
 
     if (provider) {
-      toast.success(`${provider.name} connected successfully!`);
+      toast.success(t('connectedSuccess', { name: provider.name }));
       router.replace(`/${orgId}/integrations/${providerSlug}?settings=true`);
       return;
     }
@@ -345,7 +347,7 @@ export function PlatformIntegrations({ className, taskTemplates }: PlatformInteg
     const errorDescription = searchParams.get('error_description');
     const providerSlug = searchParams.get('provider') || 'unknown';
 
-    toast.error(`Connection failed: ${errorDescription || error}`);
+    toast.error(t('connectionFailedDetailed', { error: errorDescription || error }));
 
     // Best-effort — never let recording (or its failure) affect the UI.
     void api
@@ -420,7 +422,7 @@ export function PlatformIntegrations({ className, taskTemplates }: PlatformInteg
 
   const handleCopyPrompt = (prompt: string) => {
     navigator.clipboard.writeText(prompt);
-    toast.success('Prompt copied to clipboard!');
+    toast.success(t('promptCopied'));
   };
 
   if (loadingProviders || loadingConnections) {
@@ -708,7 +710,7 @@ export function PlatformIntegrations({ className, taskTemplates }: PlatformInteg
                           ) : isConnected ? null : hasError ? (
                             <div className="space-y-2 pt-2 border-t border-border/50">
                               <p className="text-xs text-destructive line-clamp-1">
-                                {connection?.errorMessage || 'Connection error'}
+                                {connection?.errorMessage || t('connectionError')}
                               </p>
                               {canCreate && (
                                 <Button
@@ -725,10 +727,10 @@ export function PlatformIntegrations({ className, taskTemplates }: PlatformInteg
                                   {isConnecting ? (
                                     <>
                                       <Loader2 className="h-3 w-3 mr-2 animate-spin" />
-                                      Reconnecting...
+                                      {t('reconnecting')}
                                     </>
                                   ) : (
-                                    'Reconnect'
+                                    t('reconnect')
                                   )}
                                 </Button>
                               )}
@@ -752,12 +754,12 @@ export function PlatformIntegrations({ className, taskTemplates }: PlatformInteg
                               {isConnecting ? (
                                 <>
                                   <Loader2 className="h-3 w-3 mr-2 animate-spin" />
-                                  Connecting...
+                                  {t('connecting')}
                                 </>
                               ) : provider.authType === 'oauth2' ? (
-                                'Connect'
+                                t('connect')
                               ) : (
-                                'Set up'
+                                t('setup')
                               )}
                             </Button>
                           ) : null}

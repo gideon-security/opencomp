@@ -4,6 +4,7 @@ import { VendorLogo } from '@/components/VendorLogo';
 import { Button } from '@trycompai/design-system';
 import { Renew, Settings } from '@trycompai/design-system/icons';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 import {
   methodOf,
@@ -27,14 +28,14 @@ interface ConnectionsTableProps {
   onMakePermanent: (connection: Connection) => void;
 }
 
-function lastVerified(connection: Connection): string {
-  if (!connection.lastVerifiedAt) return 'Not verified yet';
+function lastVerified(connection: Connection, t: ReturnType<typeof useTranslations<'settings'>>): string {
+  if (!connection.lastVerifiedAt) return t('connections.notVerifiedYet');
   try {
-    return `Last verified ${formatDistanceToNow(new Date(connection.lastVerifiedAt), {
+    return `${t('connections.lastVerified')} ${formatDistanceToNow(new Date(connection.lastVerifiedAt), {
       addSuffix: true,
     })}`;
   } catch {
-    return 'Not verified yet';
+    return t('connections.notVerifiedYet');
   }
 }
 
@@ -47,6 +48,7 @@ export function ConnectionsTable({
   onManage,
   onMakePermanent,
 }: ConnectionsTableProps) {
+  const t = useTranslations('settings');
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(0);
 
@@ -73,7 +75,7 @@ export function ConnectionsTable({
     <div className="overflow-hidden rounded-lg border border-border bg-card">
       {/* Header: title, count, and search. */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5">
-        <span className="text-sm text-foreground">Connections</span>
+        <span className="text-sm text-foreground">{t('connections.connectionsTitle')}</span>
         <span className="inline-flex rounded-sm bg-muted px-1.5 py-0.5 text-[10px] font-bold leading-none tracking-[0.08em] text-foreground">
           {connections.length}
         </span>
@@ -95,8 +97,8 @@ export function ConnectionsTable({
             type="text"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search connections…"
-            aria-label="Search connections"
+            placeholder={t('connections.searchPlaceholder')}
+            aria-label={t('connections.searchPlaceholder')}
             className="h-8 w-full rounded-md border border-border bg-background pl-8 pr-3 text-[12px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
@@ -104,7 +106,7 @@ export function ConnectionsTable({
 
       {visible.length === 0 && (
         <div className="border-t border-border px-4 py-10 text-center text-[13px] text-muted-foreground">
-          No connections match &ldquo;{query.trim()}&rdquo;.
+          {t('connections.noConnectionsMatch', { query: query.trim() })}
         </div>
       )}
 
@@ -134,27 +136,23 @@ export function ConnectionsTable({
         const methodLabel = !isPassword
           ? 'SSO'
           : state === 'permanent'
-            ? 'Password + authenticator'
-            : 'Password';
+            ? t('connections.passwordAndAuthenticator')
+            : t('connections.password');
         const line = [
           connection.loginIdentity || null,
           methodLabel,
-          lastVerified(connection),
+          lastVerified(connection, t),
         ]
           .filter(Boolean)
           .join(' · ');
 
         const badge = loading
-          ? { text: 'Checking…', color: 'var(--muted-foreground)', bg: 'var(--muted)' }
+          ? { text: t('connections.checking'), color: 'var(--muted-foreground)', bg: 'var(--muted)' }
           : unknown
-            ? {
-                text: 'Status unavailable',
-                color: 'var(--muted-foreground)',
-                bg: 'var(--muted)',
-              }
+            ? { text: t('connections.statusUnavailable'), color: 'var(--muted-foreground)', bg: 'var(--muted)' }
             : { text: meta.badge, color: meta.color, bg: meta.bg };
         const hint = unknown
-          ? 'Couldn’t check the 2FA status — reopen this page or try again.'
+          ? t('connections.totpUnknownHint')
           : permanenceHint({
               state,
               vendorName,
@@ -199,7 +197,7 @@ export function ConnectionsTable({
             <div className="ml-auto flex flex-none items-center gap-2 pt-0.5">
               {showMakePermanent && (
                 <Button size="sm" variant="outline" onClick={() => onMakePermanent(connection)}>
-                  Make permanent
+                  {t('connections.makePermanent')}
                 </Button>
               )}
               {showReconnect && (
@@ -208,7 +206,7 @@ export function ConnectionsTable({
                   onClick={() => onReconnect(connection)}
                   iconLeft={<Renew size={13} />}
                 >
-                  Reconnect
+                  {t('connections.reconnect')}
                 </Button>
               )}
               <Button
@@ -217,7 +215,7 @@ export function ConnectionsTable({
                 onClick={() => onManage(connection)}
                 iconLeft={<Settings size={14} />}
               >
-                Manage
+                {t('connections.manage')}
               </Button>
             </div>
           </div>
@@ -227,28 +225,28 @@ export function ConnectionsTable({
       {filtered.length > PAGE_SIZE && (
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3">
           <span className="text-[12px] text-muted-foreground">
-            {filtered.length} connections
+            {filtered.length} {t('connections.connectionsLabel')}
           </span>
           <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={currentPage === 0}
-              onClick={() => setPage(currentPage - 1)}
-            >
-              Previous
-            </Button>
-            <span className="whitespace-nowrap text-[12px] text-muted-foreground">
-              Page {currentPage + 1} of {pageCount}
-            </span>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={currentPage >= pageCount - 1}
-              onClick={() => setPage(currentPage + 1)}
-            >
-              Next
-            </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={currentPage === 0}
+                onClick={() => setPage(currentPage - 1)}
+              >
+                {t('connections.previous')}
+              </Button>
+              <span className="whitespace-nowrap text-[12px] text-muted-foreground">
+                {t('connections.pageOf', { current: currentPage + 1, total: pageCount })}
+              </span>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={currentPage >= pageCount - 1}
+                onClick={() => setPage(currentPage + 1)}
+              >
+                {t('connections.next')}
+              </Button>
           </div>
         </div>
       )}

@@ -1,5 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 // Stub the DS Sheet family + controls to simple pass-throughs (render when open).
 vi.mock('@trycompai/design-system', () => ({
@@ -81,11 +84,11 @@ describe('ManageConnectionSheet', () => {
 
   it('renders a password connection with its credentials and manage actions', () => {
     render(<ManageConnectionSheet {...base} connection={connection()} />);
-    expect(screen.getByText('Password')).toBeInTheDocument();
-    expect(screen.getByText('Secured by 1Password')).toBeInTheDocument();
-    expect(screen.getByText('Reconnect')).toBeInTheDocument();
-    expect(screen.getByText('Change login')).toBeInTheDocument();
-    expect(screen.getByText('Remove…')).toBeInTheDocument();
+    expect(screen.getByText('connections.password')).toBeInTheDocument();
+    expect(screen.getByText('connections.securedBy1Password')).toBeInTheDocument();
+    expect(screen.getByText('connections.reconnect')).toBeInTheDocument();
+    expect(screen.getByText('connections.changeLogin')).toBeInTheDocument();
+    expect(screen.getByText('connections.removeEllipsis')).toBeInTheDocument();
   });
 
   it('hides "Change login" and the credentials row for an SSO connection', () => {
@@ -96,10 +99,10 @@ describe('ManageConnectionSheet', () => {
       />,
     );
     expect(screen.getByText('SSO')).toBeInTheDocument();
-    expect(screen.queryByText('Secured by 1Password')).not.toBeInTheDocument();
-    expect(screen.queryByText('Change login')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.securedBy1Password')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.changeLogin')).not.toBeInTheDocument();
     // No stored login → no Automatic 2FA row.
-    expect(screen.queryByText('Automatic 2FA')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.automatic2fa')).not.toBeInTheDocument();
   });
 
   it('shows a view-only note and no actions when the user can neither manage nor remove', () => {
@@ -111,9 +114,9 @@ describe('ManageConnectionSheet', () => {
         connection={connection()}
       />,
     );
-    expect(screen.getByText(/view access/i)).toBeInTheDocument();
-    expect(screen.queryByText('Reconnect')).not.toBeInTheDocument();
-    expect(screen.queryByText('Remove…')).not.toBeInTheDocument();
+    expect(screen.getByText('connections.viewOnlyMessage')).toBeInTheDocument();
+    expect(screen.queryByText('connections.reconnect')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.removeEllipsis')).not.toBeInTheDocument();
   });
 
   it('lets a delete-only user remove without exposing the manage actions', () => {
@@ -126,17 +129,17 @@ describe('ManageConnectionSheet', () => {
       />,
     );
     // Remove is available (delete permission), but manage-only actions are not.
-    expect(screen.getByText('Remove…')).toBeInTheDocument();
-    expect(screen.queryByText('Reconnect')).not.toBeInTheDocument();
-    expect(screen.queryByText('Change login')).not.toBeInTheDocument();
+    expect(screen.getByText('connections.removeEllipsis')).toBeInTheDocument();
+    expect(screen.queryByText('connections.reconnect')).not.toBeInTheDocument();
+    expect(screen.queryByText('connections.changeLogin')).not.toBeInTheDocument();
     expect(screen.queryByText(/view access/i)).not.toBeInTheDocument();
   });
 
   it('confirms before removing, warning about dependent automations', () => {
     render(<ManageConnectionSheet {...base} connection={connection({ automationCount: 3 })} />);
-    fireEvent.click(screen.getByText('Remove…'));
-    expect(screen.getByText(/3 automations that rely on it stop running/i)).toBeInTheDocument();
-    expect(screen.getByText('Remove')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('connections.removeEllipsis'));
+    expect(screen.getByText('connections.removeConfirmWithAutomations')).toBeInTheDocument();
+    expect(screen.getByText('connections.removeButton')).toBeInTheDocument();
   });
 
   it('surfaces the blocked reason in the header', () => {
@@ -151,13 +154,13 @@ describe('ManageConnectionSheet', () => {
 
   it('shows Automatic 2FA as not set up and saves an added key', () => {
     render(<ManageConnectionSheet {...base} connection={connection()} />);
-    expect(screen.getByText('Automatic 2FA')).toBeInTheDocument();
-    expect(screen.getByText('Not set up')).toBeInTheDocument();
+    expect(screen.getByText('connections.automatic2fa')).toBeInTheDocument();
+    expect(screen.getByText('connections.totpNotSetUp')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Add authenticator key'));
-    const input = screen.getByPlaceholderText(/authenticator setup key/i);
+    fireEvent.click(screen.getByText('connections.addAuthenticatorKey'));
+    const input = screen.getByPlaceholderText(/connections\.authenticatorKeyPlaceholder/i);
     fireEvent.change(input, { target: { value: '  SEED VALUE  ' } });
-    fireEvent.click(screen.getByText('Save key'));
+    fireEvent.click(screen.getByText('connections.saveKey'));
 
     expect(base.onSetTotp).toHaveBeenCalledWith(expect.objectContaining({ id: 'bap_1' }), 'SEED VALUE');
   });
@@ -166,10 +169,10 @@ describe('ManageConnectionSheet', () => {
     totp.configured = true;
     render(<ManageConnectionSheet {...base} connection={connection()} />);
 
-    expect(screen.getByText(/codes are generated at each run/i)).toBeInTheDocument();
-    expect(screen.getByText('Replace key')).toBeInTheDocument();
+    expect(screen.getByText(/connections\.totpConfigured/)).toBeInTheDocument();
+    expect(screen.getByText('connections.replaceKey')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Turn off'));
+    fireEvent.click(screen.getByText('connections.turnOff'));
     expect(base.onClearTotp).toHaveBeenCalledWith(expect.objectContaining({ id: 'bap_1' }));
   });
 });

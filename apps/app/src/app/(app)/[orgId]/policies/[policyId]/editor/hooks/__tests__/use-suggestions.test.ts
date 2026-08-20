@@ -102,6 +102,10 @@ describe('useSuggestions', () => {
       markdown: 'Hello world',
     });
     vi.mocked(computeSuggestionRanges).mockReturnValue([]);
+    // giveFeedback() fires a real `fetch` — stub it so tests that only assert
+    // the synchronous "loading" checkpoint don't leave a rejected/settled
+    // promise updating state after the test ends (unwrapped act warning).
+    vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {})));
   });
 
   describe('when proposedMarkdown is null', () => {
@@ -886,13 +890,14 @@ describe('useSuggestions', () => {
       expect(result.current.ranges[0].decision).toBe('pending');
     });
 
-    it('does not affect non-loading ranges', () => {
+    it('does not affect non-loading ranges', async () => {
       const ranges = [
         makeSuggestionRange({ id: 'suggestion-1-1', decision: 'pending' }),
         makeSuggestionRange({ id: 'suggestion-2-2', decision: 'pending' }),
       ];
       vi.mocked(computeSuggestionRanges).mockReturnValue(ranges);
       const editor = makeMockEditor();
+      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network error')));
 
       const { result } = renderHook(() =>
         useSuggestions({
@@ -902,8 +907,8 @@ describe('useSuggestions', () => {
       );
 
       // Put only first range into loading
-      act(() => {
-        result.current.giveFeedback('suggestion-1-1', 'feedback');
+      await act(async () => {
+        await result.current.giveFeedback('suggestion-1-1', 'feedback');
       });
 
       act(() => {

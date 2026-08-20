@@ -47,7 +47,7 @@ vi.mock('@gideon-defender/ui/button', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/form', () => ({
-  Form: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+  Form: ({ children }: any) => <div>{children}</div>,
   FormControl: ({ children }: any) => <div>{children}</div>,
   FormField: ({ render, name }: any) => (
     <div data-testid={`form-field-${name}`}>

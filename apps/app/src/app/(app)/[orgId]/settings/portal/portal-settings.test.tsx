@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -100,10 +103,10 @@ describe('PortalSettings permission gating', () => {
     setMockPermissions({});
     render(<PortalSettings {...defaultProps} />);
 
-    expect(screen.getByText('Show Device Agent Step')).toBeInTheDocument();
-    expect(screen.getByText('Show Security Training Step')).toBeInTheDocument();
-    expect(screen.getByText('Show Whistleblower Report Form')).toBeInTheDocument();
-    expect(screen.getByText('Show Access Request Form')).toBeInTheDocument();
+    expect(screen.getByText('portal.showDeviceAgentStep')).toBeInTheDocument();
+    expect(screen.getByText('portal.showSecurityTrainingStep')).toBeInTheDocument();
+    expect(screen.getByText('portal.showWhistleblowerReportForm')).toBeInTheDocument();
+    expect(screen.getByText('portal.showAccessRequestForm')).toBeInTheDocument();
   });
 
   it('reflects current toggle state in switches', () => {

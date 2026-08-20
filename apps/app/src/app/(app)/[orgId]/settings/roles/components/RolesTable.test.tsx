@@ -9,6 +9,13 @@ vi.mock('@/lib/api-client', () => ({
   },
 }));
 
+// Mock useRoles so ActionsCell doesn't trigger a real SWR fetch on mount
+vi.mock('../hooks/useRoles', () => ({
+  useRoles: () => ({
+    deleteRole: vi.fn(),
+  }),
+}));
+
 // Mock Next.js router
 const mockPush = vi.fn();
 const mockRefresh = vi.fn();

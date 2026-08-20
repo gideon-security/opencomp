@@ -3,6 +3,7 @@
 import { useOrganizationMutations } from '@/hooks/use-organization-mutations';
 import { usePermissions } from '@/hooks/use-permissions';
 import { SettingGroup, SettingRow, Switch } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -21,6 +22,7 @@ export function PortalSettings({
 }: PortalSettingsProps) {
   const { hasPermission } = usePermissions();
   const { updateOrganization } = useOrganizationMutations();
+  const t = useTranslations('settings');
   const [updatingField, setUpdatingField] = useState<string | null>(null);
 
   const handleToggle = async (
@@ -44,8 +46,8 @@ export function PortalSettings({
     <SettingGroup>
       <SettingRow
         size="lg"
-        label="Show Device Agent Step"
-        description="Employees will be asked to download and install OpenComp's device agent on their device."
+        label={t('portal.showDeviceAgentStep')}
+        description={t('portal.showDeviceAgentStepDescription')}
       >
         <Switch
           checked={deviceAgentStepEnabled}
@@ -53,8 +55,8 @@ export function PortalSettings({
             handleToggle(
               'deviceAgentStepEnabled',
               checked,
-              'Device agent step setting updated',
-              'Error updating device agent step setting',
+              t('portal.deviceAgentStepUpdated'),
+              t('portal.deviceAgentStepError'),
             );
           }}
           disabled={!hasPermission('organization', 'update') || updatingField === 'deviceAgentStepEnabled'}
@@ -62,8 +64,8 @@ export function PortalSettings({
       </SettingRow>
       <SettingRow
         size="lg"
-        label="Show Security Training Step"
-        description="Employees will be required to complete OpenComp's security awareness training videos."
+        label={t('portal.showSecurityTrainingStep')}
+        description={t('portal.showSecurityTrainingStepDescription')}
       >
         <Switch
           checked={securityTrainingStepEnabled}
@@ -71,8 +73,8 @@ export function PortalSettings({
             handleToggle(
               'securityTrainingStepEnabled',
               checked,
-              'Security training step setting updated',
-              'Error updating security training step setting',
+              t('portal.securityTrainingStepUpdated'),
+              t('portal.securityTrainingStepError'),
             );
           }}
           disabled={!hasPermission('organization', 'update') || updatingField === 'securityTrainingStepEnabled'}
@@ -80,8 +82,8 @@ export function PortalSettings({
       </SettingRow>
       <SettingRow
         size="lg"
-        label="Show Whistleblower Report Form"
-        description="Employees can submit whistleblower reports from the employee portal."
+        label={t('portal.showWhistleblowerReportForm')}
+        description={t('portal.showWhistleblowerReportFormDescription')}
       >
         <Switch
           checked={whistleblowerReportEnabled}
@@ -89,8 +91,8 @@ export function PortalSettings({
             handleToggle(
               'whistleblowerReportEnabled',
               checked,
-              'Whistleblower report visibility updated',
-              'Error updating whistleblower report visibility',
+              t('portal.whistleblowerReportUpdated'),
+              t('portal.whistleblowerReportError'),
             );
           }}
           disabled={!hasPermission('organization', 'update') || updatingField === 'whistleblowerReportEnabled'}
@@ -98,8 +100,8 @@ export function PortalSettings({
       </SettingRow>
       <SettingRow
         size="lg"
-        label="Show Access Request Form"
-        description="Employees can submit access requests from the employee portal."
+        label={t('portal.showAccessRequestForm')}
+        description={t('portal.showAccessRequestFormDescription')}
       >
         <Switch
           checked={accessRequestFormEnabled}
@@ -107,8 +109,8 @@ export function PortalSettings({
             handleToggle(
               'accessRequestFormEnabled',
               checked,
-              'Access request visibility updated',
-              'Error updating access request visibility',
+              t('portal.accessRequestUpdated'),
+              t('portal.accessRequestError'),
             );
           }}
           disabled={!hasPermission('organization', 'update') || updatingField === 'accessRequestFormEnabled'}
