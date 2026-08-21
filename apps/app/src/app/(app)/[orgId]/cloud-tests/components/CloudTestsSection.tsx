@@ -2,6 +2,7 @@
 
 import { useApi } from '@/hooks/use-api';
 import { usePermissions } from '@/hooks/use-permissions';
+import { useTranslations } from 'next-intl';
 import {
   getAwsCloudShellUrl,
   getAwsRemediationScript,
@@ -179,6 +180,7 @@ export function CloudTestsSection({
   variables,
   awsType,
 }: CloudTestsSectionProps) {
+  const t = useTranslations('integrations.list');
   const api = useApi();
   const [scanCompleted, setScanCompleted] = useState(false);
   const [scanError, setScanError] = useState<{ message: string; errorCode?: string } | null>(null);
@@ -403,7 +405,7 @@ export function CloudTestsSection({
     if (!connectionId) return;
     setIsScanning(true);
     const startTime = Date.now();
-    toast.message('Starting security scan...');
+    toast.message(t('cloudTests.startingScan'));
     setScanError(null);
     try {
       const response = await api.post<{
@@ -415,7 +417,7 @@ export function CloudTestsSection({
         const data = response.data as { message?: string; errorCode?: string } | undefined;
         const errorCode = data?.errorCode;
         const message =
-          data?.message ?? (typeof response.error === 'string' ? response.error : 'Scan failed');
+          data?.message ?? (typeof response.error === 'string' ? response.error : t('cloudTests.scanFailedShort'));
         // GCP setup errors get persistent inline message
         if (errorCode === 'SCC_NOT_ACTIVATED' || errorCode === 'GCP_ORG_MISSING') {
           setScanError({ message, errorCode });
@@ -428,9 +430,9 @@ export function CloudTestsSection({
       onScanComplete?.();
       setScanCompleted(true);
       const elapsed = Math.round((Date.now() - startTime) / 1000);
-      toast.success(`Scan completed in ${elapsed}s!`);
+        toast.success(t('cloudTests.scanCompleted', { elapsed }));
     } catch (err) {
-      toast.error(`Scan failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      toast.error(t('cloudTests.scanFailed', { error: err instanceof Error ? err.message : t('cloudTests.unknownError') }));
     } finally {
       setIsScanning(false);
     }
@@ -496,7 +498,7 @@ export function CloudTestsSection({
         >
           <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-primary">Batch fix in progress</p>
+            <p className="text-sm font-medium text-primary">{t('cloudTests.batchFixInProgress')}</p>
             <p className="text-xs text-primary/70 truncate">Click to view progress</p>
           </div>
           <Zap className="h-4 w-4 text-primary/50 shrink-0" />
