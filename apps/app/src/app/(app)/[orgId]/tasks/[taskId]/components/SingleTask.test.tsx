@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -221,6 +222,8 @@ const defaultProps = {
   evidenceApprovalEnabled: false,
 };
 
+mockNextIntl();
+
 describe('SingleTask permission gating', () => {
   beforeEach(() => {
     setMockPermissions({});
@@ -241,7 +244,7 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.getByRole('button', { name: 'Regenerate' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'regenerate' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
   });
 
@@ -250,7 +253,7 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.queryByRole('button', { name: 'Regenerate' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'regenerate' })).not.toBeInTheDocument();
   });
 
   it('hides delete button when user lacks task:delete', () => {
@@ -266,7 +269,7 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.getByRole('button', { name: 'Download' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'download' })).toBeInTheDocument();
   });
 
   it('shows regenerate but not delete with only task:update permission', () => {
@@ -274,7 +277,7 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.getByRole('button', { name: 'Regenerate' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'regenerate' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument();
   });
 
@@ -283,7 +286,7 @@ describe('SingleTask permission gating', () => {
 
     render(<SingleTask {...defaultProps} />);
 
-    expect(screen.queryByRole('button', { name: 'Regenerate' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'regenerate' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
   });
 });

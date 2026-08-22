@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -179,6 +180,8 @@ const baseProps = {
   ],
   auditorOptions: ['Sarah Chen, Assured Compliance Ltd'],
 };
+
+mockNextIntl();
 
 describe('InternalAuditClient', () => {
   beforeEach(() => {

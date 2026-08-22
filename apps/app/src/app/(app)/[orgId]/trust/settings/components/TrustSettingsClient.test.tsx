@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -60,6 +61,8 @@ const localStorageMock = (() => {
 })();
 Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock });
 
+mockNextIntl();
+
 describe('TrustSettingsClient permission gating', () => {
   const defaultProps = {
     orgId: 'org-1',
@@ -81,7 +84,7 @@ describe('TrustSettingsClient permission gating', () => {
     setMockPermissions({});
     render(<TrustSettingsClient {...defaultProps} />);
     expect(screen.getByText('Contact Information')).toBeInTheDocument();
-    expect(screen.getByText('Configure Custom Domain')).toBeInTheDocument();
+    expect(screen.getByText('title')).toBeInTheDocument();
     expect(screen.getByText('NDA Bypass - Allowed Domains')).toBeInTheDocument();
     expect(screen.getByText('NDA Bypass - Allowed Emails')).toBeInTheDocument();
   });

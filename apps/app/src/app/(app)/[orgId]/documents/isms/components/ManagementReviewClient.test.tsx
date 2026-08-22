@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -181,6 +182,8 @@ const baseProps = {
   ],
   chairOptions: ['Raoul Plickat (CEO)'],
 };
+
+mockNextIntl();
 
 describe('ManagementReviewClient', () => {
   beforeEach(() => {
