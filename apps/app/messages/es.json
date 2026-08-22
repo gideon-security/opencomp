@@ -1911,5 +1911,34 @@
       "deleteSuccess": "Documento {name} eliminado correctamente",
       "deleteDocumentError": "Error al eliminar el documento"
     }
+  },
+  "people": {
+    "invite": {
+      "addAtLeastOne": "Por favor agrega al menos un miembro para invitar.",
+      "selectRoleFor": "Por favor selecciona al menos un rol para: {invites}",
+      "fileMustBeCSV": "El archivo debe ser un CSV.",
+      "fileSizeMustBeLess": "El archivo debe pesar menos de 5MB.",
+      "invalidRow": "Fila inválida",
+      "invalidCSVFormat": "Formato de fila CSV inválido",
+      "invalidEmail": "Correo electrónico inválido",
+      "invalidEmailFormat": "Formato de correo electrónico inválido",
+      "addUser": "Agregar usuario",
+      "addEmployee": "Agrega un empleado a tu organización.",
+      "email": "Correo electrónico",
+      "enterEmail": "Ingresa la dirección de correo electrónico",
+      "role": "Rol",
+      "selectRole": "Selecciona un rol",
+      "removeInvite": "Eliminar invitación",
+      "noFileChosen": "Ningún archivo elegido",
+      "downloadCSVTemplate": "Descargar plantilla CSV",
+      "cancel": "Cancelar",
+      "addingEmployee": "Agregando empleado...",
+      "invite": "Invitar",
+      "invalidRole": "Selección de rol inválida.",
+      "invalidEmailAddress": "Dirección de correo electrónico inválida.",
+      "selectAtLeastOneRole": "Por favor selecciona al menos un rol.",
+      "addAtLeastOneInvite": "Por favor agrega al menos una invitación.",
+      "selectSingleCSV": "Por favor selecciona un solo archivo CSV."
+    }
   }
 }

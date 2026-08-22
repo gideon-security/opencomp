@@ -1911,5 +1911,34 @@
       "deleteSuccess": "Successfully deleted {name}",
       "deleteDocumentError": "Failed to delete document"
     }
+  },
+  "people": {
+    "invite": {
+      "addAtLeastOne": "Please add at least one member to invite.",
+      "selectRoleFor": "Please select at least one role for: {invites}",
+      "fileMustBeCSV": "File must be a CSV.",
+      "fileSizeMustBeLess": "File size must be less than 5MB.",
+      "invalidRow": "Invalid row",
+      "invalidCSVFormat": "Invalid CSV row format",
+      "invalidEmail": "Invalid email",
+      "invalidEmailFormat": "Invalid email format",
+      "addUser": "Add User",
+      "addEmployee": "Add an employee to your organization.",
+      "email": "Email",
+      "enterEmail": "Enter email address",
+      "role": "Role",
+      "selectRole": "Select a role",
+      "removeInvite": "Remove invite",
+      "noFileChosen": "No file chosen",
+      "downloadCSVTemplate": "Download CSV template",
+      "cancel": "Cancel",
+      "addingEmployee": "Adding Employee...",
+      "invite": "Invite",
+      "invalidRole": "Invalid role selection.",
+      "invalidEmailAddress": "Invalid email address.",
+      "selectAtLeastOneRole": "Please select at least one role.",
+      "addAtLeastOneInvite": "Please add at least one invite.",
+      "selectSingleCSV": "Please select a single CSV file."
+    }
   }
 }
