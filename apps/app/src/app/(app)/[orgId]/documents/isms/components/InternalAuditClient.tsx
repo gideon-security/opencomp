@@ -1,6 +1,7 @@
 'use client';
 
 import { Stack } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
 import { AuditsList } from './AuditsList';
@@ -47,21 +48,22 @@ export function InternalAuditClient({
   auditorOptions = [],
   ...props
 }: InternalAuditClientProps) {
+  const t = useTranslations('isms.internalAudit');
   return (
     <IsmsDocumentShell
       {...props}
       clause="9.2"
-      title="Internal Audit"
-      description="Plan and record the internal audits of the ISMS (ISO 27001 clause 9.2). Each audit samples the controls below — follow the 'Where to find it' reference, verify the evidence, and record a result per row. Findings are tracked to closure."
-      sectionTitle="Audit programme"
-      sectionDescription="One annual full audit of the whole ISMS is the default shape. Every field ships with auditor-defensible template text you can accept or edit."
-      generateSuccessMessage="Restored the default programme text"
+      title={t('title')}
+      description={t('description')}
+      sectionTitle={t('sectionTitle')}
+      sectionDescription={t('sectionDescription')}
+      generateSuccessMessage={t('generateRestored')}
       getSubmitBlockedReason={(document) => {
         const messages = auditValidationMessages({
           audits: Array.isArray(document.audits) ? document.audits : [],
         });
         return messages.length > 0
-          ? `Complete the audit programme before submitting: ${messages.join(' ')}`
+          ? t('submitBlocked', { messages: messages.join(' ') })
           : null;
       }}
     >
@@ -73,20 +75,20 @@ export function InternalAuditClient({
           onUpdateAudit: (auditId, values) =>
             run(
               hook.updateRow({ register: AUDITS, id: auditId, data: toAuditPayload(values) }),
-              'Audit updated',
-              'Failed to update audit',
+              t('auditUpdated'),
+              t('auditUpdateFailed'),
             ),
           onDeleteAudit: (auditId) =>
             run(
               hook.deleteRow({ register: AUDITS, id: auditId }),
-              'Audit deleted',
-              'Failed to delete audit',
+              t('auditDeleted'),
+              t('auditDeleteFailed'),
             ),
           onSaveSignoff: (auditId, values) =>
             run(
               hook.updateRow({ register: AUDITS, id: auditId, data: toSignoffPayload(values) }),
-              'Sign-off saved',
-              'Failed to save sign-off',
+              t('signoffSaved'),
+              t('signoffSaveFailed'),
             ),
           onCreateControl: (auditId, values) =>
             run(
@@ -94,20 +96,20 @@ export function InternalAuditClient({
                 register: CONTROLS,
                 data: { auditId, ...toControlPayload(values) },
               }),
-              'Control row added',
-              'Failed to add control row',
+              t('controlRowAdded'),
+              t('controlRowAddFailed'),
             ),
           onUpdateControl: (controlId, payload) =>
             run(
               hook.updateRow({ register: CONTROLS, id: controlId, data: payload }),
-              'Control row updated',
-              'Failed to update control row',
+              t('controlRowUpdated'),
+              t('controlRowUpdateFailed'),
             ),
           onDeleteControl: (controlId) =>
             run(
               hook.deleteRow({ register: CONTROLS, id: controlId }),
-              'Control row deleted',
-              'Failed to delete control row',
+              t('controlRowDeleted'),
+              t('controlRowDeleteFailed'),
             ),
           onCreateFinding: (auditId, values) =>
             run(
@@ -115,8 +117,8 @@ export function InternalAuditClient({
                 register: FINDINGS,
                 data: { auditId, ...toFindingPayload(values) },
               }),
-              'Finding added',
-              'Failed to add finding',
+              t('findingAdded'),
+              t('findingAddFailed'),
             ),
           onUpdateFinding: (findingId, values) =>
             run(
@@ -125,14 +127,14 @@ export function InternalAuditClient({
                 id: findingId,
                 data: toFindingPayload(values),
               }),
-              'Finding updated',
-              'Failed to update finding',
+              t('findingUpdated'),
+              t('findingUpdateFailed'),
             ),
           onDeleteFinding: (findingId) =>
             run(
               hook.deleteRow({ register: FINDINGS, id: findingId }),
-              'Finding deleted',
-              'Failed to delete finding',
+              t('findingDeleted'),
+              t('findingDeleteFailed'),
             ),
         };
 
@@ -144,8 +146,8 @@ export function InternalAuditClient({
               onSave={(programme) =>
                 run(
                   hook.saveNarrative({ programme }),
-                  'Programme saved',
-                  'Failed to save programme',
+                  t('programmeSaved'),
+                  t('programmeSaveFailed'),
                 )
               }
             />
@@ -158,8 +160,8 @@ export function InternalAuditClient({
               onCreateAudit={() =>
                 run(
                   hook.createRow({ register: AUDITS, data: {} }),
-                  'Audit created with the default template',
-                  'Failed to create audit',
+                  t('auditCreated'),
+                  t('auditCreateFailed'),
                 )
               }
               {...handlers}

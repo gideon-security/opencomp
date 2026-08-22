@@ -2004,6 +2004,36 @@
       "procedureSaveFailed": "Failed to save procedure",
       "reviewCreated": "Review created with the default template",
       "reviewCreateFailed": "Failed to create review"
+    },
+    "internalAudit": {
+      "title": "Internal Audit",
+      "description": "Plan and record the internal audits of the ISMS (ISO 27001 clause 9.2). Each audit samples the controls below — follow the 'Where to find it' reference, verify the evidence, and record a result per row. Findings are tracked to closure.",
+      "sectionTitle": "Audit programme",
+      "sectionDescription": "One annual full audit of the whole ISMS is the default shape. Every field ships with auditor-defensible template text you can accept or edit.",
+      "generateRestored": "Restored the default programme text",
+      "submitBlocked": "Complete the audit programme before submitting: {messages}",
+      "auditUpdated": "Audit updated",
+      "auditUpdateFailed": "Failed to update audit",
+      "auditDeleted": "Audit deleted",
+      "auditDeleteFailed": "Failed to delete audit",
+      "signoffSaved": "Sign-off saved",
+      "signoffSaveFailed": "Failed to save sign-off",
+      "controlRowAdded": "Control row added",
+      "controlRowAddFailed": "Failed to add control row",
+      "controlRowUpdated": "Control row updated",
+      "controlRowUpdateFailed": "Failed to update control row",
+      "controlRowDeleted": "Control row deleted",
+      "controlRowDeleteFailed": "Failed to delete control row",
+      "findingAdded": "Finding added",
+      "findingAddFailed": "Failed to add finding",
+      "findingUpdated": "Finding updated",
+      "findingUpdateFailed": "Failed to update finding",
+      "findingDeleted": "Finding deleted",
+      "findingDeleteFailed": "Failed to delete finding",
+      "programmeSaved": "Programme saved",
+      "programmeSaveFailed": "Failed to save programme",
+      "auditCreated": "Audit created with the default template",
+      "auditCreateFailed": "Failed to create audit"
     }
   }
 }

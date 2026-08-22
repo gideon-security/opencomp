@@ -2004,6 +2004,36 @@
       "procedureSaveFailed": "Error al guardar el procedimiento",
       "reviewCreated": "Revisión creada con la plantilla predeterminada",
       "reviewCreateFailed": "Error al crear la revisión"
+    },
+    "internalAudit": {
+      "title": "Auditoría interna",
+      "description": "Planifica y registra las auditorías internas del SGSI (cláusula 9.2 de ISO 27001). Cada auditoría muestrea los controles de abajo —sigue la referencia 'Dónde encontrarlo', verifica la evidencia y registra un resultado por fila. Los hallazgos se siguen hasta su cierre.",
+      "sectionTitle": "Programa de auditoría",
+      "sectionDescription": "Una auditoría completa anual de todo el SGSI es la forma predeterminada. Cada campo incluye texto de plantilla defendible ante auditores que puedes aceptar o editar.",
+      "generateRestored": "Se restauró el texto del programa predeterminado",
+      "submitBlocked": "Completa el programa de auditoría antes de enviar: {messages}",
+      "auditUpdated": "Auditoría actualizada",
+      "auditUpdateFailed": "Error al actualizar la auditoría",
+      "auditDeleted": "Auditoría eliminada",
+      "auditDeleteFailed": "Error al eliminar la auditoría",
+      "signoffSaved": "Firma guardada",
+      "signoffSaveFailed": "Error al guardar la firma",
+      "controlRowAdded": "Fila de control agregada",
+      "controlRowAddFailed": "Error al agregar la fila de control",
+      "controlRowUpdated": "Fila de control actualizada",
+      "controlRowUpdateFailed": "Error al actualizar la fila de control",
+      "controlRowDeleted": "Fila de control eliminada",
+      "controlRowDeleteFailed": "Error al eliminar la fila de control",
+      "findingAdded": "Hallazgo agregado",
+      "findingAddFailed": "Error al agregar el hallazgo",
+      "findingUpdated": "Hallazgo actualizado",
+      "findingUpdateFailed": "Error al actualizar el hallazgo",
+      "findingDeleted": "Hallazgo eliminado",
+      "findingDeleteFailed": "Error al eliminar el hallazgo",
+      "programmeSaved": "Programa guardado",
+      "programmeSaveFailed": "Error al guardar el programa",
+      "auditCreated": "Auditoría creada con la plantilla predeterminada",
+      "auditCreateFailed": "Error al crear la auditoría"
     }
   }
 }
