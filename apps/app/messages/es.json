@@ -1969,5 +1969,41 @@
       "fwPipedaDescription": "Ley de Protección de la Información Personal y Documentos Electrónicos",
       "fwCcpaDescription": "Ley de Privacidad del Consumidor de California"
     }
+  },
+  "isms": {
+    "managementReview": {
+      "title": "Revisión por la dirección",
+      "description": "Registra las revisiones de la alta dirección del SGSI (cláusula 9.3 de ISO 27001). Cada revisión recorre la tabla de entradas —el orden del día— y luego registra los resultados, las acciones derivadas y la firma del presidente. Las acciones abiertas se trasladan automáticamente a la siguiente revisión.",
+      "sectionTitle": "Procedimiento de revisión",
+      "sectionDescription": "La cadencia predeterminada es anual más las ad hoc. Cada campo incluye texto de plantilla defendible ante auditores que puedes aceptar o editar.",
+      "generateRestored": "Se restauró el texto del procedimiento predeterminado",
+      "submitBlocked": "Completa el registro de revisión antes de enviar: {messages}",
+      "reviewUpdated": "Revisión actualizada",
+      "reviewUpdateFailed": "Error al actualizar la revisión",
+      "reviewDeleted": "Revisión eliminada",
+      "reviewDeleteFailed": "Error al eliminar la revisión",
+      "attendeesUpdated": "Asistentes actualizados",
+      "attendeesUpdateFailed": "Error al actualizar los asistentes",
+      "outputsSaved": "Resultados guardados",
+      "outputsSaveFailed": "Error al guardar los resultados",
+      "signoffSaved": "Firma guardada",
+      "signoffSaveFailed": "Error al guardar la firma",
+      "inputAdded": "Fila de entrada agregada",
+      "inputAddFailed": "Error al agregar la fila de entrada",
+      "inputUpdated": "Fila de entrada actualizada",
+      "inputUpdateFailed": "Error al actualizar la fila de entrada",
+      "inputDeleted": "Fila de entrada eliminada",
+      "inputDeleteFailed": "Error al eliminar la fila de entrada",
+      "actionAdded": "Acción agregada",
+      "actionAddFailed": "Error al agregar la acción",
+      "actionUpdated": "Acción actualizada",
+      "actionUpdateFailed": "Error al actualizar la acción",
+      "actionDeleted": "Acción eliminada",
+      "actionDeleteFailed": "Error al eliminar la acción",
+      "procedureSaved": "Procedimiento guardado",
+      "procedureSaveFailed": "Error al guardar el procedimiento",
+      "reviewCreated": "Revisión creada con la plantilla predeterminada",
+      "reviewCreateFailed": "Error al crear la revisión"
+    }
   }
 }

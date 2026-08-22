@@ -1969,5 +1969,41 @@
       "fwPipedaDescription": "Personal Information Protection and Electronic Documents Act",
       "fwCcpaDescription": "California Consumer Privacy Act"
     }
+  },
+  "isms": {
+    "managementReview": {
+      "title": "Management Review",
+      "description": "Record top management's reviews of the ISMS (ISO 27001 clause 9.3). Each review works through the Inputs table — the meeting agenda — then records the outputs, actions arising, and the chair's sign-off. Open actions carry forward to the next review automatically.",
+      "sectionTitle": "Review procedure",
+      "sectionDescription": "Annual plus ad-hoc is the default cadence. Every field ships with auditor-defensible template text you can accept or edit.",
+      "generateRestored": "Restored the default procedure text",
+      "submitBlocked": "Complete the review record before submitting: {messages}",
+      "reviewUpdated": "Review updated",
+      "reviewUpdateFailed": "Failed to update review",
+      "reviewDeleted": "Review deleted",
+      "reviewDeleteFailed": "Failed to delete review",
+      "attendeesUpdated": "Attendees updated",
+      "attendeesUpdateFailed": "Failed to update attendees",
+      "outputsSaved": "Outputs saved",
+      "outputsSaveFailed": "Failed to save outputs",
+      "signoffSaved": "Sign-off saved",
+      "signoffSaveFailed": "Failed to save sign-off",
+      "inputAdded": "Input row added",
+      "inputAddFailed": "Failed to add input row",
+      "inputUpdated": "Input row updated",
+      "inputUpdateFailed": "Failed to update input row",
+      "inputDeleted": "Input row deleted",
+      "inputDeleteFailed": "Failed to delete input row",
+      "actionAdded": "Action added",
+      "actionAddFailed": "Failed to add action",
+      "actionUpdated": "Action updated",
+      "actionUpdateFailed": "Failed to update action",
+      "actionDeleted": "Action deleted",
+      "actionDeleteFailed": "Failed to delete action",
+      "procedureSaved": "Procedure saved",
+      "procedureSaveFailed": "Failed to save procedure",
+      "reviewCreated": "Review created with the default template",
+      "reviewCreateFailed": "Failed to create review"
+    }
   }
 }

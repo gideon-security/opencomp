@@ -1,6 +1,7 @@
 'use client';
 
 import { Stack } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type {
   IsmsDocument as IsmsDocumentData,
@@ -54,22 +55,23 @@ export function ManagementReviewClient({
   chairOptions = [],
   ...props
 }: ManagementReviewClientProps) {
+  const t = useTranslations('isms.managementReview');
   return (
     <IsmsDocumentShell
       {...props}
       clause="9.3"
-      title="Management Review"
-      description="Record top management's reviews of the ISMS (ISO 27001 clause 9.3). Each review works through the Inputs table — the meeting agenda — then records the outputs, actions arising, and the chair's sign-off. Open actions carry forward to the next review automatically."
-      sectionTitle="Review procedure"
-      sectionDescription="Annual plus ad-hoc is the default cadence. Every field ships with auditor-defensible template text you can accept or edit."
-      generateSuccessMessage="Restored the default procedure text"
+      title={t('title')}
+      description={t('description')}
+      sectionTitle={t('sectionTitle')}
+      sectionDescription={t('sectionDescription')}
+      generateSuccessMessage={t('generateRestored')}
       getSubmitBlockedReason={(document) => {
         const messages = reviewValidationMessages({
           procedure: parseProcedure(document.draftNarrative),
           reviews: Array.isArray(document.reviews) ? document.reviews : [],
         });
         return messages.length > 0
-          ? `Complete the review record before submitting: ${messages.join(' ')}`
+          ? t('submitBlocked', { messages: messages.join(' ') })
           : null;
       }}
     >
@@ -84,26 +86,26 @@ export function ManagementReviewClient({
           onUpdateReview: (reviewId, values) =>
             run(
               hook.updateRow({ register: REVIEWS, id: reviewId, data: toReviewPayload(values) }),
-              'Review updated',
-              'Failed to update review',
+              t('reviewUpdated'),
+              t('reviewUpdateFailed'),
             ),
           onDeleteReview: (reviewId) =>
             run(
               hook.deleteRow({ register: REVIEWS, id: reviewId }),
-              'Review deleted',
-              'Failed to delete review',
+              t('reviewDeleted'),
+              t('reviewDeleteFailed'),
             ),
           onSaveAttendees: (reviewId, attendees: IsmsReviewAttendee[]) =>
             run(
               hook.updateRow({ register: REVIEWS, id: reviewId, data: { attendees } }),
-              'Attendees updated',
-              'Failed to update attendees',
+              t('attendeesUpdated'),
+              t('attendeesUpdateFailed'),
             ),
           onSaveOutputs: (reviewId, values) =>
             run(
               hook.updateRow({ register: REVIEWS, id: reviewId, data: toOutputsPayload(values) }),
-              'Outputs saved',
-              'Failed to save outputs',
+              t('outputsSaved'),
+              t('outputsSaveFailed'),
             ),
           onSaveSignoff: (reviewId, values) =>
             run(
@@ -112,26 +114,26 @@ export function ManagementReviewClient({
                 id: reviewId,
                 data: toReviewSignoffPayload(values),
               }),
-              'Sign-off saved',
-              'Failed to save sign-off',
+              t('signoffSaved'),
+              t('signoffSaveFailed'),
             ),
           onCreateInput: (reviewId, values) =>
             run(
               hook.createRow({ register: INPUTS, data: { reviewId, ...toInputPayload(values) } }),
-              'Input row added',
-              'Failed to add input row',
+              t('inputAdded'),
+              t('inputAddFailed'),
             ),
           onUpdateInput: (inputId, payload) =>
             run(
               hook.updateRow({ register: INPUTS, id: inputId, data: payload }),
-              'Input row updated',
-              'Failed to update input row',
+              t('inputUpdated'),
+              t('inputUpdateFailed'),
             ),
           onDeleteInput: (inputId) =>
             run(
               hook.deleteRow({ register: INPUTS, id: inputId }),
-              'Input row deleted',
-              'Failed to delete input row',
+              t('inputDeleted'),
+              t('inputDeleteFailed'),
             ),
           onCreateAction: (reviewId, values) =>
             run(
@@ -139,20 +141,20 @@ export function ManagementReviewClient({
                 register: ACTIONS,
                 data: { reviewId, ...toActionPayload(values) },
               }),
-              'Action added',
-              'Failed to add action',
+              t('actionAdded'),
+              t('actionAddFailed'),
             ),
           onUpdateAction: (actionId, payload) =>
             run(
               hook.updateRow({ register: ACTIONS, id: actionId, data: payload }),
-              'Action updated',
-              'Failed to update action',
+              t('actionUpdated'),
+              t('actionUpdateFailed'),
             ),
           onDeleteAction: (actionId) =>
             run(
               hook.deleteRow({ register: ACTIONS, id: actionId }),
-              'Action deleted',
-              'Failed to delete action',
+              t('actionDeleted'),
+              t('actionDeleteFailed'),
             ),
         };
 
@@ -164,8 +166,8 @@ export function ManagementReviewClient({
               onSave={(procedure) =>
                 run(
                   hook.saveNarrative({ procedure }),
-                  'Procedure saved',
-                  'Failed to save procedure',
+                  t('procedureSaved'),
+                  t('procedureSaveFailed'),
                 )
               }
             />
@@ -178,8 +180,8 @@ export function ManagementReviewClient({
               onCreateReview={() =>
                 run(
                   hook.createRow({ register: REVIEWS, data: {} }),
-                  'Review created with the default template',
-                  'Failed to create review',
+                  t('reviewCreated'),
+                  t('reviewCreateFailed'),
                 )
               }
               {...handlers}
