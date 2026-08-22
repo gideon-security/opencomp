@@ -1940,5 +1940,34 @@
       "addAtLeastOneInvite": "Please add at least one invite.",
       "selectSingleCSV": "Please select a single CSV file."
     }
+  },
+  "trust": {
+    "portal": {
+      "tabs": {
+        "frameworks": "Frameworks",
+        "mission": "Mission",
+        "branding": "Branding",
+        "vendors": "Vendors",
+        "links": "Links",
+        "faq": "FAQ",
+        "documents": "Documents",
+        "questionnaire": "Questionnaire"
+      },
+      "complianceTitle": "Compliance Frameworks",
+      "complianceDescription": "Share the frameworks your organization is compliant with or working towards.",
+      "statusUpdated": "{name} status updated",
+      "statusUpdateFailed": "Failed to update {name} status",
+      "toggleUpdated": "Trust portal status updated",
+      "toggleUpdateFailed": "Failed to update trust portal status",
+      "fwIso27001Description": "An international standard for managing information security systems.",
+      "fwIso42001Description": "An international standard for an Artificial Intelligence Management System.",
+      "fwGdprDescription": "A European regulation that governs personal data protection and user privacy.",
+      "fwHipaaDescription": "A US regulation that protects sensitive patient health information and medical data.",
+      "fwGenericDescription": "A compliance framework focused on data security, availability, and confidentiality.",
+      "fwNen7510Description": "A Dutch standard for managing information security systems.",
+      "fwIso9001Description": "An international standard for quality management systems.",
+      "fwPipedaDescription": "Personal Information Protection and Electronic Documents Act",
+      "fwCcpaDescription": "California Consumer Privacy Act"
+    }
   }
 }

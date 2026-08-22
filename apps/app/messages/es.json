@@ -1940,5 +1940,34 @@
       "addAtLeastOneInvite": "Por favor agrega al menos una invitación.",
       "selectSingleCSV": "Por favor selecciona un solo archivo CSV."
     }
+  },
+  "trust": {
+    "portal": {
+      "tabs": {
+        "frameworks": "Marcos de cumplimiento",
+        "mission": "Misión",
+        "branding": "Marca",
+        "vendors": "Proveedores",
+        "links": "Enlaces",
+        "faq": "Preguntas frecuentes",
+        "documents": "Documentos",
+        "questionnaire": "Cuestionario"
+      },
+      "complianceTitle": "Marcos de cumplimiento",
+      "complianceDescription": "Comparte los marcos con los que tu organización cumple o a los que aspira.",
+      "statusUpdated": "Estado de {name} actualizado",
+      "statusUpdateFailed": "Error al actualizar el estado de {name}",
+      "toggleUpdated": "Estado del portal de confianza actualizado",
+      "toggleUpdateFailed": "Error al actualizar el estado del portal de confianza",
+      "fwIso27001Description": "Un estándar internacional para la gestión de sistemas de seguridad de la información.",
+      "fwIso42001Description": "Un estándar internacional para un sistema de gestión de inteligencia artificial.",
+      "fwGdprDescription": "Un reglamento europeo que rige la protección de datos personales y la privacidad del usuario.",
+      "fwHipaaDescription": "Una regulación de EE.UU. que protege la información confidencial de salud del paciente y los datos médicos.",
+      "fwGenericDescription": "Un marco de cumplimiento centrado en la seguridad, disponibilidad y confidencialidad de los datos.",
+      "fwNen7510Description": "Una norma holandesa para la gestión de sistemas de seguridad de la información.",
+      "fwIso9001Description": "Un estándar internacional para sistemas de gestión de calidad.",
+      "fwPipedaDescription": "Ley de Protección de la Información Personal y Documentos Electrónicos",
+      "fwCcpaDescription": "Ley de Privacidad del Consumidor de California"
+    }
   }
 }
