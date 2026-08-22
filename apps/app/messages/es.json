@@ -2174,5 +2174,40 @@
     "resultsCount": "{count, plural, =1 {# resultado} other {# resultados}}",
     "categoriesTab": "Categorías",
     "listTab": "Lista"
+  },
+  "policies": {
+    "pdfViewer": {
+      "loadFailedToast": "No se pudo cargar el documento de la política.",
+      "fileTooLarge": "El archivo debe pesar menos de 100 MB",
+      "uploadFailed": "Error al subir el PDF.",
+      "readFailed": "Error al leer el archivo para subirlo.",
+      "noValidFile": "No se seleccionó un archivo PDF válido",
+      "oneFileOnly": "Sube solo un archivo PDF a la vez",
+      "deleteFailed": "Error al eliminar el PDF.",
+      "openMenu": "Abrir menú",
+      "replace": "Reemplazar",
+      "deleteAction": "Eliminar",
+      "cancel": "Cancelar",
+      "deleteTitle": "¿Eliminar el PDF?",
+      "deleteDescription": "¿Seguro que quieres eliminar este PDF? Esta acción no se puede deshacer. La política volverá a la vista de editor.",
+      "pendingApprovalReadOnly": "Esta versión está pendiente de aprobación y no se puede editar.",
+      "publishedReadOnly": "Esta versión está publicada. Crea una nueva versión para hacer cambios.",
+      "readOnlyGeneric": "Esta versión no se puede editar.",
+      "iframeTitle": "PDF de la política",
+      "loadFailedTitle": "No se pudo cargar el PDF",
+      "loadFailedDescription": "Puede que el documento falte o que hubiera un problema al recuperarlo.",
+      "uploadingNew": "Subiendo nuevo PDF...",
+      "deleting": "Eliminando PDF...",
+      "dropReplaceActive": "Suelta tu nuevo PDF aquí para reemplazar el actual",
+      "dropReplace": "Arrastra y suelta un nuevo PDF aquí para reemplazar el actual, o haz clic para explorar (hasta 100 MB)",
+      "uploading": "Subiendo PDF...",
+      "dropHereActive": "Suelta tu PDF aquí",
+      "noPdf": "Sin PDF subido",
+      "pleaseWait": "Espera mientras subimos tu PDF.",
+      "releaseToUpload": "Suelta para subir tu PDF.",
+      "dropInitial": "Arrastra y suelta un PDF aquí o haz clic para explorar (hasta 100 MB)",
+      "emptyVersionNote": "Esta versión no tiene documento PDF. El contenido de la política se muestra en la vista de editor.",
+      "emptyPolicyNote": "No se ha subido ningún PDF para esta política. Sube un PDF para mostrarlo aquí, o usa la vista de editor para editar el contenido."
+    }
   }
 }
