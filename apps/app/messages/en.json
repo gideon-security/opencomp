@@ -2099,5 +2099,30 @@
       "saving": "Saving...",
       "save": "Save methodology"
     }
+  },
+  "tasks": {
+    "todo": "Todo",
+    "inProgress": "In Progress",
+    "inReview": "In Review",
+    "done": "Done",
+    "failed": "Failed",
+    "notRelevant": "Not Relevant",
+    "allStatuses": "All statuses",
+    "allFrameworks": "All frameworks",
+    "framework": "Framework",
+    "everyone": "Everyone",
+    "noEligibleMembers": "No eligible members",
+    "unknownMember": "Unknown member",
+    "assignee": "Assignee",
+    "allTypes": "All types",
+    "automated": "Automated",
+    "manual": "Manual",
+    "active": "Active",
+    "running": "Running",
+    "success": "Success",
+    "searchPlaceholder": "Search evidence...",
+    "resultsCount": "{count, plural, =1 {# result} other {# results}}",
+    "categoriesTab": "Categories",
+    "listTab": "List"
   }
 }

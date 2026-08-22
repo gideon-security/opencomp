@@ -2099,5 +2099,30 @@
       "saving": "Guardando...",
       "save": "Guardar metodología"
     }
+  },
+  "tasks": {
+    "todo": "Por hacer",
+    "inProgress": "En progreso",
+    "inReview": "En revisión",
+    "done": "Hecho",
+    "failed": "Fallido",
+    "notRelevant": "No relevante",
+    "allStatuses": "Todos los estados",
+    "allFrameworks": "Todos los marcos",
+    "framework": "Marco",
+    "everyone": "Todos",
+    "noEligibleMembers": "No hay miembros elegibles",
+    "unknownMember": "Miembro desconocido",
+    "assignee": "Responsable",
+    "allTypes": "Todos los tipos",
+    "automated": "Automatizado",
+    "manual": "Manual",
+    "active": "Activas",
+    "running": "En ejecución",
+    "success": "Éxito",
+    "searchPlaceholder": "Buscar evidencias...",
+    "resultsCount": "{count, plural, =1 {# resultado} other {# resultados}}",
+    "categoriesTab": "Categorías",
+    "listTab": "Lista"
   }
 }
