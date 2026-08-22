@@ -2034,6 +2034,38 @@
       "programmeSaveFailed": "Failed to save programme",
       "auditCreated": "Audit created with the default template",
       "auditCreateFailed": "Failed to create audit"
+    },
+    "riskMethodology": {
+      "required": "Required",
+      "purposeRequired": "Purpose is required",
+      "scopeRequired": "Scope is required",
+      "approachRequired": "Approach is required",
+      "responsibilitiesRequired": "Responsibilities are required",
+      "frequencyRequired": "Frequency is required",
+      "documentationRequired": "Documentation approach is required",
+      "purposeLabel": "Purpose",
+      "purposeHelper": "What this methodology is for and which clause it satisfies (6.1.2).",
+      "scopeLabel": "Scope",
+      "scopeHelper": "Which risks the methodology applies to, including supplier risks.",
+      "approachLabel": "Risk assessment approach",
+      "approachHelper": "How risks are identified and assessed (default: asset-based, inherent + residual).",
+      "responsibilitiesLabel": "Risk-owner responsibilities",
+      "responsibilitiesHelper": "What every named risk owner is accountable for, including residual-risk acceptance.",
+      "frequencyLabel": "Frequency of assessment",
+      "frequencyHelper": "How often risks are reviewed (default: quarterly review, annual formal reassessment).",
+      "documentationLabel": "Documentation approach",
+      "documentationHelper": "Where risks, treatments, and acceptance events are held and which documents derive from them.",
+      "likelihoodTitle": "Likelihood scale",
+      "likelihoodHelper": "What each of the five likelihood levels means for your organization.",
+      "impactTitle": "Impact scale",
+      "impactHelper": "What each of the five impact levels means for your organization.",
+      "thresholdsTitle": "Acceptance thresholds",
+      "thresholdsHelper": "The acceptance requirement each risk level triggers (default: low levels accepted, medium with owner sign-off, high levels must be treated).",
+      "treatmentTitle": "Treatment options",
+      "treatmentHelper": "What each treatment strategy means. The labels match the Risks module's strategies with their ISO 27001 option names.",
+      "matrixTitle": "Risk level matrix",
+      "saving": "Saving...",
+      "save": "Save methodology"
     }
   }
 }

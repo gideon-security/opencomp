@@ -2034,6 +2034,38 @@
       "programmeSaveFailed": "Error al guardar el programa",
       "auditCreated": "Auditoría creada con la plantilla predeterminada",
       "auditCreateFailed": "Error al crear la auditoría"
+    },
+    "riskMethodology": {
+      "required": "Obligatorio",
+      "purposeRequired": "El propósito es obligatorio",
+      "scopeRequired": "El alcance es obligatorio",
+      "approachRequired": "El enfoque es obligatorio",
+      "responsibilitiesRequired": "Las responsabilidades son obligatorias",
+      "frequencyRequired": "La frecuencia es obligatoria",
+      "documentationRequired": "El enfoque de documentación es obligatorio",
+      "purposeLabel": "Propósito",
+      "purposeHelper": "Para qué sirve esta metodología y qué cláusula satisface (6.1.2).",
+      "scopeLabel": "Alcance",
+      "scopeHelper": "A qué riesgos se aplica la metodología, incluidos los riesgos de proveedores.",
+      "approachLabel": "Enfoque de evaluación de riesgos",
+      "approachHelper": "Cómo se identifican y evalúan los riesgos (predeterminado: basado en activos, inherente + residual).",
+      "responsibilitiesLabel": "Responsabilidades del propietario del riesgo",
+      "responsibilitiesHelper": "De qué responde cada propietario de riesgo nombrado, incluida la aceptación del riesgo residual.",
+      "frequencyLabel": "Frecuencia de evaluación",
+      "frequencyHelper": "Con qué frecuencia se revisan los riesgos (predeterminado: revisión trimestral, reevaluación formal anual).",
+      "documentationLabel": "Enfoque de documentación",
+      "documentationHelper": "Dónde se conservan los riesgos, tratamientos y eventos de aceptación y qué documentos se derivan de ellos.",
+      "likelihoodTitle": "Escala de probabilidad",
+      "likelihoodHelper": "Qué significa cada uno de los cinco niveles de probabilidad para tu organización.",
+      "impactTitle": "Escala de impacto",
+      "impactHelper": "Qué significa cada uno de los cinco niveles de impacto para tu organización.",
+      "thresholdsTitle": "Umbrales de aceptación",
+      "thresholdsHelper": "El requisito de aceptación que activa cada nivel de riesgo (predeterminado: niveles bajos aceptados, medios con firma del propietario, altos deben tratarse).",
+      "treatmentTitle": "Opciones de tratamiento",
+      "treatmentHelper": "Qué significa cada estrategia de tratamiento. Las etiquetas coinciden con las estrategias del módulo de Riesgos con sus nombres de opción ISO 27001.",
+      "matrixTitle": "Matriz de niveles de riesgo",
+      "saving": "Guardando...",
+      "save": "Guardar metodología"
     }
   }
 }

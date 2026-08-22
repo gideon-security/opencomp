@@ -2,7 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Label, Text, Textarea } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { Controller, useForm } from 'react-hook-form';
+import { useMemo } from 'react';
 import { z } from 'zod';
 import type { IsmsRiskMethodologyNarrative } from '../isms-types';
 import { MethodologyLabelledList } from './MethodologyLabelledList';
@@ -14,22 +16,25 @@ import {
 } from './risk-methodology-constants';
 import { RiskLevelMatrixPreview } from './RiskLevelMatrixPreview';
 
+type Translator = ReturnType<typeof useTranslations<'isms.riskMethodology'>>;
+
 // .trim() runs before .min(), so whitespace-only input fails "required" and
 // saved values are stored trimmed.
-const methodologySchema = z.object({
-  purpose: z.string().trim().min(1, 'Purpose is required'),
-  scope: z.string().trim().min(1, 'Scope is required'),
-  approach: z.string().trim().min(1, 'Approach is required'),
-  likelihoodDescriptions: z.array(z.string().trim().min(1, 'Required')).length(5),
-  impactDescriptions: z.array(z.string().trim().min(1, 'Required')).length(5),
-  acceptanceThresholds: z.array(z.string().trim().min(1, 'Required')).length(5),
-  treatmentOptions: z.array(z.string().trim().min(1, 'Required')).length(4),
-  responsibilities: z.string().trim().min(1, 'Responsibilities are required'),
-  frequency: z.string().trim().min(1, 'Frequency is required'),
-  documentation: z.string().trim().min(1, 'Documentation approach is required'),
-});
+const createMethodologySchema = (t: Translator) =>
+  z.object({
+    purpose: z.string().trim().min(1, t('purposeRequired')),
+    scope: z.string().trim().min(1, t('scopeRequired')),
+    approach: z.string().trim().min(1, t('approachRequired')),
+    likelihoodDescriptions: z.array(z.string().trim().min(1, t('required'))).length(5),
+    impactDescriptions: z.array(z.string().trim().min(1, t('required'))).length(5),
+    acceptanceThresholds: z.array(z.string().trim().min(1, t('required'))).length(5),
+    treatmentOptions: z.array(z.string().trim().min(1, t('required'))).length(4),
+    responsibilities: z.string().trim().min(1, t('responsibilitiesRequired')),
+    frequency: z.string().trim().min(1, t('frequencyRequired')),
+    documentation: z.string().trim().min(1, t('documentationRequired')),
+  });
 
-export type RiskMethodologyValues = z.infer<typeof methodologySchema>;
+export type RiskMethodologyValues = z.infer<ReturnType<typeof createMethodologySchema>>;
 
 interface RiskMethodologyFormProps {
   narrative: IsmsRiskMethodologyNarrative;
@@ -56,48 +61,20 @@ function toDefaults(narrative: IsmsRiskMethodologyNarrative): RiskMethodologyVal
 }
 
 const PROSE_FIELDS = [
-  {
-    name: 'purpose',
-    label: 'Purpose',
-    helper: 'What this methodology is for and which clause it satisfies (6.1.2).',
-    rows: 3,
-  },
-  {
-    name: 'scope',
-    label: 'Scope',
-    helper: 'Which risks the methodology applies to, including supplier risks.',
-    rows: 3,
-  },
-  {
-    name: 'approach',
-    label: 'Risk assessment approach',
-    helper: 'How risks are identified and assessed (default: asset-based, inherent + residual).',
-    rows: 4,
-  },
+  { name: 'purpose', rows: 3 },
+  { name: 'scope', rows: 3 },
+  { name: 'approach', rows: 4 },
 ] as const;
 
 const CLOSING_FIELDS = [
-  {
-    name: 'responsibilities',
-    label: 'Risk-owner responsibilities',
-    helper: 'What every named risk owner is accountable for, including residual-risk acceptance.',
-    rows: 4,
-  },
-  {
-    name: 'frequency',
-    label: 'Frequency of assessment',
-    helper: 'How often risks are reviewed (default: quarterly review, annual formal reassessment).',
-    rows: 3,
-  },
-  {
-    name: 'documentation',
-    label: 'Documentation approach',
-    helper: 'Where risks, treatments, and acceptance events are held and which documents derive from them.',
-    rows: 3,
-  },
+  { name: 'responsibilities', rows: 4 },
+  { name: 'frequency', rows: 3 },
+  { name: 'documentation', rows: 3 },
 ] as const;
 
 export function RiskMethodologyForm({ narrative, canEdit, onSave }: RiskMethodologyFormProps) {
+  const t = useTranslations('isms.riskMethodology');
+  const methodologySchema = useMemo(() => createMethodologySchema(t), [t]);
   const {
     control,
     handleSubmit,
@@ -108,26 +85,39 @@ export function RiskMethodologyForm({ narrative, canEdit, onSave }: RiskMethodol
     defaultValues: toDefaults(narrative),
   });
 
+  const fieldCopy: Record<
+    (typeof PROSE_FIELDS)[number]['name'] | (typeof CLOSING_FIELDS)[number]['name'],
+    { label: string; helper: string }
+  > = useMemo(
+    () => ({
+      purpose: { label: t('purposeLabel'), helper: t('purposeHelper') },
+      scope: { label: t('scopeLabel'), helper: t('scopeHelper') },
+      approach: { label: t('approachLabel'), helper: t('approachHelper') },
+      responsibilities: { label: t('responsibilitiesLabel'), helper: t('responsibilitiesHelper') },
+      frequency: { label: t('frequencyLabel'), helper: t('frequencyHelper') },
+      documentation: { label: t('documentationLabel'), helper: t('documentationHelper') },
+    }),
+    [t],
+  );
+
   const handleSave = handleSubmit(async (values) => {
     await onSave(values);
   });
 
   const proseField = ({
     name,
-    label,
-    helper,
     rows,
   }: {
     name: 'purpose' | 'scope' | 'approach' | 'responsibilities' | 'frequency' | 'documentation';
-    label: string;
-    helper: string;
     rows: number;
-  }) => (
-    <div key={name} className="flex flex-col gap-2">
-      <Label htmlFor={`methodology-${name}`}>{label}</Label>
-      <div className="text-muted-foreground">
-        <Text variant="muted">{helper}</Text>
-      </div>
+  }) => {
+    const { label, helper } = fieldCopy[name];
+    return (
+      <div key={name} className="flex flex-col gap-2">
+        <Label htmlFor={`methodology-${name}`}>{label}</Label>
+        <div className="text-muted-foreground">
+          <Text variant="muted">{helper}</Text>
+        </div>
       {canEdit ? (
         <div className="flex flex-col gap-1">
           <Controller
@@ -148,14 +138,15 @@ export function RiskMethodologyForm({ narrative, canEdit, onSave }: RiskMethodol
       )}
     </div>
   );
+  };
 
   return (
     <form onSubmit={handleSave} className="flex flex-col gap-8">
       {PROSE_FIELDS.map(proseField)}
 
       <MethodologyLabelledList<RiskMethodologyValues>
-        title="Likelihood scale"
-        helper="What each of the five likelihood levels means for your organization."
+        title={t('likelihoodTitle')}
+        helper={t('likelihoodHelper')}
         labels={METHODOLOGY_LIKELIHOOD_LABELS}
         name="likelihoodDescriptions"
         control={control}
@@ -165,8 +156,8 @@ export function RiskMethodologyForm({ narrative, canEdit, onSave }: RiskMethodol
       />
 
       <MethodologyLabelledList<RiskMethodologyValues>
-        title="Impact scale"
-        helper="What each of the five impact levels means for your organization."
+        title={t('impactTitle')}
+        helper={t('impactHelper')}
         labels={METHODOLOGY_IMPACT_LABELS}
         name="impactDescriptions"
         control={control}
@@ -176,13 +167,13 @@ export function RiskMethodologyForm({ narrative, canEdit, onSave }: RiskMethodol
       />
 
       <div className="flex flex-col gap-2">
-        <Text weight="semibold">Risk level matrix</Text>
+        <Text weight="semibold">{t('matrixTitle')}</Text>
         <RiskLevelMatrixPreview />
       </div>
 
       <MethodologyLabelledList<RiskMethodologyValues>
-        title="Acceptance thresholds"
-        helper="The acceptance requirement each risk level triggers (default: low levels accepted, medium with owner sign-off, high levels must be treated)."
+        title={t('thresholdsTitle')}
+        helper={t('thresholdsHelper')}
         labels={METHODOLOGY_LEVEL_LABELS}
         name="acceptanceThresholds"
         control={control}
@@ -192,8 +183,8 @@ export function RiskMethodologyForm({ narrative, canEdit, onSave }: RiskMethodol
       />
 
       <MethodologyLabelledList<RiskMethodologyValues>
-        title="Treatment options"
-        helper="What each treatment strategy means. The labels match the Risks module's strategies with their ISO 27001 option names."
+        title={t('treatmentTitle')}
+        helper={t('treatmentHelper')}
         labels={METHODOLOGY_TREATMENT_LABELS}
         name="treatmentOptions"
         control={control}
@@ -207,7 +198,7 @@ export function RiskMethodologyForm({ narrative, canEdit, onSave }: RiskMethodol
       {canEdit && (
         <div className="flex justify-end">
           <Button type="submit" loading={isSubmitting} disabled={isSubmitting || !isDirty}>
-            {isSubmitting ? 'Saving...' : 'Save methodology'}
+            {isSubmitting ? t('saving') : t('save')}
           </Button>
         </div>
       )}
