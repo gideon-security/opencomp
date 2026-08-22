@@ -405,7 +405,7 @@ export function CloudTestsSection({
     if (!connectionId) return;
     setIsScanning(true);
     const startTime = Date.now();
-    toast.message(t('cloudTests.startingScan'));
+    toast.message(t('cloudTests_startingScan'));
     setScanError(null);
     try {
       const response = await api.post<{
@@ -417,7 +417,7 @@ export function CloudTestsSection({
         const data = response.data as { message?: string; errorCode?: string } | undefined;
         const errorCode = data?.errorCode;
         const message =
-          data?.message ?? (typeof response.error === 'string' ? response.error : t('cloudTests.scanFailedShort'));
+          data?.message ?? (typeof response.error === 'string' ? response.error : t('cloudTests_scanFailedShort'));
         // GCP setup errors get persistent inline message
         if (errorCode === 'SCC_NOT_ACTIVATED' || errorCode === 'GCP_ORG_MISSING') {
           setScanError({ message, errorCode });
@@ -430,9 +430,9 @@ export function CloudTestsSection({
       onScanComplete?.();
       setScanCompleted(true);
       const elapsed = Math.round((Date.now() - startTime) / 1000);
-        toast.success(t('cloudTests.scanCompleted', { elapsed }));
+        toast.success(t('cloudTests_scanCompleted', { elapsed }));
     } catch (err) {
-      toast.error(t('cloudTests.scanFailed', { error: err instanceof Error ? err.message : t('cloudTests.unknownError') }));
+      toast.error(t('cloudTests_scanFailed', { error: err instanceof Error ? err.message : t('cloudTests_unknownError') }));
     } finally {
       setIsScanning(false);
     }
@@ -498,7 +498,7 @@ export function CloudTestsSection({
         >
           <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-primary">{t('cloudTests.batchFixInProgress')}</p>
+            <p className="text-sm font-medium text-primary">{t('cloudTests_batchFixInProgress')}</p>
             <p className="text-xs text-primary/70 truncate">Click to view progress</p>
           </div>
           <Zap className="h-4 w-4 text-primary/50 shrink-0" />

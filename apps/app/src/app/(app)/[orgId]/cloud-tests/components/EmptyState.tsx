@@ -185,7 +185,7 @@ export function EmptyState({
           ? !Array.isArray(value) || value.length === 0
           : !String(value ?? '').trim();
       if (isMissing) {
-        newErrors[field.id] = t('cloudTests.fieldRequired');
+        newErrors[field.id] = t('cloudTests_fieldRequired');
       }
     });
 
@@ -201,10 +201,10 @@ export function EmptyState({
       !credentials.secret_access_key
     ) {
       setErrors({
-        access_key_id: !credentials.access_key_id ? t('cloudTests.required') : '',
-        secret_access_key: !credentials.secret_access_key ? t('cloudTests.required') : '',
+        access_key_id: !credentials.access_key_id ? t('cloudTests_required') : '',
+        secret_access_key: !credentials.secret_access_key ? t('cloudTests_required') : '',
       });
-      toast.error(t('cloudTests.enterAwsCredentials'));
+      toast.error(t('cloudTests_enterAwsCredentials'));
       return;
     }
 
@@ -221,7 +221,7 @@ export function EmptyState({
       });
 
       if (response.error) {
-        toast.error(response.error || t('cloudTests.failedToValidate'));
+        toast.error(response.error || t('cloudTests_failedToValidate'));
         return;
       }
 
@@ -234,13 +234,13 @@ export function EmptyState({
           accountId: data.accountId || '',
         }));
         setStep('validate-aws');
-        toast.success(t('cloudTests.credentialsValidated'));
+        toast.success(t('cloudTests_credentialsValidated'));
       } else {
-        toast.error(t('cloudTests.validateCredentialsFailed'));
+        toast.error(t('cloudTests_validateCredentialsFailed'));
       }
     } catch (error) {
       console.error('Validation error:', error);
-      toast.error(t('cloudTests.unexpectedError'));
+      toast.error(t('cloudTests_unexpectedError'));
     } finally {
       setIsConnecting(false);
     }
@@ -248,14 +248,14 @@ export function EmptyState({
 
   const handleConnect = async () => {
     if (!validateFields() || !selectedProvider) {
-      toast.error(t('cloudTests.pleaseFillRequiredFields'));
+      toast.error(t('cloudTests_pleaseFillRequiredFields'));
       return;
     }
     if (
       selectedProvider === 'aws' &&
       (!Array.isArray(credentials.regions) || credentials.regions.length === 0)
     ) {
-      toast.error(t('cloudTests.selectAtLeastOneRegion'));
+      toast.error(t('cloudTests_selectAtLeastOneRegion'));
       return;
     }
 
@@ -285,11 +285,11 @@ export function EmptyState({
           }, 2000);
         }
       } else {
-        toast.error(response.data?.error || t('cloudTests.failedToConnect'));
+        toast.error(response.data?.error || t('cloudTests_failedToConnect'));
       }
     } catch (error) {
       console.error('Connection error:', error);
-      toast.error(t('cloudTests.unexpectedError'));
+      toast.error(t('cloudTests_unexpectedError'));
     } finally {
       setIsConnecting(false);
     }
@@ -380,7 +380,7 @@ export function EmptyState({
                   width="full"
                   size="lg"
                 >
-                    {isConnecting ? t('cloudTests.connecting') : t('cloudTests.completeSetup')}
+                    {isConnecting ? t('cloudTests_connecting') : t('cloudTests_completeSetup')}
                 </Button>
               </div>
             </CardContent>
@@ -401,7 +401,7 @@ export function EmptyState({
                 Back to Results
               </Button>
             )}
-            <PageHeader title={onBack ? t('cloudTests.addAnotherCloud') : t('cloudTests.cloudTests')} />
+            <PageHeader title={onBack ? t('cloudTests_addAnotherCloud') : t('cloudTests_cloudTests')} />
           </>
         }
       >
@@ -591,10 +591,10 @@ export function EmptyState({
                 >
                   {isConnecting
                     ? selectedProvider === 'aws'
-                      ? t('cloudTests.validatingCredentials')
-                      : t('cloudTests.connecting')
+                      ? t('cloudTests_validatingCredentials')
+                      : t('cloudTests_connecting')
                     : selectedProvider === 'aws'
-                      ? t('cloudTests.continue')
+                      ? t('cloudTests_continue')
                       : `Connect ${provider.shortName}`}
                 </Button>
               </div>
