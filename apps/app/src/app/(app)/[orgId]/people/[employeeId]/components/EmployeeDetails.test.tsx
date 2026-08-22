@@ -1,9 +1,12 @@
 import type { Member, User } from '@db';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { toast } from 'sonner';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EmployeeDetails } from './EmployeeDetails';
+
+mockNextIntl();
 
 const { mockPatch } = vi.hoisted(() => ({ mockPatch: vi.fn() }));
 
@@ -56,13 +59,13 @@ describe('EmployeeDetails email editing', () => {
     const user = userEvent.setup();
     render(<EmployeeDetails employee={employee} canEdit />);
 
-    const emailInput = screen.getByLabelText('Email');
+    const emailInput = screen.getByLabelText('employeeDetails.email');
     // Regression: the field used to be hardcoded disabled+readOnly.
     expect(emailInput).not.toBeDisabled();
 
     await user.clear(emailInput);
     await user.type(emailInput, 'mmadhavan@aurorait.com');
-    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(screen.getByRole('button', { name: 'employeeDetails.save' }));
 
     await waitFor(() => {
       expect(mockPatch).toHaveBeenCalledWith('/v1/people/mem_1', {
@@ -73,18 +76,18 @@ describe('EmployeeDetails email editing', () => {
 
   it('disables the email field for read-only users', () => {
     render(<EmployeeDetails employee={employee} canEdit={false} />);
-    expect(screen.getByLabelText('Email')).toBeDisabled();
+    expect(screen.getByLabelText('employeeDetails.email')).toBeDisabled();
   });
 
   it('blocks save and does not PATCH when the email is cleared', async () => {
     const user = userEvent.setup();
     render(<EmployeeDetails employee={employee} canEdit />);
 
-    const emailInput = screen.getByLabelText('Email');
+    const emailInput = screen.getByLabelText('employeeDetails.email');
     await user.clear(emailInput);
-    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(screen.getByRole('button', { name: 'employeeDetails.save' }));
 
-    expect(toast.error).toHaveBeenCalledWith('Email is required');
+    expect(toast.error).toHaveBeenCalledWith('employeeDetails.emailRequired');
     expect(mockPatch).not.toHaveBeenCalled();
   });
 });

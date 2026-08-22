@@ -2,6 +2,9 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 import { OrganizationDetail } from './OrganizationDetail';
 
@@ -42,7 +45,7 @@ describe('OrganizationDetail — background-check toggle', () => {
     await screen.findByText(/activity will appear here when changes are made/i);
 
     const toggle = screen.getByRole('switch', {
-      name: /require background checks/i,
+      name: /organizations\.detail\.requireBackgroundChecks/i,
     });
     expect(toggle).toBeChecked();
   });
@@ -59,7 +62,7 @@ describe('OrganizationDetail — background-check toggle', () => {
     );
 
     const toggle = screen.getByRole('switch', {
-      name: /require background checks/i,
+      name: /organizations\.detail\.requireBackgroundChecks/i,
     });
 
     await user.click(toggle);
@@ -85,7 +88,7 @@ describe('OrganizationDetail — background-check toggle', () => {
     );
 
     const toggle = screen.getByRole('switch', {
-      name: /require background checks/i,
+      name: /organizations\.detail\.requireBackgroundChecks/i,
     });
     await user.click(toggle);
 
@@ -109,7 +112,7 @@ describe('OrganizationDetail — internal-organization toggle', () => {
     );
 
     await user.click(
-      screen.getByRole('switch', { name: /internal organization/i }),
+      screen.getByRole('switch', { name: /organizations\.detail\.internalOrganization/i }),
     );
 
     expect(await screen.findByRole('alertdialog')).toBeInTheDocument();
@@ -124,10 +127,12 @@ describe('OrganizationDetail — internal-organization toggle', () => {
     );
 
     await user.click(
-      screen.getByRole('switch', { name: /internal organization/i }),
+      screen.getByRole('switch', { name: /organizations\.detail\.internalOrganization/i }),
     );
     await user.click(
-      await screen.findByRole('button', { name: /mark as internal/i }),
+      await screen.findByRole('button', {
+        name: /organizations\.detail\.markInternalAction/i,
+      }),
     );
 
     await waitFor(() => {
@@ -145,9 +150,11 @@ describe('OrganizationDetail — internal-organization toggle', () => {
     );
 
     await user.click(
-      screen.getByRole('switch', { name: /internal organization/i }),
+      screen.getByRole('switch', { name: /organizations\.detail\.internalOrganization/i }),
     );
-    await user.click(await screen.findByRole('button', { name: /cancel/i }));
+    await user.click(await screen.findByRole('button', {
+        name: /organizations\.detail\.cancel/i,
+      }));
 
     await waitFor(() => {
       expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();

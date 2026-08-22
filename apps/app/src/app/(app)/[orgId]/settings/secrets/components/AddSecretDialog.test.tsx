@@ -1,5 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
+
 import {
   setMockPermissions,
   ADMIN_PERMISSIONS,
@@ -86,14 +90,16 @@ describe('AddSecretDialog permission gating', () => {
     setMockPermissions({});
     render(<AddSecretDialog />);
 
-    expect(screen.getByText('Add Secret')).toBeInTheDocument();
+    expect(screen.getByText('secrets.addDialog.addButton')).toBeInTheDocument();
   });
 
   it('disables Create Secret submit button when user lacks organization:update permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<AddSecretDialog />);
 
-    const submitButton = screen.getByRole('button', { name: /create secret/i });
+    const submitButton = screen.getByRole('button', {
+      name: /secrets\.addDialog\.submit/i,
+    });
     expect(submitButton).toBeDisabled();
   });
 
@@ -101,7 +107,9 @@ describe('AddSecretDialog permission gating', () => {
     setMockPermissions({});
     render(<AddSecretDialog />);
 
-    const submitButton = screen.getByRole('button', { name: /create secret/i });
+    const submitButton = screen.getByRole('button', {
+      name: /secrets\.addDialog\.submit/i,
+    });
     expect(submitButton).toBeDisabled();
   });
 
@@ -111,7 +119,9 @@ describe('AddSecretDialog permission gating', () => {
 
     // The button may still be disabled due to form validation (empty fields),
     // but canManageSecrets is true so permission is not the blocker
-    const submitButton = screen.getByRole('button', { name: /create secret/i });
+    const submitButton = screen.getByRole('button', {
+      name: /secrets\.addDialog\.submit/i,
+    });
     // With admin permissions, isSubmitting is false and canManageSecrets is true
     // disabled={isSubmitting || !canManageSecrets} => disabled={false || false} => false
     expect(submitButton).not.toBeDisabled();

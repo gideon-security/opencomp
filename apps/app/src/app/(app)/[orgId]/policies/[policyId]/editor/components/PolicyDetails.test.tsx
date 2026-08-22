@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -203,6 +204,8 @@ const defaultProps = {
   onMutate: vi.fn(),
 };
 
+mockNextIntl();
+
 describe('PolicyContentManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -215,8 +218,8 @@ describe('PolicyContentManager', () => {
 
     it('renders the editor view tabs', () => {
       render(<PolicyContentManager {...defaultProps} />);
-      expect(screen.getByText('Editor View')).toBeInTheDocument();
-      expect(screen.getByText('PDF View')).toBeInTheDocument();
+      expect(screen.getByText('details.editorView')).toBeInTheDocument();
+      expect(screen.getByText('details.pdfView')).toBeInTheDocument();
     });
 
     it('renders the policy editor', () => {
@@ -269,8 +272,8 @@ describe('PolicyContentManager', () => {
 
     it('still renders the tab navigation', () => {
       render(<PolicyContentManager {...defaultProps} />);
-      expect(screen.getByText('Editor View')).toBeInTheDocument();
-      expect(screen.getByText('PDF View')).toBeInTheDocument();
+      expect(screen.getByText('details.editorView')).toBeInTheDocument();
+      expect(screen.getByText('details.pdfView')).toBeInTheDocument();
     });
 
     it('does not render the AI Assistant button', () => {

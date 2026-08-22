@@ -1,5 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
+
 
 const mockGet = vi.fn();
 const mockPost = vi.fn();
@@ -70,8 +74,12 @@ describe('FrameworksTab', () => {
       expect(screen.getAllByText('SOC 2').length).toBeGreaterThan(0);
     });
     expect(screen.getAllByText('ISO 27001').length).toBeGreaterThan(0);
-    expect(screen.getByText(/active frameworks \(1\)/i)).toBeInTheDocument();
-    expect(screen.getByText(/available frameworks \(1\)/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/organizations\.frameworksTab\.activeFrameworks/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/organizations\.frameworksTab\.availableFrameworks/i),
+    ).toBeInTheDocument();
   });
 
   it('confirms before adding a framework', async () => {
@@ -81,7 +89,11 @@ describe('FrameworksTab', () => {
       expect(screen.getAllByText('ISO 27001').length).toBeGreaterThan(0);
     });
 
-    fireEvent.click(screen.getAllByRole('button', { name: /^add$/i })[0]);
+    fireEvent.click(
+      screen.getAllByRole('button', {
+        name: /^organizations\.frameworksTab\.add$/i,
+      })[0],
+    );
 
     const confirmButton = screen.getByRole('button', {
       name: /yes, add framework/i,
@@ -102,7 +114,11 @@ describe('FrameworksTab', () => {
       expect(screen.getAllByText('SOC 2').length).toBeGreaterThan(0);
     });
 
-    fireEvent.click(screen.getAllByRole('button', { name: /remove/i })[0]);
+    fireEvent.click(
+      screen.getAllByRole('button', {
+        name: 'organizations.frameworksTab.remove',
+      })[0],
+    );
 
     const confirmButton = screen.getByRole('button', {
       name: /yes, remove framework/i,

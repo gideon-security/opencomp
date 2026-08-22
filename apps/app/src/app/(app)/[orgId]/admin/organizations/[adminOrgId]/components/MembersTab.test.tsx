@@ -1,5 +1,8 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 const mockGet = vi.fn();
 const mockPost = vi.fn();
@@ -82,7 +85,9 @@ describe('MembersTab', () => {
     expect(screen.getByText('Alice Owner')).toBeInTheDocument();
     expect(screen.getByText('Bob Admin')).toBeInTheDocument();
     expect(screen.getByText('alice@acme.com')).toBeInTheDocument();
-    expect(screen.getByText(/members \(2\)/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/organizations\.membersTab\.members/i),
+    ).toBeInTheDocument();
   });
 
   it('fetches and renders pending invitations', async () => {
@@ -115,7 +120,7 @@ describe('MembersTab', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/no pending invitations/i)).toBeInTheDocument();
+      expect(screen.getByText(/organizations\.membersTab\.noInvitations/i)).toBeInTheDocument();
     });
   });
 
@@ -131,7 +136,9 @@ describe('MembersTab', () => {
 
     await waitFor(() => expect(mockGet).toHaveBeenCalled());
     expect(
-      screen.getByRole('button', { name: /invite member/i }),
+      screen.getByRole('button', {
+        name: /organizations\.membersTab\.inviteMember/i,
+      }),
     ).toBeInTheDocument();
   });
 
@@ -146,7 +153,9 @@ describe('MembersTab', () => {
     );
 
     await waitFor(() => expect(mockGet).toHaveBeenCalled());
-    const loginButtons = screen.getAllByRole('button', { name: /login as/i });
+    const loginButtons = screen.getAllByRole('button', {
+      name: /organizations\.membersTab\.loginAs/i,
+    });
     expect(loginButtons).toHaveLength(2);
   });
 
@@ -179,7 +188,9 @@ describe('MembersTab', () => {
         />,
       );
 
-      const loginButtons = screen.getAllByRole('button', { name: /login as/i });
+      const loginButtons = screen.getAllByRole('button', {
+        name: /organizations\.membersTab\.loginAs/i,
+      });
       fireEvent.click(loginButtons[0]);
 
       expect(authClient.admin.impersonateUser).not.toHaveBeenCalled();
@@ -196,15 +207,19 @@ describe('MembersTab', () => {
         />,
       );
 
-      const loginButtons = screen.getAllByRole('button', { name: /login as/i });
+      const loginButtons = screen.getAllByRole('button', {
+        name: /organizations\.membersTab\.loginAs/i,
+      });
       fireEvent.click(loginButtons[0]);
 
       await waitFor(() => {
-        expect(screen.getByText(/impersonate user/i)).toBeInTheDocument();
+        expect(screen.getByText(/organizations\.membersTab\.impersonate\.title/i)).toBeInTheDocument();
       });
 
       expect(
-        screen.getByText(/you are about to log in as/i),
+        screen.getByText(
+          /organizations\.membersTab\.impersonate\.descriptionPrefix/i,
+        ),
       ).toBeInTheDocument();
     });
 
@@ -218,12 +233,16 @@ describe('MembersTab', () => {
         />,
       );
 
-      const loginButtons = screen.getAllByRole('button', { name: /login as/i });
+      const loginButtons = screen.getAllByRole('button', {
+        name: /organizations\.membersTab\.loginAs/i,
+      });
       fireEvent.click(loginButtons[0]);
 
       await waitFor(() => {
         expect(
-          screen.getByText(/performed under their identity/i),
+          screen.getByText(
+            /organizations\.membersTab\.impersonate\.descriptionSuffix/i,
+          ),
         ).toBeInTheDocument();
       });
     });
@@ -238,17 +257,21 @@ describe('MembersTab', () => {
         />,
       );
 
-      const loginButtons = screen.getAllByRole('button', { name: /login as/i });
+      const loginButtons = screen.getAllByRole('button', {
+        name: /organizations\.membersTab\.loginAs/i,
+      });
       fireEvent.click(loginButtons[0]);
 
       await waitFor(() => {
-        expect(screen.getByText(/impersonate user/i)).toBeInTheDocument();
+        expect(screen.getByText(/organizations\.membersTab\.impersonate\.title/i)).toBeInTheDocument();
       });
 
-      fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
+      fireEvent.click(screen.getByRole('button', {
+          name: /organizations\.membersTab\.cancel/i,
+        }));
 
       await waitFor(() => {
-        expect(screen.queryByText(/impersonate user/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/organizations\.membersTab\.impersonate\.title/i)).not.toBeInTheDocument();
       });
     });
 
@@ -266,14 +289,18 @@ describe('MembersTab', () => {
         />,
       );
 
-      const loginButtons = screen.getAllByRole('button', { name: /login as/i });
+      const loginButtons = screen.getAllByRole('button', {
+        name: /organizations\.membersTab\.loginAs/i,
+      });
       fireEvent.click(loginButtons[0]);
 
       await waitFor(() => {
-        expect(screen.getByText(/impersonate user/i)).toBeInTheDocument();
+        expect(screen.getByText(/organizations\.membersTab\.impersonate\.title/i)).toBeInTheDocument();
       });
 
-      fireEvent.click(screen.getByRole('button', { name: /impersonate$/i }));
+      fireEvent.click(screen.getByRole('button', {
+          name: /organizations\.membersTab\.impersonate\.confirm$/i,
+        }));
 
       await waitFor(() => {
         expect(authClient.admin.impersonateUser).toHaveBeenCalledWith({

@@ -21,6 +21,7 @@ import {
   cn,
 } from '@trycompai/design-system';
 import { TrashCan } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { ScanModeSwitchDialog } from './ScanModeSwitchDialog';
@@ -60,6 +61,7 @@ export function CloudSettingsModal({
   connectedProviders,
   onUpdate,
 }: CloudSettingsModalProps) {
+  const t = useTranslations('integrations.list');
   const api = useApi();
   const { hasPermission } = usePermissions();
   const canDelete = hasPermission('integration', 'delete');
@@ -76,31 +78,31 @@ export function CloudSettingsModal({
   const currentProvider = connectedProviders.find((p) => p.connectionId === activeProvider) ?? connectedProviders[0];
 
   const handleDisconnect = async (provider: CloudProvider) => {
-    if (!confirm('Are you sure? All scan results will be deleted.')) return;
+    if (!confirm(t('cloudTests_confirmDisconnectScanResults'))) return;
 
     try {
       setIsDeleting(true);
       if (provider.isLegacy) {
         const response = await api.delete(`/v1/cloud-security/legacy/${provider.connectionId}`);
         if (!response.error) {
-          toast.success('Cloud provider disconnected');
+          toast.success(t('cloudTests_providerDisconnected'));
           onUpdate();
           onOpenChange(false);
         } else {
-          toast.error('Failed to disconnect');
+          toast.error(t('cloudTests_failedToDisconnect'));
         }
         return;
       }
       const result = await deleteConnection(provider.connectionId);
       if (result.success) {
-        toast.success('Cloud provider disconnected');
+        toast.success(t('cloudTests_providerDisconnected'));
         onUpdate();
         onOpenChange(false);
       } else {
-        toast.error(result.error || 'Failed to disconnect');
+        toast.error(result.error || t('cloudTests_failedToDisconnect'));
       }
     } catch {
-      toast.error('An unexpected error occurred');
+      toast.error(t('cloudTests_unexpectedError'));
     } finally {
       setIsDeleting(false);
     }
@@ -112,9 +114,9 @@ export function CloudSettingsModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
         <DialogHeader>
-          <DialogTitle>Connection Settings</DialogTitle>
+          <DialogTitle>{t('cloudTests_connectionSettings')}</DialogTitle>
           <DialogDescription>
-            Manage your cloud provider connections.
+            {t('cloudTests_connectionSettingsDescription')}
           </DialogDescription>
         </DialogHeader>
 
@@ -154,6 +156,12 @@ export function CloudSettingsModal({
 
 // ─── Connection Tab ─────────────────────────────────────────────────────
 
+const UPDATE_CREDENTIALS_HINT_KEY: Record<string, 'cloudTests_updateCredsAws' | 'cloudTests_updateCredsGcp' | 'cloudTests_updateCredsAzure'> = {
+  aws: 'cloudTests_updateCredsAws',
+  gcp: 'cloudTests_updateCredsGcp',
+  azure: 'cloudTests_updateCredsAzure',
+};
+
 function ConnectionTab({
   provider,
   canDelete,
@@ -167,35 +175,32 @@ function ConnectionTab({
   isDeleting: boolean;
   onDisconnect: (p: CloudProvider) => void;
 }) {
+  const t = useTranslations('integrations.list');
   return (
     <div className="space-y-4 pt-3">
       <div className="rounded-lg border p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Status</span>
+          <span className="text-sm font-medium">{t('cloudTests_status')}</span>
           <span className={cn('text-sm capitalize font-medium', getStatusColorClass(provider.status))}>
             {provider.status}
           </span>
         </div>
         {provider.accountId && (
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Account</span>
+            <span className="text-sm text-muted-foreground">{t('cloudTests_account')}</span>
             <span className="text-sm font-mono">{provider.accountId}</span>
           </div>
         )}
         {provider.regions && provider.regions.length > 0 && (
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Regions</span>
-            <span className="text-sm">{provider.regions.length} region{provider.regions.length !== 1 ? 's' : ''}</span>
+            <span className="text-sm text-muted-foreground">{t('cloudTests_regions')}</span>
+            <span className="text-sm">{t('cloudTests_regionCount', { count: provider.regions.length })}</span>
           </div>
         )}
       </div>
 
       <p className="text-xs text-muted-foreground">
-        {provider.id === 'aws'
-          ? 'To update credentials, disconnect and reconnect with new IAM role settings.'
-          : provider.id === 'gcp'
-            ? 'To update credentials, disconnect and reconnect with your Google account.'
-            : 'To update credentials, disconnect and reconnect with your Microsoft account.'}
+        {t(UPDATE_CREDENTIALS_HINT_KEY[provider.id] ?? 'cloudTests_updateCredsAws')}
       </p>
 
       {/* AWS-only — scan engine switcher. Lets the customer change between
@@ -219,7 +224,7 @@ function ConnectionTab({
           loading={isDeleting}
           iconLeft={!isDeleting ? <TrashCan size={16} /> : undefined}
         >
-          {isDeleting ? 'Disconnecting...' : 'Disconnect'}
+          {isDeleting ? t('cloudTests_disconnecting') : t('cloudTests_disconnect')}
         </Button>
       )}
     </div>
@@ -227,11 +232,6 @@ function ConnectionTab({
 }
 
 // ─── AWS Scan Mode Section ──────────────────────────────────────────────
-
-const SCAN_MODE_LABEL: Record<AwsScanModeChoice, string> = {
-  comp_scanners: 'OpenComp Scanners',
-  security_hub: 'AWS Security Hub',
-};
 
 /**
  * Renders the current scan engine for an AWS connection and a "Change"
@@ -246,6 +246,7 @@ function AwsScanModeSection({
   connectionId: string;
   canEdit: boolean;
 }) {
+  const t = useTranslations('integrations.list');
   const { connection, isLoading, refresh } = useIntegrationConnection(connectionId);
   const [switchDialogOpen, setSwitchDialogOpen] = useState(false);
 
@@ -261,15 +262,23 @@ function AwsScanModeSection({
     metadata.awsScanMode === 'security_hub' ? 'security_hub' : 'comp_scanners';
   const targetMode: AwsScanModeChoice =
     currentMode === 'comp_scanners' ? 'security_hub' : 'comp_scanners';
+  const currentLabel =
+    currentMode === 'security_hub'
+      ? t('cloudTests_scanModeSecurityHub')
+      : t('cloudTests_scanModeCompScanners');
+  const targetLabel =
+    targetMode === 'security_hub'
+      ? t('cloudTests_scanModeSecurityHub')
+      : t('cloudTests_scanModeCompScanners');
 
   return (
     <>
       <div className="rounded-lg border p-4 space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium">Scan engine</p>
+            <p className="text-sm font-medium">{t('cloudTests_scanEngine')}</p>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              {SCAN_MODE_LABEL[currentMode]}
+              {currentLabel}
             </p>
           </div>
           {canEdit && (
@@ -278,7 +287,7 @@ function AwsScanModeSection({
               size="sm"
               onClick={() => setSwitchDialogOpen(true)}
             >
-              Switch to {SCAN_MODE_LABEL[targetMode]}
+              {t('cloudTests_switchTo', { mode: targetLabel })}
             </Button>
           )}
         </div>

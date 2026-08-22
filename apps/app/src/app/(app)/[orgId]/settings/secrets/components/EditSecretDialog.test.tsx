@@ -1,5 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
+
 import {
   setMockPermissions,
   ADMIN_PERMISSIONS,
@@ -93,7 +97,9 @@ describe('EditSecretDialog permission gating', () => {
       <EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />,
     );
 
-    const updateButton = screen.getByRole('button', { name: /update secret/i });
+    const updateButton = screen.getByRole('button', {
+      name: /secrets\.editDialog\.submit/i,
+    });
     expect(updateButton).not.toBeDisabled();
   });
 
@@ -103,7 +109,9 @@ describe('EditSecretDialog permission gating', () => {
       <EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />,
     );
 
-    const updateButton = screen.getByRole('button', { name: /update secret/i });
+    const updateButton = screen.getByRole('button', {
+      name: /secrets\.editDialog\.submit/i,
+    });
     expect(updateButton).toBeDisabled();
   });
 
@@ -113,7 +121,9 @@ describe('EditSecretDialog permission gating', () => {
       <EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />,
     );
 
-    const updateButton = screen.getByRole('button', { name: /update secret/i });
+    const updateButton = screen.getByRole('button', {
+      name: /secrets\.editDialog\.submit/i,
+    });
     expect(updateButton).toBeDisabled();
   });
 
@@ -132,6 +142,6 @@ describe('EditSecretDialog permission gating', () => {
       <EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />,
     );
 
-    expect(screen.getByText('Edit Secret')).toBeInTheDocument();
+    expect(screen.getByText('secrets.editDialog.title')).toBeInTheDocument();
   });
 });

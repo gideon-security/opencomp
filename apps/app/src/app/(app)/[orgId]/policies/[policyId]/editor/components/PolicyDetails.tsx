@@ -46,6 +46,7 @@ import { DefaultChatTransport } from 'ai';
 import { format } from 'date-fns';
 import { ArrowDownUp, ChevronDown, ChevronLeft, ChevronRight, FileText, Trash2, Upload } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { usePolicy } from '../../hooks/usePolicy';
@@ -68,20 +69,22 @@ type PolicyVersionWithPublisher = PolicyVersion & {
   publishedBy: (Member & { user: User }) | null;
 };
 
-function mapChatErrorToMessage(error: unknown): string {
+type PoliciesTranslator = ReturnType<typeof useTranslations<'policies'>>;
+
+function mapChatErrorToMessage(error: unknown, t: PoliciesTranslator): string {
   const e = error as { status?: number };
   const status = e?.status;
 
   if (status === 401 || status === 403) {
-    return "You don't have access to this policy's AI assistant.";
+    return t('details.chatErrorForbidden');
   }
   if (status === 404) {
-    return 'This policy could not be found. It may have been removed.';
+    return t('details.chatErrorNotFound');
   }
   if (status === 429) {
-    return 'Too many requests. Please wait a moment and try again.';
+    return t('details.chatErrorRateLimited');
   }
-  return 'The AI assistant is currently unavailable. Please try again.';
+  return t('details.chatErrorUnavailable');
 }
 
 interface LatestProposal {
@@ -98,7 +101,10 @@ interface LatestProposal {
  * This ensures the card stays visible even when a new streaming response starts
  * (the previous completed proposal lives on an earlier message).
  */
-function getLatestCompletedProposal(messages: PolicyChatUIMessage[]): LatestProposal | null {
+function getLatestCompletedProposal(
+  messages: PolicyChatUIMessage[],
+  t: PoliciesTranslator,
+): LatestProposal | null {
   let latest: LatestProposal | null = null;
 
   for (const msg of messages) {
@@ -115,12 +121,14 @@ function getLatestCompletedProposal(messages: PolicyChatUIMessage[]): LatestProp
         // Strip control-char noise (e.g. stray "013" glyphs) before the content
         // feeds the diff + apply pipeline, so both see identical clean text.
         content: sanitizeMarkdown(input.content),
-        summary: input.summary ?? 'Proposing policy changes',
-        title: input.title ?? input.summary ?? 'Policy updates ready for your review',
+        summary: input.summary ?? t('details.proposalDefaultSummary'),
+        title: input.title ?? input.summary ?? t('details.proposalDefaultTitle'),
         detail:
           input.detail ??
-          'I have prepared an updated version of this policy based on your instructions.',
-        reviewHint: input.reviewHint ?? 'Review the proposed changes below before applying them.',
+          t('details.proposalDefaultDetail'),
+        reviewHint:
+          input.reviewHint ??
+          t('details.proposalDefaultReviewHint'),
       };
     }
   }
@@ -179,6 +187,7 @@ export function PolicyContentManager({
   onVersionContentChange,
 }: PolicyContentManagerProps) {
   const { orgId } = useParams<{ orgId: string }>();
+  const t = useTranslations('policies');
 
   const { updatePolicy } = usePolicy({
     policyId,
@@ -401,7 +410,7 @@ export function PolicyContentManager({
     setIsDeletingVersion(true);
     try {
       await deleteVersion(versionToDelete.id);
-      toast.success(`Version ${versionToDelete.version} deleted`);
+      toast.success(t('details.versionDeletedToast', { version: versionToDelete.version }));
 
       // If we deleted the selected version, switch to another one
       if (viewingVersion === versionToDelete.id) {
@@ -413,7 +422,7 @@ export function PolicyContentManager({
       setVersionToDelete(null);
       onMutate?.();
     } catch {
-      toast.error('Failed to delete version');
+      toast.error(t('details.deleteVersionFailedToast'));
     } finally {
       setIsDeletingVersion(false);
     }
@@ -422,25 +431,27 @@ export function PolicyContentManager({
   // Handle submit for approval
   const handleSubmitForApproval = async () => {
     if (!viewingVersion || !publishApproverId) {
-      toast.error('Please select an approver');
+      toast.error(t('details.selectApproverToast'));
       return;
     }
 
     const versionToPublish = versions.find((v) => v.id === viewingVersion);
     if (!versionToPublish) {
-      toast.error('Version not found');
+      toast.error(t('details.versionNotFoundToast'));
       return;
     }
 
     setIsSubmittingForApproval(true);
     try {
       await submitForApproval(viewingVersion, publishApproverId);
-      toast.success(`Version ${versionToPublish.version} submitted for approval`);
+      toast.success(
+        t('details.versionSubmittedToast', { version: versionToPublish.version }),
+      );
       setIsPublishApprovalDialogOpen(false);
       setPublishApproverId(null);
       onMutate?.();
     } catch {
-      toast.error('Failed to submit version for approval');
+      toast.error(t('details.submitFailedToast'));
     } finally {
       setIsSubmittingForApproval(false);
     }
@@ -482,7 +493,7 @@ export function PolicyContentManager({
     }),
     onError(error) {
       console.error('Policy AI chat error:', error);
-      setChatErrorMessage(mapChatErrorToMessage(error));
+      setChatErrorMessage(mapChatErrorToMessage(error, t));
     },
   });
 
@@ -515,8 +526,8 @@ export function PolicyContentManager({
   // starting a new streaming response doesn't cause the card to vanish.
 
   const latestCompletedProposal = useMemo(
-    () => getLatestCompletedProposal(messages),
-    [messages],
+    () => getLatestCompletedProposal(messages, t),
+    [messages, t],
   );
 
   // The last fully-completed, non-dismissed proposal the user can act on.
@@ -536,7 +547,7 @@ export function PolicyContentManager({
       try {
         await updatePolicy({ displayFormat: format });
       } catch {
-        toast.error('Failed to switch view.');
+        toast.error(t('details.switchViewFailedToast'));
         setActiveTab(previousTabRef.current);
         if (previousTabRef.current === 'EDITOR' && aiAssistantEnabled) {
           setShowAiAssistant(true);
@@ -605,10 +616,10 @@ export function PolicyContentManager({
             <div>
               <TabsList variant="default">
                 <TabsTrigger value="EDITOR" disabled={isPendingApproval}>
-                  Editor View
+                  {t('details.editorView')}
                 </TabsTrigger>
                 <TabsTrigger value="PDF" disabled={isPendingApproval}>
-                  PDF View
+                  {t('details.pdfView')}
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -632,7 +643,7 @@ export function PolicyContentManager({
                               variant="secondary"
                               className="text-[10px] px-1.5 py-0 bg-primary/10 text-primary hover:bg-primary/10"
                             >
-                              Published
+                              {t('details.statusPublished')}
                             </Badge>
                           )}
                           {selectedVersion.id === currentVersionId && !wasEverPublished && (
@@ -640,7 +651,7 @@ export function PolicyContentManager({
                               variant="secondary"
                               className="text-[10px] px-1.5 py-0 border-warning/30 bg-warning/10 text-warning hover:bg-warning/10"
                             >
-                              Draft
+                              {t('details.statusDraft')}
                             </Badge>
                           )}
                           {selectedVersion.id === pendingVersionId && (
@@ -648,7 +659,7 @@ export function PolicyContentManager({
                               variant="outline"
                               className="text-[10px] px-1.5 py-0 border-amber-500 text-amber-600"
                             >
-                              Pending
+                              {t('details.statusPending')}
                             </Badge>
                           )}
                         </div>
@@ -660,7 +671,7 @@ export function PolicyContentManager({
                               variant="secondary"
                               className="text-[10px] px-1.5 py-0 bg-primary/10 text-primary hover:bg-primary/10"
                             >
-                              Published
+                              {t('details.statusPublished')}
                             </Badge>
                           )}
                           {versions[0].id === currentVersionId && !wasEverPublished && (
@@ -668,12 +679,12 @@ export function PolicyContentManager({
                               variant="secondary"
                               className="text-[10px] px-1.5 py-0 border-warning/30 bg-warning/10 text-warning hover:bg-warning/10"
                             >
-                              Draft
+                              {t('details.statusDraft')}
                             </Badge>
                           )}
                         </div>
                       ) : (
-                        <span className="text-muted-foreground">No versions yet</span>
+                        <span className="text-muted-foreground">{t('details.noVersionsYet')}</span>
                       )}
                     </div>
                     <ChevronDown className="h-4 w-4 opacity-50" />
@@ -689,7 +700,7 @@ export function PolicyContentManager({
                       {(currentVersionId || pendingVersionId) && (
                         <>
                           <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
-                            Pinned
+                            {t('details.pinned')}
                           </div>
                           {(() => {
                             const publishedVersion = versions.find(
@@ -721,7 +732,7 @@ export function PolicyContentManager({
                                           variant="secondary"
                                           className="text-[10px] px-1 py-0 bg-primary/10 text-primary hover:bg-primary/10"
                                         >
-                                          Published
+                                          {t('details.statusPublished')}
                                         </Badge>
                                       )}
                                       {isActive && !wasEverPublished && !isPending && (
@@ -729,7 +740,7 @@ export function PolicyContentManager({
                                           variant="secondary"
                                           className="text-[10px] px-1 py-0 border-warning/30 bg-warning/10 text-warning hover:bg-warning/10"
                                         >
-                                          Draft
+                                          {t('details.statusDraft')}
                                         </Badge>
                                       )}
                                       {isPending && (
@@ -737,7 +748,7 @@ export function PolicyContentManager({
                                           variant="outline"
                                           className="text-[10px] px-1 py-0 border-amber-500 text-amber-600"
                                         >
-                                          Pending
+                                          {t('details.statusPending')}
                                         </Badge>
                                       )}
                                     </span>
@@ -756,7 +767,7 @@ export function PolicyContentManager({
                       {/* All versions with pagination */}
                       <div className="px-2 py-1.5 flex items-center justify-between">
                         <span className="text-xs font-medium text-muted-foreground">
-                          Other versions ({unpinnedVersions.length})
+                          {t('details.otherVersions', { count: unpinnedVersions.length })}
                         </span>
                         <button
                           type="button"
@@ -766,7 +777,11 @@ export function PolicyContentManager({
                             setVersionPage(0);
                           }}
                           className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground"
-                          title={versionSortAsc ? 'Sorted oldest first' : 'Sorted newest first'}
+                          title={
+                            versionSortAsc
+                              ? t('details.sortedOldestFirst')
+                              : t('details.sortedNewestFirst')
+                          }
                         >
                           <ArrowDownUp className="h-3.5 w-3.5" />
                         </button>
@@ -791,7 +806,7 @@ export function PolicyContentManager({
                                     variant="secondary"
                                     className="text-[10px] px-1 py-0 bg-primary/10 text-primary hover:bg-primary/10"
                                   >
-                                    Published
+                                    {t('details.statusPublished')}
                                   </Badge>
                                 )}
                                 {isActive && !wasEverPublished && !isPending && (
@@ -799,7 +814,7 @@ export function PolicyContentManager({
                                     variant="secondary"
                                     className="text-[10px] px-1 py-0 border-warning/30 bg-warning/10 text-warning hover:bg-warning/10"
                                   >
-                                    Draft
+                                    {t('details.statusDraft')}
                                   </Badge>
                                 )}
                                 {isPending && (
@@ -807,7 +822,7 @@ export function PolicyContentManager({
                                     variant="outline"
                                     className="text-[10px] px-1 py-0 border-amber-500 text-amber-600"
                                   >
-                                    Pending
+                                    {t('details.statusPending')}
                                   </Badge>
                                 )}
                               </span>
@@ -871,7 +886,7 @@ export function PolicyContentManager({
                     </>
                   )}
                   <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                    Edit any draft version directly. Published versions are read-only.
+                    {t('details.versionDropdownNote')}
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -883,7 +898,7 @@ export function PolicyContentManager({
                   onClick={() => setIsPublishApprovalDialogOpen(true)}
                   iconLeft={<Upload size={14} />}
                 >
-                  Publish
+                  {t('details.publish')}
                 </Button>
               )}
               {/* For read-only versions (published/pending), show button to create new version */}
@@ -893,7 +908,7 @@ export function PolicyContentManager({
                   onClick={() => setIsPublishDialogOpen(true)}
                   iconLeft={<Upload size={14} />}
                 >
-                  Create new version
+                  {t('details.createNewVersion')}
                 </Button>
               )}
               {!isVersionReadOnly && canUpdatePolicy && aiAssistantEnabled && activeTab === 'EDITOR' && (
@@ -903,7 +918,7 @@ export function PolicyContentManager({
                   onClick={() => setShowAiAssistant((prev) => !prev)}
                   iconLeft={<MagicWand size={16} />}
                 >
-                  AI Assistant
+                  {t('details.aiAssistant')}
                 </Button>
               )}
             </div>

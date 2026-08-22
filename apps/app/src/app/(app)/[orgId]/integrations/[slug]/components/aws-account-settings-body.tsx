@@ -15,6 +15,7 @@ import {
 } from '@gideon-defender/integration-platform';
 import { Badge } from '@gideon-defender/ui/badge';
 import { AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import {
@@ -36,6 +37,7 @@ export function AwsAccountSettingsBody({
   orgId: string;
   onUpdated?: () => void;
 }) {
+  const t = useTranslations('integrations');
   const { connection, isLoading } = useIntegrationConnection(open ? connectionId : null);
   const { updateConnectionCredentials, updateConnectionMetadata, deleteConnection } =
     useIntegrationMutations();
@@ -101,7 +103,7 @@ export function AwsAccountSettingsBody({
       try {
         const result = await updateConnectionCredentials(connectionId, creds);
         if (!result.success) {
-          toast.error(result.error || 'Failed to save');
+          toast.error(result.error || t('awsSettings.saveFailed'));
           return;
         }
         if (Object.keys(metaUpdates).length > 0) {
@@ -110,17 +112,17 @@ export function AwsAccountSettingsBody({
         toast.success(successMsg);
         onUpdated?.();
       } catch {
-        toast.error('Failed to save');
+        toast.error(t('awsSettings.saveFailed'));
       } finally {
         setLoading(false);
       }
     },
-    [connectionId, updateConnectionCredentials, updateConnectionMetadata, onUpdated],
+    [connectionId, updateConnectionCredentials, updateConnectionMetadata, onUpdated, t],
   );
 
   const handleSaveCredentials = useCallback(async () => {
     if (!roleArn.trim()) {
-      toast.error('Role ARN is required');
+      toast.error(t('awsSettings.roleArnRequired'));
       return;
     }
     const expectedPrefix =
@@ -128,14 +130,14 @@ export function AwsAccountSettingsBody({
         ? 'arn:aws-us-gov:iam::'
         : 'arn:aws:iam::';
     if (!roleArn.startsWith(expectedPrefix)) {
-      toast.error('Role ARN must match the selected AWS environment');
+      toast.error(t('awsSettings.roleArnEnvMismatch'));
       return;
     }
     const meta: Record<string, unknown> = { roleArn };
     const arnMatch = roleArn.match(/^arn:(?:aws|aws-us-gov):iam::(\d{12}):role\/.+$/);
     if (arnMatch) meta.accountId = arnMatch[1];
-    await saveField({ roleArn }, meta, setSavingCredentials, 'Credentials saved');
-  }, [awsEnvironment, roleArn, saveField]);
+    await saveField({ roleArn }, meta, setSavingCredentials, t('awsSettings.credentialsSaved'));
+  }, [awsEnvironment, roleArn, saveField, t]);
 
   const handleSaveRemediation = useCallback(async () => {
     const expectedPrefix =
@@ -143,54 +145,56 @@ export function AwsAccountSettingsBody({
         ? 'arn:aws-us-gov:iam::'
         : 'arn:aws:iam::';
     if (remediationRoleArn && !remediationRoleArn.startsWith(expectedPrefix)) {
-      toast.error('Remediation Role ARN must match the selected AWS environment');
+      toast.error(t('awsSettings.remediationRoleArnEnvMismatch'));
       return;
     }
     await saveField(
       { remediationRoleArn },
       { remediationRoleArn },
       setSavingRemediation,
-      'Remediation role saved',
+      t('awsSettings.remediationRoleSaved'),
     );
-  }, [awsEnvironment, remediationRoleArn, saveField]);
+  }, [awsEnvironment, remediationRoleArn, saveField, t]);
 
   const handleSaveRegions = useCallback(async () => {
     if (regions.length === 0) {
-      toast.error('Select at least one region');
+      toast.error(t('awsSettings.selectAtLeastOneRegion'));
       return;
     }
-    await saveField({ regions }, { regions }, setSavingRegions, 'Regions saved');
-  }, [regions, saveField]);
+    await saveField({ regions }, { regions }, setSavingRegions, t('awsSettings.regionsSaved'));
+  }, [regions, saveField, t]);
 
   const handleSaveAwsType = useCallback(async () => {
     if (!awsType) {
-      toast.error('Select an AWS environment');
+      toast.error(t('awsSettings.selectEnvironment'));
       return;
     }
     await saveField(
       { awsType, regions: [] },
       { awsType, regions: [] },
       setSavingAwsType,
-      'AWS environment saved',
+      t('awsSettings.environmentSaved'),
     );
     setRegions([]);
-  }, [awsType, saveField]);
+  }, [awsType, saveField, t]);
 
   const handleDisconnect = useCallback(async () => {
-    if (!confirm('Are you sure? All associated data will be removed.')) return;
+    if (!confirm(t('awsSettings.confirmDisconnect'))) return;
     setDisconnecting(true);
     try {
       const result = await deleteConnection(connectionId);
       if (result.success) {
-        toast.success('Disconnected');
+        toast.success(t('awsSettings.disconnected'));
         onUpdated?.();
-      } else toast.error(result.error || 'Failed');
+      } else {
+        toast.error(result.error || t('awsSettings.actionFailed'));
+      }
     } catch {
-      toast.error('Failed');
+      toast.error(t('awsSettings.actionFailed'));
     } finally {
       setDisconnecting(false);
     }
-  }, [connectionId, deleteConnection, onUpdated]);
+  }, [connectionId, deleteConnection, onUpdated, t]);
 
   if (isLoading) {
     return (
@@ -204,7 +208,7 @@ export function AwsAccountSettingsBody({
     <div className="space-y-5 py-5">
       <div className="rounded-md border bg-muted/20 px-3 py-2.5 space-y-1">
         <AccountSettingsInfoRow
-          label="Status"
+          label={t('awsSettings.status')}
           badge={
             connection?.status === 'active' ? (
               <Badge
@@ -212,7 +216,7 @@ export function AwsAccountSettingsBody({
                 className="gap-1 text-[9px] px-1.5 py-0 border-emerald-200 bg-emerald-50 text-emerald-700"
               >
                 <CheckCircle2 className="h-2.5 w-2.5" />
-                Active
+                {t('awsSettings.active')}
               </Badge>
             ) : (
               <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
@@ -221,16 +225,16 @@ export function AwsAccountSettingsBody({
             )
           }
         />
-        {accountId && <AccountSettingsInfoRow label="Account ID" value={accountId} mono />}
+        {accountId && <AccountSettingsInfoRow label={t('awsSettings.accountId')} value={accountId} mono />}
         {displayName && !accountId && (
-          <AccountSettingsInfoRow label="Account" value={displayName} mono />
+          <AccountSettingsInfoRow label={t('awsSettings.account')} value={displayName} mono />
         )}
         {regions.length > 0 && (
-          <AccountSettingsInfoRow label="Regions" value={`${regions.length}`} />
+          <AccountSettingsInfoRow label={t('awsSettings.regions')} value={`${regions.length}`} />
         )}
         {connection?.createdAt && (
           <AccountSettingsInfoRow
-            label="Created"
+            label={t('awsSettings.created')}
             value={new Date(connection.createdAt).toLocaleDateString(undefined, {
               year: 'numeric',
               month: 'short',
@@ -240,19 +244,19 @@ export function AwsAccountSettingsBody({
         )}
       </div>
 
-      <AccountSettingsSection label="AWS Environment">
-        <AccountSettingsFieldGroup label="AWS Environment">
+      <AccountSettingsSection label={t('awsSettings.environmentSection')}>
+        <AccountSettingsFieldGroup label={t('awsSettings.environmentSection')}>
           <CredentialInput
             field={{
               id: 'awsType',
               label: '',
               type: 'select',
               required: true,
-              placeholder: 'Select AWS environment',
-              helpText: 'Choose the AWS partition where this account runs.',
+              placeholder: t('awsSettings.selectEnvironmentPlaceholder'),
+              helpText: t('awsSettings.environmentHelpText'),
               options: [
-                { value: 'aws', label: 'Commercial AWS' },
-                { value: 'aws-us-gov', label: 'AWS GovCloud (US)' },
+                { value: 'aws', label: t('awsSettings.commercialAws') },
+                { value: 'aws-us-gov', label: t('awsSettings.govCloudUs') },
               ],
             }}
             value={awsType}
@@ -264,13 +268,13 @@ export function AwsAccountSettingsBody({
             disabled={savingAwsType}
             size="sm"
           >
-            Save
+            {t('awsSettings.save')}
           </Button>
         </AccountSettingsFieldGroup>
       </AccountSettingsSection>
 
-      <AccountSettingsSection label="Credentials">
-        <AccountSettingsFieldGroup label="Role ARN">
+      <AccountSettingsSection label={t('awsSettings.credentialsSection')}>
+        <AccountSettingsFieldGroup label={t('awsSettings.roleArnLabel')}>
           <CredentialInput
             field={{
               id: 'roleArn',
@@ -283,7 +287,7 @@ export function AwsAccountSettingsBody({
             onChange={(v) => setRoleArn(v as string)}
           />
         </AccountSettingsFieldGroup>
-        <AccountSettingsFieldGroup label="External ID">
+        <AccountSettingsFieldGroup label={t('awsSettings.externalId')}>
           <p className="rounded-md border bg-muted/30 px-2.5 py-1.5 font-mono text-xs text-muted-foreground">
             {externalId}
           </p>
@@ -294,24 +298,24 @@ export function AwsAccountSettingsBody({
           disabled={savingCredentials}
           size="sm"
         >
-          Save
+          {t('awsSettings.save')}
         </Button>
       </AccountSettingsSection>
 
-      <AccountSettingsSection label="Auto-Remediation">
+      <AccountSettingsSection label={t('awsSettings.autoRemediationSection')}>
         <div className="flex items-center justify-between mb-1">
-          <span className="text-xs text-muted-foreground">Status</span>
+          <span className="text-xs text-muted-foreground">{t('awsSettings.status')}</span>
           {hasRemediation ? (
             <Badge
               variant="outline"
               className="gap-1 text-[9px] px-1.5 py-0 border-emerald-200 bg-emerald-50 text-emerald-700"
             >
               <CheckCircle2 className="h-2.5 w-2.5" />
-              Configured
+              {t('awsSettings.configured')}
             </Badge>
           ) : (
             <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
-              Not configured
+              {t('awsSettings.notConfigured')}
             </Badge>
           )}
         </div>
@@ -319,11 +323,11 @@ export function AwsAccountSettingsBody({
           script={remediationScript}
           externalId={orgId}
           cloudShellUrl={cloudShellUrl}
-          title="Setup Script"
-          subtitle="Create a write-access role for auto-fix"
+          title={t('awsSettings.setupScript')}
+          subtitle={t('awsSettings.setupScriptSubtitle')}
           footnote=""
         />
-        <AccountSettingsFieldGroup label="Remediation Role ARN">
+        <AccountSettingsFieldGroup label={t('awsSettings.remediationRoleArnLabel')}>
           <CredentialInput
             field={{
               id: 'remediationRoleArn',
@@ -342,12 +346,12 @@ export function AwsAccountSettingsBody({
           disabled={savingRemediation}
           size="sm"
         >
-          Save
+          {t('awsSettings.save')}
         </Button>
       </AccountSettingsSection>
 
       {regionsField && (
-        <AccountSettingsSection label="Scan Regions">
+        <AccountSettingsSection label={t('awsSettings.scanRegionsSection')}>
           <CredentialInput
             field={regionsField}
             value={regions}
@@ -360,7 +364,7 @@ export function AwsAccountSettingsBody({
             disabled={savingRegions}
             size="sm"
           >
-            Save
+            {t('awsSettings.save')}
           </Button>
         </AccountSettingsSection>
       )}
@@ -370,8 +374,8 @@ export function AwsAccountSettingsBody({
           <div className="flex items-center gap-2">
             <AlertTriangle className="h-3.5 w-3.5 text-destructive shrink-0" />
             <div>
-              <p className="text-xs font-medium">Disconnect</p>
-              <p className="text-[10px] text-muted-foreground">Remove this account and all data</p>
+              <p className="text-xs font-medium">{t('awsSettings.disconnect')}</p>
+              <p className="text-[10px] text-muted-foreground">{t('awsSettings.disconnectDescription')}</p>
             </div>
           </div>
           <Button
@@ -381,7 +385,7 @@ export function AwsAccountSettingsBody({
             disabled={disconnecting}
             size="sm"
           >
-            Disconnect
+            {t('awsSettings.disconnect')}
           </Button>
         </div>
       </div>

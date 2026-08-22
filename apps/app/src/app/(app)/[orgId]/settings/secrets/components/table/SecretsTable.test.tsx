@@ -1,5 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
+
 import {
   setMockPermissions,
   ADMIN_PERMISSIONS,
@@ -128,21 +132,21 @@ describe('SecretsTable permission gating', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<SecretsTable initialSecrets={sampleSecrets} />);
 
-    expect(screen.getByText('ACTIONS')).toBeInTheDocument();
+    expect(screen.getByText('secrets.table.actions')).toBeInTheDocument();
   });
 
   it('hides ACTIONS column when user lacks organization:update permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<SecretsTable initialSecrets={sampleSecrets} />);
 
-    expect(screen.queryByText('ACTIONS')).not.toBeInTheDocument();
+    expect(screen.queryByText('secrets.table.actions')).not.toBeInTheDocument();
   });
 
   it('hides ACTIONS column when user has no permissions', () => {
     setMockPermissions({});
     render(<SecretsTable initialSecrets={sampleSecrets} />);
 
-    expect(screen.queryByText('ACTIONS')).not.toBeInTheDocument();
+    expect(screen.queryByText('secrets.table.actions')).not.toBeInTheDocument();
   });
 
   it('renders dropdown triggers for each secret when user has permission', () => {
@@ -173,6 +177,6 @@ describe('SecretsTable permission gating', () => {
     render(<SecretsTable initialSecrets={[]} />);
 
     expect(screen.getByTestId('empty-state')).toBeInTheDocument();
-    expect(screen.getByText('No secrets yet')).toBeInTheDocument();
+    expect(screen.getByText('secrets.table.emptyTitle')).toBeInTheDocument();
   });
 });

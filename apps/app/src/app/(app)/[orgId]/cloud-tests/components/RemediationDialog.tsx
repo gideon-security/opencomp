@@ -11,6 +11,7 @@ import {
 } from '@gideon-defender/ui/dialog';
 import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { AlertTriangle, ListOrdered, Loader2, RotateCcw } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { startPreview, startSingleFix } from '../actions/single-fix';
@@ -111,21 +112,19 @@ function RichText({ text }: { text: string }) {
  *      may take time to clear even though the underlying issue is gone.
  */
 function SecurityHubFixDisclosure() {
+  const t = useTranslations('integrations.list');
   return (
     <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
-      <p className="font-medium">Security Hub finding</p>
+      <p className="font-medium">{t('cloudTests_securityHubFindingTitle')}</p>
       <p className="mt-1 leading-relaxed">
-        This fix was generated from AWS Security Hub remediation
-        guidance. Verify the result in your AWS console after applying —
-        Security Hub re-evaluates findings on its own schedule, so the
-        finding may take a few hours to clear there even after a
-        successful fix.
+        {t('cloudTests_securityHubFindingBody')}
       </p>
     </div>
   );
 }
 
 function CodeBlock({ code }: { code: string }) {
+  const t = useTranslations('integrations.list');
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -138,7 +137,7 @@ function CodeBlock({ code }: { code: string }) {
         type="button"
         onClick={handleCopy}
         className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded border bg-background text-muted-foreground opacity-0 transition-opacity hover:text-foreground group-hover:opacity-100 focus:opacity-100"
-        title="Copy to clipboard"
+        title={t('cloudTests_copyToClipboard')}
       >
         {copied ? (
           <svg className="h-3 w-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -226,6 +225,7 @@ function StateBlock({ label, state }: { label: string; state: Record<string, unk
 
 /** Animated loading steps that show progress during analysis. */
 function LoadingSteps({ providerSlug }: { providerSlug?: string }) {
+  const t = useTranslations('integrations.list');
   const [step, setStep] = useState(0);
   useEffect(() => {
     const timers = [
@@ -238,10 +238,10 @@ function LoadingSteps({ providerSlug }: { providerSlug?: string }) {
 
   const providerName = providerSlug === 'gcp' ? 'GCP' : providerSlug === 'azure' ? 'Azure' : 'AWS';
   const steps = [
-    { label: 'Analyzing finding', sub: 'Reviewing security configuration' },
-    { label: `Reading ${providerName} configuration`, sub: 'Fetching current resource state' },
-    { label: 'Checking required permissions', sub: 'Verifying access' },
-    { label: 'Preparing fix plan', sub: 'Generating remediation steps' },
+    { label: t('cloudTests_stepAnalyzing'), sub: t('cloudTests_stepAnalyzingSub') },
+    { label: t('cloudTests_stepReadingConfig', { provider: providerName }), sub: t('cloudTests_stepReadingConfigSub') },
+    { label: t('cloudTests_stepCheckingPermissions'), sub: t('cloudTests_stepCheckingPermissionsSub') },
+    { label: t('cloudTests_stepPreparingFix'), sub: t('cloudTests_stepPreparingFixSub') },
   ];
 
   const progress = ((step + 1) / steps.length) * 100;
@@ -313,6 +313,7 @@ export function RemediationDialog({
   fromSecurityHub,
   onComplete,
 }: RemediationDialogProps) {
+  const t = useTranslations('integrations.list');
   const [preview, setPreview] = useState<PreviewData | null>(null);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
@@ -358,7 +359,7 @@ export function RemediationDialog({
       setPreviewRunId(null);
       setPreviewAccessToken(null);
     } else if (progress.phase === 'failed') {
-      setError(progress.error || 'Failed to load preview');
+      setError(progress.error || t('cloudTests_failedToLoadPreview'));
       setIsLoadingPreview(false);
       setPreviewRunId(null);
       setPreviewAccessToken(null);
@@ -376,7 +377,7 @@ export function RemediationDialog({
       setPreview(null);
       setError(null);
       setSucceeded(true);
-      toast.success('Fix applied successfully');
+      toast.success(t('cloudTests_fixApplied'));
       onComplete?.();
       setTimeout(() => {
         onOpenChange(false);
@@ -406,12 +407,12 @@ export function RemediationDialog({
       setExecuteAccessToken(null);
     } else if (progress.phase === 'failed') {
       setIsExecuting(false);
-      setError(progress.error || 'Remediation failed');
+      setError(progress.error || t('cloudTests_remediationFailed'));
       setExecuteRunId(null);
       setExecuteAccessToken(null);
     } else if (progress.phase === 'needs_permissions') {
       setIsExecuting(false);
-      setError(progress.error || 'Missing permissions');
+      setError(progress.error || t('cloudTests_missingPermissions'));
       if (progress.permissionError) {
         setPermissionError(progress.permissionError);
       }
@@ -434,7 +435,7 @@ export function RemediationDialog({
         }),
       });
       if (result.error || !result.data) {
-        setError(result.error || 'Failed to load preview');
+        setError(result.error || t('cloudTests_failedToLoadPreview'));
         setIsLoadingPreview(false);
         return;
       }
@@ -442,7 +443,7 @@ export function RemediationDialog({
       setPreviewRunId(result.data.runId);
       setPreviewAccessToken(result.data.accessToken);
     } catch {
-      setError('Failed to load preview');
+      setError(t('cloudTests_failedToLoadPreview'));
       setIsLoadingPreview(false);
     }
   }, [connectionId, checkResultId, remediationKey]);
@@ -490,7 +491,7 @@ export function RemediationDialog({
         acknowledgment: acknowledgment ?? undefined,
       });
       if (result.error || !result.data) {
-        setError(result.error || 'Failed to start fix');
+        setError(result.error || t('cloudTests_failedToStartFix'));
         setIsExecuting(false);
         return;
       }
@@ -498,7 +499,7 @@ export function RemediationDialog({
       setExecuteRunId(result.data.runId);
       setExecuteAccessToken(result.data.accessToken);
     } catch {
-      setError('Failed to start fix');
+      setError(t('cloudTests_failedToStartFix'));
       setIsExecuting(false);
     }
   };
@@ -527,7 +528,7 @@ export function RemediationDialog({
         <div className="min-w-0 overflow-hidden">
         <DialogHeader>
           <DialogTitle>
-            {isGuided ? 'Remediation Steps' : 'Auto-Remediate Finding'}
+            {isGuided ? t('cloudTests_remediateTitle') : t('cloudTests_autoRemediateTitle')}
           </DialogTitle>
           <DialogDescription className="line-clamp-2">
             {findingTitle}
@@ -544,9 +545,9 @@ export function RemediationDialog({
                 <Loader2 className="h-6 w-6 text-primary animate-spin" />
               </div>
               <div className="text-center">
-                <p className="text-sm font-semibold">Applying fix...</p>
+                <p className="text-sm font-semibold">{t('cloudTests_applyingFix')}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Executing changes to your cloud infrastructure. This may take a moment.
+                  {t('cloudTests_applyingFixDescription')}
                 </p>
               </div>
             </div>
@@ -561,9 +562,9 @@ export function RemediationDialog({
                 </svg>
               </div>
               <div className="text-center">
-                <p className="text-sm font-semibold">Fix applied successfully</p>
+                <p className="text-sm font-semibold">{t('cloudTests_fixApplied')}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Re-scanning to verify the changes...
+                  {t('cloudTests_rescanning')}
                 </p>
               </div>
             </div>
@@ -574,7 +575,7 @@ export function RemediationDialog({
               /* Recheck — just verifying permissions */
               <div className="flex items-center justify-center py-6 gap-2.5">
                 <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">Verifying permissions</p>
+                <p className="text-sm text-muted-foreground">{t('cloudTests_verifyingPermissions')}</p>
               </div>
             ) : (
               /* First load — full analysis */
@@ -621,7 +622,9 @@ export function RemediationDialog({
                         <ListOrdered className="h-3.5 w-3.5 text-primary" />
                       </div>
                       <span className="text-sm font-medium">
-                        Follow these steps in the {providerSlug === 'azure' ? 'Azure Portal' : providerSlug === 'gcp' ? 'GCP Console' : 'AWS Console'}
+                        {t('cloudTests_followStepsIn', {
+                          provider: providerSlug ?? 'aws',
+                        })}
                       </span>
                     </div>
                     <div className="px-4 py-3">
@@ -643,14 +646,14 @@ export function RemediationDialog({
                   {/* Footer */}
                   <div className="flex items-center justify-between pt-1">
                     <p className="text-[11px] text-muted-foreground/60">
-                      {preview.guidedSteps.length} steps to complete
+                      {t('cloudTests_stepsToComplete', { count: preview.guidedSteps.length })}
                     </p>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => onOpenChange(false)}
                     >
-                      Done
+                      {t('cloudTests_cancel')}
                     </Button>
                   </div>
                 </div>
@@ -665,7 +668,7 @@ export function RemediationDialog({
 
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-muted-foreground">Risk:</span>
+                      <span className="text-[10px] text-muted-foreground">{t('cloudTests_riskLabel')}</span>
                       <Badge variant="outline" className={`text-[10px] ${RISK_STYLES[preview.risk] ?? RISK_STYLES.medium}`}>
                         {preview.risk}
                       </Badge>
@@ -673,28 +676,28 @@ export function RemediationDialog({
                     {preview.rollbackSupported !== false && (
                       <div className="flex items-center gap-1 text-[10px] text-emerald-600">
                         <RotateCcw className="h-3 w-3" />
-                        Rollback available
+                        {t('cloudTests_rollbackAvailable')}
                       </div>
                     )}
                     {preview.rollbackSupported === false && (
                       <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                         <AlertTriangle className="h-3 w-3" />
-                        Irreversible
+                        {t('cloudTests_irreversible')}
                       </div>
                     )}
                   </div>
 
                   {/* Current vs Proposed */}
                   <div className="grid grid-cols-2 gap-2 min-w-0">
-                    <StateBlock label="Current" state={preview.currentState} />
-                    <StateBlock label="Proposed" state={preview.proposedState} />
+                    <StateBlock label={t('cloudTests_currentState')} state={preview.currentState} />
+                    <StateBlock label={t('cloudTests_proposedState')} state={preview.proposedState} />
                   </div>
 
                   {/* API calls — collapsible if many */}
                   {preview.apiCalls.length > 0 && (
                     <details className="text-xs" open>
                       <summary className="cursor-pointer text-muted-foreground font-medium">
-                        {preview.apiCalls.length} API calls
+                        {t('cloudTests_apiCallsCount', { count: preview.apiCalls.length })}
                       </summary>
                       <div className="flex flex-wrap gap-1 mt-1.5">
                         {preview.apiCalls.map((call, i) => {
@@ -714,9 +717,9 @@ export function RemediationDialog({
                     <div className="rounded-lg border overflow-hidden">
                       <div className="flex items-center justify-between border-b bg-muted/30 px-3 py-2">
                         <p className="text-xs font-medium">
-                          {preview.missingPermissions.length} permissions needed
+                          {t('cloudTests_permissionsNeeded', { count: preview.missingPermissions.length })}
                         </p>
-                        <p className="text-[10px] text-muted-foreground">Run in CloudShell, then Recheck</p>
+                        <p className="text-[10px] text-muted-foreground">{t('cloudTests_runInCloudShellHint')}</p>
                       </div>
                       <div className="p-3 space-y-2">
                         {preview.permissionFixScript && (
@@ -730,12 +733,12 @@ export function RemediationDialog({
                             onClick={() => {
                               if (preview.permissionFixScript) {
                                 navigator.clipboard.writeText(preview.permissionFixScript.replace(/\s*\\\n\s*/g, ' '));
-                                toast.success('Copied');
+                                toast.success(t('cloudTests_copiedShort'));
                               }
                             }}
                             className="flex items-center gap-1.5 rounded-md bg-primary px-2.5 py-1 text-[11px] font-medium text-primary-foreground hover:bg-primary/90"
                           >
-                            Copy
+                            {t('cloudTests_copy')}
                           </button>
                           <a
                             href="https://console.aws.amazon.com/cloudshell"
@@ -751,7 +754,7 @@ export function RemediationDialog({
                             disabled={isLoadingPreview}
                             className="flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium hover:bg-muted disabled:opacity-50"
                           >
-                            {isLoadingPreview ? 'Checking...' : 'Recheck'}
+                            {isLoadingPreview ? t('cloudTests_checking') : t('cloudTests_recheck')}
                           </button>
                         </div>
                       </div>
@@ -766,16 +769,14 @@ export function RemediationDialog({
                         className="mt-0.5 shrink-0"
                       />
                       <span>
-                        I have reviewed the changes above and understand this will modify my cloud infrastructure.
+                        {t('cloudTests_acknowledgeChanges')}
                       </span>
                     </label>
                   )}
 
                   {hasNothingToApply && (
                     <p className="text-xs text-muted-foreground">
-                      We couldn&apos;t build an automatic fix for this finding.
-                      Close this dialog and try again, or follow the manual
-                      remediation guidance for this finding.
+                      {t('cloudTests_noAutoFixBody')}
                     </p>
                   )}
 
@@ -796,7 +797,7 @@ export function RemediationDialog({
                       {isExecuting ? (
                         <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
                       ) : null}
-                      {isExecuting ? 'Applying...' : 'Apply Fix'}
+                      {isExecuting ? t('cloudTests_applying') : t('cloudTests_applyFix')}
                     </Button>
                   </div>
                 </>

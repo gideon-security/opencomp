@@ -2,6 +2,7 @@
 
 import { apiClient } from '@/lib/api-client';
 import { Badge, Button, Grid, HStack, Stack, Text } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { toast } from 'sonner';
 import useSWR from 'swr';
@@ -13,21 +14,39 @@ import {
   isCompletedBackgroundCheck,
 } from './backgroundCheckTypes';
 
-const STATUS_LABELS: Record<BackgroundCheckStatus, string> = {
-  invited: 'Invite sent',
-  in_progress: 'In progress',
-  in_review: 'In review',
-  completed: 'Complete',
-  completed_with_flags: 'Complete with flags',
-  failed: 'Failed',
-  cancelled: 'Cancelled',
+type Translator = ReturnType<typeof useTranslations<'people'>>;
+
+const COMPONENT_KEYS = ['identityStatus', 'employmentStatus', 'referenceStatus'] as const;
+
+const statusLabel = (status: BackgroundCheckStatus, t: Translator): string => {
+  switch (status) {
+    case 'invited':
+      return t('backgroundCheck.status.invited');
+    case 'in_progress':
+      return t('backgroundCheck.status.inProgress');
+    case 'in_review':
+      return t('backgroundCheck.status.inReview');
+    case 'completed':
+      return t('backgroundCheck.status.complete');
+    case 'completed_with_flags':
+      return t('backgroundCheck.status.completeWithFlags');
+    case 'failed':
+      return t('backgroundCheck.status.failed');
+    case 'cancelled':
+      return t('backgroundCheck.status.cancelled');
+  }
 };
 
-const COMPONENT_LABELS = [
-  ['identityStatus', 'Identity'],
-  ['employmentStatus', 'Employment'],
-  ['referenceStatus', 'References'],
-] as const;
+const componentLabel = (key: (typeof COMPONENT_KEYS)[number], t: Translator): string => {
+  switch (key) {
+    case 'employmentStatus':
+      return t('backgroundCheck.components.employment');
+    case 'referenceStatus':
+      return t('backgroundCheck.components.references');
+    default:
+      return t('backgroundCheck.components.identity');
+  }
+};
 
 export function BackgroundCheckStatusView({
   backgroundCheck,
@@ -42,6 +61,7 @@ export function BackgroundCheckStatusView({
   organizationId?: string;
   actions?: ReactNode;
 }) {
+  const t = useTranslations('people');
   const isComplete = isCompletedBackgroundCheck(backgroundCheck.status);
   const customAttachmentsKey =
     isComplete && memberId && organizationId
@@ -54,7 +74,7 @@ export function BackgroundCheckStatusView({
   >(customAttachmentsKey, async ([endpoint, orgId]) => {
     const response = await apiClient.get<CustomBackgroundCheckAttachment[]>(endpoint, orgId);
     if (response.error) {
-      throw new Error('Failed to load custom background check attachments');
+      throw new Error(t('backgroundCheck.view.attachmentsLoadError'));
     }
     return response.data ?? [];
   });
@@ -64,9 +84,9 @@ export function BackgroundCheckStatusView({
 
     try {
       await navigator.clipboard.writeText(backgroundCheck.candidateUrl);
-      toast.success('Candidate link copied');
+      toast.success(t('backgroundCheck.view.candidateLinkCopied'));
     } catch {
-      toast.error('Could not copy candidate link');
+      toast.error(t('backgroundCheck.view.couldNotCopyLink'));
     }
   };
 
@@ -75,7 +95,7 @@ export function BackgroundCheckStatusView({
       {confirmation && (
         <div className="rounded-md border border-primary/20 bg-primary/5 p-4">
           <Stack gap="xs">
-            <Text weight="medium">Background check requested</Text>
+            <Text weight="medium">{t('backgroundCheck.view.requestedTitle')}</Text>
             <Text size="sm" variant="muted">
               {confirmation}
             </Text>
@@ -87,36 +107,46 @@ export function BackgroundCheckStatusView({
         <Stack gap="md">
           <HStack justify="between" align="start">
             <Stack gap="xs">
-              <Text weight="medium">Status</Text>
+              <Text weight="medium">{t('backgroundCheck.view.statusHeading')}</Text>
               <HStack gap="2" align="center">
-                <Badge variant="secondary">{STATUS_LABELS[backgroundCheck.status]}</Badge>
+                <Badge variant="secondary">{statusLabel(backgroundCheck.status, t)}</Badge>
                 {backgroundCheck.lastSyncedAt && (
                   <Text size="xs" variant="muted">
-                    Updated {new Date(backgroundCheck.lastSyncedAt).toLocaleString()}
+                    {t('backgroundCheck.view.updated', {
+                      date: new Date(backgroundCheck.lastSyncedAt).toLocaleString(),
+                    })}
                   </Text>
                 )}
               </HStack>
             </Stack>
             {backgroundCheck.candidateUrl && !isComplete && (
               <Button type="button" variant="outline" onClick={handleCopyCandidateLink}>
-                Copy candidate link
+                {t('backgroundCheck.view.copyCandidateLink')}
               </Button>
             )}
           </HStack>
 
           <Grid cols={{ base: '1', md: '2' }} gap="4">
-            <ReadOnlyField label="Employee name" value={backgroundCheck.employeeName} />
-            <ReadOnlyField label="Personal email" value={backgroundCheck.employeeEmail} />
+            <ReadOnlyField
+              label={t('backgroundCheck.view.employeeName')}
+              value={backgroundCheck.employeeName}
+            />
+            <ReadOnlyField
+              label={t('backgroundCheck.view.personalEmail')}
+              value={backgroundCheck.employeeEmail}
+            />
           </Grid>
 
           <ComponentStatuses backgroundCheck={backgroundCheck} />
-
           {actions}
         </Stack>
       </div>
 
       {backgroundCheck.requesterNotes && (
-        <ReadOnlyField label="Additional information" value={backgroundCheck.requesterNotes} />
+        <ReadOnlyField
+          label={t('backgroundCheck.view.additionalInfo')}
+          value={backgroundCheck.requesterNotes}
+        />
       )}
 
       {isComplete &&
@@ -146,6 +176,7 @@ function CustomReportAttachments({
   attachments: CustomBackgroundCheckAttachment[];
   organizationId: string;
 }) {
+  const t = useTranslations('people');
   const handleDownload = async (attachmentId: string) => {
     const response = await apiClient.get<{ downloadUrl: string }>(
       `/v1/attachments/${attachmentId}/download`,
@@ -153,7 +184,7 @@ function CustomReportAttachments({
     );
 
     if (response.error || !response.data?.downloadUrl) {
-      toast.error('Failed to open background check');
+      toast.error(t('backgroundCheck.view.attachmentOpenError'));
       return;
     }
 
@@ -164,9 +195,9 @@ function CustomReportAttachments({
     <div className="rounded-md border bg-muted/20 p-4">
       <Stack gap="md">
         <Stack gap="xs">
-          <Text weight="medium">Custom background check</Text>
+          <Text weight="medium">{t('backgroundCheck.view.customCheckTitle')}</Text>
           <Text size="sm" variant="muted">
-            Uploaded reports attached for this employee.
+            {t('backgroundCheck.view.customCheckDescription')}
           </Text>
         </Stack>
         <Stack gap="sm">
@@ -175,11 +206,13 @@ function CustomReportAttachments({
               <Stack gap="xs">
                 <Text size="sm">{attachment.name}</Text>
                 <Text size="xs" variant="muted">
-                  Uploaded {new Date(attachment.createdAt).toLocaleString()}
+                  {t('backgroundCheck.view.uploadedAt', {
+                    date: new Date(attachment.createdAt).toLocaleString(),
+                  })}
                 </Text>
               </Stack>
               <Button type="button" variant="outline" onClick={() => handleDownload(attachment.id)}>
-                Open
+                {t('backgroundCheck.view.openAttachment')}
               </Button>
             </HStack>
           ))}
@@ -190,9 +223,10 @@ function CustomReportAttachments({
 }
 
 function ComponentStatuses({ backgroundCheck }: { backgroundCheck: BackgroundCheckRecord }) {
-  const statuses = COMPONENT_LABELS.flatMap(([key, label]) => {
+  const t = useTranslations('people');
+  const statuses = COMPONENT_KEYS.flatMap((key) => {
     const value = backgroundCheck[key];
-    return value ? [{ label, value }] : [];
+    return value ? [{ label: componentLabel(key, t), value }] : [];
   });
 
   if (statuses.length === 0) return null;
@@ -209,12 +243,13 @@ function ComponentStatuses({ backgroundCheck }: { backgroundCheck: BackgroundChe
 }
 
 function ReportSyncingState() {
+  const t = useTranslations('people');
   return (
     <div className="rounded-md border border-dashed bg-muted/20 p-4">
       <Stack gap="xs">
-        <Text weight="medium">Report is still syncing</Text>
+        <Text weight="medium">{t('backgroundCheck.view.reportSyncingTitle')}</Text>
         <Text size="sm" variant="muted">
-          The check is complete, but the report snapshot has not been stored in Comp yet.
+          {t('backgroundCheck.view.reportSyncingDescription')}
         </Text>
       </Stack>
     </div>

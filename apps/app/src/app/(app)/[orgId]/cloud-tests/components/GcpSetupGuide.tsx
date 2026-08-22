@@ -2,6 +2,7 @@
 
 import { useApi } from '@/hooks/use-api';
 import { Check, Copy, ExternalLink, Loader2, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -49,6 +50,7 @@ export function GcpSetupGuide({
   orgId,
 }: GcpSetupGuideProps) {
   const api = useApi();
+  const t = useTranslations('integrations.list');
   const [isSettingUp, setIsSettingUp] = useState(false);
   const [resolvingStepId, setResolvingStepId] = useState<string | null>(null);
   const [copiedCommandKey, setCopiedCommandKey] = useState<string | null>(null);
@@ -89,7 +91,7 @@ export function GcpSetupGuide({
       }>(`/v1/cloud-security/setup-gcp/${connectionId}`, body);
 
       if (resp.error) {
-        toast.error(typeof resp.error === 'string' ? resp.error : 'Setup failed');
+        toast.error(typeof resp.error === 'string' ? resp.error : t('cloudTests_setupFailed'));
         return;
       }
 
@@ -102,14 +104,14 @@ export function GcpSetupGuide({
         const total = resp.data.steps.length;
         const hasBlockingFailures = hasBlockingFailuresForSteps(resp.data.steps);
         if (!hasBlockingFailures) {
-          toast.success('Required setup complete — running first scan...');
+          toast.success(t('cloudTests_setupCompleteRunningScan'));
           onRunScan();
         } else {
-          toast.message(`${succeeded}/${total} steps completed. See details below.`);
+          toast.message(t('cloudTests_stepsCompletedProgress', { done: succeeded, total }));
         }
       }
     } catch {
-      toast.error('Setup failed');
+      toast.error(t('cloudTests_setupFailed'));
     } finally {
       setIsSettingUp(false);
     }
@@ -129,7 +131,7 @@ export function GcpSetupGuide({
       if (resp.data?.projects?.length) setProjects(resp.data.projects);
 
       if (resp.error || !resp.data?.step) {
-        toast.error(typeof resp.error === 'string' ? resp.error : 'Could not resolve this step');
+        toast.error(typeof resp.error === 'string' ? resp.error : t('cloudTests_couldNotResolveStep'));
         return;
       }
 
@@ -156,20 +158,20 @@ export function GcpSetupGuide({
       });
 
       if (resp.data.step.success) {
-        toast.success(`${resp.data.step.name} resolved`);
+        toast.success(t('cloudTests_stepResolvedToast', { step: resp.data.step.name }));
       } else {
-        toast.message(`Still blocked: ${resp.data.step.name}`);
+        toast.message(t('cloudTests_stillBlockedToast', { step: resp.data.step.name }));
       }
 
       const isBlockingNow = hasBlockingFailuresForSteps(
         nextSteps.length > 0 ? nextSteps : setupResult?.steps ?? [],
       );
       if (wasBlocking && !isBlockingNow) {
-        toast.success('Required setup complete — running first scan...');
+        toast.success(t('cloudTests_setupCompleteRunningScan'));
         onRunScan();
       }
     } catch {
-      toast.error('Could not resolve this step');
+      toast.error(t('cloudTests_couldNotResolveStep'));
     } finally {
       setResolvingStepId(null);
     }
@@ -180,9 +182,9 @@ export function GcpSetupGuide({
       await navigator.clipboard.writeText(command);
       setCopiedCommandKey(copyKey);
       setTimeout(() => setCopiedCommandKey(null), 1600);
-      toast.success('Command copied');
+      toast.success(t('cloudTests_commandCopied'));
     } catch {
-      toast.error('Failed to copy command');
+      toast.error(t('cloudTests_copyCommandFailed'));
     }
   };
 
@@ -201,26 +203,26 @@ export function GcpSetupGuide({
     <div className="space-y-4">
       <div className="rounded-xl border p-5 space-y-4">
         <div>
-          <h3 className="text-sm font-semibold">Get started with GCP scanning</h3>
+          <h3 className="text-sm font-semibold">{t('cloudTests_gcpSetupTitle')}</h3>
           <p className="text-xs text-muted-foreground mt-0.5">
-            OAuth signs in your account, but GCP still requires org-level IAM/API access for Security Command Center. We&apos;ll try to set it up automatically first.
+            {t('cloudTests_gcpSetupDescription')}
           </p>
           <p className="text-[11px] text-muted-foreground/70 mt-1">
-            For full auto-fix and rollback capabilities, connect with a GCP account that has Owner or Editor role on the selected projects.
+            {t('cloudTests_gcpOwnerEditorHint')}
           </p>
         </div>
 
         {/* No projects selected — direct user to integrations page */}
         {!hasSelectedProjects && (
           <div className="space-y-3">
-            <StepRow done label="Connected via OAuth" />
-            {hasOrgId && <StepRow done label="Organization detected" />}
-            <StepRow failed label="No projects selected" error="Select at least one GCP project to scan." />
+            <StepRow done label={t('cloudTests_connectedViaOauth')} />
+            {hasOrgId && <StepRow done label={t('cloudTests_orgDetected')} />}
+            <StepRow failed label={t('cloudTests_noProjectsSelected')} error={t('cloudTests_selectProjectToScan')} />
             <a
               href={`/${orgId}/integrations/gcp`}
               className="inline-flex items-center gap-1.5 rounded-lg border bg-background px-4 py-2.5 text-sm font-medium hover:bg-muted/50 transition-colors"
             >
-              Select projects in GCP integration settings
+              {t('cloudTests_selectProjectsLink')}
               <span aria-hidden>→</span>
             </a>
           </div>
@@ -229,12 +231,12 @@ export function GcpSetupGuide({
         {/* Auto-setup in progress */}
         {hasSelectedProjects && !setupResult && (
           <div className="space-y-3">
-            <StepRow done label="Connected via OAuth" />
-            {hasOrgId && <StepRow done label="Organization detected" />}
+            <StepRow done label={t('cloudTests_connectedViaOauth')} />
+            {hasOrgId && <StepRow done label={t('cloudTests_orgDetected')} />}
 
             <div className="flex items-center justify-center gap-2 py-3">
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
-              <p className="text-sm text-muted-foreground">Setting up GCP scanning...</p>
+              <p className="text-sm text-muted-foreground">{t('cloudTests_settingUpGcp')}</p>
             </div>
           </div>
         )}
@@ -242,19 +244,21 @@ export function GcpSetupGuide({
         {/* Setup results */}
         {setupResult && (
           <div className="space-y-2">
-            <StepRow done label="Connected via OAuth" />
+            <StepRow done label={t('cloudTests_connectedViaOauth')} />
             {setupResult.organizationId && (
-              <StepRow done label={`Organization: ${setupResult.organizationId}`} />
+              <StepRow done label={t('cloudTests_orgIdLabel', { orgId: setupResult.organizationId })} />
             )}
             {setupResult.email && (
-              <StepRow done label={`Account: ${setupResult.email}`} />
+              <StepRow done label={t('cloudTests_accountEmailLabel', { email: setupResult.email })} />
             )}
 
             {/* Project info */}
             {selectedProjectId && (
               <StepRow
                 done
-                label={`Setup project: ${projects.find((p) => p.id === selectedProjectId)?.name ?? selectedProjectId}`}
+                label={t('cloudTests_setupProjectLabel', {
+                  project: projects.find((p) => p.id === selectedProjectId)?.name ?? selectedProjectId,
+                })}
               />
             )}
 
@@ -288,8 +292,8 @@ export function GcpSetupGuide({
               }`}
             >
               {hasBlockingFailures
-                ? 'Some required setup steps need manual action:'
-                : 'Scan can still work. The remaining steps are optional for auto-setup:'}
+                ? t('cloudTests_manualActionRequired')
+                : t('cloudTests_optionalStepsOnly')}
             </p>
             <div className="space-y-2">
               {failedSteps.map((step) => (
@@ -308,7 +312,7 @@ export function GcpSetupGuide({
                           : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
                       }`}
                     >
-                      {step.requiredForScan === false ? 'Optional' : 'Required'}
+                      {step.requiredForScan === false ? t('cloudTests_optionalBadge') : t('cloudTests_required')}
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -322,7 +326,7 @@ export function GcpSetupGuide({
                         {resolvingStepId === step.id ? (
                           <>
                             <Loader2 className="h-3 w-3 animate-spin" />
-                            Resolving...
+                            {t('cloudTests_resolving')}
                           </>
                         ) : (
                           step.resolveAction.label
@@ -350,7 +354,7 @@ export function GcpSetupGuide({
                         >
                           <Copy className="h-3 w-3" />
                           {copiedCommandKey === `${step.id}-${index}`
-                            ? 'Copied'
+                            ? t('cloudTests_copiedShort')
                             : action.label}
                         </button>
                       ),
@@ -361,7 +365,7 @@ export function GcpSetupGuide({
             </div>
             {!hasBlockingFailures && failedOptionalSteps.length > 0 && (
               <p className="mt-2 text-[11px] text-muted-foreground">
-                Optional steps improve automatic setup and future onboarding, but they are not required for reading findings.
+                {t('cloudTests_optionalStepsFootnote')}
               </p>
             )}
           </div>
@@ -376,7 +380,7 @@ export function GcpSetupGuide({
               disabled={isSettingUp}
               className="w-full rounded-lg border bg-background px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors disabled:opacity-50"
             >
-              {isSettingUp ? 'Resolving...' : 'Resolve all'}
+              {isSettingUp ? t('cloudTests_resolving') : t('cloudTests_resolveAll')}
             </button>
             <button
               type="button"
@@ -385,10 +389,10 @@ export function GcpSetupGuide({
               className="w-full rounded-lg border bg-background px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors disabled:opacity-50"
             >
               {isScanning
-                ? 'Scanning...'
+                ? t('cloudTests_scanning')
                 : hasBlockingFailures
-                  ? 'Try Scanning Anyway'
-                  : 'Run Scan'}
+                  ? t('cloudTests_tryScanAnyway')
+                  : t('cloudTests_runScan')}
             </button>
           </div>
         )}
