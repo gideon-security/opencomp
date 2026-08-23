@@ -29,7 +29,7 @@ function renderRow(overrides: { disabled?: boolean } = {}) {
 }
 
 function dropPdf() {
-  const dropZone = screen.getByText('trust.portal.frameworkCard.dragAndDrop');
+  const dropZone = screen.getByText('portal.frameworkCard.dragAndDrop');
   const file = new File(['%PDF-1.4'], 'cert.pdf', { type: 'application/pdf' });
   fireEvent.drop(dropZone, { dataTransfer: { files: [file] } });
 }

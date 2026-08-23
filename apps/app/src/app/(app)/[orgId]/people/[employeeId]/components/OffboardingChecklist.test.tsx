@@ -5,6 +5,16 @@ import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
+const toastMocks = vi.hoisted(() => ({
+  success: vi.fn(),
+  error: vi.fn(),
+  message: vi.fn(),
+}));
+
+vi.mock('sonner', () => ({
+  toast: toastMocks,
+}));
+
 import { toast } from 'sonner';
 import { OffboardingChecklist } from './OffboardingChecklist';
 

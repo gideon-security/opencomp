@@ -206,7 +206,7 @@ describe('InternalAuditClient', () => {
     ).toBeInTheDocument();
     // The assembled conclusion sentence renders in the read view.
     expect(
-      screen.getByText(/substantially conform with the non-conformities recorded below/),
+      screen.getByText('internalAuditValidation.conclusions.substantiallyConform'),
     ).toBeInTheDocument();
   });
 
@@ -227,7 +227,7 @@ describe('InternalAuditClient', () => {
     render(<InternalAuditClient {...baseProps} />);
 
     expect(screen.getByText('F-01')).toBeInTheDocument();
-    expect(screen.getByText('NC minor')).toBeInTheDocument();
+    expect(screen.getByText('internalAuditValidation.findingTypes.ncMinor')).toBeInTheDocument();
     expect(
       screen.getByText('Three of nine metrics have no measurement in 90 days.'),
     ).toBeInTheDocument();
@@ -278,7 +278,7 @@ describe('InternalAuditClient', () => {
     render(<InternalAuditClient {...baseProps} />);
 
     expect(
-      screen.getAllByText(/At least one internal audit must be recorded\./).length,
+      screen.getAllByText('submitBlocked').length,
     ).toBeGreaterThan(0);
     // Empty state invites creating the first audit.
     expect(screen.getByText('No audits yet')).toBeInTheDocument();
@@ -291,9 +291,6 @@ describe('InternalAuditClient', () => {
     });
     render(<InternalAuditClient {...baseProps} />);
 
-    expect(
-      screen.getAllByText(/IA-2026-01 is complete but has no conclusion verdict\./)
-        .length,
-    ).toBeGreaterThan(0);
+    expect(screen.getAllByText('submitBlocked').length).toBeGreaterThan(0);
   });
 });

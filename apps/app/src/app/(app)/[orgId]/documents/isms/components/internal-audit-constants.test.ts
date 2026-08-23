@@ -1,20 +1,25 @@
 import { describe, expect, it } from 'vitest';
+import { parseProgramme } from './internal-audit-constants';
+import type { InternalAuditTranslator } from './internal-audit-labels';
 import {
   auditValidationMessages,
   conclusionSentence,
-  parseProgramme,
-} from './internal-audit-constants';
+} from './internal-audit-labels';
+
+// The helpers take a next-intl translator; under test the mock resolves keys
+// verbatim, so a bare key-identity function satisfies the contract.
+const t = ((key: string) => key) as unknown as InternalAuditTranslator;
 
 describe('auditValidationMessages (clause 9.2 client mirror)', () => {
   it('requires at least one audit', () => {
-    expect(auditValidationMessages({ audits: [] })).toEqual([
-      'At least one internal audit must be recorded.',
+    expect(auditValidationMessages(t, { audits: [] })).toEqual([
+      'internalAuditValidation.noAuditsRecorded',
     ]);
   });
 
   it('requires a conclusion verdict on completed audits only', () => {
     expect(
-      auditValidationMessages({
+      auditValidationMessages(t, {
         audits: [
           {
             reference: 'IA-2026-01',
@@ -28,12 +33,12 @@ describe('auditValidationMessages (clause 9.2 client mirror)', () => {
           },
         ],
       }),
-    ).toEqual(['Audit IA-2026-01 is complete but has no conclusion verdict.']);
+    ).toEqual(['internalAuditValidation.missingVerdict']);
   });
 
   it('passes for a complete audit with a verdict', () => {
     expect(
-      auditValidationMessages({
+      auditValidationMessages(t, {
         audits: [
           {
             reference: 'IA-2026-01',
@@ -48,13 +53,15 @@ describe('auditValidationMessages (clause 9.2 client mirror)', () => {
 
 describe('conclusionSentence', () => {
   it('assembles the ticket template around the chosen verdict', () => {
-    expect(conclusionSentence('conform')).toBe(
-      'Overall, this audit found the ISMS to conform to ISO/IEC 27001:2022. Corrective actions are tracked in the findings table.',
+    expect(conclusionSentence(t, 'conform')).toBe(
+      'internalAuditValidation.conclusions.conform',
     );
-    expect(conclusionSentence('substantially_conform')).toContain(
-      'substantially conform with the non-conformities recorded below',
+    expect(conclusionSentence(t, 'substantially_conform')).toBe(
+      'internalAuditValidation.conclusions.substantiallyConform',
     );
-    expect(conclusionSentence('not_yet_conform')).toContain('not yet conform');
+    expect(conclusionSentence(t, 'not_yet_conform')).toBe(
+      'internalAuditValidation.conclusions.notYetConform',
+    );
   });
 });
 
