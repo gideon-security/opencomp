@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import type { ChangeEventHandler, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -118,6 +119,8 @@ vi.mock('@trycompai/design-system', () => ({
 
 import { CompanySubmissionWizard } from './CompanySubmissionWizard';
 
+mockNextIntl();
+
 const ORG_ID = 'org_test';
 const DOCS_URL = `/${ORG_ID}/documents/tabletop-exercise`;
 
@@ -143,23 +146,23 @@ describe('CompanySubmissionWizard cancel guard', () => {
       target: { value: 'Annual DR tabletop' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    fireEvent.click(screen.getByRole('button', { name: 'submissionWizard.cancel' }));
 
     // Instead of navigating away, the wizard asks for confirmation.
-    expect(await screen.findByText('Discard submission?')).toBeInTheDocument();
+    expect(await screen.findByText('submissionWizard.discardTitle')).toBeInTheDocument();
     expect(mockPush).not.toHaveBeenCalled();
 
     // Only after confirming does it leave the page.
-    fireEvent.click(screen.getByRole('button', { name: 'Discard' }));
+    fireEvent.click(screen.getByRole('button', { name: 'submissionWizard.discard' }));
     expect(mockPush).toHaveBeenCalledWith(DOCS_URL);
   });
 
   it('navigates immediately when there are no unsaved changes', () => {
     renderWizard();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    fireEvent.click(screen.getByRole('button', { name: 'submissionWizard.cancel' }));
 
-    expect(screen.queryByText('Discard submission?')).not.toBeInTheDocument();
+    expect(screen.queryByText('submissionWizard.discardTitle')).not.toBeInTheDocument();
     expect(mockPush).toHaveBeenCalledWith(DOCS_URL);
   });
 });

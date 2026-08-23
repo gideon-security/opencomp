@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -182,6 +183,8 @@ const baseProps = {
   chairOptions: ['Raoul Plickat (CEO)'],
 };
 
+mockNextIntl();
+
 describe('ManagementReviewClient', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -288,8 +291,8 @@ describe('ManagementReviewClient', () => {
     expect(screen.queryByText('Add action')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Edit review MR-2026-01')).not.toBeInTheDocument();
     expect(screen.queryByText('Save sign-off')).not.toBeInTheDocument();
-    expect(screen.getByText('Export PDF')).toBeInTheDocument();
-    expect(screen.getByText('Export DOCX')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportPdf')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
   it('carries open actions forward to the next review', () => {

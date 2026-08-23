@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EmptyStateOnboarding } from './EmptyStateOnboarding';
 
@@ -56,6 +57,8 @@ vi.mock('sonner', () => ({
   },
 }));
 
+mockNextIntl();
+
 describe('EmptyStateOnboarding', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -90,7 +93,9 @@ describe('EmptyStateOnboarding', () => {
       expect(mockCreateConnection).toHaveBeenCalledWith('dynamic-security', {});
     });
     expect(onConnected).toHaveBeenCalled();
-    expect(mockToastSuccess).toHaveBeenCalledWith('Dynamic Security connected!');
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+        expect.stringContaining('onboarding.connected'),
+      );
   });
 
   it('uses API key fallback field when credential fields are missing', async () => {
@@ -115,10 +120,10 @@ describe('EmptyStateOnboarding', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /connect account/i }));
-    expect(screen.getByText('API Key is required')).toBeInTheDocument();
+    expect(screen.getByText('onboarding.fieldRequired')).toBeInTheDocument();
     expect(mockCreateConnection).not.toHaveBeenCalled();
 
-    fireEvent.change(screen.getByLabelText('API Key'), { target: { value: 'secret' } });
+    fireEvent.change(screen.getByLabelText('onboarding.apiKey'), { target: { value: 'secret' } });
     fireEvent.click(screen.getByRole('button', { name: /connect account/i }));
 
     await waitFor(() => {

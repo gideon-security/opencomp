@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { useApi } from '@/hooks/use-api';
 import { usePermissions } from '@/hooks/use-permissions';
 import { Button } from '@gideon-defender/ui/button';
@@ -62,15 +64,23 @@ interface HistoryPayload {
   };
 }
 
-const RESOLUTION_METHOD_LABEL: Record<
-  ResolutionRow['resolutionMethod'],
-  string
-> = {
-  platform_fix: 'Fixed via platform',
-  external_fix: 'Fixed externally',
-  resource_deleted: 'Resource deleted',
-  exception_marked: 'Marked as exception',
-};
+function resolutionMethodLabel(
+  t: ReturnType<typeof useTranslations<'integrations.list'>>,
+  method: ResolutionRow['resolutionMethod'],
+): string {
+  switch (method) {
+    case 'platform_fix':
+      return t('cloudTests_historyFixedViaPlatform');
+    case 'external_fix':
+      return t('cloudTests_historyFixedExternally');
+    case 'resource_deleted':
+      return t('cloudTests_historyResourceDeleted');
+    case 'exception_marked':
+      return t('cloudTests_historyMarkedException');
+    default:
+      return method;
+  }
+}
 
 export interface HistoryTabProps {
   connectionId: string;
@@ -82,6 +92,7 @@ export interface HistoryTabProps {
  * GET /v1/cloud-security/history?connectionId=...
  */
 export function HistoryTab({ connectionId }: HistoryTabProps) {
+  const t = useTranslations('integrations.list');
   const api = useApi();
   const { hasPermission } = usePermissions();
   const canRevoke = hasPermission('integration', 'update');
@@ -100,11 +111,11 @@ export function HistoryTab({ connectionId }: HistoryTabProps) {
       toast.error(
         typeof response.error === 'string'
           ? response.error
-          : 'Could not revoke exception',
+          : t('cloudTests_historyRevokeFailed'),
       );
       return;
     }
-    toast.success('Exception revoked');
+    toast.success(t('cloudTests_historyExceptionRevoked'));
     mutate();
     // Invalidate the cloud-tests findings cache so the revoked exception's
     // finding reappears in the active scan results immediately. Mirrors
@@ -144,10 +155,9 @@ export function HistoryTab({ connectionId }: HistoryTabProps) {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed py-12 text-center">
         <ShieldCheck className="mb-3 h-7 w-7 text-muted-foreground/30" />
-        <p className="text-sm font-medium">No audit history yet</p>
+        <p className="text-sm font-medium">{t('cloudTests_historyEmptyTitle')}</p>
         <p className="mt-1 text-xs text-muted-foreground">
-          Resolutions, exceptions, and regressions are recorded automatically
-          on each scan.
+          {t('cloudTests_historyEmptyDescription')}
         </p>
       </div>
     );
@@ -215,22 +225,23 @@ export function HistoryTab({ connectionId }: HistoryTabProps) {
 }
 
 function SummaryCard({ summary }: { summary: HistoryPayload['summary'] }) {
+  const t = useTranslations('integrations.list');
   return (
     <div className="grid grid-cols-3 gap-3 rounded-lg border bg-muted/20 p-3 text-xs">
       <div>
-        <p className="text-muted-foreground">Resolved</p>
+        <p className="text-muted-foreground">{t('cloudTests_historyResolved')}</p>
         <p className="mt-0.5 text-lg font-semibold tabular-nums">
           {summary.resolutions}
         </p>
       </div>
       <div>
-        <p className="text-muted-foreground">Active exceptions</p>
+        <p className="text-muted-foreground">{t('cloudTests_historyActiveExceptions')}</p>
         <p className="mt-0.5 text-lg font-semibold tabular-nums">
           {summary.activeExceptions}
         </p>
       </div>
       <div>
-        <p className="text-muted-foreground">Regressions</p>
+        <p className="text-muted-foreground">{t('cloudTests_historyRegressions')}</p>
         <p className="mt-0.5 text-lg font-semibold tabular-nums text-orange-600 dark:text-orange-400">
           {summary.regressions}
         </p>
@@ -264,6 +275,7 @@ function Section({
 }
 
 function ResolutionRowView({ row }: { row: ResolutionRow }) {
+  const t = useTranslations('integrations.list');
   return (
     <div className="space-y-1 px-4 py-3 text-xs">
       <div className="flex items-center gap-2">
@@ -273,7 +285,7 @@ function ResolutionRowView({ row }: { row: ResolutionRow }) {
           {row.resourceId}
         </span>
         <span className="ml-auto text-[10px] text-muted-foreground">
-          {RESOLUTION_METHOD_LABEL[row.resolutionMethod]}
+          {resolutionMethodLabel(t, row.resolutionMethod)}
         </span>
       </div>
       <p className="text-[10px] text-muted-foreground pl-5.5">

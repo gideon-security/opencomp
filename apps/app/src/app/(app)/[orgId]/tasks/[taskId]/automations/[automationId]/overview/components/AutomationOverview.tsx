@@ -27,6 +27,7 @@ import {
 import { Code2, Loader2, Play, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import {
@@ -62,6 +63,7 @@ export function AutomationOverview({
     taskId: string;
     automationId: string;
   }>();
+  const t = useTranslations('tasks');
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isUpdatingSchedule, setIsUpdatingSchedule] = useState(false);
@@ -101,11 +103,11 @@ export function AutomationOverview({
     }
     try {
       await updateAutomation({ name: nameValue.trim() });
-      toast.success('Name updated');
+      toast.success(t('automationOverview.nameUpdated'));
       setIsEditingName(false);
       await mutateAutomation();
     } catch {
-      toast.error('Failed to update name');
+      toast.error(t('automationOverview.nameUpdateFailed'));
     }
   };
 
@@ -121,11 +123,11 @@ export function AutomationOverview({
     }
     try {
       await updateAutomation({ description: descriptionValue.trim() });
-      toast.success('Description updated');
+      toast.success(t('automationOverview.descriptionUpdated'));
       setIsEditingDescription(false);
       await mutateAutomation();
     } catch {
-      toast.error('Failed to update description');
+      toast.error(t('automationOverview.descriptionUpdateFailed'));
     }
   };
 
@@ -134,11 +136,15 @@ export function AutomationOverview({
     setIsTogglingEnabled(true);
     try {
       const result = await toggleAutomationEnabled(taskId, automation.id, enabled);
-      if (!result.success) throw new Error(result.error || 'Failed to toggle automation');
-      toast.success(enabled ? 'Automation enabled' : 'Automation disabled');
+      if (!result.success) throw new Error(result.error || t('automationOverview.toggleFailed'));
+      toast.success(
+        enabled ? t('automationOverview.enabledToast') : t('automationOverview.disabledToast'),
+      );
       await mutateAutomation();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to toggle automation');
+      toast.error(
+        error instanceof Error ? error.message : t('automationOverview.toggleFailed'),
+      );
     } finally {
       setIsTogglingEnabled(false);
     }
@@ -148,10 +154,10 @@ export function AutomationOverview({
     setIsUpdatingSchedule(true);
     try {
       await updateAutomation({ scheduleFrequency: value });
-      toast.success('Schedule updated');
+      toast.success(t('automationOverview.scheduleUpdated'));
       await mutateAutomation();
     } catch {
-      toast.error('Failed to update schedule');
+      toast.error(t('automationOverview.scheduleUpdateFailed'));
     } finally {
       setIsUpdatingSchedule(false);
     }
@@ -169,8 +175,8 @@ export function AutomationOverview({
       });
 
       if (result.success) {
-        toast.success(`Testing version ${selectedVersion}`, {
-          description: 'Test started - check run history',
+        toast.success(t('automationOverview.testStartedToast', { version: selectedVersion }), {
+          description: t('automationOverview.testStartedDescription'),
         });
         const runId = result.data?.runId || `pending-${Date.now()}`;
         const now = new Date();
@@ -202,10 +208,10 @@ export function AutomationOverview({
           false,
         );
       } else {
-        toast.error(result.error || 'Failed to start test');
+        toast.error(result.error || t('automationOverview.startTestFailed'));
       }
     } catch {
-      toast.error('Failed to start test');
+      toast.error(t('automationOverview.startTestFailed'));
     } finally {
       setIsTestingVersion(false);
     }
@@ -223,7 +229,7 @@ export function AutomationOverview({
       <Breadcrumb
         items={[
           {
-            label: 'Evidence',
+            label: t('automationOverview.evidenceBreadcrumb'),
             href: `/${orgId}/tasks`,
             props: { render: <Link href={`/${orgId}/tasks`} /> },
           },
@@ -261,7 +267,7 @@ export function AutomationOverview({
           <Link href={`/${orgId}/tasks/${taskId}/automation/${automationId}`}>
             <Button size="sm">
               <Code2 className="h-4 w-4 mr-2" />
-              Edit Script
+              {t('automationOverview.editScript')}
             </Button>
           </Link>
         </HStack>
@@ -285,7 +291,7 @@ export function AutomationOverview({
             onClick={startEditingDescription}
             style={{ cursor: 'pointer' }}
           >
-            {automation.description || 'Add a description...'}
+            {automation.description || t('automationOverview.addDescriptionPlaceholder')}
           </Text>
         )}
       </Stack>
@@ -300,10 +306,10 @@ export function AutomationOverview({
       <Tabs defaultValue="history">
         <Stack gap="lg">
           <TabsList variant="underline">
-            <TabsTrigger value="history">Run History</TabsTrigger>
-            <TabsTrigger value="versions">Versions</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="history">{t('automationOverview.runHistoryTab')}</TabsTrigger>
+            <TabsTrigger value="versions">{t('automationOverview.versionsTab')}</TabsTrigger>
+            <TabsTrigger value="activity">{t('automationOverview.activityTab')}</TabsTrigger>
+            <TabsTrigger value="settings">{t('automationOverview.settingsTab')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="history">
@@ -327,7 +333,7 @@ export function AutomationOverview({
                             <Text size="sm" weight="medium">v{v.version}</Text>
                             {isLatest && (
                               <span className="text-[10px] px-1.5 py-0 rounded-full bg-primary/10 text-primary font-medium">
-                                Latest
+                                {t('automationOverview.latestBadge')}
                               </span>
                             )}
                           </HStack>
@@ -355,7 +361,7 @@ export function AutomationOverview({
                         ) : (
                           <>
                             <Play className="w-3.5 h-3.5 mr-1.5" />
-                            Test
+                            {t('automationOverview.testButton')}
                           </>
                         )}
                       </Button>
@@ -366,7 +372,9 @@ export function AutomationOverview({
             ) : (
               <div className="py-8">
                 <Stack gap="sm" align="center">
-                  <Text size="sm" variant="muted">No versions published yet</Text>
+                  <Text size="sm" variant="muted">
+                    {t('automationOverview.noVersionsYet')}
+                  </Text>
                 </Stack>
               </div>
             )}
@@ -377,13 +385,15 @@ export function AutomationOverview({
           </TabsContent>
 
           <TabsContent value="settings">
-            <Section title="Automation Settings">
+            <Section title={t('automationOverview.settingsSectionTitle')}>
               <Stack gap="lg">
                 <HStack justify="between" align="center">
                   <Stack gap="none">
-                    <Text size="sm" weight="medium">Enable Automation</Text>
+                    <Text size="sm" weight="medium">
+                      {t('automationOverview.enableAutomation')}
+                    </Text>
                     <Text size="xs" variant="muted">
-                      When enabled, this automation will run on its configured schedule
+                      {t('automationOverview.enableAutomationDescription')}
                     </Text>
                   </Stack>
                   <Switch
@@ -397,9 +407,11 @@ export function AutomationOverview({
 
                 <HStack justify="between" align="center">
                   <Stack gap="none">
-                    <Text size="sm" weight="medium">Schedule</Text>
+                    <Text size="sm" weight="medium">
+                      {t('automationOverview.scheduleLabel')}
+                    </Text>
                     <Text size="xs" variant="muted">
-                      How often this automation runs
+                      {t('automationOverview.scheduleDescription')}
                     </Text>
                   </Stack>
                   <div className="w-40">
@@ -415,9 +427,11 @@ export function AutomationOverview({
 
                 <HStack justify="between" align="center">
                   <Stack gap="none">
-                    <Text size="sm" weight="medium">Delete Automation</Text>
+                    <Text size="sm" weight="medium">
+                      {t('automationOverview.deleteAutomation')}
+                    </Text>
                     <Text size="xs" variant="muted">
-                      Permanently delete this automation and all its versions
+                      {t('automationOverview.deleteAutomationDescription')}
                     </Text>
                   </Stack>
                   <Button
@@ -427,7 +441,7 @@ export function AutomationOverview({
                     className="text-destructive hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    {t('automationOverview.deleteButton')}
                   </Button>
                 </HStack>
               </Stack>

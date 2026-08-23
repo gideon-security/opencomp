@@ -1,6 +1,7 @@
 import { apiClient } from '@/lib/api-client';
 import type { Member, User } from '@db';
 import { render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import userEvent from '@testing-library/user-event';
 import { SWRConfig } from 'swr';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -69,6 +70,8 @@ function renderSection(props?: Partial<Parameters<typeof EmployeeBackgroundCheck
   );
 }
 
+mockNextIntl();
+
 describe('EmployeeBackgroundCheck — V1 two-paths', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -105,10 +108,10 @@ describe('EmployeeBackgroundCheck — V1 two-paths', () => {
   it('shows the status strip with credits remaining', () => {
     renderSection();
 
-    expect(screen.getByText('Not started')).toBeInTheDocument();
-    expect(screen.getByText(/Credits remaining/)).toBeInTheDocument();
+    expect(screen.getByText('backgroundCheck.strip.notStarted.label')).toBeInTheDocument();
+    expect(screen.getByText(/backgroundCheck\.strip\.creditsRemaining/)).toBeInTheDocument();
     expect(screen.getByText('2 / 3')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Choose a plan/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /backgroundCheck\.strip\.choosePlan/ })).toHaveAttribute(
       'href',
       '/org_1/settings/billing/add-ons/background-checks',
     );

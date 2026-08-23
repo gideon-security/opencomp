@@ -10,6 +10,7 @@ import {
   TableRow,
   Text,
 } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import type { IsmsAcceptanceState } from '../isms-types';
 
 /** The columns shared by the organisational and supplier risk tables. */
@@ -28,13 +29,10 @@ export interface RiskTreatmentTableRow {
   status: string;
 }
 
-const ACCEPTANCE_BADGE: Record<
-  IsmsAcceptanceState,
-  { variant: 'accent' | 'secondary' | 'destructive'; label: string }
-> = {
-  accepted: { variant: 'accent', label: 'Accepted' },
-  awaiting: { variant: 'secondary', label: 'Awaiting acceptance' },
-  stale: { variant: 'destructive', label: 'Stale' },
+const ACCEPTANCE_BADGE: Record<IsmsAcceptanceState, { variant: 'accent' | 'secondary' | 'destructive' }> = {
+  accepted: { variant: 'accent' },
+  awaiting: { variant: 'secondary' },
+  stale: { variant: 'destructive' },
 };
 
 interface RiskTreatmentTableProps {
@@ -52,6 +50,13 @@ export function RiskTreatmentTable({
   rows,
   emptyText,
 }: RiskTreatmentTableProps) {
+  const t = useTranslations('isms');
+  const acceptanceLabels: Record<IsmsAcceptanceState, string> = {
+    accepted: t('riskTreatment.accepted'),
+    awaiting: t('riskTreatment.awaitingAcceptance'),
+    stale: t('riskTreatment.stale'),
+  };
+
   if (rows.length === 0) {
     return (
       <div className="rounded-md border py-8 text-center">
@@ -66,15 +71,15 @@ export function RiskTreatmentTable({
         <TableHeader>
           <TableRow>
             <TableHead>{keyHeader}</TableHead>
-            {showTitle && <TableHead>Description</TableHead>}
-            <TableHead>Category</TableHead>
-            <TableHead>Inherent</TableHead>
-            <TableHead>Treatment</TableHead>
-            <TableHead>Controls / actions</TableHead>
-            <TableHead>Owner</TableHead>
-            <TableHead>Residual</TableHead>
-            <TableHead>Acceptance</TableHead>
-            <TableHead>Status</TableHead>
+            {showTitle && <TableHead>{t('riskTreatment.columns.description')}</TableHead>}
+            <TableHead>{t('riskTreatment.columns.category')}</TableHead>
+            <TableHead>{t('riskTreatment.columns.inherent')}</TableHead>
+            <TableHead>{t('riskTreatment.columns.treatment')}</TableHead>
+            <TableHead>{t('riskTreatment.columns.controlsActions')}</TableHead>
+            <TableHead>{t('riskTreatment.columns.owner')}</TableHead>
+            <TableHead>{t('riskTreatment.columns.residual')}</TableHead>
+            <TableHead>{t('riskTreatment.columns.acceptance')}</TableHead>
+            <TableHead>{t('riskTreatment.columns.status')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -103,7 +108,9 @@ export function RiskTreatmentTable({
                 <TableCell>{row.residualLevel}</TableCell>
                 <TableCell>
                   <span className="flex min-w-40 flex-col items-start gap-1">
-                    <Badge variant={badge.variant}>{badge.label}</Badge>
+                    <Badge variant={badge.variant}>
+                      {acceptanceLabels[row.acceptanceState]}
+                    </Badge>
                     {row.acceptanceState !== 'awaiting' && (
                       <span className="whitespace-normal text-xs text-muted-foreground">
                         {row.acceptance}

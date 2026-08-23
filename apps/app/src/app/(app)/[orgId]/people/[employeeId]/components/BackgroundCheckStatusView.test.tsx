@@ -1,8 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { toast } from 'sonner';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BackgroundCheckStatusView } from './BackgroundCheckStatusView';
 import type { BackgroundCheckRecord } from './backgroundCheckTypes';
+
+mockNextIntl();
 
 vi.mock('sonner', () => ({
   toast: { success: vi.fn(), error: vi.fn() },
@@ -43,11 +46,15 @@ describe('BackgroundCheckStatusView', () => {
   it('copies the candidate link with a toast', async () => {
     render(<BackgroundCheckStatusView backgroundCheck={record()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /copy candidate link/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: 'backgroundCheck.view.copyCandidateLink' }),
+    );
 
     await waitFor(() => {
       expect(writeText).toHaveBeenCalledWith('https://identity.gideondefender.com/cand_1');
-      expect(toast.success).toHaveBeenCalledWith('Candidate link copied');
+      expect(toast.success).toHaveBeenCalledWith(
+        'backgroundCheck.view.candidateLinkCopied',
+      );
     });
     expect(screen.queryByRole('link', { name: /candidate link/i })).not.toBeInTheDocument();
   });
@@ -56,10 +63,14 @@ describe('BackgroundCheckStatusView', () => {
     writeText.mockRejectedValueOnce(new Error('blocked'));
     render(<BackgroundCheckStatusView backgroundCheck={record()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /copy candidate link/i }));
+    fireEvent.click(
+      screen.getByRole('button', { name: 'backgroundCheck.view.copyCandidateLink' }),
+    );
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Could not copy candidate link');
+      expect(toast.error).toHaveBeenCalledWith(
+        'backgroundCheck.view.couldNotCopyLink',
+      );
     });
   });
 
@@ -106,8 +117,10 @@ describe('BackgroundCheckStatusView', () => {
       />,
     );
 
-    expect(screen.getByText('Complete with flags')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /copy candidate link/i })).not.toBeInTheDocument();
+    expect(screen.getByText('backgroundCheck.status.completeWithFlags')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'backgroundCheck.view.copyCandidateLink' }),
+    ).not.toBeInTheDocument();
     expect(screen.queryByText(/Adjudication: Draft/i)).not.toBeInTheDocument();
     expect(screen.getByText('Identity & liveness')).toBeInTheDocument();
     expect(screen.getByText('Shareable summary')).toBeInTheDocument();
@@ -282,7 +295,7 @@ describe('BackgroundCheckStatusView', () => {
   it('renders a syncing state when a completed report snapshot is missing', () => {
     render(<BackgroundCheckStatusView backgroundCheck={record({ status: 'completed' })} />);
 
-    expect(screen.getByText('Report is still syncing')).toBeInTheDocument();
+    expect(screen.getByText('backgroundCheck.view.reportSyncingTitle')).toBeInTheDocument();
   });
 
   it('does not show report sections for in-progress checks', () => {

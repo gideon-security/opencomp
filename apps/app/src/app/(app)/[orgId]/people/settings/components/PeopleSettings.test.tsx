@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -14,6 +15,8 @@ vi.mock('@/lib/api-client', () => ({
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({ hasPermission: () => true }),
 }));
+
+mockNextIntl();
 
 describe('PeopleSettings — background-check toggle', () => {
   beforeEach(() => {

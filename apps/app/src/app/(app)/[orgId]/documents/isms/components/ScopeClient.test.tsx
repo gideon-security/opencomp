@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -183,6 +184,8 @@ const baseProps = {
   approverOptions: [{ id: 'm2', name: 'Approver Two' }],
 };
 
+mockNextIntl();
+
 describe('ScopeClient', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -209,7 +212,7 @@ describe('ScopeClient', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<ScopeClient {...baseProps} />);
 
-    expect(screen.getByText('Generate from platform data')).toBeInTheDocument();
+    expect(screen.getByText('shell.generate')).toBeInTheDocument();
     expect(screen.getByText('Save scope')).toBeInTheDocument();
     // Editable fields are textareas/inputs.
     expect(
@@ -223,7 +226,7 @@ describe('ScopeClient', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<ScopeClient {...baseProps} />);
 
-    expect(screen.queryByText('Generate from platform data')).not.toBeInTheDocument();
+    expect(screen.queryByText('shell.generate')).not.toBeInTheDocument();
     expect(screen.queryByText('Save scope')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('New Interfaces item')).not.toBeInTheDocument();
     // Read-only users see plain text, not editable fields.
@@ -237,8 +240,8 @@ describe('ScopeClient', () => {
     ).toBeInTheDocument();
     // Read-only items still render and export remains available.
     expect(screen.getByText('Customer support portal')).toBeInTheDocument();
-    expect(screen.getByText('Export PDF')).toBeInTheDocument();
-    expect(screen.getByText('Export DOCX')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportPdf')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
   it('shows the drift banner when the document is stale', async () => {

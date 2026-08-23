@@ -44,16 +44,56 @@ jobs:
   app-e2e:
     name: App e2e tests (Playwright)
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_DB: comp
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d comp"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     env:
       E2E_TEST_MODE: 'true'
       E2E_USE_REAL_AUTH: 'false'
       AUTH_SECRET: test-secret-for-e2e-only
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/comp?sslmode=disable
+      # Shared by @gideon-defender/kv and the local trigger/BullMQ shim.
+      REDIS_URL: redis://localhost:6379
+      NEXT_PUBLIC_PORTAL_URL: http://localhost:3002
+      REVALIDATION_SECRET: test-revalidation-secret
+      GOOGLE_ID: test-client-id
+      GOOGLE_SECRET: test-client-secret
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/npm-install
       - name: Install Playwright browsers
         working-directory: apps/app
         run: npx playwright install --with-deps chromium
+      # The Next.js dev server resolves workspace packages (@gideon-defender/db,
+      # auth, billing, ...) through their exports maps, which point at dist/
+      # build output. A fresh checkout has no dist/, so instrumentation fails
+      # to compile ("Can't resolve '@gideon-defender/db'"). Build all of the
+      # app's dependencies (^... = deps only, skips the slow app build itself).
+      - name: Build workspace packages
+        run: npx turbo run build --filter=@gideon-defender/app^...
+      - name: Apply migrations
+        working-directory: packages/db
+        run: npx prisma migrate deploy
       - name: Start app
         working-directory: apps/app
         run: |

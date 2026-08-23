@@ -75,6 +75,7 @@ import {
 } from '@gideon-defender/ui/select';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import useSWR, { useSWRConfig } from 'swr';
@@ -102,11 +103,21 @@ type EvidenceFormResponse = {
 
 const MEETING_SUB_TYPES = meetingSubTypeValues;
 
-const MEETING_TYPE_LABELS: Record<string, string> = {
-  'board-meeting': 'Board',
-  'it-leadership-meeting': 'IT Leadership',
-  'risk-committee-meeting': 'Risk Committee',
-};
+type DocumentsTranslator = ReturnType<typeof useTranslations<'documents'>>;
+
+/** Meeting-type badge labels, resolved from translations. */
+function meetingTypeLabel(t: DocumentsTranslator, formType: string): string {
+  switch (formType) {
+    case 'board-meeting':
+      return t('companyForm.meetingTypes.board');
+    case 'it-leadership-meeting':
+      return t('companyForm.meetingTypes.itLeadership');
+    case 'risk-committee-meeting':
+      return t('companyForm.meetingTypes.riskCommittee');
+    default:
+      return formType;
+  }
+}
 
 const submissionDateColumnWidth = 128;
 const submittedByColumnWidth = 128;
@@ -140,13 +151,13 @@ function fileToBase64(file: File): Promise<string> {
   });
 }
 
-async function evidenceFormFetcher([endpoint, orgId]: readonly [
-  string,
-  string,
-]): Promise<EvidenceFormResponse> {
+async function evidenceFormFetcher(
+  [endpoint]: readonly [string, string],
+  loadFailedMessage: string,
+): Promise<EvidenceFormResponse> {
   const response = await api.get<EvidenceFormResponse>(endpoint);
   if (response.error || !response.data) {
-    throw new Error(response.error ?? 'Failed to load submissions');
+    throw new Error(response.error ?? loadFailedMessage);
   }
   return response.data;
 }
@@ -162,6 +173,7 @@ export function CompanyFormPageClient({
   formType: EvidenceFormType;
   isPlatformAdmin?: boolean;
 }) {
+  const t = useTranslations('documents');
   const router = useRouter();
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'submissions';
@@ -209,22 +221,28 @@ export function CompanyFormPageClient({
     ? null
     : [`/v1/evidence-forms/${formType}${query}`, organizationId];
 
+  const loadSubmissions = useCallback(
+    (key: readonly [string, string]) =>
+      evidenceFormFetcher(key, t('companyForm.loadFailed')),
+    [t],
+  );
+
   const { data: singleData, isLoading: singleLoading } = useSWR<EvidenceFormResponse>(
     swrKey,
-    evidenceFormFetcher,
+    loadSubmissions,
   );
 
   const { data: meetingData0, isLoading: ml0 } = useSWR<EvidenceFormResponse>(
     meetingSwrKeys[0] ?? null,
-    evidenceFormFetcher,
+    loadSubmissions,
   );
   const { data: meetingData1, isLoading: ml1 } = useSWR<EvidenceFormResponse>(
     meetingSwrKeys[1] ?? null,
-    evidenceFormFetcher,
+    loadSubmissions,
   );
   const { data: meetingData2, isLoading: ml2 } = useSWR<EvidenceFormResponse>(
     meetingSwrKeys[2] ?? null,
-    evidenceFormFetcher,
+    loadSubmissions,
   );
 
   const mergedMeetingSubmissions = useMemo(() => {
@@ -259,7 +277,7 @@ export function CompanyFormPageClient({
 
   const handleExportCsv = async () => {
     if (!data || data.total === 0) {
-      toast.error('No submissions available to export');
+      toast.error(t('companyForm.noSubmissionsToExport'));
       return;
     }
 
@@ -286,7 +304,7 @@ export function CompanyFormPageClient({
       }
 
       if (results.length === 0) {
-        toast.error('No submissions available to export');
+        toast.error(t('companyForm.noSubmissionsToExport'));
         return;
       }
 
@@ -301,7 +319,7 @@ export function CompanyFormPageClient({
         URL.revokeObjectURL(url);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'CSV export failed');
+      toast.error(error instanceof Error ? error.message : t('companyForm.csvExportFailed'));
     } finally {
       setIsExporting(false);
     }
@@ -328,7 +346,7 @@ export function CompanyFormPageClient({
         throw new Error(response.error);
       }
 
-      toast.success('Evidence uploaded');
+      toast.success(t('companyForm.evidenceUploaded'));
       setIsUploadOpen(false);
       setSelectedFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -341,11 +359,11 @@ export function CompanyFormPageClient({
         globalMutate([`/v1/evidence-forms/${formType}${query}`, organizationId]);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Upload failed');
+      toast.error(error instanceof Error ? error.message : t('companyForm.uploadFailed'));
     } finally {
       setIsUploading(false);
     }
-  }, [selectedFile, selectedMeetingType, isMeeting, formType, organizationId, query, globalMutate]);
+  }, [selectedFile, selectedMeetingType, isMeeting, formType, organizationId, query, globalMutate, t]);
 
   const handleConfirmDelete = useCallback(async () => {
     if (!submissionToDelete) return;
@@ -359,10 +377,10 @@ export function CompanyFormPageClient({
       );
 
       if (response.error || !response.data?.success) {
-        throw new Error(response.error ?? 'Failed to delete submission');
+        throw new Error(response.error ?? t('companyForm.deleteSubmissionFailed'));
       }
 
-      toast.success('Submission deleted');
+      toast.success(t('companyForm.submissionDeleted'));
       setDeleteDialogOpen(false);
       setSubmissionToDelete(null);
 
@@ -379,11 +397,11 @@ export function CompanyFormPageClient({
         globalMutate([`/v1/findings?evidenceFormType=${formType}`, organizationId]);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete submission');
+      toast.error(error instanceof Error ? error.message : t('companyForm.deleteSubmissionFailed'));
     } finally {
       setIsDeleting(false);
     }
-  }, [submissionToDelete, formType, isMeeting, organizationId, query, globalMutate]);
+  }, [submissionToDelete, formType, isMeeting, organizationId, query, globalMutate, t]);
 
   return (
     <div className="space-y-6">
@@ -394,7 +412,7 @@ export function CompanyFormPageClient({
             {canCreate && (
               <>
                 <Link href={`/${organizationId}/documents/${formType}/new`}>
-                  <Button iconLeft={<Add size={16} />}>New Submission</Button>
+                  <Button iconLeft={<Add size={16} />}>{t('companyForm.newSubmission')}</Button>
                 </Link>
                 <Button
                   type="button"
@@ -402,7 +420,7 @@ export function CompanyFormPageClient({
                   iconLeft={<Upload size={16} />}
                   onClick={() => setIsUploadOpen(true)}
                 >
-                  Upload Evidence
+                  {t('companyForm.uploadEvidence')}
                 </Button>
               </>
             )}
@@ -414,7 +432,7 @@ export function CompanyFormPageClient({
                 onClick={handleExportCsv}
                 disabled={isExporting}
               >
-                {isExporting ? 'Exporting...' : 'Export CSV'}
+                {isExporting ? t('companyForm.exporting') : t('companyForm.exportCsv')}
               </Button>
             )}
           </div>
@@ -429,7 +447,7 @@ export function CompanyFormPageClient({
       <Tabs defaultValue={defaultTab}>
         <Stack gap="lg">
           <TabsList variant="underline">
-            <TabsTrigger value="submissions">Submissions</TabsTrigger>
+            <TabsTrigger value="submissions">{t('companyForm.submissionsTab')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="submissions">
@@ -440,7 +458,7 @@ export function CompanyFormPageClient({
                   <Search size={16} />
                 </InputGroupAddon>
                 <InputGroupInput
-                  placeholder="Search submissions..."
+                  placeholder={t('companyForm.searchPlaceholder')}
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                 />
@@ -453,9 +471,9 @@ export function CompanyFormPageClient({
                   <Catalog />
                 </EmptyMedia>
                 <EmptyHeader>
-                  <EmptyTitle>No submissions yet</EmptyTitle>
+                  <EmptyTitle>{t('companyForm.emptyTitle')}</EmptyTitle>
                   <EmptyDescription>
-                    Start by creating a new submission, click the New Submission button above.
+                    {t('companyForm.emptyDescription')}
                   </EmptyDescription>
                 </EmptyHeader>
               </Empty>
@@ -472,25 +490,25 @@ export function CompanyFormPageClient({
                 <TableHeader>
                   <TableRow>
                     <TableHead>
-                      <div className="whitespace-nowrap">Submission Date</div>
+                      <div className="whitespace-nowrap">{t('companyForm.columns.submissionDate')}</div>
                     </TableHead>
                     {isMeeting && (
                       <TableHead>
-                        <div className="whitespace-nowrap">Meeting Type</div>
+                        <div className="whitespace-nowrap">{t('companyForm.columns.meetingType')}</div>
                       </TableHead>
                     )}
                     <TableHead>
-                      <div className="whitespace-nowrap">Submitted By</div>
+                      <div className="whitespace-nowrap">{t('companyForm.columns.submittedBy')}</div>
                     </TableHead>
                     {formType === 'access-request' && (
                       <TableHead>
-                        <div className="whitespace-nowrap">Status</div>
+                        <div className="whitespace-nowrap">{t('companyForm.columns.status')}</div>
                       </TableHead>
                     )}
-                    {showSummaryColumn && <TableHead>Summary</TableHead>}
+                    {showSummaryColumn && <TableHead>{t('companyForm.columns.summary')}</TableHead>}
                     {isAdminOrOwner && (
                       <TableHead>
-                        <div className="whitespace-nowrap">Actions</div>
+                        <div className="whitespace-nowrap">{t('companyForm.columns.actions')}</div>
                       </TableHead>
                     )}
                   </TableRow>
@@ -501,7 +519,9 @@ export function CompanyFormPageClient({
                       ? String(submission.data[summaryField.key] ?? '')
                       : '';
                     const matrixSummary = matrixSummaryField
-                      ? `${getMatrixRowCount(submission.data[matrixSummaryField.key])} row(s)`
+                      ? t('companyForm.rowCount', {
+                          count: getMatrixRowCount(submission.data[matrixSummaryField.key]),
+                        })
                       : '';
                     const rowSummary = summaryField ? truncate(summaryValue, 80) : matrixSummary;
 
@@ -528,13 +548,13 @@ export function CompanyFormPageClient({
                         {isMeeting && (
                           <TableCell>
                             <Badge variant="secondary">
-                              {MEETING_TYPE_LABELS[submissionFormType] ?? submissionFormType}
+                              {meetingTypeLabel(t, submissionFormType)}
                             </Badge>
                           </TableCell>
                         )}
                         <TableCell>
                           <span className="block truncate">
-                            {submission.submittedBy?.name ?? submission.submittedBy?.email ?? 'Unknown'}
+                            {submission.submittedBy?.name ?? submission.submittedBy?.email ?? t('companyForm.unknown')}
                           </span>
                         </TableCell>
                         {formType === 'access-request' && (
@@ -571,7 +591,7 @@ export function CompanyFormPageClient({
                                     }}
                                   >
                                     <TrashCan size={16} />
-                                    Delete
+                                    {t('companyForm.delete')}
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
@@ -602,9 +622,9 @@ export function CompanyFormPageClient({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Upload Evidence</DialogTitle>
+            <DialogTitle>{t('companyForm.uploadTitle')}</DialogTitle>
             <DialogDescription>
-              Upload a PDF, image, Markdown, or CSV file as evidence for this document.
+              {t('companyForm.uploadDescription')}
             </DialogDescription>
           </DialogHeader>
           <div ref={setUploadSelectPortalRoot} className="min-w-0 space-y-4 overflow-visible">
@@ -612,7 +632,7 @@ export function CompanyFormPageClient({
               <Field>
                 <div className="flex flex-row items-center gap-4">
                   <div className="shrink-0">
-                    <FieldLabel htmlFor="upload-meeting-type">Meeting type</FieldLabel>
+                    <FieldLabel htmlFor="upload-meeting-type">{t('companyForm.meetingTypeLabel')}</FieldLabel>
                   </div>
                   <div className="min-w-0 flex-1">
                     <Select
@@ -620,9 +640,9 @@ export function CompanyFormPageClient({
                       onValueChange={(value) => setSelectedMeetingType(value as MeetingSubType)}
                     >
                       <SelectTrigger id="upload-meeting-type">
-                        <SelectValue placeholder="Select meeting type">
+                        <SelectValue placeholder={t('companyForm.meetingTypePlaceholder')}>
                           {meetingSubTypes.find((m) => m.value === selectedMeetingType)?.label ??
-                            'Select meeting type'}
+                            t('companyForm.meetingTypePlaceholder')}
                         </SelectValue>
                       </SelectTrigger>
                       <SelectContent container={uploadSelectPortalRoot}>
@@ -657,7 +677,7 @@ export function CompanyFormPageClient({
               onClick={() => setIsUploadOpen(false)}
               disabled={isUploading}
             >
-              Cancel
+              {t('companyForm.cancel')}
             </Button>
             <Button
               type="button"
@@ -665,7 +685,7 @@ export function CompanyFormPageClient({
               disabled={!selectedFile || isUploading}
               loading={isUploading}
             >
-              Upload
+              {t('companyForm.upload')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -680,13 +700,13 @@ export function CompanyFormPageClient({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete submission</AlertDialogTitle>
+            <AlertDialogTitle>{t('companyForm.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this submission? This action cannot be undone.
+              {t('companyForm.deleteDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>{t('companyForm.cancel')}</AlertDialogCancel>
             <Button
               type="button"
               variant="destructive"
@@ -694,7 +714,7 @@ export function CompanyFormPageClient({
               disabled={isDeleting}
               loading={isDeleting}
             >
-              {isDeleting ? 'Deleting...' : 'Delete'}
+              {isDeleting ? t('companyForm.deleting') : t('companyForm.delete')}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

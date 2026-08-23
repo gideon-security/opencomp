@@ -41,6 +41,7 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -53,6 +54,8 @@ import {
 } from './submission-utils';
 
 type Step = 1 | 2 | 3 | 4;
+
+type DocumentsTranslator = ReturnType<typeof useTranslations<'documents'>>;
 
 async function fileToBase64(file: File): Promise<string> {
   return await new Promise((resolve, reject) => {
@@ -78,17 +81,19 @@ function MatrixCellControl({
   column,
   value,
   onChange,
+  t,
 }: {
   id: string;
   column: MatrixColumnDefinition;
   value: string;
   onChange: (value: string) => void;
+  t: DocumentsTranslator;
 }) {
   if (column.type === 'select' && column.options) {
     return (
       <Select value={value} onValueChange={(next) => onChange(next ?? '')}>
         <SelectTrigger id={id}>
-          <SelectValue placeholder={column.placeholder ?? 'Select...'} />
+          <SelectValue placeholder={column.placeholder ?? t('submissionWizard.selectPlaceholder')} />
         </SelectTrigger>
         <SelectContent>
           {column.options.map((option) => (
@@ -118,6 +123,7 @@ export function CompanySubmissionWizard({
   organizationId: string;
   formType: EvidenceFormType;
 }) {
+  const t = useTranslations('documents');
   const router = useRouter();
   const [step, setStep] = useState<Step>(1);
   const [uploadingField, setUploadingField] = useState<string | null>(null);
@@ -257,16 +263,16 @@ export function CompanySubmissionWizard({
       );
 
       if (response.error || !response.data) {
-        throw new Error(response.error ?? 'Upload failed');
+        throw new Error(response.error ?? t('submissionWizard.uploadFailed'));
       }
 
       setValue(fieldKey as never, response.data as never, {
         shouldDirty: true,
         shouldValidate: true,
       });
-      toast.success('File uploaded');
+      toast.success(t('submissionWizard.fileUploaded'));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'File upload failed');
+      toast.error(error instanceof Error ? error.message : t('submissionWizard.fileUploadFailed'));
     } finally {
       setUploadingField(null);
     }
@@ -344,7 +350,9 @@ export function CompanySubmissionWizard({
 
           const inputId = `${field.key}-${rowIndex}-${column.key}`;
           document.getElementById(inputId)?.focus();
-          toast.error(`Complete "${column.label}" in row ${rowIndex + 1} to continue`);
+          toast.error(
+            t('submissionWizard.completeCellInRow', { label: column.label, row: rowIndex + 1 }),
+          );
           return false;
         }
       }
@@ -397,14 +405,14 @@ export function CompanySubmissionWizard({
         const errorData = await response.json().catch(() => null);
         setAnalysisError(
           (errorData as { error?: string } | null)?.error ??
-            'AI analysis unavailable. You may submit without analysis.',
+            t('submissionWizard.aiAnalysisUnavailable'),
         );
         return;
       }
       const result = (await response.json()) as EvidenceFormAnalysisResult;
       setAnalysisResult(result);
     } catch {
-      setAnalysisError('AI analysis unavailable. You may submit without analysis.');
+      setAnalysisError(t('submissionWizard.aiAnalysisUnavailable'));
     } finally {
       setIsAnalyzing(false);
     }
@@ -417,7 +425,7 @@ export function CompanySubmissionWizard({
 
     const isValid = await trigger(keys as never, { shouldFocus: true });
     if (!isValid) {
-      toast.error('Complete required fields before continuing');
+      toast.error(t('submissionWizard.completeFieldsToContinue'));
       return;
     }
     setStep(2);
@@ -429,7 +437,7 @@ export function CompanySubmissionWizard({
       const isValid =
         keys.length === 0 ? true : await trigger(keys as never, { shouldFocus: true });
       if (!isValid) {
-        toast.error('Complete required fields before continuing');
+        toast.error(t('submissionWizard.completeFieldsToContinue'));
         return;
       }
       setStep(3);
@@ -444,7 +452,7 @@ export function CompanySubmissionWizard({
     ];
     const isValid = keys.length === 0 ? true : await trigger(keys as never, { shouldFocus: true });
     if (!isValid) {
-      toast.error('Complete required fields before reviewing');
+      toast.error(t('submissionWizard.completeFieldsToReview'));
       return;
     }
     if (hasAiAnalysis) {
@@ -460,7 +468,7 @@ export function CompanySubmissionWizard({
     const keys = [...fileFields.map((f) => f.key), ...matrixFields.map((f) => f.key)];
     const isValid = keys.length === 0 ? true : await trigger(keys as never, { shouldFocus: true });
     if (!isValid) {
-      toast.error('Complete required fields before reviewing');
+      toast.error(t('submissionWizard.completeFieldsToReview'));
       return;
     }
 
@@ -489,7 +497,7 @@ export function CompanySubmissionWizard({
       return;
     }
 
-    toast.success('Submission saved');
+    toast.success(t('submissionWizard.submissionSaved'));
     router.push(`/${organizationId}/documents/${formType}`);
     router.refresh();
   };
@@ -504,17 +512,17 @@ export function CompanySubmissionWizard({
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {isMeeting && (
                 <Field>
-                  <FieldLabel htmlFor="meetingType">Meeting type</FieldLabel>
+                  <FieldLabel htmlFor="meetingType">{t('submissionWizard.meetingTypeLabel')}</FieldLabel>
                   <Text size="sm" variant="muted">
-                    Select the type of meeting to record
+                    {t('submissionWizard.meetingTypeHelper')}
                   </Text>
                   <Select
                     value={selectedMeetingType}
                     onValueChange={(value) => setSelectedMeetingType(value as MeetingSubType)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select meeting type">
-                        {selectedMeetingLabel ?? 'Select meeting type'}
+                      <SelectValue placeholder={t('submissionWizard.meetingTypePlaceholder')}>
+                        {selectedMeetingLabel ?? t('submissionWizard.meetingTypePlaceholder')}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
@@ -534,9 +542,9 @@ export function CompanySubmissionWizard({
                   control={control}
                   render={({ field: controllerField, fieldState }) => (
                     <Field>
-                      <FieldLabel htmlFor="submissionDate">Submission date</FieldLabel>
+                      <FieldLabel htmlFor="submissionDate">{t('submissionWizard.submissionDateLabel')}</FieldLabel>
                       <Text size="sm" variant="muted">
-                        Date this evidence was submitted
+                        {t('submissionWizard.submissionDateHelper')}
                       </Text>
                       <Input
                         id="submissionDate"
@@ -588,8 +596,15 @@ export function CompanySubmissionWizard({
                             onValueChange={controllerField.onChange}
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder={`Select ${field.label.toLowerCase()}`}>
-                                {selectedOption?.label ?? `Select ${field.label.toLowerCase()}`}
+                              <SelectValue
+                                placeholder={t('submissionWizard.selectField', {
+                                  field: field.label.toLowerCase(),
+                                })}
+                              >
+                                {selectedOption?.label ??
+                                  t('submissionWizard.selectField', {
+                                    field: field.label.toLowerCase(),
+                                  })}
                               </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
@@ -616,13 +631,15 @@ export function CompanySubmissionWizard({
             {useFourSteps ? (
               <>
                 {textareaFields.length === 0 && (
-                  <Text variant="muted">No additional fields required for this step.</Text>
+                  <Text variant="muted">
+                    {t('submissionWizard.noAdditionalFieldsStep')}
+                  </Text>
                 )}
                 {textareaFields.some((f) => f.placeholder) && (
                   <Alert
                     variant="warning"
-                    title="Reference only"
-                    description="The pre-filled content below is provided as a template. You must review and edit it to reflect your organization's actual information before submitting."
+                    title={t('submissionWizard.referenceOnly')}
+                    description={t('submissionWizard.referenceOnlyDescription')}
                   />
                 )}
                 {textareaFields.map((field) => (
@@ -653,8 +670,9 @@ export function CompanySubmissionWizard({
                             rows={12}
                           />
                           <p className="text-xs text-muted-foreground">
-                            {String(controllerField.value ?? '').length}/10,000 characters &bull;
-                            Markdown supported
+                            {t('submissionWizard.charactersCount', {
+                              count: String(controllerField.value ?? '').length,
+                            })}
                           </p>
                         </div>
                         <FieldError errors={[fieldState.error]} />
@@ -668,7 +686,9 @@ export function CompanySubmissionWizard({
                 {step2OnlyFields.length === 0 &&
                   extendedFields.length === 0 &&
                   matrixFields.length === 0 && (
-                    <Text variant="muted">No additional fields required for this form.</Text>
+                    <Text variant="muted">
+                      {t('submissionWizard.noAdditionalFieldsForm')}
+                    </Text>
                   )}
                 {step2OnlyFields.map((field) => (
                   <Controller
@@ -698,8 +718,8 @@ export function CompanySubmissionWizard({
                 {extendedFields.some((f) => f.type === 'textarea' && f.placeholder) && (
                   <Alert
                     variant="warning"
-                    title="Reference only"
-                    description="The pre-filled content below is provided as a template. You must review and edit it to reflect your organization's actual information before submitting."
+                    title={t('submissionWizard.referenceOnly')}
+                    description={t('submissionWizard.referenceOnlyDescription')}
                   />
                 )}
                 {extendedFields.map((field) => (
@@ -731,8 +751,9 @@ export function CompanySubmissionWizard({
                               rows={12}
                             />
                             <p className="text-xs text-muted-foreground">
-                              {String(controllerField.value ?? '').length}/10,000 characters &bull;
-                              Markdown supported
+                              {t('submissionWizard.charactersCount', {
+                                count: String(controllerField.value ?? '').length,
+                              })}
                             </p>
                           </div>
                         )}
@@ -790,7 +811,7 @@ export function CompanySubmissionWizard({
                             />
                             {uploadingField === field.key && (
                               <Text size="sm" variant="muted">
-                                Uploading file...
+                                {t('submissionWizard.uploadingFile')}
                               </Text>
                             )}
                             {controllerField.value &&
@@ -799,8 +820,9 @@ export function CompanySubmissionWizard({
                               typeof (controllerField.value as { fileName?: unknown }).fileName ===
                                 'string' && (
                                 <Text size="sm" variant="muted">
-                                  Uploaded:{' '}
-                                  {(controllerField.value as { fileName: string }).fileName}
+                                  {t('submissionWizard.uploaded', {
+                                    name: (controllerField.value as { fileName: string }).fileName,
+                                  })}
                                 </Text>
                               )}
                           </div>
@@ -830,7 +852,7 @@ export function CompanySubmissionWizard({
                           >
                             <div className="mb-3 flex items-center justify-between">
                               <Text size="sm" weight="medium">
-                                Row {rowIndex + 1}
+                                {t('submissionWizard.row', { number: rowIndex + 1 })}
                               </Text>
                               <Button
                                 type="button"
@@ -838,7 +860,7 @@ export function CompanySubmissionWizard({
                                 onClick={() => removeMatrixRow(field, rowIndex)}
                                 disabled={rowValues.length <= 1}
                               >
-                                Remove row
+                                {t('submissionWizard.removeRow')}
                               </Button>
                             </div>
                             <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
@@ -859,6 +881,7 @@ export function CompanySubmissionWizard({
                                     onChange={(value) =>
                                       updateMatrixCell(field, rowIndex, column.key, value)
                                     }
+                                    t={t}
                                   />
                                 </Field>
                               ))}
@@ -870,7 +893,7 @@ export function CompanySubmissionWizard({
                           variant="secondary"
                           onClick={() => addMatrixRow(field)}
                         >
-                          {field.addRowLabel ?? 'Add row'}
+                          {field.addRowLabel ?? t('submissionWizard.addRow')}
                         </Button>
                       </div>
                       <FieldError errors={[matrixError as never]} />
@@ -885,7 +908,7 @@ export function CompanySubmissionWizard({
         {step === 3 && useFourSteps && (
           <FieldGroup>
             {step3Fields.length === 0 && (
-              <Text variant="muted">No additional fields required for this step.</Text>
+              <Text variant="muted">{t('submissionWizard.noAdditionalFieldsStep')}</Text>
             )}
             {fileFields.map((field) => (
               <Controller
@@ -950,7 +973,7 @@ export function CompanySubmissionWizard({
                       />
                       {uploadingField === field.key && (
                         <Text size="sm" variant="muted">
-                          Uploading file...
+                          {t('submissionWizard.uploadingFile')}
                         </Text>
                       )}
                       {controllerField.value &&
@@ -959,7 +982,9 @@ export function CompanySubmissionWizard({
                         typeof (controllerField.value as { fileName?: unknown }).fileName ===
                           'string' && (
                           <Text size="sm" variant="muted">
-                            Uploaded: {(controllerField.value as { fileName: string }).fileName}
+                            {t('submissionWizard.uploaded', {
+                              name: (controllerField.value as { fileName: string }).fileName,
+                            })}
                           </Text>
                         )}
                     </div>
@@ -990,7 +1015,7 @@ export function CompanySubmissionWizard({
                       >
                         <div className="mb-3 flex items-center justify-between">
                           <Text size="sm" weight="medium">
-                            Row {rowIndex + 1}
+                            {t('submissionWizard.row', { number: rowIndex + 1 })}
                           </Text>
                           <Button
                             type="button"
@@ -998,7 +1023,7 @@ export function CompanySubmissionWizard({
                             onClick={() => removeMatrixRow(field, rowIndex)}
                             disabled={rowValues.length <= 1}
                           >
-                            Remove row
+                            {t('submissionWizard.removeRow')}
                           </Button>
                         </div>
                         <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
@@ -1019,6 +1044,7 @@ export function CompanySubmissionWizard({
                                 onChange={(value) =>
                                   updateMatrixCell(field, rowIndex, column.key, value)
                                 }
+                                t={t}
                               />
                             </Field>
                           ))}
@@ -1028,7 +1054,7 @@ export function CompanySubmissionWizard({
 
                     <div>
                       <Button type="button" variant="secondary" onClick={() => addMatrixRow(field)}>
-                        {field.addRowLabel ?? 'Add row'}
+                        {field.addRowLabel ?? t('submissionWizard.addRow')}
                       </Button>
                     </div>
                   </div>
@@ -1042,7 +1068,7 @@ export function CompanySubmissionWizard({
         {isReviewStep && (
           <div className="space-y-4">
             <Text size="sm" variant="muted">
-              Review your submission before saving.
+              {t('submissionWizard.reviewHint')}
             </Text>
 
             {hasAiAnalysis && (
@@ -1050,12 +1076,12 @@ export function CompanySubmissionWizard({
                 <div className="flex items-center gap-2">
                   <Text size="sm" weight="medium">
                     {isTabletopExercise
-                      ? 'Exercise completeness analysis'
-                      : 'Security topic analysis'}
+                      ? t('submissionWizard.exerciseAnalysisTitle')
+                      : t('submissionWizard.securityAnalysisTitle')}
                   </Text>
                   {isAnalyzing && (
                     <span className="text-xs text-muted-foreground animate-pulse">
-                      Analyzing...
+                      {t('submissionWizard.analyzing')}
                     </span>
                   )}
                 </div>
@@ -1106,7 +1132,7 @@ export function CompanySubmissionWizard({
                 {isMeeting && (
                   <div className="grid grid-cols-1 gap-2 p-4 lg:grid-cols-3">
                     <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                      Meeting type
+                      {t('submissionWizard.meetingTypeLabel')}
                     </div>
                     <div className="lg:col-span-2 text-sm">{selectedMeetingLabel}</div>
                   </div>
@@ -1114,7 +1140,7 @@ export function CompanySubmissionWizard({
                 {activeFormDefinition.submissionDateMode === 'custom' && (
                   <div className="grid grid-cols-1 gap-2 p-4 lg:grid-cols-3">
                     <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                      Submission date
+                      {t('submissionWizard.submissionDateLabel')}
                     </div>
                     <div className="lg:col-span-2 text-sm whitespace-pre-wrap wrap-anywhere">
                       {String(values.submissionDate ?? '—')}
@@ -1142,7 +1168,7 @@ export function CompanySubmissionWizard({
                                     className="rounded-md border border-border p-3"
                                   >
                                     <Text size="sm" weight="medium">
-                                      Row {rowIndex + 1}
+                                      {t('submissionWizard.row', { number: rowIndex + 1 })}
                                     </Text>
                                     <div className="mt-2 grid grid-cols-1 gap-2 lg:grid-cols-2">
                                       {field.columns.map((column) => (
@@ -1172,27 +1198,27 @@ export function CompanySubmissionWizard({
 
         <div className="flex items-center justify-between">
           <Button type="button" variant="ghost" onClick={handleCancel}>
-            Cancel
+            {t('submissionWizard.cancel')}
           </Button>
           <div className="flex items-center gap-2">
             {step > 1 && (
               <Button type="button" variant="secondary" onClick={() => setStep((step - 1) as Step)}>
-                Back
+                {t('submissionWizard.back')}
               </Button>
             )}
             {step === 1 && (
               <Button type="button" onClick={goToStepTwo}>
-                Continue
+                {t('submissionWizard.continue')}
               </Button>
             )}
             {step === 2 && (
               <Button type="button" onClick={goToStepThree}>
-                {useFourSteps ? 'Continue' : 'Review'}
+                {useFourSteps ? t('submissionWizard.continue') : t('submissionWizard.reviewButton')}
               </Button>
             )}
             {step === 3 && useFourSteps && (
               <Button type="button" onClick={goToStepFour}>
-                Review
+                {t('submissionWizard.reviewButton')}
               </Button>
             )}
             {(step === 3 && !useFourSteps) || (step === 4 && useFourSteps) ? (
@@ -1204,7 +1230,7 @@ export function CompanySubmissionWizard({
                   !isAnalyzing &&
                   analysisResult && (
                     <Button type="button" variant="ghost" onClick={() => setAnalysisSkipped(true)}>
-                      Submit anyway
+                      {t('submissionWizard.submitAnyway')}
                     </Button>
                   )}
                 <Button
@@ -1220,10 +1246,10 @@ export function CompanySubmissionWizard({
                   }
                 >
                   {isSubmitting
-                    ? 'Submitting...'
+                    ? t('submissionWizard.submitting')
                     : isAnalyzing
-                      ? 'Analyzing...'
-                      : 'Submit evidence'}
+                      ? t('submissionWizard.analyzing')
+                      : t('submissionWizard.submitEvidence')}
                 </Button>
               </>
             ) : null}
@@ -1234,15 +1260,16 @@ export function CompanySubmissionWizard({
       <AlertDialog open={isCancelConfirmOpen} onOpenChange={setIsCancelConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Discard submission?</AlertDialogTitle>
+            <AlertDialogTitle>{t('submissionWizard.discardTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              You have unsaved changes. Leaving now discards everything you have entered on
-              every step of this submission, and it cannot be recovered.
+              {t('submissionWizard.discardDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Keep editing</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDiscardConfirmed}>Discard</AlertDialogAction>
+            <AlertDialogCancel>{t('submissionWizard.keepEditing')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDiscardConfirmed}>
+              {t('submissionWizard.discard')}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

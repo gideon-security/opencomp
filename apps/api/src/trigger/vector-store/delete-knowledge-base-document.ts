@@ -83,7 +83,7 @@ export const deleteKnowledgeBaseDocumentTask = task({
         };
       }
 
-      // Delete all embeddings in batches (Upstash Vector supports batch delete)
+      // Delete all embeddings in batches
       const batchSize = 100;
       let deletedCount = 0;
 
@@ -249,7 +249,7 @@ export const deleteKnowledgeBaseDocumentTask = task({
                   sourceId: e.sourceId,
                   updatedAt: e.updatedAt,
                 })),
-                note: 'These chunks may need manual deletion or there may be a synchronization issue with Upstash Vector',
+                note: 'These chunks may need manual deletion or there may be a synchronization issue with the vector store',
               },
             );
           }

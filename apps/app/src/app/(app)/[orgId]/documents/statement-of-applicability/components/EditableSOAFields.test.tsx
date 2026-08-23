@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { describe, expect, it, vi } from 'vitest';
 import { EditableSOAFields } from './EditableSOAFields';
+
+mockNextIntl();
 
 vi.mock('../hooks/useSOADocument', () => ({
   useSOADocument: () => ({
@@ -25,6 +28,6 @@ describe('EditableSOAFields', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: 'Edit answer' })).toHaveClass('opacity-100');
+    expect(screen.getByRole('button', { name: 'soa.editAnswer' })).toHaveClass('opacity-100');
   });
 });

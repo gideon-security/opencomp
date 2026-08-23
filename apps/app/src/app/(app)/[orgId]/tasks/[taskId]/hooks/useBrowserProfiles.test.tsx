@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/api-client';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { SWRConfig } from 'swr';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -88,7 +88,9 @@ describe('useBrowserProfiles', () => {
     });
     // fetchProfiles must not reject on a failed refresh (call sites await it
     // mid-flow, e.g. right after connecting a vendor).
-    await result.current.fetchProfiles();
+    await act(async () => {
+      await result.current.fetchProfiles();
+    });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
     // The stale-but-real list is kept — not blanked into "no connections".

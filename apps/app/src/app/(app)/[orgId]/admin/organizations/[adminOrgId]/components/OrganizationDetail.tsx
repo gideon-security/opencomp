@@ -18,6 +18,7 @@ import {
   Switch,
   Text,
 } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -42,6 +43,7 @@ export function OrganizationDetail({
   currentOrgId: string;
   hasAccess: boolean;
 }) {
+  const t = useTranslations('admin');
   const router = useRouter();
   const [bgCheckEnabled, setBgCheckEnabled] = useState(org.backgroundCheckStepEnabled);
   const [savingBgCheck, setSavingBgCheck] = useState(false);
@@ -62,12 +64,14 @@ export function OrganizationDetail({
 
     if (res.error) {
       setBgCheckEnabled(previous);
-      toast.error('Failed to update background check setting');
+      toast.error(t('organizations.detail.bgCheckUpdateError'));
       return;
     }
 
     toast.success(
-      next ? 'Background checks now required' : 'Background checks bypassed for this organization',
+      next
+        ? t('organizations.detail.bgCheckEnabledToast')
+        : t('organizations.detail.bgCheckDisabledToast'),
     );
   };
 
@@ -93,7 +97,7 @@ export function OrganizationDetail({
 
     if (res.error) {
       setIsInternal(previous);
-      toast.error('Failed to update internal-organization setting');
+      toast.error(t('organizations.detail.internalUpdateError'));
       return;
     }
 
@@ -106,8 +110,8 @@ export function OrganizationDetail({
 
     toast.success(
       next
-        ? 'Marked as internal — platform admins can now participate here'
-        : 'Unmarked as internal — platform admins are excluded again',
+        ? t('organizations.detail.internalEnabledToast')
+        : t('organizations.detail.internalDisabledToast'),
     );
   };
 
@@ -118,54 +122,64 @@ export function OrganizationDetail({
     <Stack gap="lg">
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <InfoCard
-          label="Status"
-          value={hasAccess ? 'Active' : 'Inactive'}
+          label={t('organizations.detail.status')}
+          value={hasAccess ? t('organizations.detail.active') : t('organizations.detail.inactive')}
           variant={hasAccess ? 'default' : 'destructive'}
         />
-        <InfoCard label="Members" value={String(org.members.length)} />
-        <InfoCard label="Created" value={new Date(org.createdAt).toLocaleDateString()} />
-        <InfoCard label="Onboarding" value={org.onboardingCompleted ? 'Completed' : 'Pending'} />
+        <InfoCard
+          label={t('organizations.detail.members')}
+          value={String(org.members.length)}
+        />
+        <InfoCard
+          label={t('organizations.detail.created')}
+          value={new Date(org.createdAt).toLocaleDateString()}
+        />
+        <InfoCard
+          label={t('organizations.detail.onboarding')}
+          value={
+            org.onboardingCompleted
+              ? t('organizations.detail.completed')
+              : t('organizations.detail.pending')
+          }
+        />
       </div>
 
-      <Section title="Compliance settings">
+      <Section title={t('organizations.detail.complianceSettings')}>
         <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
           <div className="flex-1">
-            <Text weight="medium">Require background checks</Text>
+            <Text weight="medium">{t('organizations.detail.requireBackgroundChecks')}</Text>
             <Text size="sm" variant="muted">
-              When off, this org&apos;s members do not need to pass a background check to count
-              toward people completion. Existing requests stay accessible.
+              {t('organizations.detail.backgroundChecksDescription')}
             </Text>
           </div>
           <Switch
             checked={bgCheckEnabled}
             disabled={savingBgCheck}
             onCheckedChange={handleToggleBgCheck}
-            aria-label="Require background checks"
+            aria-label={t('organizations.detail.requireBackgroundChecks')}
           />
         </div>
       </Section>
 
-      <Section title="Platform settings">
+      <Section title={t('organizations.detail.platformSettings')}>
         <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
           <div className="flex-1">
-            <Text weight="medium">Internal organization</Text>
+            <Text weight="medium">{t('organizations.detail.internalOrganization')}</Text>
             <Text size="sm" variant="muted">
-              For OpenComp-operated orgs only. When on, platform admins are treated as real members
-              here — assignable, counted in compliance, and notified. Leave off for every customer
-              organization.
+              {t('organizations.detail.internalOrganizationDescription')}
             </Text>
           </div>
           <Switch
             checked={isInternal}
             disabled={savingInternal}
             onCheckedChange={handleRequestToggleInternal}
-            aria-label="Internal organization"
+            aria-label={t('organizations.detail.internalOrganization')}
           />
         </div>
       </Section>
 
       {isLoading ? (
-        <Section title="Recent Activity">
+        <Section title={t('organizations.detail.recentActivity')}>
           <div className="space-y-3">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="flex items-center gap-3">
@@ -178,7 +192,7 @@ export function OrganizationDetail({
       ) : (
         <RecentAuditLogs
           logs={logs}
-          title="Recent Activity"
+          title={t('organizations.detail.recentActivity')}
           total={total}
           hasMore={hasMore}
           onLoadMore={loadMore}
@@ -196,19 +210,21 @@ export function OrganizationDetail({
           <AlertDialogHeader>
             <AlertDialogTitle>
               {pendingInternal
-                ? 'Mark as internal organization?'
-                : 'Remove internal organization?'}
+                ? t('organizations.detail.markInternalTitle')
+                : t('organizations.detail.removeInternalTitle')}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {pendingInternal
-                ? 'Platform admins will be treated as real members here — assignable, counted in compliance, and notified. Only enable this for OpenComp-operated orgs, never a customer organization.'
-                : 'Platform admins will be excluded from this organization again — removed from assignments, compliance counts, and notifications.'}
+                ? t('organizations.detail.markInternalDescription')
+                : t('organizations.detail.removeInternalDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t('organizations.detail.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirmToggleInternal}>
-              {pendingInternal ? 'Mark as internal' : 'Remove internal'}
+              {pendingInternal
+                ? t('organizations.detail.markInternalAction')
+                : t('organizations.detail.removeInternalAction')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

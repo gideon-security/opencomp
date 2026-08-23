@@ -529,7 +529,7 @@ describe('runLinkage onPhase', () => {
 
 describe('runLinkage waits for the vector index to drain before matching', () => {
   // ENG-221: 6 of 11 risks landed with 0 cosine candidates because their
-  // queries fired before Upstash had finished indexing the just-upserted
+  // queries fired before the vector index had finished indexing the just-upserted
   // task vectors. These tests pin the fix in place.
 
   it('emits waiting-for-index between embedding and matching phases', async () => {
@@ -767,7 +767,7 @@ describe('runLinkage waits for the vector index to drain before matching', () =>
 describe('runLinkage prunes orphan task vectors before matching (CS-681)', () => {
   // The real root cause: findSimilarTasks filters only by org + sourceType, so
   // stale/orphan task vectors (deleted tasks, or tasks whose controls were all
-  // archived) accumulate in Upstash — lib/embedding has no delete path — and
+  // archived) accumulate in the vector store — lib/embedding has no delete path — and
   // crowd the live tasks out of the top-K cosine recall. When a risk's nearest
   // vectors are ALL orphans, post-recall filtering can't help (nothing real is
   // recalled), so the index itself must be cleaned before matching.
@@ -847,7 +847,7 @@ describe('runLinkage prunes orphan task vectors before matching (CS-681)', () =>
     findSimilarTasksMock.mockResolvedValueOnce([
       { id: 'tsk_a', score: 0.9, department: Departments.hr },
     ]);
-    pruneMock.mockRejectedValueOnce(new Error('upstash down'));
+    pruneMock.mockRejectedValueOnce(new Error('vector store down'));
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     const result = await runLinkage({ organizationId: 'org_1', riskId: 'rsk_1' });

@@ -17,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideo
 import { Alert, AlertDescription } from '@trycompai/design-system';
 import { CheckmarkFilled, Copy, Launch, Renew, WarningFilled } from '@trycompai/design-system/icons';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useTrustPortalSettings } from '@/hooks/use-trust-portal-settings';
 import { useMemo, useState } from 'react';
@@ -24,17 +25,20 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-const trustPortalDomainSchema = z.object({
-  domain: z
-    .string()
-    .min(1, 'Domain cannot be empty.')
-    .max(63, 'Domain too long. Max 63 chars.')
-    .regex(
-      /^(?!-)[A-Za-z0-9-]+([-\.]{1}[a-z0-9]+)*\.[A-Za-z]{2,63}$/,
-      'Invalid domain format. Use format like sub.example.com',
-    )
-    .trim(),
-});
+const createTrustPortalDomainSchema = (
+  t: ReturnType<typeof useTranslations<'trust.domain'>>,
+) =>
+  z.object({
+    domain: z
+      .string()
+      .min(1, t('domainRequired'))
+      .max(63, t('domainTooLong'))
+      .regex(
+        /^(?!-)[A-Za-z0-9-]+([-\.]{1}[a-z0-9]+)*\.[A-Za-z]{2,63}$/,
+        t('domainInvalidFormat'),
+      )
+      .trim(),
+  });
 
 export function TrustPortalDomain({
   domain: initialDomain,
@@ -102,6 +106,8 @@ export function TrustPortalDomain({
 
   const { hasPermission } = usePermissions();
   const canUpdate = hasPermission('trust', 'update');
+  const t = useTranslations('trust.domain');
+  const trustPortalDomainSchema = useMemo(() => createTrustPortalDomainSchema(t), [t]);
   const { submitCustomDomain, checkDns } = useTrustPortalSettings();
   const [isUpdatingDomain, setIsUpdatingDomain] = useState(false);
   const [isCheckingDns, setIsCheckingDns] = useState(false);
@@ -118,13 +124,13 @@ export function TrustPortalDomain({
     try {
       const result = await submitCustomDomain(data.domain);
       if (result && typeof result === 'object' && 'success' in result && result.success === false) {
-        const errorMsg = 'error' in result ? (result.error as string) : 'Failed to update custom domain.';
+        const errorMsg = 'error' in result ? (result.error as string) : t('updateFailed');
         toast.error(errorMsg);
         return;
       }
-      toast.success('Custom domain update submitted, please verify your DNS records.');
+      toast.success(t('updateSubmitted'));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update custom domain.');
+      toast.error(error instanceof Error ? error.message : t('updateFailed'));
     } finally {
       setIsUpdatingDomain(false);
     }
@@ -132,7 +138,7 @@ export function TrustPortalDomain({
 
   const handleCopy = (text: string, type: string) => {
     navigator.clipboard.writeText(text);
-    toast.success(`${type} copied to clipboard`);
+    toast.success(t('copiedToClipboard', { type }));
   };
 
   const handleCheckDnsRecord = async () => {
@@ -145,9 +151,7 @@ export function TrustPortalDomain({
         toast.error(data.error as string);
       }
     } catch {
-      toast.error(
-        'DNS record verification failed, check the records are valid or try again later.',
-      );
+      toast.error(t('dnsCheckFailed'));
     } finally {
       setIsCheckingDns(false);
     }
@@ -158,9 +162,9 @@ export function TrustPortalDomain({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <Card>
           <CardHeader>
-            <CardTitle>Configure Custom Domain</CardTitle>
+            <CardTitle>{t('title')}</CardTitle>
             <CardDescription>
-              You can use a custom domain (like trust.example.com) to brand your trust portal.
+              {t('description')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -171,7 +175,7 @@ export function TrustPortalDomain({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2">
-                      Custom Domain
+                      {t('customDomainLabel')}
                       {initialDomain !== '' &&
                         (isEffectivelyVerified ? (
                           <TooltipProvider>
@@ -179,7 +183,7 @@ export function TrustPortalDomain({
                               <TooltipTrigger type="button">
                                 <CheckmarkFilled size={16} className="text-success" />
                               </TooltipTrigger>
-                              <TooltipContent>Domain is verified</TooltipContent>
+                              <TooltipContent>{t('domainVerified')}</TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         ) : (
@@ -188,7 +192,7 @@ export function TrustPortalDomain({
                               <TooltipTrigger type="button">
                                 <WarningFilled size={16} className="text-destructive" />
                               </TooltipTrigger>
-                              <TooltipContent>Domain is not verified yet</TooltipContent>
+                              <TooltipContent>{t('domainNotVerified')}</TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         ))}
@@ -216,7 +220,7 @@ export function TrustPortalDomain({
                           {isCheckingDns ? (
                             <Renew size={16} className="mr-1 animate-spin" />
                           ) : null}
-                          Check DNS record
+                          {t('checkDnsRecord')}
                         </Button>
                       )}
                     </div>
@@ -232,16 +236,18 @@ export function TrustPortalDomain({
                     {verificationInfo && (
                       <Alert variant="warning">
                         <AlertDescription>
-                          This domain is linked to another Vercel account. To use it with this
-                          project, add a {verificationInfo.type} record at{' '}
-                          {verificationInfo.domain} to verify ownership. You can remove the record
-                          after verification is complete.{' '}
+
+                          {t('linkedOtherAccount', {
+                            recordType: verificationInfo.type,
+                            domain: verificationInfo.domain,
+                          })}{' '}
                           <a
                             href="https://vercel.com/docs/domains/troubleshooting#misconfigured-domain-issues"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            Learn more <Launch size={14} className="mb-0.5 inline-block" />
+
+                            {t('learnMore')} <Launch size={14} className="mb-0.5 inline-block" />
                           </a>
                         </AlertDescription>
                       </Alert>
@@ -249,17 +255,17 @@ export function TrustPortalDomain({
                     {vercelReportsMisconfigured && (
                       <Alert variant="warning">
                         <AlertDescription>
-                          Vercel reports this domain is still misconfigured. The CNAME value must
-                          match exactly: <code className="font-mono">{cnameTarget ?? 'unknown'}</code>. Update it at
-                          your DNS provider and try again.
+                          {t('misconfiguredPrefix')}{' '}
+                          <code className="font-mono">{cnameTarget ?? 'unknown'}</code>
+                          {t('misconfiguredSuffix')}
                         </AlertDescription>
                       </Alert>
                     )}
                     {!cnameTarget && !domainStatusLoading && (
                       <Alert variant="warning">
                         <AlertDescription>
-                          Could not fetch the recommended CNAME target from Vercel. Please refresh
-                          in a moment — do not guess the value.
+
+                          {t('cnameFetchFailed')}
                         </AlertDescription>
                       </Alert>
                     )}
@@ -268,10 +274,10 @@ export function TrustPortalDomain({
                         <table className="hidden w-full table-fixed lg:table">
                           <thead>
                             <tr className="[&_th]:px-3 [&_th]:py-2 [&_th]:text-left">
-                              <th className="w-20">Verified</th>
-                              <th className="w-16">Type</th>
-                              <th className="w-1/4">Name</th>
-                              <th>Value</th>
+                              <th className="w-20">{t('thVerified')}</th>
+                              <th className="w-16">{t('thType')}</th>
+                              <th className="w-1/4">{t('thName')}</th>
+                              <th>{t('thValue')}</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -291,7 +297,7 @@ export function TrustPortalDomain({
                                     variant="ghost"
                                     size="icon"
                                     type="button"
-                                    onClick={() => handleCopy(initialDomain, 'Name')}
+                                    onClick={() => handleCopy(initialDomain, t('copyName'))}
                                     className="h-6 w-6 shrink-0"
                                   >
                                     <Copy size={16} />
@@ -304,8 +310,8 @@ export function TrustPortalDomain({
                                     {cnameTarget ?? (
                                       <span className="text-muted-foreground italic">
                                         {domainStatusLoading
-                                          ? 'Loading from Vercel…'
-                                          : 'Unavailable — refresh to retry'}
+                                          ? t('loadingFromVercel')
+                                          : t('unavailableRetry')}
                                       </span>
                                     )}
                                   </span>
@@ -314,7 +320,7 @@ export function TrustPortalDomain({
                                     size="icon"
                                     type="button"
                                     onClick={() =>
-                                      cnameTarget && handleCopy(cnameTarget, 'Value')
+                                      cnameTarget && handleCopy(cnameTarget, t('copyValue'))
                                     }
                                     disabled={!cnameTarget}
                                     className="h-6 w-6 shrink-0"
@@ -341,7 +347,7 @@ export function TrustPortalDomain({
                                     size="icon"
                                     type="button"
                                     onClick={() =>
-                                      handleCopy(`opencomp-domain-verification=${orgId}`, 'Name')
+                                      handleCopy(`opencomp-domain-verification=${orgId}`, t('copyName'))
                                     }
                                     className="h-6 w-6 shrink-0"
                                   >
@@ -359,7 +365,7 @@ export function TrustPortalDomain({
                                     size="icon"
                                     type="button"
                                     onClick={() =>
-                                      handleCopy(`opencomp-domain-verification=${orgId}`, 'Value')
+                                      handleCopy(`opencomp-domain-verification=${orgId}`, t('copyValue'))
                                     }
                                     className="h-6 w-6 shrink-0"
                                   >
@@ -385,7 +391,7 @@ export function TrustPortalDomain({
                                       variant="ghost"
                                       size="icon"
                                       type="button"
-                                      onClick={() => handleCopy('_vercel', 'Name')}
+                                      onClick={() => handleCopy('_vercel', t('copyName'))}
                                       className="h-6 w-6 shrink-0"
                                     >
                                       <Copy size={16} />
@@ -401,7 +407,7 @@ export function TrustPortalDomain({
                                       variant="ghost"
                                       size="icon"
                                       type="button"
-                                      onClick={() => handleCopy(effectiveVercelTxtValue || '', 'Value')}
+                                      onClick={() => handleCopy(effectiveVercelTxtValue || '', t('copyValue'))}
                                       className="h-6 w-6 shrink-0"
                                     >
                                       <Copy size={16} />
@@ -423,14 +429,14 @@ export function TrustPortalDomain({
                             <span className="font-medium">CNAME</span>
                           </div>
                           <div>
-                            <div className="mb-1 font-medium">Name:</div>
+                            <div className="mb-1 font-medium">{t('nameColon')}</div>
                             <div className="flex items-center justify-between gap-2">
                               <span className="min-w-0 break-all">{form.watch('domain')}</span>
                               <Button
                                 variant="ghost"
                                 size="icon"
                                 type="button"
-                                onClick={() => handleCopy(form.watch('domain'), 'Name')}
+                                onClick={() => handleCopy(form.watch('domain'), t('copyName'))}
                                 className="h-6 w-6 shrink-0"
                               >
                                 <Copy size={16} />
@@ -438,14 +444,14 @@ export function TrustPortalDomain({
                             </div>
                           </div>
                           <div>
-                            <div className="mb-1 font-medium">Value:</div>
+                            <div className="mb-1 font-medium">{t('valueColon')}</div>
                             <div className="flex items-center justify-between gap-2">
                               <span className="min-w-0 break-all">
                                 {cnameTarget ?? (
                                   <span className="text-muted-foreground italic">
                                     {domainStatusLoading
-                                      ? 'Loading from Vercel…'
-                                      : 'Unavailable — refresh to retry'}
+                                      ? t('loadingFromVercel')
+                                      : t('unavailableRetry')}
                                   </span>
                                 )}
                               </span>
@@ -453,7 +459,7 @@ export function TrustPortalDomain({
                                 variant="ghost"
                                 size="icon"
                                 type="button"
-                                onClick={() => cnameTarget && handleCopy(cnameTarget, 'Value')}
+                                onClick={() => cnameTarget && handleCopy(cnameTarget, t('copyValue'))}
                                 disabled={!cnameTarget}
                                 className="h-6 w-6 shrink-0"
                               >
@@ -471,7 +477,7 @@ export function TrustPortalDomain({
                             <span className="font-medium">TXT</span>
                           </div>
                           <div>
-                            <div className="mb-1 font-medium">Name:</div>
+                            <div className="mb-1 font-medium">{t('nameColon')}</div>
                             <div className="flex items-center justify-between gap-2">
                               <span className="min-w-0 break-all">@</span>
                               <Button
@@ -479,7 +485,7 @@ export function TrustPortalDomain({
                                 size="icon"
                                 type="button"
                                 onClick={() =>
-                                  handleCopy(`opencomp-domain-verification=${orgId}`, 'Name')
+                                  handleCopy(`opencomp-domain-verification=${orgId}`, t('copyName'))
                                 }
                                 className="h-6 w-6 shrink-0"
                               >
@@ -488,7 +494,7 @@ export function TrustPortalDomain({
                             </div>
                           </div>
                           <div>
-                            <div className="mb-1 font-medium">Value:</div>
+                            <div className="mb-1 font-medium">{t('valueColon')}</div>
                             <div className="flex items-center justify-between gap-2">
                               <span className="min-w-0 break-all">
                                 opencomp-domain-verification={orgId}
@@ -498,7 +504,7 @@ export function TrustPortalDomain({
                                 size="icon"
                                 type="button"
                                 onClick={() =>
-                                  handleCopy(`opencomp-domain-verification=${orgId}`, 'Value')
+                                  handleCopy(`opencomp-domain-verification=${orgId}`, t('copyValue'))
                                 }
                                 className="h-6 w-6 shrink-0"
                               >
@@ -518,14 +524,14 @@ export function TrustPortalDomain({
                                 <span className="font-medium">TXT (_vercel)</span>
                               </div>
                               <div>
-                                <div className="mb-1 font-medium">Name:</div>
+                                <div className="mb-1 font-medium">{t('nameColon')}</div>
                                 <div className="flex items-center justify-between gap-2">
                                   <span className="min-w-0 break-all">_vercel</span>
                                   <Button
                                     variant="ghost"
                                     size="icon"
                                     type="button"
-                                    onClick={() => handleCopy('_vercel', 'Name')}
+                                    onClick={() => handleCopy('_vercel', t('copyName'))}
                                     className="h-6 w-6 shrink-0"
                                   >
                                     <Copy size={16} />
@@ -533,14 +539,14 @@ export function TrustPortalDomain({
                                 </div>
                               </div>
                               <div>
-                                <div className="mb-1 font-medium">Value:</div>
+                                <div className="mb-1 font-medium">{t('valueColon')}</div>
                                 <div className="flex items-center justify-between gap-2">
                                   <span className="min-w-0 break-all">{effectiveVercelTxtValue}</span>
                                   <Button
                                     variant="ghost"
                                     size="icon"
                                     type="button"
-                                    onClick={() => handleCopy(effectiveVercelTxtValue || '', 'Value')}
+                                    onClick={() => handleCopy(effectiveVercelTxtValue || '', t('copyValue'))}
                                     className="h-6 w-6 shrink-0"
                                   >
                                     <Copy size={16} />
@@ -558,7 +564,7 @@ export function TrustPortalDomain({
           </CardContent>
           <CardFooter className="flex justify-between">
             <div className="text-muted-foreground text-xs">
-              Configure a custom domain for your trust portal.
+              {t('footerNote')}
             </div>
             <Button
               type="submit"
@@ -569,7 +575,7 @@ export function TrustPortalDomain({
               {isUpdatingDomain ? (
                 <Renew size={16} className="mr-1 animate-spin" />
               ) : null}
-              Save
+              {t('save')}
             </Button>
           </CardFooter>
         </Card>

@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -141,6 +142,8 @@ vi.mock('@trycompai/design-system/icons', () => ({
 
 import { TasksPageClient } from './TasksPageClient';
 
+mockNextIntl();
+
 const defaultProps = {
   tasks: [],
   members: [],
@@ -163,7 +166,7 @@ describe('TasksPageClient permission gating', () => {
 
     render(<TasksPageClient {...defaultProps} />);
 
-    expect(screen.getByText('Create Evidence')).toBeInTheDocument();
+    expect(screen.getByText('page.createEvidence')).toBeInTheDocument();
   });
 
   it('hides "Create Evidence" button when user lacks task:create permission', () => {
@@ -171,7 +174,7 @@ describe('TasksPageClient permission gating', () => {
 
     render(<TasksPageClient {...defaultProps} />);
 
-    expect(screen.queryByText('Create Evidence')).not.toBeInTheDocument();
+    expect(screen.queryByText('page.createEvidence')).not.toBeInTheDocument();
   });
 
   it('hides "Create Evidence" button when user has no permissions', () => {
@@ -179,7 +182,7 @@ describe('TasksPageClient permission gating', () => {
 
     render(<TasksPageClient {...defaultProps} />);
 
-    expect(screen.queryByText('Create Evidence')).not.toBeInTheDocument();
+    expect(screen.queryByText('page.createEvidence')).not.toBeInTheDocument();
   });
 
   it('shows "Create Evidence" button with only task:create permission', () => {
@@ -187,7 +190,7 @@ describe('TasksPageClient permission gating', () => {
 
     render(<TasksPageClient {...defaultProps} />);
 
-    expect(screen.getByText('Create Evidence')).toBeInTheDocument();
+    expect(screen.getByText('page.createEvidence')).toBeInTheDocument();
   });
 
   it('always renders TaskList regardless of permissions', () => {
@@ -218,7 +221,7 @@ describe('TasksPageClient evidence export', () => {
   });
 
   async function startExport() {
-    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    fireEvent.click(screen.getByRole('button', { name: 'page.exportButton' }));
     await waitFor(() => expect(mockToastInfo).toHaveBeenCalled());
   }
 
@@ -236,7 +239,7 @@ describe('TasksPageClient evidence export', () => {
 
     expect(clickSpy).toHaveBeenCalledTimes(1);
     expect(mockToastSuccess).toHaveBeenCalledWith(
-      'Evidence package downloaded successfully',
+      'page.downloadSuccess',
     );
     expect(mockToastError).not.toHaveBeenCalled();
   });
@@ -250,7 +253,7 @@ describe('TasksPageClient evidence export', () => {
     });
 
     expect(mockToastError).toHaveBeenCalledWith(
-      'Export completed but download link was not available.',
+      'page.downloadLinkMissing',
     );
     expect(mockToastSuccess).not.toHaveBeenCalled();
   });
@@ -264,7 +267,7 @@ describe('TasksPageClient evidence export', () => {
     });
 
     expect(mockToastError).toHaveBeenCalledWith(
-      'Evidence export failed. Please try again.',
+      'page.exportFailed',
     );
     expect(mockToastSuccess).not.toHaveBeenCalled();
   });

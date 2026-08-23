@@ -1,8 +1,11 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { DeviceWithChecks } from '../types';
 import { DeviceDetails } from './DeviceDetails';
+
+mockNextIntl();
 
 vi.mock('./RevokeAgentAccessDialog', () => ({
   RevokeAgentAccessDialog: ({ deviceId }: { deviceId: string; deviceName: string }) => (
@@ -41,8 +44,8 @@ function makeDevice(overrides: Partial<DeviceWithChecks> = {}): DeviceWithChecks
 describe('DeviceDetails compliance badge', () => {
   it('renders "Compliant" when complianceStatus is compliant', () => {
     render(<DeviceDetails device={makeDevice()} onClose={vi.fn()} />);
-    expect(screen.getByText('Compliant')).toBeInTheDocument();
-    expect(screen.queryByText('Non-Compliant')).not.toBeInTheDocument();
+    expect(screen.getByText('devices.compliant')).toBeInTheDocument();
+    expect(screen.queryByText('devices.nonCompliant')).not.toBeInTheDocument();
   });
 
   it('renders "Non-Compliant" when complianceStatus is non_compliant', () => {
@@ -56,7 +59,7 @@ describe('DeviceDetails compliance badge', () => {
         onClose={vi.fn()}
       />,
     );
-    expect(screen.getByText('Non-Compliant')).toBeInTheDocument();
+    expect(screen.getByText('devices.nonCompliant')).toBeInTheDocument();
   });
 
   it('renders "Stale (Nd)" and em-dash result badges when complianceStatus is stale', () => {
@@ -70,8 +73,8 @@ describe('DeviceDetails compliance badge', () => {
       />,
     );
     expect(screen.getByText('Stale (21d)')).toBeInTheDocument();
-    expect(screen.queryByText('Pass')).not.toBeInTheDocument();
-    expect(screen.queryByText('Fail')).not.toBeInTheDocument();
+    expect(screen.queryByText('devices.pass')).not.toBeInTheDocument();
+    expect(screen.queryByText('devices.fail')).not.toBeInTheDocument();
     // 4 check rows + the 4 exception cells + 4 detail cells all show '—'
     const dashes = screen.getAllByText('—');
     // At minimum: 4 result badges (stale)
@@ -100,7 +103,7 @@ describe('DeviceDetails compliance badge', () => {
       />,
     );
     expect(
-      screen.getByRole('button', { name: /What does Stale mean\?/i }),
+      screen.getByRole('button', { name: 'devices.whatDoesStaleMean' }),
     ).toBeInTheDocument();
   });
 
@@ -116,14 +119,14 @@ describe('DeviceDetails compliance badge', () => {
       />,
     );
     expect(
-      screen.getByRole('button', { name: /What does Stale mean\?/i }),
+      screen.getByRole('button', { name: 'devices.whatDoesStaleMean' }),
     ).toBeInTheDocument();
   });
 
   it('does not render the stale-explainer tooltip trigger for a compliant device', () => {
     render(<DeviceDetails device={makeDevice()} onClose={vi.fn()} />);
     expect(
-      screen.queryByRole('button', { name: /What does Stale mean\?/i }),
+      screen.queryByRole('button', { name: 'devices.whatDoesStaleMean' }),
     ).not.toBeInTheDocument();
   });
 
@@ -139,7 +142,7 @@ describe('DeviceDetails compliance badge', () => {
       />,
     );
     expect(
-      screen.queryByRole('button', { name: /What does Stale mean\?/i }),
+      screen.queryByRole('button', { name: 'devices.whatDoesStaleMean' }),
     ).not.toBeInTheDocument();
   });
 });

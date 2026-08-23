@@ -7,6 +7,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@trycompai/design-system';
 import { Form } from '@gideon-defender/ui/form';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -227,6 +228,7 @@ export function TrustPortalSwitch({
 }) {
   const { hasPermission } = usePermissions();
   const canUpdate = hasPermission('trust', 'update');
+  const t = useTranslations('trust');
   const {
     updateToggleSettings,
     updateFrameworkSettings,
@@ -367,9 +369,9 @@ export function TrustPortalSwitch({
           contactEmail: data.contactEmail,
           primaryColor: data.primaryColor,
         });
-        toast.success('Trust portal status updated');
+        toast.success(t('portal.toggleUpdated'));
       } catch {
-        toast.error('Failed to update trust portal status');
+        toast.error(t('portal.toggleUpdateFailed'));
       } finally {
         setIsToggling(false);
       }
@@ -482,30 +484,30 @@ export function TrustPortalSwitch({
       <form>
         <Tabs defaultValue="frameworks">
           <TabsList variant="underline">
-            <TabsTrigger value="frameworks">Frameworks</TabsTrigger>
-            <TabsTrigger value="content">Mission</TabsTrigger>
-            <TabsTrigger value="branding">Branding</TabsTrigger>
-            <TabsTrigger value="vendors">Vendors</TabsTrigger>
-            <TabsTrigger value="links">Links</TabsTrigger>
-            <TabsTrigger value="faq">FAQ</TabsTrigger>
-            <TabsTrigger value="documents">Documents</TabsTrigger>
-            <TabsTrigger value="questionnaire">Questionnaire</TabsTrigger>
+            <TabsTrigger value="frameworks">{t('portal.tabs.frameworks')}</TabsTrigger>
+            <TabsTrigger value="content">{t('portal.tabs.mission')}</TabsTrigger>
+            <TabsTrigger value="branding">{t('portal.tabs.branding')}</TabsTrigger>
+            <TabsTrigger value="vendors">{t('portal.tabs.vendors')}</TabsTrigger>
+            <TabsTrigger value="links">{t('portal.tabs.links')}</TabsTrigger>
+            <TabsTrigger value="faq">{t('portal.tabs.faq')}</TabsTrigger>
+            <TabsTrigger value="documents">{t('portal.tabs.documents')}</TabsTrigger>
+            <TabsTrigger value="questionnaire">{t('portal.tabs.questionnaire')}</TabsTrigger>
           </TabsList>
 
           {/* Compliance Frameworks Tab */}
           <TabsContent value="frameworks">
             <div className="pt-6">
               <div className="mb-4">
-                <h3 className="text-lg font-medium">Compliance Frameworks</h3>
+                <h3 className="text-lg font-medium">{t('portal.complianceTitle')}</h3>
                 <p className="text-muted-foreground text-sm">
-                  Share the frameworks your organization is compliant with or working towards.
+                  {t('portal.complianceDescription')}
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
                 {/* ISO 27001 */}
                 <ComplianceFramework
                   title="ISO 27001"
-                  description="An international standard for managing information security systems."
+                  description={t('portal.fwIso27001Description')}
                   isEnabled={iso27001}
                   status={iso27001Status}
                   onStatusChange={async (value) => {
@@ -513,10 +515,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         iso27001Status: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('ISO 27001 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'ISO 27001' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update ISO 27001 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'ISO 27001' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -526,10 +528,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         iso27001: checked,
                       });
-                      toast.success('ISO 27001 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'ISO 27001' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update ISO 27001 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'ISO 27001' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -544,7 +546,7 @@ export function TrustPortalSwitch({
                 {/* ISO 42001 */}
                 <ComplianceFramework
                   title="ISO 42001"
-                  description="An international standard for an Artificial Intelligence Management System."
+                  description={t('portal.fwIso42001Description')}
                   isEnabled={iso42001}
                   status={iso42001Status}
                   onStatusChange={async (value) => {
@@ -552,10 +554,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         iso42001Status: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('ISO 42001 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'ISO 42001' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update ISO 42001 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'ISO 42001' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -565,10 +567,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         iso42001: checked,
                       });
-                      toast.success('ISO 42001 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'ISO 42001' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update ISO 42001 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'ISO 42001' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -583,7 +585,7 @@ export function TrustPortalSwitch({
                 {/* GDPR */}
                 <ComplianceFramework
                   title="GDPR"
-                  description="A European regulation that governs personal data protection and user privacy."
+                  description={t('portal.fwGdprDescription')}
                   isEnabled={gdpr}
                   status={gdprStatus}
                   onStatusChange={async (value) => {
@@ -591,10 +593,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         gdprStatus: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('GDPR status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'GDPR' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update GDPR status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'GDPR' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -604,10 +606,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         gdpr: checked,
                       });
-                      toast.success('GDPR status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'GDPR' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update GDPR status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'GDPR' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -622,7 +624,7 @@ export function TrustPortalSwitch({
                 {/* HIPAA */}
                 <ComplianceFramework
                   title="HIPAA"
-                  description="A US regulation that protects sensitive patient health information and medical data."
+                  description={t('portal.fwHipaaDescription')}
                   isEnabled={hipaa}
                   status={hipaaStatus}
                   onStatusChange={async (value) => {
@@ -630,10 +632,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         hipaaStatus: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('HIPAA status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'HIPAA' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update HIPAA status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'HIPAA' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -643,10 +645,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         hipaa: checked,
                       });
-                      toast.success('HIPAA status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'HIPAA' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update HIPAA status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'HIPAA' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -661,7 +663,7 @@ export function TrustPortalSwitch({
                 {/* SOC 2 Type 1*/}
                 <ComplianceFramework
                   title="SOC 2 Type 1"
-                  description="A compliance framework focused on data security, availability, and confidentiality."
+                  description={t('portal.fwGenericDescription')}
                   isEnabled={soc2type1}
                   status={soc2type1Status}
                   onStatusChange={async (value) => {
@@ -669,10 +671,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         soc2type1Status: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('SOC 2 Type 1 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'SOC 2 Type 1' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update SOC 2 Type 1 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'SOC 2 Type 1' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -682,10 +684,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         soc2type1: checked,
                       });
-                      toast.success('SOC 2 Type 1 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'SOC 2 Type 1' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update SOC 2 Type 1 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'SOC 2 Type 1' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -700,7 +702,7 @@ export function TrustPortalSwitch({
                 {/* SOC 2 Type 2*/}
                 <ComplianceFramework
                   title="SOC 2 Type 2"
-                  description="A compliance framework focused on data security, availability, and confidentiality."
+                  description={t('portal.fwGenericDescription')}
                   isEnabled={soc2type2}
                   status={soc2type2Status}
                   onStatusChange={async (value) => {
@@ -708,10 +710,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         soc2type2Status: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('SOC 2 Type 2 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'SOC 2 Type 2' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update SOC 2 Type 2 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'SOC 2 Type 2' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -721,10 +723,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings(
                         checked ? { soc2type2: true } : { soc2: false, soc2type2: false },
                       );
-                      toast.success('SOC 2 Type 2 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'SOC 2 Type 2' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update SOC 2 Type 2 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'SOC 2 Type 2' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -739,7 +741,7 @@ export function TrustPortalSwitch({
                 {/* SOC 3 */}
                 <ComplianceFramework
                   title="SOC 3"
-                  description="A compliance framework focused on data security, availability, and confidentiality."
+                  description={t('portal.fwGenericDescription')}
                   isEnabled={soc3}
                   status={soc3Status}
                   onStatusChange={async (value) => {
@@ -747,10 +749,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         soc3Status: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('SOC 3 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'SOC 3' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update SOC 3 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'SOC 3' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -760,10 +762,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         soc3: checked,
                       });
-                      toast.success('SOC 3 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'SOC 3' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update SOC 3 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'SOC 3' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -778,7 +780,7 @@ export function TrustPortalSwitch({
                 {/* PCI DSS */}
                 <ComplianceFramework
                   title="PCI DSS"
-                  description="A compliance framework focused on data security, availability, and confidentiality."
+                  description={t('portal.fwGenericDescription')}
                   isEnabled={pcidss}
                   status={pcidssStatus}
                   onStatusChange={async (value) => {
@@ -786,10 +788,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         pcidssStatus: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('PCI DSS status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'PCI DSS' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update PCI DSS status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'PCI DSS' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -799,10 +801,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         pcidss: checked,
                       });
-                      toast.success('PCI DSS status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'PCI DSS' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update PCI DSS status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'PCI DSS' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -817,7 +819,7 @@ export function TrustPortalSwitch({
                 {/* NEN 7510 */}
                 <ComplianceFramework
                   title="NEN 7510"
-                  description="A Dutch standard for managing information security systems."
+                  description={t('portal.fwNen7510Description')}
                   isEnabled={nen7510}
                   status={nen7510Status}
                   onStatusChange={async (value) => {
@@ -825,10 +827,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         nen7510Status: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('NEN 7510 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'NEN 7510' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update NEN 7510 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'NEN 7510' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -838,10 +840,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         nen7510: checked,
                       });
-                      toast.success('NEN 7510 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'NEN 7510' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update NEN 7510 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'NEN 7510' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -856,7 +858,7 @@ export function TrustPortalSwitch({
                 {/* ISO 9001 */}
                 <ComplianceFramework
                   title="ISO 9001"
-                  description="An international standard for quality management systems."
+                  description={t('portal.fwIso9001Description')}
                   isEnabled={iso9001}
                   status={iso9001Status}
                   onStatusChange={async (value) => {
@@ -864,10 +866,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         iso9001Status: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('ISO 9001 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'ISO 9001' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update ISO 9001 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'ISO 9001' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -877,10 +879,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         iso9001: checked,
                       });
-                      toast.success('ISO 9001 status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'ISO 9001' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update ISO 9001 status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'ISO 9001' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -895,7 +897,7 @@ export function TrustPortalSwitch({
                 {/* PIPEDA */}
                 <ComplianceFramework
                   title="PIPEDA"
-                  description="Personal Information Protection and Electronic Documents Act"
+                  description={t('portal.fwPipedaDescription')}
                   isEnabled={pipeda}
                   status={pipedaStatus}
                   onStatusChange={async (value) => {
@@ -903,10 +905,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         pipedaStatus: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('PIPEDA status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'PIPEDA' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update PIPEDA status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'PIPEDA' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -916,10 +918,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         pipeda: checked,
                       });
-                      toast.success('PIPEDA status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'PIPEDA' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update PIPEDA status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'PIPEDA' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -934,7 +936,7 @@ export function TrustPortalSwitch({
                 {/* CCPA */}
                 <ComplianceFramework
                   title="CCPA"
-                  description="California Consumer Privacy Act"
+                  description={t('portal.fwCcpaDescription')}
                   isEnabled={ccpa}
                   status={ccpaStatus}
                   onStatusChange={async (value) => {
@@ -942,10 +944,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         ccpaStatus: value as 'started' | 'in_progress' | 'compliant',
                       });
-                      toast.success('CCPA status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'CCPA' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update CCPA status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'CCPA' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }
@@ -955,10 +957,10 @@ export function TrustPortalSwitch({
                       await updateFrameworkSettings({
                         ccpa: checked,
                       });
-                      toast.success('CCPA status updated');
+                      toast.success(t('portal.statusUpdated', { name: 'CCPA' }));
                     } catch (error) {
                       console.error('[trust framework update] failed', error);
-                      toast.error('Failed to update CCPA status', {
+                      toast.error(t('portal.statusUpdateFailed', { name: 'CCPA' }), {
                         description: error instanceof Error ? error.message : undefined,
                       });
                     }

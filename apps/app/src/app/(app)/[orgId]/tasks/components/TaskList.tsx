@@ -25,6 +25,7 @@ import {
 } from '@trycompai/design-system';
 
 import { Check, Circle, FolderTree, List, Search, XCircle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { useEffect, useMemo, useState } from 'react';
@@ -40,6 +41,28 @@ const statuses = [
   { id: 'failed', label: 'Failed', icon: XCircle, color: 'text-red-400' },
   { id: 'not_relevant', label: 'Not Relevant', icon: Circle, color: 'text-slate-500' },
 ] as const;
+
+function statusLabel(
+  t: ReturnType<typeof useTranslations<'tasks'>>,
+  id: (typeof statuses)[number]['id'],
+): string {
+  switch (id) {
+    case 'todo':
+      return t('todo');
+    case 'in_progress':
+      return t('inProgress');
+    case 'in_review':
+      return t('inReview');
+    case 'done':
+      return t('done');
+    case 'failed':
+      return t('failed');
+    case 'not_relevant':
+      return t('notRelevant');
+    default:
+      return id;
+  }
+}
 
 export function TaskList({
   tasks: initialTasks,
@@ -75,6 +98,7 @@ export function TaskList({
 }) {
   const params = useParams();
   const orgId = params.orgId as string;
+  const t = useTranslations('tasks');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useQueryState('status');
   const [assigneeFilter, setAssigneeFilter] = useQueryState('assignee');
@@ -525,7 +549,7 @@ export function TaskList({
                   <div className="text-foreground text-xl font-semibold tabular-nums">
                     {overallStats.enabledAutomations}
                   </div>
-                  <div className="text-muted-foreground text-[9px] tabular-nums">Active</div>
+                  <div className="text-muted-foreground text-[9px] tabular-nums">{t('active')}</div>
                 </div>
                 {overallStats.automationHealth.running > 0 && (
                   <>
@@ -539,7 +563,7 @@ export function TaskList({
                         <div className="text-foreground text-sm font-semibold tabular-nums">
                           {overallStats.automationHealth.running}
                         </div>
-                        <div className="text-muted-foreground text-[9px] tabular-nums">Running</div>
+                        <div className="text-muted-foreground text-[9px] tabular-nums">{t('running')}</div>
                       </div>
                     </div>
                   </>
@@ -551,7 +575,7 @@ export function TaskList({
                       <div className="text-foreground text-sm font-semibold tabular-nums">
                         {overallStats.successRate}%
                       </div>
-                      <div className="text-muted-foreground text-[9px] tabular-nums">Success</div>
+                      <div className="text-muted-foreground text-[9px] tabular-nums">{t('success')}</div>
                     </div>
                   </>
                 )}
@@ -588,7 +612,7 @@ export function TaskList({
                     <Search size={16} />
                   </InputGroupAddon>
                   <InputGroupInput
-                    placeholder="Search evidence..."
+                    placeholder={t('searchPlaceholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -604,16 +628,16 @@ export function TaskList({
                   onValueChange={(value) => setStatusFilter(value === 'all' ? null : value)}
                 >
                   <SelectTrigger size="sm">
-                    <SelectValue placeholder="All statuses">
+                    <SelectValue placeholder={t('allStatuses')}>
                       {(() => {
-                        if (!statusFilter) return 'All statuses';
+                        if (!statusFilter) return t('allStatuses');
                         const selectedStatus = statuses.find((s) => s.id === statusFilter);
-                        if (!selectedStatus) return 'All statuses';
+                        if (!selectedStatus) return t('allStatuses');
                         const StatusIcon = selectedStatus.icon;
                         return (
                           <div className="flex items-center gap-1.5">
                             <StatusIcon className={`h-3.5 w-3.5 ${selectedStatus.color}`} />
-                            <span>{selectedStatus.label}</span>
+                            <span>{statusLabel(t, selectedStatus.id)}</span>
                           </div>
                         );
                       })()}
@@ -621,7 +645,7 @@ export function TaskList({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">
-                      <span className="text-xs">All statuses</span>
+                      <span className="text-xs">{t('allStatuses')}</span>
                     </SelectItem>
                     {statuses.map((status) => {
                       const StatusIcon = status.icon;
@@ -629,7 +653,7 @@ export function TaskList({
                         <SelectItem key={status.id} value={status.id}>
                           <div className="flex items-center gap-2 text-xs">
                             <StatusIcon className={`h-3.5 w-3.5 ${status.color}`} />
-                            <span>{status.label}</span>
+                            <span>{statusLabel(t, status.id)}</span>
                           </div>
                         </SelectItem>
                       );
@@ -643,31 +667,31 @@ export function TaskList({
                     onValueChange={(value) => setFrameworkFilter(value === 'all' ? null : value)}
                   >
                     <SelectTrigger size="sm">
-                      <SelectValue placeholder="All frameworks">
+                      <SelectValue placeholder={t('allFrameworks')}>
                         {(() => {
-                          if (!frameworkFilter) return 'All frameworks';
+                          if (!frameworkFilter) return t('allFrameworks');
                           const selectedFramework = frameworkInstances.find(
                             (fw) => fw.id === frameworkFilter,
                           );
-                          if (!selectedFramework) return 'All frameworks';
+                          if (!selectedFramework) return t('allFrameworks');
                           return (
                             selectedFramework.framework?.name ??
                             selectedFramework.customFramework?.name ??
-                            'Framework'
+                            t('framework')
                           );
                         })()}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">
-                        <span className="text-xs">All frameworks</span>
+                        <span className="text-xs">{t('allFrameworks')}</span>
                       </SelectItem>
                       {frameworkInstances.map((fw) => (
                         <SelectItem key={fw.id} value={fw.id}>
                           <span className="text-xs">
                             {fw.framework?.name ??
                               fw.customFramework?.name ??
-                              'Framework'}
+                              t('framework')}
                           </span>
                         </SelectItem>
                       ))}
@@ -680,21 +704,21 @@ export function TaskList({
                   onValueChange={(value) => setAssigneeFilter(value === 'all' ? null : value)}
                 >
                   <SelectTrigger size="sm" disabled={eligibleAssignees.length === 0}>
-                    <SelectValue placeholder="Everyone">
+                    <SelectValue placeholder={t('everyone')}>
                       {(() => {
-                        if (eligibleAssignees.length === 0) return 'No eligible members';
-                        if (!assigneeFilter) return 'Everyone';
+                        if (eligibleAssignees.length === 0) return t('noEligibleMembers');
+                        if (!assigneeFilter) return t('everyone');
                         const selectedMember = eligibleAssignees.find(
                           (member) => member.id === assigneeFilter,
                         );
-                        if (!selectedMember) return 'Everyone';
+                        if (!selectedMember) return t('everyone');
                         return (
                           <div className="flex items-center gap-2">
                             <Avatar size="xs">
                               {selectedMember.user.image && (
                                 <AvatarImage
                                   src={selectedMember.user.image}
-                                  alt={selectedMember.user.name ?? 'Assignee'}
+                                  alt={selectedMember.user.name ?? t('assignee')}
                                 />
                               )}
                               <AvatarFallback>
@@ -704,7 +728,7 @@ export function TaskList({
                             <span className="truncate">
                               {selectedMember.user.name ||
                                 selectedMember.user.email ||
-                                'Unknown member'}
+                                t('unknownMember')}
                             </span>
                           </div>
                         );
@@ -712,7 +736,7 @@ export function TaskList({
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Everyone</SelectItem>
+                    <SelectItem value="all">{t('everyone')}</SelectItem>
                     {eligibleAssignees.map((member) => (
                       <SelectItem key={member.id} value={member.id}>
                         <div className="flex items-center gap-2 text-xs">
@@ -720,14 +744,14 @@ export function TaskList({
                             {member.user.image && (
                               <AvatarImage
                                 src={member.user.image}
-                                alt={member.user.name ?? 'Assignee'}
+                                alt={member.user.name ?? t('assignee')}
                               />
                             )}
                             <AvatarFallback>
                               {member.user.name?.charAt(0)?.toUpperCase() ?? '?'}
                             </AvatarFallback>
                           </Avatar>
-                          <span>{member.user.name || member.user.email || 'Unknown member'}</span>
+                          <span>{member.user.name || member.user.email || t('unknownMember')}</span>
                         </div>
                       </SelectItem>
                     ))}
@@ -741,23 +765,23 @@ export function TaskList({
                   }
                 >
                   <SelectTrigger size="sm">
-                    <SelectValue placeholder="All types">
+                    <SelectValue placeholder={t('allTypes')}>
                       {!automationStatusFilter
-                        ? 'All types'
+                        ? t('allTypes')
                         : automationStatusFilter === 'AUTOMATED'
-                          ? 'Automated'
-                          : 'Manual'}
+                          ? t('automated')
+                          : t('manual')}
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">
-                      <span className="text-xs">All types</span>
+                      <span className="text-xs">{t('allTypes')}</span>
                     </SelectItem>
                     <SelectItem value="AUTOMATED">
-                      <span className="text-xs">Automated</span>
+                      <span className="text-xs">{t('automated')}</span>
                     </SelectItem>
                     <SelectItem value="MANUAL">
-                      <span className="text-xs">Manual</span>
+                      <span className="text-xs">{t('manual')}</span>
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -765,7 +789,7 @@ export function TaskList({
               {/* Result Count */}
               {(searchQuery || statusFilter || assigneeFilter || frameworkFilter || automationStatusFilter) && (
                 <div className="text-muted-foreground text-xs tabular-nums whitespace-nowrap lg:ml-auto">
-                  {filteredTasks.length} {filteredTasks.length === 1 ? 'result' : 'results'}
+                  {t('resultsCount', { count: filteredTasks.length })}
                 </div>
               )}
             </div>
@@ -775,11 +799,11 @@ export function TaskList({
               <TabsList variant="default">
                 <TabsTrigger value="categories">
                   <FolderTree className="h-2.5 w-2.5" />
-                  Categories
+                  {t('categoriesTab')}
                 </TabsTrigger>
                 <TabsTrigger value="list">
                   <List className="h-2.5 w-2.5" />
-                  List
+                  {t('listTab')}
                 </TabsTrigger>
               </TabsList>
             </div>

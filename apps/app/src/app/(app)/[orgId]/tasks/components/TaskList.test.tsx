@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -177,6 +178,9 @@ const defaultProps = {
   evidenceApprovalEnabled: false,
 };
 
+mockNextIntl();
+
+
 describe('TaskList automation status filter', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -185,7 +189,7 @@ describe('TaskList automation status filter', () => {
 
   it('renders the automation status filter dropdown', () => {
     render(<TaskList {...defaultProps} />);
-    expect(screen.getAllByText('All types').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('allTypes').length).toBeGreaterThan(0);
   });
 
   it('shows all tasks when no automation status filter is active', () => {
@@ -211,7 +215,7 @@ describe('TaskList automation status filter', () => {
   it('displays result count when automation status filter is active', () => {
     automationStatusValue = 'AUTOMATED';
     render(<TaskList {...defaultProps} />);
-    expect(screen.getByText('1 result')).toBeInTheDocument();
+    expect(screen.getByText('resultsCount')).toBeInTheDocument();
   });
 
   it('renders Automated and Manual options in the dropdown', () => {
@@ -222,7 +226,7 @@ describe('TaskList automation status filter', () => {
 
   it('renders All types text in the dropdown', () => {
     render(<TaskList {...defaultProps} />);
-    expect(screen.getAllByText('All types').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('allTypes').length).toBeGreaterThan(0);
   });
 });
 

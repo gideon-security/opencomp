@@ -1,9 +1,12 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ModernTaskListItem } from './ModernTaskListItem';
 import { TaskList } from './TaskList';
 import { TasksByCategory } from './TasksByCategory';
+
+mockNextIntl();
 
 // next/navigation is mocked locally (not via the global setup) so we can add
 // useParams (needed by TaskList) and vary the search params per test.

@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -53,6 +54,8 @@ const localStorageMock = (() => {
 })();
 Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock });
 
+mockNextIntl();
+
 describe('TrustPortalDomain permission gating', () => {
   const defaultProps = {
     domain: 'trust.example.com',
@@ -70,7 +73,7 @@ describe('TrustPortalDomain permission gating', () => {
   it('renders title and description regardless of permissions', () => {
     setMockPermissions({});
     render(<TrustPortalDomain {...defaultProps} />);
-    expect(screen.getByText('Configure Custom Domain')).toBeInTheDocument();
+    expect(screen.getByText('title')).toBeInTheDocument();
   });
 
   it('enables the domain input when user has trust:update permission', () => {
@@ -111,6 +114,6 @@ describe('TrustPortalDomain permission gating', () => {
   it('renders Custom Domain label regardless of permissions', () => {
     setMockPermissions({});
     render(<TrustPortalDomain {...defaultProps} />);
-    expect(screen.getByText('Custom Domain')).toBeInTheDocument();
+    expect(screen.getByText('customDomainLabel')).toBeInTheDocument();
   });
 });

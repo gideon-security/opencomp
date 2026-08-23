@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -135,6 +136,8 @@ const baseProps = {
   approverOptions: [{ id: 'm2', name: 'Approver Two' }],
 };
 
+mockNextIntl();
+
 describe('ObjectivesClient', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -162,7 +165,7 @@ describe('ObjectivesClient', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<ObjectivesClient {...baseProps} />);
 
-    expect(screen.getByText('Generate from platform data')).toBeInTheDocument();
+    expect(screen.getByText('shell.generate')).toBeInTheDocument();
     expect(screen.getByText('Add objective')).toBeInTheDocument();
     expect(screen.getAllByLabelText('Edit objective').length).toBe(OBJECTIVES.length);
     expect(screen.getAllByLabelText('Delete objective').length).toBe(OBJECTIVES.length);
@@ -173,15 +176,15 @@ describe('ObjectivesClient', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<ObjectivesClient {...baseProps} />);
 
-    expect(screen.queryByText('Generate from platform data')).not.toBeInTheDocument();
+    expect(screen.queryByText('shell.generate')).not.toBeInTheDocument();
     expect(screen.queryByText('Add objective')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Edit objective')).not.toBeInTheDocument();
     // Read-only users see plain text, not editable inputs.
     expect(screen.queryByDisplayValue('Reduce phishing click rate')).not.toBeInTheDocument();
     expect(screen.getByText('Reduce phishing click rate')).toBeInTheDocument();
     // Export remains available to readers.
-    expect(screen.getByText('Export PDF')).toBeInTheDocument();
-    expect(screen.getByText('Export DOCX')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportPdf')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
   it('shows the drift banner when the document is stale', async () => {

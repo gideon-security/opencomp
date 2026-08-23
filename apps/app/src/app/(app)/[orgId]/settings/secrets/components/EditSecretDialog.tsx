@@ -15,8 +15,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { usePermissions } from '@/hooks/use-permissions';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -33,27 +34,35 @@ interface EditSecretDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const editSecretSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Name is required')
-    .max(100, 'Name is too long')
-    .regex(/^[A-Z0-9_]+$/, 'Name must be uppercase letters, numbers, and underscores only'),
-  value: z.string().optional(),
-  description: z.string().optional(),
-  category: z.string().optional(),
-});
+type SettingsTranslator = ReturnType<typeof useTranslations<'settings'>>;
 
-type EditSecretFormValues = z.infer<typeof editSecretSchema>;
+function createEditSecretSchema(t: SettingsTranslator) {
+  return z.object({
+    name: z
+      .string()
+      .min(1, t('secrets.errors.nameRequired'))
+      .max(100, t('secrets.errors.nameTooLong'))
+      .regex(/^[A-Z0-9_]+$/, t('secrets.errors.nameFormat')),
+    value: z.string().optional(),
+    description: z.string().optional(),
+    category: z.string().optional(),
+  });
+}
+
+type EditSecretFormValues = z.infer<ReturnType<typeof createEditSecretSchema>>;
 
 export function EditSecretDialog({
   secret,
   open,
   onOpenChange,
 }: EditSecretDialogProps) {
+  const t = useTranslations('settings');
   const { updateSecret } = useSecrets();
   const { hasPermission } = usePermissions();
   const canManageSecrets = hasPermission('secret', 'update');
+
+  const editSecretSchema = useMemo(() => createEditSecretSchema(t), [t]);
+
   const {
     handleSubmit,
     control,
@@ -94,11 +103,13 @@ export function EditSecretDialog({
 
       await updateSecret(secret.id, updateData);
 
-      toast.success('Secret updated successfully');
+      toast.success(t('secrets.editDialog.successToast'));
       onOpenChange(false);
       reset();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to update secret');
+      toast.error(
+        err instanceof Error ? err.message : t('secrets.editDialog.failedToast'),
+      );
       console.error('Error updating secret:', err);
     }
   });
@@ -108,14 +119,14 @@ export function EditSecretDialog({
       <DialogContent className="sm:max-w-[525px]">
         <form onSubmit={onSubmit}>
           <DialogHeader>
-            <DialogTitle>Edit Secret</DialogTitle>
+            <DialogTitle>{t('secrets.editDialog.title')}</DialogTitle>
             <DialogDescription>
-              Update the secret details. Leave value empty to keep the existing value.
+              {t('secrets.editDialog.description')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="edit-name">Secret Name</Label>
+              <Label htmlFor="edit-name">{t('secrets.editDialog.nameLabel')}</Label>
               <Input
                 id="edit-name"
                 placeholder="e.g., GITHUB_TOKEN, OPENAI_API_KEY"
@@ -125,40 +136,44 @@ export function EditSecretDialog({
                 <p className="text-xs text-destructive mt-1">{errors.name.message}</p>
               ) : null}
               <p className="text-xs text-muted-foreground">
-                Use uppercase with underscores for naming convention
+                {t('secrets.editDialog.namingHint')}
               </p>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="edit-value">Secret Value (Optional)</Label>
+              <Label htmlFor="edit-value">{t('secrets.editDialog.valueLabel')}</Label>
               <Input
                 id="edit-value"
                 type="password"
-                placeholder="Leave empty to keep existing value"
+                placeholder={t('secrets.editDialog.valuePlaceholder')}
                 {...register('value')}
               />
               {errors.value?.message ? (
                 <p className="text-xs text-destructive mt-1">{errors.value.message}</p>
               ) : null}
               <p className="text-xs text-muted-foreground">
-                Only provide a value if you want to update it
+                {t('secrets.editDialog.valueHint')}
               </p>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="edit-category">Category (Optional)</Label>
+              <Label htmlFor="edit-category">{t('secrets.editDialog.categoryLabel')}</Label>
               <Controller
                 control={control}
                 name="category"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger id="edit-category">
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder={t('secrets.editDialog.categoryPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="api_keys">API Keys</SelectItem>
-                      <SelectItem value="database">Database</SelectItem>
-                      <SelectItem value="authentication">Authentication</SelectItem>
-                      <SelectItem value="integration">Integration</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="api_keys">{t('secrets.categories.api_keys')}</SelectItem>
+                      <SelectItem value="database">{t('secrets.categories.database')}</SelectItem>
+                      <SelectItem value="authentication">
+                        {t('secrets.categories.authentication')}
+                      </SelectItem>
+                      <SelectItem value="integration">
+                        {t('secrets.categories.integration')}
+                      </SelectItem>
+                      <SelectItem value="other">{t('secrets.categories.other')}</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -168,10 +183,10 @@ export function EditSecretDialog({
               ) : null}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="edit-description">Description (Optional)</Label>
+              <Label htmlFor="edit-description">{t('secrets.editDialog.descriptionLabel')}</Label>
               <Textarea
                 id="edit-description"
-                placeholder="Describe what this secret is used for"
+                placeholder={t('secrets.editDialog.descriptionPlaceholder')}
                 rows={3}
                 {...register('description')}
               />
@@ -182,16 +197,16 @@ export function EditSecretDialog({
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t('secrets.editDialog.cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting || !canManageSecrets}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
+                  {t('secrets.editDialog.submitting')}
                 </>
               ) : (
-                'Update Secret'
+                t('secrets.editDialog.submit')
               )}
             </Button>
           </DialogFooter>

@@ -21,13 +21,22 @@ import {
 } from '@trycompai/design-system';
 import { Calendar as CalendarIcon } from '@trycompai/design-system/icons';
 import { format } from 'date-fns';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-const STATUS_OPTIONS = [
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' },
-];
+const STATUS_OPTIONS = [{ value: 'active' }, { value: 'inactive' }] as const;
+
+type Translator = ReturnType<typeof useTranslations<'people'>>;
+
+const statusOptionLabel = (value: string, t: Translator): string => {
+  switch (value) {
+    case 'inactive':
+      return t('employeeDetails.statusInactive');
+    default:
+      return t('employeeDetails.statusActive');
+  }
+};
 
 // Mirrors the backend's @IsEmail() on UpdatePeopleDto.email so the form rejects
 // values the PATCH /v1/people/:id endpoint would reject anyway.
@@ -43,6 +52,7 @@ export const EmployeeDetails = ({
   };
   canEdit: boolean;
 }) => {
+  const t = useTranslations('people');
   const [name, setName] = useState(employee.user.name ?? '');
   const [email, setEmail] = useState(employee.user.email ?? '');
   const [jobTitle, setJobTitle] = useState(employee.jobTitle ?? '');
@@ -79,17 +89,17 @@ export const EmployeeDetails = ({
     e.preventDefault();
 
     if (!name.trim()) {
-      toast.error('Name is required');
+      toast.error(t('employeeDetails.nameRequired'));
       return;
     }
 
     const trimmedEmail = email.trim();
     if (!trimmedEmail) {
-      toast.error('Email is required');
+      toast.error(t('employeeDetails.emailRequired'));
       return;
     }
     if (!isValidEmail(trimmedEmail)) {
-      toast.error('Enter a valid email address');
+      toast.error(t('employeeDetails.invalidEmail'));
       return;
     }
 
@@ -136,7 +146,7 @@ export const EmployeeDetails = ({
     }
 
     if (Object.keys(updateData).length === 0) {
-      toast.info('No changes to save');
+      toast.info(t('employeeDetails.noChanges'));
       return;
     }
 
@@ -144,12 +154,12 @@ export const EmployeeDetails = ({
     try {
       const response = await api.patch(`/v1/people/${employee.id}`, updateData);
       if (response.error) {
-        toast.error(response.error || 'Failed to update employee details');
+        toast.error(response.error || t('employeeDetails.updateFailed'));
       } else {
-        toast.success('Employee details updated successfully');
+        toast.success(t('employeeDetails.updateSuccess'));
       }
     } catch {
-      toast.error('Failed to update employee details');
+      toast.error(t('employeeDetails.updateFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -162,19 +172,19 @@ export const EmployeeDetails = ({
           <Grid cols={{ base: '1', md: '2' }} gap="4">
             {/* Name Field */}
             <Stack gap="sm">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">{t('employeeDetails.name')}</Label>
               <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Employee name"
+                placeholder={t('employeeDetails.namePlaceholder')}
                 disabled={!canEdit}
               />
             </Stack>
 
             {/* Email Field (login email) */}
             <Stack gap="sm">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('employeeDetails.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -187,19 +197,19 @@ export const EmployeeDetails = ({
 
             {/* Job Title Field */}
             <Stack gap="sm">
-              <Label htmlFor="jobTitle">Job Title</Label>
+              <Label htmlFor="jobTitle">{t('employeeDetails.jobTitle')}</Label>
               <Input
                 id="jobTitle"
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
-                placeholder="e.g. Software Engineer"
+                placeholder={t('employeeDetails.jobTitlePlaceholder')}
                 disabled={!canEdit}
               />
             </Stack>
 
             {/* Department Field */}
             <Stack gap="sm">
-              <Label htmlFor="department">Department</Label>
+              <Label htmlFor="department">{t('employeeDetails.department')}</Label>
               <DepartmentSelect
                 value={department}
                 onChange={setDepartment}
@@ -209,21 +219,21 @@ export const EmployeeDetails = ({
 
             {/* Status Field */}
             <Stack gap="sm">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">{t('employeeDetails.status')}</Label>
               <Select
                 value={status}
                 disabled={!canEdit}
                 onValueChange={(value) => value && setStatus(value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select status">
-                    {STATUS_OPTIONS.find((s) => s.value === status)?.label ?? 'Active'}
+                  <SelectValue placeholder={t('employeeDetails.status')}>
+                    {statusOptionLabel(status, t)}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {STATUS_OPTIONS.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
-                      {option.label}
+                      {statusOptionLabel(option.value, t)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -232,7 +242,7 @@ export const EmployeeDetails = ({
 
             {/* Onboard Date Field */}
             <Stack gap="sm">
-              <Label htmlFor="onboardDate">Onboard Date</Label>
+              <Label htmlFor="onboardDate">{t('employeeDetails.onboardDate')}</Label>
               <Popover
                 open={!canEdit ? false : onboardDatePickerOpen}
                 onOpenChange={!canEdit ? undefined : setOnboardDatePickerOpen}
@@ -244,7 +254,7 @@ export const EmployeeDetails = ({
                     disabled={!canEdit}
                     className="border-border bg-background text-foreground hover:bg-muted flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {onboardDate ? format(onboardDate, 'PPP') : 'Not set'}
+                    {onboardDate ? format(onboardDate, 'PPP') : t('employeeDetails.notSet')}
                     <CalendarIcon size={16} />
                   </button>
                 </PopoverTrigger>
@@ -266,7 +276,7 @@ export const EmployeeDetails = ({
 
             {/* Offboard Date Field */}
             <Stack gap="sm">
-              <Label htmlFor="offboardDate">Offboard Date</Label>
+              <Label htmlFor="offboardDate">{t('employeeDetails.offboardDate')}</Label>
               <Popover
                 open={!canEdit ? false : offboardDatePickerOpen}
                 onOpenChange={!canEdit ? undefined : setOffboardDatePickerOpen}
@@ -278,7 +288,7 @@ export const EmployeeDetails = ({
                     disabled={!canEdit}
                     className="border-border bg-background text-foreground hover:bg-muted flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {offboardDate ? format(offboardDate, 'PPP') : 'Not set'}
+                    {offboardDate ? format(offboardDate, 'PPP') : t('employeeDetails.notSet')}
                     <CalendarIcon size={16} />
                   </button>
                 </PopoverTrigger>
@@ -305,7 +315,7 @@ export const EmployeeDetails = ({
               disabled={!hasChanges || isLoading || !canEdit}
               loading={isLoading}
             >
-              Save
+              {t('employeeDetails.save')}
             </Button>
           </HStack>
         </Stack>

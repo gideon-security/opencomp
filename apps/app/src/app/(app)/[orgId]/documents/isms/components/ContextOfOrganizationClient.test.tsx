@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -129,6 +130,8 @@ const baseProps = {
   approverOptions: [{ id: 'm2', name: 'Approver Two' }],
 };
 
+mockNextIntl();
+
 describe('ContextOfOrganizationClient', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -152,7 +155,7 @@ describe('ContextOfOrganizationClient', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<ContextOfOrganizationClient {...baseProps} />);
 
-    expect(screen.getByText('Generate from platform data')).toBeInTheDocument();
+    expect(screen.getByText('shell.generate')).toBeInTheDocument();
     // One collapsed "Add … issue" trigger per kind section.
     expect(screen.getAllByText(/Add internal issue|Add external issue/).length).toBe(2);
     // Each card exposes an Edit affordance instead of always-on inputs.
@@ -177,15 +180,15 @@ describe('ContextOfOrganizationClient', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<ContextOfOrganizationClient {...baseProps} />);
 
-    expect(screen.queryByText('Generate from platform data')).not.toBeInTheDocument();
+    expect(screen.queryByText('shell.generate')).not.toBeInTheDocument();
     expect(screen.queryByText(/Add internal issue/)).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Edit issue')).not.toBeInTheDocument();
     // Read-only users see plain text, not editable textareas.
     expect(screen.queryByDisplayValue('Derived internal issue')).not.toBeInTheDocument();
     expect(screen.getByText('Derived internal issue')).toBeInTheDocument();
     // Export remains available to readers.
-    expect(screen.getByText('Export PDF')).toBeInTheDocument();
-    expect(screen.getByText('Export DOCX')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportPdf')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
   it('shows the drift banner when the document is stale', async () => {

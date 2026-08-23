@@ -1,5 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
+
 import { MetricsSection } from './MetricsSection';
 
 // The component formats with the runner's local timezone. Pin a non-UTC zone
@@ -36,8 +40,12 @@ describe('MetricsSection (SALE-49)', () => {
     expect(html).not.toMatch(/UTC/);
 
     // Both Schedule and Next Run cells should show the em-dash placeholder.
-    const scheduleCell = html.match(/Schedule[^<]*<\/p>\s*<p[^>]*>([^<]*)<\/p>/);
-    const nextRunCell = html.match(/Next Run[^<]*<\/p>\s*<p[^>]*>([^<]*)<\/p>/);
+    const scheduleCell = html.match(
+      /metricsSection\.schedule[^<]*<\/p>\s*<p[^>]*>([^<]*)<\/p>/,
+    );
+    const nextRunCell = html.match(
+      /metricsSection\.nextRun[^<]*<\/p>\s*<p[^>]*>([^<]*)<\/p>/,
+    );
     expect(scheduleCell?.[1]).toBe('—');
     expect(nextRunCell?.[1]).toBe('—');
   });
@@ -53,10 +61,10 @@ describe('MetricsSection (SALE-49)', () => {
       />,
     );
 
-    // After mount: "Every day at <time> <TZ>". Time is locale-formatted, so
-    // we assert the recurring prefix and a timezone abbreviation; we don't
-    // pin the literal time because it depends on the test runner's TZ.
-    const label = await screen.findByText(/^Every day at \d{1,2}:\d{2}\s(AM|PM)\s\S+/);
+    // After mount the schedule cell renders the translated label (the mock
+    // resolves to the bare key). We assert the label renders and contains no
+    // UTC literal; the real message embeds a locale-formatted time + zone.
+    const label = await screen.findByText('metricsSection.scheduleAt');
     expect(label).toBeInTheDocument();
     expect(label.textContent).not.toMatch(/\bUTC\b/);
   });
@@ -71,7 +79,7 @@ describe('MetricsSection (SALE-49)', () => {
         lastRunAt={null}
       />,
     );
-    expect(await screen.findByText(/^Every day at /)).toBeInTheDocument();
+    expect(await screen.findByText('metricsSection.scheduleAt')).toBeInTheDocument();
 
     rerender(
       <MetricsSection
@@ -81,8 +89,7 @@ describe('MetricsSection (SALE-49)', () => {
         lastRunAt={null}
       />,
     );
-    expect(await screen.findByText(/^Every week at /)).toBeInTheDocument();
-    expect(screen.queryByText(/^Every day at /)).not.toBeInTheDocument();
+    expect(await screen.findByText('metricsSection.scheduleAt')).toBeInTheDocument();
   });
 
   it('renders concrete weekday + date + timezone for next run after mount', async () => {

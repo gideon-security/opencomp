@@ -43,6 +43,7 @@ import {
 import { SubtractAlt } from '@trycompai/design-system/icons';
 import { CheckCircle2, Clock, Download, RefreshCw, SendHorizontal, Trash2, XCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useParams, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -81,6 +82,7 @@ export function SingleTask({
 }: SingleTaskProps) {
   const params = useParams();
   const searchParams = useSearchParams();
+  const t = useTranslations('tasks.single');
   const orgId = params.orgId as string;
   const taskId = params.taskId as string;
   const defaultTab = searchParams.get('tab') || 'overview';
@@ -139,11 +141,11 @@ export function SingleTask({
     }
     try {
       await updateTask({ title: titleValue.trim() });
-      toast.success('Title updated');
+      toast.success(t('titleUpdated'));
       setIsEditingTitle(false);
       mutateActivity();
     } catch {
-      toast.error('Failed to update title');
+      toast.error(t('titleUpdateFailed'));
     }
   };
 
@@ -160,21 +162,21 @@ export function SingleTask({
     }
     try {
       await updateTask({ description: descriptionValue.trim() });
-      toast.success('Description updated');
+      toast.success(t('descriptionUpdated'));
       setIsEditingDescription(false);
       mutateActivity();
     } catch {
-      toast.error('Failed to update description');
+      toast.error(t('descriptionUpdateFailed'));
     }
   };
 
   const handleUpdateIntegrationSchedule = async (value: TaskFrequency) => {
     try {
       await updateTask({ integrationScheduleFrequency: value });
-      toast.success('Schedule updated');
+      toast.success(t('scheduleUpdated'));
       mutateActivity();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update schedule');
+      toast.error(error instanceof Error ? error.message : t('scheduleUpdateFailed'));
     }
   };
 
@@ -194,30 +196,30 @@ export function SingleTask({
         reviewDate: updates.reviewDate ? String(updates.reviewDate) : undefined,
         notRelevantJustification: updates.notRelevantJustification,
       });
-      toast.success('Task updated');
+      toast.success(t('taskUpdated'));
       mutateActivity();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update task');
+      toast.error(error instanceof Error ? error.message : t('taskUpdateFailed'));
     }
   };
 
   const handleApproveTask = async () => {
     try {
       await approveTaskFn();
-      toast.success('Task approved');
+      toast.success(t('approved'));
       mutateActivity();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to approve task');
+      toast.error(error instanceof Error ? error.message : t('approveFailed'));
     }
   };
 
   const handleRejectTask = async () => {
     try {
       await rejectTaskFn();
-      toast.success('Task rejected');
+      toast.success(t('rejected'));
       mutateActivity();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to reject task');
+      toast.error(error instanceof Error ? error.message : t('rejectFailed'));
     }
   };
 
@@ -228,16 +230,16 @@ export function SingleTask({
 
   const handleSubmitForReview = async () => {
     if (!selectedApproverId) {
-      toast.error('Please select an approver');
+      toast.error(t('selectApprover'));
       return;
     }
     try {
       await submitForReview(selectedApproverId);
-      toast.success('Task submitted for review');
+      toast.success(t('submittedForReview'));
       setRequestApprovalDialogOpen(false);
       mutateActivity();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to submit for review');
+      toast.error(error instanceof Error ? error.message : t('submitFailed'));
     }
   };
 
@@ -258,7 +260,7 @@ export function SingleTask({
       <Breadcrumb
         items={[
           {
-            label: 'Evidence',
+            label: t('breadcrumbEvidence'),
             href: `/${orgId}/tasks`,
             props: { render: <Link href={`/${orgId}/tasks`} /> },
           },
@@ -318,7 +320,7 @@ export function SingleTask({
             {task.description ? (
               <MarkdownRenderer content={task.description} />
             ) : (
-              'Add a description...'
+              t('addDescriptionPlaceholder')
             )}
           </div>
         )}
@@ -344,12 +346,12 @@ export function SingleTask({
       <Tabs defaultValue={defaultTab}>
         <Stack gap="lg">
           <TabsList variant="underline">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            {task.automationStatus !== 'MANUAL' && <TabsTrigger value="automations">Automations</TabsTrigger>}
-            {canReadPolicy && <TabsTrigger value="mappings">Mappings</TabsTrigger>}
-            <TabsTrigger value="comments">Comments</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="overview">{t('tabOverview')}</TabsTrigger>
+            {task.automationStatus !== 'MANUAL' && <TabsTrigger value="automations">{t('tabAutomations')}</TabsTrigger>}
+            {canReadPolicy && <TabsTrigger value="mappings">{t('tabMappings')}</TabsTrigger>}
+            <TabsTrigger value="comments">{t('tabComments')}</TabsTrigger>
+            <TabsTrigger value="activity">{t('tabActivity')}</TabsTrigger>
+            <TabsTrigger value="settings">{t('tabSettings')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -360,7 +362,7 @@ export function SingleTask({
                 onRequestApproval={handleRequestApproval}
               />
               <Stack gap="sm">
-                <Label>Comments</Label>
+                <Label>{t('commentsLabel')}</Label>
                 <Comments
                   entityId={task.id}
                   entityType={CommentEntityType.task}
@@ -420,9 +422,9 @@ export function SingleTask({
             <Stack gap="lg">
               <HStack justify="between" align="center">
                 <Stack gap="none">
-                  <Text size="sm" weight="medium">Download Evidence</Text>
+                  <Text size="sm" weight="medium">{t('downloadEvidence')}</Text>
                   <Text size="xs" variant="muted">
-                    Download all evidence for this task as a ZIP file
+                    {t('downloadEvidenceDescription')}
                   </Text>
                 </Stack>
                 <Button
@@ -431,14 +433,14 @@ export function SingleTask({
                   onClick={async () => {
                     try {
                       await downloadTaskEvidenceZip({ taskId: task.id, taskTitle: task.title, includeJson: true });
-                      toast.success('Evidence downloaded');
+                      toast.success(t('evidenceDownloaded'));
                     } catch {
-                      toast.error('Failed to download evidence');
+                      toast.error(t('evidenceDownloadFailed'));
                     }
                   }}
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Download
+                  {t('download')}
                 </Button>
               </HStack>
 
@@ -448,9 +450,9 @@ export function SingleTask({
                 <>
                   <HStack justify="between" align="center">
                     <Stack gap="none">
-                      <Text size="sm" weight="medium">Reset to Defaults</Text>
+                      <Text size="sm" weight="medium">{t('resetToDefaults')}</Text>
                       <Text size="xs" variant="muted">
-                        Regenerate this evidence task using AI. All manual changes will be overwritten.
+                        {t('resetToDefaultsDescription')}
                       </Text>
                     </Stack>
                     <Button
@@ -459,7 +461,7 @@ export function SingleTask({
                       onClick={() => setRegenerateConfirmOpen(true)}
                     >
                       <RefreshCw className="h-4 w-4 mr-2" />
-                      Regenerate
+                      {t('regenerate')}
                     </Button>
                   </HStack>
                   <div className="border-t" />
@@ -468,9 +470,9 @@ export function SingleTask({
               {canDeleteTask && (
                 <HStack justify="between" align="center">
                   <Stack gap="none">
-                    <Text size="sm" weight="medium">Delete Evidence</Text>
+                    <Text size="sm" weight="medium">{t('deleteEvidence')}</Text>
                     <Text size="xs" variant="muted">
-                      Permanently delete this evidence task and all associated data
+                      {t('deleteEvidenceDescription')}
                     </Text>
                   </Stack>
                   <Button
@@ -499,27 +501,27 @@ export function SingleTask({
       <Dialog open={isRegenerateConfirmOpen} onOpenChange={setRegenerateConfirmOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Regenerate Task</DialogTitle>
+            <DialogTitle>{t('regenerateTitle')}</DialogTitle>
             <DialogDescription>
-              This will regenerate the task content using AI. Any manual changes will be overwritten.
+              {t('regenerateDescription')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setRegenerateConfirmOpen(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               onClick={async () => {
                 setRegenerateConfirmOpen(false);
                 try {
                   await regenerateTask();
-                  toast.success('Task regenerated');
+                  toast.success(t('regenerated'));
                 } catch (error) {
-                  toast.error(error instanceof Error ? error.message : 'Failed to regenerate task');
+                  toast.error(error instanceof Error ? error.message : t('regenerateFailed'));
                 }
               }}
             >
-              Regenerate
+              {t('regenerate')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -528,9 +530,9 @@ export function SingleTask({
       <Dialog open={requestApprovalDialogOpen} onOpenChange={setRequestApprovalDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Request Approval</DialogTitle>
+            <DialogTitle>{t('requestApprovalTitle')}</DialogTitle>
             <DialogDescription>
-              Select an approver to review this task.
+              {t('requestApprovalDescription')}
             </DialogDescription>
           </DialogHeader>
           <SelectAssignee
@@ -541,11 +543,11 @@ export function SingleTask({
           />
           <DialogFooter>
             <Button variant="outline" onClick={() => setRequestApprovalDialogOpen(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button onClick={handleSubmitForReview} disabled={!selectedApproverId}>
               <SendHorizontal className="h-4 w-4 mr-2" />
-              Submit for Review
+              {t('submitForReview')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -560,12 +562,13 @@ function TaskActivitySection({ taskId }: { taskId: string }) {
 }
 
 function NotRelevantBanner({ justification }: { justification: string }) {
+  const t = useTranslations('tasks.single');
   return (
     <div className="rounded-lg border border-l-4 border-border border-l-muted-foreground/50 bg-muted/30 p-4">
       <HStack gap="sm" align="start">
         <SubtractAlt size={20} className="text-muted-foreground mt-0.5 shrink-0" />
         <Stack gap="xs">
-          <Text size="sm" weight="medium">Marked as Not Relevant</Text>
+          <Text size="sm" weight="medium">{t('markedNotRelevant')}</Text>
           <Text size="sm" variant="muted">{justification}</Text>
         </Stack>
       </HStack>
@@ -586,6 +589,7 @@ function ApprovalBanner({
   onApprove: () => void;
   onReject: () => void;
 }) {
+  const t = useTranslations('tasks.single');
   if (canApprove) {
     return (
       <div className="rounded-lg border border-l-4 border-border border-l-orange-400 bg-orange-50 dark:bg-orange-950/20 p-4">
@@ -593,18 +597,18 @@ function ApprovalBanner({
           <HStack gap="sm" align="start">
             <CheckCircle2 className="h-5 w-5 text-orange-500 mt-0.5 shrink-0" />
             <Stack gap="none">
-              <Text size="sm" weight="medium">Your approval is required</Text>
-              <Text size="xs" variant="muted">Review the evidence and approve or reject.</Text>
+              <Text size="sm" weight="medium">{t('yourApprovalRequired')}</Text>
+              <Text size="xs" variant="muted">{t('reviewAndDecide')}</Text>
             </Stack>
           </HStack>
           <HStack gap="sm">
             <Button variant="outline" size="sm" onClick={onReject}>
               <XCircle className="h-4 w-4 mr-2" />
-              Reject
+              {t('reject')}
             </Button>
             <Button size="sm" onClick={onApprove}>
               <CheckCircle2 className="h-4 w-4 mr-2" />
-              Approve
+              {t('approve')}
             </Button>
           </HStack>
         </HStack>
@@ -614,7 +618,7 @@ function ApprovalBanner({
 
   const approverName = approverMember
     ? approverMember.user.name || approverMember.user.email
-    : 'the approver';
+    : t('theApprover');
 
   return (
     <div className="rounded-lg border border-l-4 border-border border-l-muted-foreground/50 bg-background p-4">
@@ -622,14 +626,14 @@ function ApprovalBanner({
         <HStack gap="sm" align="start">
           <Clock className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
           <Stack gap="none">
-            <Text size="sm" weight="medium">Pending approval</Text>
-            <Text size="xs" variant="muted">Waiting for {approverName} to review.</Text>
+            <Text size="sm" weight="medium">{t('pendingApproval')}</Text>
+            <Text size="xs" variant="muted">{t('waitingForReview', { approverName })}</Text>
           </Stack>
         </HStack>
         {canCancel && (
           <Button variant="outline" size="sm" onClick={onReject}>
             <XCircle className="h-4 w-4 mr-2" />
-            Cancel
+            {t('cancel')}
           </Button>
         )}
       </HStack>

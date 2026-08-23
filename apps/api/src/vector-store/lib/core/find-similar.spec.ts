@@ -18,7 +18,7 @@ const mockEmbed = generateEmbedding as jest.Mock;
 const mockBatchEmbed = batchGenerateEmbeddings as jest.Mock;
 
 /**
- * Builds `count` Upstash results, each from a DISTINCT policy, with strictly
+ * Builds `count` vector-store results, each from a DISTINCT policy, with strictly
  * descending scores starting at 0.9. This mirrors CS-594: a single question
  * matching a chunk of nearly every published policy just above the 0.2 noise
  * floor.

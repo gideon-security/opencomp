@@ -1,6 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { InviteMembersModal } from './InviteMembersModal';
+
+mockNextIntl();
 
 beforeEach(() => {
   globalThis.ResizeObserver = class {
@@ -94,7 +97,7 @@ describe('InviteMembersModal', () => {
 
     // Modal should still render
     await waitFor(() => {
-      expect(screen.getByText('Add User')).toBeInTheDocument();
+      expect(screen.getByText('invite.addUser')).toBeInTheDocument();
     });
   });
 
@@ -110,6 +113,6 @@ describe('InviteMembersModal', () => {
       />,
     );
 
-    expect(screen.getByText('Invite')).toBeInTheDocument();
+    expect(screen.getByText('invite.invite')).toBeInTheDocument();
   });
 });

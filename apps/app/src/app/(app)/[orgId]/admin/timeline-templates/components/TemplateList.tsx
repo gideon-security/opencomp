@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
@@ -72,6 +74,7 @@ function groupByTrack(
 }
 
 export function TemplateList() {
+  const t = useTranslations('admin.timelineTemplates');
   const { templates, isLoading } = useAdminTimelineTemplates();
   const { orgId } = useParams<{ orgId: string }>();
   const router = useRouter();
@@ -182,21 +185,21 @@ export function TemplateList() {
         {groupedFilteredTemplates.length === 0 ? (
           <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
             {groupedAllTemplates.length === 0
-              ? 'No timeline templates yet. Create one to get started.'
-              : 'No templates match the selected visibility filter.'}
+              ? t('emptyAll')
+              : t('emptyFiltered')}
           </div>
         ) : (
           <Table variant="bordered">
             <TableHeader>
               <TableRow>
-                <TableHead>Template Name</TableHead>
-                <TableHead>Framework</TableHead>
-                <TableHead>Visibility</TableHead>
-                <TableHead>Cycle</TableHead>
-                <TableHead>Phases</TableHead>
-                <TableHead>Duration</TableHead>
-                <TableHead>Preview</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{t('colName')}</TableHead>
+                <TableHead>{t('colFramework')}</TableHead>
+                <TableHead>{t('colVisibility')}</TableHead>
+                <TableHead>{t('colCycle')}</TableHead>
+                <TableHead>{t('colPhases')}</TableHead>
+                <TableHead>{t('colDuration')}</TableHead>
+                <TableHead>{t('colPreview')}</TableHead>
+                <TableHead>{t('colActions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -278,8 +281,8 @@ export function TemplateList() {
                       onClick={() => handleEdit(baseTemplate)}
                     >
                       {group.templates.length > 1
-                        ? `Edit Cycle ${baseTemplate.cycleNumber}`
-                        : 'Edit'}
+                        ? t('editCycle', { cycle: baseTemplate.cycleNumber })
+                        : t('edit')}
                     </Button>
                   </TableCell>
                 </TableRow>

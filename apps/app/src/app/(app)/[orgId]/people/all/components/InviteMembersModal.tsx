@@ -4,6 +4,7 @@ import { api } from '@/lib/api-client';
 import type { Role } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, PlusCircle, Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
@@ -42,20 +43,23 @@ const isAllowedRole = (role: string, allowedRoles: string[]): boolean => {
   return allowedRoles.includes(role);
 };
 
-const createFormSchema = (allowedRoles: string[]) => {
+const createFormSchema = (
+  allowedRoles: string[],
+  t: ReturnType<typeof useTranslations<'people'>>,
+) => {
   const roleValidator = z.string().refine((val) => allowedRoles.includes(val), {
-    message: 'Invalid role selection.',
+    message: t('invite.invalidRole'),
   });
   const manualInviteSchema = z.object({
-    email: z.string().email({ message: 'Invalid email address.' }),
-    roles: z.array(roleValidator).min(1, { message: 'Please select at least one role.' }),
+    email: z.string().email({ message: t('invite.invalidEmail') }),
+    roles: z.array(roleValidator).min(1, { message: t('invite.selectAtLeastOneRole') }),
   });
 
   const manualModeSchema = z.object({
     mode: z.literal('manual'),
     manualInvites: z
       .array(manualInviteSchema)
-      .min(1, { message: 'Please add at least one invite.' }),
+      .min(1, { message: t('invite.addAtLeastOneInvite') }),
     sendPortalEmail: z.boolean(),
     csvFile: z.any().optional(), // Optional here, validated by union
   });
@@ -65,7 +69,7 @@ const createFormSchema = (allowedRoles: string[]) => {
     manualInvites: z.array(manualInviteSchema).optional(), // Optional here
     sendPortalEmail: z.boolean(),
     csvFile: z.any().refine((val) => val instanceof FileList && val.length === 1, {
-      message: 'Please select a single CSV file.',
+      message: t('invite.selectSingleCSV'),
     }),
   });
 
@@ -88,6 +92,7 @@ export function InviteMembersModal({
   allowedBuiltInRoles,
 }: InviteMembersModalProps) {
   const router = useRouter();
+  const t = useTranslations('people');
   const [mode, setMode] = useState<'manual' | 'csv'>('manual');
   const [isLoading, setIsLoading] = useState(false);
   const [csvFileName, setCsvFileName] = useState<string | null>(null);
@@ -108,8 +113,8 @@ export function InviteMembersModal({
     ...customRoleNames,
   ];
   const formSchema = useMemo(
-    () => createFormSchema(normalizedAllowedRoles),
-    [normalizedAllowedRoles.join(',')],
+    () => createFormSchema(normalizedAllowedRoles, t),
+    [normalizedAllowedRoles.join(','), t],
   );
 
   const form = useForm<FormData>({
@@ -142,7 +147,7 @@ export function InviteMembersModal({
         console.log('Processing manual mode');
         if (!values.manualInvites || values.manualInvites.length === 0) {
           console.error('Manual mode validation failed: No invites.');
-          toast.error('Please add at least one member to invite.');
+          toast.error(t('invite.addAtLeastOne'));
           setIsLoading(false);
           return;
         }
@@ -155,7 +160,7 @@ export function InviteMembersModal({
             `Manual mode validation failed: No roles selected for: ${invalidInvites.map((i) => i.email || 'invite').join(', ')}`,
           );
           toast.error(
-            `Please select at least one role for: ${invalidInvites.map((i) => i.email || 'invite').join(', ')}`,
+            t('invite.selectRoleFor', { invites: invalidInvites.map((i) => i.email || 'invite').join(', ') }),
           );
           setIsLoading(false);
           return;
@@ -236,7 +241,7 @@ export function InviteMembersModal({
             type: file.type,
           });
           form.setError('csvFile', {
-            message: 'File must be a CSV.',
+            message: t('invite.fileMustBeCSV'),
           });
           setIsLoading(false);
           return;
@@ -247,7 +252,7 @@ export function InviteMembersModal({
             size: file.size,
           });
           form.setError('csvFile', {
-            message: 'File size must be less than 5MB.',
+            message: t('invite.fileSizeMustBeLess'),
           });
           setIsLoading(false);
           return;
@@ -297,8 +302,8 @@ export function InviteMembersModal({
 
             if (columns.length <= Math.max(emailIndex, roleIndex)) {
               clientErrors.push({
-                email: columns[emailIndex] || 'Invalid row',
-                error: 'Invalid CSV row format',
+                email: columns[emailIndex] || t('invite.invalidRow'),
+                error: t('invite.invalidCSVFormat'),
               });
               continue;
             }
@@ -308,8 +313,8 @@ export function InviteMembersModal({
 
             if (!email || !z.string().email().safeParse(email).success) {
               clientErrors.push({
-                email: email || 'Invalid email',
-                error: 'Invalid email format',
+                email: email || t('invite.invalidEmail'),
+                error: t('invite.invalidEmailFormat'),
               });
               continue;
             }
@@ -442,8 +447,8 @@ export function InviteMembersModal({
         }}
       >
         <DialogHeader>
-          <DialogTitle>{'Add User'}</DialogTitle>
-          <DialogDescription>{'Add an employee to your organization.'}</DialogDescription>
+          <DialogTitle>{t('invite.addUser')}</DialogTitle>
+          <DialogDescription>{t('invite.addEmployee')}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -463,11 +468,11 @@ export function InviteMembersModal({
                         name={`manualInvites.${index}.email`}
                         render={({ field }) => (
                           <FormItem className="flex-1">
-                            {index === 0 && <FormLabel>{'Email'}</FormLabel>}
+                            {index === 0 && <FormLabel>{t('invite.email')}</FormLabel>}
                             <FormControl>
                               <Input
                                 className="h-10"
-                                placeholder={'Enter email address'}
+                                placeholder={t('invite.enterEmail')}
                                 {...field}
                                 value={field.value || ''}
                               />
@@ -481,13 +486,13 @@ export function InviteMembersModal({
                         name={`manualInvites.${index}.roles`}
                         render={({ field: { onChange, value }, fieldState: { error } }) => (
                           <FormItem className="w-[200px]">
-                            {index === 0 && <FormLabel>{'Role'}</FormLabel>}
+                            {index === 0 && <FormLabel>{t('invite.role')}</FormLabel>}
                             <MultiRoleCombobox
                               selectedRoles={value || []}
                               onSelectedRolesChange={onChange}
                               allowedRoles={normalizedAllowedRoles}
                               customRoles={customRoles}
-                              placeholder={'Select a role'}
+                              placeholder={t('invite.selectRole')}
                             />
                             <FormMessage>{error?.message}</FormMessage>
                           </FormItem>
@@ -500,7 +505,7 @@ export function InviteMembersModal({
                         onClick={() => fields.length > 1 && remove(index)}
                         disabled={fields.length <= 1}
                         className={`mt-${index === 0 ? '6' : '0'} self-center ${fields.length <= 1 ? 'cursor-not-allowed opacity-50' : ''}`}
-                        aria-label="Remove invite"
+                        aria-label={t('invite.removeInvite')}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -522,7 +527,7 @@ export function InviteMembersModal({
                   <PlusCircle className="mr-2 h-4 w-4" />
                   Add Another
                 </Button>
-                <FormDescription>{'Add an employee to your organization.'}</FormDescription>
+                <FormDescription>{t('invite.addEmployee')}</FormDescription>
               </TabsContent>
 
               <TabsContent value="csv" className="space-y-4 pt-4">
@@ -541,7 +546,7 @@ export function InviteMembersModal({
                           Choose File
                         </Button>
                         <span className="text-muted-foreground truncate text-sm">
-                          {csvFileName || 'No file chosen'}
+                          {csvFileName ?? t('invite.noFileChosen')}
                         </span>
                       </div>
                       <FormControl className="relative">
@@ -568,7 +573,7 @@ export function InviteMembersModal({
                         download="comp_invite_template.csv"
                         className="text-muted-foreground hover:text-foreground text-xs underline transition-colors"
                       >
-                        {'Download CSV template'}
+                        {t('invite.downloadCSVTemplate')}
                       </a>
                       <FormMessage />
                     </FormItem>
@@ -603,11 +608,11 @@ export function InviteMembersModal({
                 disabled={isLoading}
                 className="w-full sm:w-auto"
               >
-                {'Cancel'}
+                {t('invite.cancel')}
               </Button>
               <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isLoading ? 'Adding Employee...' : 'Invite'}
+                {isLoading ? t('invite.addingEmployee') : t('invite.invite')}
               </Button>
             </DialogFooter>
           </form>

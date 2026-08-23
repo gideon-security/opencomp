@@ -1,5 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 // Mock the task API hooks
 const mockRefreshAttachments = vi.fn();
@@ -33,7 +36,6 @@ vi.mock('@gideon-defender/ui/dialog', () => ({
 
 import { useTaskAttachments } from '@/hooks/use-tasks-api';
 import { TaskBody } from './TaskBody';
-
 const mockUseTaskAttachments = vi.mocked(useTaskAttachments);
 
 describe('TaskBody', () => {
@@ -52,7 +54,7 @@ describe('TaskBody', () => {
 
     render(<TaskBody taskId="tsk_123" />);
 
-    expect(screen.getByText('Drag and drop files here')).toBeInTheDocument();
+    expect(screen.getByText('body.dragAndDrop')).toBeInTheDocument();
   });
 
   it('should show upload dropzone when attachments data is undefined (SWR key is null)', () => {
@@ -66,7 +68,7 @@ describe('TaskBody', () => {
 
     render(<TaskBody taskId="tsk_123" />);
 
-    expect(screen.getByText('Drag and drop files here')).toBeInTheDocument();
+    expect(screen.getByText('body.dragAndDrop')).toBeInTheDocument();
   });
 
   it('should show upload dropzone when attachments have loaded successfully', () => {
@@ -80,7 +82,7 @@ describe('TaskBody', () => {
 
     render(<TaskBody taskId="tsk_123" />);
 
-    expect(screen.getByText('Drag and drop files here')).toBeInTheDocument();
+    expect(screen.getByText('body.dragAndDrop')).toBeInTheDocument();
   });
 
   it('should show upload dropzone when attachments fail to load', () => {
@@ -94,8 +96,8 @@ describe('TaskBody', () => {
 
     render(<TaskBody taskId="tsk_123" />);
 
-    expect(screen.getByText('Drag and drop files here')).toBeInTheDocument();
-    expect(screen.getByText('Failed to load attachments. Please try again.')).toBeInTheDocument();
+    expect(screen.getByText('body.dragAndDrop')).toBeInTheDocument();
+    expect(screen.getByText('body.loadFailed')).toBeInTheDocument();
   });
 
   it('should show loading skeletons while attachments are loading', () => {

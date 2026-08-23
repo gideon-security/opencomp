@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { describe, expect, it } from 'vitest';
 import { RiskTreatmentTable, type RiskTreatmentTableRow } from './RiskTreatmentTable';
+
+mockNextIntl();
 
 const row = (overrides: Partial<RiskTreatmentTableRow> = {}): RiskTreatmentTableRow => ({
   key: 'R-01',
@@ -30,7 +33,7 @@ describe('RiskTreatmentTable', () => {
 
     expect(screen.getByText('R-01')).toBeInTheDocument();
     expect(screen.getByText('Unauthorized data sharing')).toBeInTheDocument();
-    expect(screen.getByText('Accepted')).toBeInTheDocument();
+    expect(screen.getByText('riskTreatment.accepted')).toBeInTheDocument();
     expect(screen.getByText('Accepted 2026-04-15 (Jane Doe)')).toBeInTheDocument();
   });
 
@@ -51,8 +54,8 @@ describe('RiskTreatmentTable', () => {
       />,
     );
 
-    expect(screen.getByText('Awaiting acceptance')).toBeInTheDocument();
-    expect(screen.getByText('Stale')).toBeInTheDocument();
+    expect(screen.getByText('riskTreatment.awaitingAcceptance')).toBeInTheDocument();
+    expect(screen.getByText('riskTreatment.stale')).toBeInTheDocument();
     // The stale row keeps the prior acceptance detail visible under the badge.
     expect(screen.getByText(/residual has changed since/)).toBeInTheDocument();
   });
@@ -67,7 +70,7 @@ describe('RiskTreatmentTable', () => {
       />,
     );
 
-    expect(screen.queryByText('Description')).not.toBeInTheDocument();
+    expect(screen.queryByText('riskTreatment.columns.description')).not.toBeInTheDocument();
   });
 
   it('renders the empty state when there are no rows', () => {
