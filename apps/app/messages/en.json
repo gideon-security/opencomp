@@ -1635,7 +1635,46 @@
       "cloudTests_scanCompleteFailedRetry": "Failed to complete scan. Please try again.",
       "cloudTests_disconnectFailedRetry": "Failed to disconnect connections. Please try again.",
       "cloudTests_loadingConnections": "Loading connections, please try again in a moment.",
-      "cloudTests_configSavedScanning": "Configuration saved! Running security scan..."
+      "cloudTests_configSavedScanning": "Configuration saved! Running security scan...",
+      "cloudTests_batchFixAllTitle": "Fix All — {serviceName}",
+      "cloudTests_batchProcessingFindings": "{count, plural, one {Processing # finding} other {Processing # findings}}",
+      "cloudTests_batchSelectedForAutoFix": "{count, plural, one {# finding selected for auto-fix} other {# findings selected for auto-fix}}",
+      "cloudTests_batchSelectAll": "Select all",
+      "cloudTests_batchDeselectAll": "Deselect all",
+      "cloudTests_batchSelectedCount": "{count} selected",
+      "cloudTests_batchUntitledFinding": "Untitled",
+      "cloudTests_batchAcknowledgeBody": "I have reviewed the findings above and understand this will modify my cloud infrastructure.",
+      "cloudTests_batchStarting": "Starting...",
+      "cloudTests_batchFixCount": "{count, plural, one {Fix # finding} other {Fix # findings}}",
+      "cloudTests_batchRescanning": "Re-scanning to verify...",
+      "cloudTests_batchComplete": "Complete",
+      "cloudTests_batchCancelled": "Cancelled",
+      "cloudTests_batchWaitingForPerms": "Waiting for permissions... ({count} checks left)",
+      "cloudTests_batchRetryingWithPerms": "Retrying with new permissions...",
+      "cloudTests_batchFixingProgress": "Fixing {current} of {total}...",
+      "cloudTests_batchFixedCount": "{count} fixed",
+      "cloudTests_batchSkippedCount": "{count} skipped",
+      "cloudTests_batchFailedCount": "{count} failed",
+      "cloudTests_batchSkipFindingTooltip": "Skip this finding",
+      "cloudTests_batchDone": "Done",
+      "cloudTests_batchRemoved": "Removed",
+      "cloudTests_batchFixedToast": "Fixed: {title}",
+      "cloudTests_batchStillMissingPerms": "Still missing permissions",
+      "cloudTests_batchRetryFailed": "Retry failed",
+      "cloudTests_batchScriptCopied": "Script copied",
+      "cloudTests_batchCopied": "Copied",
+      "cloudTests_batchCopy": "Copy",
+      "cloudTests_batchRetry": "Retry",
+      "cloudTests_batchRetryingShort": "Retrying...",
+      "cloudTests_batchPermScriptCopied": "Permission script copied",
+      "cloudTests_batchPermsNeededBanner": "{permCount, plural, one {# permission} other {# permissions}} needed across {serviceCount, plural, one {# service} other {# services}}",
+      "cloudTests_batchMergeScriptHint": "Run the script below — it merges with existing permissions, nothing gets overwritten.",
+      "cloudTests_batchCopyScript": "Copy Script",
+      "cloudTests_batchCancelling": "Cancelling...",
+      "cloudTests_batchCancelAll": "Cancel All",
+      "cloudTests_batchRescanningButton": "Re-scanning...",
+      "cloudTests_batchRetrySkipped": "Retry Skipped",
+      "cloudTests_batchMinimize": "Minimize"
     },
     "search": {
       "clear": "Clear search"
@@ -1802,7 +1841,9 @@
       "disconnected": "Disconnected",
       "failed": "Failed",
       "disconnect": "Disconnect",
-      "removeAccountAndData": "Remove this account and all data"
+      "removeAccountAndData": "Remove this account and all data",
+      "status": "Status",
+      "created": "Created"
     },
     "platformTest": {
       "pageTitle": "Integration Platform Test Page",
@@ -2255,7 +2296,11 @@
       "invalidEmailAddress": "Invalid email address.",
       "selectAtLeastOneRole": "Please select at least one role.",
       "addAtLeastOneInvite": "Please add at least one invite.",
-      "selectSingleCSV": "Please select a single CSV file."
+      "selectSingleCSV": "Please select a single CSV file.",
+      "processFailed": "Failed to process invitations.",
+      "processCsvFailed": "Failed to process CSV invitations.",
+      "parseCsvFailed": "Failed to parse CSV file. Please check the format.",
+      "unexpectedError": "An unexpected error occurred while processing invitations."
     },
     "team": {
       "searchPlaceholder": "Search people...",
@@ -2391,6 +2436,22 @@
         "identity": "Identity",
         "employment": "Employment",
         "references": "References"
+      },
+      "main": {
+        "nameRequired": "Employee name is required",
+        "invalidPersonalEmail": "Enter a valid personal email",
+        "requestFailed": "Failed to request background check",
+        "inviteSentTo": "Invite sent to {email}",
+        "uploadFailed": "Failed to upload background check",
+        "customAttached": "Custom background check attached",
+        "confirmExemptFailed": "Failed to confirm exemption",
+        "exemptSuccess": "{name} exempted from background check",
+        "defaultEmployeeName": "Employee",
+        "updateExemptFailed": "Failed to update exempt status",
+        "toggleExemptOn": "Employee exempted from background check",
+        "toggleExemptOff": "Employee no longer exempt",
+        "exemptNoticeTitle": "This employee is exempt from background checks",
+        "exemptNoticeBody": "Toggle off above to require this employee to complete a background check."
       }
     },
     "offboarding": {
@@ -2461,6 +2522,82 @@
       "reportedByInformational": "Reported by {provider} (informational — not part of the compliance verdict)",
       "notTrackedByFleet": "Not tracked by Fleet",
       "staleUnknownTitle": "{label} — unknown (device is stale)"
+    },
+    "devicesList": {
+      "searchPlaceholder": "Search devices...",
+      "filterBySource": "Filter by source",
+      "allSources": "All sources",
+      "exportCsv": "Export CSV",
+      "emptyTitle": "No devices found",
+      "emptyDescription": "Try adjusting your search.",
+      "colDeviceName": "Device Name",
+      "colUser": "User",
+      "colPlatform": "Platform",
+      "colSource": "Source",
+      "colLastSeen": "Last Seen",
+      "colChecks": "Checks",
+      "colCompliant": "Compliant",
+      "colActions": "ACTIONS",
+      "removedToast": "Device removed successfully",
+      "removeFailedToast": "Failed to remove device",
+      "removeTitle": "Remove Device",
+      "removeDescription": "Are you sure you want to remove this device {device}?",
+      "defaultDeviceName": "device",
+      "integrationImportedNote": "It was imported from {provider} and may be re-added on the next sync.",
+      "defaultIntegrationName": "an integration"
+    },
+    "dateRange": {
+      "last7Days": "Last 7 days",
+      "last30Days": "Last 30 days",
+      "thisQuarter": "This quarter",
+      "thisYear": "This year",
+      "allTime": "All time",
+      "anyTime": "Any time",
+      "from": "From {date}",
+      "until": "Until {date}",
+      "range": "{from} – {to}",
+      "between": "{label} between",
+      "startPlaceholder": "Start date",
+      "endPlaceholder": "End date",
+      "clear": "Clear",
+      "apply": "Apply"
+    },
+    "offboardingChecklist": {
+      "title": "Offboarding checklist",
+      "description": "Track tasks required to complete this offboarding.",
+      "loading": "Loading checklist...",
+      "empty": "No checklist items configured. Add items in the offboarding checklist settings.",
+      "showOnlyRemaining": "Show only remaining",
+      "allCompleted": "All tasks completed. Turn off the filter to see all items.",
+      "itemCompleted": "Item completed",
+      "completeFailed": "Failed to complete item",
+      "itemUncompleted": "Item uncompleted",
+      "uncompleteFailed": "Failed to uncomplete item",
+      "evidenceUploaded": "Evidence uploaded",
+      "evidenceUploadFailed": "Failed to upload evidence",
+      "downloadFailed": "Failed to download file"
+    },
+    "filters": {
+      "title": "Filters",
+      "status": "Status",
+      "allPeople": "All People",
+      "active": "Active",
+      "pending": "Pending",
+      "deactivated": "Deactivated",
+      "role": "Role",
+      "allRoles": "All Roles",
+      "owner": "Owner",
+      "admin": "Admin",
+      "auditor": "Auditor",
+      "employee": "Employee",
+      "contractor": "Contractor",
+      "onboarded": "Onboarded",
+      "offboarded": "Offboarded",
+      "chipStatus": "Status: {value}",
+      "chipRole": "Role: {value}",
+      "chipOnboarded": "Onboarded {range}",
+      "chipOffboarded": "Offboarded {range}",
+      "removeAriaLabel": "Remove filter: {filter}"
     }
   },
   "trust": {
@@ -2489,7 +2626,58 @@
       "fwNen7510Description": "A Dutch standard for managing information security systems.",
       "fwIso9001Description": "An international standard for quality management systems.",
       "fwPipedaDescription": "Personal Information Protection and Electronic Documents Act",
-      "fwCcpaDescription": "California Consumer Privacy Act"
+      "fwCcpaDescription": "California Consumer Privacy Act",
+      "frameworkCard": {
+        "statusCompliant": "Compliant",
+        "statusInProgress": "In Progress",
+        "statusStarted": "Started",
+        "pdfOnlyError": "Please upload a PDF file",
+        "fileTooLarge": "File size must be less than 100MB",
+        "uploadSuccess": "Certificate uploaded successfully",
+        "uploadFailed": "Failed to upload certificate",
+        "disabled": "Disabled",
+        "certificateTitle": "Compliance Certificate",
+        "certificateUploaded": "Certificate uploaded",
+        "previewFailed": "Failed to preview certificate",
+        "view": "View",
+        "openInNewTab": "Open certificate in new tab",
+        "replace": "Replace",
+        "replaceHint": "Replace current certificate (PDF)",
+        "downloadFailed": "Failed to download certificate",
+        "download": "Download",
+        "downloadHint": "Download certificate",
+        "dropHere": "Drop your certificate here",
+        "dragAndDrop": "Drag & drop certificate",
+        "browseHint": "or click to browse • PDF only, max 100MB",
+        "uploading": "Uploading..."
+      },
+      "customLinks": {
+        "title": "Custom Links",
+        "description": "Add external links to display on your trust portal (e.g., StatusPage, support site)",
+        "addLink": "Add Link",
+        "editLinkTitle": "Edit Link",
+        "edit": "Edit",
+        "delete": "Delete",
+        "emptyState": "No custom links yet. Add one to get started.",
+        "titleLabel": "Title *",
+        "titlePlaceholder": "e.g., System Status, Support Portal",
+        "descriptionLabel": "Description (optional)",
+        "descriptionPlaceholder": "Brief description of this link",
+        "urlLabel": "URL *",
+        "create": "Create",
+        "update": "Update",
+        "cancel": "Cancel",
+        "titleUrlRequired": "Title and URL are required",
+        "invalidUrl": "Please enter a valid URL",
+        "linkCreated": "Link created successfully",
+        "linkUpdated": "Link updated successfully",
+        "linkDeleted": "Link deleted successfully",
+        "linksReordered": "Links reordered",
+        "createFailed": "Failed to create link",
+        "updateFailed": "Failed to update link",
+        "deleteFailed": "Failed to delete link",
+        "reorderFailed": "Failed to reorder links"
+      }
     },
     "domain": {
       "domainRequired": "Domain cannot be empty.",
@@ -2710,6 +2898,101 @@
       "accepted": "Accepted",
       "awaitingAcceptance": "Awaiting acceptance",
       "stale": "Stale"
+    },
+    "formFields": {
+      "meeting": "Record board, IT leadership, or risk committee meeting minutes.",
+      "boardMeeting": "Hold a board meeting and capture minutes.",
+      "itLeadershipMeeting": "Run an IT leadership meeting and document outcomes.",
+      "riskCommitteeMeeting": "Conduct a risk committee meeting and record decisions.",
+      "accessRequest": "Track and retain user access requests. Employees can request access to systems through the employee portal.",
+      "whistleblowerReport": "Submit a confidential whistleblower report.",
+      "penetrationTest": "Upload a third-party penetration test report.",
+      "rbacMatrix": "Document role-based access by system, role, and approval.",
+      "infrastructureInventory": "Track infrastructure assets, ownership, and review dates.",
+      "employeePerformanceEvaluation": "Capture structured employee review outcomes and sign-off.",
+      "networkDiagram": "Upload or link to a current network diagram.",
+      "tabletopExercise": "Conduct a tabletop exercise and document findings, attendees, and action items."
+    },
+    "internalAuditValidation": {
+      "statuses": {
+        "planned": "Planned",
+        "inProgress": "In progress",
+        "complete": "Complete"
+      },
+      "verdicts": {
+        "conform": "Conform",
+        "substantiallyConform": "Substantially conform",
+        "notYetConform": "Not yet conform"
+      },
+      "conclusions": {
+        "conform": "Overall, this audit found the ISMS to conform to ISO/IEC 27001:2022. Corrective actions are tracked in the findings table.",
+        "substantiallyConform": "Overall, this audit found the ISMS to substantially conform to ISO/IEC 27001:2022. Corrective actions are tracked in the findings table.",
+        "notYetConform": "Overall, this audit found the ISMS to not yet conform to ISO/IEC 27001:2022. Corrective actions are tracked in the findings table."
+      },
+      "controlResults": {
+        "conformityConfirmed": "Conformity confirmed",
+        "nonconformityRaised": "Non-conformity raised",
+        "observationRaised": "Observation raised",
+        "notSampled": "Not sampled this cycle"
+      },
+      "findingTypes": {
+        "ncMajor": "NC major",
+        "ncMinor": "NC minor",
+        "ofi": "OFI",
+        "observation": "Observation"
+      },
+      "findingTypeDescriptions": {
+        "ncMajor": "Major non-conformity: a required process or control is missing or has broken down. Blocks certification until fixed.",
+        "ncMinor": "Minor non-conformity: a single lapse in an otherwise working control. Needs a corrective action with an owner and due date.",
+        "ofi": "Opportunity for improvement: a suggestion to make a working control better. No corrective action required.",
+        "observation": "Observation: something worth recording or watching. No conformity impact yet."
+      },
+      "findingStatuses": {
+        "open": "Open",
+        "inProgress": "In progress",
+        "closed": "Closed"
+      },
+      "findingDescriptionPlaceholder": "Describe the finding, its evidence, and required follow-up…",
+      "noAuditsRecorded": "At least one internal audit must be recorded.",
+      "missingVerdict": "Audit {reference} is complete but has no conclusion verdict."
+    },
+    "leadership": {
+      "statementRequired": "A commitment statement is required",
+      "commitmentAria": "Commitment statement",
+      "commitments": {
+        "a": {
+          "label": "Policy & objectives aligned to strategy",
+          "placeholder": "How the information security policy and objectives are established and aligned with the strategic direction of the organization."
+        },
+        "b": {
+          "label": "ISMS integrated into business processes",
+          "placeholder": "How ISMS requirements are integrated into the organization's business processes."
+        },
+        "c": {
+          "label": "Resources made available",
+          "placeholder": "How the resources needed for the ISMS are made available."
+        },
+        "d": {
+          "label": "Importance of effective security communicated",
+          "placeholder": "How the importance of effective information security management and conforming to ISMS requirements is communicated."
+        },
+        "e": {
+          "label": "ISMS achieves intended outcomes",
+          "placeholder": "How leadership ensures the ISMS achieves its intended outcome(s)."
+        },
+        "f": {
+          "label": "Persons directed & supported",
+          "placeholder": "How persons are directed and supported to contribute to the effectiveness of the ISMS."
+        },
+        "g": {
+          "label": "Continual improvement promoted",
+          "placeholder": "How continual improvement of the ISMS is promoted."
+        },
+        "h": {
+          "label": "Leadership commitment evidenced",
+          "placeholder": "How leadership commitment to the ISMS is evidenced and communicated across the organization."
+        }
+      }
     }
   },
   "tasks": {
@@ -3141,6 +3424,20 @@
       "regenerating": "Regenerating...",
       "regeneratingToast": "Regenerating policy content...",
       "working": "Working…"
+    },
+    "controlMappings": {
+      "mappedSuccess": "Control mapped successfully",
+      "mappedError": "Failed to map control",
+      "unmappedSuccess": "Control unmapped successfully",
+      "unmappedError": "Failed to unmap control",
+      "title": "Controls",
+      "description": "Controls relevant to this policy.",
+      "linkControl": "Link control",
+      "searchPlaceholder": "Search controls...",
+      "noControlsFound": "No controls found.",
+      "noneMapped": "No controls mapped yet.",
+      "name": "Name",
+      "frameworks": "Frameworks"
     }
   },
   "admin": {

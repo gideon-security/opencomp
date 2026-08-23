@@ -2,6 +2,7 @@
 
 import { useOffboardingChecklist } from '@/hooks/use-offboarding-checklist';
 import { HStack, Label, Section, Stack, Switch, Text } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 import { OffboardingChecklistItem } from './OffboardingChecklistItem';
@@ -18,6 +19,7 @@ export function OffboardingChecklist({
   canEdit,
   offboardDate,
 }: OffboardingChecklistProps) {
+  const t = useTranslations('people');
   const {
     checklist,
     isLoading,
@@ -34,36 +36,36 @@ export function OffboardingChecklist({
     async ({ templateItemId, file }: { templateItemId: string; file?: File }) => {
       try {
         await completeItem({ templateItemId, file });
-        toast.success('Item completed');
+        toast.success(t('offboardingChecklist.itemCompleted'));
       } catch {
-        toast.error('Failed to complete item');
+        toast.error(t('offboardingChecklist.completeFailed'));
       }
     },
-    [completeItem],
+    [completeItem, t],
   );
 
   const handleUncomplete = useCallback(
     async (templateItemId: string) => {
       try {
         await uncompleteItem(templateItemId);
-        toast.success('Item uncompleted');
+        toast.success(t('offboardingChecklist.itemUncompleted'));
       } catch {
-        toast.error('Failed to uncomplete item');
+        toast.error(t('offboardingChecklist.uncompleteFailed'));
       }
     },
-    [uncompleteItem],
+    [uncompleteItem, t],
   );
 
   const handleUploadEvidence = useCallback(
     async (templateItemId: string, file: File) => {
       try {
         await uploadEvidence(templateItemId, file);
-        toast.success('Evidence uploaded');
+        toast.success(t('offboardingChecklist.evidenceUploaded'));
       } catch {
-        toast.error('Failed to upload evidence');
+        toast.error(t('offboardingChecklist.evidenceUploadFailed'));
       }
     },
-    [uploadEvidence],
+    [uploadEvidence, t],
   );
 
   const handleDownload = useCallback(
@@ -72,19 +74,19 @@ export function OffboardingChecklist({
         const url = await getDownloadUrl(attachmentId);
         window.open(url, '_blank', 'noopener,noreferrer');
       } catch {
-        toast.error('Failed to download file');
+        toast.error(t('offboardingChecklist.downloadFailed'));
       }
     },
-    [getDownloadUrl],
+    [getDownloadUrl, t],
   );
 
   if (isLoading) {
     return (
       <Section
-        title="Offboarding Checklist"
-        description="Track tasks required to complete this offboarding."
+        title={t('offboardingChecklist.title')}
+        description={t('offboardingChecklist.description')}
       >
-        <Text variant="muted">Loading checklist...</Text>
+        <Text variant="muted">{t('offboardingChecklist.loading')}</Text>
       </Section>
     );
   }
@@ -92,13 +94,10 @@ export function OffboardingChecklist({
   if (!checklist || checklist.items.length === 0) {
     return (
       <Section
-        title="Offboarding Checklist"
-        description="Track tasks required to complete this offboarding."
+        title={t('offboardingChecklist.title')}
+        description={t('offboardingChecklist.description')}
       >
-        <Text variant="muted">
-          No checklist items configured. Add items in the offboarding checklist
-          settings.
-        </Text>
+        <Text variant="muted">{t('offboardingChecklist.empty')}</Text>
       </Section>
     );
   }
@@ -122,14 +121,14 @@ export function OffboardingChecklist({
       <Stack gap="4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-normal">Offboarding checklist</h3>
+            <h3 className="text-lg font-normal">{t('offboardingChecklist.title')}</h3>
             <p className="text-sm text-muted-foreground">
-              Track tasks required to complete this offboarding.
+              {t('offboardingChecklist.description')}
             </p>
           </div>
           <HStack gap="2" align="center">
             <Label htmlFor="show-remaining">
-              <Text size="sm">Show only remaining</Text>
+              <Text size="sm">{t('offboardingChecklist.showOnlyRemaining')}</Text>
             </Label>
             <Switch
               id="show-remaining"
@@ -157,7 +156,7 @@ export function OffboardingChecklist({
           {filteredItems.length === 0 && showOnlyRemaining && (
             <div className="rounded-lg border px-4 py-8 text-center">
               <Text variant="muted">
-                All tasks completed. Turn off the filter to see all items.
+                {t('offboardingChecklist.allCompleted')}
               </Text>
             </div>
           )}

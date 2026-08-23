@@ -4,6 +4,7 @@ import { usePermissions } from '@/hooks/use-permissions';
 import { apiClient } from '@/lib/api-client';
 import type { Member, User } from '@db';
 import { Stack } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { BackgroundCheckAdminActions } from './BackgroundCheckAdminActions';
@@ -49,6 +50,7 @@ export function EmployeeBackgroundCheck({
   memberBackgroundCheckExempt,
   onMemberBackgroundCheckExemptChange,
 }: EmployeeBackgroundCheckProps) {
+  const t = useTranslations('people');
   const [selectedPath, setSelectedPath] = useState<SelectedPath>('order');
   const [orderValues, setOrderValues] = useState<OrderFormValues>({
     employeeName: employee.user.name ?? '',
@@ -111,9 +113,11 @@ export function EmployeeBackgroundCheck({
 
   const handleOrderSubmit = async () => {
     const errors: Partial<Record<keyof OrderFormValues, string>> = {};
-    if (!orderValues.employeeName.trim()) errors.employeeName = 'Employee name is required';
+    if (!orderValues.employeeName.trim()) {
+      errors.employeeName = t('backgroundCheck.main.nameRequired');
+    }
     if (!isValidEmail(orderValues.employeeEmail)) {
-      errors.employeeEmail = 'Enter a valid personal email';
+      errors.employeeEmail = t('backgroundCheck.main.invalidPersonalEmail');
     }
     setOrderErrors(errors);
     if (Object.keys(errors).length > 0) return;
@@ -131,11 +135,11 @@ export function EmployeeBackgroundCheck({
     setIsOrderSubmitting(false);
 
     if (response.error || !response.data) {
-      toast.error('Failed to request background check');
+      toast.error(t('backgroundCheck.main.requestFailed'));
       return;
     }
 
-    toast.success('Invite sent to ' + orderValues.employeeEmail);
+    toast.success(t('backgroundCheck.main.inviteSentTo', { email: orderValues.employeeEmail }));
     await mutateBackgroundCheck(response.data, { revalidate: false });
   };
 
@@ -159,14 +163,14 @@ export function EmployeeBackgroundCheck({
       );
 
       if (response.error || !response.data) {
-        toast.error('Failed to upload background check');
+        toast.error(t('backgroundCheck.main.uploadFailed'));
         return;
       }
 
-      toast.success('Custom background check attached');
+      toast.success(t('backgroundCheck.main.customAttached'));
       await mutateBackgroundCheck(response.data, { revalidate: false });
     } catch {
-      toast.error('Failed to upload background check');
+      toast.error(t('backgroundCheck.main.uploadFailed'));
     } finally {
       setIsAttachSubmitting(false);
     }
@@ -186,12 +190,16 @@ export function EmployeeBackgroundCheck({
     setIsExemptSubmitting(false);
 
     if (res.error) {
-      toast.error('Failed to confirm exemption');
+      toast.error(t('backgroundCheck.main.confirmExemptFailed'));
       return;
     }
 
     setExempt(true);
-    toast.success(`${employee.user.name ?? 'Employee'} exempted from background check`);
+    toast.success(
+      t('backgroundCheck.main.exemptSuccess', {
+        name: employee.user.name ?? t('backgroundCheck.main.defaultEmployeeName'),
+      }),
+    );
   };
 
   const handleToggleExempt = async (next: boolean) => {
@@ -209,11 +217,15 @@ export function EmployeeBackgroundCheck({
 
     if (res.error) {
       setExempt(previous);
-      toast.error('Failed to update exempt status');
+      toast.error(t('backgroundCheck.main.updateExemptFailed'));
       return;
     }
 
-    toast.success(next ? 'Employee exempted from background check' : 'Employee no longer exempt');
+    toast.success(
+      next
+        ? t('backgroundCheck.main.toggleExemptOn')
+        : t('backgroundCheck.main.toggleExemptOff'),
+    );
   };
 
   if (!backgroundCheckStepEnabled) {
@@ -230,8 +242,8 @@ export function EmployeeBackgroundCheck({
           onToggle={handleToggleExempt}
         />
         <BackgroundCheckNotice
-          title="This employee is exempt from background checks"
-          body="Toggle off above to require this employee to complete a background check."
+          title={t('backgroundCheck.main.exemptNoticeTitle')}
+          body={t('backgroundCheck.main.exemptNoticeBody')}
         />
       </Stack>
     );

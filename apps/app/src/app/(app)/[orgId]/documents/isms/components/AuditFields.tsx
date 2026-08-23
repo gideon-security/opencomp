@@ -15,13 +15,16 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { Controller, type Control } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import type { AuditDetailsFormValues } from './audit-schema';
 import {
   AUDIT_STATUSES,
-  AUDIT_STATUS_LABELS,
   CONCLUSION_VERDICTS,
-  CONCLUSION_VERDICT_LABELS,
 } from './internal-audit-constants';
+import {
+  auditStatusLabel,
+  conclusionVerdictLabel,
+} from './internal-audit-labels';
 import { IsmsFieldLabel } from './shared';
 
 const NO_VERDICT = 'no-verdict';
@@ -81,6 +84,7 @@ function AuditorSelect({
 
 /** Inline edit fields for an audit instance's plan + conclusion (clause 9.2). */
 export function AuditFields({ control, auditorOptions }: AuditFieldsProps) {
+  const t = useTranslations('isms');
   return (
     <Stack gap="3">
       <IsmsFieldLabel label="Scope">
@@ -137,7 +141,7 @@ export function AuditFields({ control, auditorOptions }: AuditFieldsProps) {
                 <SelectContent>
                   {AUDIT_STATUSES.map((status) => (
                     <SelectItem key={status} value={status}>
-                      {AUDIT_STATUS_LABELS[status]}
+                      {auditStatusLabel(t, status)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -187,7 +191,7 @@ export function AuditFields({ control, auditorOptions }: AuditFieldsProps) {
                 <SelectItem value={NO_VERDICT}>No verdict yet</SelectItem>
                 {CONCLUSION_VERDICTS.map((verdict) => (
                   <SelectItem key={verdict} value={verdict}>
-                    {CONCLUSION_VERDICT_LABELS[verdict]}
+                    {conclusionVerdictLabel(t, verdict)}
                   </SelectItem>
                 ))}
               </SelectContent>

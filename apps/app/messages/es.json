@@ -1635,7 +1635,46 @@
       "cloudTests_scanCompleteFailedRetry": "Error al completar el escaneo. Inténtalo de nuevo.",
       "cloudTests_disconnectFailedRetry": "Error al desconectar las conexiones. Inténtalo de nuevo.",
       "cloudTests_loadingConnections": "Cargando conexiones, espera un momento.",
-      "cloudTests_configSavedScanning": "¡Configuración guardada! Ejecutando escaneo de seguridad..."
+      "cloudTests_configSavedScanning": "¡Configuración guardada! Ejecutando escaneo de seguridad...",
+      "cloudTests_batchFixAllTitle": "Corregir todo — {serviceName}",
+      "cloudTests_batchProcessingFindings": "{count, plural, one {Procesando # hallazgo} other {Procesando # hallazgos}}",
+      "cloudTests_batchSelectedForAutoFix": "{count, plural, one {# hallazgo seleccionado para corrección automática} other {# hallazgos seleccionados para corrección automática}}",
+      "cloudTests_batchSelectAll": "Seleccionar todos",
+      "cloudTests_batchDeselectAll": "Deseleccionar todos",
+      "cloudTests_batchSelectedCount": "{count} seleccionados",
+      "cloudTests_batchUntitledFinding": "Sin título",
+      "cloudTests_batchAcknowledgeBody": "He revisado los hallazgos anteriores y entiendo que esto modificará mi infraestructura en la nube.",
+      "cloudTests_batchStarting": "Iniciando...",
+      "cloudTests_batchFixCount": "{count, plural, one {Corregir # hallazgo} other {Corregir # hallazgos}}",
+      "cloudTests_batchRescanning": "Volviendo a escanear para verificar...",
+      "cloudTests_batchComplete": "Completado",
+      "cloudTests_batchCancelled": "Cancelado",
+      "cloudTests_batchWaitingForPerms": "Esperando permisos... ({count} comprobaciones restantes)",
+      "cloudTests_batchRetryingWithPerms": "Reintentando con los nuevos permisos...",
+      "cloudTests_batchFixingProgress": "Corrigiendo {current} de {total}...",
+      "cloudTests_batchFixedCount": "{count} corregidos",
+      "cloudTests_batchSkippedCount": "{count} omitidos",
+      "cloudTests_batchFailedCount": "{count} fallidos",
+      "cloudTests_batchSkipFindingTooltip": "Omitir este hallazgo",
+      "cloudTests_batchDone": "Hecho",
+      "cloudTests_batchRemoved": "Eliminado",
+      "cloudTests_batchFixedToast": "Corregido: {title}",
+      "cloudTests_batchStillMissingPerms": "Siguen faltando permisos",
+      "cloudTests_batchRetryFailed": "El reintento falló",
+      "cloudTests_batchScriptCopied": "Script copiado",
+      "cloudTests_batchCopied": "Copiado",
+      "cloudTests_batchCopy": "Copiar",
+      "cloudTests_batchRetry": "Reintentar",
+      "cloudTests_batchRetryingShort": "Reintentando...",
+      "cloudTests_batchPermScriptCopied": "Script de permisos copiado",
+      "cloudTests_batchPermsNeededBanner": "{permCount, plural, one {Se necesita # permiso} other {Se necesitan # permisos}} en {serviceCount, plural, one {# servicio} other {# servicios}}",
+      "cloudTests_batchMergeScriptHint": "Ejecuta el siguiente script: se fusiona con los permisos existentes y no se sobrescribe nada.",
+      "cloudTests_batchCopyScript": "Copiar script",
+      "cloudTests_batchCancelling": "Cancelando...",
+      "cloudTests_batchCancelAll": "Cancelar todo",
+      "cloudTests_batchRescanningButton": "Volviendo a escanear...",
+      "cloudTests_batchRetrySkipped": "Reintentar omitidos",
+      "cloudTests_batchMinimize": "Minimizar"
     },
     "search": {
       "clear": "Borrar búsqueda"
@@ -1802,7 +1841,9 @@
       "disconnected": "Desconectado",
       "failed": "Falló",
       "disconnect": "Desconectar",
-      "removeAccountAndData": "Eliminar esta cuenta y todos sus datos"
+      "removeAccountAndData": "Eliminar esta cuenta y todos sus datos",
+      "status": "Estado",
+      "created": "Creado"
     },
     "platformTest": {
       "pageTitle": "Página de prueba de la plataforma de integraciones",
@@ -2255,7 +2296,11 @@
       "invalidEmailAddress": "Dirección de correo electrónico inválida.",
       "selectAtLeastOneRole": "Por favor selecciona al menos un rol.",
       "addAtLeastOneInvite": "Por favor agrega al menos una invitación.",
-      "selectSingleCSV": "Por favor selecciona un solo archivo CSV."
+      "selectSingleCSV": "Por favor selecciona un solo archivo CSV.",
+      "processFailed": "Error al procesar las invitaciones.",
+      "processCsvFailed": "Error al procesar las invitaciones del CSV.",
+      "parseCsvFailed": "Error al analizar el archivo CSV. Comprueba el formato.",
+      "unexpectedError": "Ocurrió un error inesperado al procesar las invitaciones."
     },
     "team": {
       "searchPlaceholder": "Buscar personas...",
@@ -2391,6 +2436,22 @@
         "identity": "Identidad",
         "employment": "Empleo",
         "references": "Referencias"
+      },
+      "main": {
+        "nameRequired": "El nombre del empleado es obligatorio",
+        "invalidPersonalEmail": "Introduce un correo personal válido",
+        "requestFailed": "No se pudo solicitar la verificación de antecedentes",
+        "inviteSentTo": "Invitación enviada a {email}",
+        "uploadFailed": "No se pudo subir la verificación de antecedentes",
+        "customAttached": "Se adjuntó la verificación de antecedentes personalizada",
+        "confirmExemptFailed": "No se pudo confirmar la exención",
+        "exemptSuccess": "Se concedió la exención de la verificación de antecedentes a {name}",
+        "defaultEmployeeName": "Empleado",
+        "updateExemptFailed": "No se pudo actualizar el estado de exención",
+        "toggleExemptOn": "El empleado quedó exento de la verificación de antecedentes",
+        "toggleExemptOff": "El empleado ya no está exento",
+        "exemptNoticeTitle": "Este empleado está exento de las verificaciones de antecedentes",
+        "exemptNoticeBody": "Desactiva el interruptor de arriba para requerir que este empleado complete una verificación de antecedentes."
       }
     },
     "offboarding": {
@@ -2461,6 +2522,82 @@
       "reportedByInformational": "Reportado por {provider} (informativo — no forma parte del veredicto de conformidad)",
       "notTrackedByFleet": "No supervisado por Fleet",
       "staleUnknownTitle": "{label} — desconocido (el dispositivo está en estado Stale)"
+    },
+    "devicesList": {
+      "searchPlaceholder": "Buscar dispositivos...",
+      "filterBySource": "Filtrar por origen",
+      "allSources": "Todos los orígenes",
+      "exportCsv": "Exportar CSV",
+      "emptyTitle": "No se encontraron dispositivos",
+      "emptyDescription": "Prueba a ajustar tu búsqueda.",
+      "colDeviceName": "Nombre del dispositivo",
+      "colUser": "Usuario",
+      "colPlatform": "Plataforma",
+      "colSource": "Origen",
+      "colLastSeen": "Última conexión",
+      "colChecks": "Comprobaciones",
+      "colCompliant": "Conforme",
+      "colActions": "ACCIONES",
+      "removedToast": "Dispositivo eliminado correctamente",
+      "removeFailedToast": "No se pudo eliminar el dispositivo",
+      "removeTitle": "Eliminar dispositivo",
+      "removeDescription": "¿Seguro que quieres eliminar este dispositivo {device}?",
+      "defaultDeviceName": "dispositivo",
+      "integrationImportedNote": "Se importó desde {provider} y puede volver a añadirse en la próxima sincronización.",
+      "defaultIntegrationName": "una integración"
+    },
+    "dateRange": {
+      "last7Days": "Últimos 7 días",
+      "last30Days": "Últimos 30 días",
+      "thisQuarter": "Este trimestre",
+      "thisYear": "Este año",
+      "allTime": "Todo el período",
+      "anyTime": "Cualquier fecha",
+      "from": "Desde {date}",
+      "until": "Hasta {date}",
+      "range": "{from} – {to}",
+      "between": "{label}: entre fechas",
+      "startPlaceholder": "Fecha de inicio",
+      "endPlaceholder": "Fecha de fin",
+      "clear": "Limpiar",
+      "apply": "Aplicar"
+    },
+    "offboardingChecklist": {
+      "title": "Lista de verificación de baja",
+      "description": "Sigue las tareas necesarias para completar esta baja.",
+      "loading": "Cargando la lista de verificación...",
+      "empty": "No hay elementos configurados. Añádelos en la configuración de la lista de verificación de baja.",
+      "showOnlyRemaining": "Mostrar solo pendientes",
+      "allCompleted": "Todas las tareas están completadas. Desactiva el filtro para ver todos los elementos.",
+      "itemCompleted": "Elemento completado",
+      "completeFailed": "No se pudo completar el elemento",
+      "itemUncompleted": "Elemento marcado como pendiente",
+      "uncompleteFailed": "No se pudo marcar el elemento como pendiente",
+      "evidenceUploaded": "Evidencia subida",
+      "evidenceUploadFailed": "No se pudo subir la evidencia",
+      "downloadFailed": "No se pudo descargar el archivo"
+    },
+    "filters": {
+      "title": "Filtros",
+      "status": "Estado",
+      "allPeople": "Todas las personas",
+      "active": "Activo",
+      "pending": "Pendiente",
+      "deactivated": "Desactivado",
+      "role": "Rol",
+      "allRoles": "Todos los roles",
+      "owner": "Propietario",
+      "admin": "Administrador",
+      "auditor": "Auditor",
+      "employee": "Empleado",
+      "contractor": "Contratista",
+      "onboarded": "Alta",
+      "offboarded": "Baja",
+      "chipStatus": "Estado: {value}",
+      "chipRole": "Rol: {value}",
+      "chipOnboarded": "Alta {range}",
+      "chipOffboarded": "Baja {range}",
+      "removeAriaLabel": "Eliminar filtro: {filter}"
     }
   },
   "trust": {
@@ -2489,7 +2626,58 @@
       "fwNen7510Description": "Una norma holandesa para la gestión de sistemas de seguridad de la información.",
       "fwIso9001Description": "Un estándar internacional para sistemas de gestión de calidad.",
       "fwPipedaDescription": "Ley de Protección de la Información Personal y Documentos Electrónicos",
-      "fwCcpaDescription": "Ley de Privacidad del Consumidor de California"
+      "fwCcpaDescription": "Ley de Privacidad del Consumidor de California",
+      "frameworkCard": {
+        "statusCompliant": "Conforme",
+        "statusInProgress": "En progreso",
+        "statusStarted": "Iniciado",
+        "pdfOnlyError": "Sube únicamente archivos PDF",
+        "fileTooLarge": "El archivo debe pesar menos de 100 MB",
+        "uploadSuccess": "Certificado subido correctamente",
+        "uploadFailed": "No se pudo subir el certificado",
+        "disabled": "Desactivado",
+        "certificateTitle": "Certificado de cumplimiento",
+        "certificateUploaded": "Certificado subido",
+        "previewFailed": "No se pudo ver el certificado",
+        "view": "Ver",
+        "openInNewTab": "Abre el certificado en una pestaña nueva",
+        "replace": "Reemplazar",
+        "replaceHint": "Reemplaza el certificado actual (PDF)",
+        "downloadFailed": "No se pudo descargar el certificado",
+        "download": "Descargar",
+        "downloadHint": "Descargar el certificado",
+        "dropHere": "Suelta aquí tu certificado",
+        "dragAndDrop": "Arrastra y suelta el certificado",
+        "browseHint": "o haz clic para explorar • Solo PDF, máx. 100 MB",
+        "uploading": "Subiendo..."
+      },
+      "customLinks": {
+        "title": "Enlaces personalizados",
+        "description": "Añade enlaces externos para mostrarlos en tu portal de confianza (p. ej., StatusPage, sitio de soporte)",
+        "addLink": "Añadir enlace",
+        "editLinkTitle": "Editar enlace",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "emptyState": "Aún no hay enlaces personalizados. Añade uno para empezar.",
+        "titleLabel": "Título *",
+        "titlePlaceholder": "p. ej., Estado del sistema, Portal de soporte",
+        "descriptionLabel": "Descripción (opcional)",
+        "descriptionPlaceholder": "Breve descripción de este enlace",
+        "urlLabel": "URL *",
+        "create": "Crear",
+        "update": "Actualizar",
+        "cancel": "Cancelar",
+        "titleUrlRequired": "El título y la URL son obligatorios",
+        "invalidUrl": "Introduce una URL válida",
+        "linkCreated": "Enlace creado correctamente",
+        "linkUpdated": "Enlace actualizado correctamente",
+        "linkDeleted": "Enlace eliminado correctamente",
+        "linksReordered": "Enlaces reordenados",
+        "createFailed": "No se pudo crear el enlace",
+        "updateFailed": "No se pudo actualizar el enlace",
+        "deleteFailed": "No se pudo eliminar el enlace",
+        "reorderFailed": "No se pudieron reordenar los enlaces"
+      }
     },
     "domain": {
       "domainRequired": "El dominio no puede estar vacío.",
@@ -2710,6 +2898,101 @@
       "accepted": "Aceptado",
       "awaitingAcceptance": "Pendiente de aceptación",
       "stale": "Desactualizado"
+    },
+    "formFields": {
+      "meeting": "Registra las actas de las reuniones del consejo, del liderazgo de TI o del comité de riesgos.",
+      "boardMeeting": "Convoca una reunión del consejo y captura el acta.",
+      "itLeadershipMeeting": "Celebra una reunión del liderazgo de TI y documenta los resultados.",
+      "riskCommitteeMeeting": "Lleva a cabo una reunión del comité de riesgos y registra las decisiones.",
+      "accessRequest": "Realiza el seguimiento y conserva las solicitudes de acceso de los usuarios. Los empleados pueden solicitar acceso a los sistemas a través del portal de empleados.",
+      "whistleblowerReport": "Envía un informe confidencial de denuncia (canal de alertas).",
+      "penetrationTest": "Sube un informe de prueba de penetración externa.",
+      "rbacMatrix": "Documenta el acceso basado en roles por sistema, rol y aprobación.",
+      "infrastructureInventory": "Registra los activos de infraestructura, su responsable y las fechas de revisión.",
+      "employeePerformanceEvaluation": "Registra los resultados estructurados de la evaluación de empleados y la firma de conformidad.",
+      "networkDiagram": "Sube o enlaza un diagrama de red actualizado.",
+      "tabletopExercise": "Realiza un ejercicio de simulación y documenta los hallazgos, los asistentes y las acciones de seguimiento."
+    },
+    "internalAuditValidation": {
+      "statuses": {
+        "planned": "Planificada",
+        "inProgress": "En curso",
+        "complete": "Completada"
+      },
+      "verdicts": {
+        "conform": "Conforme",
+        "substantiallyConform": "Sustancialmente conforme",
+        "notYetConform": "Aún no conforme"
+      },
+      "conclusions": {
+        "conform": "En general, esta auditoría concluyó que el SGSI es conforme a ISO/IEC 27001:2022. Las acciones correctivas se registran en la tabla de hallazgos.",
+        "substantiallyConform": "En general, esta auditoría concluyó que el SGSI es sustancialmente conforme a ISO/IEC 27001:2022. Las acciones correctivas se registran en la tabla de hallazgos.",
+        "notYetConform": "En general, esta auditoría concluyó que el SGSI aún no es conforme a ISO/IEC 27001:2022. Las acciones correctivas se registran en la tabla de hallazgos."
+      },
+      "controlResults": {
+        "conformityConfirmed": "Conformidad confirmada",
+        "nonconformityRaised": "No conformidad registrada",
+        "observationRaised": "Observación registrada",
+        "notSampled": "No muestreado en este ciclo"
+      },
+      "findingTypes": {
+        "ncMajor": "NC mayor",
+        "ncMinor": "NC menor",
+        "ofi": "OFI",
+        "observation": "Observación"
+      },
+      "findingTypeDescriptions": {
+        "ncMajor": "No conformidad mayor: falta un proceso o control requerido o ha dejado de funcionar. Bloquea la certificación hasta corregirse.",
+        "ncMinor": "No conformidad menor: un fallo puntual en un control que funciona. Requiere una acción correctiva con responsable y fecha límite.",
+        "ofi": "Oportunidad de mejora: una sugerencia para mejorar un control que funciona. No requiere acción correctiva.",
+        "observation": "Observación: algo que vale la pena registrar o vigilar. Sin impacto en la conformidad por ahora."
+      },
+      "findingStatuses": {
+        "open": "Abierto",
+        "inProgress": "En curso",
+        "closed": "Cerrado"
+      },
+      "findingDescriptionPlaceholder": "Describe el hallazgo, su evidencia y el seguimiento requerido…",
+      "noAuditsRecorded": "Debe registrarse al menos una auditoría interna.",
+      "missingVerdict": "La auditoría {reference} está completada pero no tiene veredicto de conclusión."
+    },
+    "leadership": {
+      "statementRequired": "Se requiere una declaración de compromiso",
+      "commitmentAria": "Declaración de compromiso",
+      "commitments": {
+        "a": {
+          "label": "Política y objetivos alineados con la estrategia",
+          "placeholder": "Cómo se establecen la política de seguridad de la información y los objetivos, y cómo se alinean con la dirección estratégica de la organización."
+        },
+        "b": {
+          "label": "SGSI integrado en los procesos del negocio",
+          "placeholder": "Cómo se integran los requisitos del SGSI en los procesos de la organización."
+        },
+        "c": {
+          "label": "Recursos puestos a disposición",
+          "placeholder": "Cómo se ponen a disposición los recursos necesarios para el SGSI."
+        },
+        "d": {
+          "label": "Importancia de la seguridad efectiva comunicada",
+          "placeholder": "Cómo se comunica la importancia de una gestión eficaz de la seguridad de la información y del cumplimiento de los requisitos del SGSI."
+        },
+        "e": {
+          "label": "El SGSI logra los resultados previstos",
+          "placeholder": "Cómo garantiza la dirección que el SGSI logra su resultado previsto."
+        },
+        "f": {
+          "label": "Personas dirigidas y apoyadas",
+          "placeholder": "Cómo se dirige y apoya a las personas para que contribuyan a la eficacia del SGSI."
+        },
+        "g": {
+          "label": "Mejora continua promovida",
+          "placeholder": "Cómo se promueve la mejora continua del SGSI."
+        },
+        "h": {
+          "label": "Compromiso de la dirección evidenciado",
+          "placeholder": "Cómo se evidencia y comunica el compromiso de la dirección con el SGSI en toda la organización."
+        }
+      }
     }
   },
   "tasks": {
@@ -3141,6 +3424,20 @@
       "regenerating": "Regenerando...",
       "regeneratingToast": "Regenerando contenido de la política...",
       "working": "Trabajando…"
+    },
+    "controlMappings": {
+      "mappedSuccess": "Control asignado correctamente",
+      "mappedError": "Error al asignar el control",
+      "unmappedSuccess": "Control desasignado correctamente",
+      "unmappedError": "Error al desasignar el control",
+      "title": "Controles",
+      "description": "Controles relevantes para esta política.",
+      "linkControl": "Vincular control",
+      "searchPlaceholder": "Buscar controles...",
+      "noControlsFound": "No se encontraron controles.",
+      "noneMapped": "Aún no hay controles asignados.",
+      "name": "Nombre",
+      "frameworks": "Marcos"
     }
   },
   "admin": {

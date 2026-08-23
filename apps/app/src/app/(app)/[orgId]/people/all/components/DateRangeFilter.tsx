@@ -10,14 +10,17 @@ import {
   PopoverTrigger,
 } from '@trycompai/design-system';
 import { Calendar as CalendarIcon, ChevronDown } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 
 const PRESETS = [
-  { label: 'Last 7 days', days: 7 },
-  { label: 'Last 30 days', days: 30 },
-  { label: 'This quarter', days: 90 },
-  { label: 'This year', days: 365 },
-  { label: 'All time', days: 0 },
+  { key: 'last7Days', days: 7 },
+  { key: 'last30Days', days: 30 },
+  { key: 'thisQuarter', days: 90 },
+  { key: 'thisYear', days: 365 },
+  { key: 'allTime', days: 0 },
 ] as const;
+
+type PresetKey = (typeof PRESETS)[number]['key'];
 
 function getPresetRange(days: number): { from: Date | undefined; to: Date | undefined } {
   if (days === 0) return { from: undefined, to: undefined };
@@ -28,9 +31,8 @@ function getPresetRange(days: number): { from: Date | undefined; to: Date | unde
   return { from, to };
 }
 
-function getActivePresetLabel(from: Date | undefined, to: Date | undefined): string | null {
-  // Must be the exact PRESETS label so the chip renders as selected.
-  if (!from && !to) return 'All time';
+function getActivePresetKey(from: Date | undefined, to: Date | undefined): PresetKey | null {
+  if (!from && !to) return 'allTime';
   if (!from || !to) return null;
   const diffDays = Math.round((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24));
   const now = new Date();
@@ -38,7 +40,7 @@ function getActivePresetLabel(from: Date | undefined, to: Date | undefined): str
   if (!isToToday) return null;
   for (const p of PRESETS) {
     if (p.days === 0) continue;
-    if (Math.abs(diffDays - p.days) <= 1) return p.label;
+    if (Math.abs(diffDays - p.days) <= 1) return p.key;
   }
   return null;
 }
@@ -56,10 +58,18 @@ export function DateRangeFilter({
   onApply: (from: Date | undefined, to: Date | undefined) => void;
   onClear: () => void;
 }) {
+  const t = useTranslations('people');
+  const presetLabels: Record<PresetKey, string> = {
+    last7Days: t('dateRange.last7Days'),
+    last30Days: t('dateRange.last30Days'),
+    thisQuarter: t('dateRange.thisQuarter'),
+    thisYear: t('dateRange.thisYear'),
+    allTime: t('dateRange.allTime'),
+  };
   const [open, setOpen] = useState(false);
   const [draftFrom, setDraftFrom] = useState<Date | undefined>(from);
   const [draftTo, setDraftTo] = useState<Date | undefined>(to);
-  const [activePreset, setActivePreset] = useState<string | null>(null);
+  const [activePreset, setActivePreset] = useState<PresetKey | null>(null);
   const [fromPickerOpen, setFromPickerOpen] = useState(false);
   const [toPickerOpen, setToPickerOpen] = useState(false);
 
@@ -67,7 +77,7 @@ export function DateRangeFilter({
     if (isOpen) {
       setDraftFrom(from);
       setDraftTo(to);
-      setActivePreset(getActivePresetLabel(from, to));
+      setActivePreset(getActivePresetKey(from, to));
     }
     // Nested pickers must never stay open across parent close/reopen.
     setFromPickerOpen(false);
@@ -75,11 +85,11 @@ export function DateRangeFilter({
     setOpen(isOpen);
   };
 
-  const handlePreset = (days: number, presetLabel: string) => {
+  const handlePreset = (days: number, presetKey: PresetKey) => {
     const range = getPresetRange(days);
     setDraftFrom(range.from);
     setDraftTo(range.to);
-    setActivePreset(presetLabel);
+    setActivePreset(presetKey);
   };
 
   const handleApply = () => {
@@ -93,12 +103,12 @@ export function DateRangeFilter({
   };
 
   const displayLabel = from && to
-    ? `${format(from, 'MMM d')} – ${format(to, 'MMM d, yyyy')}`
+    ? t('dateRange.range', { from: format(from, 'MMM d'), to: format(to, 'MMM d, yyyy') })
     : from
-      ? `From ${format(from, 'MMM d, yyyy')}`
+      ? t('dateRange.from', { date: format(from, 'MMM d, yyyy') })
       : to
-        ? `Until ${format(to, 'MMM d, yyyy')}`
-        : 'Any time';
+        ? t('dateRange.until', { date: format(to, 'MMM d, yyyy') })
+        : t('dateRange.anyTime');
 
   const labelId = `people-${label.toLowerCase()}-filter-label`;
 
@@ -118,22 +128,22 @@ export function DateRangeFilter({
         <PopoverContent align="start" style={{ width: 'auto' }}>
           <div className="flex w-[380px] flex-col gap-4 p-1.5">
             <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-              {label} between
+              {t('dateRange.between', { label })}
             </span>
 
             <div className="flex flex-wrap gap-2">
               {PRESETS.map((p) => (
                 <button
-                  key={p.label}
+                  key={p.key}
                   type="button"
-                  onClick={() => handlePreset(p.days, p.label)}
+                  onClick={() => handlePreset(p.days, p.key)}
                   className={`rounded-full border px-3 py-1.5 text-xs transition-colors ${
-                    activePreset === p.label
+                    activePreset === p.key
                       ? 'border-primary bg-primary text-primary-foreground'
                       : 'border-border hover:bg-muted'
                   }`}
                 >
-                  {p.label}
+                  {presetLabels[p.key]}
                 </button>
               ))}
             </div>
@@ -143,7 +153,7 @@ export function DateRangeFilter({
                 <PopoverTrigger>
                   <div className="border-border bg-muted/50 flex h-10 flex-1 items-center gap-2 rounded-lg border px-3 text-sm cursor-pointer">
                     <CalendarIcon size={14} className="text-muted-foreground" />
-                    {draftFrom ? format(draftFrom, 'MMM d, yyyy') : <span className="text-muted-foreground">Start date</span>}
+                    {draftFrom ? format(draftFrom, 'MMM d, yyyy') : <span className="text-muted-foreground">{t('dateRange.startPlaceholder')}</span>}
                   </div>
                 </PopoverTrigger>
                 <PopoverContent align="start">
@@ -162,7 +172,7 @@ export function DateRangeFilter({
                 <PopoverTrigger>
                   <div className="border-border bg-muted/50 flex h-10 flex-1 items-center gap-2 rounded-lg border px-3 text-sm cursor-pointer">
                     <CalendarIcon size={14} className="text-muted-foreground" />
-                    {draftTo ? format(draftTo, 'MMM d, yyyy') : <span className="text-muted-foreground">End date</span>}
+                    {draftTo ? format(draftTo, 'MMM d, yyyy') : <span className="text-muted-foreground">{t('dateRange.endPlaceholder')}</span>}
                   </div>
                 </PopoverTrigger>
                 <PopoverContent align="start">
@@ -180,10 +190,10 @@ export function DateRangeFilter({
 
             <div className="flex items-center justify-end gap-2 border-t pt-3">
               <div>
-                <Button variant="ghost" size="sm" onClick={handleClear}>Clear</Button>
+                <Button variant="ghost" size="sm" onClick={handleClear}>{t('dateRange.clear')}</Button>
               </div>
               <div>
-                <Button size="sm" onClick={handleApply}>Apply</Button>
+                <Button size="sm" onClick={handleApply}>{t('dateRange.apply')}</Button>
               </div>
             </div>
           </div>

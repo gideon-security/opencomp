@@ -1,6 +1,9 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { ComplianceFramework } from './ComplianceFramework';
+
+mockNextIntl();
 
 vi.mock('sonner', () => ({
   toast: { success: vi.fn(), error: vi.fn() },
@@ -26,7 +29,7 @@ function renderRow(overrides: { disabled?: boolean } = {}) {
 }
 
 function dropPdf() {
-  const dropZone = screen.getByText(/Drag & drop certificate/i);
+  const dropZone = screen.getByText('portal.frameworkCard.dragAndDrop');
   const file = new File(['%PDF-1.4'], 'cert.pdf', { type: 'application/pdf' });
   fireEvent.drop(dropZone, { dataTransfer: { files: [file] } });
 }

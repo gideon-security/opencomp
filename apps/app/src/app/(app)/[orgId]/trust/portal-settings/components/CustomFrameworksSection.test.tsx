@@ -1,5 +1,6 @@
 import type { TrustCustomFrameworkItem } from '@/hooks/use-trust-portal-settings';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CustomFrameworksSection } from './CustomFrameworksSection';
 
@@ -46,6 +47,8 @@ const frameworks: TrustCustomFrameworkItem[] = [
   },
 ];
 
+mockNextIntl();
+
 describe('CustomFrameworksSection', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -66,8 +69,8 @@ describe('CustomFrameworksSection', () => {
     );
 
     // Enabled + compliant framework shows its status; disabled one shows "Disabled".
-    expect(screen.getByText('Compliant')).toBeInTheDocument();
-    expect(screen.getByText('Disabled')).toBeInTheDocument();
+    expect(screen.getByText('portal.frameworkCard.statusCompliant')).toBeInTheDocument();
+    expect(screen.getByText('portal.frameworkCard.disabled')).toBeInTheDocument();
   });
 
   it('shows an empty state when the org has no custom frameworks', () => {

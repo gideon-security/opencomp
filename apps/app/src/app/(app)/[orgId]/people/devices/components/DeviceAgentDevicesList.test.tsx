@@ -1,5 +1,9 @@
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
+
 import type { DeviceWithChecks } from '../types';
 
 vi.mock('next/navigation', () => ({
@@ -108,7 +112,7 @@ describe('DeviceAgentDevicesList', () => {
 
   it('shows the Export CSV button when devices are present', () => {
     render(<DeviceAgentDevicesList devices={[makeDevice()]} />);
-    expect(screen.getByRole('button', { name: /export csv/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /devicesList\.exportCsv/i })).toBeInTheDocument();
   });
 
   it('calls the CSV download with the built rows when clicked', () => {
@@ -120,7 +124,7 @@ describe('DeviceAgentDevicesList', () => {
         ]}
       />,
     );
-    fireEvent.click(screen.getByRole('button', { name: /export csv/i }));
+    fireEvent.click(screen.getByRole('button', { name: /devicesList\.exportCsv/i }));
     expect(mockDownload).toHaveBeenCalledTimes(1);
     const [filename, contents] = mockDownload.mock.calls[0];
     expect(filename).toMatch(/^devices-org_1-\d{4}-\d{2}-\d{2}\.csv$/);
@@ -343,14 +347,14 @@ describe('DeviceAgentDevicesList — integration-imported devices', () => {
     const { rerender } = render(
       <DeviceAgentDevicesList devices={[makeDevice()]} />,
     );
-    expect(screen.queryByLabelText('Filter by source')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('devicesList.filterBySource')).not.toBeInTheDocument();
 
     rerender(
       <DeviceAgentDevicesList
         devices={[makeDevice(), makeIntegrationDevice()]}
       />,
     );
-    expect(screen.getByLabelText('Filter by source')).toBeInTheDocument();
+    expect(screen.getByLabelText('devicesList.filterBySource')).toBeInTheDocument();
   });
 
   it('filters the table to a single source when selected', () => {
@@ -365,7 +369,7 @@ describe('DeviceAgentDevicesList — integration-imported devices', () => {
     expect(screen.getByText('Agent Mac')).toBeInTheDocument();
     expect(screen.getByText('Imported Mac')).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText('Filter by source'), {
+    fireEvent.change(screen.getByLabelText('devicesList.filterBySource'), {
       target: { value: 'integration:kandji' },
     });
     expect(screen.queryByText('Agent Mac')).not.toBeInTheDocument();
@@ -389,8 +393,8 @@ describe('DeviceAgentDevicesList — integration-imported devices', () => {
         ]}
       />,
     );
-    const select = screen.getByLabelText('Filter by source');
-    // "All sources" + two distinct providers (not merged into one "MDM").
+    const select = screen.getByLabelText('devicesList.filterBySource');
+    // devicesList.allSources + two distinct providers (not merged into one "MDM").
     expect(within(select).getAllByRole('option')).toHaveLength(3);
     fireEvent.change(select, { target: { value: 'integration:intune' } });
     expect(screen.queryByText('Device X')).not.toBeInTheDocument();
