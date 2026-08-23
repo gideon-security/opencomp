@@ -2,6 +2,7 @@ import { createHash, pbkdf2Sync, randomBytes } from 'node:crypto';
 import {
   PBKDF2_ITERATIONS,
   hashApiKeyCurrent,
+  isLegacyStoredHash,
   matchesStoredKey,
 } from './api-key-hash';
 
@@ -55,5 +56,17 @@ describe('api-key-hash', () => {
     const salt = 'salt';
     const expected = pbkdf2Sync(key, salt, PBKDF2_ITERATIONS, 32, 'sha256').toString('hex');
     expect(hashApiKeyCurrent(key, salt)).toBe(`pbkdf2$${PBKDF2_ITERATIONS}$${expected}`);
+  });
+});
+
+describe('isLegacyStoredHash (upgrade-on-verify gate)', () => {
+  it('flags plain sha256 rows as legacy', () => {
+    const salt = randomBytes(16).toString('hex');
+    expect(isLegacyStoredHash(createHash('sha256').update(key + salt).digest('hex'))).toBe(true);
+  });
+
+  it('treats pbkdf2 rows as current', () => {
+    const salt = randomBytes(16).toString('hex');
+    expect(isLegacyStoredHash(hashApiKeyCurrent(key, salt))).toBe(false);
   });
 });

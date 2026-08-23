@@ -24,6 +24,11 @@ export function hashApiKeyCurrent(apiKey: string, salt: string): string {
   return `${CURRENT_PREFIX}$${PBKDF2_ITERATIONS}$${derived.toString('hex')}`;
 }
 
+/** True when a stored hash predates the PBKDF2 scheme and should be upgraded. */
+export function isLegacyStoredHash(storedHash: string): boolean {
+  return !storedHash.startsWith(`${CURRENT_PREFIX}$`);
+}
+
 /** Legacy schemes: unsalted SHA-256, or SHA-256 over key+salt. */
 function hashLegacy(apiKey: string, salt?: string): string {
   return createHash('sha256')
