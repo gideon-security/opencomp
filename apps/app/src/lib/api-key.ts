@@ -1,7 +1,7 @@
 import { db } from '@db/server';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { createHash, randomBytes } from 'node:crypto';
+import { pbkdf2Sync, randomBytes, timingSafeEqual } from 'node:crypto';
 
 /**
  * Generate a new API key
@@ -25,21 +25,48 @@ export function generateSalt(): string {
   return randomBytes(16).toString('hex');
 }
 
+const PBKDF2_ITERATIONS = 100_000;
+const CURRENT_HASH_PREFIX = 'pbkdf2';
+const KEY_LEN = 32;
+
 /**
- * Hash an API key for storage
- * @param apiKey The API key to hash
- * @param salt Optional salt to use for hashing. If not provided, the key is hashed without a salt (for backward compatibility).
- * @returns The hashed API key
+ * Hash an API key for storage. PBKDF2-SHA256 with a required salt, stored as
+ * a versioned string (`pbkdf2$<iterations>$<hex>`).
  */
-export function hashApiKey(apiKey: string, salt?: string): string {
-  if (salt) {
-    // If salt is provided, use it for hashing
-    return createHash('sha256')
-      .update(apiKey + salt)
-      .digest('hex');
+export function hashApiKey(apiKey: string, salt: string): string {
+  const derived = pbkdf2Sync(apiKey, salt, PBKDF2_ITERATIONS, KEY_LEN, 'sha256');
+  return `${CURRENT_HASH_PREFIX}$${PBKDF2_ITERATIONS}$${derived.toString('hex')}`;
+}
+
+/** Constant-time hex comparison (length-mismatch safe). */
+function safeEqualHex(a: string, b: string): boolean {
+  const bufA = Buffer.from(a, 'hex');
+  const bufB = Buffer.from(b, 'hex');
+  if (bufA.length !== bufB.length) return false;
+  return timingSafeEqual(bufA, bufB);
+}
+
+/**
+ * Verify a presented API key against a stored PBKDF2 hash. Any other stored
+ * format fails closed.
+ */
+function matchesStoredKey(
+  presentedKey: string,
+  storedHash: string,
+  salt: string | null,
+): boolean {
+  if (!storedHash.startsWith(`${CURRENT_HASH_PREFIX}$`)) return false;
+  try {
+    const [, iterationsRaw, digest] = storedHash.split('$');
+    const iterations = Number(iterationsRaw);
+    if (!Number.isInteger(iterations) || iterations <= 0 || !digest) {
+      return false;
+    }
+    const derived = pbkdf2Sync(presentedKey, salt ?? '', iterations, KEY_LEN, 'sha256');
+    return safeEqualHex(derived.toString('hex'), digest);
+  } catch {
+    return false;
   }
-  // For backward compatibility, hash without salt
-  return createHash('sha256').update(apiKey).digest('hex');
 }
 
 /**
@@ -87,8 +114,7 @@ async function validateApiKeyValue(apiKey: string): Promise<string | null> {
       return null;
     }
 
-    // Use key prefix for indexed lookup when available (new keys),
-    // fall back to full scan for legacy keys without prefix
+    // Indexed lookup via the key prefix embedded in every modern key.
     const keyPrefix = apiKey.startsWith('comp_') ? extractKeyPrefix(apiKey) : null;
 
     const apiKeyRecords = await db.apiKey.findMany({
@@ -109,44 +135,11 @@ async function validateApiKeyValue(apiKey: string): Promise<string | null> {
       },
     });
 
-    const matchingRecord = apiKeyRecords.find((record) => {
-      const hashedKey = record.salt ? hashApiKey(apiKey, record.salt) : hashApiKey(apiKey);
-      return hashedKey === record.key;
-    });
+    const matchingRecord = apiKeyRecords.find((record) =>
+      matchesStoredKey(apiKey, record.key, record.salt),
+    );
 
     if (!matchingRecord) {
-      // Try legacy keys (no prefix set) for backwards compatibility
-      if (keyPrefix) {
-        const legacyRecords = await db.apiKey.findMany({
-          where: {
-            isActive: true,
-            keyPrefix: null,
-            OR: [
-              { expiresAt: null },
-              { expiresAt: { gt: new Date() } },
-            ],
-          },
-          select: {
-            id: true,
-            key: true,
-            salt: true,
-            organizationId: true,
-            expiresAt: true,
-          },
-        });
-        const legacyMatch = legacyRecords.find((record) => {
-          const hashedKey = record.salt ? hashApiKey(apiKey, record.salt) : hashApiKey(apiKey);
-          return hashedKey === record.key;
-        });
-        if (legacyMatch) {
-          // Backfill the prefix for future lookups
-          await db.apiKey.update({
-            where: { id: legacyMatch.id },
-            data: { keyPrefix, lastUsedAt: new Date() },
-          });
-          return legacyMatch.organizationId;
-        }
-      }
       return null;
     }
 
