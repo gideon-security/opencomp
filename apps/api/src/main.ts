@@ -29,9 +29,33 @@ declare module 'express-serve-static-core' {
 let app: INestApplication | null = null;
 
 function describeServer(baseUrl: string): string {
-  if (baseUrl.includes('api.staging.gideondefender.com')) return 'Staging API Server';
-  if (baseUrl.includes('api.gideondefender.com')) return 'Production API Server';
-  if (baseUrl.startsWith('http://localhost')) return 'Local API Server';
+  // Hostname-exact matching (CodeQL js/incomplete-url-substring-sanitization):
+  // substring checks would mislabel hosts like "evil.com/api.staging.…".
+  try {
+    const { hostname } = new URL(baseUrl);
+    if (
+      hostname === 'api.staging.gideondefender.com' ||
+      hostname.endsWith('.api.staging.gideondefender.com')
+    ) {
+      return 'Staging API Server';
+    }
+    if (
+      hostname === 'api.gideondefender.com' ||
+      hostname.endsWith('.api.gideondefender.com')
+    ) {
+      return 'Production API Server';
+    }
+    if (
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname === '[::1]' ||
+      hostname.endsWith('.localhost')
+    ) {
+      return 'Local API Server';
+    }
+  } catch {
+    // Unparseable base URL — fall through to the generic label.
+  }
   return 'API Server';
 }
 
