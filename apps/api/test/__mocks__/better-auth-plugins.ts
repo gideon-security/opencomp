@@ -5,3 +5,4 @@ export const admin = jest.fn(() => ({}));
 export const magicLink = jest.fn(() => ({}));
 export const multiSession = jest.fn(() => ({}));
 export const emailOTP = jest.fn(() => ({}));
+export const mcp = jest.fn(() => ({}));
