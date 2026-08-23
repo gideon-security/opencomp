@@ -29,6 +29,7 @@ import {
   Section,
 } from '@trycompai/design-system';
 import { Add, Launch, Rule, Unlink } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -86,6 +87,7 @@ export function IsmsControlMappings({
   organizationId,
   canManage,
 }: IsmsControlMappingsProps) {
+  const t = useTranslations('isms');
   const { addControlMappings, removeControlMapping } = useIsmsDocument({
     documentId: document.id,
     organizationId,
@@ -115,9 +117,9 @@ export function IsmsControlMappings({
     setAddOpen(false);
     try {
       await addControlMappings([id]);
-      toast.success('Control linked successfully');
+      toast.success(t('controlMappings.linkedSuccess'));
     } catch {
-      toast.error('Failed to link control');
+      toast.error(t('controlMappings.linkFailed'));
     } finally {
       setLoading(false);
     }
@@ -132,9 +134,9 @@ export function IsmsControlMappings({
     setLoading(true);
     try {
       await removeControlMapping(target.id);
-      toast.success('Control unlinked successfully');
+      toast.success(t('controlMappings.unlinkedSuccess'));
     } catch {
-      toast.error('Failed to unlink control');
+      toast.error(t('controlMappings.unlinkFailed'));
     } finally {
       setLoading(false);
       setToRemove(null);
@@ -143,8 +145,8 @@ export function IsmsControlMappings({
 
   return (
     <Section
-      title="Linked controls"
-      description="Controls relevant to this ISMS document."
+      title={t('controlMappings.sectionTitle')}
+      description={t('controlMappings.sectionDescription')}
       actions={
         canManage ? (
           <Popover open={addOpen} onOpenChange={setAddOpen}>
@@ -153,14 +155,14 @@ export function IsmsControlMappings({
               className={buttonVariants({ variant: 'outline', size: 'sm' })}
             >
               <Add size={16} />
-              Link control
+              {t('controlMappings.linkControl')}
             </PopoverTrigger>
             <PopoverContent align="end" sideOffset={8}>
               <Command>
-                <CommandInput placeholder="Search controls..." />
+                <CommandInput placeholder={t('controlMappings.searchPlaceholder')} />
                 <div className="h-2" />
                 <CommandList>
-                  <CommandEmpty>No controls found.</CommandEmpty>
+                  <CommandEmpty>{t('controlMappings.noControlsFound')}</CommandEmpty>
                   {availableControls.map((c) => (
                     <CommandItem key={c.id} value={c.name} onSelect={() => handleAdd(c.id)}>
                       {c.name}
@@ -177,8 +179,8 @@ export function IsmsControlMappings({
         <IsmsEmptyState
           compact
           icon={Rule}
-          title="No controls linked"
-          description="No controls linked yet."
+          title={t('controlMappings.emptyTitle')}
+          description={t('controlMappings.emptyDescription')}
         />
       ) : (
         <ItemGroup>
@@ -214,8 +216,8 @@ export function IsmsControlMappings({
                     type="button"
                     variant="ghost"
                     size="icon-sm"
-                    aria-label={`Unlink ${link.control.name}`}
-                    title="Unlink control"
+                    aria-label={t('controlMappings.unlinkAria', { name: link.control.name })}
+                    title={t('controlMappings.unlinkTitle')}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -239,20 +241,19 @@ export function IsmsControlMappings({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Unlink control</AlertDialogTitle>
+            <AlertDialogTitle>{t('controlMappings.dialogTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {toRemove ? (
-                <>
-                  Unlink <strong>{toRemove.name}</strong> from this document? You can link it again
-                  later.
-                </>
-              ) : null}
+              {toRemove
+                ? t('controlMappings.dialogDescription', { name: toRemove.name })
+                : null}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setToRemove(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setToRemove(null)}>
+              {t('controlMappings.cancel')}
+            </AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirmRemove} variant="destructive">
-              Unlink
+              {t('controlMappings.unlink')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

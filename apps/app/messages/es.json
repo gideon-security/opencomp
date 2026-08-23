@@ -2993,6 +2993,159 @@
           "placeholder": "Cómo se evidencia y comunica el compromiso de la dirección con el SGSI en toda la organización."
         }
       }
+    },
+    "auditControls": {
+      "title": "Controles probados",
+      "description": "Para cada fila: abre la ubicación \"Dónde encontrarlo\", verifica que el contenido esté presente y sea apropiado, y registra un resultado. Marca deliberadamente las filas omitidas como \"No muestreadas este ciclo\" — seguirán apareciendo en el documento para mostrar que la muestra se acotó a propósito.",
+      "empty": "No hay controles registrados para esta auditoría.",
+      "columns": {
+        "controlRef": "Referencia del control",
+        "whatWasTested": "Qué se probó",
+        "whereToFind": "Dónde encontrarlo",
+        "result": "Resultado",
+        "notes": "Notas"
+      },
+      "actions": "Acciones",
+      "addRow": "Añadir fila de control",
+      "newFormTitle": "Nueva fila de control",
+      "form": {
+        "controlRef": "Referencia del control",
+        "controlRefPlaceholder": "p. ej. A.8.16 Actividades de monitoreo",
+        "whatWasTested": "Qué se probó",
+        "whereToFind": "Dónde encontrarlo",
+        "whereToFindPlaceholder": "OpenComp > ... o una ubicación externa",
+        "notesOptional": "Notas (opcional)",
+        "notes": "Notas",
+        "notesPlaceholder": "Evidencia externa, fechas o comentarios del auditor"
+      }
+    },
+    "carriedForward": {
+      "title": "Arrastrados de revisiones anteriores",
+      "description": "Acciones abiertas de revisiones anteriores — trátalas en el apartado de entradas (a) y ciérralas en su revisión de origen.",
+      "columns": {
+        "reference": "Referencia",
+        "description": "Descripción",
+        "owner": "Responsable",
+        "dueDate": "Fecha de vencimiento",
+        "status": "Estado"
+      },
+      "unknownMember": "Miembro desconocido",
+      "formerMember": "Antiguo miembro"
+    },
+    "contextOrg": {
+      "title": "Contexto de la organización",
+      "description": "Registra las cuestiones internas y externas relevantes para el SGSI y su efecto sobre los objetivos (cláusula 4.1 de ISO 27001). Genera a partir de los datos de tu plataforma y edita o añade cuestiones según sea necesario.",
+      "sectionTitle": "Registro de cuestiones",
+      "sectionDescription": "Cuestiones internas y externas que afectan al SGSI, agrupadas por origen.",
+      "generatedSuccess": "Cuestiones generadas a partir de los datos de la plataforma",
+      "issueAdded": "Cuestión añadida",
+      "issueAddFailed": "No se pudo añadir la cuestión",
+      "issueUpdated": "Cuestión actualizada",
+      "issueUpdateFailed": "No se pudo actualizar la cuestión",
+      "issueDeleted": "Cuestión eliminada",
+      "issueDeleteFailed": "No se pudo eliminar la cuestión"
+    },
+    "approval": {
+      "defaultApprover": "un aprobador",
+      "approvedPublishedTitle": "Aprobado · Publicado como v{version}",
+      "approvedTitle": "Aprobado",
+      "approvedByDated": "Este documento fue aprobado por {approver} el {date}.",
+      "approvedBy": "Este documento fue aprobado por {approver}.",
+      "draftChangesTitle": "Editar crea un nuevo borrador",
+      "draftChangesDescription": "La versión publicada v{version} sigue activa y exportable. Tus cambios son un borrador en curso (v{nextVersion}) — envíalo a aprobación para publicarlo.",
+      "declinedTitle": "Rechazado",
+      "declinedByDated": "Este documento fue rechazado por {approver} el {date}.",
+      "declinedBy": "Este documento fue rechazado por {approver}.",
+      "resubmitHint": "Puedes enviarlo a aprobación de nuevo.",
+      "actionRequiredTitle": "Acción requerida de tu parte",
+      "actionRequiredDescription": "Este documento espera tu aprobación.",
+      "approve": "Aprobar",
+      "decline": "Rechazar",
+      "pendingTitle": "Pendiente de aprobación",
+      "pendingApprover": "Este documento espera la aprobación de {approver}.",
+      "resubmitForApproval": "Reenviar a aprobación",
+      "submitForApproval": "Enviar a aprobación",
+      "dialogTitle": "Enviar a aprobación",
+      "dialogDescription": "Selecciona un aprobador para este documento.",
+      "approverAria": "Aprobador",
+      "approverPlaceholder": "Selecciona un aprobador",
+      "cancel": "Cancelar",
+      "submitting": "Enviando...",
+      "confirmSubmit": "Confirmar y enviar"
+    },
+    "controlMappings": {
+      "linkedSuccess": "Control vinculado correctamente",
+      "linkFailed": "No se pudo vincular el control",
+      "unlinkedSuccess": "Control desvinculado correctamente",
+      "unlinkFailed": "No se pudo desvincular el control",
+      "sectionTitle": "Controles vinculados",
+      "sectionDescription": "Controles relevantes para este documento SGSI.",
+      "emptyTitle": "No hay controles vinculados",
+      "emptyDescription": "Aún no hay controles vinculados.",
+      "unlinkAria": "Desvincular {name}",
+      "unlinkTitle": "Desvincular control",
+      "dialogTitle": "Desvincular control",
+      "dialogDescription": "¿Desvincular {name} de este documento? Podrás vincularlo de nuevo más tarde.",
+      "cancel": "Cancelar",
+      "unlink": "Desvincular",
+      "linkControl": "Vincular control",
+      "searchPlaceholder": "Buscar controles...",
+      "noControlsFound": "No se encontraron controles."
+    },
+    "requirements": {
+      "title": "Requisitos de las partes interesadas y tratamiento del SGSI",
+      "description": "Registra los requisitos de las partes interesadas relevantes para la seguridad de la información y cómo los aborda el SGSI (cláusulas 4.2b y 4.2c de ISO 27001). Genera a partir de los datos de tu plataforma y edita o añade requisitos según sea necesario.",
+      "sectionTitle": "Requisitos y tratamiento",
+      "sectionDescription": "Cada requisito de las partes interesadas y cómo lo trata el SGSI.",
+      "generatedSuccess": "Requisitos generados a partir de los datos de la plataforma",
+      "requirementAdded": "Requisito añadido",
+      "requirementAddFailed": "No se pudo añadir el requisito",
+      "requirementUpdated": "Requisito actualizado",
+      "requirementUpdateFailed": "No se pudo actualizar el requisito",
+      "requirementDeleted": "Requisito eliminado",
+      "requirementDeleteFailed": "No se pudo eliminar el requisito"
+    },
+    "sourceBadge": {
+      "autoDerived": "Derivado automáticamente",
+      "framework": "Framework",
+      "interestedParty": "Parte interesada",
+      "wizard": "Asistente de configuración",
+      "manual": "Manual",
+      "provenance": {
+        "vendors": "Registro de proveedores",
+        "subprocessors": "Subencargados",
+        "members": "Personal",
+        "devices": "Dispositivos",
+        "customers": "Clientes",
+        "risks": "Registro de riesgos",
+        "training": "Registros de formación"
+      }
+    },
+    "interestedParties": {
+      "title": "Registro de partes interesadas",
+      "description": "Registra las partes interesadas relevantes para el SGSI y sus necesidades y expectativas (cláusula 4.2a de ISO 27001). Genera a partir de los datos de tu plataforma y edita o añade partes según sea necesario.",
+      "sectionTitle": "Partes interesadas",
+      "sectionDescription": "Partes con interés en el SGSI y sus necesidades y expectativas de seguridad de la información.",
+      "generatedSuccess": "Partes interesadas generadas a partir de los datos de la plataforma",
+      "partyAdded": "Parte interesada añadida",
+      "partyAddFailed": "No se pudo añadir la parte interesada",
+      "partyUpdated": "Parte interesada actualizada",
+      "partyUpdateFailed": "No se pudo actualizar la parte interesada",
+      "partyDeleted": "Parte interesada eliminada",
+      "partyDeleteFailed": "No se pudo eliminar la parte interesada"
+    },
+    "objectives": {
+      "title": "Objetivos y plan de seguridad de la información",
+      "description": "Define los objetivos de seguridad de la información y los planes para lograrlos (cláusula 6.2 de ISO 27001). Genera a partir de los datos de tu plataforma y edita responsables, metas, cadencia y estado según sea necesario.",
+      "sectionTitle": "Objetivos y plan",
+      "sectionDescription": "Objetivos de seguridad de la información medibles con responsables, metas y cadencia de revisión.",
+      "generatedSuccess": "Objetivos generados a partir de los datos de la plataforma",
+      "objectiveAdded": "Objetivo añadido",
+      "objectiveAddFailed": "No se pudo añadir el objetivo",
+      "objectiveUpdated": "Objetivo actualizado",
+      "objectiveUpdateFailed": "No se pudo actualizar el objetivo",
+      "objectiveDeleted": "Objetivo eliminado",
+      "objectiveDeleteFailed": "No se pudo eliminar el objetivo"
     }
   },
   "tasks": {
@@ -3588,6 +3741,207 @@
         "amount": "Importe",
         "created": "Creación",
         "recoveryLink": "Enlace de recuperación"
+      },
+      "contextTab": {
+        "loading": "Cargando contexto...",
+        "title": "Contexto ({count})",
+        "addContext": "Añadir contexto",
+        "empty": "No hay entradas de contexto para esta organización.",
+        "colQuestion": "Pregunta",
+        "colAnswer": "Respuesta",
+        "colActions": "Acciones",
+        "edit": "Editar",
+        "editTitle": "Editar contexto",
+        "question": "Pregunta",
+        "questionPlaceholder": "¿Cuál es la pregunta?",
+        "answer": "Respuesta",
+        "answerPlaceholder": "Escribe la respuesta...",
+        "saveChanges": "Guardar cambios",
+        "create": "Crear"
+      },
+      "featureFlagsTab": {
+        "toastEnabled": "\"{name}\" activado para esta organización",
+        "toastDisabled": "\"{name}\" desactivado para esta organización",
+        "toastUpdateFailed": "No se pudo actualizar el feature flag",
+        "loading": "Cargando feature flags…",
+        "loadError": "No se pudieron cargar los feature flags",
+        "unknownError": "Error desconocido",
+        "emptyTitle": "No se encontraron feature flags",
+        "emptyDescPrefix": "Crea un feature flag en PostHog y configura",
+        "emptyDescMiddle": "y",
+        "emptyDescSuffix": "en la API para gestionarlo aquí.",
+        "searchPlaceholder": "Buscar flags...",
+        "refresh": "Actualizar desde PostHog",
+        "noMatch": "Ningún flag coincide con tu búsqueda.",
+        "inactiveInPosthog": "Inactivo en PostHog",
+        "inactiveBadge": "Inactivo"
+      },
+      "findingsTab": {
+        "toastDeleted": "Hallazgo eliminado",
+        "loading": "Cargando hallazgos...",
+        "title": "Hallazgos ({count})",
+        "logFinding": "Registrar hallazgo",
+        "empty": "No hay hallazgos para esta organización.",
+        "colContent": "Contenido",
+        "colTarget": "Objetivo",
+        "colSeverity": "Severidad",
+        "colCreatedBy": "Creado por",
+        "colStatus": "Estado",
+        "colActions": "Acciones",
+        "deleteTitle": "¿Eliminar el hallazgo?",
+        "deleteDescription": "Esto elimina permanentemente el hallazgo y su historial de actividad. Esta acción no se puede deshacer.",
+        "cancel": "Cancelar",
+        "deleting": "Eliminando…",
+        "delete": "Eliminar"
+      },
+      "policiesTab": {
+        "statuses": {
+          "draft": "Borrador",
+          "published": "Publicada",
+          "needsReview": "Requiere revisión"
+        },
+        "departments": {
+          "none": "Ninguno",
+          "admin": "Admin",
+          "gov": "Gov",
+          "hr": "RRHH",
+          "it": "TI",
+          "itsm": "ITSM",
+          "qms": "QMS"
+        },
+        "frequencies": {
+          "monthly": "Mensual",
+          "quarterly": "Trimestral",
+          "yearly": "Anual"
+        },
+        "loading": "Cargando políticas...",
+        "title": "Políticas ({count})",
+        "createPolicy": "Crear política",
+        "empty": "No hay políticas para esta organización.",
+        "colName": "Nombre",
+        "colStatus": "Estado",
+        "colDepartment": "Departamento",
+        "colFrequency": "Frecuencia",
+        "colAssignee": "Responsable",
+        "colLastPublished": "Última publicación",
+        "colActions": "Acciones",
+        "view": "Ver"
+      },
+      "policyForm": {
+        "statuses": {
+          "draft": "Borrador",
+          "published": "Publicada",
+          "needsReview": "Requiere revisión"
+        },
+        "departments": {
+          "none": "Ninguno",
+          "admin": "Admin",
+          "gov": "Gov",
+          "hr": "RRHH",
+          "it": "TI",
+          "itsm": "ITSM",
+          "qms": "QMS"
+        },
+        "frequencies": {
+          "monthly": "Mensual",
+          "quarterly": "Trimestral",
+          "yearly": "Anual"
+        },
+        "nameLabel": "Nombre",
+        "namePlaceholder": "Nombre de la política...",
+        "descriptionLabel": "Descripción (opcional)",
+        "descriptionPlaceholder": "Breve descripción...",
+        "statusLabel": "Estado",
+        "statusDefault": "Borrador (predeterminado)",
+        "departmentLabel": "Departamento",
+        "departmentDefault": "Ninguno (predeterminado)",
+        "frequencyLabel": "Frecuencia",
+        "frequencyDefault": "Sin frecuencia",
+        "submit": "Crear política"
+      },
+      "taskForm": {
+        "statuses": {
+          "todo": "Por hacer",
+          "inProgress": "En progreso",
+          "inReview": "En revisión",
+          "done": "Hecho"
+        },
+        "departments": {
+          "none": "Ninguno",
+          "admin": "Admin",
+          "gov": "Gov",
+          "hr": "RRHH",
+          "it": "TI",
+          "itsm": "ITSM",
+          "qms": "QMS"
+        },
+        "frequencies": {
+          "daily": "Diaria",
+          "weekly": "Semanal",
+          "monthly": "Mensual",
+          "quarterly": "Trimestral",
+          "yearly": "Anual"
+        },
+        "titleLabel": "Título",
+        "titlePlaceholder": "Título de la tarea...",
+        "descriptionLabel": "Descripción",
+        "descriptionPlaceholder": "Describe la tarea...",
+        "statusLabel": "Estado",
+        "statusDefault": "Por hacer (predeterminado)",
+        "departmentLabel": "Departamento",
+        "departmentDefault": "Ninguno (predeterminado)",
+        "frequencyLabel": "Frecuencia",
+        "frequencyDefault": "Sin frecuencia",
+        "submit": "Crear tarea"
+      },
+      "timeline": {
+        "status": {
+          "draft": "Borrador",
+          "active": "Activa",
+          "paused": "En pausa",
+          "completed": "Completada"
+        },
+        "phaseStatus": {
+          "pending": "PENDIENTE",
+          "inProgress": "EN CURSO",
+          "completed": "COMPLETADA"
+        },
+        "completion": {
+          "manual": "Manual",
+          "autoTasks": "Automática (tareas)",
+          "autoPolicies": "Automática (políticas)",
+          "autoPeople": "Automática (personas)",
+          "autoFindings": "Automática (hallazgos)",
+          "autoUpload": "Automática (carga)"
+        },
+        "unknownFramework": "Framework desconocido",
+        "locked": "Bloqueada",
+        "toastPaused": "Cronograma pausado",
+        "toastResumed": "Cronograma reanudado",
+        "toastReset": "Cronograma restablecido a borrador",
+        "toastDeleted": "Cronograma eliminado",
+        "toastNextCycle": "Siguiente ciclo creado como borrador",
+        "toastUnlocked": "Cronograma desbloqueado",
+        "phaseDuration": "{weeks} sem · {startDate} - {endDate}",
+        "lock": "Bloquear",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar"
+      },
+      "table": {
+        "searchPlaceholder": "Buscar por nombre, ID, propietario...",
+        "refresh": "Actualizar",
+        "totalOrgs": "{count} organizaciones",
+        "empty": "No se encontraron organizaciones.",
+        "colOrganization": "Organización",
+        "colOwner": "Propietario",
+        "colMembers": "Miembros",
+        "colCreated": "Creada",
+        "colStatus": "Estado",
+        "colActions": "Acciones",
+        "noOwner": "Sin propietario",
+        "active": "Activa",
+        "inactive": "Inactiva",
+        "view": "Ver"
       }
     },
     "timelineTemplates": {
@@ -3603,6 +3957,54 @@
       "colActions": "Acciones",
       "editCycle": "Editar ciclo {cycle}",
       "edit": "Editar"
+    },
+    "findingTemplates": {
+      "form": {
+        "validation": {
+          "categoryRequired": "La categoría es obligatoria",
+          "titleRequired": "El título es obligatorio",
+          "contentRequired": "El contenido es obligatorio"
+        },
+        "toastUpdated": "Plantilla actualizada",
+        "toastCreated": "Plantilla creada",
+        "editTitle": "Editar plantilla",
+        "newTitle": "Nueva plantilla",
+        "category": "Categoría",
+        "categoryPlaceholder": "Selecciona una categoría",
+        "titleLabel": "Título",
+        "titlePlaceholder": "Título de la plantilla",
+        "contentLabel": "Contenido",
+        "contentPlaceholder": "Contenido de la plantilla...",
+        "orderLabel": "Orden",
+        "saveChanges": "Guardar cambios",
+        "create": "Crear"
+      },
+      "list": {
+        "title": "Plantillas de hallazgos",
+        "loading": "Cargando plantillas...",
+        "addTemplate": "Añadir plantilla",
+        "searchPlaceholder": "Buscar por título o contenido...",
+        "allCategories": "Todas las categorías",
+        "emptyAll": "Aún no hay plantillas de hallazgos. Haz clic en 'Añadir plantilla' para crear una.",
+        "emptyFiltered": "Ninguna plantilla coincide con tus filtros.",
+        "colTitle": "Título",
+        "colCategory": "Categoría",
+        "colContent": "Contenido",
+        "colOrder": "Orden",
+        "colActions": "Acciones",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "paginationRange": "{from}–{to} de {total}",
+        "pageInfo": "{current} / {total}",
+        "previous": "Anterior",
+        "next": "Siguiente"
+      },
+      "categories": {
+        "evidenceIssue": "Problema con la evidencia subida",
+        "furtherEvidence": "Se necesita más evidencia",
+        "taskSpecific": "Problemas específicos de la tarea",
+        "naIncorrect": "Marcado como N/A incorrectamente"
+      }
     }
   },
   "documents": {

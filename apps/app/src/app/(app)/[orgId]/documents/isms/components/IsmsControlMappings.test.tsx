@@ -1,6 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsControlLink, IsmsDocument } from '../isms-types';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 // ─── Mock the ISMS document hook (add/remove control mappings) ───
 const mockAddControlMappings = vi.fn().mockResolvedValue(undefined);
@@ -226,14 +229,14 @@ describe('IsmsControlMappings', () => {
     render(
       <IsmsControlMappings {...baseProps} document={makeDocument({ controlLinks: [] })} />,
     );
-    expect(screen.getByText('No controls linked yet.')).toBeInTheDocument();
+    expect(screen.getByText('controlMappings.emptyDescription')).toBeInTheDocument();
   });
 
   it('lets a user with evidence:update link a control', async () => {
     render(<IsmsControlMappings {...baseProps} document={makeDocument()} />);
 
     // Already-linked ctl_1 is filtered out; ctl_2 remains selectable.
-    expect(screen.queryByText('Link control')).toBeInTheDocument();
+    expect(screen.queryByText('controlMappings.linkControl')).toBeInTheDocument();
     const option = screen.getByRole('button', { name: 'Encryption Standard' });
     fireEvent.click(option);
 
@@ -243,9 +246,9 @@ describe('IsmsControlMappings', () => {
   it('lets a user with evidence:update unlink a control', async () => {
     render(<IsmsControlMappings {...baseProps} document={makeDocument()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Unlink Access Control Policy' }));
+    fireEvent.click(screen.getByRole('button', { name: 'controlMappings.unlinkAria' }));
     // Confirm in the dialog.
-    fireEvent.click(screen.getByRole('button', { name: 'Unlink' }));
+    fireEvent.click(screen.getByRole('button', { name: 'controlMappings.unlink' }));
 
     await waitFor(() => expect(mockRemoveControlMapping).toHaveBeenCalledWith('ctl_1'));
   });
@@ -258,9 +261,9 @@ describe('IsmsControlMappings', () => {
     // Linked controls still render for readers.
     expect(screen.getByText('Access Control Policy')).toBeInTheDocument();
     // No link/unlink affordances.
-    expect(screen.queryByText('Link control')).not.toBeInTheDocument();
+    expect(screen.queryByText('controlMappings.linkControl')).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'Unlink Access Control Policy' }),
+      screen.queryByRole('button', { name: 'controlMappings.unlinkAria' }),
     ).not.toBeInTheDocument();
   });
 });

@@ -83,7 +83,7 @@ export function ismsDesignSystemMock() {
     Table: ({ children }: { children: ReactNode }) => <table>{children}</table>,
     TableBody: ({ children }: { children: ReactNode }) => <tbody>{children}</tbody>,
     TableCell: ({ children }: { children: ReactNode }) => <td>{children}</td>,
-    TableHead: ({ children }: { children: ReactNode }) => <th>{children}</th>,
+    TableHead: (props: React.ComponentProps<'th'>) => <th {...props} />,
     TableHeader: ({ children }: { children: ReactNode }) => <thead>{children}</thead>,
     TableRow: ({ children }: { children: ReactNode }) => <tr>{children}</tr>,
     Text: ({ children }: { children: ReactNode }) => <span>{children}</span>,

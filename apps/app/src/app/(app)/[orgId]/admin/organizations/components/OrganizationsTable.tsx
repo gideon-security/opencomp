@@ -21,6 +21,7 @@ import {
   View,
 } from '@trycompai/design-system/icons';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
 
@@ -74,6 +75,7 @@ export function OrganizationsTable({
   initialSearch: string;
   orgId: string;
 }) {
+  const t = useTranslations('admin');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -139,7 +141,7 @@ export function OrganizationsTable({
     <Stack gap="md">
       <DataTableHeader>
         <DataTableSearch
-          placeholder="Search by name, ID, owner..."
+          placeholder={t('organizations.table.searchPlaceholder')}
           value={inputValue}
           onChange={handleSearchChange}
         />
@@ -150,17 +152,17 @@ export function OrganizationsTable({
             loading={isLoading}
             iconLeft={<Renew size={16} />}
           >
-            Refresh
+            {t('organizations.table.refresh')}
           </Button>
           <Text size="sm" variant="muted">
-            {total} organizations
+            {t('organizations.table.totalOrgs', { count: total })}
           </Text>
         </DataTableFilters>
       </DataTableHeader>
 
       {orgs.length === 0 ? (
         <div className="flex h-32 items-center justify-center">
-          <Text variant="muted">No organizations found.</Text>
+          <Text variant="muted">{t('organizations.table.empty')}</Text>
         </div>
       ) : (
         <Table
@@ -173,12 +175,12 @@ export function OrganizationsTable({
         >
           <TableHeader>
             <TableRow>
-              <TableHead>Organization</TableHead>
-              <TableHead>Owner</TableHead>
-              <TableHead>Members</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>{t('organizations.table.colOrganization')}</TableHead>
+              <TableHead>{t('organizations.table.colOwner')}</TableHead>
+              <TableHead>{t('organizations.table.colMembers')}</TableHead>
+              <TableHead>{t('organizations.table.colCreated')}</TableHead>
+              <TableHead>{t('organizations.table.colStatus')}</TableHead>
+              <TableHead>{t('organizations.table.colActions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -203,6 +205,7 @@ function OrgRow({
   org: AdminOrg;
   orgId: string;
 }) {
+  const t = useTranslations('admin');
   const router = useRouter();
   const detailHref = `/${orgId}/admin/organizations/${org.id}`;
 
@@ -236,7 +239,7 @@ function OrgRow({
           </div>
         ) : (
           <Text size="xs" variant="muted">
-            No owner
+            {t('organizations.table.noOwner')}
           </Text>
         )}
       </TableCell>
@@ -252,7 +255,9 @@ function OrgRow({
       </TableCell>
       <TableCell>
         <Badge variant={org.hasAccess ? 'default' : 'destructive'}>
-          {org.hasAccess ? 'Active' : 'Inactive'}
+          {org.hasAccess
+            ? t('organizations.table.active')
+            : t('organizations.table.inactive')}
         </Badge>
       </TableCell>
       <TableCell>
@@ -262,7 +267,7 @@ function OrgRow({
           iconLeft={<View size={16} />}
           onClick={() => router.push(detailHref)}
         >
-          View
+          {t('organizations.table.view')}
         </Button>
       </TableCell>
     </TableRow>

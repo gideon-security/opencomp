@@ -1,5 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 const mockPost = vi.fn();
 
@@ -21,25 +24,25 @@ describe('PolicyForm', () => {
   it('renders the form with required fields', () => {
     render(<PolicyForm orgId="org_1" onCreated={onCreated} />);
 
-    expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /create policy/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('organizations.policyForm.nameLabel')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'organizations.policyForm.submit' })).toBeInTheDocument();
   });
 
   it('disables submit when name is empty', () => {
     render(<PolicyForm orgId="org_1" onCreated={onCreated} />);
 
-    const submitButton = screen.getByRole('button', { name: /create policy/i });
+    const submitButton = screen.getByRole('button', { name: 'organizations.policyForm.submit' });
     expect(submitButton).toBeDisabled();
   });
 
   it('enables submit when name is provided', () => {
     render(<PolicyForm orgId="org_1" onCreated={onCreated} />);
 
-    fireEvent.change(screen.getByLabelText(/^name$/i), {
+    fireEvent.change(screen.getByLabelText('organizations.policyForm.nameLabel'), {
       target: { value: 'Test Policy' },
     });
 
-    const submitButton = screen.getByRole('button', { name: /create policy/i });
+    const submitButton = screen.getByRole('button', { name: 'organizations.policyForm.submit' });
     expect(submitButton).not.toBeDisabled();
   });
 
@@ -47,10 +50,10 @@ describe('PolicyForm', () => {
     mockPost.mockResolvedValue({ data: { id: 'pol_new' } });
     render(<PolicyForm orgId="org_1" onCreated={onCreated} />);
 
-    fireEvent.change(screen.getByLabelText(/^name$/i), {
+    fireEvent.change(screen.getByLabelText('organizations.policyForm.nameLabel'), {
       target: { value: 'New Security Policy' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /create policy/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'organizations.policyForm.submit' }));
 
     await waitFor(() => {
       expect(mockPost).toHaveBeenCalledWith(
@@ -66,10 +69,10 @@ describe('PolicyForm', () => {
     mockPost.mockResolvedValue({ error: 'Validation failed' });
     render(<PolicyForm orgId="org_1" onCreated={onCreated} />);
 
-    fireEvent.change(screen.getByLabelText(/^name$/i), {
+    fireEvent.change(screen.getByLabelText('organizations.policyForm.nameLabel'), {
       target: { value: 'Bad Policy' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /create policy/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'organizations.policyForm.submit' }));
 
     await waitFor(() => {
       expect(screen.getByText(/validation failed/i)).toBeInTheDocument();

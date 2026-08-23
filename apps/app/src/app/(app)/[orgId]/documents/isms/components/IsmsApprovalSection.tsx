@@ -17,9 +17,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Text,
 } from '@trycompai/design-system';
 import { Time } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import type { IsmsDocument } from '../isms-types';
 
@@ -65,6 +65,7 @@ export function IsmsApprovalSection({
   onApprove,
   onDecline,
 }: IsmsApprovalSectionProps) {
+  const t = useTranslations('isms');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedApproverId, setSelectedApproverId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,7 +78,8 @@ export function IsmsApprovalSection({
   const canCurrentUserApprove =
     isPending && !!document.approverId && document.approverId === currentMemberId;
   const approverName =
-    approverOptions.find((option) => option.id === document.approverId)?.name ?? 'an approver';
+    approverOptions.find((option) => option.id === document.approverId)?.name ??
+    t('approval.defaultApprover');
   const approvedDate = formatDate(document.approvedAt);
   const declinedDate = formatDate(document.declinedAt);
 
@@ -114,42 +116,38 @@ export function IsmsApprovalSection({
       {isApproved && (
         <Alert variant="success">
           <AlertTitle>
-            Approved{publishedVersion ? ` · Published as v${publishedVersion}` : ''}
+            {publishedVersion
+              ? t('approval.approvedPublishedTitle', { version: publishedVersion })
+              : t('approval.approvedTitle')}
           </AlertTitle>
           <AlertDescription>
-            This document was approved by{' '}
-            <Text as="span" size="sm" weight="medium">
-              {approverName}
-            </Text>
-            {approvedDate ? ` on ${approvedDate}` : ''}.
+            {approvedDate
+              ? t('approval.approvedByDated', { approver: approverName, date: approvedDate })
+              : t('approval.approvedBy', { approver: approverName })}
           </AlertDescription>
         </Alert>
       )}
 
       {hasDraftChanges && (
         <Alert>
-          <AlertTitle>Editing creates a new draft</AlertTitle>
+          <AlertTitle>{t('approval.draftChangesTitle')}</AlertTitle>
           <AlertDescription>
-            Published version{' '}
-            <Text as="span" size="sm" weight="medium">
-              v{publishedVersion}
-            </Text>{' '}
-            stays live and exportable. Your changes are an in-progress draft{' '}
-            {`(v${nextDraftVersion})`} — submit it for approval to publish.
+            {t('approval.draftChangesDescription', {
+              version: publishedVersion ?? 0,
+              nextVersion: nextDraftVersion,
+            })}
           </AlertDescription>
         </Alert>
       )}
 
       {isDeclined && (
         <Alert variant="destructive">
-          <AlertTitle>Declined</AlertTitle>
+          <AlertTitle>{t('approval.declinedTitle')}</AlertTitle>
           <AlertDescription>
-            This document was declined by{' '}
-            <Text as="span" size="sm" weight="medium">
-              {approverName}
-            </Text>
-            {declinedDate ? ` on ${declinedDate}` : ''}.
-            {showResubmitButton ? ' You can submit it for approval again.' : ''}
+            {declinedDate
+              ? t('approval.declinedByDated', { approver: approverName, date: declinedDate })
+              : t('approval.declinedBy', { approver: approverName })}
+            {showResubmitButton ? ` ${t('approval.resubmitHint')}` : ''}
           </AlertDescription>
         </Alert>
       )}
@@ -157,10 +155,10 @@ export function IsmsApprovalSection({
       {canCurrentUserApprove && (
         <ApprovalBanner
           variant="warning"
-          title="Action required by you"
-          description="This document is awaiting your approval."
-          approveText="Approve"
-          rejectText="Decline"
+          title={t('approval.actionRequiredTitle')}
+          description={t('approval.actionRequiredDescription')}
+          approveText={t('approval.approve')}
+          rejectText={t('approval.decline')}
           onApprove={onApprove}
           onReject={onDecline}
         />
@@ -168,13 +166,9 @@ export function IsmsApprovalSection({
 
       {isPending && !canCurrentUserApprove && (
         <Alert variant="warning" icon={<Time />}>
-          <AlertTitle>Pending approval</AlertTitle>
+          <AlertTitle>{t('approval.pendingTitle')}</AlertTitle>
           <AlertDescription>
-            This document is awaiting approval from{' '}
-            <Text as="span" size="sm" weight="medium">
-              {approverName}
-            </Text>
-            .
+            {t('approval.pendingApprover', { approver: approverName })}
           </AlertDescription>
         </Alert>
       )}
@@ -187,12 +181,12 @@ export function IsmsApprovalSection({
             onClick={() => setIsDialogOpen(true)}
             disabled={!!submitBlockedReason}
           >
-            {showResubmitButton ? 'Resubmit for approval' : 'Submit for approval'}
+            {showResubmitButton
+              ? t('approval.resubmitForApproval')
+              : t('approval.submitForApproval')}
           </Button>
           {submitBlockedReason ? (
-            <Text size="sm" variant="muted">
-              {submitBlockedReason}
-            </Text>
+            <p className="text-sm text-muted-foreground">{submitBlockedReason}</p>
           ) : null}
         </div>
       )}
@@ -200,15 +194,15 @@ export function IsmsApprovalSection({
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Submit for approval</DialogTitle>
-            <DialogDescription>Select an approver for this document.</DialogDescription>
+            <DialogTitle>{t('approval.dialogTitle')}</DialogTitle>
+            <DialogDescription>{t('approval.dialogDescription')}</DialogDescription>
           </DialogHeader>
           <Select
             value={selectedApproverId ?? undefined}
             onValueChange={(value) => setSelectedApproverId(value)}
           >
-            <SelectTrigger aria-label="Approver">
-              <SelectValue placeholder="Select an approver" />
+            <SelectTrigger aria-label={t('approval.approverAria')}>
+              <SelectValue placeholder={t('approval.approverPlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               {approverOptions.map((option) => (
@@ -220,7 +214,7 @@ export function IsmsApprovalSection({
           </Select>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancel
+              {t('approval.cancel')}
             </Button>
             <Button
               type="button"
@@ -228,7 +222,7 @@ export function IsmsApprovalSection({
               disabled={isSubmitting || !selectedApproverId}
               loading={isSubmitting}
             >
-              {isSubmitting ? 'Submitting...' : 'Confirm & Submit'}
+              {isSubmitting ? t('approval.submitting') : t('approval.confirmSubmit')}
             </Button>
           </DialogFooter>
         </DialogContent>

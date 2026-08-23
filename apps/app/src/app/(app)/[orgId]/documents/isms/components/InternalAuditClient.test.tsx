@@ -214,7 +214,7 @@ describe('InternalAuditClient', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<InternalAuditClient {...baseProps} />);
 
-    expect(screen.getByText('Controls Tested')).toBeInTheDocument();
+    expect(screen.getByText('auditControls.title')).toBeInTheDocument();
     // Appears in the table and again as the finding's related control.
     expect(screen.getAllByText('Clause 9.1 Monitoring').length).toBeGreaterThan(0);
     expect(screen.getByText('A.8.13 Backup')).toBeInTheDocument();
@@ -252,7 +252,7 @@ describe('InternalAuditClient', () => {
     render(<InternalAuditClient {...baseProps} />);
 
     expect(screen.getByText('New audit')).toBeInTheDocument();
-    expect(screen.getByText('Add control row')).toBeInTheDocument();
+    expect(screen.getByText('auditControls.addRow')).toBeInTheDocument();
     expect(screen.getByText('Add finding')).toBeInTheDocument();
     expect(screen.getByLabelText('Edit audit IA-2026-01')).toBeInTheDocument();
     expect(screen.getByLabelText('Delete audit IA-2026-01')).toBeInTheDocument();

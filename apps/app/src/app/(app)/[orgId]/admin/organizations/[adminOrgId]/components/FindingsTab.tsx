@@ -21,12 +21,14 @@ import {
   TableRow,
 } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState, type MouseEvent } from 'react';
 import { toast } from 'sonner';
 import { EditFindingSheet } from './EditFindingSheet';
 import { AdminFindingRow, getTargetLabel, type AdminFinding } from './AdminFindingRow';
 
 export function FindingsTab({ orgId }: { orgId: string }) {
+  const t = useTranslations('admin');
   const [findings, setFindings] = useState<AdminFinding[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -87,7 +89,7 @@ export function FindingsTab({ orgId }: { orgId: string }) {
     if (res.error) {
       toast.error(res.error);
     } else {
-      toast.success('Finding deleted');
+      toast.success(t('organizations.findingsTab.toastDeleted'));
       setFindings((prev) => prev.filter((f) => f.id !== deletingFinding.id));
       setDeletingFinding(null);
     }
@@ -97,7 +99,7 @@ export function FindingsTab({ orgId }: { orgId: string }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-muted-foreground">
-        Loading findings...
+        {t('organizations.findingsTab.loading')}
       </div>
     );
   }
@@ -105,27 +107,27 @@ export function FindingsTab({ orgId }: { orgId: string }) {
   return (
     <>
       <Section
-        title={`Findings (${findings.length})`}
+        title={t('organizations.findingsTab.title', { count: findings.length })}
         actions={
           <Button size="sm" iconLeft={<Add size={16} />} onClick={() => setShowForm(true)}>
-            Log Finding
+            {t('organizations.findingsTab.logFinding')}
           </Button>
         }
       >
         {findings.length === 0 ? (
           <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
-            No findings for this organization.
+            {t('organizations.findingsTab.empty')}
           </div>
         ) : (
           <Table variant="bordered">
             <TableHeader>
               <TableRow>
-                <TableHead>Content</TableHead>
-                <TableHead>Target</TableHead>
-                <TableHead>Severity</TableHead>
-                <TableHead>Created By</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{t('organizations.findingsTab.colContent')}</TableHead>
+                <TableHead>{t('organizations.findingsTab.colTarget')}</TableHead>
+                <TableHead>{t('organizations.findingsTab.colSeverity')}</TableHead>
+                <TableHead>{t('organizations.findingsTab.colCreatedBy')}</TableHead>
+                <TableHead>{t('organizations.findingsTab.colStatus')}</TableHead>
+                <TableHead>{t('organizations.findingsTab.colActions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -193,20 +195,23 @@ export function FindingsTab({ orgId }: { orgId: string }) {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete finding?</AlertDialogTitle>
+            <AlertDialogTitle>{t('organizations.findingsTab.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This permanently removes the finding and its activity history. This
-              action cannot be undone.
+              {t('organizations.findingsTab.deleteDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>
+              {t('organizations.findingsTab.cancel')}
+            </AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={handleConfirmDelete}
               disabled={deleting}
             >
-              {deleting ? 'Deleting…' : 'Delete'}
+              {deleting
+                ? t('organizations.findingsTab.deleting')
+                : t('organizations.findingsTab.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -22,6 +22,7 @@ import { Add, Edit } from '@trycompai/design-system/icons';
 import { Input } from '@gideon-defender/ui/input';
 import { Label } from '@gideon-defender/ui/label';
 import { Textarea } from '@gideon-defender/ui/textarea';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 
 interface ContextEntry {
@@ -39,6 +40,7 @@ interface ContextResponse {
 }
 
 export function ContextTab({ orgId }: { orgId: string }) {
+  const t = useTranslations('admin');
   const [entries, setEntries] = useState<ContextEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingEntry, setEditingEntry] = useState<ContextEntry | null>(null);
@@ -66,7 +68,7 @@ export function ContextTab({ orgId }: { orgId: string }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-muted-foreground">
-        Loading context...
+        {t('organizations.contextTab.loading')}
       </div>
     );
   }
@@ -74,28 +76,28 @@ export function ContextTab({ orgId }: { orgId: string }) {
   return (
     <>
       <Section
-        title={`Context (${entries.length})`}
+        title={t('organizations.contextTab.title', { count: entries.length })}
         actions={
           <Button
             size="sm"
             iconLeft={<Add size={16} />}
             onClick={() => setShowCreateForm(true)}
           >
-            Add Context
+            {t('organizations.contextTab.addContext')}
           </Button>
         }
       >
         {entries.length === 0 ? (
           <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
-            No context entries for this organization.
+            {t('organizations.contextTab.empty')}
           </div>
         ) : (
           <Table variant="bordered">
             <TableHeader>
               <TableRow>
-                <TableHead>Question</TableHead>
-                <TableHead>Answer</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{t('organizations.contextTab.colQuestion')}</TableHead>
+                <TableHead>{t('organizations.contextTab.colAnswer')}</TableHead>
+                <TableHead>{t('organizations.contextTab.colActions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -122,7 +124,7 @@ export function ContextTab({ orgId }: { orgId: string }) {
                       iconLeft={<Edit size={16} />}
                       onClick={() => setEditingEntry(entry)}
                     >
-                      Edit
+                      {t('organizations.contextTab.edit')}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -144,7 +146,9 @@ export function ContextTab({ orgId }: { orgId: string }) {
         <SheetContent>
           <SheetHeader>
             <SheetTitle>
-              {editingEntry ? 'Edit Context' : 'Add Context'}
+              {editingEntry
+                ? t('organizations.contextTab.editTitle')
+                : t('organizations.contextTab.addContext')}
             </SheetTitle>
           </SheetHeader>
           <SheetBody>
@@ -169,6 +173,7 @@ function ContextForm({
   entry: ContextEntry | null;
   onSaved: () => void;
 }) {
+  const t = useTranslations('admin');
   const [question, setQuestion] = useState(entry?.question ?? '');
   const [answer, setAnswer] = useState(entry?.answer ?? '');
   const [submitting, setSubmitting] = useState(false);
@@ -202,21 +207,21 @@ function ContextForm({
     <form onSubmit={handleSubmit}>
       <Stack gap="md">
         <div>
-          <Label htmlFor="ctx-question">Question</Label>
+          <Label htmlFor="ctx-question">{t('organizations.contextTab.question')}</Label>
           <Input
             id="ctx-question"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            placeholder="What is the question?"
+            placeholder={t('organizations.contextTab.questionPlaceholder')}
           />
         </div>
         <div>
-          <Label htmlFor="ctx-answer">Answer</Label>
+          <Label htmlFor="ctx-answer">{t('organizations.contextTab.answer')}</Label>
           <Textarea
             id="ctx-answer"
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
-            placeholder="Provide the answer..."
+            placeholder={t('organizations.contextTab.answerPlaceholder')}
             rows={6}
           />
         </div>
@@ -230,7 +235,9 @@ function ContextForm({
           loading={submitting}
           disabled={!question.trim() || !answer.trim()}
         >
-          {entry ? 'Save Changes' : 'Create'}
+          {entry
+            ? t('organizations.contextTab.saveChanges')
+            : t('organizations.contextTab.create')}
         </Button>
       </Stack>
     </form>

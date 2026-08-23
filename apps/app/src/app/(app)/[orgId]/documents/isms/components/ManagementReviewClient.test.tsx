@@ -315,7 +315,7 @@ describe('ManagementReviewClient', () => {
     render(<ManagementReviewClient {...baseProps} />);
 
     expect(
-      screen.getByText('Carried forward from previous reviews'),
+      screen.getByText('carriedForward.title'),
     ).toBeInTheDocument();
     // The first review's open action appears twice: on its own review and in
     // the second review's carried-forward table.
