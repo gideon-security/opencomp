@@ -101,7 +101,7 @@ async function performSync(organizationId: string): Promise<void> {
       existingEmbeddings,
     );
 
-    // Step 7: Verify embeddings are queryable (handles Upstash eventual consistency)
+    // Step 7: Verify embeddings are queryable (handles write-to-read visibility lag)
     // Only verify if we actually created or updated any embeddings
     const totalCreated =
       policyStats.created +
@@ -166,7 +166,7 @@ async function performSync(organizationId: string): Promise<void> {
 
 /**
  * Verifies that embeddings are indexed and QUERYABLE after sync.
- * Uses retry with exponential backoff to handle Upstash Vector's eventual consistency.
+ * Uses retry with exponential backoff to handle write-to-read visibility lag.
  *
  * IMPORTANT: We use vectorIndex.query() instead of fetch() because:
  * - fetch() checks if data is stored (works immediately)

@@ -193,7 +193,7 @@ export interface ApiPermissionContext {
  *
  * The Next.js mutation routes for risk/vendor auto-link, relink, and unlink
  * orchestrate work that the NestJS API doesn't host directly (local-trigger
- * tokens, Upstash queries, Prisma joins). These endpoints still need the
+ * tokens, vector-store queries, Prisma joins). These endpoints still need the
  * same RBAC contract as the API — see Cubic finding #9 on PR #2671.
  */
 export async function requireApiPermission(

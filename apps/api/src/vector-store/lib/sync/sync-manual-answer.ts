@@ -69,7 +69,7 @@ export async function syncManualAnswerToVector(
     });
 
     // Verify the embedding was actually added by fetching it directly by ID
-    // Using direct fetch with retry to handle eventual consistency in Upstash Vector
+    // Using direct fetch with retry to handle indexing lag after writes
     // Even direct fetch can have slight delays, so we retry a few times with exponential backoff
     let wasFound = false;
     const maxRetries = 3;
@@ -130,7 +130,7 @@ export async function syncManualAnswerToVector(
 
     // Only log info if verification failed after all retries (non-critical)
     // This is non-critical - upsert succeeded, so embedding will be available soon
-    // Upstash Vector has eventual consistency, so immediate fetch might not find it
+    // Newly written embeddings may not be immediately visible, so an immediate fetch might not find it
     // We don't log this as a warning since it's expected behavior
     if (!wasFound) {
       // Silently continue - upsert succeeded, embedding will be available soon

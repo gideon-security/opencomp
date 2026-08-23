@@ -23,7 +23,7 @@ export interface EmbeddingMetadata {
 }
 
 /**
- * Upserts an embedding into Upstash Vector
+ * Upserts an embedding into the vector store (pgvector)
  * @param id - Unique identifier for this embedding (e.g., "policy_pol123_chunk0")
  * @param text - The text content to embed
  * @param metadata - Metadata associated with this embedding

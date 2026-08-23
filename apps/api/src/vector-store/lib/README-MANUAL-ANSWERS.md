@@ -2,7 +2,7 @@
 
 ## Overview
 
-Manual answers are automatically synced to the Upstash Vector database to improve AI answer generation quality. This document explains how to verify embeddings and troubleshoot sync issues.
+Manual answers are automatically synced to the pgvector database to improve AI answer generation quality. This document explains how to verify embeddings and troubleshoot sync issues.
 
 ## Embedding ID Format
 
@@ -33,10 +33,10 @@ if (result.data?.success) {
 }
 ```
 
-### Method 2: Search in Upstash Vector Dashboard
+### Method 2: Query the Vector Database Directly
 
-1. Go to your Upstash Vector dashboard
-2. Use the search/filter functionality
+1. Connect to the Postgres database hosting pgvector
+2. Query the embeddings table by embedding ID or metadata
 3. Search for the embedding ID: `manual_answer_sqma_abc123xyz`
 4. Or filter by metadata:
    - `sourceType`: `manual_answer`
@@ -76,8 +76,8 @@ If an embedding is not found:
 1. **Check if sync succeeded**: Look at the `embeddingId` field in the save response - if present, sync was successful
 2. **Check logs**: Look for errors in the server logs
 3. **Manual sync**: The embedding will be synced automatically on the next `syncOrganizationEmbeddings()` call
-4. **Check Upstash Vector Dashboard**: Use the dashboard to search for the embedding ID or filter by metadata
-5. **Check Upstash Vector**: Verify the vector database is configured correctly
+4. **Check the vector database**: Search for the embedding ID or filter by metadata
+5. **Check the vector store**: Verify the vector database is configured correctly
 
 ### Sync Failed
 
@@ -97,7 +97,7 @@ const saveResult = await saveManualAnswer.execute({...});
 if (saveResult.data?.embeddingId) {
   console.log('Embedding ID:', saveResult.data.embeddingId);
   // The embedding ID confirms that sync was successful
-  // You can verify it exists in the Upstash Vector Dashboard
+  // You can verify it exists by querying the vector database
 }
 ```
 
