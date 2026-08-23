@@ -52,11 +52,25 @@ const MAGIC_LINK_EXPIRES_IN_SECONDS = 60 * 60; // 1 hour
 function getCookieDomain(): string | undefined {
   const baseUrl = process.env.BASE_URL || '';
 
-  if (baseUrl.includes('staging.gideondefender.com')) {
-    return '.staging.gideondefender.com';
-  }
-  if (baseUrl.includes('gideondefender.com')) {
-    return '.gideondefender.com';
+  // Hostname-exact matching (CodeQL js/incomplete-url-substring-sanitization):
+  // substring checks would match crafted URLs like
+  // "https://staging.gideondefender.com.evil.com".
+  try {
+    const { hostname } = new URL(baseUrl);
+    if (
+      hostname === 'staging.gideondefender.com' ||
+      hostname.endsWith('.staging.gideondefender.com')
+    ) {
+      return '.staging.gideondefender.com';
+    }
+    if (
+      hostname === 'gideondefender.com' ||
+      hostname.endsWith('.gideondefender.com')
+    ) {
+      return '.gideondefender.com';
+    }
+  } catch {
+    // Unparseable BASE_URL — no cookie domain (host-only cookies).
   }
   return undefined;
 }

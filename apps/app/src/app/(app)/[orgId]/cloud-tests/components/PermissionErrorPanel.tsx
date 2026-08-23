@@ -66,10 +66,20 @@ function buildAwsFixScript(actions: string[]): string | null {
   return `aws iam put-role-policy --role-name OpenComp-Remediator --policy-name OpenComp-AutoFix --policy-document '${policy}'`;
 }
 
+/**
+ * True when the error text references `host` as a host-like token
+ * (CodeQL js/incomplete-url-substring-sanitization: not a bare substring
+ * match — "management.azure.com.evil.com" does NOT count).
+ */
+function mentionsHost(error: string, host: string): boolean {
+  const escaped = host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?:^|[^A-Za-z0-9.-])${escaped}(?![A-Za-z0-9.-])`, 'i').test(error);
+}
+
 function isAzureError(error: string): boolean {
   return (
     error.includes('AuthorizationFailed') ||
-    error.includes('management.azure.com') ||
+    mentionsHost(error, 'management.azure.com') ||
     error.includes('does not have authorization')
   );
 }
@@ -77,7 +87,7 @@ function isAzureError(error: string): boolean {
 function isGcpError(error: string): boolean {
   return (
     error.includes('PERMISSION_DENIED') ||
-    error.includes('googleapis.com') ||
+    mentionsHost(error, 'googleapis.com') ||
     /does not have\s+[\w.]+\s+access/i.test(error) ||
     /permission\s+'[\w.]+'/i.test(error)
   );
