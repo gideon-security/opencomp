@@ -6,7 +6,8 @@ import {
 } from '@nestjs/common';
 import { db } from '@db';
 import { statement } from '@gideon-defender/auth';
-import { createHash, randomBytes } from 'node:crypto';
+import { randomBytes } from 'node:crypto';
+import { hashApiKeyCurrent, matchesStoredKey } from './api-key-hash';
 
 /** Result from validating an API key */
 export interface ApiKeyValidationResult {
@@ -30,21 +31,22 @@ export class ApiKeyService {
   private readonly logger = new Logger(ApiKeyService.name);
 
   /**
-   * Hash an API key for comparison
-   * @param apiKey The API key to hash
-   * @param salt Optional salt to use for hashing
-   * @returns The hashed API key
+   * Hash a newly-created API key. Uses PBKDF2-SHA256 (see api-key-hash.ts);
+   * legacy rows keep verifying through the format-dispatched matcher below.
    */
-  private hashApiKey(apiKey: string, salt?: string): string {
-    if (salt) {
-      // If salt is provided, use it for hashing
-      return createHash('sha256')
-        .update(apiKey + salt)
-        .digest('hex');
-    }
-    // For backward compatibility, hash without salt
-    return createHash('sha256').update(apiKey).digest('hex');
+  private hashApiKey(apiKey: string, salt: string): string {
+    return hashApiKeyCurrent(apiKey, salt);
   }
+
+  /** Format-aware verification of a presented key against one DB row. */
+  private matchesStored(
+    presentedKey: string,
+    storedHash: string,
+    salt: string | null,
+  ): boolean {
+    return matchesStoredKey(presentedKey, storedHash, salt);
+  }
+
 
   private generateApiKey(): string {
     const apiKey = randomBytes(32).toString('hex');
@@ -211,12 +213,9 @@ export class ApiKeyService {
       });
 
       // Find the matching API key by hashing with each candidate's salt
-      const matchingRecord = apiKeyRecords.find((record) => {
-        const hashedKey = record.salt
-          ? this.hashApiKey(apiKey, record.salt)
-          : this.hashApiKey(apiKey);
-        return hashedKey === record.key;
-      });
+      const matchingRecord = apiKeyRecords.find((record) =>
+        this.matchesStored(apiKey, record.key, record.salt),
+      );
 
       if (!matchingRecord) {
         // If prefix lookup found nothing, try legacy keys (no prefix set)
@@ -238,12 +237,9 @@ export class ApiKeyService {
               createdByMemberId: true,
             },
           });
-          const legacyMatch = legacyRecords.find((record) => {
-            const hashedKey = record.salt
-              ? this.hashApiKey(apiKey, record.salt)
-              : this.hashApiKey(apiKey);
-            return hashedKey === record.key;
-          });
+          const legacyMatch = legacyRecords.find((record) =>
+            this.matchesStored(apiKey, record.key, record.salt),
+          );
           if (legacyMatch) {
             // Backfill the prefix for future lookups
             await db.apiKey.update({

@@ -102,9 +102,15 @@ export function extractS3KeyFromUrl(url: string): string {
   }
 
   // Not a URL - treat as S3 key
-  // Security: Ensure it's not a malformed URL attempting to bypass validation
-  const lowerInput = url.toLowerCase();
-  if (lowerInput.includes('://') || lowerInput.includes('amazonaws.com')) {
+  // Security: Ensure it's not a malformed URL attempting to bypass validation.
+  // Token-boundary checks instead of a bare substring match: CodeQL
+  // js/incomplete-url-substring-sanitization — "evil.com/amazonaws.com" or
+  // "amazonaws.com.evil.com" must still be rejected, which the boundary
+  // classes below guarantee.
+  if (url.includes('://')) {
+    throw new Error('Invalid input: Malformed URL detected');
+  }
+  if (/(?:^|[/@.?\s])amazonaws\.com(?=$|[/@.?\s])/i.test(url)) {
     throw new Error('Invalid input: Malformed URL detected');
   }
 
