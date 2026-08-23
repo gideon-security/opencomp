@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { ConnectIntegrationDialog } from '@/components/integrations/ConnectIntegrationDialog';
 import { useApi } from '@/hooks/use-api';
 import { useIntegrationMutations } from '@/hooks/use-integration-platform';
@@ -49,6 +51,7 @@ const needsVariableConfiguration = (provider: Provider): boolean => {
 };
 
 export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsLayoutProps) {
+  const t = useTranslations('integrations.list');
   const { hasPermission } = usePermissions();
   const canRunScan = hasPermission('integration', 'update');
   const canCreateIntegration = hasPermission('integration', 'create');
@@ -151,7 +154,7 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
 
   const handleRunScan = async (connectionId?: string): Promise<string | null> => {
     if (!orgId) {
-      toast.error('No active organization');
+      toast.error(t('cloudTests_noActiveOrganization'));
       return null;
     }
 
@@ -160,13 +163,13 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
     const targetProvider = connectedProviders.find((p) => p.id === targetConnectionId);
 
     if (!targetProvider) {
-      toast.error('No provider selected');
+      toast.error(t('cloudTests_noProviderSelected'));
       return null;
     }
 
     setIsScanning(true);
     const startTime = Date.now();
-    toast.message(`Starting ${targetProvider.displayName || targetProvider.name} security scan...`);
+    toast.message(t('cloudTests_startingSecurityScan', { name: targetProvider.displayName || targetProvider.name }));
 
     try {
       if (targetProvider.isLegacy) {
@@ -181,7 +184,7 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
 
         if (!result.success) {
           console.error('Legacy scan error:', result.errors);
-          toast.error(`Scan failed: ${result.errors?.join(', ') || 'Unknown error'}`);
+          toast.error(t('cloudTests_scanFailedWithErrors', { errors: result.errors?.join(', ') || '' }));
           return null;
         }
       } else {
@@ -189,7 +192,7 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
         const response = await api.post(`/v1/cloud-security/scan/${targetProvider.id}`, {});
         if (response.error) {
           console.error(`Error scanning ${targetProvider.name}:`, response.error, 'Status:', response.status);
-          toast.error(`Failed to scan ${targetProvider.name}: ${response.error}`);
+          toast.error(t('cloudTests_scanProviderFailed', { name: targetProvider.name, error: String(response.error ?? '') }));
           return null;
         }
       }
@@ -198,11 +201,11 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
       await Promise.all([mutateProviders(), mutateFindings()]);
 
       const elapsed = Math.round((Date.now() - startTime) / 1000);
-      toast.success(`Scan completed in ${elapsed}s! Results updated.`);
+      toast.success(t('cloudTests_scanCompletedIn', { elapsed }));
       return 'completed';
     } catch (error) {
       console.error('Scan error:', error);
-      toast.error(`Failed to complete scan: ${error instanceof Error ? error.message : 'Please try again.'}`);
+      toast.error(error instanceof Error ? `${t('cloudTests_scanCompleteFailed')} ${error.message}` : t('cloudTests_scanCompleteFailedRetry'));
       return null;
     } finally {
       setIsScanning(false);
@@ -246,7 +249,7 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
       await globalMutate(['integration-connections', orgId]);
       router.push(`/${orgId}/integrations/${providerType}`);
     } catch {
-      toast.error('Failed to disconnect connections. Please try again.');
+      toast.error(t('cloudTests_disconnectFailedRetry'));
     } finally {
       setIsReconnecting(false);
     }
@@ -343,7 +346,7 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
         onRunScan={handleRunScan}
         onAddConnection={(providerType) => {
           if (isProvidersValidating) {
-            toast.message('Loading connections, please try again in a moment.');
+            toast.message(t('cloudTests_loadingConnections'));
             return;
           }
           const existingConnections = providerGroups[providerType] || [];
@@ -437,7 +440,7 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
             await mutateProviders();
             // Run scan after saving variables for this specific connection
             if (savedProvider) {
-              toast.message('Configuration saved! Running security scan...');
+              toast.message(t('cloudTests_configSavedScanning'));
               await handleRunScan(savedProvider.id);
             }
           }}

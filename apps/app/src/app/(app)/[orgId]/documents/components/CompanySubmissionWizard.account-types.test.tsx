@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/navigation', () => ({
@@ -49,12 +50,14 @@ vi.mock('@trycompai/design-system', () => {
 
 import { CompanySubmissionWizard } from './CompanySubmissionWizard';
 
+mockNextIntl();
+
 describe('CompanySubmissionWizard — account-types rendering', () => {
   it('renders the 10 seeded rows with Allowed/Disallowed dropdowns and prefilled values', async () => {
     render(<CompanySubmissionWizard organizationId="org_test" formType="account-types" />);
 
     // The Account Types table (matrix) lives on the second step.
-    fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
+    fireEvent.click(screen.getByRole('button', { name: 'submissionWizard.continue' }));
 
     // 10 default rows → 10 status dropdowns, each offering Allowed/Disallowed.
     await waitFor(() => {

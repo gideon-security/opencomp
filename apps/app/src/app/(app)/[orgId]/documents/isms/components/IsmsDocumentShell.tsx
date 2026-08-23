@@ -17,6 +17,7 @@ import {
   WarningAlt,
 } from '@trycompai/design-system/icons';
 import { useState, type ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useIsmsDocument, type UseIsmsDocumentReturn } from '../hooks/useIsmsDocument';
@@ -95,6 +96,7 @@ export function IsmsDocumentShell({
   onGenerated,
   children,
 }: IsmsDocumentShellProps) {
+  const t = useTranslations('isms');
   const { hasPermission } = usePermissions();
   const canManage = hasPermission('evidence', 'update');
 
@@ -130,7 +132,7 @@ export function IsmsDocumentShell({
       await onGenerated?.();
       toast.success(generateSuccessMessage);
     } catch (caught) {
-      toast.error(caught instanceof Error ? caught.message : 'Failed to generate');
+      toast.error(caught instanceof Error ? caught.message : t('shell.generateFailed'));
     } finally {
       setIsGenerating(false);
     }
@@ -139,9 +141,9 @@ export function IsmsDocumentShell({
   const handleSubmit = async (approverId: string) => {
     try {
       await submitForApproval(approverId);
-      toast.success('Submitted for approval');
+      toast.success(t('shell.submittedForApproval'));
     } catch (caught) {
-      toast.error(caught instanceof Error ? caught.message : 'Failed to submit');
+      toast.error(caught instanceof Error ? caught.message : t('shell.submitFailed'));
     }
   };
 
@@ -149,22 +151,22 @@ export function IsmsDocumentShell({
     try {
       await approve();
     } catch (caught) {
-      toast.error(caught instanceof Error ? caught.message : 'Failed to approve');
+      toast.error(caught instanceof Error ? caught.message : t('shell.approveFailed'));
       return;
     }
     // Approval already persisted. Refreshing the history list + drift baseline is
     // best-effort — a revalidation hiccup must not look like an approval failure
     // (which would tempt the user to retry an already-published document).
-    toast.success('Document approved');
+    toast.success(t('shell.approved'));
     await Promise.allSettled([mutateVersions(), mutateDrift()]);
   };
 
   const handleDecline = async () => {
     try {
       await decline();
-      toast.success('Document declined');
+      toast.success(t('shell.declined'));
     } catch (caught) {
-      toast.error(caught instanceof Error ? caught.message : 'Failed to decline');
+      toast.error(caught instanceof Error ? caught.message : t('shell.declineFailed'));
     }
   };
 
@@ -188,7 +190,7 @@ export function IsmsDocumentShell({
                 loading={isGenerating}
                 iconLeft={<MachineLearningModel size={16} />}
               >
-                {isGenerating ? 'Generating...' : 'Generate from platform data'}
+                {isGenerating ? t('shell.generating') : t('shell.generate')}
               </Button>
             )}
             <Button
@@ -198,7 +200,7 @@ export function IsmsDocumentShell({
               disabled={isExporting}
               iconLeft={<Download size={16} />}
             >
-              Export PDF
+              {t('shell.exportPdf')}
             </Button>
             <Button
               type="button"
@@ -207,7 +209,7 @@ export function IsmsDocumentShell({
               disabled={isExporting}
               iconLeft={<Document size={16} />}
             >
-              Export DOCX
+              {t('shell.exportDocx')}
             </Button>
           </>
         }
@@ -237,13 +239,13 @@ export function IsmsDocumentShell({
 
       {!document && error && (
         <Alert variant="destructive" icon={<WarningAlt />}>
-          <AlertTitle>Couldn&apos;t load this document</AlertTitle>
+          <AlertTitle>{t('shell.loadErrorTitle')}</AlertTitle>
           <AlertDescription>
             <div className="flex flex-col gap-3">
               <div>
                 {error instanceof Error
                   ? error.message
-                  : 'Something went wrong loading this document.'}
+                  : t('shell.loadErrorDescription')}
               </div>
               <div className="flex">
                 <Button
@@ -253,7 +255,7 @@ export function IsmsDocumentShell({
                   onClick={() => void hook.refresh()}
                   iconLeft={<Renew size={16} />}
                 >
-                  Retry
+                  {t('shell.retry')}
                 </Button>
               </div>
             </div>

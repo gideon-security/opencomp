@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
 import { Camera, FileIcon, FileText, ImageIcon, Loader2, Upload, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -22,12 +23,6 @@ interface TaskBodyProps {
   onTitleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onDescriptionChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   disabled?: boolean;
-}
-
-// Helper function to provide user-friendly error messages
-function getErrorMessage(errorMessage: string): string {
-  // Simplified error handling since API errors are already user-friendly
-  return errorMessage || 'Failed to upload file. Please try again.';
 }
 
 function formatUploadMonthYear(dateString: string): string {
@@ -44,6 +39,7 @@ export function TaskBody({
   onDescriptionChange,
   disabled,
 }: TaskBodyProps) {
+  const t = useTranslations('tasks');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -135,7 +131,7 @@ export function TaskBody({
           const fileExt = file.name.split('.').pop()?.toLowerCase();
           if (fileExt && BLOCKED_EXTENSIONS.includes(fileExt)) {
             toast.error(
-              `File "${file.name}" has a blocked extension (.${fileExt}) for security reasons.`,
+              t('body.blockedExtensionToast', { name: file.name, ext: fileExt }),
             );
             return resolve(null);
           }
@@ -143,24 +139,28 @@ export function TaskBody({
           const MAX_FILE_SIZE_MB = 100;
           const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
           if (file.size > MAX_FILE_SIZE_BYTES) {
-            toast.error(`File "${file.name}" exceeds the ${MAX_FILE_SIZE_MB}MB limit.`);
+            toast.error(
+              t('body.fileTooLargeToast', { name: file.name, maxSize: MAX_FILE_SIZE_MB }),
+            );
             return resolve(null); // Resolve to skip this file
           }
 
           // Use the API hook's uploadAttachment method
           uploadAttachment(file)
             .then((result) => {
-              toast.success(`File "${file.name}" uploaded successfully.`);
+              toast.success(t('body.uploadSuccessToast', { name: file.name }));
               // Refresh attachments via SWR after successful upload
               refreshAttachments();
               resolve(result);
             })
             .catch((error) => {
               console.error(`Failed to upload ${file.name}:`, error);
-              const userFriendlyMessage = getErrorMessage(
-                error instanceof Error ? error.message : 'Unknown error',
+              const userFriendlyMessage =
+                (error instanceof Error ? error.message : t('body.unknownError')) ||
+                t('body.uploadFailedRetry');
+              toast.error(
+                t('body.uploadFailedToast', { name: file.name, error: userFriendlyMessage }),
               );
-              toast.error(`Failed to upload ${file.name}: ${userFriendlyMessage}`);
               resolve(null); // Resolve even if there's an error to not break Promise.all
             });
         });
@@ -172,7 +172,7 @@ export function TaskBody({
       refreshAttachments();
       resetState();
     },
-    [uploadAttachment, refreshAttachments],
+    [uploadAttachment, refreshAttachments, t],
   );
 
   const initiateUpload = useCallback((files: FileList | File[]) => {
@@ -256,7 +256,7 @@ export function TaskBody({
       window.open(downloadUrl, '_blank');
     } catch (error) {
       console.error('Failed to get download URL:', error);
-      toast.error('Failed to get download URL. Please try again.');
+      toast.error(t('body.downloadUrlFailedToast'));
     } finally {
       setBusyAttachmentId(null);
     }
@@ -267,17 +267,17 @@ export function TaskBody({
       setBusyAttachmentId(attachmentId);
       try {
         await deleteAttachment(attachmentId);
-        toast.success('Attachment deleted successfully.');
+        toast.success(t('body.deleteSuccessToast'));
         // Refresh attachments via SWR instead of manual router refresh
         refreshAttachments();
       } catch (error) {
         console.error('Failed to delete attachment:', error);
-        toast.error('Failed to delete attachment. Please try again.');
+        toast.error(t('body.deleteFailedToast'));
       } finally {
         setBusyAttachmentId(null);
       }
     },
-    [deleteAttachment, refreshAttachments],
+    [deleteAttachment, refreshAttachments, t],
   );
 
   return (
@@ -293,13 +293,13 @@ export function TaskBody({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Attachments
+            {t('body.attachments')}
           </h3>
         </div>
 
         {/* Show error state if attachments failed to load */}
         {attachmentsError && (
-          <p className="text-destructive text-sm">Failed to load attachments. Please try again.</p>
+          <p className="text-destructive text-sm">{t('body.loadFailed')}</p>
         )}
 
         <div className="space-y-3">
@@ -417,14 +417,14 @@ export function TaskBody({
               <div className="flex flex-col gap-1">
                 <span className="text-sm font-medium transition-colors group-hover:text-foreground">
                   {isUploading
-                    ? 'Uploading...'
+                    ? t('body.uploading')
                     : isDragging
-                      ? 'Drop files here'
-                      : 'Drag and drop files here'}
+                      ? t('body.dropHere')
+                      : t('body.dragAndDrop')}
                 </span>
                 {!isUploading && !isDragging && (
                   <span className="text-xs text-muted-foreground transition-colors group-hover:text-muted-foreground/80">
-                    or click to browse • max 100MB • most file types accepted
+                    {t('body.browseHint')}
                   </span>
                 )}
               </div>
@@ -440,21 +440,20 @@ export function TaskBody({
               <div className="rounded-full bg-primary/10 p-2">
                 <Camera className="h-5 w-5 text-primary" />
               </div>
-              <DialogTitle>Screenshot Requirements</DialogTitle>
+              <DialogTitle>{t('body.reminderTitle')}</DialogTitle>
             </div>
             <DialogDescription className="pt-2">
-              Ensure your organisation name is clearly visible within the screenshot.
+              {t('body.reminderDescription')}
             </DialogDescription>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Auditors require this to verify the source of the data; without it, evidence may be
-            rejected.
+            {t('body.reminderExplanation')}
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={handleReminderClose}>
-              Cancel
+              {t('body.cancel')}
             </Button>
-            <Button onClick={handleReminderConfirm}>Continue Upload</Button>
+            <Button onClick={handleReminderConfirm}>{t('body.continueUpload')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

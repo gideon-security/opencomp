@@ -11,6 +11,7 @@ import {
   getAwsRemediationScript,
   normalizeAwsEnvironment,
 } from '@gideon-defender/integration-platform';
+import { useTranslations } from 'next-intl';
 import { ArrowRight, Shield } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -77,6 +78,7 @@ function SetupGuide({
   fallback: string;
   docsUrl?: string | null;
 }) {
+  const t = useTranslations('integrations');
   const raw = text || fallback;
   const [expandedSection, setExpandedSection] = useState<number | null>(null);
 
@@ -136,7 +138,7 @@ function SetupGuide({
                 {section.title}
               </span>
               <span className="text-[9px] text-muted-foreground/50 ml-auto">
-                {section.steps.length} step{section.steps.length !== 1 ? 's' : ''}
+                {t('onboarding.stepCount', { count: section.steps.length })}
               </span>
             </button>
             {isOpen && (
@@ -153,8 +155,7 @@ function SetupGuide({
                 ))}
                 {section.steps.length > 3 && (
                   <p className="text-[10px] text-muted-foreground/50 pl-6">
-                    +{section.steps.length - 3} more step{section.steps.length - 3 !== 1 ? 's' : ''}{' '}
-                    in docs
+                    {t('onboarding.moreStepsInDocs', { count: section.steps.length - 3 })}
                   </p>
                 )}
               </div>
@@ -169,7 +170,7 @@ function SetupGuide({
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors pt-1"
         >
-          View full documentation
+          {t('onboarding.viewFullDocs')}
           <ArrowRight className="h-3 w-3" />
         </a>
       )}
@@ -258,6 +259,7 @@ export function EmptyStateOnboarding({
 // ─── OAuth (GitHub, Google Workspace, etc.) ─────────────────────────────
 
 function ComingSoonState({ provider }: { provider: IntegrationProvider }) {
+  const t = useTranslations('integrations');
   return (
     <div className="py-6">
       <div className="rounded-xl border bg-background shadow-sm max-w-2xl">
@@ -272,9 +274,9 @@ function ComingSoonState({ provider }: { provider: IntegrationProvider }) {
             </div>
           </div>
           <div className="rounded-lg bg-muted/40 border border-dashed px-4 py-5 text-center space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">Coming Soon</p>
+            <p className="text-sm font-medium text-muted-foreground">{t('onboarding.comingSoon')}</p>
             <p className="text-xs text-muted-foreground/70 max-w-sm mx-auto">
-              This integration is under development. We&apos;ll notify you when it&apos;s ready.
+              {t('onboarding.comingSoonDescription')}
             </p>
           </div>
         </div>
@@ -290,20 +292,23 @@ function OAuthSetup({
   provider: IntegrationProvider;
   onConnect?: () => void;
 }) {
+  const t = useTranslations('integrations');
   return (
     <div className="py-6">
       <div className="flex items-center justify-between rounded-xl border bg-background shadow-sm px-6 py-5">
         <div className="flex items-center gap-4">
           {provider.logoUrl && <img src={provider.logoUrl} alt="" className="h-9 w-9 rounded-lg" />}
           <div>
-            <h3 className="text-sm font-semibold">Connect {provider.name}</h3>
+            <h3 className="text-sm font-semibold">
+              {t('onboarding.connectProvider', { name: provider.name })}
+            </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              You&apos;ll be redirected to authorize access. Takes about 30 seconds.
+              {t('onboarding.redirectOAuth')}
             </p>
           </div>
         </div>
         <Button onClick={onConnect}>
-          Connect
+          {t('onboarding.connect')}
           <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
         </Button>
       </div>
@@ -322,6 +327,7 @@ function CredentialSetup({
   orgId: string;
   onConnected: () => void;
 }) {
+  const t = useTranslations('integrations');
   const { createConnection } = useIntegrationMutations();
   const [connecting, setConnecting] = useState(false);
   const [credentials, setCredentials] = useState<Record<string, string | string[]>>({});
@@ -334,17 +340,17 @@ function CredentialSetup({
       return [
         {
           id: 'username',
-          label: 'Username',
+          label: t('onboarding.username'),
           type: 'text' as const,
           required: true,
-          placeholder: 'Enter username',
+          placeholder: t('onboarding.enterUsername'),
         },
         {
           id: 'password',
-          label: 'Password',
+          label: t('onboarding.password'),
           type: 'password' as const,
           required: true,
-          placeholder: 'Enter password',
+          placeholder: t('onboarding.enterPassword'),
         },
       ];
     }
@@ -353,16 +359,16 @@ function CredentialSetup({
       return [
         {
           id: 'api_key',
-          label: 'API Key',
+          label: t('onboarding.apiKey'),
           type: 'password' as const,
           required: true,
-          placeholder: 'Enter your API key',
+          placeholder: t('onboarding.enterApiKey'),
         },
       ];
     }
 
     return configuredFields;
-  }, [provider.authType, provider.credentialFields]);
+  }, [provider.authType, provider.credentialFields, t]);
   const hasConfigurableFields = fields.length > 0;
 
   const updateCredential = (fieldId: string, value: string | string[]) => {
@@ -385,7 +391,7 @@ function CredentialSetup({
           ? !Array.isArray(value) || value.length === 0
           : !String(value ?? '').trim();
       if (field.required && isMissing) {
-        newErrors[field.id] = `${field.label} is required`;
+        newErrors[field.id] = t('onboarding.fieldRequired', { label: field.label });
       }
     }
     if (Object.keys(newErrors).length > 0) {
@@ -397,24 +403,26 @@ function CredentialSetup({
     try {
       const result = await createConnection(provider.id, credentials);
       if (!result.success) {
-        toast.error(result.error || 'Failed to connect');
+        toast.error(result.error || t('onboarding.connectFailed'));
         return;
       }
-      toast.success(`${provider.name} connected!`);
+      toast.success(t('onboarding.connected', { name: provider.name }));
       onConnected();
     } catch {
-      toast.error('Failed to connect');
+      toast.error(t('onboarding.connectFailed'));
     } finally {
       setConnecting(false);
     }
-  }, [fields, credentials, createConnection, provider, onConnected]);
+  }, [fields, credentials, createConnection, provider, onConnected, t]);
 
   return (
     <div className="py-6 space-y-6">
       <div className="space-y-1">
-        <h3 className="text-lg font-semibold tracking-tight">Connect {provider.name}</h3>
+        <h3 className="text-lg font-semibold tracking-tight">
+          {t('onboarding.connectProvider', { name: provider.name })}
+        </h3>
         <p className="text-sm text-muted-foreground">
-          {provider.description || 'Enter your credentials to get started.'}
+          {provider.description || t('onboarding.enterCredentials')}
         </p>
       </div>
 

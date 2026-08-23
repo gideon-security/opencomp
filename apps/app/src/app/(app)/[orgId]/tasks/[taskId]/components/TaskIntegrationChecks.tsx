@@ -43,6 +43,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { toast } from 'sonner';
 import type { StoredCheckRun, TaskIntegrationCheck } from '../hooks/useIntegrationChecks';
@@ -79,6 +80,7 @@ export function TaskIntegrationChecks({
   const orgId = params.orgId as string;
   const activeOrg = useActiveOrganization();
   const organizationName = activeOrg.data?.name || orgId;
+  const t = useTranslations('tasks');
 
   const {
     checks,
@@ -157,7 +159,7 @@ export function TaskIntegrationChecks({
         });
         setConfigureDialogOpen(true);
         toast.success(
-          `${connectedCheck.integrationName} connected! Configure it to start automated checks.`,
+          t('integrationChecks.connectedToast', { name: connectedCheck.integrationName }),
         );
       }
 
@@ -165,9 +167,9 @@ export function TaskIntegrationChecks({
       const url = new URL(window.location.href);
       url.searchParams.delete('success');
       url.searchParams.delete('provider');
-      window.history.replaceState({}, '', url.toString());
+        window.history.replaceState({}, '', url.toString());
     }
-  }, [searchParams, checks, loading]);
+  }, [searchParams, checks, loading, t]);
 
   const handleRunCheck = useCallback(
     async (connectionId: string, checkId: string) => {
@@ -181,12 +183,12 @@ export function TaskIntegrationChecks({
         }
       } catch (err) {
         console.error('Failed to run check:', err);
-        setError(err instanceof Error ? err.message : 'Failed to run check');
+        setError(err instanceof Error ? err.message : t('integrationChecks.runCheckError'));
       } finally {
         setRunningCheck(null);
       }
     },
-    [runCheck, onTaskUpdated],
+    [runCheck, onTaskUpdated, t],
   );
 
   /**
@@ -219,7 +221,7 @@ export function TaskIntegrationChecks({
     try {
       await revokeException(revokeTarget.exceptionId);
       toast.success(
-        `"${revokeTarget.resourceId}" is back in scope — re-running the check to update this evidence item.`,
+        t('integrationChecks.backInScopeToast', { resource: revokeTarget.resourceId }),
       );
       const target = revokeTarget;
       setRevokeTarget(null);
@@ -227,12 +229,12 @@ export function TaskIntegrationChecks({
     } catch (err) {
       console.error('Failed to revoke exception:', err);
       toast.error(
-        err instanceof Error ? err.message : 'Failed to move the resource back in scope',
+        err instanceof Error ? err.message : t('integrationChecks.revokeErrorFallback'),
       );
     } finally {
       setRevoking(false);
     }
-  }, [revokeTarget, revokeException, rerunAfterScopeChange]);
+  }, [revokeTarget, revokeException, rerunAfterScopeChange, t]);
 
   // Stable action handles passed down to the run history rows.
   const exceptionActions = useMemo<RunExceptionActions>(
@@ -252,15 +254,15 @@ export function TaskIntegrationChecks({
     setDisconnectError(null);
     try {
       await disconnectCheckFromTask(connectionId, checkId);
-      toast.success(`Disconnected "${monitorName}" from this task.`);
+      toast.success(t('integrationChecks.disconnectedToast', { name: monitorName }));
       setDisconnectTarget(null);
     } catch (err) {
       console.error('Failed to disconnect check:', err);
-      setDisconnectError(err instanceof Error ? err.message : 'Failed to disconnect check');
+      setDisconnectError(err instanceof Error ? err.message : t('integrationChecks.disconnectErrorFallback'));
     } finally {
       setTogglingCheck(null);
     }
-  }, [disconnectCheckFromTask, disconnectTarget]);
+  }, [disconnectCheckFromTask, disconnectTarget, t]);
 
   const handleReconnect = useCallback(
     async (connectionId: string, checkId: string, checkName: string) => {
@@ -268,15 +270,15 @@ export function TaskIntegrationChecks({
       setError(null);
       try {
         await reconnectCheckToTask(connectionId, checkId);
-        toast.success(`Reconnected "${checkName}" to this task.`);
+        toast.success(t('integrationChecks.reconnectedToast', { name: checkName }));
       } catch (err) {
         console.error('Failed to reconnect check:', err);
-        setError(err instanceof Error ? err.message : 'Failed to reconnect check');
+        setError(err instanceof Error ? err.message : t('integrationChecks.reconnectErrorFallback'));
       } finally {
         setTogglingCheck(null);
       }
     },
-    [reconnectCheckToTask],
+    [reconnectCheckToTask, t],
   );
 
   const getMonitorDisplayName = useCallback(
@@ -342,12 +344,12 @@ export function TaskIntegrationChecks({
         <div className="flex items-center gap-2">
           <PlugZap className="h-3.5 w-3.5 text-primary" />
           <h3 className="text-[10px] font-semibold text-foreground uppercase tracking-[0.15em]">
-            App Automations
+            {t('integrationChecks.title')}
           </h3>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
           <Loader2 className="h-4 w-4 animate-spin" />
-          Loading...
+          {t('integrationChecks.loading')}
         </div>
       </div>
     );
@@ -416,9 +418,11 @@ export function TaskIntegrationChecks({
               <PlugZap className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-foreground">App Automations</h3>
+              <h3 className="text-sm font-semibold text-foreground">
+                {t('integrationChecks.title')}
+              </h3>
               <p className="text-xs text-muted-foreground">
-                Pre-built automations from connected integrations
+                {t('integrationChecks.description')}
               </p>
             </div>
           </div>
@@ -426,7 +430,7 @@ export function TaskIntegrationChecks({
             {showSchedulePicker && scheduleFrequency && onScheduleChange && (
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground uppercase tracking-wide">
-                  Schedule
+                  {t('integrationChecks.scheduleLabel')}
                 </span>
                 <SchedulePicker
                   value={scheduleFrequency}
@@ -439,7 +443,7 @@ export function TaskIntegrationChecks({
             {connectedChecks.length > 0 && nextRun && (
               <div className="text-right">
                 <div className="text-[10px] text-muted-foreground uppercase tracking-wide">
-                  Next run
+                  {t('integrationChecks.nextRun')}
                 </div>
                 <div className="text-sm font-medium text-foreground">
                   {formatDistanceToNow(nextRun, { addSuffix: true })}
@@ -471,7 +475,7 @@ export function TaskIntegrationChecks({
                     <div className="flex items-center gap-2">
                       <TrendingUp className="h-3.5 w-3.5 text-muted-foreground" />
                       <span className="text-[9px] text-muted-foreground uppercase tracking-[0.1em] font-medium">
-                        Total Runs
+                        {t('integrationChecks.totalRuns')}
                       </span>
                     </div>
                     <div className="text-xl font-semibold text-foreground tabular-nums">
@@ -484,7 +488,7 @@ export function TaskIntegrationChecks({
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
                       <span className="text-[9px] text-muted-foreground uppercase tracking-[0.1em] font-medium">
-                        Success Rate
+                        {t('integrationChecks.successRate')}
                       </span>
                     </div>
                     <div className="flex items-baseline gap-2">
@@ -506,7 +510,7 @@ export function TaskIntegrationChecks({
                       <div className="flex items-center gap-2">
                         <XCircle className="h-3.5 w-3.5 text-destructive" />
                         <span className="text-[9px] text-muted-foreground uppercase tracking-[0.1em] font-medium">
-                          Issues
+                          {t('integrationChecks.issues')}
                         </span>
                       </div>
                       <div className="text-xl font-semibold text-destructive tabular-nums">
@@ -589,7 +593,7 @@ export function TaskIntegrationChecks({
                       >
                         <AlertTriangle className="h-3.5 w-3.5 text-warning shrink-0" />
                         <span className="text-xs text-warning-foreground font-medium">
-                          Configuration required
+                          {t('integrationChecks.configurationRequired')}
                         </span>
                         <Settings2 className="h-3 w-3 text-warning ml-auto shrink-0" />
                       </button>
@@ -625,27 +629,33 @@ export function TaskIntegrationChecks({
                         </div>
                         {needsConfig ? (
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            Configure required settings to enable this check
+                            {t('integrationChecks.configureRequiredHint')}
                           </p>
                         ) : lastRan ? (
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            Last ran {lastRan}
+                            {t('integrationChecks.lastRan', { time: lastRan })}
                             <span className="ml-2">
-                              • {summary.passed} passed
+                              • {t('integrationChecks.passedCount', { count: summary.passed })}
                               {summary.failed > 0 && (
                                 <span className="text-destructive">
-                                  , {summary.failed} issues
+                                  ,{' '}
+                                  {t('integrationChecks.failedCount', { count: summary.failed })}
                                 </span>
                               )}
                             </span>
                             {summary.accountCount > 1 && (
                               <span className="ml-2">
-                                · {summary.accountCount} accounts
+                                ·{' '}
+                                {t('integrationChecks.accountsCount', {
+                                  count: summary.accountCount,
+                                })}
                               </span>
                             )}
                           </p>
                         ) : (
-                          <p className="text-xs text-muted-foreground mt-0.5">Not run yet</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {t('integrationChecks.notRunYet')}
+                          </p>
                         )}
                       </div>
 
@@ -668,7 +678,9 @@ export function TaskIntegrationChecks({
                             }}
                           >
                             <Settings2 className="h-3.5 w-3.5" />
-                            <span className="ml-1.5 text-xs">Configure</span>
+                            <span className="ml-1.5 text-xs">
+                              {t('integrationChecks.configureButton')}
+                            </span>
                           </Button>
                         ) : (
                           <>
@@ -687,14 +699,16 @@ export function TaskIntegrationChecks({
                               ) : (
                                 <Play className="h-3.5 w-3.5" />
                               )}
-                              <span className="ml-1.5 text-xs">Run</span>
+                              <span className="ml-1.5 text-xs">
+                                {t('integrationChecks.runButton')}
+                              </span>
                             </Button>
                             {checkRuns.length > 0 && (
                               <Button
                                 size="sm"
                                 variant="ghost"
                                 className="h-8 w-8 p-0"
-                                title="Download evidence PDF"
+                                title={t('integrationChecks.downloadPdfTooltip')}
                                 onClick={async (e) => {
                                   e.stopPropagation();
                                   try {
@@ -703,9 +717,9 @@ export function TaskIntegrationChecks({
                                       automationId: check.checkId,
                                       automationName: check.checkName,
                                     });
-                                    toast.success('Evidence PDF downloaded');
+                                    toast.success(t('integrationChecks.pdfDownloadedToast'));
                                   } catch {
-                                    toast.error('Failed to download evidence');
+                                    toast.error(t('integrationChecks.pdfDownloadErrorToast'));
                                   }
                                 }}
                               >
@@ -734,7 +748,7 @@ export function TaskIntegrationChecks({
                               size="sm"
                               variant="ghost"
                               className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
-                              title="Disconnect this check from the task"
+                              title={t('integrationChecks.disconnectTooltip')}
                               disabled={togglingCheck === check.checkId}
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -799,7 +813,7 @@ export function TaskIntegrationChecks({
             {disabledForTaskChecks.length > 0 && (
               <div className="pt-4 border-t border-border/40">
                 <p className="text-xs font-medium text-muted-foreground mb-3">
-                  Disconnected from this task
+                  {t('integrationChecks.disconnectedFromTaskHeader')}
                 </p>
                 <div className="space-y-1">
                   {disabledForTaskChecks.map((check) => {
@@ -823,7 +837,7 @@ export function TaskIntegrationChecks({
                               {monitorName}
                             </p>
                             <p className="text-[11px] text-muted-foreground/80">
-                              Will not run until reconnected
+                              {t('integrationChecks.willNotRunUntilReconnected')}
                             </p>
                           </div>
                         </div>
@@ -841,7 +855,9 @@ export function TaskIntegrationChecks({
                           ) : (
                             <Plug className="h-3.5 w-3.5" />
                           )}
-                          <span className="ml-1.5 text-xs">Reconnect</span>
+                          <span className="ml-1.5 text-xs">
+                            {t('integrationChecks.reconnectButton')}
+                          </span>
                         </Button>
                       </div>
                     );
@@ -855,20 +871,22 @@ export function TaskIntegrationChecks({
               <div className="pt-4 border-t border-border/40">
                 <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-xs font-medium text-muted-foreground">
-                    More integrations available
+                    {t('integrationChecks.moreIntegrations')}
                   </p>
                   {uniqueDisconnectedIntegrations.length > INTEGRATIONS_PER_PAGE && (
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                       <input
                         value={suggestionsSearchQuery}
                         onChange={handleSuggestionsSearchChange}
-                        aria-label="Search integrations"
-                        placeholder="Search integrations"
+                        aria-label={t('integrationChecks.searchAriaLabel')}
+                        placeholder={t('integrationChecks.searchPlaceholder')}
                         className="h-8 w-full rounded-md border border-border bg-background px-3 text-xs text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary sm:w-56"
                       />
                       <span className="text-xs text-muted-foreground whitespace-nowrap">
-                        {filteredDisconnectedIntegrations.length} of{' '}
-                        {uniqueDisconnectedIntegrations.length}
+                        {t('integrationChecks.ofCount', {
+                          filtered: filteredDisconnectedIntegrations.length,
+                          total: uniqueDisconnectedIntegrations.length,
+                        })}
                       </span>
                     </div>
                   )}
@@ -876,9 +894,11 @@ export function TaskIntegrationChecks({
                 <div className="space-y-1">
                   {paginatedDisconnectedIntegrations.length === 0 && (
                     <div className="py-6 text-center">
-                      <p className="text-sm font-medium text-foreground">No integrations found</p>
+                      <p className="text-sm font-medium text-foreground">
+                        {t('integrationChecks.noIntegrationsFound')}
+                      </p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        Try a different search term.
+                        {t('integrationChecks.tryDifferentSearch')}
                       </p>
                     </div>
                   )}
@@ -922,10 +942,13 @@ export function TaskIntegrationChecks({
                       disabled={currentSuggestionsPage === 1}
                       onClick={handlePreviousSuggestionsPage}
                     >
-                      Previous
+                      {t('integrationChecks.previous')}
                     </Button>
                     <span className="text-xs text-muted-foreground">
-                      Page {currentSuggestionsPage} of {suggestionsPageCount}
+                      {t('integrationChecks.pageOf', {
+                        current: currentSuggestionsPage,
+                        total: suggestionsPageCount,
+                      })}
                     </span>
                     <Button
                       variant="ghost"
@@ -934,7 +957,7 @@ export function TaskIntegrationChecks({
                       disabled={currentSuggestionsPage === suggestionsPageCount}
                       onClick={handleNextSuggestionsPage}
                     >
-                      Next
+                      {t('integrationChecks.next')}
                     </Button>
                   </div>
                 )}
@@ -958,20 +981,26 @@ export function TaskIntegrationChecks({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Disconnect check from task?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t('integrationChecks.disconnectDialogTitle')}
+            </AlertDialogTitle>
             <AlertDialogDescription>
               {disconnectTarget ? (
                 <>
-                  <strong>{disconnectTarget.integrationName || disconnectTarget.checkName}</strong>
+                  {t.rich('integrationChecks.disconnectDialogDescription', {
+                    monitor: disconnectTarget.integrationName || disconnectTarget.checkName,
+                    b: (chunks) => <strong>{chunks}</strong>,
+                  })}
                   {disconnectTarget.checkName !==
                     (disconnectTarget.integrationName || disconnectTarget.checkName) && (
                     <>
                       {' '}
-                      (<strong>{disconnectTarget.checkName}</strong> check)
+                      {t.rich('integrationChecks.disconnectDialogCheckSuffix', {
+                        checkName: disconnectTarget.checkName,
+                        b: (chunks) => <strong>{chunks}</strong>,
+                      })}
                     </>
-                  )}{' '}
-                  will no longer run for this task. The integration itself stays connected and will
-                  continue running for other tasks. You can reconnect it to this task at any time.
+                  )}
                 </>
               ) : null}
             </AlertDialogDescription>
@@ -983,7 +1012,9 @@ export function TaskIntegrationChecks({
             </div>
           )}
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={togglingCheck !== null}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={togglingCheck !== null}>
+              {t('integrationChecks.cancel')}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 // Radix's AlertDialogAction auto-closes the dialog on click.
@@ -995,7 +1026,9 @@ export function TaskIntegrationChecks({
               }}
               disabled={togglingCheck !== null}
             >
-              {togglingCheck !== null ? 'Disconnecting...' : 'Disconnect'}
+              {togglingCheck !== null
+                ? t('integrationChecks.disconnecting')
+                : t('integrationChecks.disconnectButton')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -1011,12 +1044,12 @@ export function TaskIntegrationChecks({
         findingId={outOfScopeTarget?.findingId ?? null}
         findingTitle={outOfScopeTarget?.title ?? ''}
         resourceLabel={outOfScopeTarget?.resourceId ?? null}
-        title="Mark this resource as out of scope?"
-        description="The resource stays visible on this evidence item but no longer fails it. The exception and your reason are recorded in the audit trail for auditors."
-        confirmLabel="Mark out of scope"
-        reasonLabel="Reason this resource is out of scope (required) *"
-        expiryHint="Leave empty for never. If set, the resource comes back in scope after this date."
-        successToast="Marked out of scope — re-running the check to update this evidence item."
+        title={t('integrationChecks.markOutOfScopeTitle')}
+        description={t('integrationChecks.markOutOfScopeDescription')}
+        confirmLabel={t('integrationChecks.markOutOfScopeConfirm')}
+        reasonLabel={t('integrationChecks.reasonLabel')}
+        expiryHint={t('integrationChecks.expiryHint')}
+        successToast={t('integrationChecks.markedOutOfScopeToast')}
         onMarked={handleMarkedOutOfScope}
       />
 
@@ -1032,18 +1065,22 @@ export function TaskIntegrationChecks({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Move this resource back in scope?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {t('integrationChecks.moveBackTitle')}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              {revokeTarget ? (
-                <>
-                  The exception on <strong>{revokeTarget.resourceId}</strong> will be removed and
-                  the resource will count against this evidence item again on the next check run.
-                </>
-              ) : null}
+              {revokeTarget
+                ? t.rich('integrationChecks.moveBackDescription', {
+                    resource: revokeTarget.resourceId,
+                    b: (chunks) => <strong>{chunks}</strong>,
+                  })
+                : null}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={revoking}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={revoking}>
+              {t('integrationChecks.cancel')}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 // Keep the dialog open (with its "Removing…" state) until the
@@ -1053,7 +1090,7 @@ export function TaskIntegrationChecks({
               }}
               disabled={revoking}
             >
-              {revoking ? 'Removing...' : 'Move back in scope'}
+              {revoking ? t('integrationChecks.removing') : t('integrationChecks.moveBackButton')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -1105,6 +1142,7 @@ function IntegrationEmptyState({
 }) {
   const params = useParams();
   const router = useRouter();
+  const t = useTranslations('tasks');
   const currentTaskId = taskId || (params.taskId as string);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number | undefined>(undefined);
@@ -1223,7 +1261,7 @@ function IntegrationEmptyState({
     return (
       <div className="py-6 px-6 text-center border-t border-border/40">
         <p className="text-muted-foreground text-sm">
-          This task requires manual execution and cannot be automated.
+          {t('integrationChecks.manualTaskMessage')}
         </p>
       </div>
     );
@@ -1251,16 +1289,15 @@ function IntegrationEmptyState({
 
           <div className="space-y-1.5">
             <h4 className="text-base font-semibold text-foreground tracking-tight">
-              Automate This Task
+              {t('integrationChecks.automateThisTask')}
             </h4>
             <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
-              No pre-built integrations are available. Launch an AI agent that continuously
-              collects, verifies, and refreshes evidence for this requirement.
+              {t('integrationChecks.noPrebuiltDescription')}
             </p>
           </div>
 
           <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-5 py-4">
-            Continue
+            {t('integrationChecks.continueButton')}
           </Button>
         </div>
       </div>
@@ -1303,11 +1340,10 @@ function IntegrationEmptyState({
             </div>
 
             <h4 className="text-base font-semibold text-foreground tracking-tight">
-              Automate This Task
+              {t('integrationChecks.automateThisTask')}
             </h4>
             <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed mt-1.5">
-              Connect an integration to automatically verify compliance, or build a custom
-              automation
+              {t('integrationChecks.connectIntegrationDescription')}
             </p>
           </div>
 
@@ -1319,12 +1355,15 @@ function IntegrationEmptyState({
                   <input
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    aria-label="Search integrations"
-                    placeholder="Search integrations"
+                    aria-label={t('integrationChecks.searchAriaLabel')}
+                    placeholder={t('integrationChecks.searchPlaceholder')}
                     className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary sm:max-w-xs"
                   />
                   <p className="text-xs text-muted-foreground">
-                    {filteredIntegrations.length} of {uniqueIntegrations.length}
+                    {t('integrationChecks.ofCount', {
+                      filtered: filteredIntegrations.length,
+                      total: uniqueIntegrations.length,
+                    })}
                   </p>
                 </div>
               </div>
@@ -1333,8 +1372,12 @@ function IntegrationEmptyState({
             {/* Pre-built integrations */}
             {paginatedIntegrations.length === 0 && (
               <div className="px-6 py-6 text-center">
-                <p className="text-sm font-medium text-foreground">No integrations found</p>
-                <p className="mt-1 text-xs text-muted-foreground">Try a different search term.</p>
+                <p className="text-sm font-medium text-foreground">
+                  {t('integrationChecks.noIntegrationsFound')}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {t('integrationChecks.tryDifferentSearch')}
+                </p>
               </div>
             )}
 
@@ -1366,12 +1409,13 @@ function IntegrationEmptyState({
                         {integration.integrationName}
                       </p>
                       <p className="text-[10px] text-muted-foreground mt-0.5">
-                        {checksForIntegration.length} automated check
-                        {checksForIntegration.length > 1 ? 's' : ''} available
+                        {t('integrationChecks.checksAvailable', {
+                          count: checksForIntegration.length,
+                        })}
                       </p>
                     </div>
                     <Badge variant="secondary" className="text-[10px] shrink-0">
-                      Coming Soon
+                      {t('integrationChecks.comingSoon')}
                     </Badge>
                   </div>
                 );
@@ -1394,11 +1438,14 @@ function IntegrationEmptyState({
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground group-hover/item:text-primary transition-colors">
-                      Connect {integration.integrationName}
+                      {t('integrationChecks.connectIntegration', {
+                        name: integration.integrationName,
+                      })}
                     </p>
                     <p className="text-[10px] text-muted-foreground mt-0.5">
-                      {checksForIntegration.length} automated check
-                      {checksForIntegration.length > 1 ? 's' : ''} available
+                      {t('integrationChecks.checksAvailable', {
+                        count: checksForIntegration.length,
+                      })}
                     </p>
                   </div>
                   <ArrowRight className="w-4 h-4 text-muted-foreground group-hover/item:text-primary transition-colors shrink-0" />
@@ -1415,10 +1462,10 @@ function IntegrationEmptyState({
                   disabled={currentPage === 1}
                   onClick={handlePreviousPage}
                 >
-                  Previous
+                  {t('integrationChecks.previous')}
                 </Button>
                 <span className="text-xs text-muted-foreground">
-                  Page {currentPage} of {pageCount}
+                  {t('integrationChecks.pageOf', { current: currentPage, total: pageCount })}
                 </span>
                 <Button
                   variant="ghost"
@@ -1427,7 +1474,7 @@ function IntegrationEmptyState({
                   disabled={currentPage === pageCount}
                   onClick={handleNextPage}
                 >
-                  Next
+                  {t('integrationChecks.next')}
                 </Button>
               </div>
             )}
@@ -1442,10 +1489,10 @@ function IntegrationEmptyState({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground group-hover/item:text-foreground/80 transition-colors">
-                  Build Custom Automation
+                  {t('integrationChecks.buildCustomAutomation')}
                 </p>
                 <p className="text-[10px] text-muted-foreground mt-0.5">
-                  Use the AI agent to create a tailored automation
+                  {t('integrationChecks.buildCustomAutomationDescription')}
                 </p>
               </div>
               <ArrowRight className="w-4 h-4 text-muted-foreground group-hover/item:text-foreground/80 transition-colors shrink-0" />

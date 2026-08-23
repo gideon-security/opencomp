@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 type SwrShape = {
@@ -108,6 +109,8 @@ const baselinePayload = {
   ],
 };
 
+mockNextIntl();
+
 describe('HistoryTab', () => {
   beforeEach(() => {
     swrMock.mockReset();
@@ -151,7 +154,7 @@ describe('HistoryTab', () => {
       mutate: () => undefined,
     });
     render(<HistoryTab connectionId="icn_aws" />);
-    expect(screen.getByText(/No audit history yet/i)).toBeInTheDocument();
+    expect(screen.getByText('cloudTests_historyEmptyTitle')).toBeInTheDocument();
   });
 
   it('renders all three sections with sample data', () => {
@@ -167,9 +170,9 @@ describe('HistoryTab', () => {
     expect(screen.getAllByText(/Resolutions/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Active exceptions/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Regressions/).length).toBeGreaterThan(0);
-    expect(screen.getByText('Fixed via platform')).toBeInTheDocument();
-    expect(screen.getByText('Fixed externally')).toBeInTheDocument();
-    expect(screen.getByText('Resource deleted')).toBeInTheDocument();
+    expect(screen.getByText('cloudTests_historyFixedViaPlatform')).toBeInTheDocument();
+    expect(screen.getByText('cloudTests_historyFixedExternally')).toBeInTheDocument();
+    expect(screen.getByText('cloudTests_historyResourceDeleted')).toBeInTheDocument();
     expect(
       screen.getByText(/Public marketing bucket/i),
     ).toBeInTheDocument();

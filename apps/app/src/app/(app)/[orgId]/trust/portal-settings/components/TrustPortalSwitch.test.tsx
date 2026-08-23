@@ -5,6 +5,7 @@ import {
   setMockPermissions,
 } from '@/test-utils/mocks/permissions';
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/use-permissions', () => ({
@@ -202,6 +203,8 @@ vi.mock('next/image', () => ({
 
 import { TrustPortalSwitch } from './TrustPortalSwitch';
 
+mockNextIntl();
+
 describe('TrustPortalSwitch permission gating', () => {
   const defaultProps = {
     enabled: true,
@@ -263,7 +266,7 @@ describe('TrustPortalSwitch permission gating', () => {
   it('renders compliance framework titles regardless of permissions', () => {
     setMockPermissions({});
     render(<TrustPortalSwitch {...defaultProps} />);
-    expect(screen.getByText('Compliance Frameworks')).toBeInTheDocument();
+    expect(screen.getByText('portal.complianceTitle')).toBeInTheDocument();
     expect(screen.getByText('ISO 27001')).toBeInTheDocument();
   });
 

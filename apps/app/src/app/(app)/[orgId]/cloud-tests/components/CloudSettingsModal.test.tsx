@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -183,6 +184,8 @@ const defaultProps = {
   onUpdate: vi.fn(),
 };
 
+mockNextIntl();
+
 describe('CloudSettingsModal permission gating', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -191,32 +194,32 @@ describe('CloudSettingsModal permission gating', () => {
   it('shows "Disconnect" button for admin with integration:delete permission', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<CloudSettingsModal {...defaultProps} />);
-    expect(screen.getByText('Disconnect')).toBeInTheDocument();
+    expect(screen.getByText('cloudTests_disconnect')).toBeInTheDocument();
   });
 
   it('hides "Disconnect" button for auditor without integration:delete permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<CloudSettingsModal {...defaultProps} />);
-    expect(screen.queryByText('Disconnect')).not.toBeInTheDocument();
+    expect(screen.queryByText('cloudTests_disconnect')).not.toBeInTheDocument();
   });
 
   it('hides "Disconnect" button when user has no permissions', () => {
     setMockPermissions({});
     render(<CloudSettingsModal {...defaultProps} />);
-    expect(screen.queryByText('Disconnect')).not.toBeInTheDocument();
+    expect(screen.queryByText('cloudTests_disconnect')).not.toBeInTheDocument();
   });
 
   it('always shows connection info regardless of permissions', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<CloudSettingsModal {...defaultProps} />);
-    expect(screen.getByText('Connection Settings')).toBeInTheDocument();
+    expect(screen.getByText('cloudTests_connectionSettings')).toBeInTheDocument();
     expect(screen.getByText('123456789012')).toBeInTheDocument();
   });
 
   it('always shows connection status regardless of permissions', () => {
     setMockPermissions({});
     render(<CloudSettingsModal {...defaultProps} />);
-    expect(screen.getByText('Status')).toBeInTheDocument();
+    expect(screen.getByText('cloudTests_status')).toBeInTheDocument();
     expect(screen.getByText('active')).toBeInTheDocument();
   });
 
@@ -241,7 +244,7 @@ describe('CloudSettingsModal permission gating', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<CloudSettingsModal {...defaultProps} />);
     expect(
-      screen.getByRole('button', { name: /switch to/i }),
+      screen.getByRole('button', { name: /cloudTests_switchTo/i }),
     ).toBeInTheDocument();
   });
 
@@ -250,7 +253,7 @@ describe('CloudSettingsModal permission gating', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<CloudSettingsModal {...defaultProps} />);
     expect(
-      screen.queryByRole('button', { name: /switch to/i }),
+      screen.queryByRole('button', { name: /cloudTests_switchTo/i }),
     ).not.toBeInTheDocument();
   });
 
@@ -261,9 +264,9 @@ describe('CloudSettingsModal permission gating', () => {
     setMockPermissions({ integration: ['read', 'update'] });
     render(<CloudSettingsModal {...defaultProps} />);
     expect(
-      screen.getByRole('button', { name: /switch to/i }),
+      screen.getByRole('button', { name: /cloudTests_switchTo/i }),
     ).toBeInTheDocument();
     // ...and they correctly DO NOT see Disconnect (delete permission required).
-    expect(screen.queryByText('Disconnect')).not.toBeInTheDocument();
+    expect(screen.queryByText('cloudTests_disconnect')).not.toBeInTheDocument();
   });
 });

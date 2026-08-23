@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -133,6 +134,8 @@ const baseProps = {
   approverOptions: [{ id: 'm2', name: 'Approver Two' }],
 };
 
+mockNextIntl();
+
 describe('RequirementsClient', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -167,7 +170,7 @@ describe('RequirementsClient', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<RequirementsClient {...baseProps} />);
 
-    expect(screen.getByText('Generate from platform data')).toBeInTheDocument();
+    expect(screen.getByText('shell.generate')).toBeInTheDocument();
     expect(screen.getByText('Add requirement')).toBeInTheDocument();
     expect(screen.getAllByLabelText('Edit requirement').length).toBe(REQUIREMENTS.length);
     expect(screen.getAllByLabelText('Delete requirement').length).toBe(REQUIREMENTS.length);
@@ -178,7 +181,7 @@ describe('RequirementsClient', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<RequirementsClient {...baseProps} />);
 
-    expect(screen.queryByText('Generate from platform data')).not.toBeInTheDocument();
+    expect(screen.queryByText('shell.generate')).not.toBeInTheDocument();
     expect(screen.queryByText('Add requirement')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Edit requirement')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Delete requirement')).not.toBeInTheDocument();
@@ -186,8 +189,8 @@ describe('RequirementsClient', () => {
     expect(screen.queryByDisplayValue('Derived customer requirement')).not.toBeInTheDocument();
     expect(screen.getByText('Derived customer requirement')).toBeInTheDocument();
     // Export remains available to readers.
-    expect(screen.getByText('Export PDF')).toBeInTheDocument();
-    expect(screen.getByText('Export DOCX')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportPdf')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
   it('shows the drift banner when the document is stale', async () => {

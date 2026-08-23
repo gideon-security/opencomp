@@ -16,31 +16,39 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { usePermissions } from '@/hooks/use-permissions';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import { Loader2, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useSecrets } from '../hooks/useSecrets';
 
-const secretSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Name is required')
-    .max(100, 'Name is too long')
-    .regex(/^[A-Z0-9_]+$/, 'Name must be uppercase letters, numbers, and underscores only'),
-  value: z.string().min(1, 'Value is required'),
-  description: z.string().optional(),
-  category: z.string().optional(),
-});
+type SettingsTranslator = ReturnType<typeof useTranslations<'settings'>>;
 
-type SecretFormValues = z.infer<typeof secretSchema>;
+function createSecretSchema(t: SettingsTranslator) {
+  return z.object({
+    name: z
+      .string()
+      .min(1, t('secrets.errors.nameRequired'))
+      .max(100, t('secrets.errors.nameTooLong'))
+      .regex(/^[A-Z0-9_]+$/, t('secrets.errors.nameFormat')),
+    value: z.string().min(1, t('secrets.errors.valueRequired')),
+    description: z.string().optional(),
+    category: z.string().optional(),
+  });
+}
+
+type SecretFormValues = z.infer<ReturnType<typeof createSecretSchema>>;
 
 export function AddSecretDialog() {
+  const t = useTranslations('settings');
   const [open, setOpen] = useState(false);
   const { createSecret } = useSecrets();
   const { hasPermission } = usePermissions();
   const canManageSecrets = hasPermission('secret', 'create');
+
+  const secretSchema = useMemo(() => createSecretSchema(t), [t]);
 
   const {
     handleSubmit,
@@ -64,11 +72,13 @@ export function AddSecretDialog() {
         category: values.category || null,
       });
 
-      toast.success('Secret created successfully');
+      toast.success(t('secrets.addDialog.successToast'));
       setOpen(false);
       reset();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to create secret');
+      toast.error(
+        err instanceof Error ? err.message : t('secrets.addDialog.failedToast'),
+      );
       console.error('Error creating secret:', err);
     }
   });
@@ -78,20 +88,20 @@ export function AddSecretDialog() {
       <DialogTrigger asChild>
         <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="mr-2 h-4 w-4" />
-          Add Secret
+          {t('secrets.addDialog.addButton')}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[525px]">
         <form onSubmit={onSubmit}>
           <DialogHeader>
-            <DialogTitle>Add New Secret</DialogTitle>
+            <DialogTitle>{t('secrets.addDialog.title')}</DialogTitle>
             <DialogDescription>
-              Create a new secret that can be accessed by AI automations in your organization.
+              {t('secrets.addDialog.description')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Secret Name</Label>
+              <Label htmlFor="name">{t('secrets.addDialog.nameLabel')}</Label>
               <Input
                 id="name"
                 placeholder="e.g., GITHUB_TOKEN, OPENAI_API_KEY"
@@ -101,15 +111,15 @@ export function AddSecretDialog() {
                 <p className="text-xs text-destructive mt-1">{errors.name.message}</p>
               ) : null}
               <p className="text-xs text-muted-foreground">
-                Use uppercase with underscores for naming convention
+                {t('secrets.addDialog.namingHint')}
               </p>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="value">Secret Value</Label>
+              <Label htmlFor="value">{t('secrets.addDialog.valueLabel')}</Label>
               <Input
                 id="value"
                 type="password"
-                placeholder="Enter the secret value"
+                placeholder={t('secrets.addDialog.valuePlaceholder')}
                 {...register('value')}
               />
               {errors.value?.message ? (
@@ -117,21 +127,25 @@ export function AddSecretDialog() {
               ) : null}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="category">Category (Optional)</Label>
+              <Label htmlFor="category">{t('secrets.addDialog.categoryLabel')}</Label>
               <Controller
                 control={control}
                 name="category"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger id="category">
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder={t('secrets.addDialog.categoryPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="api_keys">API Keys</SelectItem>
-                      <SelectItem value="database">Database</SelectItem>
-                      <SelectItem value="authentication">Authentication</SelectItem>
-                      <SelectItem value="integration">Integration</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="api_keys">{t('secrets.categories.api_keys')}</SelectItem>
+                      <SelectItem value="database">{t('secrets.categories.database')}</SelectItem>
+                      <SelectItem value="authentication">
+                        {t('secrets.categories.authentication')}
+                      </SelectItem>
+                      <SelectItem value="integration">
+                        {t('secrets.categories.integration')}
+                      </SelectItem>
+                      <SelectItem value="other">{t('secrets.categories.other')}</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -141,10 +155,10 @@ export function AddSecretDialog() {
               ) : null}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="description">Description (Optional)</Label>
+              <Label htmlFor="description">{t('secrets.addDialog.descriptionLabel')}</Label>
               <Textarea
                 id="description"
-                placeholder="Describe what this secret is used for"
+                placeholder={t('secrets.addDialog.descriptionPlaceholder')}
                 rows={3}
                 {...register('description')}
               />
@@ -155,16 +169,16 @@ export function AddSecretDialog() {
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Cancel
+              {t('secrets.addDialog.cancel')}
             </Button>
             <Button type="submit" disabled={isSubmitting || !canManageSecrets}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating...
+                  {t('secrets.addDialog.submitting')}
                 </>
               ) : (
-                'Create Secret'
+                t('secrets.addDialog.submit')
               )}
             </Button>
           </DialogFooter>

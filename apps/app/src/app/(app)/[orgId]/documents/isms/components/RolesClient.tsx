@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
@@ -32,6 +33,7 @@ async function run(action: Promise<void>, successMessage: string, failMessage: s
 }
 
 export function RolesClient({ memberOptions, ...props }: RolesClientProps) {
+  const t = useTranslations('isms');
   const band = teamSizeBand(memberOptions.length);
   // memberOptions is the active People list, so this is the set of active member
   // ids — used to match the server's active-only completeness gate.
@@ -41,11 +43,11 @@ export function RolesClient({ memberOptions, ...props }: RolesClientProps) {
     <IsmsDocumentShell
       {...props}
       clause="5.3"
-      title="Roles, Responsibilities and Authorities"
-      description="Define the ISMS governance roles, their responsibilities and authorities, and the members who hold them (ISO 27001 clause 5.3). Assign members and complete each role before generating the document."
-      sectionTitle="Governance roles"
-      sectionDescription="Real ISMS governance roles — distinct from OpenComp application-access levels."
-      generateSuccessMessage="Restored any missing seeded roles"
+      title={t('roles.title')}
+      description={t('roles.description')}
+      sectionTitle={t('roles.sectionTitle')}
+      sectionDescription={t('roles.sectionDescription')}
+      generateSuccessMessage={t('roles.generateRestored')}
       getSubmitBlockedReason={(document) => {
         const messages = roleValidationMessages({
           roles: Array.isArray(document.roles) ? document.roles : [],
@@ -53,7 +55,7 @@ export function RolesClient({ memberOptions, ...props }: RolesClientProps) {
           activeMemberIds,
         });
         return messages.length > 0
-          ? `Complete the required assignments before submitting: ${messages.join(' ')}`
+          ? t('roles.submitBlocked', { messages: messages.join(' ') })
           : null;
       }}
     >
@@ -75,29 +77,29 @@ export function RolesClient({ memberOptions, ...props }: RolesClientProps) {
             onCreateRole={(values: RoleFormValues) =>
               run(
                 hook.createRow({ register: ROLES, data: { ...values } }),
-                'Role added',
-                'Failed to add role',
+                t('roles.roleAdded'),
+                t('roles.roleAddFailed'),
               )
             }
             onUpdateRole={(roleId, values) =>
               run(
                 hook.updateRow({ register: ROLES, id: roleId, data: { ...values } }),
-                'Role updated',
-                'Failed to update role',
+                t('roles.roleUpdated'),
+                t('roles.roleUpdateFailed'),
               )
             }
             onDeleteRole={(roleId) =>
               run(
                 hook.deleteRow({ register: ROLES, id: roleId }),
-                'Role deleted',
-                'Failed to delete role',
+                t('roles.roleDeleted'),
+                t('roles.roleDeleteFailed'),
               )
             }
             onSaveAuditRoute={(roleId, update) =>
               run(
                 hook.updateRow({ register: ROLES, id: roleId, data: { ...update } }),
-                'Audit route saved',
-                'Failed to save audit route',
+                t('roles.auditRouteSaved'),
+                t('roles.auditRouteSaveFailed'),
               )
             }
             onAddAssignment={(roleId, memberId) =>
@@ -106,8 +108,8 @@ export function RolesClient({ memberOptions, ...props }: RolesClientProps) {
                   register: ASSIGNMENTS,
                   data: { roleId, memberId },
                 }),
-                'Member assigned',
-                'Failed to assign member',
+                t('roles.memberAssigned'),
+                t('roles.memberAssignFailed'),
               )
             }
             onUpdateAssignment={(assignmentId, update) =>
@@ -117,15 +119,15 @@ export function RolesClient({ memberOptions, ...props }: RolesClientProps) {
                   id: assignmentId,
                   data: { ...update },
                 }),
-                'Competence updated',
-                'Failed to update competence',
+                t('roles.competenceUpdated'),
+                t('roles.competenceUpdateFailed'),
               )
             }
             onRemoveAssignment={(assignmentId) =>
               run(
                 hook.deleteRow({ register: ASSIGNMENTS, id: assignmentId }),
-                'Member removed',
-                'Failed to remove member',
+                t('roles.memberRemoved'),
+                t('roles.memberRemoveFailed'),
               )
             }
           />

@@ -22,6 +22,7 @@ import { Icons } from '@gideon-defender/ui/icons';
 import type { Member, Policy, PolicyVersion, User } from '@db';
 import type { JSONContent } from '@tiptap/react';
 import { useRealtimeRun } from '@gideon-defender/trigger-react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -43,6 +44,7 @@ export function PolicyHeaderActions({
   organizationId: string;
 }) {
   const router = useRouter();
+  const t = useTranslations('policies');
   const { mutate: globalMutate } = useSWRConfig();
   const [isRegenerateConfirmOpen, setRegenerateConfirmOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -86,7 +88,7 @@ export function PolicyHeaderActions({
       if (toastIdRef.current) {
         toast.dismiss(toastIdRef.current);
       }
-      toast.success('New draft version created for review');
+      toast.success(t('headerActions.newDraftCreatedToast'));
       setIsRegenerating(false);
       setRunInfo(null);
       toastIdRef.current = null;
@@ -95,7 +97,7 @@ export function PolicyHeaderActions({
       if (toastIdRef.current) {
         toast.dismiss(toastIdRef.current);
       }
-      toast.error('Policy regeneration failed');
+      toast.error(t('headerActions.regenerateFailedToast'));
       setIsRegenerating(false);
       setRunInfo(null);
       toastIdRef.current = null;
@@ -112,13 +114,13 @@ export function PolicyHeaderActions({
 
       const { runId, publicAccessToken } = response.data?.data ?? {};
       if (runId && publicAccessToken) {
-        const toastId = toast.loading('Regenerating policy content...');
+        const toastId = toast.loading(t('headerActions.regeneratingToast'));
         toastIdRef.current = toastId;
 
         setRunInfo({ runId, accessToken: publicAccessToken });
       }
     } catch {
-      toast.error('Failed to trigger policy regeneration');
+      toast.error(t('headerActions.regenerateTriggerFailedToast'));
       setIsRegenerating(false);
     }
   };
@@ -131,7 +133,7 @@ export function PolicyHeaderActions({
 
   const handleDownloadPDF = async () => {
     if (!policy) {
-      toast.error('Policy not available');
+      toast.error(t('headerActions.policyNotAvailableToast'));
       return;
     }
 
@@ -157,7 +159,7 @@ export function PolicyHeaderActions({
       const contentSource = policy.currentVersion?.content ?? policy.content;
 
       if (!contentSource) {
-        toast.error('Policy content not available for download');
+        toast.error(t('headerActions.contentNotAvailableToast'));
         return;
       }
 
@@ -168,7 +170,7 @@ export function PolicyHeaderActions({
       } else if (typeof contentSource === 'object' && contentSource !== null) {
         policyContent = [contentSource as JSONContent];
       } else {
-        toast.error('Invalid policy content format');
+        toast.error(t('headerActions.invalidContentFormatToast'));
         return;
       }
 
@@ -180,7 +182,7 @@ export function PolicyHeaderActions({
       await generatePolicyPDF(policyContent, approvalLogs, policy.name || 'Policy Document');
     } catch (error) {
       console.error('Error downloading policy PDF:', error);
-      toast.error('Failed to generate policy PDF');
+      toast.error(t('headerActions.downloadFailedToast'));
     } finally {
       setIsDownloading(false);
       // Revalidate audit logs so the activity tab reflects the download
@@ -214,7 +216,9 @@ export function PolicyHeaderActions({
               disabled={isPendingApproval || isRegenerating}
             >
               <Icons.AI className="mr-2 h-4 w-4" />{' '}
-              {isRegenerating ? 'Regenerating...' : 'Regenerate policy'}
+              {isRegenerating
+                ? t('headerActions.regenerating')
+                : t('headerActions.regenerate')}
             </DropdownMenuItem>
           )}
           {canUpdate && (
@@ -223,13 +227,15 @@ export function PolicyHeaderActions({
                 updateQueryParam({ key: 'policy-overview-sheet', value: 'true' });
               }}
             >
-              <Icons.Edit className="mr-2 h-4 w-4" /> Edit policy
+              <Icons.Edit className="mr-2 h-4 w-4" /> {t('headerActions.edit')}
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => handleDownloadPDF()} disabled={isDownloading}>
             <Icons.Download className="mr-2 h-4 w-4" />{' '}
-            {isDownloading ? 'Downloading...' : 'Download as PDF'}
+            {isDownloading
+              ? t('headerActions.downloading')
+              : t('headerActions.downloadPdf')}
           </DropdownMenuItem>
           {canUpdate && (
             <DropdownMenuItem
@@ -237,7 +243,8 @@ export function PolicyHeaderActions({
                 updateQueryParam({ key: 'archive-policy-sheet', value: 'true' });
               }}
             >
-              <Icons.InboxCustomize className="mr-2 h-4 w-4" /> Archive / Restore
+              <Icons.InboxCustomize className="mr-2 h-4 w-4" />{' '}
+              {t('headerActions.archiveRestore')}
             </DropdownMenuItem>
           )}
           {canDelete && (
@@ -247,7 +254,7 @@ export function PolicyHeaderActions({
               }}
               className="text-destructive"
             >
-              <Icons.Delete className="mr-2 h-4 w-4" /> Delete
+              <Icons.Delete className="mr-2 h-4 w-4" /> {t('headerActions.delete')}
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
@@ -257,22 +264,20 @@ export function PolicyHeaderActions({
       <Dialog open={isRegenerateConfirmOpen} onOpenChange={setRegenerateConfirmOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Regenerate Policy</DialogTitle>
+            <DialogTitle>{t('headerActions.regenerateTitle')}</DialogTitle>
             <DialogDescription>
-              This will generate new policy content using your org context and frameworks and save
-              it as a new draft version. Your published policy and its signatures stay unchanged
-              until you review and approve the draft. Continue?
+              {t('headerActions.regenerateDescription')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setRegenerateConfirmOpen(false)}>
-              Cancel
+              {t('headerActions.cancel')}
             </Button>
             <Button
               onClick={handleRegenerate}
               disabled={isRegenerating}
             >
-              {isRegenerating ? 'Working…' : 'Confirm'}
+              {isRegenerating ? t('headerActions.working') : t('headerActions.confirm')}
             </Button>
           </DialogFooter>
         </DialogContent>

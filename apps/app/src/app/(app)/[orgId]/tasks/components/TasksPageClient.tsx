@@ -20,6 +20,7 @@ import {
   TabsTrigger,
 } from '@trycompai/design-system';
 import { Add, ArrowDown } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useTasks } from '../hooks/useTasks';
@@ -68,6 +69,7 @@ export function TasksPageClient({
 }: TasksPageClientProps) {
   const { tasks, createTask, mutate: mutateTasks } = useTasks({ initialData: initialTasks });
   const { hasPermission } = usePermissions();
+  const t = useTranslations('tasks');
   const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false);
   const [includeRawJson, setIncludeRawJson] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -88,7 +90,7 @@ export function TasksPageClient({
       // subscription errors via `err`), so treat anything that isn't a clean
       // COMPLETED run as a failure.
       if (err || run.status !== 'COMPLETED') {
-        toast.error('Evidence export failed. Please try again.');
+        toast.error(t('page.exportFailed'));
         setExportRun(null);
         return;
       }
@@ -102,9 +104,9 @@ export function TasksPageClient({
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        toast.success('Evidence package downloaded successfully');
+        toast.success(t('page.downloadSuccess'));
       } else {
-        toast.error('Export completed but download link was not available.');
+        toast.error(t('page.downloadLinkMissing'));
       }
       setExportRun(null);
       setIsPopoverOpen(false);
@@ -123,14 +125,14 @@ export function TasksPageClient({
         runId: result.runId,
         accessToken: result.publicAccessToken,
       });
-      toast.info('Evidence export started. You\'ll be notified when it\'s ready.');
+      toast.info(t('page.exportStarted'));
     } catch (err) {
       const noEvidence =
         err instanceof Error && err.message?.includes('No tasks with evidence found');
       if (noEvidence) {
-        toast.info('No tasks with evidence found to export.');
+        toast.info(t('page.noEvidenceToExport'));
       } else {
-        toast.error('Failed to start evidence export. Please try again.');
+        toast.error(t('page.exportStartFailed'));
       }
       console.error('Evidence export error:', err);
     } finally {
@@ -143,21 +145,23 @@ export function TasksPageClient({
       <PageLayout
         header={
           <PageHeader
-            title="Evidence"
+            title={t('page.title')}
             actions={
               <div className="flex items-center gap-2">
                 {hasEvidenceExportAccess && (
                   <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                     <PopoverTrigger className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-7 px-2 cursor-pointer">
-                      Export All Evidence
+                      {t('page.exportAllEvidence')}
                     </PopoverTrigger>
                     <PopoverContent align="end" side="bottom" sideOffset={8}>
                       <PopoverHeader>
-                        <PopoverTitle>Export Options</PopoverTitle>
-                        <PopoverDescription>Download all task evidence as ZIP</PopoverDescription>
+                        <PopoverTitle>{t('page.exportOptions')}</PopoverTitle>
+                        <PopoverDescription>
+                          {t('page.exportDescription')}
+                        </PopoverDescription>
                       </PopoverHeader>
                       <div className="flex items-center justify-between gap-3 py-1">
-                        <span className="text-sm">Include raw JSON files</span>
+                        <span className="text-sm">{t('page.includeRawJson')}</span>
                         <Switch
                           checked={includeRawJson}
                           onCheckedChange={(checked) => setIncludeRawJson(checked)}
@@ -169,14 +173,14 @@ export function TasksPageClient({
                         disabled={isDownloadingAll}
                         width="full"
                       >
-                        {isDownloadingAll ? 'Preparing...' : 'Export'}
+                        {isDownloadingAll ? t('page.preparing') : t('page.exportButton')}
                       </Button>
                     </PopoverContent>
                   </Popover>
                 )}
                 {hasPermission('task', 'create') && (
                   <Button iconLeft={<Add />} onClick={() => setIsCreateSheetOpen(true)}>
-                    Create Evidence
+                    {t('page.createEvidence')}
                   </Button>
                 )}
               </div>
@@ -193,8 +197,8 @@ export function TasksPageClient({
           afterAnalytics={
             <div className="w-fit">
               <TabsList variant="underline">
-                <TabsTrigger value="evidence-list">Overview</TabsTrigger>
-                <TabsTrigger value="settings">Settings</TabsTrigger>
+                <TabsTrigger value="evidence-list">{t('page.overviewTab')}</TabsTrigger>
+                <TabsTrigger value="settings">{t('page.settingsTab')}</TabsTrigger>
               </TabsList>
             </div>
           }

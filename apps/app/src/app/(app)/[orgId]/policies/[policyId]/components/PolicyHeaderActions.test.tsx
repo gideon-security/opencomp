@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -102,6 +103,8 @@ const basePolicy = {
     updatedAt: new Date(),
   },
 } as any;
+
+mockNextIntl();
 
 describe('PolicyHeaderActions', () => {
   beforeEach(() => {

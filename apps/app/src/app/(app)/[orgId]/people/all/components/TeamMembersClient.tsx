@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -65,6 +66,26 @@ import { useEmployeeSync } from '../hooks/useEmployeeSync';
 // distinct option rather than the absence of a selection.
 const NO_SYNC_VALUE = '__no_sync__';
 
+const requirementColumnLabel = (
+  key: RequirementColumnKey,
+  t: ReturnType<typeof useTranslations<'people'>>,
+): string => {
+  switch (key) {
+    case 'policies':
+      return t('team.colPolicies');
+    case 'training':
+      return t('team.colTraining');
+    case 'hipaa':
+      return 'HIPAA';
+    case 'device':
+      return t('team.colDevice');
+    case 'background':
+      return t('team.colBackground');
+    case 'twoFactor':
+      return '2FA';
+  }
+};
+
 interface TeamMembersClientProps {
   data: TeamMembersData;
   organizationId: string;
@@ -92,6 +113,7 @@ export function TeamMembersClient({
   twoFactorStatusMap,
   requirementTracking,
 }: TeamMembersClientProps) {
+  const t = useTranslations('people');
   const { agentDevices, isLoading: isAgentDevicesLoading } = useAgentDevices();
   const { fleetHosts, isLoading: isFleetHostsLoading } = useFleetHosts();
   const isDeviceStatusLoading = isAgentDevicesLoading || isFleetHostsLoading;
@@ -104,18 +126,14 @@ export function TeamMembersClient({
   // Which requirement columns the table shows, in order. A column only exists
   // when the underlying tracking applies to this org (flag on / framework
   // present / 2FA source configured), so orgs never see empty dash columns.
-  const requirementColumns = useMemo<
-    Array<{ key: RequirementColumnKey; label: string }>
-  >(() => {
-    const cols: Array<{ key: RequirementColumnKey; label: string }> = [];
-    if (requirementTracking.policies) cols.push({ key: 'policies', label: 'POLICIES' });
-    if (requirementTracking.training) cols.push({ key: 'training', label: 'TRAINING' });
-    if (requirementTracking.hipaa) cols.push({ key: 'hipaa', label: 'HIPAA' });
-    if (complianceMemberIds.length > 0) cols.push({ key: 'device', label: 'DEVICE' });
-    if (backgroundCheckStepEnabled)
-      cols.push({ key: 'background', label: 'BACKGROUND' });
-    if (Object.keys(twoFactorStatusMap).length > 0)
-      cols.push({ key: 'twoFactor', label: '2FA' });
+  const requirementColumns = useMemo<RequirementColumnKey[]>(() => {
+    const cols: RequirementColumnKey[] = [];
+    if (requirementTracking.policies) cols.push('policies');
+    if (requirementTracking.training) cols.push('training');
+    if (requirementTracking.hipaa) cols.push('hipaa');
+    if (complianceMemberIds.length > 0) cols.push('device');
+    if (backgroundCheckStepEnabled) cols.push('background');
+    if (Object.keys(twoFactorStatusMap).length > 0) cols.push('twoFactor');
     return cols;
   }, [requirementTracking, complianceMemberIds, backgroundCheckStepEnabled, twoFactorStatusMap]);
   const router = useRouter();
@@ -249,11 +267,11 @@ export function TeamMembersClient({
         toast.error(response.error);
         return;
       }
-      toast.success('Invitation has been cancelled');
+      toast.success(t('team.invitationCancelled'));
       router.refresh();
     } catch (error) {
       console.error('Cancel Invitation Error:', error);
-      toast.error('Failed to cancel invitation');
+      toast.error(t('team.failedToCancelInvitation'));
     }
   };
 
@@ -263,28 +281,28 @@ export function TeamMembersClient({
   ) => {
     try {
       await removeMember(memberId, options);
-      toast.success('Member has been removed from the organization');
+      toast.success(t('team.memberRemoved'));
       router.refresh();
     } catch (error) {
       console.error('Remove Member Error:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to remove member');
+      toast.error(error instanceof Error ? error.message : t('team.failedToRemoveMember'));
     }
   };
 
   const handleReactivateMember = async (memberId: string) => {
     try {
       await reactivateMember(memberId);
-      toast.success('Member has been reinstated');
+      toast.success(t('team.memberReinstated'));
       router.refresh();
     } catch (error) {
       console.error('Reactivate Member Error:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to reinstate member');
+      toast.error(error instanceof Error ? error.message : t('team.failedToReinstateMember'));
     }
   };
 
   const handleRemoveDevice = async (memberId: string) => {
     await unlinkDevice(memberId);
-    toast.success('Device unlinked successfully');
+    toast.success(t('team.deviceUnlinked'));
     router.refresh(); // Revalidate data to update UI
   };
 
@@ -297,13 +315,13 @@ export function TeamMembersClient({
     const memberRoles = parseRolesString(member?.role);
     if (member && memberRoles.includes('owner') && !rolesArray.includes('owner')) {
       // Show toast error directly, no need to return an error object
-      toast.error('The Owner role cannot be removed.');
+      toast.error(t('team.ownerRoleCannotBeRemoved'));
       return;
     }
 
     // Ensure at least one role is selected
     if (rolesArray.length === 0) {
-      toast.warning('Please select at least one role.');
+      toast.warning(t('team.selectAtLeastOneRoleWarning'));
       return;
     }
 
@@ -313,7 +331,7 @@ export function TeamMembersClient({
         memberId: memberId,
         role: rolesArray, // Pass the array of roles
       });
-      toast.success('Member roles updated successfully.');
+      toast.success(t('team.memberRolesUpdated'));
       router.refresh(); // Revalidate data
     } catch (error) {
       console.error('Update Role Error:', error);
@@ -323,7 +341,7 @@ export function TeamMembersClient({
         toast.error(error.message);
         return;
       }
-      toast.error('Failed to update member roles');
+      toast.error(t('team.failedToUpdateRoles'));
     }
   };
 
@@ -340,7 +358,7 @@ export function TeamMembersClient({
               <Search size={16} />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search people..."
+              placeholder={t('team.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -374,19 +392,19 @@ export function TeamMembersClient({
           <PopoverTrigger>
             <div className="border-border bg-background hover:bg-muted flex h-8 cursor-pointer items-center gap-2 whitespace-nowrap rounded-md border px-3 text-sm transition-colors">
               <SettingsAdjust size={16} className="text-muted-foreground" />
-              Sync settings
+              {t('team.syncSettings')}
             </div>
           </PopoverTrigger>
           <PopoverContent align="end" style={{ width: 'auto' }}>
             <div className="flex w-[280px] flex-col gap-4 p-1.5">
         {!hasAnyConnection && (
           <div className="flex w-full flex-col gap-1">
-            <span className="text-xs text-muted-foreground">People</span>
+            <span className="text-xs text-muted-foreground">{t('team.people')}</span>
             <Link
               href={`/${organizationId}/integrations`}
               className="border-border text-muted-foreground hover:bg-muted flex h-8 items-center justify-between rounded-md border border-dashed px-3 text-sm transition-colors"
             >
-              Connect an integration
+              {t('team.connectIntegration')}
               <span aria-hidden>→</span>
             </Link>
           </div>
@@ -395,7 +413,7 @@ export function TeamMembersClient({
           <div className="flex w-full">
             <div className="flex w-full flex-col gap-1">
               <span id="employee-sync-source-label" className="text-xs text-muted-foreground">
-                People
+                {t('team.people')}
               </span>
               <Select
                 onValueChange={(value) => {
@@ -409,11 +427,11 @@ export function TeamMembersClient({
                 }}
                 disabled={isSyncing || isDisablingSync || !canManageMembers}
               >
-                <SelectTrigger aria-label="Sync people from">
+                <SelectTrigger aria-label={t('team.syncPeopleFrom')}>
                   {isSyncing ? (
                     <>
                       <InProgress size={16} className="mr-2 animate-spin" />
-                      Syncing...
+                      {t('team.syncing')}
                     </>
                   ) : selectedProvider ? (
                     <div className="flex items-center gap-2">
@@ -430,27 +448,27 @@ export function TeamMembersClient({
                       <span className="truncate">{getProviderName(selectedProvider)}</span>
                     </div>
                   ) : (
-                    <span className="text-muted-foreground">Not syncing</span>
+                    <span className="text-muted-foreground">{t('team.notSyncing')}</span>
                   )}
                 </SelectTrigger>
               <SelectContent>
                 <div className="px-2 py-1.5 text-xs text-muted-foreground space-y-1">
                   {selectedProvider ? (
                     <>
-                      <div>Auto-syncs daily at 7 AM UTC</div>
+                      <div>{t('team.autoSyncSchedule')}</div>
                       {lastSyncAt && (
                         <div className="text-xs text-muted-foreground/80">
-                          Last sync: {new Date(lastSyncAt).toLocaleString()}
+                          {t('team.lastSync', { date: new Date(lastSyncAt).toLocaleString() })}
                         </div>
                       )}
                       {nextSyncAt && (
                         <div className="text-xs text-muted-foreground/80">
-                          Next sync: {new Date(nextSyncAt).toLocaleString()}
+                          {t('team.nextSync', { date: new Date(nextSyncAt).toLocaleString() })}
                         </div>
                       )}
                     </>
                   ) : (
-                    'Select a provider to enable auto-sync'
+                    t('team.selectProviderHint')
                   )}
                 </div>
                 <Separator />
@@ -467,7 +485,7 @@ export function TeamMembersClient({
                       />
                       Google Workspace
                       {selectedProvider === 'google-workspace' && (
-                        <span className="ml-auto text-xs text-muted-foreground">Active</span>
+                        <span className="ml-auto text-xs text-muted-foreground">{t('team.active')}</span>
                       )}
                     </div>
                   </SelectItem>
@@ -485,7 +503,7 @@ export function TeamMembersClient({
                       />
                       Rippling
                       {selectedProvider === 'rippling' && (
-                        <span className="ml-auto text-xs text-muted-foreground">Active</span>
+                        <span className="ml-auto text-xs text-muted-foreground">{t('team.active')}</span>
                       )}
                     </div>
                   </SelectItem>
@@ -503,7 +521,7 @@ export function TeamMembersClient({
                       />
                       JumpCloud
                       {selectedProvider === 'jumpcloud' && (
-                        <span className="ml-auto text-xs text-muted-foreground">Active</span>
+                        <span className="ml-auto text-xs text-muted-foreground">{t('team.active')}</span>
                       )}
                     </div>
                   </SelectItem>
@@ -526,7 +544,7 @@ export function TeamMembersClient({
                         )}
                         {provider.name}
                         {selectedProvider === provider.slug && (
-                          <span className="ml-auto text-xs text-muted-foreground">Active</span>
+                          <span className="ml-auto text-xs text-muted-foreground">{t('team.active')}</span>
                         )}
                       </div>
                     </SelectItem>
@@ -534,9 +552,9 @@ export function TeamMembersClient({
                 <Separator />
                 <SelectItem value={NO_SYNC_VALUE}>
                   <div className="flex items-center gap-2">
-                    <span>Don&apos;t auto-sync</span>
+                    <span>{t('team.dontAutoSync')}</span>
                     {!selectedProvider && (
-                      <span className="ml-auto text-xs text-muted-foreground">Active</span>
+                      <span className="ml-auto text-xs text-muted-foreground">{t('team.active')}</span>
                     )}
                   </div>
                 </SelectItem>
@@ -555,11 +573,13 @@ export function TeamMembersClient({
       {totalItems === 0 ? (
         <Empty>
           <EmptyHeader>
-            <EmptyTitle>{searchQuery ? 'No people found' : 'No employees yet'}</EmptyTitle>
+            <EmptyTitle>
+              {searchQuery ? t('team.noPeopleFound') : t('team.noEmployeesYet')}
+            </EmptyTitle>
             <EmptyDescription>
               {searchQuery
-                ? 'Try adjusting your search or filters.'
-                : 'Get started by inviting your first team member.'}
+                ? t('team.tryAdjustingSearch')
+                : t('team.getStartedInvite')}
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
@@ -580,17 +600,17 @@ export function TeamMembersClient({
         >
           <TableHeader>
             <TableRow>
-              <TableHead>NAME</TableHead>
-              <TableHead>STATUS</TableHead>
+              <TableHead>{t('team.colName')}</TableHead>
+              <TableHead>{t('team.colStatus')}</TableHead>
               <TableHead>
-                <div className="w-[160px]">ROLE</div>
+                <div className="w-[160px]">{t('team.colRole')}</div>
               </TableHead>
-              <TableHead>ONBOARDED</TableHead>
-              <TableHead>OFFBOARDED</TableHead>
+              <TableHead>{t('team.colOnboarded')}</TableHead>
+              <TableHead>{t('team.colOffboarded')}</TableHead>
               {requirementColumns.map((col) => (
-                <TableHead key={col.key}>{col.label}</TableHead>
+                <TableHead key={col}>{requirementColumnLabel(col, t)}</TableHead>
               ))}
-              <TableHead>ACTIONS</TableHead>
+              <TableHead>{t('team.colActions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -615,7 +635,7 @@ export function TeamMembersClient({
                   }
                   backgroundCheckStepEnabled={backgroundCheckStepEnabled}
                   twoFactorStatus={twoFactorStatusMap[(item as MemberWithUser).id]}
-                  requirementColumns={requirementColumns.map((c) => c.key)}
+                  requirementColumns={requirementColumns}
                 />
               ) : (
                 <PendingInvitationRow

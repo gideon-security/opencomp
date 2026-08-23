@@ -3,6 +3,10 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SWRConfig } from 'swr';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
+
 import { AdminBillingTab } from './AdminBillingTab';
 import type { AdminBillingStatus } from './AdminBillingTypes';
 
@@ -97,7 +101,9 @@ describe('AdminBillingTab', () => {
 
     expect(await screen.findByText('cus_123')).toBeInTheDocument();
     expect(screen.getByText('pentest_monthly_1')).toBeInTheDocument();
-    expect(screen.getByText('Penetration tests')).toBeInTheDocument();
+    expect(
+      screen.getByText('organizations.billingTables.products.pentest'),
+    ).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
   });
 
@@ -105,7 +111,7 @@ describe('AdminBillingTab', () => {
     const user = userEvent.setup();
     renderBillingTab();
 
-    await screen.findByText('Free credits');
+    await screen.findByText('organizations.billingTab.freeCredits');
     await user.type(screen.getByPlaceholderText('Reason for grant'), 'Support credit');
     await user.click(screen.getByRole('button', { name: /grant credits/i }));
 

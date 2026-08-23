@@ -1,11 +1,72 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Badge, Button, Text } from '@trycompai/design-system';
 import type {
   AdminBillingCreditBalance,
   AdminBillingInvoice,
   AdminBillingSubscription,
 } from './AdminBillingTypes';
+
+type BillingTranslator = ReturnType<typeof useTranslations<'admin'>>;
+
+function stripeStatusLabel(t: BillingTranslator, status: string): string {
+  switch (status) {
+    case 'active':
+      return t('organizations.billingTables.statuses.active');
+    case 'trialing':
+      return t('organizations.billingTables.statuses.trialing');
+    case 'past_due':
+      return t('organizations.billingTables.statuses.pastDue');
+    case 'canceled':
+      return t('organizations.billingTables.statuses.canceled');
+    case 'unpaid':
+      return t('organizations.billingTables.statuses.unpaid');
+    case 'incomplete':
+      return t('organizations.billingTables.statuses.incomplete');
+    case 'incomplete_expired':
+      return t('organizations.billingTables.statuses.incompleteExpired');
+    default:
+      return status;
+  }
+}
+
+function invoiceStatusLabel(t: BillingTranslator, status: string): string {
+  switch (status) {
+    case 'paid':
+      return t('organizations.billingTables.statuses.paid');
+    case 'open':
+      return t('organizations.billingTables.statuses.open');
+    case 'void':
+      return t('organizations.billingTables.statuses.void');
+    case 'uncollectible':
+      return t('organizations.billingTables.statuses.uncollectible');
+    case 'draft':
+      return t('organizations.billingTables.statuses.draft');
+    default:
+      return status;
+  }
+}
+
+function productLabel(t: BillingTranslator, productKey: string): string {
+  switch (productKey) {
+    case 'pentest':
+      return t('organizations.billingTables.products.pentest');
+    default:
+      return t('organizations.billingTables.products.backgroundChecks');
+  }
+}
+
+function formatDate(value: string | null, notAvailableLabel: string) {
+  return value ? new Date(value).toLocaleDateString() : notAvailableLabel;
+}
+
+function formatAmount(amount: number, currency: string) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(amount / 100);
+}
 
 export function SubscriptionRows({
   subscriptions,
@@ -18,19 +79,21 @@ export function SubscriptionRows({
   onResume: (subscription: AdminBillingSubscription) => void;
   loadingId: string | null;
 }) {
+  const t = useTranslations('admin');
+
   if (subscriptions.length === 0) {
-    return <Text variant="muted">No subscription history.</Text>;
+    return <Text variant="muted">{t('organizations.billingTables.emptySubscriptions')}</Text>;
   }
   return (
     <div className="overflow-x-auto rounded-lg border">
       <table className="w-full text-sm">
         <thead className="bg-muted/40 text-left">
           <tr>
-            <th className="px-4 py-3">Plan</th>
-            <th className="px-4 py-3">Status</th>
-            <th className="px-4 py-3">Usage</th>
-            <th className="px-4 py-3">Renews</th>
-            <th className="px-4 py-3 text-right">Actions</th>
+            <th className="px-4 py-3">{t('organizations.billingTables.plan')}</th>
+            <th className="px-4 py-3">{t('organizations.billingTables.status')}</th>
+            <th className="px-4 py-3">{t('organizations.billingTables.usage')}</th>
+            <th className="px-4 py-3">{t('organizations.billingTables.renews')}</th>
+            <th className="px-4 py-3 text-right">{t('organizations.billingTables.actions')}</th>
           </tr>
         </thead>
         <tbody>
@@ -39,13 +102,20 @@ export function SubscriptionRows({
               <td className="px-4 py-3 font-medium">{subscription.skuKey}</td>
               <td className="px-4 py-3">
                 <Badge variant={subscription.stripeStatus === 'active' ? 'default' : 'outline'}>
-                  {subscription.cancelAtPeriodEnd ? 'canceling' : subscription.stripeStatus}
+                  {subscription.cancelAtPeriodEnd
+                    ? t('organizations.billingTables.statuses.canceling')
+                    : stripeStatusLabel(t, subscription.stripeStatus)}
                 </Badge>
               </td>
               <td className="px-4 py-3">
                 {subscription.usedQuantity} / {subscription.includedQuantity}
               </td>
-              <td className="px-4 py-3">{formatDate(subscription.currentPeriodEnd)}</td>
+              <td className="px-4 py-3">
+                {formatDate(
+                  subscription.currentPeriodEnd,
+                  t('organizations.billingTables.notAvailable'),
+                )}
+              </td>
               <td className="px-4 py-3">
                 <div className="flex justify-end gap-2">
                   {subscription.cancelAtPeriodEnd ? (
@@ -55,7 +125,7 @@ export function SubscriptionRows({
                       loading={loadingId === subscription.id}
                       onClick={() => onResume(subscription)}
                     >
-                      Resume
+                      {t('organizations.billingTables.resume')}
                     </Button>
                   ) : (
                     <>
@@ -65,7 +135,7 @@ export function SubscriptionRows({
                         loading={loadingId === subscription.id}
                         onClick={() => onCancel(subscription, false)}
                       >
-                        Cancel later
+                        {t('organizations.billingTables.cancelLater')}
                       </Button>
                       <Button
                         size="sm"
@@ -73,7 +143,7 @@ export function SubscriptionRows({
                         loading={loadingId === subscription.id}
                         onClick={() => onCancel(subscription, true)}
                       >
-                        Cancel now
+                        {t('organizations.billingTables.cancelNow')}
                       </Button>
                     </>
                   )}
@@ -88,17 +158,24 @@ export function SubscriptionRows({
 }
 
 export function CreditBalanceRows({ balances }: { balances: AdminBillingCreditBalance[] }) {
-  if (balances.length === 0) return <Text variant="muted">No free credits.</Text>;
+  const t = useTranslations('admin');
+
+  if (balances.length === 0) {
+    return <Text variant="muted">{t('organizations.billingTables.emptyCredits')}</Text>;
+  }
   return (
     <div className="grid gap-3 md:grid-cols-2">
       {balances.map((balance) => (
         <div key={balance.id} className="rounded-lg border p-4">
           <Text size="sm" variant="muted">
-            {formatProduct(balance.productKey)}
+            {productLabel(t, balance.productKey)}
           </Text>
           <div className="mt-2 text-3xl font-semibold tabular-nums">{balance.balance}</div>
           <Text size="sm" variant="muted">
-            {balance.totalGranted} granted, {balance.totalConsumed} consumed
+            {t('organizations.billingTables.grantedConsumed', {
+              granted: balance.totalGranted,
+              consumed: balance.totalConsumed,
+            })}
           </Text>
         </div>
       ))}
@@ -115,17 +192,21 @@ export function InvoiceRows({
   onRetryLink: (invoice: AdminBillingInvoice) => void;
   loadingId: string | null;
 }) {
-  if (invoices.length === 0) return <Text variant="muted">No invoices yet.</Text>;
+  const t = useTranslations('admin');
+
+  if (invoices.length === 0) {
+    return <Text variant="muted">{t('organizations.billingTables.emptyInvoices')}</Text>;
+  }
   return (
     <div className="overflow-x-auto rounded-lg border">
       <table className="w-full text-sm">
         <thead className="bg-muted/40 text-left">
           <tr>
-            <th className="px-4 py-3">Invoice</th>
-            <th className="px-4 py-3">Status</th>
-            <th className="px-4 py-3">Amount</th>
-            <th className="px-4 py-3">Created</th>
-            <th className="px-4 py-3 text-right">Actions</th>
+            <th className="px-4 py-3">{t('organizations.billingTables.invoice')}</th>
+            <th className="px-4 py-3">{t('organizations.billingTables.status')}</th>
+            <th className="px-4 py-3">{t('organizations.billingTables.amount')}</th>
+            <th className="px-4 py-3">{t('organizations.billingTables.created')}</th>
+            <th className="px-4 py-3 text-right">{t('organizations.billingTables.actions')}</th>
           </tr>
         </thead>
         <tbody>
@@ -134,11 +215,13 @@ export function InvoiceRows({
               <td className="px-4 py-3 font-medium">{invoice.number}</td>
               <td className="px-4 py-3">
                 <Badge variant={invoice.status === 'paid' ? 'default' : 'outline'}>
-                  {invoice.status}
+                  {invoiceStatusLabel(t, invoice.status)}
                 </Badge>
               </td>
               <td className="px-4 py-3">{formatAmount(invoice.amountDue, invoice.currency)}</td>
-              <td className="px-4 py-3">{formatDate(invoice.createdAt)}</td>
+              <td className="px-4 py-3">
+                {formatDate(invoice.createdAt, t('organizations.billingTables.notAvailable'))}
+              </td>
               <td className="px-4 py-3 text-right">
                 <Button
                   size="sm"
@@ -146,7 +229,7 @@ export function InvoiceRows({
                   loading={loadingId === invoice.id}
                   onClick={() => onRetryLink(invoice)}
                 >
-                  Recovery link
+                  {t('organizations.billingTables.recoveryLink')}
                 </Button>
               </td>
             </tr>
@@ -155,19 +238,4 @@ export function InvoiceRows({
       </table>
     </div>
   );
-}
-
-function formatDate(value: string | null) {
-  return value ? new Date(value).toLocaleDateString() : 'n/a';
-}
-
-function formatAmount(amount: number, currency: string) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-  }).format(amount / 100);
-}
-
-function formatProduct(value: string) {
-  return value === 'pentest' ? 'Penetration tests' : 'Background checks';
 }

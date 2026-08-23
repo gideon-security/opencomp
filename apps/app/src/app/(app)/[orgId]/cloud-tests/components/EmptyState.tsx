@@ -19,6 +19,7 @@ import {
   Spinner,
 } from '@trycompai/design-system';
 import { ArrowLeft, CheckmarkFilled, Launch } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -111,6 +112,7 @@ export function EmptyState({
 }: EmptyStateProps) {
   const api = useApi();
   const { hasPermission } = usePermissions();
+  const t = useTranslations('integrations.list');
   const canCreate = hasPermission('integration', 'create');
   const initialUsesDialog = initialProvider === 'aws' || initialProvider === 'gcp' || initialProvider === 'azure';
   const [step, setStep] = useState<Step>(
@@ -183,7 +185,7 @@ export function EmptyState({
           ? !Array.isArray(value) || value.length === 0
           : !String(value ?? '').trim();
       if (isMissing) {
-        newErrors[field.id] = 'This field is required';
+        newErrors[field.id] = t('cloudTests_fieldRequired');
       }
     });
 
@@ -199,10 +201,10 @@ export function EmptyState({
       !credentials.secret_access_key
     ) {
       setErrors({
-        access_key_id: !credentials.access_key_id ? 'Required' : '',
-        secret_access_key: !credentials.secret_access_key ? 'Required' : '',
+        access_key_id: !credentials.access_key_id ? t('cloudTests_required') : '',
+        secret_access_key: !credentials.secret_access_key ? t('cloudTests_required') : '',
       });
-      toast.error('Please enter your AWS credentials');
+      toast.error(t('cloudTests_enterAwsCredentials'));
       return;
     }
 
@@ -219,7 +221,7 @@ export function EmptyState({
       });
 
       if (response.error) {
-        toast.error(response.error || 'Failed to validate credentials');
+        toast.error(response.error || t('cloudTests_failedToValidate'));
         return;
       }
 
@@ -232,13 +234,13 @@ export function EmptyState({
           accountId: data.accountId || '',
         }));
         setStep('validate-aws');
-        toast.success('Credentials validated! Now select your regions.');
+        toast.success(t('cloudTests_credentialsValidated'));
       } else {
-        toast.error('Failed to validate credentials');
+        toast.error(t('cloudTests_validateCredentialsFailed'));
       }
     } catch (error) {
       console.error('Validation error:', error);
-      toast.error('An unexpected error occurred');
+      toast.error(t('cloudTests_unexpectedError'));
     } finally {
       setIsConnecting(false);
     }
@@ -246,14 +248,14 @@ export function EmptyState({
 
   const handleConnect = async () => {
     if (!validateFields() || !selectedProvider) {
-      toast.error('Please fill in all required fields');
+      toast.error(t('cloudTests_pleaseFillRequiredFields'));
       return;
     }
     if (
       selectedProvider === 'aws' &&
       (!Array.isArray(credentials.regions) || credentials.regions.length === 0)
     ) {
-      toast.error('Please select at least one AWS region');
+      toast.error(t('cloudTests_selectAtLeastOneRegion'));
       return;
     }
 
@@ -283,11 +285,11 @@ export function EmptyState({
           }, 2000);
         }
       } else {
-        toast.error(response.data?.error || 'Failed to connect cloud provider');
+        toast.error(response.data?.error || t('cloudTests_failedToConnect'));
       }
     } catch (error) {
       console.error('Connection error:', error);
-      toast.error('An unexpected error occurred');
+      toast.error(t('cloudTests_unexpectedError'));
     } finally {
       setIsConnecting(false);
     }
@@ -378,7 +380,7 @@ export function EmptyState({
                   width="full"
                   size="lg"
                 >
-                  {isConnecting ? 'Connecting...' : 'Complete Setup'}
+                    {isConnecting ? t('cloudTests_connecting') : t('cloudTests_completeSetup')}
                 </Button>
               </div>
             </CardContent>
@@ -399,7 +401,7 @@ export function EmptyState({
                 Back to Results
               </Button>
             )}
-            <PageHeader title={onBack ? 'Add Another Cloud' : 'Cloud Tests'} />
+            <PageHeader title={onBack ? t('cloudTests_addAnotherCloud') : t('cloudTests_cloudTests')} />
           </>
         }
       >
@@ -589,10 +591,10 @@ export function EmptyState({
                 >
                   {isConnecting
                     ? selectedProvider === 'aws'
-                      ? 'Validating credentials...'
-                      : 'Connecting...'
+                      ? t('cloudTests_validatingCredentials')
+                      : t('cloudTests_connecting')
                     : selectedProvider === 'aws'
-                      ? 'Continue'
+                      ? t('cloudTests_continue')
                       : `Connect ${provider.shortName}`}
                 </Button>
               </div>

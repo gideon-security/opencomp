@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Button,
   Dialog,
@@ -48,6 +49,7 @@ export function EditableSOAFields({
   organizationId,
   onUpdate,
 }: EditableSOAFieldsProps) {
+  const t = useTranslations('isms');
   const { saveAnswer } = useSOADocument({ documentId, organizationId });
   const [isEditing, setIsEditing] = useState(false);
   const [isApplicable, setIsApplicable] = useState<boolean | null>(initialIsApplicable);
@@ -96,14 +98,14 @@ export function EditableSOAFields({
       setJustification(nextJustification);
       setIsEditing(false);
       setError(null);
-      toast.success('Answer saved successfully');
+      toast.success(t('soa.answerSaved'));
       onUpdate?.({
         isApplicable: nextIsApplicable,
         justification: nextJustification,
       });
       return true;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to save answer';
+      const message = err instanceof Error ? err.message : t('soa.saveFailed');
       if (!isJustificationDialogOpen) {
         setIsApplicable(initialIsApplicable);
         setJustification(initialJustification);
@@ -149,7 +151,7 @@ export function EditableSOAFields({
 
   const handleJustificationSave = async () => {
     if (isApplicable === false && (!justification || justification.trim().length === 0)) {
-      setError('Justification is required when Applicable is NO');
+      setError(t('soa.justificationRequired'));
       justificationTextareaRef.current?.focus();
       return;
     }
@@ -193,8 +195,8 @@ export function EditableSOAFields({
           type="button"
           onClick={handleEditClick}
           className="absolute right-0 flex h-6 w-6 items-center justify-center rounded border border-border bg-background text-muted-foreground opacity-100 shadow-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Edit answer"
-          title="Edit answer"
+          aria-label={t('soa.editAnswer')}
+          title={t('soa.editAnswer')}
         >
           <Edit size={12} />
         </button>
@@ -231,10 +233,10 @@ export function EditableSOAFields({
           size="icon"
           onClick={closeEditing}
           disabled={isSaving}
-          aria-label="Close editing"
+          aria-label={t('soa.closeEditing')}
         >
           <Close size={12} />
-          <span className="sr-only">Close editing</span>
+          <span className="sr-only">{t('soa.closeEditing')}</span>
         </Button>
       </div>
 
@@ -242,12 +244,14 @@ export function EditableSOAFields({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {isApplicable === false ? 'Justification Required' : 'Edit Justification'}
+              {isApplicable === false
+                ? t('soa.justificationRequiredTitle')
+                : t('soa.editJustificationTitle')}
             </DialogTitle>
             <DialogDescription>
               {isApplicable === false
-                ? 'Explain why this control is not applicable to your organization.'
-                : 'Explain why this control is applicable to your organization.'}
+                ? t('soa.justificationRequiredDescription')
+                : t('soa.justificationDescription')}
             </DialogDescription>
           </DialogHeader>
           <Textarea
@@ -258,9 +262,7 @@ export function EditableSOAFields({
               setError(null);
             }}
             placeholder={
-              isApplicable === false
-                ? 'Enter justification (required)'
-                : 'Enter justification'
+              isApplicable === false ? t('soa.placeholderRequired') : t('soa.placeholder')
             }
             rows={5}
             size="full"
@@ -275,13 +277,13 @@ export function EditableSOAFields({
               onClick={() => handleDialogOpenChange(false)}
               disabled={isSaving}
             >
-              Cancel
+              {t('soa.cancel')}
             </Button>
             <Button
               onClick={handleJustificationSave}
               loading={isSaving}
             >
-              {isSaving ? 'Saving...' : 'Save justification'}
+              {isSaving ? t('soa.saving') : t('soa.saveJustification')}
             </Button>
           </DialogFooter>
         </DialogContent>

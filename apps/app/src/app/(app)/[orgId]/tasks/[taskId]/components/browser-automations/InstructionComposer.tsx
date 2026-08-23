@@ -3,6 +3,7 @@
 import { Button } from '@trycompai/design-system';
 import { Add, Close, Play } from '@trycompai/design-system/icons';
 import { useRealtimeRun } from '@gideon-defender/trigger-react';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import type {
@@ -146,6 +147,7 @@ export function InstructionComposer({
   const [result, setResult] = useState<InstructionTestResult | null>(null);
 
   const { startTest, closeTestSession, isStarting } = useInstructionTest();
+  const t = useTranslations('tasks');
 
   // Always include the primary connection (deduped) so every step's connection
   // has a matching option — otherwise the picker shows the raw profile id.
@@ -203,7 +205,7 @@ export function InstructionComposer({
     };
 
     if (runError) {
-      finalize({ success: false, error: 'The test run could not complete.' });
+      finalize({ success: false, error: t('instructionComposer.testRunFailed') });
       return;
     }
     if (!runState) return;
@@ -212,7 +214,7 @@ export function InstructionComposer({
       finalize(
         (runState.output as InstructionTestResult) ?? {
           success: false,
-          error: 'No result returned.',
+          error: t('instructionComposer.noResultReturned'),
         },
       );
     } else if (FAILED_RUN_STATUSES.has(runState.status)) {
@@ -220,11 +222,11 @@ export function InstructionComposer({
         success: false,
         error:
           runState.status === 'TIMED_OUT'
-            ? 'The AI ran out of time before finishing. Try a more specific instruction.'
-            : 'The test run could not complete.',
+            ? t('instructionComposer.timedOut')
+            : t('instructionComposer.testRunFailed'),
       });
     }
-  }, [testRun, runState, runError, closeTestSession]);
+  }, [testRun, runState, runError, closeTestSession, t]);
 
   // Never leak the live session if the user leaves mid-test.
   useEffect(() => {
@@ -312,7 +314,7 @@ export function InstructionComposer({
 
   const handleTest = useCallback(async () => {
     if (!activeStep.instruction.trim()) {
-      toast.error('Add an instruction for this step first.');
+      toast.error(t('instructionComposer.needInstructionToast'));
       return;
     }
     if (sessionId) void closeTestSession(sessionId);
@@ -336,11 +338,11 @@ export function InstructionComposer({
     setSessionId(handle.sessionId);
     setLiveViewUrl(handle.liveViewUrl);
     setTestRun({ runId: handle.runId, accessToken: handle.publicAccessToken });
-  }, [activeStep, activeConnection.url, sessionId, closeTestSession, startTest, taskId]);
+  }, [activeStep, activeConnection.url, sessionId, closeTestSession, startTest, taskId, t]);
 
   const handleSave = useCallback(async () => {
     if (!canSave) {
-      toast.error('Every step needs an instruction.');
+      toast.error(t('instructionComposer.allStepsNeedInstructionToast'));
       return;
     }
     const stepInputs: BrowserAutomationStepInput[] = steps.map((step) => ({
@@ -360,7 +362,7 @@ export function InstructionComposer({
       ? await onUpdate({ automationId: initialValues.id, input })
       : await onCreate(input);
     if (ok) onSaved();
-  }, [canSave, steps, connectionOf, initialValues?.id, onCreate, onUpdate, onSaved]);
+  }, [canSave, steps, connectionOf, initialValues?.id, onCreate, onUpdate, onSaved, t]);
 
   const handleCancel = useCallback(() => {
     if (sessionId) void closeTestSession(sessionId);
@@ -375,25 +377,24 @@ export function InstructionComposer({
       <div className="border-b border-border px-6 py-4">
         <div className="flex items-center justify-between gap-3">
           <div className="text-base text-foreground">
-            {mode === 'edit' ? 'Edit automation' : 'New automation'}
+            {mode === 'edit' ? t('instructionComposer.titleEdit') : t('instructionComposer.titleCreate')}
             <span className="ml-2 text-xs text-muted-foreground">
-              {steps.length} {steps.length === 1 ? 'step' : 'steps'}
-              {checkCount > 0 && ` · ${checkCount} ${checkCount === 1 ? 'check' : 'checks'}`}
+              {t('instructionComposer.stepsCount', { count: steps.length })}
+              {checkCount > 0 && t('instructionComposer.checksCount', { count: checkCount })}
             </span>
           </div>
           {/* Sits on the title's line (not the top of the two-line block) and is
               sized to match it, so it reads as part of the header. */}
           <button
             onClick={handleCancel}
-            aria-label="Close"
+            aria-label={t('instructionComposer.closeAriaLabel')}
             className="-mr-1.5 grid h-7 w-7 flex-none cursor-pointer place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <Close size={16} />
           </button>
         </div>
         <p className="mt-0.5 text-xs text-muted-foreground">
-          Steps run in order, unattended. Saved sessions are reused — no re-login
-          between vendors.
+          {t('instructionComposer.subtitle')}
         </p>
       </div>
 
@@ -405,7 +406,7 @@ export function InstructionComposer({
               {index > 0 && (
                 <div className="flex items-center gap-2 pl-2 text-[10.5px] text-muted-foreground">
                   <span className="h-3 w-px bg-border" />
-                  session reused — no sign-in
+                  {t('instructionComposer.sessionReused')}
                 </div>
               )}
               <StepCard
@@ -426,7 +427,7 @@ export function InstructionComposer({
 
           <div className="pt-1">
             <Button variant="outline" onClick={handleAddStep} iconLeft={<Add size={13} />}>
-              Add step — another vendor, same run
+              {t('instructionComposer.addStep')}
             </Button>
           </div>
 
@@ -439,7 +440,7 @@ export function InstructionComposer({
               loading={testing}
               iconLeft={!testing ? <Play size={11} /> : undefined}
             >
-              {testing ? 'Testing…' : 'Test this step'}
+              {testing ? t('instructionComposer.testing') : t('instructionComposer.testStep')}
             </Button>
             <Button
               width="full"
@@ -448,8 +449,8 @@ export function InstructionComposer({
               disabled={isSaving || !canSave || blockedStepIndex !== -1}
             >
               {blockedStepIndex !== -1
-                ? `Fix step ${blockedStepIndex + 1} to save`
-                : 'Save automation'}
+                ? t('instructionComposer.fixStepToSave', { step: blockedStepIndex + 1 })
+                : t('instructionComposer.save')}
             </Button>
           </div>
         </div>

@@ -7,42 +7,25 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { statement } from '@gideon-defender/auth';
+import { useTranslations } from 'next-intl';
 
 /** Access toggles — binary on/off permissions shown as switches above the matrix */
-const ACCESS_TOGGLES = [
-  { key: 'app', label: 'App Access', description: 'Can access the main compliance dashboard. Without this, the user can only access the employee portal.' },
-];
+const ACCESS_TOGGLE_KEYS = ['app'] as const;
 
 /** Obligation toggles — requirements the role must fulfill, separate from permissions */
-const OBLIGATION_TOGGLES = [
-  { key: 'compliance', label: 'Employee Compliance', description: 'Must complete compliance tasks: sign policies, watch training videos, and install device agent.' },
-];
+const OBLIGATION_TOGGLE_KEYS = ['compliance'] as const;
 
-/** UI labels for permission resources. Keys kept in display order. */
-const RESOURCE_LABELS: Record<string, { label: string; description: string }> = {
-  organization: { label: 'Organization', description: 'Manage organization settings' },
-  member: { label: 'Members', description: 'Manage team members and roles' },
-  control: { label: 'Controls', description: 'Manage security controls' },
-  evidence: { label: 'Evidence', description: 'Manage compliance evidence' },
-  policy: { label: 'Policies', description: 'Manage organizational policies' },
-  risk: { label: 'Risks', description: 'Manage risk assessments' },
-  vendor: { label: 'Vendors', description: 'Manage vendor relationships' },
-  task: { label: 'Tasks', description: 'Manage compliance tasks' },
-  framework: { label: 'Frameworks', description: 'Manage compliance frameworks' },
-  audit: { label: 'Audits', description: 'Manage audit activities' },
-  finding: { label: 'Findings', description: 'Manage audit findings' },
-  questionnaire: { label: 'Questionnaires', description: 'Manage security questionnaires' },
-  integration: { label: 'Integrations', description: 'Manage third-party integrations' },
-  apiKey: { label: 'API Keys', description: 'Manage API keys for programmatic access' },
-  secret: { label: 'Secrets', description: 'Manage secrets and encrypted credentials for automations' },
-  trust: { label: 'Trust Center', description: 'Manage trust portal settings and access requests' },
-  pentest: { label: 'Penetration Tests', description: 'Manage penetration testing activities' },
-};
+/** UI-labeled permission resources. Keys kept in display order. */
+const RESOURCE_KEYS = [
+  'organization', 'member', 'control', 'evidence', 'policy', 'risk',
+  'vendor', 'task', 'framework', 'audit', 'finding', 'questionnaire',
+  'integration', 'apiKey', 'secret', 'trust', 'pentest',
+] as const;
 
 /** Resources grouped by product section for the permission matrix UI. */
-const RESOURCE_SECTIONS: Array<{ label: string; keys: string[] }> = [
+const RESOURCE_SECTIONS: Array<{ id: 'compliance' | 'security'; keys: readonly string[] }> = [
   {
-    label: 'Compliance',
+    id: 'compliance',
     keys: [
       'organization', 'member', 'control', 'evidence', 'policy', 'risk',
       'vendor', 'task', 'framework', 'audit', 'finding', 'questionnaire',
@@ -50,7 +33,7 @@ const RESOURCE_SECTIONS: Array<{ label: string; keys: string[] }> = [
     ],
   },
   {
-    label: 'Security',
+    id: 'security',
     keys: ['pentest'],
   },
 ];
@@ -59,16 +42,14 @@ const RESOURCE_SECTIONS: Array<{ label: string; keys: string[] }> = [
  * Resources available for permission assignment — derived from @gideon-defender/auth statement.
  * Only includes resources that have a UI label (excludes internal ones like 'ac', 'team', 'app').
  */
-const RESOURCES = Object.keys(RESOURCE_LABELS)
-  .filter((key) => key in statement)
-  .map((key) => ({ key, ...RESOURCE_LABELS[key] }));
+const RESOURCES = RESOURCE_KEYS.filter((key) => key in statement).map((key) => ({ key }));
 
 /** Resources grouped into sections, filtered to only those present in the auth statement. */
 const RESOURCE_SECTIONS_RESOLVED = RESOURCE_SECTIONS.map((section) => ({
-  label: section.label,
+  id: section.id,
   resources: section.keys
-    .filter((key) => key in statement && key in RESOURCE_LABELS)
-    .map((key) => ({ key, ...RESOURCE_LABELS[key] })),
+    .filter((key) => key in statement)
+    .map((key) => ({ key })),
 })).filter((section) => section.resources.length > 0);
 
 type ResourceKey = string;
@@ -90,7 +71,7 @@ type AccessLevel = 'none' | 'view' | 'edit';
 const ACCESS_LEVEL_MAPPING: Record<string, Record<Exclude<AccessLevel, 'none'>, string[]>> =
   Object.fromEntries(
     Object.entries(statement)
-      .filter(([key]) => key in RESOURCE_LABELS)
+      .filter(([key]) => (RESOURCE_KEYS as readonly string[]).includes(key))
       .map(([key, actions]) => [
         key,
         {
@@ -154,17 +135,90 @@ function accessLevelToPermissions(resourceKey: ResourceKey, level: AccessLevel):
   return ACCESS_LEVEL_MAPPING[resourceKey][level];
 }
 
+type Translator = ReturnType<typeof useTranslations<'settings.roles'>>;
+
+function resourceLabel(t: Translator, key: string): string {
+  switch (key) {
+    case 'organization': return t('matrix.organization');
+    case 'member': return t('matrix.member');
+    case 'control': return t('matrix.control');
+    case 'evidence': return t('matrix.evidence');
+    case 'policy': return t('matrix.policy');
+    case 'risk': return t('matrix.risk');
+    case 'vendor': return t('matrix.vendor');
+    case 'task': return t('matrix.task');
+    case 'framework': return t('matrix.framework');
+    case 'audit': return t('matrix.audit');
+    case 'finding': return t('matrix.finding');
+    case 'questionnaire': return t('matrix.questionnaire');
+    case 'integration': return t('matrix.integration');
+    case 'apiKey': return t('matrix.apiKey');
+    case 'secret': return t('matrix.secret');
+    case 'trust': return t('matrix.trust');
+    case 'pentest': return t('matrix.pentest');
+    default: return key;
+  }
+}
+
+function resourceDescription(t: Translator, key: string): string {
+  switch (key) {
+    case 'organization': return t('matrix.organizationDescription');
+    case 'member': return t('matrix.memberDescription');
+    case 'control': return t('matrix.controlDescription');
+    case 'evidence': return t('matrix.evidenceDescription');
+    case 'policy': return t('matrix.policyDescription');
+    case 'risk': return t('matrix.riskDescription');
+    case 'vendor': return t('matrix.vendorDescription');
+    case 'task': return t('matrix.taskDescription');
+    case 'framework': return t('matrix.frameworkDescription');
+    case 'audit': return t('matrix.auditDescription');
+    case 'finding': return t('matrix.findingDescription');
+    case 'questionnaire': return t('matrix.questionnaireDescription');
+    case 'integration': return t('matrix.integrationDescription');
+    case 'apiKey': return t('matrix.apiKeyDescription');
+    case 'secret': return t('matrix.secretDescription');
+    case 'trust': return t('matrix.trustDescription');
+    case 'pentest': return t('matrix.pentestDescription');
+    default: return key;
+  }
+}
+
+function toggleLabel(t: Translator, key: string): string {
+  switch (key) {
+    case 'app': return t('matrix.appAccess');
+    case 'compliance': return t('matrix.employeeCompliance');
+    default: return key;
+  }
+}
+
+function toggleDescription(t: Translator, key: string): string {
+  switch (key) {
+    case 'app': return t('matrix.appAccessDescription');
+    case 'compliance': return t('matrix.employeeComplianceDescription');
+    default: return key;
+  }
+}
+
+function sectionTitle(t: Translator, id: 'compliance' | 'security'): string {
+  switch (id) {
+    case 'compliance': return t('matrix.sectionCompliance');
+    case 'security': return t('matrix.sectionSecurity');
+    default: return id;
+  }
+}
+
 function PermissionRow({
   resource,
   currentLevel,
   onAccessChange,
   disabled,
 }: {
-  resource: (typeof RESOURCES)[number];
+  resource: { key: string };
   currentLevel: AccessLevel;
   onAccessChange: (level: AccessLevel) => void;
   disabled: boolean;
 }) {
+  const t = useTranslations('settings.roles');
   return (
     <RadioGroup
       value={currentLevel}
@@ -174,10 +228,10 @@ function PermissionRow({
       <div className="grid grid-cols-[1fr_100px_100px_100px] items-center border-b last:border-b-0 py-3 px-3">
         <div>
           <Text size="sm" weight="medium">
-            {resource.label}
+            {resourceLabel(t, resource.key)}
           </Text>
           <Text size="xs" variant="muted">
-            {resource.description}
+            {resourceDescription(t, resource.key)}
           </Text>
         </div>
         <div className="flex justify-center">
@@ -195,24 +249,25 @@ function PermissionRow({
 }
 
 function AccessToggle({
-  toggle,
+  toggleKey,
   enabled,
   onToggle,
   disabled,
 }: {
-  toggle: { key: string; label: string; description: string };
+  toggleKey: string;
   enabled: boolean;
   onToggle: (enabled: boolean) => void;
   disabled: boolean;
 }) {
+  const t = useTranslations('settings.roles');
   return (
     <div className="flex items-center justify-between py-3 px-3 border-b last:border-b-0">
       <div>
         <Text size="sm" weight="medium">
-          {toggle.label}
+          {toggleLabel(t, toggleKey)}
         </Text>
         <Text size="xs" variant="muted">
-          {toggle.description}
+          {toggleDescription(t, toggleKey)}
         </Text>
       </div>
       <Switch
@@ -225,6 +280,7 @@ function AccessToggle({
 }
 
 export function PermissionMatrix({ value, onChange, obligations, onObligationsChange, disabled = false, obligationsEditable = false }: PermissionMatrixProps) {
+  const t = useTranslations('settings.roles');
   const obligationsDisabled = disabled && !obligationsEditable;
   const handleObligationChange = (key: string, enabled: boolean) => {
     if (!onObligationsChange) return;
@@ -303,15 +359,15 @@ export function PermissionMatrix({ value, onChange, obligations, onObligationsCh
       <div className="rounded-md border">
         <div className="border-b bg-muted/50 py-2 px-3">
           <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Access
+            {t('matrix.access')}
           </span>
         </div>
-        {ACCESS_TOGGLES.map((toggle) => (
+        {ACCESS_TOGGLE_KEYS.map((toggleKey) => (
           <AccessToggle
-            key={toggle.key}
-            toggle={toggle}
-            enabled={Boolean(value[toggle.key]?.length)}
-            onToggle={(enabled) => handleToggleChange(toggle.key, enabled)}
+            key={toggleKey}
+            toggleKey={toggleKey}
+            enabled={Boolean(value[toggleKey]?.length)}
+            onToggle={(enabled) => handleToggleChange(toggleKey, enabled)}
             disabled={disabled}
           />
         ))}
@@ -321,15 +377,15 @@ export function PermissionMatrix({ value, onChange, obligations, onObligationsCh
       <div className="rounded-md border">
         <div className="border-b bg-muted/50 py-2 px-3">
           <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Obligations
+            {t('matrix.obligations')}
           </span>
         </div>
-        {OBLIGATION_TOGGLES.map((toggle) => (
+        {OBLIGATION_TOGGLE_KEYS.map((toggleKey) => (
           <AccessToggle
-            key={toggle.key}
-            toggle={toggle}
-            enabled={Boolean(obligations?.[toggle.key])}
-            onToggle={(enabled) => handleObligationChange(toggle.key, enabled)}
+            key={toggleKey}
+            toggleKey={toggleKey}
+            enabled={Boolean(obligations?.[toggleKey])}
+            onToggle={(enabled) => handleObligationChange(toggleKey, enabled)}
             disabled={obligationsDisabled}
           />
         ))}
@@ -337,20 +393,20 @@ export function PermissionMatrix({ value, onChange, obligations, onObligationsCh
 
       {/* Resource Permissions Matrix */}
       {RESOURCE_SECTIONS_RESOLVED.map((section) => (
-        <div key={section.label} className="rounded-md border">
+        <div key={section.id} className="rounded-md border">
           {/* Section + Column Header */}
           <div className="grid grid-cols-[1fr_100px_100px_100px] items-center border-b bg-muted/50 py-2 px-3">
             <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              {section.label}
+              {sectionTitle(t, section.id)}
             </span>
             <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground text-center">
-              No Access
+              {t('matrix.noAccess')}
             </span>
             <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground text-center">
-              Read
+              {t('matrix.read')}
             </span>
             <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground text-center">
-              Write
+              {t('matrix.write')}
             </span>
           </div>
           {/* Select All Row */}
@@ -367,7 +423,7 @@ export function PermissionMatrix({ value, onChange, obligations, onObligationsCh
                 <div className="grid grid-cols-[1fr_100px_100px_100px] items-center border-b py-3 px-3 bg-muted/25">
                   <div>
                     <Text size="sm" weight="medium">
-                      Select All
+                      {t('matrix.selectAll')}
                     </Text>
                   </div>
                   <div className="flex justify-center">

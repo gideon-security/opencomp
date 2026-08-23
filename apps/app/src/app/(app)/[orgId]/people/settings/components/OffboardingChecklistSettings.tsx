@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useApi } from '@/hooks/use-api';
 import { useApiSWR } from '@/hooks/use-api-swr';
@@ -38,6 +39,7 @@ interface TemplateItem {
 const TEMPLATE_ENDPOINT = '/v1/offboarding-checklist/template';
 
 export function OffboardingChecklistSettings() {
+  const t = useTranslations('people');
   const { hasPermission } = usePermissions();
   const canUpdate = hasPermission('organization', 'update');
   const { post, patch, delete: deleteReq } = useApi();
@@ -76,11 +78,11 @@ export function OffboardingChecklistSettings() {
 
     if (res.error) {
       mutate();
-      toast.error('Failed to update checklist item');
+      toast.error(t('offboarding.updateFailed'));
       return;
     }
 
-    toast.success(next ? 'Checklist item enabled' : 'Checklist item disabled');
+    toast.success(next ? t('offboarding.itemEnabled') : t('offboarding.itemDisabled'));
   };
 
   const handleToggleEvidence = async ({
@@ -112,12 +114,12 @@ export function OffboardingChecklistSettings() {
 
     if (res.error) {
       mutate();
-      toast.error('Failed to update evidence requirement');
+      toast.error(t('offboarding.evidenceUpdateFailed'));
       return;
     }
 
     toast.success(
-      next ? 'Evidence now required' : 'Evidence no longer required',
+      next ? t('offboarding.evidenceRequiredToast') : t('offboarding.evidenceNotRequiredToast'),
     );
   };
 
@@ -139,25 +141,25 @@ export function OffboardingChecklistSettings() {
 
     if (res.error) {
       mutate();
-      toast.error('Failed to delete checklist item');
+      toast.error(t('offboarding.deleteFailed'));
       return;
     }
 
-    toast.success('Checklist item deleted');
+    toast.success(t('offboarding.itemDeleted'));
   };
 
   return (
-    <Section title="Offboarding checklist">
+    <Section title={t('offboarding.title')}>
       <Stack gap="md">
         <div className="flex items-center justify-between">
           <Text size="sm" variant="muted">
-            Configure the default checklist items for employee offboarding.
+            {t('offboarding.description')}
           </Text>
           {canUpdate && (
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger render={<Button size="sm" variant="outline" />}>
                 <Add size={16} />
-                Add item
+                {t('offboarding.addItem')}
               </DialogTrigger>
               <AddChecklistItemDialog
                 onCreated={() => {
@@ -172,7 +174,7 @@ export function OffboardingChecklistSettings() {
         {items.length === 0 ? (
           <div className="rounded-lg border border-dashed p-6 text-center">
             <Text size="sm" variant="muted">
-              No checklist items configured yet.
+              {t('offboarding.empty')}
             </Text>
           </div>
         ) : (
@@ -207,6 +209,7 @@ function ChecklistItemCard({
   onToggleEvidence: (args: { item: TemplateItem; next: boolean }) => void;
   onDelete: (args: { item: TemplateItem }) => void;
 }) {
+  const t = useTranslations('people');
   return (
     <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
       <div className="flex-1">
@@ -214,7 +217,7 @@ function ChecklistItemCard({
           <Text weight="medium">{item.title}</Text>
           {item.isDefault && (
             <div className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
-              Default
+              {t('offboarding.defaultBadge')}
             </div>
           )}
         </HStack>
@@ -226,7 +229,7 @@ function ChecklistItemCard({
         <div className="mt-2">
           <HStack gap="sm">
             <Label htmlFor={`evidence-${item.id}`}>
-              <Text size="sm">Evidence required</Text>
+              <Text size="sm">{t('offboarding.evidenceRequiredLabel')}</Text>
             </Label>
             <Switch
               id={`evidence-${item.id}`}
@@ -235,7 +238,7 @@ function ChecklistItemCard({
               onCheckedChange={(next) =>
                 onToggleEvidence({ item, next: Boolean(next) })
               }
-              aria-label={`Evidence required for ${item.title}`}
+              aria-label={t('offboarding.evidenceRequiredFor', { title: item.title })}
             />
           </HStack>
         </div>
@@ -247,14 +250,14 @@ function ChecklistItemCard({
           onCheckedChange={(next) =>
             onToggleEnabled({ item, next: Boolean(next) })
           }
-          aria-label={`Enable ${item.title}`}
+          aria-label={t('offboarding.enableItem', { title: item.title })}
         />
         {!item.isDefault && canUpdate && (
           <Button
             variant="ghost"
             size="icon-sm"
             onClick={() => onDelete({ item })}
-            aria-label={`Delete ${item.title}`}
+            aria-label={t('offboarding.deleteItem', { title: item.title })}
           >
             <TrashCan size={16} />
           </Button>
@@ -269,6 +272,7 @@ function AddChecklistItemDialog({
 }: {
   onCreated: () => void;
 }) {
+  const t = useTranslations('people');
   const { post } = useApi();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -290,11 +294,11 @@ function AddChecklistItemDialog({
     setSaving(false);
 
     if (res.error) {
-      toast.error('Failed to create checklist item');
+      toast.error(t('offboarding.createFailed'));
       return;
     }
 
-    toast.success('Checklist item created');
+    toast.success(t('offboarding.itemCreated'));
     setTitle('');
     setDescription('');
     setEvidenceRequired(false);
@@ -305,31 +309,31 @@ function AddChecklistItemDialog({
     <DialogContent>
       <form onSubmit={handleSubmit}>
         <DialogHeader>
-          <DialogTitle>Add checklist item</DialogTitle>
+          <DialogTitle>{t('offboarding.dialogTitle')}</DialogTitle>
         </DialogHeader>
         <Stack gap="md">
           <div className="grid gap-1.5">
-            <Label htmlFor="checklist-title">Title</Label>
+            <Label htmlFor="checklist-title">{t('offboarding.titleLabel')}</Label>
             <Input
               id="checklist-title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g., Return company laptop"
+              placeholder={t('offboarding.titlePlaceholder')}
               required
             />
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="checklist-description">Description</Label>
+            <Label htmlFor="checklist-description">{t('offboarding.descriptionLabel')}</Label>
             <Textarea
               id="checklist-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Optional details about this checklist item"
+              placeholder={t('offboarding.descriptionPlaceholder')}
               rows={3}
             />
           </div>
           <HStack gap="sm">
-            <Label htmlFor="checklist-evidence">Evidence required</Label>
+            <Label htmlFor="checklist-evidence">{t('offboarding.evidenceRequiredLabel')}</Label>
             <Switch
               id="checklist-evidence"
               checked={evidenceRequired}
@@ -341,10 +345,10 @@ function AddChecklistItemDialog({
         </Stack>
         <DialogFooter>
           <DialogClose render={<Button variant="outline" />}>
-            Cancel
+            {t('offboarding.cancel')}
           </DialogClose>
           <Button type="submit" disabled={saving || !title.trim()}>
-            {saving ? 'Creating...' : 'Create'}
+            {saving ? t('offboarding.creating') : t('offboarding.create')}
           </Button>
         </DialogFooter>
       </form>

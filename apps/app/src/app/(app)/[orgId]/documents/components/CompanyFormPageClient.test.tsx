@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -126,6 +127,8 @@ vi.mock('next/link', () => ({
 
 import { CompanyFormPageClient } from './CompanyFormPageClient';
 
+mockNextIntl();
+
 // ─── Tests ───────────────────────────────────────────────────
 
 describe('CompanyFormPageClient', () => {
@@ -146,7 +149,7 @@ describe('CompanyFormPageClient', () => {
         />,
       );
 
-      expect(screen.getByText('New Submission')).toBeInTheDocument();
+      expect(screen.getByText('companyForm.newSubmission')).toBeInTheDocument();
     });
 
     it('renders the Export CSV button when user has evidence:read', () => {
@@ -157,7 +160,7 @@ describe('CompanyFormPageClient', () => {
         />,
       );
 
-      expect(screen.getByText('Export CSV')).toBeInTheDocument();
+      expect(screen.getByText('companyForm.exportCsv')).toBeInTheDocument();
     });
 
     it('checks evidence:create and evidence:read permissions', () => {
@@ -189,7 +192,7 @@ describe('CompanyFormPageClient', () => {
       const hasCreate = mockHasPermission('evidence', 'create');
       if (!hasCreate) {
         expect(
-          screen.queryByText('New Submission'),
+          screen.queryByText('companyForm.newSubmission'),
         ).not.toBeInTheDocument();
       }
     });
@@ -204,7 +207,7 @@ describe('CompanyFormPageClient', () => {
 
       const hasRead = mockHasPermission('evidence', 'read');
       if (hasRead) {
-        expect(screen.getByText('Export CSV')).toBeInTheDocument();
+        expect(screen.getByText('companyForm.exportCsv')).toBeInTheDocument();
       }
     });
   });
@@ -223,7 +226,7 @@ describe('CompanyFormPageClient', () => {
       );
 
       expect(
-        screen.queryByText('New Submission'),
+        screen.queryByText('companyForm.newSubmission'),
       ).not.toBeInTheDocument();
     });
 
@@ -235,7 +238,7 @@ describe('CompanyFormPageClient', () => {
         />,
       );
 
-      expect(screen.queryByText('Export CSV')).not.toBeInTheDocument();
+      expect(screen.queryByText('companyForm.exportCsv')).not.toBeInTheDocument();
     });
 
     it('still renders the page header', () => {

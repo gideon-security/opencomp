@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -192,6 +193,8 @@ const baseProps = {
   approverOptions: [{ id: 'm2', name: 'Approver Two' }],
 };
 
+mockNextIntl();
+
 describe('LeadershipClient', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -223,7 +226,7 @@ describe('LeadershipClient', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<LeadershipClient {...baseProps} />);
 
-    expect(screen.getByText('Generate from platform data')).toBeInTheDocument();
+    expect(screen.getByText('shell.generate')).toBeInTheDocument();
     expect(screen.getByText('Save document')).toBeInTheDocument();
     expect(mockHasPermission).toHaveBeenCalledWith('evidence', 'update');
   });
@@ -232,7 +235,7 @@ describe('LeadershipClient', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<LeadershipClient {...baseProps} />);
 
-    expect(screen.queryByText('Generate from platform data')).not.toBeInTheDocument();
+    expect(screen.queryByText('shell.generate')).not.toBeInTheDocument();
     expect(screen.queryByText('Save document')).not.toBeInTheDocument();
     // Read-only users see plain text, not editable textareas.
     expect(
@@ -243,8 +246,8 @@ describe('LeadershipClient', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Policy aligned to strategy commitment.')).toBeInTheDocument();
     // Export remains available to readers.
-    expect(screen.getByText('Export PDF')).toBeInTheDocument();
-    expect(screen.getByText('Export DOCX')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportPdf')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
   it('shows the drift banner when the document is stale', async () => {

@@ -500,7 +500,7 @@ describe('pruneOrphanTaskVectors', () => {
     }));
     onePage(vectors);
     deleteMock
-      .mockRejectedValueOnce(new Error('upstash 500'))
+      .mockRejectedValueOnce(new Error('vector store 500'))
       .mockResolvedValueOnce({ deleted: 50 });
     const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 

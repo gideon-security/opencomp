@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { describe, expect, it, vi } from 'vitest';
 import {
   PermissionMatrix,
@@ -7,6 +8,8 @@ import {
   RESOURCES,
 } from './PermissionMatrix';
 
+mockNextIntl();
+
 describe('PermissionMatrix', () => {
   describe('Rendering', () => {
     it('renders all resources', () => {
@@ -14,8 +17,8 @@ describe('PermissionMatrix', () => {
       render(<PermissionMatrix value={{}} onChange={mockOnChange} />);
 
       for (const resource of RESOURCES) {
-        expect(screen.getByText(resource.label)).toBeInTheDocument();
-        expect(screen.getByText(resource.description)).toBeInTheDocument();
+        expect(screen.getByText(`matrix.${resource.key}`)).toBeInTheDocument();
+        expect(screen.getByText(`matrix.${resource.key}Description`)).toBeInTheDocument();
       }
     });
 
@@ -23,13 +26,13 @@ describe('PermissionMatrix', () => {
       const mockOnChange = vi.fn();
       render(<PermissionMatrix value={{}} onChange={mockOnChange} />);
 
-      expect(screen.getByText('Compliance')).toBeInTheDocument();
-      expect(screen.getByText('Security')).toBeInTheDocument();
+      expect(screen.getByText('matrix.sectionCompliance')).toBeInTheDocument();
+      expect(screen.getByText('matrix.sectionSecurity')).toBeInTheDocument();
       // Column headers appear in each section
-      const noAccessHeaders = screen.getAllByText('No Access');
+      const noAccessHeaders = screen.getAllByText('matrix.noAccess');
       expect(noAccessHeaders.length).toBeGreaterThanOrEqual(2);
-      expect(screen.getAllByText('Read').length).toBeGreaterThanOrEqual(2);
-      expect(screen.getAllByText('Write').length).toBeGreaterThanOrEqual(2);
+      expect(screen.getAllByText('matrix.read').length).toBeGreaterThanOrEqual(2);
+      expect(screen.getAllByText('matrix.write').length).toBeGreaterThanOrEqual(2);
     });
 
     it('selects "No Access" by default when no permissions exist', () => {
@@ -65,7 +68,7 @@ describe('PermissionMatrix', () => {
       render(<PermissionMatrix value={{}} onChange={mockOnChange} />);
 
       // Find the Controls row and click on Read radio
-      const controlsText = screen.getByText('Controls');
+      const controlsText = screen.getByText('matrix.control');
       const controlsRow = controlsText.closest('[class*="grid"]');
       const radios = controlsRow?.querySelectorAll('[data-slot="radio-group-item"]');
 
@@ -83,7 +86,7 @@ describe('PermissionMatrix', () => {
       render(<PermissionMatrix value={{}} onChange={mockOnChange} />);
 
       // Find the Controls row and click on Write radio
-      const controlsText = screen.getByText('Controls');
+      const controlsText = screen.getByText('matrix.control');
       const controlsRow = controlsText.closest('[class*="grid"]');
       const radios = controlsRow?.querySelectorAll('[data-slot="radio-group-item"]');
 
@@ -106,7 +109,7 @@ describe('PermissionMatrix', () => {
       );
 
       // Find the Controls row and click on No Access radio
-      const controlsText = screen.getByText('Controls');
+      const controlsText = screen.getByText('matrix.control');
       const controlsRow = controlsText.closest('[class*="grid"]');
       const radios = controlsRow?.querySelectorAll('[data-slot="radio-group-item"]');
 
@@ -130,7 +133,7 @@ describe('PermissionMatrix', () => {
       );
 
       // Find the Risk row and click on Read radio
-      const riskText = screen.getByText('Risks');
+      const riskText = screen.getByText('matrix.risk');
       const riskRow = riskText.closest('[class*="grid"]');
       const radios = riskRow?.querySelectorAll('[data-slot="radio-group-item"]');
 
@@ -163,7 +166,7 @@ describe('PermissionMatrix', () => {
       const mockOnChange = vi.fn();
       render(<PermissionMatrix value={{}} onChange={mockOnChange} />);
 
-      expect(screen.getByText('Select All')).toBeInTheDocument();
+      expect(screen.getByText('matrix.selectAll')).toBeInTheDocument();
     });
 
     it('does not render Select All for sections with only one resource', () => {
@@ -171,7 +174,7 @@ describe('PermissionMatrix', () => {
       render(<PermissionMatrix value={{}} onChange={mockOnChange} />);
 
       // Only one Select All (for Compliance). Security has 1 resource so no Select All.
-      const selectAllElements = screen.getAllByText('Select All');
+      const selectAllElements = screen.getAllByText('matrix.selectAll');
       expect(selectAllElements).toHaveLength(1);
     });
 
@@ -179,7 +182,7 @@ describe('PermissionMatrix', () => {
       const mockOnChange = vi.fn();
       render(<PermissionMatrix value={{}} onChange={mockOnChange} />);
 
-      const selectAllText = screen.getByText('Select All');
+      const selectAllText = screen.getByText('matrix.selectAll');
       const selectAllRow = selectAllText.closest('[class*="grid"]');
       const radios = selectAllRow?.querySelectorAll('[data-slot="radio-group-item"]');
 
@@ -200,7 +203,7 @@ describe('PermissionMatrix', () => {
       const mockOnChange = vi.fn();
       render(<PermissionMatrix value={{}} onChange={mockOnChange} />);
 
-      const selectAllText = screen.getByText('Select All');
+      const selectAllText = screen.getByText('matrix.selectAll');
       const selectAllRow = selectAllText.closest('[class*="grid"]');
       const radios = selectAllRow?.querySelectorAll('[data-slot="radio-group-item"]');
 
@@ -229,7 +232,7 @@ describe('PermissionMatrix', () => {
         />
       );
 
-      const selectAllText = screen.getByText('Select All');
+      const selectAllText = screen.getByText('matrix.selectAll');
       const selectAllRow = selectAllText.closest('[class*="grid"]');
       const radios = selectAllRow?.querySelectorAll('[data-slot="radio-group-item"]');
 
@@ -251,7 +254,7 @@ describe('PermissionMatrix', () => {
       const mockOnChange = vi.fn();
       render(<PermissionMatrix value={{}} onChange={mockOnChange} />);
 
-      expect(screen.getByText('Penetration Tests')).toBeInTheDocument();
+      expect(screen.getByText('matrix.pentest')).toBeInTheDocument();
     });
 
     it('includes pentest resource in RESOURCES list', () => {
@@ -273,7 +276,7 @@ describe('PermissionMatrix', () => {
       const mockOnChange = vi.fn();
       render(<PermissionMatrix value={{}} onChange={mockOnChange} />);
 
-      expect(screen.getByText('Secrets')).toBeInTheDocument();
+      expect(screen.getByText('matrix.secret')).toBeInTheDocument();
     });
 
     it('maps Write to full secret CRUD including read (unblocks the Secrets page)', () => {
@@ -293,7 +296,7 @@ describe('PermissionMatrix', () => {
 
 describe('Employee Compliance obligation implies portal access', () => {
   function findComplianceSwitch(): HTMLElement {
-    const label = screen.getByText('Employee Compliance');
+    const label = screen.getByText('matrix.employeeCompliance');
     const row = label.closest('[class*="flex"]') as HTMLElement;
     const switchEl = row.querySelector('[role="switch"]');
     if (!switchEl) throw new Error('Employee Compliance switch not found');
@@ -357,7 +360,7 @@ describe('Employee Compliance obligation implies portal access', () => {
       />,
     );
 
-    const controlsText = screen.getByText('Controls');
+    const controlsText = screen.getByText('matrix.control');
     const controlsRow = controlsText.closest('[class*="grid"]');
     const radios = controlsRow?.querySelectorAll('[data-slot="radio-group-item"]');
     if (radios && radios[1]) {

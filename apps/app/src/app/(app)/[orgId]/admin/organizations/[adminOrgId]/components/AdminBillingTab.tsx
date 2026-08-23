@@ -1,6 +1,7 @@
 'use client';
 
 import { api } from '@/lib/api-client';
+import { useTranslations } from 'next-intl';
 import { Badge, Button, Section, Stack, Text } from '@trycompai/design-system';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -20,15 +21,18 @@ import type {
   AdminBillingSubscription,
 } from './AdminBillingTypes';
 
+class BillingLoadError extends Error {}
+
 const fetcher = async ([url, currentOrgId]: [string, string]) => {
   const response = await api.get<AdminBillingStatus>(url, currentOrgId);
   if (response.error || !response.data) {
-    throw new Error(response.error ?? 'Failed to load billing');
+    throw new BillingLoadError(response.error ?? undefined);
   }
   return response.data;
 };
 
 export function AdminBillingTab({ orgId, currentOrgId }: { orgId: string; currentOrgId: string }) {
+  const t = useTranslations('admin');
   const endpoint = `/v1/admin/organizations/${orgId}/billing`;
   const { data, error, isLoading, mutate } = useSWR<AdminBillingStatus>(
     [endpoint, currentOrgId],
@@ -37,8 +41,16 @@ export function AdminBillingTab({ orgId, currentOrgId }: { orgId: string; curren
   );
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
 
-  if (error) return <Text variant="muted">{error.message}</Text>;
-  if (isLoading || !data) return <Text variant="muted">Loading billing...</Text>;
+  if (error) {
+    const message =
+      error instanceof BillingLoadError && error.message
+        ? error.message
+        : t('organizations.billingTab.loadError');
+    return <Text variant="muted">{message}</Text>;
+  }
+  if (isLoading || !data) {
+    return <Text variant="muted">{t('organizations.billingTab.loading')}</Text>;
+  }
 
   const handleRefresh = () => mutate();
 
@@ -59,10 +71,10 @@ export function AdminBillingTab({ orgId, currentOrgId }: { orgId: string; curren
     }
     if (response.data && 'url' in response.data) {
       window.open(response.data.url, '_blank', 'noopener,noreferrer');
-      toast.success('Checkout link opened');
+      toast.success(t('organizations.billingTab.checkoutOpened'));
       return;
     }
-    toast.success('Subscription updated');
+    toast.success(t('organizations.billingTab.subscriptionUpdated'));
     await mutate(response.data, { revalidate: true });
   };
 
@@ -78,7 +90,7 @@ export function AdminBillingTab({ orgId, currentOrgId }: { orgId: string; curren
       toast.error(response.error);
       return;
     }
-    toast.success('Credits granted');
+    toast.success(t('organizations.billingTab.creditsGranted'));
     await mutate(response.data, { revalidate: false });
   };
 
@@ -94,14 +106,16 @@ export function AdminBillingTab({ orgId, currentOrgId }: { orgId: string; curren
       toast.error(response.error);
       return;
     }
-    toast.success('Billing details updated');
+    toast.success(t('organizations.billingTab.preferencesUpdated'));
     await mutate(response.data, { revalidate: false });
   };
 
   const handleCancel = async (subscription: AdminBillingSubscription, immediate: boolean) => {
-    const note = window.prompt('Reason for cancellation');
+    const note = window.prompt(t('organizations.billingTab.prompts.cancelReason'));
     if (!note) return;
-    const confirm = immediate ? window.prompt('Type "cancel now"') : undefined;
+    const confirm = immediate
+      ? window.prompt(t('organizations.billingTab.prompts.cancelConfirm'))
+      : undefined;
     setLoadingAction(subscription.id);
     const response = await api.post<AdminBillingStatus>(
       `${endpoint}/subscriptions/${subscription.id}/cancel`,
@@ -117,12 +131,12 @@ export function AdminBillingTab({ orgId, currentOrgId }: { orgId: string; curren
       toast.error(response.error);
       return;
     }
-    toast.success('Subscription cancellation updated');
+    toast.success(t('organizations.billingTab.cancellationUpdated'));
     await mutate(response.data, { revalidate: false });
   };
 
   const handleResume = async (subscription: AdminBillingSubscription) => {
-    const note = window.prompt('Reason for resuming subscription');
+    const note = window.prompt(t('organizations.billingTab.prompts.resumeReason'));
     if (!note) return;
     setLoadingAction(subscription.id);
     const response = await api.post<AdminBillingStatus>(
@@ -135,7 +149,7 @@ export function AdminBillingTab({ orgId, currentOrgId }: { orgId: string; curren
       toast.error(response.error);
       return;
     }
-    toast.success('Subscription resumed');
+    toast.success(t('organizations.billingTab.resumed'));
     await mutate(response.data, { revalidate: false });
   };
 
@@ -155,21 +169,34 @@ export function AdminBillingTab({ orgId, currentOrgId }: { orgId: string; curren
       window.open(response.data.hostedInvoiceUrl, '_blank', 'noopener,noreferrer');
       return;
     }
-    toast.error('No hosted invoice link available');
+    toast.error(t('organizations.billingTab.noRecoveryLink'));
   };
 
   return (
     <Stack gap="lg">
       <div className="grid gap-4 md:grid-cols-3">
-        <SummaryCard label="Stripe customer" value={data.stripeCustomerId ?? 'None'} />
-        <SummaryCard label="Payment method" value={data.hasPaymentMethod ? 'Saved' : 'Missing'} />
-        <SummaryCard label="Failed invoices" value={String(data.failedInvoices.length)} />
+        <SummaryCard
+          label={t('organizations.billingTab.stripeCustomer')}
+          value={data.stripeCustomerId ?? t('organizations.billingTab.none')}
+        />
+        <SummaryCard
+          label={t('organizations.billingTab.paymentMethod')}
+          value={
+            data.hasPaymentMethod
+              ? t('organizations.billingTab.saved')
+              : t('organizations.billingTab.missing')
+          }
+        />
+        <SummaryCard
+          label={t('organizations.billingTab.failedInvoices')}
+          value={String(data.failedInvoices.length)}
+        />
       </div>
       <Section
-        title="Subscriptions"
+        title={t('organizations.billingTab.subscriptions')}
         actions={
           <Button size="sm" variant="outline" onClick={handleRefresh}>
-            Refresh
+            {t('organizations.billingTab.refresh')}
           </Button>
         }
       >
@@ -187,27 +214,27 @@ export function AdminBillingTab({ orgId, currentOrgId }: { orgId: string; curren
           />
         </Stack>
       </Section>
-      <Section title="Free credits">
+      <Section title={t('organizations.billingTab.freeCredits')}>
         <Stack gap="4">
           <CreditBalanceRows balances={data.creditBalances} />
           <CreditGrantForm loading={loadingAction === 'credits'} onSubmit={handleCreditSubmit} />
         </Stack>
       </Section>
-      <Section title="Billing details">
+      <Section title={t('organizations.billingTab.billingDetails')}>
         <BillingPreferencesAdminForm
           status={data}
           loading={loadingAction === 'preferences'}
           onSubmit={handlePreferencesSubmit}
         />
       </Section>
-      <Section title="Invoices and recovery">
+      <Section title={t('organizations.billingTab.invoicesAndRecovery')}>
         <InvoiceRows
           invoices={data.invoices}
           onRetryLink={handleRetryLink}
           loadingId={loadingAction}
         />
       </Section>
-      <Section title="Audit history">
+      <Section title={t('organizations.billingTab.auditHistory')}>
         <div className="grid gap-2">
           {data.auditEvents.map((event) => (
             <div key={event.id} className="flex items-center justify-between rounded-lg border p-3">
@@ -215,7 +242,9 @@ export function AdminBillingTab({ orgId, currentOrgId }: { orgId: string; curren
               <Badge variant="outline">{new Date(event.createdAt).toLocaleString()}</Badge>
             </div>
           ))}
-          {data.auditEvents.length === 0 && <Text variant="muted">No billing audit events.</Text>}
+          {data.auditEvents.length === 0 && (
+            <Text variant="muted">{t('organizations.billingTab.noAuditEvents')}</Text>
+          )}
         </div>
       </Section>
     </Stack>

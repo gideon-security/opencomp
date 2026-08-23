@@ -17,6 +17,7 @@ import {
 } from '@trycompai/design-system';
 import { ArrowLeft, Information } from '@trycompai/design-system/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
+import { useTranslations } from 'next-intl';
 import type { DeviceWithChecks } from '../types';
 import {
   CANONICAL_DEVICE_CHECKS,
@@ -34,6 +35,7 @@ import { NotTrackedBadge } from './DeviceListCells';
 import { RevokeAgentAccessDialog } from './RevokeAgentAccessDialog';
 
 function DeviceComplianceBadge({ device }: { device: DeviceWithChecks }) {
+  const t = useTranslations('people');
   if (device.source === 'integration') {
     // CompAI's verdict, computed from the source-reported CANONICAL checks —
     // the same standard as the Comp agent. The vendor's own overall verdict is
@@ -43,22 +45,25 @@ function DeviceComplianceBadge({ device }: { device: DeviceWithChecks }) {
       return <NotTrackedBadge device={device} />;
     }
     if (verdict.kind === 'non_compliant') {
-      return <Badge variant="destructive">Non-Compliant</Badge>;
+      return <Badge variant="destructive">{t('devices.nonCompliant')}</Badge>;
     }
     if (verdict.kind === 'compliant') {
-      return <Badge variant="default">Compliant</Badge>;
+      return <Badge variant="default">{t('devices.compliant')}</Badge>;
     }
     return (
       <div className="flex items-center gap-1">
         <Badge variant="secondary">
-          Unverified ({verdict.reported}/{CANONICAL_DEVICE_CHECKS.length})
+          {t('devices.unverifiedChecks', {
+            reported: verdict.reported,
+            total: CANONICAL_DEVICE_CHECKS.length,
+          })}
         </Badge>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 type="button"
-                aria-label="Why is compliance unverified?"
+                aria-label={t('devices.whyUnverified')}
                 className="inline-flex items-center text-muted-foreground hover:text-foreground"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -82,7 +87,7 @@ function DeviceComplianceBadge({ device }: { device: DeviceWithChecks }) {
             <TooltipTrigger asChild>
               <button
                 type="button"
-                aria-label="What does Stale mean?"
+                aria-label={t('devices.whatDoesStaleMean')}
                 className="inline-flex items-center text-muted-foreground hover:text-foreground"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -98,9 +103,9 @@ function DeviceComplianceBadge({ device }: { device: DeviceWithChecks }) {
     );
   }
   if (device.complianceStatus === 'compliant') {
-    return <Badge variant="default">Compliant</Badge>;
+    return <Badge variant="default">{t('devices.compliant')}</Badge>;
   }
-  return <Badge variant="destructive">Non-Compliant</Badge>;
+  return <Badge variant="destructive">{t('devices.nonCompliant')}</Badge>;
 }
 
 interface DeviceDetailsProps {
@@ -109,12 +114,14 @@ interface DeviceDetailsProps {
 }
 
 export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
+  const t = useTranslations('people');
+  const providerName = device.integrationProvider?.name ?? t('devices.integrationFallback');
   return (
     <Stack gap="4">
       <div>
         <Button variant="outline" size="sm" onClick={onClose}>
           <ArrowLeft size={16} />
-          Back
+          {t('devices.back')}
         </Button>
       </div>
 
@@ -142,15 +149,19 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
                 {(device.source === 'device_agent' ||
                   device.source === 'integration') && (
                   <Badge variant="outline">
-                    {isDeviceOnline(device.lastCheckIn) ? 'Online' : 'Offline'}
+                    {isDeviceOnline(device.lastCheckIn)
+                      ? t('devices.online')
+                      : t('devices.offline')}
                   </Badge>
                 )}
                 {device.source === 'integration' && (
                   <Badge variant="outline">
-                    {`Imported • ${device.integrationProvider?.name ?? 'Integration'}`}
+                    {t('devices.importedFrom', { provider: providerName })}
                   </Badge>
                 )}
-                {device.source === 'fleet' && <Badge variant="outline">Fleet (Legacy)</Badge>}
+                {device.source === 'fleet' && (
+                  <Badge variant="outline">{t('devices.fleetLegacy')}</Badge>
+                )}
               </div>
               <Text size="sm" variant="muted">
                 {PLATFORM_LABELS[device.platform] ?? device.platform} {device.osVersion}
@@ -169,7 +180,7 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <Text size="sm" variant="muted">
-                User
+                {t('devices.user')}
               </Text>
               <Text size="sm" weight="medium">
                 {device.user.name}
@@ -180,7 +191,7 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
             </div>
             <div>
               <Text size="sm" variant="muted">
-                Hostname
+                {t('devices.hostname')}
               </Text>
               <Text size="sm" weight="medium">
                 {device.hostname}
@@ -188,35 +199,39 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
             </div>
             <div>
               <Text size="sm" variant="muted">
-                Serial Number
+                {t('devices.serialNumber')}
               </Text>
               <Text size="sm" weight="medium">
                 {device.serialNumber?.startsWith('fallback:')
-                  ? 'Generic serial number'
-                  : (device.serialNumber ?? 'N/A')}
+                  ? t('devices.genericSerialNumber')
+                  : (device.serialNumber ?? t('devices.notAvailable'))}
               </Text>
             </div>
             <div>
               <Text size="sm" variant="muted">
-                {device.source === 'integration' ? 'Last synced' : 'Last Check-in'}
+                {device.source === 'integration'
+                  ? t('devices.lastSynced')
+                  : t('devices.lastCheckIn')}
               </Text>
               <Text size="sm" weight="medium">
-                {device.lastCheckIn ? new Date(device.lastCheckIn).toLocaleString() : 'Never'}
+                {device.lastCheckIn
+                  ? new Date(device.lastCheckIn).toLocaleString()
+                  : t('devices.never')}
               </Text>
             </div>
             <div>
               <Text size="sm" variant="muted">
-                {device.source === 'integration' ? 'Source' : 'Agent Version'}
+                {device.source === 'integration' ? t('devices.source') : t('devices.agentVersion')}
               </Text>
               <Text size="sm" weight="medium">
                 {device.source === 'integration'
-                  ? (device.integrationProvider?.name ?? 'Integration')
-                  : (device.agentVersion ?? 'N/A')}
+                  ? providerName
+                  : (device.agentVersion ?? t('devices.notAvailable'))}
               </Text>
             </div>
             <div>
               <Text size="sm" variant="muted">
-                Installed
+                {t('devices.installed')}
               </Text>
               <Text size="sm" weight="medium">
                 {new Date(device.installedAt).toLocaleDateString()}
@@ -228,11 +243,16 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
             {device.source === 'integration' && sourceVerdict(device) !== undefined && (
               <div>
                 <Text size="sm" variant="muted">
-                  {device.integrationProvider?.name ?? 'Provider'} verdict
+                  {t('devices.providerVerdict', {
+                    provider: device.integrationProvider?.name ?? t('devices.provider'),
+                  })}
                 </Text>
                 <Text size="sm" weight="medium">
-                  {sourceVerdict(device) ? 'Compliant' : 'Non-Compliant'} (per
-                  its own policies)
+                  {t('devices.perOwnPolicies', {
+                    verdict: sourceVerdict(device)
+                      ? t('devices.compliant')
+                      : t('devices.nonCompliant'),
+                  })}
                 </Text>
               </div>
             )}
@@ -243,10 +263,10 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
       <Table variant="bordered">
         <TableHeader>
           <TableRow>
-            <TableHead>Check</TableHead>
-            <TableHead>Details</TableHead>
-            <TableHead>Result</TableHead>
-            <TableHead>Exception</TableHead>
+            <TableHead>{t('devices.colCheck')}</TableHead>
+            <TableHead>{t('devices.colDetails')}</TableHead>
+            <TableHead>{t('devices.colResult')}</TableHead>
+            <TableHead>{t('devices.colException')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -255,7 +275,8 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
               otherwise — then any extra provider-specific checks below. */}
           {device.source === 'integration' &&
             (() => {
-              const provider = device.integrationProvider?.name ?? 'the integration';
+              const provider =
+                device.integrationProvider?.name ?? t('devices.theIntegration');
               const bySourceId = new Map(sourceChecks(device).map((c) => [c.id, c]));
               const canonicalIds = new Set<string>(
                 CANONICAL_DEVICE_CHECKS.map((c) => c.id),
@@ -274,17 +295,17 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
                       <TableCell>
                         <Text size="sm" variant="muted">
                           {reported
-                            ? `Reported by ${provider}`
-                            : `Not reported by ${provider} — install the CompAI agent to verify`}
+                            ? t('devices.reportedBy', { provider })
+                            : t('devices.notReportedBy', { provider })}
                         </Text>
                       </TableCell>
                       <TableCell>
                         {reported ? (
                           <Badge variant={reported.passed ? 'default' : 'destructive'}>
-                            {reported.passed ? 'Pass' : 'Fail'}
+                            {reported.passed ? t('devices.pass') : t('devices.fail')}
                           </Badge>
                         ) : (
-                          <Badge variant="secondary">Unverified</Badge>
+                          <Badge variant="secondary">{t('devices.unverified')}</Badge>
                         )}
                       </TableCell>
                       <TableCell>
@@ -304,13 +325,12 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
                     </TableCell>
                     <TableCell>
                       <Text size="sm" variant="muted">
-                        Reported by {provider} (informational — not part of the
-                        compliance verdict)
+                        {t('devices.reportedByInformational', { provider })}
                       </Text>
                     </TableCell>
                     <TableCell>
                       <Badge variant={check.passed ? 'default' : 'destructive'}>
-                        {check.passed ? 'Pass' : 'Fail'}
+                        {check.passed ? t('devices.pass') : t('devices.fail')}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -326,7 +346,7 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
           CHECK_FIELDS.map(({ key, dbKey, label }) => {
             const isUntracked =
               device.source === 'fleet' && key !== 'diskEncryptionEnabled';
-            const untrackedCopy = 'Not tracked by Fleet';
+            const untrackedCopy = t('devices.notTrackedByFleet');
             const isStale = device.complianceStatus === 'stale';
             const passed = device[key];
             const details = device.checkDetails?.[dbKey];
@@ -348,17 +368,17 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
                 </TableCell>
                 <TableCell>
                   {isUntracked ? (
-                    <Badge variant="outline">N/A</Badge>
+                    <Badge variant="outline">{t('devices.notAvailable')}</Badge>
                   ) : isStale ? (
                     <Badge
                       variant="secondary"
-                      title={`${label} — unknown (device is stale)`}
+                      title={t('devices.staleUnknownTitle', { label })}
                     >
                       —
                     </Badge>
                   ) : (
                     <Badge variant={passed ? 'default' : 'destructive'}>
-                      {passed ? 'Pass' : 'Fail'}
+                      {passed ? t('devices.pass') : t('devices.fail')}
                     </Badge>
                   )}
                 </TableCell>

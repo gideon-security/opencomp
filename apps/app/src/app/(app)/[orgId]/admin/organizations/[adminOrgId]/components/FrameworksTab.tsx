@@ -13,44 +13,33 @@ import {
   TableRow,
   Text,
 } from '@trycompai/design-system';
-import { Add, TrashCan } from '@trycompai/design-system/icons';
+import { Add } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { ActiveFrameworkRow } from './ActiveFrameworkRow';
 import { FrameworkConfirmationDialog } from './FrameworkConfirmationDialog';
 import { ActiveFrameworkCards, AvailableFrameworkCards } from './FrameworkMobileCards';
+import {
+  getActiveFrameworkDetails,
+  type ActiveFramework,
+  type FrameworkDetails,
+  type PendingAction,
+} from './FrameworksTabTypes';
 
-export interface FrameworkDetails {
-  id: string;
-  name: string;
-  description: string | null;
-  version: string;
-  visible: boolean;
-}
-
-export interface ActiveFramework {
-  id: string;
-  framework: FrameworkDetails | null;
-  customFramework: FrameworkDetails | null;
-}
+export type {
+  ActiveFramework,
+  FrameworkDetails,
+  PendingAction,
+} from './FrameworksTabTypes';
 
 interface AdminFrameworksResponse {
   frameworks: ActiveFramework[];
   availableFrameworks: FrameworkDetails[];
 }
 
-export type PendingAction =
-  | { type: 'add'; framework: FrameworkDetails }
-  | { type: 'delete'; framework: ActiveFramework };
-
-function getActiveFrameworkDetails(framework: ActiveFramework) {
-  return framework.framework ?? framework.customFramework;
-}
-
-export function getActiveFrameworkName(framework: ActiveFramework) {
-  return getActiveFrameworkDetails(framework)?.name ?? 'Unknown framework';
-}
-
 export function FrameworksTab({ orgId }: { orgId: string }) {
+  const t = useTranslations('admin');
   const [frameworks, setFrameworks] = useState<ActiveFramework[]>([]);
   const [availableFrameworks, setAvailableFrameworks] = useState<FrameworkDetails[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,15 +94,17 @@ export function FrameworksTab({ orgId }: { orgId: string }) {
 
     toast.success(
       pendingAction.type === 'add'
-        ? 'Framework added to organization'
-        : 'Framework removed from organization',
+        ? t('organizations.frameworksTab.addedSuccess')
+        : t('organizations.frameworksTab.removedSuccess'),
     );
     setPendingAction(null);
     await fetchFrameworks();
   };
 
+  const activeName = (framework: ActiveFramework) =>
+    getActiveFrameworkDetails(framework)?.name ?? '';
   const sortedFrameworks = [...frameworks].sort((a, b) =>
-    getActiveFrameworkName(a).localeCompare(getActiveFrameworkName(b)),
+    activeName(a).localeCompare(activeName(b)),
   );
   const sortedAvailableFrameworks = [...availableFrameworks].sort((a, b) =>
     a.name.localeCompare(b.name),
@@ -122,17 +113,21 @@ export function FrameworksTab({ orgId }: { orgId: string }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-muted-foreground">
-        Loading frameworks...
+        {t('organizations.frameworksTab.loading')}
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <Section title={`Active Frameworks (${frameworks.length})`}>
+      <Section
+        title={t('organizations.frameworksTab.activeFrameworks', {
+          count: frameworks.length,
+        })}
+      >
         {frameworks.length === 0 ? (
           <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
-            No frameworks have been added to this organization.
+            {t('organizations.frameworksTab.emptyActive')}
           </div>
         ) : (
           <>
@@ -146,10 +141,10 @@ export function FrameworksTab({ orgId }: { orgId: string }) {
               <Table variant="bordered">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Version</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>{t('organizations.frameworksTab.name')}</TableHead>
+                    <TableHead>{t('organizations.frameworksTab.version')}</TableHead>
+                    <TableHead>{t('organizations.frameworksTab.type')}</TableHead>
+                    <TableHead>{t('organizations.frameworksTab.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -172,10 +167,14 @@ export function FrameworksTab({ orgId }: { orgId: string }) {
         )}
       </Section>
 
-      <Section title={`Available Frameworks (${availableFrameworks.length})`}>
+      <Section
+        title={t('organizations.frameworksTab.availableFrameworks', {
+          count: availableFrameworks.length,
+        })}
+      >
         {availableFrameworks.length === 0 ? (
           <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
-            No additional visible frameworks are available to add.
+            {t('organizations.frameworksTab.emptyAvailable')}
           </div>
         ) : (
           <>
@@ -189,10 +188,10 @@ export function FrameworksTab({ orgId }: { orgId: string }) {
               <Table variant="bordered">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Version</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>{t('organizations.frameworksTab.name')}</TableHead>
+                    <TableHead>{t('organizations.frameworksTab.version')}</TableHead>
+                    <TableHead>{t('organizations.frameworksTab.description')}</TableHead>
+                    <TableHead>{t('organizations.frameworksTab.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -219,7 +218,7 @@ export function FrameworksTab({ orgId }: { orgId: string }) {
                             setPendingAction({ type: 'add', framework });
                           }}
                         >
-                          Add
+                          {t('organizations.frameworksTab.add')}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -238,54 +237,5 @@ export function FrameworksTab({ orgId }: { orgId: string }) {
         onConfirm={handleConfirm}
       />
     </div>
-  );
-}
-
-function ActiveFrameworkRow({
-  framework,
-  onDelete,
-}: {
-  framework: ActiveFramework;
-  onDelete: (framework: ActiveFramework) => void;
-}) {
-  const details = getActiveFrameworkDetails(framework);
-
-  return (
-    <TableRow>
-      <TableCell>
-        <div className="max-w-[420px]">
-          <div className="truncate">
-            <Text size="sm" weight="medium">
-              {details?.name ?? 'Unknown framework'}
-            </Text>
-          </div>
-          {details?.description && (
-            <div className="truncate">
-              <Text size="xs" variant="muted">
-                {details.description}
-              </Text>
-            </div>
-          )}
-        </div>
-      </TableCell>
-      <TableCell>
-        <Badge variant="outline">v{details?.version ?? '--'}</Badge>
-      </TableCell>
-      <TableCell>
-        <Badge variant={framework.customFramework ? 'secondary' : 'default'}>
-          {framework.customFramework ? 'Custom' : 'Platform'}
-        </Badge>
-      </TableCell>
-      <TableCell>
-        <Button
-          size="sm"
-          variant="destructive"
-          iconLeft={<TrashCan size={16} />}
-          onClick={() => onDelete(framework)}
-        >
-          Remove
-        </Button>
-      </TableCell>
-    </TableRow>
   );
 }

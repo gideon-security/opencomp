@@ -26,10 +26,11 @@ export interface SimilarContentResult {
 // Set to 0.2 for maximum recall while filtering obvious noise
 const MIN_SIMILARITY_SCORE = 0.2;
 
-// Maximum results to fetch from Upstash Vector (their limit is 1000, but 100 is practical)
+// Maximum results to fetch per similarity query (100 keeps queries fast and the
+// result set reviewable)
 const MAX_TOP_K = 100;
 
-// Maximum distinct chunks returned to the answer generator. Upstash hands back up
+// Maximum distinct chunks returned to the answer generator. A query can hand back up
 // to MAX_TOP_K candidates above the 0.2 noise floor, but feeding all of them to the
 // LLM floods "Show Sources" with every loosely matching policy (21-24 per question,
 // CS-594) and dilutes the prompt. Keep only the highest-scoring chunks. Mirrors the
@@ -37,7 +38,7 @@ const MAX_TOP_K = 100;
 const MAX_RESULTS = 5;
 
 /**
- * Finds similar content using semantic search in Upstash Vector
+ * Finds similar content using semantic search in the vector store (pgvector)
  * Optimized for RAG (Retrieval-Augmented Generation) answer generation
  *
  * Returns the highest-scoring results above the similarity threshold, capped at
@@ -65,7 +66,7 @@ export async function findSimilarContent(
     // Generate embedding for the question
     const queryEmbedding = await generateEmbedding(question);
 
-    // Search in Upstash Vector with server-side organization filtering
+    // Search with server-side organization filtering
     // Fetch maximum results, then filter by score threshold
     const results = await vectorIndex.query({
       vector: queryEmbedding,
@@ -166,7 +167,7 @@ export async function findSimilarContentBatch(
       embeddingTimeMs: embeddingTime,
     });
 
-    // Step 2: Query Upstash Vector in parallel for all questions
+    // Step 2: Query the vector store in parallel for all questions
     const queryStartTime = Date.now();
     const queryResults = await Promise.all(
       embeddings.map(async (embedding, index) => {

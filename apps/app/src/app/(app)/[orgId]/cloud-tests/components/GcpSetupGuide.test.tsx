@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 const mockPost = vi.fn();
@@ -18,6 +19,8 @@ vi.mock('sonner', () => ({
 }));
 
 import { GcpSetupGuide } from './GcpSetupGuide';
+
+mockNextIntl();
 
 describe('GcpSetupGuide', () => {
   beforeEach(() => {
@@ -87,7 +90,7 @@ describe('GcpSetupGuide', () => {
 
     await waitFor(() =>
       expect(
-        screen.getByText('Some required setup steps need manual action:'),
+        screen.getByText('cloudTests_manualActionRequired'),
       ).toBeInTheDocument(),
     );
 
@@ -103,7 +106,7 @@ describe('GcpSetupGuide', () => {
       'href',
       'https://console.cloud.google.com/iam-admin/iam',
     );
-    expect(screen.getByRole('button', { name: 'Resolve all' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'cloudTests_resolveAll' })).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: 'Resolve this' })).toHaveLength(2);
   });
 });
