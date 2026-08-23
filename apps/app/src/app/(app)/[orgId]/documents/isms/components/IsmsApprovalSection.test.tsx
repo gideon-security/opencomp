@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDocumentStatus } from '../isms-types';
@@ -86,6 +87,8 @@ vi.mock('@trycompai/design-system/icons', () => ({
 
 import { IsmsApprovalSection } from './IsmsApprovalSection';
 
+mockNextIntl();
+
 const APPROVER_OPTIONS = [
   { id: 'mem_approver', name: 'Avery Approver' },
   { id: 'mem_other', name: 'Other Member' },
@@ -128,7 +131,7 @@ const baseProps = {
 describe('IsmsApprovalSection', () => {
   it('shows "Submit for approval" only for a draft document', () => {
     render(<IsmsApprovalSection {...baseProps} document={makeDocument()} />);
-    expect(screen.getByText('Submit for approval')).toBeInTheDocument();
+    expect(screen.getByText('approval.submitForApproval')).toBeInTheDocument();
   });
 
   it('renders an approved state (approver + date) and hides the submit button', () => {
@@ -142,10 +145,10 @@ describe('IsmsApprovalSection', () => {
         })}
       />,
     );
-    expect(screen.getByText('Approved')).toBeInTheDocument();
-    expect(screen.getByText('Avery Approver')).toBeInTheDocument();
-    expect(screen.queryByText('Submit for approval')).not.toBeInTheDocument();
-    expect(screen.queryByText('Resubmit for approval')).not.toBeInTheDocument();
+    expect(screen.getByText('approval.approvedTitle')).toBeInTheDocument();
+    expect(screen.getByText('approval.approvedByDated')).toBeInTheDocument();
+    expect(screen.queryByText('approval.submitForApproval')).not.toBeInTheDocument();
+    expect(screen.queryByText('approval.resubmitForApproval')).not.toBeInTheDocument();
   });
 
   it('renders a declined state and offers resubmit (not the plain submit)', () => {
@@ -159,9 +162,9 @@ describe('IsmsApprovalSection', () => {
         })}
       />,
     );
-    expect(screen.getByText('Declined')).toBeInTheDocument();
-    expect(screen.queryByText('Submit for approval')).not.toBeInTheDocument();
-    expect(screen.getByText('Resubmit for approval')).toBeInTheDocument();
+    expect(screen.getByText('approval.declinedTitle')).toBeInTheDocument();
+    expect(screen.queryByText('approval.submitForApproval')).not.toBeInTheDocument();
+    expect(screen.getByText('approval.resubmitForApproval')).toBeInTheDocument();
   });
 
   it('renders a pending-with-approver state and hides the submit button', () => {
@@ -171,9 +174,9 @@ describe('IsmsApprovalSection', () => {
         document={makeDocument({ status: 'needs_review', approverId: 'mem_approver' })}
       />,
     );
-    expect(screen.getByText('Pending approval')).toBeInTheDocument();
-    expect(screen.getByText('Avery Approver')).toBeInTheDocument();
-    expect(screen.queryByText('Submit for approval')).not.toBeInTheDocument();
+    expect(screen.getByText('approval.pendingTitle')).toBeInTheDocument();
+    expect(screen.getByText('approval.pendingApprover')).toBeInTheDocument();
+    expect(screen.queryByText('approval.submitForApproval')).not.toBeInTheDocument();
     expect(screen.queryByTestId('approval-banner')).not.toBeInTheDocument();
   });
 
@@ -186,15 +189,15 @@ describe('IsmsApprovalSection', () => {
       />,
     );
     expect(screen.getByTestId('approval-banner')).toBeInTheDocument();
-    expect(screen.getByText('Action required by you')).toBeInTheDocument();
+    expect(screen.getByText('approval.actionRequiredTitle')).toBeInTheDocument();
   });
 
   it('does not offer submit affordances to read-only users', () => {
     render(
       <IsmsApprovalSection {...baseProps} canManage={false} document={makeDocument()} />,
     );
-    expect(screen.queryByText('Submit for approval')).not.toBeInTheDocument();
-    expect(screen.queryByText('Resubmit for approval')).not.toBeInTheDocument();
+    expect(screen.queryByText('approval.submitForApproval')).not.toBeInTheDocument();
+    expect(screen.queryByText('approval.resubmitForApproval')).not.toBeInTheDocument();
   });
 });
 
@@ -221,7 +224,7 @@ describe('IsmsApprovalSection interactions', () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Approve' }));
+    fireEvent.click(screen.getByRole('button', { name: 'approval.approve' }));
 
     expect(handlers.onApprove).toHaveBeenCalledTimes(1);
     expect(handlers.onDecline).not.toHaveBeenCalled();
@@ -239,7 +242,7 @@ describe('IsmsApprovalSection interactions', () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Decline' }));
+    fireEvent.click(screen.getByRole('button', { name: 'approval.decline' }));
 
     expect(handlers.onDecline).toHaveBeenCalledTimes(1);
     expect(handlers.onApprove).not.toHaveBeenCalled();
@@ -258,11 +261,11 @@ describe('IsmsApprovalSection interactions', () => {
     );
 
     // Open the submit dialog.
-    fireEvent.click(screen.getByText('Submit for approval'));
+    fireEvent.click(screen.getByText('approval.submitForApproval'));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
 
     // Confirm is disabled until an approver is chosen.
-    const confirm = screen.getByRole('button', { name: 'Confirm & Submit' });
+    const confirm = screen.getByRole('button', { name: 'approval.confirmSubmit' });
     expect(confirm).toBeDisabled();
 
     fireEvent.change(screen.getByRole('combobox', { name: 'Approver' }), {

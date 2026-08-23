@@ -1,5 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 const mockPost = vi.fn();
 
@@ -23,13 +26,13 @@ describe('TaskForm', () => {
 
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /create task/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'organizations.taskForm.submit' })).toBeInTheDocument();
   });
 
   it('disables submit when required fields are empty', () => {
     render(<TaskForm orgId="org_1" onCreated={onCreated} />);
 
-    const submitButton = screen.getByRole('button', { name: /create task/i });
+    const submitButton = screen.getByRole('button', { name: 'organizations.taskForm.submit' });
     expect(submitButton).toBeDisabled();
   });
 
@@ -40,7 +43,7 @@ describe('TaskForm', () => {
       target: { value: 'My Task' },
     });
 
-    expect(screen.getByRole('button', { name: /create task/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'organizations.taskForm.submit' })).toBeDisabled();
   });
 
   it('enables submit when both title and description are provided', () => {
@@ -53,7 +56,7 @@ describe('TaskForm', () => {
       target: { value: 'Task description' },
     });
 
-    expect(screen.getByRole('button', { name: /create task/i })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: 'organizations.taskForm.submit' })).not.toBeDisabled();
   });
 
   it('calls the API and onCreated on successful submit', async () => {
@@ -66,7 +69,7 @@ describe('TaskForm', () => {
     fireEvent.change(screen.getByLabelText(/description/i), {
       target: { value: 'Review all access controls' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /create task/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'organizations.taskForm.submit' }));
 
     await waitFor(() => {
       expect(mockPost).toHaveBeenCalledWith(
@@ -88,7 +91,7 @@ describe('TaskForm', () => {
     fireEvent.change(screen.getByLabelText(/description/i), {
       target: { value: 'This will fail' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /create task/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'organizations.taskForm.submit' }));
 
     await waitFor(() => {
       expect(screen.getByText(/server error/i)).toBeInTheDocument();

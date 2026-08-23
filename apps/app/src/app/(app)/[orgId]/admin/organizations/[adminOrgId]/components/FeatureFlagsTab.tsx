@@ -15,6 +15,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Renew, Search } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import {
   setAdminOrgFeatureFlag,
   useAdminOrgFeatureFlags,
@@ -26,6 +27,7 @@ interface FeatureFlagsTabProps {
 }
 
 export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
+  const t = useTranslations('admin');
   const { flags, isLoading, error, mutate } = useAdminOrgFeatureFlags(orgId);
   const [updatingKey, setUpdatingKey] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -56,11 +58,19 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
 
     try {
       await setAdminOrgFeatureFlag({ orgId, flagKey: flag.key, enabled });
-      toast.success(`"${flag.name}" ${enabled ? 'enabled' : 'disabled'} for this organization`);
+      toast.success(
+        enabled
+          ? t('organizations.featureFlagsTab.toastEnabled', { name: flag.name })
+          : t('organizations.featureFlagsTab.toastDisabled', { name: flag.name }),
+      );
       // Trust the write. Skip revalidation — PostHog isFeatureEnabled may lag
       // behind groupIdentify and temporarily return the old value.
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to update feature flag');
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : t('organizations.featureFlagsTab.toastUpdateFailed'),
+      );
       // Roll back to the snapshot.
       mutate(previous, { revalidate: false });
     } finally {
@@ -80,7 +90,7 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12 text-muted-foreground">
-        Loading feature flags…
+        {t('organizations.featureFlagsTab.loading')}
       </div>
     );
   }
@@ -88,9 +98,11 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
   if (error) {
     return (
       <Stack gap="xs">
-        <Text weight="semibold">Failed to load feature flags</Text>
+        <Text weight="semibold">{t('organizations.featureFlagsTab.loadError')}</Text>
         <Text variant="muted">
-          {error instanceof Error ? error.message : 'Unknown error'}
+          {error instanceof Error
+            ? error.message
+            : t('organizations.featureFlagsTab.unknownError')}
         </Text>
       </Stack>
     );
@@ -99,10 +111,13 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
   if (flags.length === 0) {
     return (
       <Stack gap="xs">
-        <Text weight="semibold">No feature flags found</Text>
+        <Text weight="semibold">{t('organizations.featureFlagsTab.emptyTitle')}</Text>
         <Text variant="muted">
-          Create a feature flag in PostHog and set <code>POSTHOG_PERSONAL_API_KEY</code> and{' '}
-          <code>POSTHOG_PROJECT_ID</code> on the API to manage it here.
+          {t('organizations.featureFlagsTab.emptyDescPrefix')}{' '}
+          <code>POSTHOG_PERSONAL_API_KEY</code>{' '}
+          {t('organizations.featureFlagsTab.emptyDescMiddle')}{' '}
+          <code>POSTHOG_PROJECT_ID</code>{' '}
+          {t('organizations.featureFlagsTab.emptyDescSuffix')}
         </Text>
       </Stack>
     );
@@ -117,7 +132,7 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
               <Search size={16} />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search flags..."
+              placeholder={t('organizations.featureFlagsTab.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -130,11 +145,11 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
           loading={refreshing}
         >
           <Renew />
-          Refresh from PostHog
+          {t('organizations.featureFlagsTab.refresh')}
         </Button>
       </div>
       {filteredFlags.length === 0 ? (
-        <Text variant="muted">No flags match your search.</Text>
+        <Text variant="muted">{t('organizations.featureFlagsTab.noMatch')}</Text>
       ) : (
         <SettingGroup>
           {filteredFlags.map((flag) => (
@@ -144,11 +159,17 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
               label={flag.key}
               description={
                 flag.description ||
-                (flag.active ? undefined : 'Inactive in PostHog')
+                (flag.active
+                  ? undefined
+                  : t('organizations.featureFlagsTab.inactiveInPosthog'))
               }
             >
               <div className="flex items-center gap-2">
-                {!flag.active && <Badge variant="outline">Inactive</Badge>}
+                {!flag.active && (
+                  <Badge variant="outline">
+                    {t('organizations.featureFlagsTab.inactiveBadge')}
+                  </Badge>
+                )}
                 <Switch
                   checked={flag.enabled}
                   // Disable every switch while any flag is being updated —

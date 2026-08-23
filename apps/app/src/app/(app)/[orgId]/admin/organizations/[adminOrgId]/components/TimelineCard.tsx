@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { api } from '@/lib/api-client';
 import type { AdminOrgTimeline } from '@/hooks/use-admin-timelines';
 import {
@@ -35,27 +36,65 @@ import { TimelinePhaseBar } from '@/app/(app)/[orgId]/overview/components/Timeli
 import { TimelineActivateForm } from './TimelineActivateForm';
 import { TimelinePhaseEditor } from './TimelinePhaseEditor';
 
-const STATUS_BADGE: Record<
+const STATUS_BADGE_VARIANT: Record<
   AdminOrgTimeline['status'],
-  { label: string; variant: 'default' | 'outline' | 'destructive' }
+  'default' | 'outline' | 'destructive'
 > = {
-  DRAFT: { label: 'Draft', variant: 'outline' },
-  ACTIVE: { label: 'Active', variant: 'default' },
-  PAUSED: { label: 'Paused', variant: 'destructive' },
-  COMPLETED: { label: 'Completed', variant: 'default' },
+  DRAFT: 'outline',
+  ACTIVE: 'default',
+  PAUSED: 'destructive',
+  COMPLETED: 'default',
 };
 
-const PHASE_COMPLETION_LABEL: Record<
-  AdminOrgTimeline['phases'][number]['completionType'],
-  string
-> = {
-  MANUAL: 'Manual',
-  AUTO_TASKS: 'Auto (Tasks)',
-  AUTO_POLICIES: 'Auto (Policies)',
-  AUTO_PEOPLE: 'Auto (People)',
-  AUTO_FINDINGS: 'Auto (Findings)',
-  AUTO_UPLOAD: 'Auto (Upload)',
-};
+type AdminTranslator = ReturnType<typeof useTranslations<'admin'>>;
+type Phase = AdminOrgTimeline['phases'][number];
+
+function timelineStatusLabel(t: AdminTranslator, status: AdminOrgTimeline['status']) {
+  switch (status) {
+    case 'DRAFT':
+      return t('organizations.timeline.status.draft');
+    case 'ACTIVE':
+      return t('organizations.timeline.status.active');
+    case 'PAUSED':
+      return t('organizations.timeline.status.paused');
+    case 'COMPLETED':
+      return t('organizations.timeline.status.completed');
+    default:
+      return status;
+  }
+}
+
+function phaseStatusLabel(t: AdminTranslator, status: string) {
+  switch (status) {
+    case 'PENDING':
+      return t('organizations.timeline.phaseStatus.pending');
+    case 'IN_PROGRESS':
+      return t('organizations.timeline.phaseStatus.inProgress');
+    case 'COMPLETED':
+      return t('organizations.timeline.phaseStatus.completed');
+    default:
+      return status;
+  }
+}
+
+function completionTypeLabel(t: AdminTranslator, completionType: string) {
+  switch (completionType) {
+    case 'MANUAL':
+      return t('organizations.timeline.completion.manual');
+    case 'AUTO_TASKS':
+      return t('organizations.timeline.completion.autoTasks');
+    case 'AUTO_POLICIES':
+      return t('organizations.timeline.completion.autoPolicies');
+    case 'AUTO_PEOPLE':
+      return t('organizations.timeline.completion.autoPeople');
+    case 'AUTO_FINDINGS':
+      return t('organizations.timeline.completion.autoFindings');
+    case 'AUTO_UPLOAD':
+      return t('organizations.timeline.completion.autoUpload');
+    default:
+      return completionType;
+  }
+}
 
 function formatDate(date: string | null): string {
   if (!date) return '--';
@@ -67,7 +106,7 @@ function formatDate(date: string | null): string {
 }
 
 type PhaseEntry =
-  | { type: 'ungrouped'; phase: AdminOrgTimeline['phases'][number] }
+  | { type: 'ungrouped'; phase: Phase }
   | { type: 'group'; label: string; phases: AdminOrgTimeline['phases'] };
 
 function buildPhaseEntries(phases: AdminOrgTimeline['phases']): PhaseEntry[] {
@@ -96,13 +135,14 @@ interface TimelineCardProps {
 }
 
 export function TimelineCard({ timeline, orgId, onMutate }: TimelineCardProps) {
+  const t = useTranslations('admin');
   const [actionLoading, setActionLoading] = useState(false);
   const [editingPhaseId, setEditingPhaseId] = useState<string | null>(null);
-  const badge = STATUS_BADGE[timeline.status];
+  const badgeVariant = STATUS_BADGE_VARIANT[timeline.status];
   const frameworkName =
     timeline.template?.name ??
     timeline.frameworkInstance?.framework.name ??
-    'Unknown Framework';
+    t('organizations.timeline.unknownFramework');
   const sortedPhases = [...timeline.phases].sort(
     (a, b) => a.orderIndex - b.orderIndex,
   );
@@ -133,11 +173,11 @@ export function TimelineCard({ timeline, orgId, onMutate }: TimelineCardProps) {
       title={frameworkName}
       actions={
         <div className="flex items-center gap-2">
-          <Badge variant={badge.variant}>{badge.label}</Badge>
+          <Badge variant={badgeVariant}>{timelineStatusLabel(t, timeline.status)}</Badge>
           {timeline.lockedAt ? (
             <Badge variant="outline">
               <Locked size={12} />
-              Locked
+              {t('organizations.timeline.locked')}
             </Badge>
           ) : null}
           <TimelineActions
@@ -147,25 +187,25 @@ export function TimelineCard({ timeline, orgId, onMutate }: TimelineCardProps) {
             timelineId={timeline.id}
             loading={actionLoading}
             onPause={() =>
-              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/pause`, 'Timeline paused')
+              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/pause`, t('organizations.timeline.toastPaused'))
             }
             onResume={() =>
-              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/resume`, 'Timeline resumed')
+              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/resume`, t('organizations.timeline.toastResumed'))
             }
             onReset={() =>
-              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/reset`, 'Timeline reset to draft')
+              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/reset`, t('organizations.timeline.toastReset'))
             }
             onDelete={() =>
-              runAction('delete', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}`, 'Timeline deleted')
+              runAction('delete', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}`, t('organizations.timeline.toastDeleted'))
             }
             onStartNextCycle={() =>
-              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/next-cycle`, 'Next cycle created as draft')
+              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/next-cycle`, t('organizations.timeline.toastNextCycle'))
             }
             onUnlock={(unlockReason) =>
               runAction(
                 'post',
                 `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/unlock`,
-                'Timeline unlocked',
+                t('organizations.timeline.toastUnlocked'),
                 { unlockReason },
               )
             }
@@ -229,10 +269,11 @@ function PhaseRow({
   editable,
   onEdit,
 }: {
-  phase: AdminOrgTimeline['phases'][number];
+  phase: Phase;
   editable: boolean;
   onEdit: () => void;
 }) {
+  const t = useTranslations('admin');
   const isCompleted = phase.status === 'COMPLETED';
   const isActive = phase.status === 'IN_PROGRESS';
   const borderClass = isCompleted
@@ -249,20 +290,24 @@ function PhaseRow({
       <div className="flex min-w-0 flex-1 flex-col">
         <span className="text-sm font-medium">{phase.name}</span>
         <span className="text-xs text-muted-foreground">
-          {phase.durationWeeks}w · {formatDate(phase.startDate)} - {formatDate(phase.endDate)}
+          {t('organizations.timeline.phaseDuration', {
+            weeks: phase.durationWeeks,
+            startDate: formatDate(phase.startDate),
+            endDate: formatDate(phase.endDate),
+          })}
         </span>
       </div>
       {phase.locksTimelineOnComplete ? (
         <Badge variant="outline">
           <Locked size={12} />
-          Lock
+          {t('organizations.timeline.lock')}
         </Badge>
       ) : null}
       <Badge variant="outline">
-        {PHASE_COMPLETION_LABEL[phase.completionType]}
+        {completionTypeLabel(t, phase.completionType)}
       </Badge>
       <Badge variant="outline">
-        {phase.status.replace('_', ' ')}
+        {phaseStatusLabel(t, phase.status)}
       </Badge>
       {editable && (
         <button
@@ -300,6 +345,7 @@ function ConfirmButton({
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const t = useTranslations('admin');
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -316,14 +362,14 @@ function ConfirmButton({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t('organizations.timeline.cancel')}</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
               setOpen(false);
               onConfirm();
             }}
           >
-            Confirm
+            {t('organizations.timeline.confirm')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

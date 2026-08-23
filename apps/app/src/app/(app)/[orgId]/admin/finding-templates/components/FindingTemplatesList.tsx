@@ -25,14 +25,19 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Add, Edit } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
-import { CATEGORY_LABELS, FINDING_TEMPLATE_CATEGORIES } from './constants';
+import {
+  FINDING_TEMPLATE_CATEGORIES,
+  findingTemplateCategoryLabel,
+} from './constants';
 import { DeleteTemplateDialog } from './DeleteTemplateDialog';
 import { TemplateFormDialog } from './TemplateFormDialog';
 
 const PAGE_SIZE = 10;
 
 export function FindingTemplatesList() {
+  const t = useTranslations('admin');
   const { templates, isLoading } = useAdminFindingTemplates();
 
   const [search, setSearch] = useState('');
@@ -74,9 +79,9 @@ export function FindingTemplatesList() {
 
   if (isLoading) {
     return (
-      <PageLayout header={<PageHeader title="Finding Templates" />}>
+      <PageLayout header={<PageHeader title={t('findingTemplates.list.title')} />}>
         <div className="flex items-center justify-center py-12 text-muted-foreground">
-          Loading templates...
+          {t('findingTemplates.list.loading')}
         </div>
       </PageLayout>
     );
@@ -86,10 +91,10 @@ export function FindingTemplatesList() {
     <PageLayout
       header={
         <PageHeader
-          title="Finding Templates"
+          title={t('findingTemplates.list.title')}
           actions={
             <Button size="sm" iconLeft={<Add size={16} />} onClick={openCreate}>
-              Add Template
+              {t('findingTemplates.list.addTemplate')}
             </Button>
           }
         />
@@ -104,7 +109,7 @@ export function FindingTemplatesList() {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              placeholder="Search title or content..."
+              placeholder={t('findingTemplates.list.searchPlaceholder')}
             />
           </div>
           <div className="w-56">
@@ -116,13 +121,13 @@ export function FindingTemplatesList() {
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="All categories" />
+                <SelectValue placeholder={t('findingTemplates.list.allCategories')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All categories</SelectItem>
-                {FINDING_TEMPLATE_CATEGORIES.map((category) => (
-                  <SelectItem key={category.value} value={category.value}>
-                    {category.label}
+                <SelectItem value="all">{t('findingTemplates.list.allCategories')}</SelectItem>
+                {FINDING_TEMPLATE_CATEGORIES.map((value) => (
+                  <SelectItem key={value} value={value}>
+                    {findingTemplateCategoryLabel(t, value)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -133,19 +138,19 @@ export function FindingTemplatesList() {
         {filtered.length === 0 ? (
           <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
             {templates.length === 0
-              ? "No finding templates yet. Click 'Add Template' to create one."
-              : 'No templates match your filters.'}
+              ? t('findingTemplates.list.emptyAll')
+              : t('findingTemplates.list.emptyFiltered')}
           </div>
         ) : (
           <>
             <Table variant="bordered">
               <TableHeader>
                 <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Content</TableHead>
-                  <TableHead>Order</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>{t('findingTemplates.list.colTitle')}</TableHead>
+                  <TableHead>{t('findingTemplates.list.colCategory')}</TableHead>
+                  <TableHead>{t('findingTemplates.list.colContent')}</TableHead>
+                  <TableHead>{t('findingTemplates.list.colOrder')}</TableHead>
+                  <TableHead>{t('findingTemplates.list.colActions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -158,7 +163,7 @@ export function FindingTemplatesList() {
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">
-                        {CATEGORY_LABELS[template.category] ?? template.category}
+                        {findingTemplateCategoryLabel(t, template.category)}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -177,14 +182,14 @@ export function FindingTemplatesList() {
                           iconLeft={<Edit size={16} />}
                           onClick={() => openEdit(template)}
                         >
-                          Edit
+                          {t('findingTemplates.list.edit')}
                         </Button>
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => setDeleteTarget(template)}
                         >
-                          Delete
+                          {t('findingTemplates.list.delete')}
                         </Button>
                       </div>
                     </TableCell>
@@ -196,8 +201,11 @@ export function FindingTemplatesList() {
             {filtered.length > PAGE_SIZE && (
               <div className="mt-4 flex items-center justify-between">
                 <Text size="sm" variant="muted">
-                  {pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, filtered.length)} of{' '}
-                  {filtered.length}
+                  {t('findingTemplates.list.paginationRange', {
+                    from: pageStart + 1,
+                    to: Math.min(pageStart + PAGE_SIZE, filtered.length),
+                    total: filtered.length,
+                  })}
                 </Text>
                 <div className="flex items-center gap-2">
                   <Button
@@ -206,10 +214,13 @@ export function FindingTemplatesList() {
                     disabled={currentPage <= 1}
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                   >
-                    Previous
+                    {t('findingTemplates.list.previous')}
                   </Button>
                   <Text size="sm" variant="muted">
-                    {currentPage} / {totalPages}
+                    {t('findingTemplates.list.pageInfo', {
+                      current: currentPage,
+                      total: totalPages,
+                    })}
                   </Text>
                   <Button
                     size="sm"
@@ -217,7 +228,7 @@ export function FindingTemplatesList() {
                     disabled={currentPage >= totalPages}
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   >
-                    Next
+                    {t('findingTemplates.list.next')}
                   </Button>
                 </div>
               </div>

@@ -1,5 +1,8 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 const mockGet = vi.fn();
 const mockPatch = vi.fn();
@@ -46,7 +49,7 @@ describe('PoliciesTab', () => {
   it('shows loading state initially', () => {
     mockGet.mockReturnValue(new Promise(() => {}));
     render(<PoliciesTab orgId="org_1" />);
-    expect(screen.getByText(/loading policies/i)).toBeInTheDocument();
+    expect(screen.getByText('organizations.policiesTab.loading')).toBeInTheDocument();
   });
 
   it('renders policies after loading', async () => {
@@ -67,7 +70,7 @@ describe('PoliciesTab', () => {
     render(<PoliciesTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(screen.getByText(/no policies/i)).toBeInTheDocument();
+      expect(screen.getByText('organizations.policiesTab.empty')).toBeInTheDocument();
     });
   });
 

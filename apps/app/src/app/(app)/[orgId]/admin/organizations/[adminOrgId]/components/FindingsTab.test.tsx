@@ -1,5 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 const mockGet = vi.fn();
 const mockPost = vi.fn();
@@ -58,7 +61,7 @@ describe('FindingsTab', () => {
   it('shows loading state initially', () => {
     mockGet.mockReturnValue(new Promise(() => {}));
     render(<FindingsTab orgId="org_1" />);
-    expect(screen.getByText(/loading findings/i)).toBeInTheDocument();
+    expect(screen.getByText('organizations.findingsTab.loading')).toBeInTheDocument();
   });
 
   it('renders findings after loading', async () => {
@@ -66,7 +69,7 @@ describe('FindingsTab', () => {
     render(<FindingsTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(screen.getByText(/findings \(2\)/i)).toBeInTheDocument();
+      expect(screen.getByText('organizations.findingsTab.title')).toBeInTheDocument();
     });
 
     expect(screen.getByText(/missing evidence screenshot/i)).toBeInTheDocument();
@@ -78,7 +81,7 @@ describe('FindingsTab', () => {
     render(<FindingsTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(screen.getByText(/no findings/i)).toBeInTheDocument();
+      expect(screen.getByText('organizations.findingsTab.empty')).toBeInTheDocument();
     });
   });
 
@@ -87,7 +90,7 @@ describe('FindingsTab', () => {
     render(<FindingsTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /log finding/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'organizations.findingsTab.logFinding' })).toBeInTheDocument();
     });
   });
 

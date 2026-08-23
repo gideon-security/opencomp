@@ -12,6 +12,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Label } from '@gideon-defender/ui/label';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 interface PolicyFormProps {
@@ -19,29 +20,61 @@ interface PolicyFormProps {
   onCreated: () => void;
 }
 
-const STATUS_OPTIONS = [
-  { value: 'draft', label: 'Draft' },
-  { value: 'published', label: 'Published' },
-  { value: 'needs_review', label: 'Needs Review' },
-];
+const STATUS_OPTIONS = ['draft', 'published', 'needs_review'];
+const DEPARTMENT_OPTIONS = ['none', 'admin', 'gov', 'hr', 'it', 'itsm', 'qms'];
+const FREQUENCY_OPTIONS = ['monthly', 'quarterly', 'yearly'];
 
-const DEPARTMENT_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'admin', label: 'Admin' },
-  { value: 'gov', label: 'Gov' },
-  { value: 'hr', label: 'HR' },
-  { value: 'it', label: 'IT' },
-  { value: 'itsm', label: 'ITSM' },
-  { value: 'qms', label: 'QMS' },
-];
+type AdminTranslator = ReturnType<typeof useTranslations<'admin'>>;
 
-const FREQUENCY_OPTIONS = [
-  { value: 'monthly', label: 'Monthly' },
-  { value: 'quarterly', label: 'Quarterly' },
-  { value: 'yearly', label: 'Yearly' },
-];
+function statusLabel(t: AdminTranslator, value: string) {
+  switch (value) {
+    case 'draft':
+      return t('organizations.policyForm.statuses.draft');
+    case 'published':
+      return t('organizations.policyForm.statuses.published');
+    case 'needs_review':
+      return t('organizations.policyForm.statuses.needsReview');
+    default:
+      return value;
+  }
+}
+
+function departmentLabel(t: AdminTranslator, value: string) {
+  switch (value) {
+    case 'none':
+      return t('organizations.policyForm.departments.none');
+    case 'admin':
+      return t('organizations.policyForm.departments.admin');
+    case 'gov':
+      return t('organizations.policyForm.departments.gov');
+    case 'hr':
+      return t('organizations.policyForm.departments.hr');
+    case 'it':
+      return t('organizations.policyForm.departments.it');
+    case 'itsm':
+      return t('organizations.policyForm.departments.itsm');
+    case 'qms':
+      return t('organizations.policyForm.departments.qms');
+    default:
+      return value;
+  }
+}
+
+function frequencyLabel(t: AdminTranslator, value: string) {
+  switch (value) {
+    case 'monthly':
+      return t('organizations.policyForm.frequencies.monthly');
+    case 'quarterly':
+      return t('organizations.policyForm.frequencies.quarterly');
+    case 'yearly':
+      return t('organizations.policyForm.frequencies.yearly');
+    default:
+      return value;
+  }
+}
 
 export function PolicyForm({ orgId, onCreated }: PolicyFormProps) {
+  const t = useTranslations('admin');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('');
@@ -80,37 +113,41 @@ export function PolicyForm({ orgId, onCreated }: PolicyFormProps) {
     <form onSubmit={handleSubmit}>
       <Stack gap="md">
         <div>
-          <Label htmlFor="policy-name">Name</Label>
+          <Label htmlFor="policy-name">{t('organizations.policyForm.nameLabel')}</Label>
           <Input
             id="policy-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Policy name..."
+            placeholder={t('organizations.policyForm.namePlaceholder')}
           />
         </div>
 
         <div>
-          <Label htmlFor="policy-description">Description (optional)</Label>
+          <Label htmlFor="policy-description">
+            {t('organizations.policyForm.descriptionLabel')}
+          </Label>
           <Input
             id="policy-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Brief description..."
+            placeholder={t('organizations.policyForm.descriptionPlaceholder')}
           />
         </div>
 
         <div>
-          <Label>Status</Label>
+          <Label>{t('organizations.policyForm.statusLabel')}</Label>
           <Select value={status} onValueChange={(val) => { if (val) setStatus(val); }}>
             <SelectTrigger>
               <span className="text-sm">
-                {STATUS_OPTIONS.find((o) => o.value === status)?.label ?? 'Draft (default)'}
+                {status
+                  ? statusLabel(t, status)
+                  : t('organizations.policyForm.statusDefault')}
               </span>
             </SelectTrigger>
             <SelectContent>
               {STATUS_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
+                <SelectItem key={opt} value={opt}>
+                  {statusLabel(t, opt)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -118,17 +155,19 @@ export function PolicyForm({ orgId, onCreated }: PolicyFormProps) {
         </div>
 
         <div>
-          <Label>Department</Label>
+          <Label>{t('organizations.policyForm.departmentLabel')}</Label>
           <Select value={department} onValueChange={(val) => { if (val) setDepartment(val); }}>
             <SelectTrigger>
               <span className="text-sm">
-                {DEPARTMENT_OPTIONS.find((o) => o.value === department)?.label ?? 'None (default)'}
+                {department
+                  ? departmentLabel(t, department)
+                  : t('organizations.policyForm.departmentDefault')}
               </span>
             </SelectTrigger>
             <SelectContent>
               {DEPARTMENT_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
+                <SelectItem key={opt} value={opt}>
+                  {departmentLabel(t, opt)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -136,17 +175,19 @@ export function PolicyForm({ orgId, onCreated }: PolicyFormProps) {
         </div>
 
         <div>
-          <Label>Frequency</Label>
+          <Label>{t('organizations.policyForm.frequencyLabel')}</Label>
           <Select value={frequency} onValueChange={(val) => { if (val) setFrequency(val); }}>
             <SelectTrigger>
               <span className="text-sm">
-                {FREQUENCY_OPTIONS.find((o) => o.value === frequency)?.label ?? 'No frequency'}
+                {frequency
+                  ? frequencyLabel(t, frequency)
+                  : t('organizations.policyForm.frequencyDefault')}
               </span>
             </SelectTrigger>
             <SelectContent>
               {FREQUENCY_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
+                <SelectItem key={opt} value={opt}>
+                  {frequencyLabel(t, opt)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -160,7 +201,7 @@ export function PolicyForm({ orgId, onCreated }: PolicyFormProps) {
         )}
 
         <Button type="submit" loading={submitting} disabled={!name.trim()}>
-          Create Policy
+          {t('organizations.policyForm.submit')}
         </Button>
       </Stack>
     </form>

@@ -20,6 +20,7 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { Controller, useForm } from 'react-hook-form';
 import type { IsmsAudit, IsmsAuditControl } from '../isms-types';
 import { AuditControlRow, type RaisedResult } from './AuditControlRow';
@@ -59,36 +60,34 @@ export function AuditControlsTable({
   onDeleteControl,
   onResultRaised,
 }: AuditControlsTableProps) {
+  const t = useTranslations('isms');
   const controls = audit.controls;
 
   return (
     <Stack gap="3">
       <HStack align="center" gap="2">
-        <Heading level="5">Controls Tested</Heading>
+        <Heading level="5">{t('auditControls.title')}</Heading>
         <Badge variant="secondary">{String(controls.length)}</Badge>
       </HStack>
       <Text size="sm" variant="muted">
-        For each row: open the &quot;Where to find it&quot; location, verify the content is present
-        and appropriate, then record a result. Mark rows deliberately skipped as &quot;Not sampled
-        this cycle&quot; — they still render in the document to show the sample was scoped on
-        purpose.
+        {t('auditControls.description')}
       </Text>
 
       {controls.length === 0 ? (
         <Text size="sm" variant="muted">
-          No controls recorded for this audit.
+          {t('auditControls.empty')}
         </Text>
       ) : (
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Control reference</TableHead>
-                <TableHead>What was tested</TableHead>
-                <TableHead>Where to find it</TableHead>
-                <TableHead>Result</TableHead>
-                <TableHead>Notes</TableHead>
-                {canEdit ? <TableHead aria-label="Actions" /> : null}
+                <TableHead>{t('auditControls.columns.controlRef')}</TableHead>
+                <TableHead>{t('auditControls.columns.whatWasTested')}</TableHead>
+                <TableHead>{t('auditControls.columns.whereToFind')}</TableHead>
+                <TableHead>{t('auditControls.columns.result')}</TableHead>
+                <TableHead>{t('auditControls.columns.notes')}</TableHead>
+                {canEdit ? <TableHead aria-label={t('auditControls.actions')} /> : null}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -108,7 +107,7 @@ export function AuditControlsTable({
       )}
 
       {canEdit ? (
-        <IsmsAddCard addLabel="Add control row" formTitle="New control row">
+        <IsmsAddCard addLabel={t('auditControls.addRow')} formTitle={t('auditControls.newFormTitle')}>
           {({ close }) => <AddControlForm onAdd={onCreateControl} onClose={close} />}
         </IsmsAddCard>
       ) : null}
@@ -123,6 +122,7 @@ function AddControlForm({
   onAdd: (values: AuditControlFormValues) => Promise<void>;
   onClose: () => void;
 }) {
+  const t = useTranslations('isms');
   const {
     control,
     handleSubmit,
@@ -146,7 +146,7 @@ function AddControlForm({
 
   return (
     <form onSubmit={handleAdd} className="flex flex-col gap-3">
-      <IsmsFieldLabel label="Control reference">
+      <IsmsFieldLabel label={t('auditControls.form.controlRef')}>
         <Field>
           <Controller
             control={control}
@@ -155,8 +155,8 @@ function AddControlForm({
               <>
                 <Input
                   {...field}
-                  aria-label="Control reference"
-                  placeholder="e.g. A.8.16 Monitoring activities"
+                  aria-label={t('auditControls.form.controlRef')}
+                  placeholder={t('auditControls.form.controlRefPlaceholder')}
                 />
                 <FieldError>{fieldState.error?.message}</FieldError>
               </>
@@ -164,29 +164,29 @@ function AddControlForm({
           />
         </Field>
       </IsmsFieldLabel>
-      <IsmsFieldLabel label="What was tested">
+      <IsmsFieldLabel label={t('auditControls.form.whatWasTested')}>
         <Controller
           control={control}
           name="whatWasTested"
           render={({ field: { ref: _ref, ...field } }) => (
-            <Input {...field} aria-label="What was tested" />
+            <Input {...field} aria-label={t('auditControls.form.whatWasTested')} />
           )}
         />
       </IsmsFieldLabel>
-      <IsmsFieldLabel label="Where to find it">
+      <IsmsFieldLabel label={t('auditControls.form.whereToFind')}>
         <Controller
           control={control}
           name="whereToFind"
           render={({ field: { ref: _ref, ...field } }) => (
             <Input
               {...field}
-              aria-label="Where to find it"
-              placeholder="OpenComp > ... or an external location"
+              aria-label={t('auditControls.form.whereToFind')}
+              placeholder={t('auditControls.form.whereToFindPlaceholder')}
             />
           )}
         />
       </IsmsFieldLabel>
-      <IsmsFieldLabel label="Notes (optional)">
+      <IsmsFieldLabel label={t('auditControls.form.notesOptional')}>
         <Controller
           control={control}
           name="notes"
@@ -194,8 +194,8 @@ function AddControlForm({
             <Textarea
               {...field}
               rows={2}
-              aria-label="Notes"
-              placeholder="External evidence, dates, or auditor commentary"
+              aria-label={t('auditControls.form.notes')}
+              placeholder={t('auditControls.form.notesPlaceholder')}
             />
           )}
         />
@@ -209,7 +209,7 @@ function AddControlForm({
           disabled={isSubmitting}
           iconLeft={<Add size={16} />}
         >
-          Add control row
+          {t('auditControls.addRow')}
         </Button>
       </HStack>
     </form>

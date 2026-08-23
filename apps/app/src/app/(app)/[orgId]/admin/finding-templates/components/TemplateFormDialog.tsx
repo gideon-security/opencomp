@@ -24,20 +24,28 @@ import {
   Text,
   Textarea,
 } from '@trycompai/design-system';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { FINDING_TEMPLATE_CATEGORIES } from './constants';
+import {
+  FINDING_TEMPLATE_CATEGORIES,
+  findingTemplateCategoryLabel,
+} from './constants';
 
-const templateSchema = z.object({
-  category: z.string().min(1, 'Category is required'),
-  title: z.string().min(1, 'Title is required').max(500),
-  content: z.string().min(1, 'Content is required').max(50000),
-  order: z.number().int().min(0),
-});
+type AdminTranslator = ReturnType<typeof useTranslations<'admin'>>;
 
-type TemplateFormValues = z.infer<typeof templateSchema>;
+function createTemplateSchema(t: AdminTranslator) {
+  return z.object({
+    category: z.string().min(1, t('findingTemplates.form.validation.categoryRequired')),
+    title: z.string().min(1, t('findingTemplates.form.validation.titleRequired')).max(500),
+    content: z.string().min(1, t('findingTemplates.form.validation.contentRequired')).max(50000),
+    order: z.number().int().min(0),
+  });
+}
+
+type TemplateFormValues = z.infer<ReturnType<typeof createTemplateSchema>>;
 
 interface TemplateFormDialogProps {
   open: boolean;
@@ -46,16 +54,19 @@ interface TemplateFormDialogProps {
 }
 
 const emptyDefaults: TemplateFormValues = {
-  category: FINDING_TEMPLATE_CATEGORIES[0].value,
+  category: FINDING_TEMPLATE_CATEGORIES[0],
   title: '',
   content: '',
   order: 0,
 };
 
 export function TemplateFormDialog({ open, template, onClose }: TemplateFormDialogProps) {
+  const t = useTranslations('admin');
   const { mutate } = useAdminFindingTemplates();
   const [saving, setSaving] = useState(false);
   const isEdit = Boolean(template);
+
+  const templateSchema = useMemo(() => createTemplateSchema(t), [t]);
 
   const {
     register,
@@ -95,7 +106,11 @@ export function TemplateFormDialog({ open, template, onClose }: TemplateFormDial
       return;
     }
 
-    toast.success(isEdit ? 'Template updated' : 'Template created');
+    toast.success(
+      isEdit
+        ? t('findingTemplates.form.toastUpdated')
+        : t('findingTemplates.form.toastCreated'),
+    );
     mutate();
     onClose();
   };
@@ -104,25 +119,29 @@ export function TemplateFormDialog({ open, template, onClose }: TemplateFormDial
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>{isEdit ? 'Edit Template' : 'New Template'}</SheetTitle>
+          <SheetTitle>
+            {isEdit
+              ? t('findingTemplates.form.editTitle')
+              : t('findingTemplates.form.newTitle')}
+          </SheetTitle>
         </SheetHeader>
         <SheetBody>
           <form onSubmit={handleSubmit(handleSave)}>
             <Stack gap="md">
               <div className="flex flex-col gap-1.5">
-                <Label>Category</Label>
+                <Label>{t('findingTemplates.form.category')}</Label>
                 <Controller
                   control={control}
                   name="category"
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
+                        <SelectValue placeholder={t('findingTemplates.form.categoryPlaceholder')} />
                       </SelectTrigger>
                       <SelectContent>
-                        {FINDING_TEMPLATE_CATEGORIES.map((category) => (
-                          <SelectItem key={category.value} value={category.value}>
-                            {category.label}
+                        {FINDING_TEMPLATE_CATEGORIES.map((value) => (
+                          <SelectItem key={value} value={value}>
+                            {findingTemplateCategoryLabel(t, value)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -137,8 +156,12 @@ export function TemplateFormDialog({ open, template, onClose }: TemplateFormDial
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="ft-title">Title</Label>
-                <Input id="ft-title" {...register('title')} placeholder="Template title" />
+                <Label htmlFor="ft-title">{t('findingTemplates.form.titleLabel')}</Label>
+                <Input
+                  id="ft-title"
+                  {...register('title')}
+                  placeholder={t('findingTemplates.form.titlePlaceholder')}
+                />
                 {errors.title && (
                   <Text size="xs" variant="destructive">
                     {errors.title.message}
@@ -147,12 +170,12 @@ export function TemplateFormDialog({ open, template, onClose }: TemplateFormDial
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="ft-content">Content</Label>
+                <Label htmlFor="ft-content">{t('findingTemplates.form.contentLabel')}</Label>
                 <Textarea
                   id="ft-content"
                   rows={6}
                   {...register('content')}
-                  placeholder="Template content..."
+                  placeholder={t('findingTemplates.form.contentPlaceholder')}
                 />
                 {errors.content && (
                   <Text size="xs" variant="destructive">
@@ -162,7 +185,7 @@ export function TemplateFormDialog({ open, template, onClose }: TemplateFormDial
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="ft-order">Order</Label>
+                <Label htmlFor="ft-order">{t('findingTemplates.form.orderLabel')}</Label>
                 <Input
                   id="ft-order"
                   type="number"
@@ -177,7 +200,9 @@ export function TemplateFormDialog({ open, template, onClose }: TemplateFormDial
               </div>
 
               <Button type="submit" loading={saving}>
-                {isEdit ? 'Save Changes' : 'Create'}
+                {isEdit
+                  ? t('findingTemplates.form.saveChanges')
+                  : t('findingTemplates.form.create')}
               </Button>
             </Stack>
           </form>

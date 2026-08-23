@@ -13,6 +13,7 @@ import {
 } from '@trycompai/design-system';
 import { Label } from '@gideon-defender/ui/label';
 import { Textarea } from '@gideon-defender/ui/textarea';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 interface TaskFormProps {
@@ -20,32 +21,67 @@ interface TaskFormProps {
   onCreated: () => void;
 }
 
-const STATUS_OPTIONS = [
-  { value: 'todo', label: 'To Do' },
-  { value: 'in_progress', label: 'In Progress' },
-  { value: 'in_review', label: 'In Review' },
-  { value: 'done', label: 'Done' },
-];
+const STATUS_OPTIONS = ['todo', 'in_progress', 'in_review', 'done'];
+const DEPARTMENT_OPTIONS = ['none', 'admin', 'gov', 'hr', 'it', 'itsm', 'qms'];
+const FREQUENCY_OPTIONS = ['daily', 'weekly', 'monthly', 'quarterly', 'yearly'];
 
-const DEPARTMENT_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'admin', label: 'Admin' },
-  { value: 'gov', label: 'Gov' },
-  { value: 'hr', label: 'HR' },
-  { value: 'it', label: 'IT' },
-  { value: 'itsm', label: 'ITSM' },
-  { value: 'qms', label: 'QMS' },
-];
+type AdminTranslator = ReturnType<typeof useTranslations<'admin'>>;
 
-const FREQUENCY_OPTIONS = [
-  { value: 'daily', label: 'Daily' },
-  { value: 'weekly', label: 'Weekly' },
-  { value: 'monthly', label: 'Monthly' },
-  { value: 'quarterly', label: 'Quarterly' },
-  { value: 'yearly', label: 'Yearly' },
-];
+function statusLabel(t: AdminTranslator, value: string) {
+  switch (value) {
+    case 'todo':
+      return t('organizations.taskForm.statuses.todo');
+    case 'in_progress':
+      return t('organizations.taskForm.statuses.inProgress');
+    case 'in_review':
+      return t('organizations.taskForm.statuses.inReview');
+    case 'done':
+      return t('organizations.taskForm.statuses.done');
+    default:
+      return value;
+  }
+}
+
+function departmentLabel(t: AdminTranslator, value: string) {
+  switch (value) {
+    case 'none':
+      return t('organizations.taskForm.departments.none');
+    case 'admin':
+      return t('organizations.taskForm.departments.admin');
+    case 'gov':
+      return t('organizations.taskForm.departments.gov');
+    case 'hr':
+      return t('organizations.taskForm.departments.hr');
+    case 'it':
+      return t('organizations.taskForm.departments.it');
+    case 'itsm':
+      return t('organizations.taskForm.departments.itsm');
+    case 'qms':
+      return t('organizations.taskForm.departments.qms');
+    default:
+      return value;
+  }
+}
+
+function frequencyLabel(t: AdminTranslator, value: string) {
+  switch (value) {
+    case 'daily':
+      return t('organizations.taskForm.frequencies.daily');
+    case 'weekly':
+      return t('organizations.taskForm.frequencies.weekly');
+    case 'monthly':
+      return t('organizations.taskForm.frequencies.monthly');
+    case 'quarterly':
+      return t('organizations.taskForm.frequencies.quarterly');
+    case 'yearly':
+      return t('organizations.taskForm.frequencies.yearly');
+    default:
+      return value;
+  }
+}
 
 export function TaskForm({ orgId, onCreated }: TaskFormProps) {
+  const t = useTranslations('admin');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('');
@@ -88,38 +124,42 @@ export function TaskForm({ orgId, onCreated }: TaskFormProps) {
     <form onSubmit={handleSubmit}>
       <Stack gap="md">
         <div>
-          <Label htmlFor="task-title">Title</Label>
+          <Label htmlFor="task-title">{t('organizations.taskForm.titleLabel')}</Label>
           <Input
             id="task-title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Task title..."
+            placeholder={t('organizations.taskForm.titlePlaceholder')}
           />
         </div>
 
         <div>
-          <Label htmlFor="task-description">Description</Label>
+          <Label htmlFor="task-description">
+            {t('organizations.taskForm.descriptionLabel')}
+          </Label>
           <Textarea
             id="task-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe the task..."
+            placeholder={t('organizations.taskForm.descriptionPlaceholder')}
             rows={3}
           />
         </div>
 
         <div>
-          <Label>Status</Label>
+          <Label>{t('organizations.taskForm.statusLabel')}</Label>
           <Select value={status} onValueChange={(val) => { if (val) setStatus(val); }}>
             <SelectTrigger>
               <span className="text-sm">
-                {STATUS_OPTIONS.find((o) => o.value === status)?.label ?? 'To Do (default)'}
+                {status
+                  ? statusLabel(t, status)
+                  : t('organizations.taskForm.statusDefault')}
               </span>
             </SelectTrigger>
             <SelectContent>
               {STATUS_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
+                <SelectItem key={opt} value={opt}>
+                  {statusLabel(t, opt)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -127,17 +167,19 @@ export function TaskForm({ orgId, onCreated }: TaskFormProps) {
         </div>
 
         <div>
-          <Label>Department</Label>
+          <Label>{t('organizations.taskForm.departmentLabel')}</Label>
           <Select value={department} onValueChange={(val) => { if (val) setDepartment(val); }}>
             <SelectTrigger>
               <span className="text-sm">
-                {DEPARTMENT_OPTIONS.find((o) => o.value === department)?.label ?? 'None (default)'}
+                {department
+                  ? departmentLabel(t, department)
+                  : t('organizations.taskForm.departmentDefault')}
               </span>
             </SelectTrigger>
             <SelectContent>
               {DEPARTMENT_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
+                <SelectItem key={opt} value={opt}>
+                  {departmentLabel(t, opt)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -145,17 +187,19 @@ export function TaskForm({ orgId, onCreated }: TaskFormProps) {
         </div>
 
         <div>
-          <Label>Frequency</Label>
+          <Label>{t('organizations.taskForm.frequencyLabel')}</Label>
           <Select value={frequency} onValueChange={(val) => { if (val) setFrequency(val); }}>
             <SelectTrigger>
               <span className="text-sm">
-                {FREQUENCY_OPTIONS.find((o) => o.value === frequency)?.label ?? 'No frequency'}
+                {frequency
+                  ? frequencyLabel(t, frequency)
+                  : t('organizations.taskForm.frequencyDefault')}
               </span>
             </SelectTrigger>
             <SelectContent>
               {FREQUENCY_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
+                <SelectItem key={opt} value={opt}>
+                  {frequencyLabel(t, opt)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -169,7 +213,7 @@ export function TaskForm({ orgId, onCreated }: TaskFormProps) {
         )}
 
         <Button type="submit" loading={submitting} disabled={!isValid}>
-          Create Task
+          {t('organizations.taskForm.submit')}
         </Button>
       </Stack>
     </form>

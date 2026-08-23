@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
 import { InterestedPartiesTable } from './InterestedPartiesTable';
@@ -17,15 +18,17 @@ interface InterestedPartiesClientProps {
 const REGISTER = 'interested-parties' as const;
 
 export function InterestedPartiesClient(props: InterestedPartiesClientProps) {
+  const t = useTranslations('isms');
+
   return (
     <IsmsDocumentShell
       {...props}
       clause="4.2"
-      title="Interested Parties Register"
-      description="Capture the interested parties relevant to the ISMS and their needs and expectations (ISO 27001 clause 4.2a). Generate from your platform data, then edit or add parties as needed."
-      sectionTitle="Interested parties"
-      sectionDescription="Parties with a stake in the ISMS and their information-security needs and expectations."
-      generateSuccessMessage="Generated interested parties from platform data"
+      title={t('interestedParties.title')}
+      description={t('interestedParties.description')}
+      sectionTitle={t('interestedParties.sectionTitle')}
+      sectionDescription={t('interestedParties.sectionDescription')}
+      generateSuccessMessage={t('interestedParties.generatedSuccess')}
     >
       {({ document, canManage, hook }) => {
         const handleCreateParty = async (input: {
@@ -35,9 +38,13 @@ export function InterestedPartiesClient(props: InterestedPartiesClientProps) {
         }) => {
           try {
             await hook.createRow({ register: REGISTER, data: { ...input } });
-            toast.success('Interested party added');
+            toast.success(t('interestedParties.partyAdded'));
           } catch (caught) {
-            toast.error(caught instanceof Error ? caught.message : 'Failed to add interested party');
+            toast.error(
+              caught instanceof Error
+                ? caught.message
+                : t('interestedParties.partyAddFailed'),
+            );
             // Re-throw so the form keeps the user's input and stays open on failure.
             throw caught;
           }
@@ -49,10 +56,12 @@ export function InterestedPartiesClient(props: InterestedPartiesClientProps) {
         }) => {
           try {
             await hook.updateRow({ register: REGISTER, id: params.partyId, data: { ...params.input } });
-            toast.success('Interested party updated');
+            toast.success(t('interestedParties.partyUpdated'));
           } catch (caught) {
             toast.error(
-              caught instanceof Error ? caught.message : 'Failed to update interested party',
+              caught instanceof Error
+                ? caught.message
+                : t('interestedParties.partyUpdateFailed'),
             );
             // Re-throw so the row stays in edit mode with the user's changes on failure.
             throw caught;
@@ -62,10 +71,12 @@ export function InterestedPartiesClient(props: InterestedPartiesClientProps) {
         const handleDeleteParty = async (partyId: string) => {
           try {
             await hook.deleteRow({ register: REGISTER, id: partyId });
-            toast.success('Interested party deleted');
+            toast.success(t('interestedParties.partyDeleted'));
           } catch (caught) {
             toast.error(
-              caught instanceof Error ? caught.message : 'Failed to delete interested party',
+              caught instanceof Error
+                ? caught.message
+                : t('interestedParties.partyDeleteFailed'),
             );
             // Re-throw so the row's delete state resets only after a real outcome.
             throw caught;

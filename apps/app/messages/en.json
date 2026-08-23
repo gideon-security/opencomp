@@ -2993,6 +2993,159 @@
           "placeholder": "How leadership commitment to the ISMS is evidenced and communicated across the organization."
         }
       }
+    },
+    "auditControls": {
+      "title": "Controls Tested",
+      "description": "For each row: open the \"Where to find it\" location, verify the content is present and appropriate, then record a result. Mark rows deliberately skipped as \"Not sampled this cycle\" — they still render in the document to show the sample was scoped on purpose.",
+      "empty": "No controls recorded for this audit.",
+      "columns": {
+        "controlRef": "Control reference",
+        "whatWasTested": "What was tested",
+        "whereToFind": "Where to find it",
+        "result": "Result",
+        "notes": "Notes"
+      },
+      "actions": "Actions",
+      "addRow": "Add control row",
+      "newFormTitle": "New control row",
+      "form": {
+        "controlRef": "Control reference",
+        "controlRefPlaceholder": "e.g. A.8.16 Monitoring activities",
+        "whatWasTested": "What was tested",
+        "whereToFind": "Where to find it",
+        "whereToFindPlaceholder": "OpenComp > ... or an external location",
+        "notesOptional": "Notes (optional)",
+        "notes": "Notes",
+        "notesPlaceholder": "External evidence, dates, or auditor commentary"
+      }
+    },
+    "carriedForward": {
+      "title": "Carried forward from previous reviews",
+      "description": "Open actions from earlier reviews — discuss them under input (a) and close them on their originating review.",
+      "columns": {
+        "reference": "Reference",
+        "description": "Description",
+        "owner": "Owner",
+        "dueDate": "Due date",
+        "status": "Status"
+      },
+      "unknownMember": "Unknown member",
+      "formerMember": "Former member"
+    },
+    "contextOrg": {
+      "title": "Context of the Organization",
+      "description": "Capture the internal and external issues relevant to the ISMS and their effect on its objectives (ISO 27001 clause 4.1). Generate from your platform data, then edit or add issues as needed.",
+      "sectionTitle": "Issues register",
+      "sectionDescription": "Internal and external issues that affect the ISMS, grouped by origin.",
+      "generatedSuccess": "Generated issues from platform data",
+      "issueAdded": "Issue added",
+      "issueAddFailed": "Failed to add issue",
+      "issueUpdated": "Issue updated",
+      "issueUpdateFailed": "Failed to update issue",
+      "issueDeleted": "Issue deleted",
+      "issueDeleteFailed": "Failed to delete issue"
+    },
+    "approval": {
+      "defaultApprover": "an approver",
+      "approvedPublishedTitle": "Approved · Published as v{version}",
+      "approvedTitle": "Approved",
+      "approvedByDated": "This document was approved by {approver} on {date}.",
+      "approvedBy": "This document was approved by {approver}.",
+      "draftChangesTitle": "Editing creates a new draft",
+      "draftChangesDescription": "Published version v{version} stays live and exportable. Your changes are an in-progress draft (v{nextVersion}) — submit it for approval to publish.",
+      "declinedTitle": "Declined",
+      "declinedByDated": "This document was declined by {approver} on {date}.",
+      "declinedBy": "This document was declined by {approver}.",
+      "resubmitHint": "You can submit it for approval again.",
+      "actionRequiredTitle": "Action required by you",
+      "actionRequiredDescription": "This document is awaiting your approval.",
+      "approve": "Approve",
+      "decline": "Decline",
+      "pendingTitle": "Pending approval",
+      "pendingApprover": "This document is awaiting approval from {approver}.",
+      "resubmitForApproval": "Resubmit for approval",
+      "submitForApproval": "Submit for approval",
+      "dialogTitle": "Submit for approval",
+      "dialogDescription": "Select an approver for this document.",
+      "approverAria": "Approver",
+      "approverPlaceholder": "Select an approver",
+      "cancel": "Cancel",
+      "submitting": "Submitting...",
+      "confirmSubmit": "Confirm & Submit"
+    },
+    "controlMappings": {
+      "linkedSuccess": "Control linked successfully",
+      "linkFailed": "Failed to link control",
+      "unlinkedSuccess": "Control unlinked successfully",
+      "unlinkFailed": "Failed to unlink control",
+      "sectionTitle": "Linked controls",
+      "sectionDescription": "Controls relevant to this ISMS document.",
+      "emptyTitle": "No controls linked",
+      "emptyDescription": "No controls linked yet.",
+      "unlinkAria": "Unlink {name}",
+      "unlinkTitle": "Unlink control",
+      "dialogTitle": "Unlink control",
+      "dialogDescription": "Unlink {name} from this document? You can link it again later.",
+      "cancel": "Cancel",
+      "unlink": "Unlink",
+      "linkControl": "Link control",
+      "searchPlaceholder": "Search controls...",
+      "noControlsFound": "No controls found."
+    },
+    "requirements": {
+      "title": "Interested Parties Requirements & ISMS Treatment",
+      "description": "Capture the requirements of interested parties relevant to information security and how the ISMS addresses each one (ISO 27001 clauses 4.2b and 4.2c). Generate from your platform data, then edit or add requirements as needed.",
+      "sectionTitle": "Requirements & treatment",
+      "sectionDescription": "Each interested-party requirement and how the ISMS treats it.",
+      "generatedSuccess": "Generated requirements from platform data",
+      "requirementAdded": "Requirement added",
+      "requirementAddFailed": "Failed to add requirement",
+      "requirementUpdated": "Requirement updated",
+      "requirementUpdateFailed": "Failed to update requirement",
+      "requirementDeleted": "Requirement deleted",
+      "requirementDeleteFailed": "Failed to delete requirement"
+    },
+    "sourceBadge": {
+      "autoDerived": "Auto-derived",
+      "framework": "Framework",
+      "interestedParty": "Interested party",
+      "wizard": "Setup wizard",
+      "manual": "Manual",
+      "provenance": {
+        "vendors": "Vendor register",
+        "subprocessors": "Sub-processors",
+        "members": "Workforce",
+        "devices": "Devices",
+        "customers": "Customers",
+        "risks": "Risk register",
+        "training": "Training records"
+      }
+    },
+    "interestedParties": {
+      "title": "Interested Parties Register",
+      "description": "Capture the interested parties relevant to the ISMS and their needs and expectations (ISO 27001 clause 4.2a). Generate from your platform data, then edit or add parties as needed.",
+      "sectionTitle": "Interested parties",
+      "sectionDescription": "Parties with a stake in the ISMS and their information-security needs and expectations.",
+      "generatedSuccess": "Generated interested parties from platform data",
+      "partyAdded": "Interested party added",
+      "partyAddFailed": "Failed to add interested party",
+      "partyUpdated": "Interested party updated",
+      "partyUpdateFailed": "Failed to update interested party",
+      "partyDeleted": "Interested party deleted",
+      "partyDeleteFailed": "Failed to delete interested party"
+    },
+    "objectives": {
+      "title": "Information Security Objectives and Plan",
+      "description": "Define the information security objectives and the plans to achieve them (ISO 27001 clause 6.2). Generate from your platform data, then edit owners, targets, cadence and status as needed.",
+      "sectionTitle": "Objectives & plan",
+      "sectionDescription": "Measurable information-security objectives with owners, targets, and review cadence.",
+      "generatedSuccess": "Generated objectives from platform data",
+      "objectiveAdded": "Objective added",
+      "objectiveAddFailed": "Failed to add objective",
+      "objectiveUpdated": "Objective updated",
+      "objectiveUpdateFailed": "Failed to update objective",
+      "objectiveDeleted": "Objective deleted",
+      "objectiveDeleteFailed": "Failed to delete objective"
     }
   },
   "tasks": {
@@ -3588,6 +3741,207 @@
         "amount": "Amount",
         "created": "Created",
         "recoveryLink": "Recovery link"
+      },
+      "contextTab": {
+        "loading": "Loading context...",
+        "title": "Context ({count})",
+        "addContext": "Add Context",
+        "empty": "No context entries for this organization.",
+        "colQuestion": "Question",
+        "colAnswer": "Answer",
+        "colActions": "Actions",
+        "edit": "Edit",
+        "editTitle": "Edit Context",
+        "question": "Question",
+        "questionPlaceholder": "What is the question?",
+        "answer": "Answer",
+        "answerPlaceholder": "Provide the answer...",
+        "saveChanges": "Save Changes",
+        "create": "Create"
+      },
+      "featureFlagsTab": {
+        "toastEnabled": "\"{name}\" enabled for this organization",
+        "toastDisabled": "\"{name}\" disabled for this organization",
+        "toastUpdateFailed": "Failed to update feature flag",
+        "loading": "Loading feature flags…",
+        "loadError": "Failed to load feature flags",
+        "unknownError": "Unknown error",
+        "emptyTitle": "No feature flags found",
+        "emptyDescPrefix": "Create a feature flag in PostHog and set",
+        "emptyDescMiddle": "and",
+        "emptyDescSuffix": "on the API to manage it here.",
+        "searchPlaceholder": "Search flags...",
+        "refresh": "Refresh from PostHog",
+        "noMatch": "No flags match your search.",
+        "inactiveInPosthog": "Inactive in PostHog",
+        "inactiveBadge": "Inactive"
+      },
+      "findingsTab": {
+        "toastDeleted": "Finding deleted",
+        "loading": "Loading findings...",
+        "title": "Findings ({count})",
+        "logFinding": "Log Finding",
+        "empty": "No findings for this organization.",
+        "colContent": "Content",
+        "colTarget": "Target",
+        "colSeverity": "Severity",
+        "colCreatedBy": "Created By",
+        "colStatus": "Status",
+        "colActions": "Actions",
+        "deleteTitle": "Delete finding?",
+        "deleteDescription": "This permanently removes the finding and its activity history. This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleting": "Deleting…",
+        "delete": "Delete"
+      },
+      "policiesTab": {
+        "statuses": {
+          "draft": "Draft",
+          "published": "Published",
+          "needsReview": "Needs Review"
+        },
+        "departments": {
+          "none": "None",
+          "admin": "Admin",
+          "gov": "Gov",
+          "hr": "HR",
+          "it": "IT",
+          "itsm": "ITSM",
+          "qms": "QMS"
+        },
+        "frequencies": {
+          "monthly": "Monthly",
+          "quarterly": "Quarterly",
+          "yearly": "Yearly"
+        },
+        "loading": "Loading policies...",
+        "title": "Policies ({count})",
+        "createPolicy": "Create Policy",
+        "empty": "No policies for this organization.",
+        "colName": "Name",
+        "colStatus": "Status",
+        "colDepartment": "Department",
+        "colFrequency": "Frequency",
+        "colAssignee": "Assignee",
+        "colLastPublished": "Last Published",
+        "colActions": "Actions",
+        "view": "View"
+      },
+      "policyForm": {
+        "statuses": {
+          "draft": "Draft",
+          "published": "Published",
+          "needsReview": "Needs Review"
+        },
+        "departments": {
+          "none": "None",
+          "admin": "Admin",
+          "gov": "Gov",
+          "hr": "HR",
+          "it": "IT",
+          "itsm": "ITSM",
+          "qms": "QMS"
+        },
+        "frequencies": {
+          "monthly": "Monthly",
+          "quarterly": "Quarterly",
+          "yearly": "Yearly"
+        },
+        "nameLabel": "Name",
+        "namePlaceholder": "Policy name...",
+        "descriptionLabel": "Description (optional)",
+        "descriptionPlaceholder": "Brief description...",
+        "statusLabel": "Status",
+        "statusDefault": "Draft (default)",
+        "departmentLabel": "Department",
+        "departmentDefault": "None (default)",
+        "frequencyLabel": "Frequency",
+        "frequencyDefault": "No frequency",
+        "submit": "Create Policy"
+      },
+      "taskForm": {
+        "statuses": {
+          "todo": "To Do",
+          "inProgress": "In Progress",
+          "inReview": "In Review",
+          "done": "Done"
+        },
+        "departments": {
+          "none": "None",
+          "admin": "Admin",
+          "gov": "Gov",
+          "hr": "HR",
+          "it": "IT",
+          "itsm": "ITSM",
+          "qms": "QMS"
+        },
+        "frequencies": {
+          "daily": "Daily",
+          "weekly": "Weekly",
+          "monthly": "Monthly",
+          "quarterly": "Quarterly",
+          "yearly": "Yearly"
+        },
+        "titleLabel": "Title",
+        "titlePlaceholder": "Task title...",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Describe the task...",
+        "statusLabel": "Status",
+        "statusDefault": "To Do (default)",
+        "departmentLabel": "Department",
+        "departmentDefault": "None (default)",
+        "frequencyLabel": "Frequency",
+        "frequencyDefault": "No frequency",
+        "submit": "Create Task"
+      },
+      "timeline": {
+        "status": {
+          "draft": "Draft",
+          "active": "Active",
+          "paused": "Paused",
+          "completed": "Completed"
+        },
+        "phaseStatus": {
+          "pending": "PENDING",
+          "inProgress": "IN PROGRESS",
+          "completed": "COMPLETED"
+        },
+        "completion": {
+          "manual": "Manual",
+          "autoTasks": "Auto (Tasks)",
+          "autoPolicies": "Auto (Policies)",
+          "autoPeople": "Auto (People)",
+          "autoFindings": "Auto (Findings)",
+          "autoUpload": "Auto (Upload)"
+        },
+        "unknownFramework": "Unknown Framework",
+        "locked": "Locked",
+        "toastPaused": "Timeline paused",
+        "toastResumed": "Timeline resumed",
+        "toastReset": "Timeline reset to draft",
+        "toastDeleted": "Timeline deleted",
+        "toastNextCycle": "Next cycle created as draft",
+        "toastUnlocked": "Timeline unlocked",
+        "phaseDuration": "{weeks}w · {startDate} - {endDate}",
+        "lock": "Lock",
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+      },
+      "table": {
+        "searchPlaceholder": "Search by name, ID, owner...",
+        "refresh": "Refresh",
+        "totalOrgs": "{count} organizations",
+        "empty": "No organizations found.",
+        "colOrganization": "Organization",
+        "colOwner": "Owner",
+        "colMembers": "Members",
+        "colCreated": "Created",
+        "colStatus": "Status",
+        "colActions": "Actions",
+        "noOwner": "No owner",
+        "active": "Active",
+        "inactive": "Inactive",
+        "view": "View"
       }
     },
     "timelineTemplates": {
@@ -3603,6 +3957,54 @@
       "colActions": "Actions",
       "editCycle": "Edit Cycle {cycle}",
       "edit": "Edit"
+    },
+    "findingTemplates": {
+      "form": {
+        "validation": {
+          "categoryRequired": "Category is required",
+          "titleRequired": "Title is required",
+          "contentRequired": "Content is required"
+        },
+        "toastUpdated": "Template updated",
+        "toastCreated": "Template created",
+        "editTitle": "Edit Template",
+        "newTitle": "New Template",
+        "category": "Category",
+        "categoryPlaceholder": "Select a category",
+        "titleLabel": "Title",
+        "titlePlaceholder": "Template title",
+        "contentLabel": "Content",
+        "contentPlaceholder": "Template content...",
+        "orderLabel": "Order",
+        "saveChanges": "Save Changes",
+        "create": "Create"
+      },
+      "list": {
+        "title": "Finding Templates",
+        "loading": "Loading templates...",
+        "addTemplate": "Add Template",
+        "searchPlaceholder": "Search title or content...",
+        "allCategories": "All categories",
+        "emptyAll": "No finding templates yet. Click 'Add Template' to create one.",
+        "emptyFiltered": "No templates match your filters.",
+        "colTitle": "Title",
+        "colCategory": "Category",
+        "colContent": "Content",
+        "colOrder": "Order",
+        "colActions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete",
+        "paginationRange": "{from}–{to} of {total}",
+        "pageInfo": "{current} / {total}",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "categories": {
+        "evidenceIssue": "Issue with uploaded evidence",
+        "furtherEvidence": "Further evidence needed",
+        "taskSpecific": "Task-specific issues",
+        "naIncorrect": "Marked N/A incorrectly"
+      }
     }
   },
   "documents": {

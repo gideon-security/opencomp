@@ -125,7 +125,7 @@ describe('AdminOrgTabs', () => {
       await Promise.resolve();
     });
     fireEvent.click(screen.getByRole('tab', { name: /findings/i }));
-    expect(screen.getByText(/loading findings/i)).toBeInTheDocument();
+    expect(screen.getByText('organizations.findingsTab.loading')).toBeInTheDocument();
     await act(async () => {
       await Promise.resolve();
     });

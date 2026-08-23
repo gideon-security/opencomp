@@ -23,6 +23,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Add, View } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 import { PolicyContentSheet } from './PolicyContentSheet';
 import { PolicyForm } from './PolicyForm';
@@ -48,16 +49,57 @@ const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'outline'> = {
   draft: 'outline', published: 'default', needs_review: 'secondary',
 };
 
-const DEPARTMENT_LABELS: Record<string, string> = {
-  none: 'None', admin: 'Admin', gov: 'Gov', hr: 'HR',
-  it: 'IT', itsm: 'ITSM', qms: 'QMS',
-};
+type AdminTranslator = ReturnType<typeof useTranslations<'admin'>>;
 
-function formatLabel(value: string) {
-  return value.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+function statusLabel(t: AdminTranslator, status: string) {
+  switch (status) {
+    case 'draft':
+      return t('organizations.policiesTab.statuses.draft');
+    case 'published':
+      return t('organizations.policiesTab.statuses.published');
+    case 'needs_review':
+      return t('organizations.policiesTab.statuses.needsReview');
+    default:
+      return status;
+  }
+}
+
+function departmentLabel(t: AdminTranslator, value: string) {
+  switch (value) {
+    case 'none':
+      return t('organizations.policiesTab.departments.none');
+    case 'admin':
+      return t('organizations.policiesTab.departments.admin');
+    case 'gov':
+      return t('organizations.policiesTab.departments.gov');
+    case 'hr':
+      return t('organizations.policiesTab.departments.hr');
+    case 'it':
+      return t('organizations.policiesTab.departments.it');
+    case 'itsm':
+      return t('organizations.policiesTab.departments.itsm');
+    case 'qms':
+      return t('organizations.policiesTab.departments.qms');
+    default:
+      return value;
+  }
+}
+
+function frequencyLabel(t: AdminTranslator, value: string) {
+  switch (value) {
+    case 'monthly':
+      return t('organizations.policiesTab.frequencies.monthly');
+    case 'quarterly':
+      return t('organizations.policiesTab.frequencies.quarterly');
+    case 'yearly':
+      return t('organizations.policiesTab.frequencies.yearly');
+    default:
+      return value;
+  }
 }
 
 export function PoliciesTab({ orgId }: { orgId: string }) {
+  const t = useTranslations('admin');
   const [policies, setPolicies] = useState<Policy[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -90,7 +132,7 @@ export function PoliciesTab({ orgId }: { orgId: string }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12 text-muted-foreground">
-        Loading policies...
+        {t('organizations.policiesTab.loading')}
       </div>
     );
   }
@@ -98,28 +140,28 @@ export function PoliciesTab({ orgId }: { orgId: string }) {
   return (
     <>
       <Section
-        title={`Policies (${policies.length})`}
+        title={t('organizations.policiesTab.title', { count: policies.length })}
         actions={
           <Button size="sm" iconLeft={<Add size={16} />} onClick={() => setShowForm(true)}>
-            Create Policy
+            {t('organizations.policiesTab.createPolicy')}
           </Button>
         }
       >
         {policies.length === 0 ? (
           <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
-            No policies for this organization.
+            {t('organizations.policiesTab.empty')}
           </div>
         ) : (
           <Table variant="bordered">
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>Frequency</TableHead>
-                <TableHead>Assignee</TableHead>
-                <TableHead>Last Published</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead>{t('organizations.policiesTab.colName')}</TableHead>
+                <TableHead>{t('organizations.policiesTab.colStatus')}</TableHead>
+                <TableHead>{t('organizations.policiesTab.colDepartment')}</TableHead>
+                <TableHead>{t('organizations.policiesTab.colFrequency')}</TableHead>
+                <TableHead>{t('organizations.policiesTab.colAssignee')}</TableHead>
+                <TableHead>{t('organizations.policiesTab.colLastPublished')}</TableHead>
+                <TableHead>{t('organizations.policiesTab.colActions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -146,7 +188,9 @@ export function PoliciesTab({ orgId }: { orgId: string }) {
 
       <Sheet open={showForm} onOpenChange={setShowForm}>
         <SheetContent>
-          <SheetHeader><SheetTitle>Create Policy</SheetTitle></SheetHeader>
+          <SheetHeader>
+            <SheetTitle>{t('organizations.policiesTab.createPolicy')}</SheetTitle>
+          </SheetHeader>
           <SheetBody>
             <PolicyForm orgId={orgId} onCreated={handleCreated} />
           </SheetBody>
@@ -164,6 +208,8 @@ function PolicyRow({
   onFieldChange: (id: string, field: string, value: string | null) => void;
   onView: (policy: Policy) => void;
 }) {
+  const t = useTranslations('admin');
+
   return (
     <TableRow>
       <TableCell>
@@ -185,10 +231,14 @@ function PolicyRow({
           disabled={isUpdating}
         >
           <SelectTrigger size="sm">
-            <Badge variant={STATUS_VARIANT[policy.status] ?? 'default'}>{formatLabel(policy.status)}</Badge>
+            <Badge variant={STATUS_VARIANT[policy.status] ?? 'default'}>
+              {statusLabel(t, policy.status)}
+            </Badge>
           </SelectTrigger>
           <SelectContent alignItemWithTrigger={false}>
-            {STATUS_OPTIONS.map((s) => (<SelectItem key={s} value={s}>{formatLabel(s)}</SelectItem>))}
+            {STATUS_OPTIONS.map((s) => (
+              <SelectItem key={s} value={s}>{statusLabel(t, s)}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </TableCell>
@@ -200,11 +250,13 @@ function PolicyRow({
         >
           <SelectTrigger size="sm">
             <span className="text-sm">
-              {DEPARTMENT_LABELS[policy.department ?? 'none'] ?? formatLabel(policy.department ?? 'none')}
+              {departmentLabel(t, policy.department ?? 'none')}
             </span>
           </SelectTrigger>
           <SelectContent alignItemWithTrigger={false}>
-            {DEPARTMENT_OPTIONS.map((d) => (<SelectItem key={d} value={d}>{DEPARTMENT_LABELS[d] ?? d}</SelectItem>))}
+            {DEPARTMENT_OPTIONS.map((d) => (
+              <SelectItem key={d} value={d}>{departmentLabel(t, d)}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </TableCell>
@@ -217,11 +269,15 @@ function PolicyRow({
           disabled={isUpdating}
         >
           <SelectTrigger size="sm">
-            <span className="text-sm">{policy.frequency ? formatLabel(policy.frequency) : '--'}</span>
+            <span className="text-sm">
+              {policy.frequency ? frequencyLabel(t, policy.frequency) : '--'}
+            </span>
           </SelectTrigger>
           <SelectContent alignItemWithTrigger={false}>
             <SelectItem value="none">--</SelectItem>
-            {FREQUENCY_OPTIONS.map((f) => (<SelectItem key={f} value={f}>{formatLabel(f)}</SelectItem>))}
+            {FREQUENCY_OPTIONS.map((f) => (
+              <SelectItem key={f} value={f}>{frequencyLabel(t, f)}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </TableCell>
@@ -235,7 +291,7 @@ function PolicyRow({
       </TableCell>
       <TableCell>
         <Button size="sm" variant="outline" iconLeft={<View size={16} />} onClick={() => onView(policy)}>
-          View
+          {t('organizations.policiesTab.view')}
         </Button>
       </TableCell>
     </TableRow>

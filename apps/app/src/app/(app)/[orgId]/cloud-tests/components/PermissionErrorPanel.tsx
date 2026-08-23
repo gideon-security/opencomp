@@ -67,19 +67,19 @@ function buildAwsFixScript(actions: string[]): string | null {
 }
 
 /**
- * True when the error text references `host` as a host-like token
- * (CodeQL js/incomplete-url-substring-sanitization: not a bare substring
- * match — "management.azure.com.evil.com" does NOT count).
+ * Host-like token matchers (CodeQL js/incomplete-hostname-regexp):
+ * static literals with escaped dots — never built from strings via
+ * `new RegExp`. The boundary classes ensure "management.azure.com"
+ * is matched as a host token, so "management.azure.com.evil.com"
+ * does NOT count.
  */
-function mentionsHost(error: string, host: string): boolean {
-  const escaped = host.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`(?:^|[^A-Za-z0-9.-])${escaped}(?![A-Za-z0-9.-])`, 'i').test(error);
-}
+const AZURE_MANAGEMENT_HOST = /(?:^|[^A-Za-z0-9.-])management\.azure\.com(?![A-Za-z0-9.-])/i;
+const GCP_APIS_HOST = /(?:^|[^A-Za-z0-9.-])googleapis\.com(?![A-Za-z0-9.-])/i;
 
 function isAzureError(error: string): boolean {
   return (
     error.includes('AuthorizationFailed') ||
-    mentionsHost(error, 'management.azure.com') ||
+    AZURE_MANAGEMENT_HOST.test(error) ||
     error.includes('does not have authorization')
   );
 }
@@ -87,7 +87,7 @@ function isAzureError(error: string): boolean {
 function isGcpError(error: string): boolean {
   return (
     error.includes('PERMISSION_DENIED') ||
-    mentionsHost(error, 'googleapis.com') ||
+    GCP_APIS_HOST.test(error) ||
     /does not have\s+[\w.]+\s+access/i.test(error) ||
     /permission\s+'[\w.]+'/i.test(error)
   );

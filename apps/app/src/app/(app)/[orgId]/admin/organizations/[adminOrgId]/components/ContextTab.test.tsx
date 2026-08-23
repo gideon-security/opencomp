@@ -1,6 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 const mockGet = vi.fn();
 const mockPost = vi.fn();
@@ -46,7 +49,7 @@ describe('ContextTab', () => {
   it('shows loading state initially', () => {
     mockGet.mockReturnValue(new Promise(() => {}));
     render(<ContextTab orgId="org_1" />);
-    expect(screen.getByText(/loading context/i)).toBeInTheDocument();
+    expect(screen.getByText('organizations.contextTab.loading')).toBeInTheDocument();
   });
 
   it('renders context entries after loading', async () => {
@@ -54,7 +57,7 @@ describe('ContextTab', () => {
     render(<ContextTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(screen.getByText(/context \(2\)/i)).toBeInTheDocument();
+      expect(screen.getByText('organizations.contextTab.title')).toBeInTheDocument();
     });
 
     expect(screen.getByText(/how do we handle auth/i)).toBeInTheDocument();
@@ -66,7 +69,7 @@ describe('ContextTab', () => {
     render(<ContextTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(screen.getByText(/no context entries/i)).toBeInTheDocument();
+      expect(screen.getByText('organizations.contextTab.empty')).toBeInTheDocument();
     });
   });
 
@@ -75,7 +78,7 @@ describe('ContextTab', () => {
     render(<ContextTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /add context/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'organizations.contextTab.addContext' })).toBeInTheDocument();
     });
   });
 

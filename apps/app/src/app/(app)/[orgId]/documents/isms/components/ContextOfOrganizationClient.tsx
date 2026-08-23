@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsContextIssueKind, IsmsDocument as IsmsDocumentData } from '../isms-types';
 import { IsmsDocumentShell } from './IsmsDocumentShell';
@@ -15,15 +16,17 @@ interface ContextOfOrganizationClientProps {
 }
 
 export function ContextOfOrganizationClient(props: ContextOfOrganizationClientProps) {
+  const t = useTranslations('isms');
+
   return (
     <IsmsDocumentShell
       {...props}
       clause="4.1"
-      title="Context of the Organization"
-      description="Capture the internal and external issues relevant to the ISMS and their effect on its objectives (ISO 27001 clause 4.1). Generate from your platform data, then edit or add issues as needed."
-      sectionTitle="Issues register"
-      sectionDescription="Internal and external issues that affect the ISMS, grouped by origin."
-      generateSuccessMessage="Generated issues from platform data"
+      title={t('contextOrg.title')}
+      description={t('contextOrg.description')}
+      sectionTitle={t('contextOrg.sectionTitle')}
+      sectionDescription={t('contextOrg.sectionDescription')}
+      generateSuccessMessage={t('contextOrg.generatedSuccess')}
     >
       {({ document, canManage, hook }) => {
         const handleCreateIssue = async (params: {
@@ -33,9 +36,11 @@ export function ContextOfOrganizationClient(props: ContextOfOrganizationClientPr
         }) => {
           try {
             await hook.createIssue(params);
-            toast.success('Issue added');
+            toast.success(t('contextOrg.issueAdded'));
           } catch (caught) {
-            toast.error(caught instanceof Error ? caught.message : 'Failed to add issue');
+            toast.error(
+              caught instanceof Error ? caught.message : t('contextOrg.issueAddFailed'),
+            );
             // Re-throw so the form keeps the user's input and stays open on failure.
             throw caught;
           }
@@ -47,9 +52,11 @@ export function ContextOfOrganizationClient(props: ContextOfOrganizationClientPr
         }) => {
           try {
             await hook.updateIssue(params);
-            toast.success('Issue updated');
+            toast.success(t('contextOrg.issueUpdated'));
           } catch (caught) {
-            toast.error(caught instanceof Error ? caught.message : 'Failed to update issue');
+            toast.error(
+              caught instanceof Error ? caught.message : t('contextOrg.issueUpdateFailed'),
+            );
             // Re-throw so the row stays in edit mode with the user's changes on failure.
             throw caught;
           }
@@ -58,9 +65,11 @@ export function ContextOfOrganizationClient(props: ContextOfOrganizationClientPr
         const handleDeleteIssue = async (issueId: string) => {
           try {
             await hook.deleteIssue(issueId);
-            toast.success('Issue deleted');
+            toast.success(t('contextOrg.issueDeleted'));
           } catch (caught) {
-            toast.error(caught instanceof Error ? caught.message : 'Failed to delete issue');
+            toast.error(
+              caught instanceof Error ? caught.message : t('contextOrg.issueDeleteFailed'),
+            );
             // Re-throw so the row's delete state resets only after a real outcome.
             throw caught;
           }

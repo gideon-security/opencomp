@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
 import { IsmsDocumentShell } from './IsmsDocumentShell';
@@ -28,23 +29,29 @@ function toPayload(values: RequirementFormValues | RequirementRowValues) {
 }
 
 export function RequirementsClient(props: RequirementsClientProps) {
+  const t = useTranslations('isms');
+
   return (
     <IsmsDocumentShell
       {...props}
       clause="4.2"
-      title="Interested Parties Requirements & ISMS Treatment"
-      description="Capture the requirements of interested parties relevant to information security and how the ISMS addresses each one (ISO 27001 clauses 4.2b and 4.2c). Generate from your platform data, then edit or add requirements as needed."
-      sectionTitle="Requirements & treatment"
-      sectionDescription="Each interested-party requirement and how the ISMS treats it."
-      generateSuccessMessage="Generated requirements from platform data"
+      title={t('requirements.title')}
+      description={t('requirements.description')}
+      sectionTitle={t('requirements.sectionTitle')}
+      sectionDescription={t('requirements.sectionDescription')}
+      generateSuccessMessage={t('requirements.generatedSuccess')}
     >
       {({ document, canManage, hook }) => {
         const handleCreate = async (values: RequirementFormValues) => {
           try {
             await hook.createRow({ register: REGISTER, data: toPayload(values) });
-            toast.success('Requirement added');
+            toast.success(t('requirements.requirementAdded'));
           } catch (caught) {
-            toast.error(caught instanceof Error ? caught.message : 'Failed to add requirement');
+            toast.error(
+              caught instanceof Error
+                ? caught.message
+                : t('requirements.requirementAddFailed'),
+            );
             // Re-throw so the form keeps the user's input and stays open on failure.
             throw caught;
           }
@@ -53,9 +60,13 @@ export function RequirementsClient(props: RequirementsClientProps) {
         const handleUpdate = async ({ id, values }: { id: string; values: RequirementRowValues }) => {
           try {
             await hook.updateRow({ register: REGISTER, id, data: toPayload(values) });
-            toast.success('Requirement updated');
+            toast.success(t('requirements.requirementUpdated'));
           } catch (caught) {
-            toast.error(caught instanceof Error ? caught.message : 'Failed to update requirement');
+            toast.error(
+              caught instanceof Error
+                ? caught.message
+                : t('requirements.requirementUpdateFailed'),
+            );
             // Re-throw so the row stays in edit mode with the user's changes on failure.
             throw caught;
           }
@@ -64,9 +75,13 @@ export function RequirementsClient(props: RequirementsClientProps) {
         const handleDelete = async (id: string) => {
           try {
             await hook.deleteRow({ register: REGISTER, id });
-            toast.success('Requirement deleted');
+            toast.success(t('requirements.requirementDeleted'));
           } catch (caught) {
-            toast.error(caught instanceof Error ? caught.message : 'Failed to delete requirement');
+            toast.error(
+              caught instanceof Error
+                ? caught.message
+                : t('requirements.requirementDeleteFailed'),
+            );
             // Re-throw so the row's delete state resets only after a real outcome.
             throw caught;
           }

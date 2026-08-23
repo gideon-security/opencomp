@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ReactNode } from 'react';
+import { useState } from 'react';
 import {
   setMockPermissions,
   ADMIN_PERMISSIONS,
@@ -71,7 +72,6 @@ vi.mock('./shared', () => {
     addLabel: string;
     children: (helpers: { close: () => void }) => ReactNode;
   }) {
-    const { useState } = require('react') as typeof import('react');
     const [isOpen, setIsOpen] = useState(false);
     if (!isOpen) {
       return (
