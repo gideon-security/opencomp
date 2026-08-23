@@ -15,8 +15,10 @@ import {
   Text,
 } from '@trycompai/design-system';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import useSWR from 'swr';
+import { formFieldLabel } from '../form-description-labels';
 import { evidenceFormDefinitionList, meetingSubTypeValues } from '../forms';
 import { useIso27001FrameworkId } from '../isms/hooks/useIso27001FrameworkId';
 import { SOAOverviewCard } from './SOAOverviewCard';
@@ -107,6 +109,7 @@ function StatusBadge({
 }
 
 export function CompanyOverviewCards({ organizationId }: { organizationId: string }) {
+  const t = useTranslations('isms');
   const iso27001FrameworkId = useIso27001FrameworkId(organizationId);
   const swrKey: readonly [string, string] = ['/v1/evidence-forms/statuses', organizationId];
 
@@ -181,7 +184,9 @@ export function CompanyOverviewCards({ organizationId }: { organizationId: strin
                     <CardTitle>{form.title}</CardTitle>
                     <div className="line-clamp-1">
                       <CardDescription>
-                        {conciseFormDescriptions[form.type] ?? form.description}
+                        {conciseFormDescriptions[form.type]
+                          ? formFieldLabel(t, form.type)
+                          : form.description}
                       </CardDescription>
                     </div>
                   </CardHeader>

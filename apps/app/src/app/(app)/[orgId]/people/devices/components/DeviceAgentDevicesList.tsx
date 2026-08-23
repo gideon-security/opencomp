@@ -17,6 +17,7 @@ import {
   TableRow,
 } from '@trycompai/design-system';
 import { Download, Search } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -41,6 +42,7 @@ export interface DeviceAgentDevicesListProps {
 export const DeviceAgentDevicesList = ({
   devices,
 }: DeviceAgentDevicesListProps) => {
+  const t = useTranslations('people');
   const { orgId } = useParams<{ orgId: string }>();
   const { removeDeviceAgent } = usePeopleActions();
   const { hasPermission } = usePermissions();
@@ -106,12 +108,14 @@ export const DeviceAgentDevicesList = ({
             : currentDevices,
         false,
       );
-      toast.success('Device removed successfully');
+      toast.success(t('devicesList.removedToast'));
       if (selectedDevice?.id === actionDevice.id) {
         setSelectedDevice(null);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to remove device');
+      toast.error(
+        error instanceof Error ? error.message : t('devicesList.removeFailedToast'),
+      );
     } finally {
       setIsRemovingDevice(false);
       setIsRemoveDeviceAlertOpen(false);
@@ -137,7 +141,7 @@ export const DeviceAgentDevicesList = ({
                 <Search size={16} />
               </InputGroupAddon>
               <InputGroupInput
-                placeholder="Search devices..."
+                placeholder={t('devicesList.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -154,9 +158,9 @@ export const DeviceAgentDevicesList = ({
                 setPage(1);
               }}
               className="rounded-md border border-input bg-background px-3 py-1.5 text-sm"
-              aria-label="Filter by source"
+              aria-label={t('devicesList.filterBySource')}
             >
-              <option value="all">All sources</option>
+              <option value="all">{t('devicesList.allSources')}</option>
               {sourceOptions.map(({ key, label }) => (
                 <option key={key} value={key}>
                   {label}
@@ -166,15 +170,15 @@ export const DeviceAgentDevicesList = ({
           )}
         </div>
         <Button variant="outline" iconLeft={<Download />} onClick={handleExport}>
-          Export CSV
+          {t('devicesList.exportCsv')}
         </Button>
       </div>
 
       {filteredDevices.length === 0 ? (
         <Empty>
           <EmptyHeader>
-            <EmptyTitle>No devices found</EmptyTitle>
-            <EmptyDescription>Try adjusting your search.</EmptyDescription>
+            <EmptyTitle>{t('devicesList.emptyTitle')}</EmptyTitle>
+            <EmptyDescription>{t('devicesList.emptyDescription')}</EmptyDescription>
           </EmptyHeader>
         </Empty>
       ) : (
@@ -194,14 +198,14 @@ export const DeviceAgentDevicesList = ({
         >
           <TableHeader>
             <TableRow>
-              <TableHead>Device Name</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>Platform</TableHead>
-              <TableHead>Source</TableHead>
-              <TableHead>Last Seen</TableHead>
-              <TableHead>Checks</TableHead>
-              <TableHead>Compliant</TableHead>
-              <TableHead>ACTIONS</TableHead>
+              <TableHead>{t('devicesList.colDeviceName')}</TableHead>
+              <TableHead>{t('devicesList.colUser')}</TableHead>
+              <TableHead>{t('devicesList.colPlatform')}</TableHead>
+              <TableHead>{t('devicesList.colSource')}</TableHead>
+              <TableHead>{t('devicesList.colLastSeen')}</TableHead>
+              <TableHead>{t('devicesList.colChecks')}</TableHead>
+              <TableHead>{t('devicesList.colCompliant')}</TableHead>
+              <TableHead>{t('devicesList.colActions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -223,17 +227,20 @@ export const DeviceAgentDevicesList = ({
       )}
       <RemoveDeviceAlert
         open={isRemoveDeviceAlertOpen}
-        title="Remove Device"
+        title={t('devicesList.removeTitle')}
         description={
           <>
-            Are you sure you want to remove this device{' '}
-            <strong>{actionDevice?.name ?? 'device'}</strong>?
+            {t('devicesList.removeDescription', {
+              device: actionDevice?.name ?? t('devicesList.defaultDeviceName'),
+            })}
             {actionDevice?.source === 'integration' && (
               <>
                 {' '}
-                It was imported from{' '}
-                <strong>{actionDevice.integrationProvider?.name ?? 'an integration'}</strong>{' '}
-                and may be re-added on the next sync.
+                {t('devicesList.integrationImportedNote', {
+                  provider:
+                    actionDevice.integrationProvider?.name ??
+                    t('devicesList.defaultIntegrationName'),
+                })}
               </>
             )}
           </>

@@ -11,6 +11,7 @@ import {
 import { api } from '@/lib/api-client';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useActiveMember } from '@/utils/auth-client';
+import { formFieldLabel } from '../form-description-labels';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -174,6 +175,7 @@ export function CompanyFormPageClient({
   isPlatformAdmin?: boolean;
 }) {
   const t = useTranslations('documents');
+  const tIsms = useTranslations('isms');
   const router = useRouter();
   const searchParams = useSearchParams();
   const defaultTab = searchParams.get('tab') || 'submissions';
@@ -440,7 +442,9 @@ export function CompanyFormPageClient({
       />
       <div className="line-clamp-1">
         <Text variant="muted">
-          {conciseFormDescriptions[formType] ?? formDefinition.description}
+          {conciseFormDescriptions[formType]
+            ? formFieldLabel(tIsms, formType)
+            : formDefinition.description}
         </Text>
       </div>
 

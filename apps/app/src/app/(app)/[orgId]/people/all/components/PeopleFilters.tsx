@@ -14,37 +14,31 @@ import {
 import { Close, Filter } from '@trycompai/design-system/icons';
 
 import { format } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 import { DateRangeFilter } from './DateRangeFilter';
 
-const STATUS_LABELS: Record<string, string> = {
-  all: 'All People',
-  active: 'Active',
-  pending: 'Pending',
-  deactivated: 'Deactivated',
-};
-const ROLE_LABELS: Record<string, string> = {
-  owner: 'Owner',
-  admin: 'Admin',
-  auditor: 'Auditor',
-  employee: 'Employee',
-  contractor: 'Contractor',
-};
-
-function rangeLabel(from: Date | undefined, to: Date | undefined): string {
-  if (from && to) return `${format(from, 'MMM d')} – ${format(to, 'MMM d')}`;
-  if (from) return `from ${format(from, 'MMM d')}`;
-  return `until ${format(to as Date, 'MMM d')}`;
+function rangeLabel(
+  t: ReturnType<typeof useTranslations<'people'>>,
+  from: Date | undefined,
+  to: Date | undefined,
+): string {
+  if (from && to) {
+    return t('dateRange.range', { from: format(from, 'MMM d'), to: format(to, 'MMM d') });
+  }
+  if (from) return t('dateRange.from', { date: format(from, 'MMM d') });
+  return t('dateRange.until', { date: format(to as Date, 'MMM d') });
 }
 
 /** Removable chip for one applied filter — clearable without opening the popover. */
 function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
+  const t = useTranslations('people');
   return (
     <span className="flex h-8 items-center gap-1.5 whitespace-nowrap rounded-md border border-border bg-muted/40 px-2 text-xs">
       {label}
       <button
         type="button"
-        aria-label={`Remove filter: ${label}`}
+        aria-label={t('filters.removeAriaLabel', { filter: label })}
         onClick={onRemove}
         className="text-muted-foreground transition-colors hover:text-foreground"
       >
@@ -90,6 +84,22 @@ export function PeopleFilters({
   onOffboardApply,
   onOffboardClear,
 }: PeopleFiltersProps) {
+  const t = useTranslations('people');
+  const statusLabels: Record<string, string> = {
+    all: t('filters.allPeople'),
+    active: t('filters.active'),
+    pending: t('filters.pending'),
+    deactivated: t('filters.deactivated'),
+  };
+  const roleLabels: Record<string, string> = {
+    all: t('filters.allRoles'),
+    owner: t('filters.owner'),
+    admin: t('filters.admin'),
+    auditor: t('filters.auditor'),
+    employee: t('filters.employee'),
+    contractor: t('filters.contractor'),
+  };
+
   const activeCount = [
     statusFilter,
     roleFilter,
@@ -105,7 +115,7 @@ export function PeopleFilters({
       <PopoverTrigger>
         <div className="border-border bg-background hover:bg-muted flex h-8 cursor-pointer items-center gap-2 whitespace-nowrap rounded-md border px-3 text-sm transition-colors">
           <Filter size={16} className="text-muted-foreground" />
-          Filters
+          {t('filters.title')}
           {activeCount > 0 && <Badge variant="accent">{activeCount}</Badge>}
         </div>
       </PopoverTrigger>
@@ -113,59 +123,55 @@ export function PeopleFilters({
         <div className="flex w-[280px] flex-col gap-4 p-1.5">
           <div className="flex flex-col gap-1">
             <span id="people-status-filter-label" className="text-xs text-muted-foreground">
-              Status
+              {t('filters.status')}
             </span>
             <Select value={statusFilter || undefined} onValueChange={onStatusChange}>
               <SelectTrigger aria-labelledby="people-status-filter-label">
-                <SelectValue placeholder="Active">
+                <SelectValue placeholder={t('filters.active')}>
                   {hasOffboardFilter && !statusFilter
-                    ? 'All People'
-                    : ({ all: 'All People', active: 'Active', pending: 'Pending', deactivated: 'Deactivated' }[
-                        statusFilter
-                      ] ?? 'Active')}
+                    ? t('filters.allPeople')
+                    : (statusLabels[statusFilter] ?? t('filters.active'))}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All People</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="deactivated">Deactivated</SelectItem>
+                <SelectItem value="all">{statusLabels.all}</SelectItem>
+                <SelectItem value="active">{statusLabels.active}</SelectItem>
+                <SelectItem value="pending">{statusLabels.pending}</SelectItem>
+                <SelectItem value="deactivated">{statusLabels.deactivated}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="flex flex-col gap-1">
             <span id="people-role-filter-label" className="text-xs text-muted-foreground">
-              Role
+              {t('filters.role')}
             </span>
             <Select value={roleFilter || undefined} onValueChange={onRoleChange}>
               <SelectTrigger aria-labelledby="people-role-filter-label">
-                <SelectValue placeholder="All Roles">
-                  {{ owner: 'Owner', admin: 'Admin', auditor: 'Auditor', employee: 'Employee', contractor: 'Contractor' }[
-                    roleFilter
-                  ] ?? 'All Roles'}
+                <SelectValue placeholder={t('filters.allRoles')}>
+                  {roleLabels[roleFilter] ?? t('filters.allRoles')}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Roles</SelectItem>
-                <SelectItem value="owner">Owner</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="auditor">Auditor</SelectItem>
-                <SelectItem value="employee">Employee</SelectItem>
-                <SelectItem value="contractor">Contractor</SelectItem>
+                <SelectItem value="all">{roleLabels.all}</SelectItem>
+                <SelectItem value="owner">{roleLabels.owner}</SelectItem>
+                <SelectItem value="admin">{roleLabels.admin}</SelectItem>
+                <SelectItem value="auditor">{roleLabels.auditor}</SelectItem>
+                <SelectItem value="employee">{roleLabels.employee}</SelectItem>
+                <SelectItem value="contractor">{roleLabels.contractor}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <DateRangeFilter
-            label="Onboarded"
+            label={t('filters.onboarded')}
             from={onboardFrom}
             to={onboardTo}
             onApply={onOnboardApply}
             onClear={onOnboardClear}
           />
           <DateRangeFilter
-            label="Offboarded"
+            label={t('filters.offboarded')}
             from={offboardFrom}
             to={offboardTo}
             onApply={onOffboardApply}
@@ -179,25 +185,31 @@ export function PeopleFilters({
           without reopening the popover. */}
       {statusFilter && (
         <FilterChip
-          label={`Status: ${STATUS_LABELS[statusFilter] ?? statusFilter}`}
+          label={t('filters.chipStatus', {
+            value: statusLabels[statusFilter] ?? statusFilter,
+          })}
           onRemove={() => onStatusChange(null)}
         />
       )}
       {roleFilter && (
         <FilterChip
-          label={`Role: ${ROLE_LABELS[roleFilter] ?? roleFilter}`}
+          label={t('filters.chipRole', { value: roleLabels[roleFilter] ?? roleFilter })}
           onRemove={() => onRoleChange('all')}
         />
       )}
       {(onboardFrom || onboardTo) && (
         <FilterChip
-          label={`Onboarded ${rangeLabel(onboardFrom, onboardTo)}`}
+          label={t('filters.chipOnboarded', {
+            range: rangeLabel(t, onboardFrom, onboardTo),
+          })}
           onRemove={onOnboardClear}
         />
       )}
       {(offboardFrom || offboardTo) && (
         <FilterChip
-          label={`Offboarded ${rangeLabel(offboardFrom, offboardTo)}`}
+          label={t('filters.chipOffboarded', {
+            range: rangeLabel(t, offboardFrom, offboardTo),
+          })}
           onRemove={onOffboardClear}
         />
       )}

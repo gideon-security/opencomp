@@ -18,6 +18,7 @@ import {
   Stack,
 } from '@trycompai/design-system';
 import { Edit, TrashCan } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { IsmsAudit, IsmsAuditFinding } from '../isms-types';
@@ -25,9 +26,9 @@ import { AuditFindingFields } from './AuditFindingFields';
 import type { ApproverOption } from './IsmsApprovalSection';
 import { findingSchema, type FindingFormValues } from './audit-schema';
 import {
-  FINDING_STATUS_LABELS,
-  FINDING_TYPE_LABELS,
-} from './internal-audit-constants';
+  findingStatusLabel,
+  findingTypeLabel,
+} from './internal-audit-labels';
 import { IsmsRegisterCard, IsmsRegisterField } from './shared';
 
 interface AuditFindingRowProps {
@@ -61,6 +62,7 @@ export function AuditFindingRow({
   onUpdateFinding,
   onDeleteFinding,
 }: AuditFindingRowProps) {
+  const t = useTranslations('isms');
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -167,9 +169,9 @@ export function AuditFindingRow({
       header={
         <HStack align="center" gap="2">
           <Heading level="5">{finding.reference}</Heading>
-          <Badge variant="secondary">{FINDING_TYPE_LABELS[finding.type]}</Badge>
+          <Badge variant="secondary">{findingTypeLabel(t, finding.type)}</Badge>
           <Badge variant={finding.status === 'closed' ? 'default' : 'outline'}>
-            {FINDING_STATUS_LABELS[finding.status]}
+            {findingStatusLabel(t, finding.status)}
           </Badge>
         </HStack>
       }

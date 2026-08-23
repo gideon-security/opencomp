@@ -24,6 +24,7 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { Edit, TrashCan } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import type { IsmsAuditControl } from '../isms-types';
@@ -32,10 +33,8 @@ import {
   toControlPayload,
   type AuditControlFormValues,
 } from './audit-schema';
-import {
-  CONTROL_RESULTS,
-  CONTROL_RESULT_LABELS,
-} from './internal-audit-constants';
+import { CONTROL_RESULTS } from './internal-audit-constants';
+import { controlResultLabel } from './internal-audit-labels';
 
 const NO_RESULT = 'no-result';
 
@@ -74,6 +73,7 @@ export function AuditControlRow({
   onDeleteControl,
   onResultRaised,
 }: AuditControlRowProps) {
+  const t = useTranslations('isms');
   const [isEditing, setIsEditing] = useState(false);
   const [isSavingResult, setIsSavingResult] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -230,13 +230,13 @@ export function AuditControlRow({
               <SelectItem value={NO_RESULT}>Not set</SelectItem>
               {CONTROL_RESULTS.map((result) => (
                 <SelectItem key={result} value={result}>
-                  {CONTROL_RESULT_LABELS[result]}
+                  {controlResultLabel(t, result)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         ) : controlRow.result ? (
-          CONTROL_RESULT_LABELS[controlRow.result]
+          controlResultLabel(t, controlRow.result)
         ) : (
           '—'
         )}

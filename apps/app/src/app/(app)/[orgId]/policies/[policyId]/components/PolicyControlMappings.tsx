@@ -33,6 +33,7 @@ import {
 import { Add, Launch, Unlink } from '@trycompai/design-system/icons';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import useSWR from 'swr';
@@ -65,6 +66,7 @@ export function PolicyControlMappings({
 }: PolicyControlMappingsProps) {
   const { orgId, policyId } = useParams<{ orgId: string; policyId: string }>();
   const { hasPermission } = usePermissions();
+  const t = useTranslations('policies');
   const canMutate = hasPermission('policy', 'update') && !isPendingApproval;
 
   const { data: controlsData, mutate: mutateControls } = useSWR(
@@ -109,9 +111,9 @@ export function PolicyControlMappings({
     try {
       await addControlMappings([id]);
       await refreshAll();
-      toast.success('Control mapped successfully');
+      toast.success(t('controlMappings.mappedSuccess'));
     } catch {
-      toast.error('Failed to map control');
+      toast.error(t('controlMappings.mappedError'));
     } finally {
       setLoading(false);
     }
@@ -127,9 +129,9 @@ export function PolicyControlMappings({
     try {
       await removeControlMapping(target.id);
       await refreshAll();
-      toast.success('Control unmapped successfully');
+      toast.success(t('controlMappings.unmappedSuccess'));
     } catch {
-      toast.error('Failed to unmap control');
+      toast.error(t('controlMappings.unmappedError'));
     } finally {
       setLoading(false);
       setToRemove(null);
@@ -138,8 +140,8 @@ export function PolicyControlMappings({
 
   return (
     <Section
-      title="Controls"
-      description="Controls relevant to this policy."
+      title={t('controlMappings.title')}
+      description={t('controlMappings.description')}
       actions={
         canMutate ? (
           <Popover open={addOpen} onOpenChange={setAddOpen}>
@@ -148,14 +150,14 @@ export function PolicyControlMappings({
               className={buttonVariants({ variant: 'outline', size: 'sm' })}
             >
               <Add size={14} />
-              Link control
+              {t('controlMappings.linkControl')}
             </PopoverTrigger>
             <PopoverContent align="end" sideOffset={8}>
               <Command>
-                <CommandInput placeholder="Search controls..." />
+                <CommandInput placeholder={t('controlMappings.searchPlaceholder')} />
                 <div className="h-2" />
                 <CommandList>
-                  <CommandEmpty>No controls found.</CommandEmpty>
+                  <CommandEmpty>{t('controlMappings.noControlsFound')}</CommandEmpty>
                   {availableControls.map((c) => (
                     <CommandItem
                       key={c.id}
@@ -174,14 +176,14 @@ export function PolicyControlMappings({
     >
       {mappedControls.length === 0 ? (
         <Text size="sm" variant="muted">
-          No controls mapped yet.
+          {t('controlMappings.noneMapped')}
         </Text>
       ) : (
         <Table variant="bordered">
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Frameworks</TableHead>
+              <TableHead>{t('controlMappings.name')}</TableHead>
+              <TableHead>{t('controlMappings.frameworks')}</TableHead>
               {canMutate && <TableHead style={{ width: 48 }} />}
             </TableRow>
           </TableHeader>

@@ -260,6 +260,40 @@ const FINDINGS_VIEWER_ACTION = {
 
 @Injectable()
 export class GCPSecurityService {
+  // GCP project IDs: 6-30 chars, lowercase letters/digits/hyphens, letter
+  // first, must not end with a hyphen (may also be a bare project number).
+  private static readonly PROJECT_ID_RE = /^([a-z][a-z0-9-]{4,28}[a-z0-9]|\d{6,20})$/;
+  // Organization/folder/resource IDs used in Resource Manager & SCC paths.
+  private static readonly RESOURCE_ID_RE = /^\d{1,20}$/;
+  // Service Usage API names, e.g. `compute.googleapis.com`.
+  private static readonly API_NAME_RE = /^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$/;
+
+  /**
+   * Guards against SSRF via user-supplied integration config: every value
+   * interpolated into a googleapis.com URL path must match its strict GCP
+   * format before it is percent-encoded into the request URL.
+   */
+  private safeProjectId(projectId: string): string {
+    if (!GCPSecurityService.PROJECT_ID_RE.test(projectId)) {
+      throw new Error('Invalid GCP project id');
+    }
+    return encodeURIComponent(projectId);
+  }
+
+  private safeResourceId(id: string): string {
+    if (!GCPSecurityService.RESOURCE_ID_RE.test(id)) {
+      throw new Error('Invalid GCP organization/resource id');
+    }
+    return encodeURIComponent(id);
+  }
+
+  private safeApiName(apiName: string): string {
+    if (!GCPSecurityService.API_NAME_RE.test(apiName)) {
+      throw new Error('Invalid GCP API name');
+    }
+    return encodeURIComponent(apiName);
+  }
+
   private readonly logger = new Logger(GCPSecurityService.name);
 
   /**
@@ -399,7 +433,7 @@ export class GCPSecurityService {
 
     try {
       const resp = await fetch(
-        `https://serviceusage.googleapis.com/v1/projects/${projectId}/services/${stepDef.api}:enable`,
+        `https://serviceusage.googleapis.com/v1/projects/${this.safeProjectId(projectId)}/services/${this.safeApiName(stepDef.api)}:enable`,
         {
           method: 'POST',
           headers: {
@@ -529,7 +563,7 @@ export class GCPSecurityService {
 
     try {
       const getPolicyResp = await fetch(
-        `https://cloudresourcemanager.googleapis.com/v3/organizations/${organizationId}:getIamPolicy`,
+        `https://cloudresourcemanager.googleapis.com/v3/organizations/${this.safeResourceId(organizationId)}:getIamPolicy`,
         {
           method: 'POST',
           headers: {
@@ -579,7 +613,7 @@ export class GCPSecurityService {
       }
 
       const setPolicyResp = await fetch(
-        `https://cloudresourcemanager.googleapis.com/v3/organizations/${organizationId}:setIamPolicy`,
+        `https://cloudresourcemanager.googleapis.com/v3/organizations/${this.safeResourceId(organizationId)}:setIamPolicy`,
         {
           method: 'POST',
           headers: {
@@ -672,7 +706,7 @@ export class GCPSecurityService {
   ): Promise<boolean> {
     try {
       const resp = await fetch(
-        `https://serviceusage.googleapis.com/v1/projects/${projectId}/services/${apiName}`,
+        `https://serviceusage.googleapis.com/v1/projects/${this.safeProjectId(projectId)}/services/${this.safeApiName(apiName)}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -696,7 +730,7 @@ export class GCPSecurityService {
   ): Promise<boolean> {
     try {
       const url = new URL(
-        `https://securitycenter.googleapis.com/v2/organizations/${organizationId}/sources/-/findings`,
+        `https://securitycenter.googleapis.com/v2/organizations/${this.safeResourceId(organizationId)}/sources/-/findings`,
       );
       url.searchParams.set('pageSize', '1');
       url.searchParams.set('filter', 'state="ACTIVE"');
@@ -1484,10 +1518,12 @@ export class GCPSecurityService {
     scope: { type: 'organization' | 'project'; id: string },
     pageToken?: string,
   ): Promise<{ findings: SCCFindingResult[]; nextPageToken?: string }> {
-    const parent =
+    const safeId =
       scope.type === 'project'
-        ? `projects/${scope.id}`
-        : `organizations/${scope.id}`;
+        ? this.safeProjectId(scope.id)
+        : this.safeResourceId(scope.id);
+    const parent =
+      scope.type === 'project' ? `projects/${safeId}` : `organizations/${safeId}`;
     const url = new URL(
       `https://securitycenter.googleapis.com/v2/${parent}/sources/-/findings`,
     );

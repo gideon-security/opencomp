@@ -9,6 +9,7 @@ import {
 import { Button } from '@trycompai/design-system';
 import { Badge } from '@gideon-defender/ui/badge';
 import { AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AccountSettingsInfoRow } from './account-settings-shared-ui';
@@ -38,6 +39,7 @@ export function AccountSettingsOAuthBody({
   onUpdated,
   onOpenChange,
 }: AccountSettingsOAuthProps) {
+  const t = useTranslations('integrations');
   const { connection, isLoading } = useIntegrationConnection(open ? connectionId : null);
   const { getConnectionVariables, saveConnectionVariables, getVariableOptions, deleteConnection } =
     useIntegrationMutations();
@@ -68,13 +70,13 @@ export function AccountSettingsOAuthBody({
         }
         setVariableValues(next);
       }
-      if (result.error) toast.error('Failed to load settings');
+      if (result.error) toast.error(t('oauthSettings.failedToLoad'));
     } catch {
-      toast.error('Failed to load settings');
+      toast.error(t('oauthSettings.failedToLoad'));
     } finally {
       setLoadingVariables(false);
     }
-  }, [connectionId, getConnectionVariables]);
+  }, [connectionId, getConnectionVariables, t]);
 
   useEffect(() => {
     if (!open) return;
@@ -101,35 +103,35 @@ export function AccountSettingsOAuthBody({
     try {
       const result = await saveConnectionVariables(connectionId, variableValues);
       if (!result.success) {
-        toast.error(result.error || 'Failed to save');
+        toast.error(result.error || t('oauthSettings.saveFailed'));
         return;
       }
-      toast.success('Settings saved');
+      toast.success(t('oauthSettings.settingsSaved'));
       onUpdated?.();
       await loadVariables();
     } catch {
-      toast.error('Failed to save');
+      toast.error(t('oauthSettings.saveFailed'));
     } finally {
       setSavingVariables(false);
     }
-  }, [connectionId, saveConnectionVariables, variableValues, onUpdated, loadVariables]);
+  }, [connectionId, saveConnectionVariables, variableValues, onUpdated, loadVariables, t]);
 
   const handleDisconnect = useCallback(async () => {
-    if (!confirm('Are you sure? All associated data will be removed.')) return;
+    if (!confirm(t('oauthSettings.disconnectConfirm'))) return;
     setDisconnecting(true);
     try {
       const result = await deleteConnection(connectionId);
       if (result.success) {
-        toast.success('Disconnected');
+        toast.success(t('oauthSettings.disconnected'));
         onOpenChange(false);
         onUpdated?.();
-      } else toast.error(result.error || 'Failed');
+      } else toast.error(result.error || t('oauthSettings.failed'));
     } catch {
-      toast.error('Failed');
+      toast.error(t('oauthSettings.failed'));
     } finally {
       setDisconnecting(false);
     }
-  }, [connectionId, deleteConnection, onOpenChange, onUpdated]);
+  }, [connectionId, deleteConnection, onOpenChange, onUpdated, t]);
 
   if (!open) {
     return null;
@@ -146,9 +148,13 @@ export function AccountSettingsOAuthBody({
   return (
     <div className="space-y-5 py-5">
       <div className="rounded-md border bg-muted/20 px-3 py-2.5 space-y-1">
-        <AccountSettingsInfoRow label="Integration" value={provider.name} valueTruncate />
         <AccountSettingsInfoRow
-          label="Status"
+          label={t('oauthSettings.integration')}
+          value={provider.name}
+          valueTruncate
+        />
+        <AccountSettingsInfoRow
+          label={t('oauthSettings.status')}
           badge={
             connection?.status === 'active' ? (
               <Badge
@@ -156,7 +162,7 @@ export function AccountSettingsOAuthBody({
                 className="gap-1 text-[9px] px-1.5 py-0 border-emerald-200 bg-emerald-50 text-emerald-700"
               >
                 <CheckCircle2 className="h-2.5 w-2.5" />
-                Active
+                {t('oauthSettings.active')}
               </Badge>
             ) : (
               <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
@@ -167,7 +173,7 @@ export function AccountSettingsOAuthBody({
         />
         {connection?.createdAt && (
           <AccountSettingsInfoRow
-            label="Created"
+            label={t('oauthSettings.created')}
             value={new Date(connection.createdAt).toLocaleDateString(undefined, {
               year: 'numeric',
               month: 'short',
@@ -194,8 +200,10 @@ export function AccountSettingsOAuthBody({
           <div className="flex items-center gap-2 min-w-0">
             <AlertTriangle className="h-3.5 w-3.5 text-destructive shrink-0" />
             <div className="min-w-0">
-              <p className="text-xs font-medium">Disconnect</p>
-              <p className="text-[10px] text-muted-foreground">Remove this account and all data</p>
+              <p className="text-xs font-medium">{t('oauthSettings.disconnect')}</p>
+              <p className="text-[10px] text-muted-foreground">
+                {t('oauthSettings.removeAccountAndData')}
+              </p>
             </div>
           </div>
           <Button
@@ -205,7 +213,7 @@ export function AccountSettingsOAuthBody({
             disabled={disconnecting}
             size="sm"
           >
-            Disconnect
+            {t('oauthSettings.disconnect')}
           </Button>
         </div>
       </div>

@@ -1,11 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
   setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
 } from '@/test-utils/mocks/permissions';
+
+mockNextIntl();
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -118,7 +121,7 @@ describe('TrustPortalCustomLinks permission gating', () => {
   it('renders section title regardless of permissions', () => {
     setMockPermissions({});
     render(<TrustPortalCustomLinks {...defaultProps} />);
-    expect(screen.getByText('Custom Links')).toBeInTheDocument();
+    expect(screen.getByText('trust.portal.customLinks.title')).toBeInTheDocument();
   });
 
   it('renders existing links regardless of permissions', () => {
@@ -131,14 +134,14 @@ describe('TrustPortalCustomLinks permission gating', () => {
   it('shows Add Link button when user has trust:update permission', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<TrustPortalCustomLinks {...defaultProps} />);
-    expect(screen.getByText('Add Link')).toBeInTheDocument();
+    expect(screen.getByText('trust.portal.customLinks.addLink')).toBeInTheDocument();
   });
 
   it('hides Add Link button when user lacks trust:update permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<TrustPortalCustomLinks {...defaultProps} />);
     // The "Add Link" button text should not be in a direct button context
-    const addButtons = screen.queryAllByText('Add Link');
+    const addButtons = screen.queryAllByText('trust.portal.customLinks.addLink');
     // When no permission, the button wrapping "Add Link" should not exist
     expect(addButtons.length).toBe(0);
   });
@@ -146,7 +149,7 @@ describe('TrustPortalCustomLinks permission gating', () => {
   it('hides Add Link button when user has no permissions', () => {
     setMockPermissions({});
     render(<TrustPortalCustomLinks {...defaultProps} />);
-    const addButtons = screen.queryAllByText('Add Link');
+    const addButtons = screen.queryAllByText('trust.portal.customLinks.addLink');
     expect(addButtons.length).toBe(0);
   });
 

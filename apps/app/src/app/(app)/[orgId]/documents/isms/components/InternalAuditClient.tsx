@@ -15,7 +15,7 @@ import {
   toFindingPayload,
   toSignoffPayload,
 } from './audit-schema';
-import { auditValidationMessages } from './internal-audit-constants';
+import { auditValidationMessages } from './internal-audit-labels';
 
 interface InternalAuditClientProps {
   organizationId: string;
@@ -49,6 +49,7 @@ export function InternalAuditClient({
   ...props
 }: InternalAuditClientProps) {
   const t = useTranslations('isms.internalAudit');
+  const tIsms = useTranslations('isms');
   return (
     <IsmsDocumentShell
       {...props}
@@ -59,7 +60,7 @@ export function InternalAuditClient({
       sectionDescription={t('sectionDescription')}
       generateSuccessMessage={t('generateRestored')}
       getSubmitBlockedReason={(document) => {
-        const messages = auditValidationMessages({
+        const messages = auditValidationMessages(tIsms, {
           audits: Array.isArray(document.audits) ? document.audits : [],
         });
         return messages.length > 0
@@ -69,7 +70,7 @@ export function InternalAuditClient({
     >
       {({ document, canManage, hook }) => {
         const audits = Array.isArray(document.audits) ? document.audits : [];
-        const validationMessages = auditValidationMessages({ audits });
+        const validationMessages = auditValidationMessages(tIsms, { audits });
 
         const handlers: AuditHandlers = {
           onUpdateAudit: (auditId, values) =>
