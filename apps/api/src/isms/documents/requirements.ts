@@ -9,7 +9,7 @@ import type {
 } from './types';
 
 /** A party row read from the org's Interested Parties Register. */
-export interface PartyInput {
+interface PartyInput {
   id: string;
   name: string;
   category: string;

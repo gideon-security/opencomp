@@ -17,19 +17,19 @@ import {
   generateS3Key,
 } from './constants';
 
-export interface UploadResult {
+interface UploadResult {
   s3Key: string;
   fileSize: number;
 }
 
-export interface SignedUrlResult {
+interface SignedUrlResult {
   signedUrl: string;
 }
 
 /**
  * Validates that S3 is configured
  */
-export function validateS3Config(): void {
+function validateS3Config(): void {
   if (!s3Client) {
     throw new Error('S3 client not configured');
   }

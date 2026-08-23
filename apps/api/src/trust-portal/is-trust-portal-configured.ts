@@ -1,4 +1,4 @@
-export interface TrustPortalConfiguredInput {
+interface TrustPortalConfiguredInput {
   domain?: string | null;
   contactEmail?: string | null;
   overviewContent?: string | null;
@@ -24,19 +24,21 @@ export interface TrustPortalConfiguredInput {
  * it up. Computed from RAW values (the settings endpoint substitutes a Context
  * Hub default for overviewContent — do not pass the substituted value here).
  */
-export function isTrustPortalConfigured(input: TrustPortalConfiguredInput): boolean {
+export function isTrustPortalConfigured(
+  input: TrustPortalConfiguredInput,
+): boolean {
   const hasFaqs = Array.isArray(input.faqs) && input.faqs.length > 0;
   const hasFramework = input.frameworkFlags.some(Boolean);
 
   return Boolean(
     input.domain ||
-      input.contactEmail ||
-      input.overviewContent ||
-      input.favicon ||
-      hasFaqs ||
-      hasFramework ||
-      input.documentCount > 0 ||
-      input.resourceCount > 0 ||
-      input.customLinkCount > 0,
+    input.contactEmail ||
+    input.overviewContent ||
+    input.favicon ||
+    hasFaqs ||
+    hasFramework ||
+    input.documentCount > 0 ||
+    input.resourceCount > 0 ||
+    input.customLinkCount > 0,
   );
 }

@@ -8,14 +8,6 @@
  * - Easy to add new integrations category-by-category
  */
 
-import { cloudIntegrations } from './categories/cloud';
-import { communicationIntegrations } from './categories/communication';
-import { developmentIntegrations } from './categories/development';
-import { hrIntegrations } from './categories/hr';
-import { identityIntegrations } from './categories/identity';
-import { infrastructureIntegrations } from './categories/infrastructure';
-import { monitoringIntegrations } from './categories/monitoring';
-
 export interface Integration {
   id: string;
   name: string;
@@ -35,20 +27,6 @@ export type IntegrationCategory =
   | 'Communication'
   | 'Monitoring'
   | 'Infrastructure';
-
-/**
- * All integrations - merged from category files
- * Total integrations will grow as we add more categories
- */
-export const INTEGRATIONS: Integration[] = [
-  ...identityIntegrations,
-  ...hrIntegrations,
-  ...cloudIntegrations,
-  ...developmentIntegrations,
-  ...communicationIntegrations,
-  ...monitoringIntegrations,
-  ...infrastructureIntegrations,
-];
 
 export const CATEGORIES: IntegrationCategory[] = [
   'Identity & Access',

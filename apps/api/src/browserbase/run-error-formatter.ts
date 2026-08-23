@@ -1,4 +1,4 @@
-export interface RunErrorMessage {
+interface RunErrorMessage {
   userFacing: string;
   needsReauth: boolean;
 }

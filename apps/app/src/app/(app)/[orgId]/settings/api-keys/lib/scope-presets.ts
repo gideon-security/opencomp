@@ -1,6 +1,6 @@
 export type ScopePreset = 'full' | 'read-only' | 'custom';
 
-export const RESOURCE_LABELS: Record<string, string> = {
+const RESOURCE_LABELS: Record<string, string> = {
   organization: 'Organization',
   member: 'Members',
   invitation: 'Invitations',
@@ -25,7 +25,7 @@ export const RESOURCE_LABELS: Record<string, string> = {
   portal: 'Employee Portal',
 };
 
-export const ACTION_LABELS: Record<string, string> = {
+const ACTION_LABELS: Record<string, string> = {
   create: 'Create',
   read: 'Read',
   update: 'Update',
@@ -41,7 +41,7 @@ export const ACTION_LABELS: Record<string, string> = {
   respond: 'Respond',
 };
 
-export interface ScopeGroup {
+interface ScopeGroup {
   resource: string;
   label: string;
   scopes: { scope: string; action: string; label: string }[];

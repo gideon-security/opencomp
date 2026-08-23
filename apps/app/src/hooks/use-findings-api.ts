@@ -2,9 +2,9 @@
 
 import { useApi } from '@/hooks/use-api';
 import { useApiSWR, UseApiSWROptions } from '@/hooks/use-api-swr';
-import type { EvidenceFormType } from '@gideon-defender/company';
-import { FindingType } from '@db';
 import type { FindingArea, FindingSeverity, FindingStatus } from '@db';
+import { FindingType } from '@db';
+import type { EvidenceFormType } from '@gideon-defender/company';
 import { useCallback } from 'react';
 
 // ---------------------------------------------------------------------------
@@ -91,7 +91,7 @@ export interface CreateFindingData {
   content: string;
 }
 
-export interface UpdateFindingData {
+interface UpdateFindingData {
   status?: FindingStatus;
   type?: FindingType;
   severity?: FindingSeverity;
@@ -131,9 +131,9 @@ export interface FindingHistoryEntry {
 
 const DEFAULT_FINDINGS_POLLING_INTERVAL = 10000;
 
-export interface UseFindingsOptions extends UseApiSWROptions<Finding[]> {}
+interface UseFindingsOptions extends UseApiSWROptions<Finding[]> {}
 
-export interface OrganizationFindingsFilters {
+interface OrganizationFindingsFilters {
   status?: FindingStatus;
   area?: FindingArea;
   taskId?: string;
@@ -166,14 +166,11 @@ export function useOrganizationFindings(
 
   return useApiSWR<Finding[]>(endpoint, {
     ...options,
-    refreshInterval:
-      options.refreshInterval ?? DEFAULT_FINDINGS_POLLING_INTERVAL,
+    refreshInterval: options.refreshInterval ?? DEFAULT_FINDINGS_POLLING_INTERVAL,
   });
 }
 
-export function useFindingTemplates(
-  options: UseApiSWROptions<FindingTemplate[]> = {},
-) {
+export function useFindingTemplates(options: UseApiSWROptions<FindingTemplate[]> = {}) {
   return useApiSWR<FindingTemplate[]>('/v1/finding-template', options);
 }
 
@@ -185,8 +182,7 @@ export function useFindingHistory(
 
   return useApiSWR<FindingHistoryEntry[]>(endpoint, {
     ...options,
-    refreshInterval:
-      options.refreshInterval ?? DEFAULT_FINDINGS_POLLING_INTERVAL,
+    refreshInterval: options.refreshInterval ?? DEFAULT_FINDINGS_POLLING_INTERVAL,
   });
 }
 
@@ -204,10 +200,7 @@ export function useFindingActions() {
 
   const updateFinding = useCallback(
     async (findingId: string, data: UpdateFindingData) => {
-      const response = await api.patch<Finding>(
-        `/v1/findings/${findingId}`,
-        data,
-      );
+      const response = await api.patch<Finding>(`/v1/findings/${findingId}`, data);
       if (response.error) throw new Error(response.error);
       return response.data!;
     },
@@ -225,76 +218,6 @@ export function useFindingActions() {
 
   return { createFinding, updateFinding, deleteFinding };
 }
-
-export function useGroupedFindingTemplates(
-  options: UseApiSWROptions<FindingTemplate[]> = {},
-) {
-  const { data, ...rest } = useFindingTemplates(options);
-
-  const groupedTemplates = data?.data?.reduce(
-    (acc, template) => {
-      if (!acc[template.category]) acc[template.category] = [];
-      acc[template.category].push(template);
-      return acc;
-    },
-    {} as Record<string, FindingTemplate[]>,
-  );
-
-  return {
-    ...rest,
-    data: data ? { ...data, grouped: groupedTemplates } : undefined,
-  };
-}
-
-// ---------------------------------------------------------------------------
-// Display constants
-// ---------------------------------------------------------------------------
-
-export const FINDING_CATEGORY_LABELS: Record<string, string> = {
-  evidence_issue: 'Issue with uploaded evidence',
-  further_evidence: 'Further evidence needed',
-  task_specific: 'Task-specific issues',
-  na_incorrect: 'Marked N/A incorrectly',
-};
-
-export const FINDING_STATUS_CONFIG: Record<
-  FindingStatus,
-  { label: string; color: string; bgColor: string; icon: string }
-> = {
-  open: { label: 'Open', color: 'text-red-600', bgColor: 'bg-red-100', icon: '🔴' },
-  ready_for_review: {
-    label: 'Ready for Review',
-    color: 'text-yellow-600',
-    bgColor: 'bg-yellow-100',
-    icon: '🟡',
-  },
-  needs_revision: {
-    label: 'Needs Revision',
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-100',
-    icon: '🟠',
-  },
-  closed: {
-    label: 'Closed',
-    color: 'text-primary',
-    bgColor: 'bg-primary/10',
-    icon: '✓',
-  },
-};
-
-export const FINDING_SEVERITY_CONFIG: Record<
-  FindingSeverity,
-  { label: string; color: string; bgColor: string }
-> = {
-  low: { label: 'Low', color: 'text-muted-foreground', bgColor: 'bg-muted' },
-  medium: {
-    label: 'Medium',
-    color: 'text-yellow-700',
-    bgColor: 'bg-yellow-100',
-  },
-  high: { label: 'High', color: 'text-orange-700', bgColor: 'bg-orange-100' },
-  critical: { label: 'Critical', color: 'text-red-700', bgColor: 'bg-red-100' },
-};
 
 export const FINDING_TYPE_FRAMEWORK_OPTIONS = [
   { value: 'soc2', label: 'SOC 2' },
@@ -360,9 +283,7 @@ export function extractOrgFrameworkTypes(payload: unknown): FindingType[] {
     const fw = (item.framework ?? item) as { name?: unknown } | undefined;
     const name = typeof fw?.name === 'string' ? fw.name : '';
     if (!name) continue;
-    const match = FRAMEWORK_NAME_MATCHERS.find(({ pattern }) =>
-      pattern.test(name),
-    );
+    const match = FRAMEWORK_NAME_MATCHERS.find(({ pattern }) => pattern.test(name));
     if (match) types.add(match.type);
   }
   return Array.from(types);

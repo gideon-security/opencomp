@@ -23,7 +23,7 @@ import {
   isPrismaUniqueConstraintError,
 } from './browserbase-org-context.service';
 
-export interface AuthProfileInput {
+interface AuthProfileInput {
   organizationId: string;
   url: string;
   displayName?: string;

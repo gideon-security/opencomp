@@ -42,7 +42,7 @@ export interface TaskUndoContent {
   department: string | null;
 }
 
-export interface PolicyUndoContent {
+interface PolicyUndoContent {
   name: string;
   description: string | null;
   content: unknown;
@@ -84,8 +84,16 @@ export interface ImplicitEdgeBucket {
  */
 export interface ControlFamilyUndoBucket {
   created: Array<{ frameworkInstanceId: string; controlId: string }>;
-  updated: Array<{ frameworkInstanceId: string; controlId: string; prevFamily: string }>;
-  deleted: Array<{ frameworkInstanceId: string; controlId: string; prevFamily: string }>;
+  updated: Array<{
+    frameworkInstanceId: string;
+    controlId: string;
+    prevFamily: string;
+  }>;
+  deleted: Array<{
+    frameworkInstanceId: string;
+    controlId: string;
+    prevFamily: string;
+  }>;
 }
 
 export interface SyncSummary {

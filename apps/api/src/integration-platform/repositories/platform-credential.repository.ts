@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { db } from '@db';
 import type { Prisma } from '@db';
 
-export interface CreatePlatformCredentialDto {
+interface CreatePlatformCredentialDto {
   providerSlug: string;
   encryptedClientId: Prisma.InputJsonValue;
   encryptedClientSecret: Prisma.InputJsonValue;
@@ -13,7 +13,7 @@ export interface CreatePlatformCredentialDto {
   createdById?: string;
 }
 
-export interface UpdatePlatformCredentialDto {
+interface UpdatePlatformCredentialDto {
   encryptedClientId?: Prisma.InputJsonValue;
   encryptedClientSecret?: Prisma.InputJsonValue;
   customScopes?: string[];

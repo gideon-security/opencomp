@@ -51,27 +51,27 @@ export type AuditWithExportIncludes = Prisma.IsmsAuditGetPayload<{
   include: { controls: true; findings: true };
 }>;
 
-export const AUDIT_STATUS_LABELS: Record<string, string> = {
+const AUDIT_STATUS_LABELS: Record<string, string> = {
   planned: 'Planned',
   in_progress: 'In progress',
   complete: 'Complete',
 };
 
-export const CONTROL_RESULT_LABELS: Record<string, string> = {
+const CONTROL_RESULT_LABELS: Record<string, string> = {
   conformity_confirmed: 'Conformity confirmed',
   nonconformity_raised: 'Non-conformity raised',
   observation_raised: 'Observation raised',
   not_sampled: 'Not sampled this cycle',
 };
 
-export const FINDING_TYPE_LABELS: Record<string, string> = {
+const FINDING_TYPE_LABELS: Record<string, string> = {
   nc_major: 'NC major',
   nc_minor: 'NC minor',
   ofi: 'OFI',
   observation: 'Observation',
 };
 
-export const FINDING_STATUS_LABELS: Record<string, string> = {
+const FINDING_STATUS_LABELS: Record<string, string> = {
   open: 'Open',
   in_progress: 'In progress',
   closed: 'Closed',

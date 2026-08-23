@@ -23,8 +23,6 @@ async function getPostHogClient(): Promise<PostHog | null> {
   return null;
 }
 
-export { getPostHogClient };
-
 export async function track(distinctId: string, eventName: string, properties?: Properties) {
   const client = await getPostHogClient();
   if (!client) return;

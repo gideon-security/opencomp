@@ -19,14 +19,8 @@ export const VISUAL_IMPACT_ORDER: Impact[] = [
   Impact.severe,
 ];
 
-export const probabilityLevels = [
-  'Very Likely',
-  'Likely',
-  'Possible',
-  'Unlikely',
-  'Very Unlikely',
-];
-export const probabilityNumbers = ['5', '4', '3', '2', '1'];
+export const probabilityLevels = ['Very Likely', 'Likely', 'Possible', 'Unlikely', 'Very Unlikely'];
+const probabilityNumbers = ['5', '4', '3', '2', '1'];
 export const impactLevels = ['Insignificant', 'Minor', 'Moderate', 'Major', 'Severe'];
 
 const LIKELIHOOD_DEFINITIONS: Record<string, string> = {
@@ -69,10 +63,7 @@ const getRiskColor = (level: string, readOnly?: boolean) => {
   }
 };
 
-export function buildRiskData(
-  activeLikelihood: Likelihood,
-  activeImpact: Impact,
-): RiskCell[] {
+export function buildRiskData(activeLikelihood: Likelihood, activeImpact: Impact): RiskCell[] {
   const activeProbability = probabilityLevels[VISUAL_LIKELIHOOD_ORDER.indexOf(activeLikelihood)];
   const activeImpactLevel = impactLevels[VISUAL_IMPACT_ORDER.indexOf(activeImpact)];
 
@@ -131,14 +122,10 @@ export function MatrixBody({
                 );
                 let rounding = '';
                 if (rowIdx === 0 && colIdx === 0) rounding = 'rounded-tl-lg';
-                if (rowIdx === 0 && colIdx === impactLevels.length - 1)
-                  rounding = 'rounded-tr-lg';
+                if (rowIdx === 0 && colIdx === impactLevels.length - 1) rounding = 'rounded-tr-lg';
                 if (rowIdx === probabilityLevels.length - 1 && colIdx === 0)
                   rounding = 'rounded-bl-lg';
-                if (
-                  rowIdx === probabilityLevels.length - 1 &&
-                  colIdx === impactLevels.length - 1
-                )
+                if (rowIdx === probabilityLevels.length - 1 && colIdx === impactLevels.length - 1)
                   rounding = 'rounded-br-lg';
                 const isSuggested =
                   suggestedLikelihood !== undefined &&
@@ -177,10 +164,7 @@ export function MatrixBody({
           ))}
         </div>
       </div>
-      <div
-        className="flex items-center justify-center ml-2"
-        style={{ writingMode: 'vertical-rl' }}
-      >
+      <div className="flex items-center justify-center ml-2" style={{ writingMode: 'vertical-rl' }}>
         <span className="text-xs font-medium text-muted-foreground">Likelihood</span>
       </div>
     </div>

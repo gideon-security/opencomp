@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmptyObject, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class EmailPreferencesDto {
+class EmailPreferencesDto {
   @ApiProperty({ example: true })
   @IsBoolean()
   policyNotifications: boolean;

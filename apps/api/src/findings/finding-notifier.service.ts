@@ -11,10 +11,7 @@ const EMAIL_CONTENT_MAX_LENGTH = 200;
 const NOVU_CONTENT_MAX_LENGTH = 100;
 
 type FindingAction =
-  | 'created'
-  | 'ready_for_review'
-  | 'needs_revision'
-  | 'closed';
+  'created' | 'ready_for_review' | 'needs_revision' | 'closed';
 
 interface Recipient {
   userId: string;
@@ -23,7 +20,7 @@ interface Recipient {
 }
 
 // Lightweight projection of the Finding + target relations the notifier needs.
-export interface FindingForNotification {
+interface FindingForNotification {
   id: string;
   type: FindingType;
   content: string;
@@ -46,7 +43,10 @@ export interface FindingForNotification {
   policy?: { id: string; name: string } | null;
   vendor?: { id: string; name: string } | null;
   risk?: { id: string; title: string } | null;
-  member?: { id: string; user: { id: string; name: string | null; email: string } } | null;
+  member?: {
+    id: string;
+    user: { id: string; name: string | null; email: string };
+  } | null;
   device?: { id: string; name: string; hostname: string } | null;
 }
 
@@ -132,7 +132,8 @@ function findingNoun(f: FindingForNotification): string {
   if (f.riskId) return 'risk';
   if (f.memberId) return 'person';
   if (f.deviceId) return 'device';
-  if (f.evidenceSubmissionId || f.evidenceFormType) return 'document submission';
+  if (f.evidenceSubmissionId || f.evidenceFormType)
+    return 'document submission';
   return 'area';
 }
 
@@ -233,8 +234,16 @@ export class FindingNotifierService {
   // --------------------------------------------------------------------------
 
   private async sendNotifications(params: SendParams): Promise<void> {
-    const { organizationId, finding, action, recipients, subject, heading, message, newStatus } =
-      params;
+    const {
+      organizationId,
+      finding,
+      action,
+      recipients,
+      subject,
+      heading,
+      message,
+      newStatus,
+    } = params;
 
     const organization = await db.organization.findUnique({
       where: { id: organizationId },
@@ -296,7 +305,9 @@ export class FindingNotifierService {
       );
 
       if (isUnsubscribed) {
-        this.logger.log(`Skipping notification: ${recipient.email} unsubscribed`);
+        this.logger.log(
+          `Skipping notification: ${recipient.email} unsubscribed`,
+        );
         return;
       }
 
@@ -363,7 +374,11 @@ export class FindingNotifierService {
     const { organizationId, actorUserId, finding } = args;
 
     if (finding.taskId) {
-      return this.getTaskRecipients(organizationId, finding.taskId, actorUserId);
+      return this.getTaskRecipients(
+        organizationId,
+        finding.taskId,
+        actorUserId,
+      );
     }
     if (finding.memberId && finding.member) {
       return this.includeAdmins(
@@ -523,11 +538,15 @@ export class FindingNotifierService {
     excludeUserId: string,
   ): Promise<Recipient[]> {
     try {
-      const admins = await this.getOwnersAndAdmins(organizationId, excludeUserId);
+      const admins = await this.getOwnersAndAdmins(
+        organizationId,
+        excludeUserId,
+      );
       const added = new Set(admins.map((r) => r.userId));
       const recipients: Recipient[] = [];
 
-      let submitter: { id: string; email: string; name: string | null } | null = null;
+      let submitter: { id: string; email: string; name: string | null } | null =
+        null;
       if (submitterUserId) {
         submitter = await db.user.findUnique({
           where: { id: submitterUserId },
@@ -587,7 +606,9 @@ export class FindingNotifierService {
   }
 
   private dedupe(
-    members: { user: { id: string; email: string | null; name: string | null } }[],
+    members: {
+      user: { id: string; email: string | null; name: string | null };
+    }[],
     excludeUserId: string,
   ): Recipient[] {
     const seen = new Set<string>();

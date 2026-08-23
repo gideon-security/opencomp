@@ -11,7 +11,7 @@ const datePreprocess = (arg: unknown) => {
   return arg;
 };
 
-export const FrameworkEditorVideoSchema = z.object({
+const FrameworkEditorVideoSchema = z.object({
   id: z.string().optional(), // @id @default
   title: z.string(),
   description: z.string(),
@@ -35,7 +35,7 @@ export const FrameworkEditorVideoSchema = z.object({
     .optional(), // @default(now()) @updatedAt
 });
 
-export const FrameworkEditorFrameworkSchema = z.object({
+const FrameworkEditorFrameworkSchema = z.object({
   id: z.string().optional(), // @id @default
   name: z.string(),
   version: z.string(),
@@ -61,7 +61,7 @@ export const FrameworkEditorFrameworkSchema = z.object({
     .optional(), // @default(now()) @updatedAt
 });
 
-export const FrameworkEditorRequirementSchema = z.object({
+const FrameworkEditorRequirementSchema = z.object({
   id: z.string().optional(), // @id @default
   frameworkId: z.string(),
   // framework: FrameworkEditorFramework - relational, omitted
@@ -90,7 +90,7 @@ export const FrameworkEditorRequirementSchema = z.object({
     .optional(), // @default(now()) @updatedAt
 });
 
-export const FrameworkEditorPolicyTemplateSchema = z.object({
+const FrameworkEditorPolicyTemplateSchema = z.object({
   id: z.string().optional(), // @id @default
   name: z.string(),
   description: z.string(),
@@ -117,7 +117,7 @@ export const FrameworkEditorPolicyTemplateSchema = z.object({
   // policies: Policy[] - relational, omitted
 });
 
-export const FrameworkEditorTaskTemplateSchema = z.object({
+const FrameworkEditorTaskTemplateSchema = z.object({
   id: z.string().optional(), // @id @default
   name: z.string(),
   description: z.string(),
@@ -144,7 +144,7 @@ export const FrameworkEditorTaskTemplateSchema = z.object({
   // tasks: Task[] - relational, omitted
 });
 
-export const FrameworkEditorControlTemplateSchema = z.object({
+const FrameworkEditorControlTemplateSchema = z.object({
   id: z.string().optional(), // @id @default
   name: z.string(),
   description: z.string(),
@@ -172,7 +172,7 @@ export const FrameworkEditorControlTemplateSchema = z.object({
   // controls: Control[] - relational, omitted
 });
 
-export const FindingTemplateSchema = z.object({
+const FindingTemplateSchema = z.object({
   id: z.string().optional(), // @id @default
   category: z.string(),
   title: z.string(),

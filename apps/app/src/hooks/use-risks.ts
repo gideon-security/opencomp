@@ -3,15 +3,15 @@
 import { useApi } from '@/hooks/use-api';
 import { useApiSWR, UseApiSWROptions } from '@/hooks/use-api-swr';
 import { ApiResponse } from '@/lib/api-client';
-import { useCallback, useMemo } from 'react';
 import type {
+  Impact,
+  Likelihood,
   RiskCategory,
   RiskStatus,
-  Likelihood,
-  Impact,
   RiskTreatmentType,
   TaskStatus,
 } from '@db';
+import { useCallback, useMemo } from 'react';
 
 export interface RiskLinkedTask {
   id: string;
@@ -54,7 +54,7 @@ export interface Risk {
   updatedAt: string;
 }
 
-export interface RisksResponse {
+interface RisksResponse {
   data: Risk[];
   totalCount: number;
   page: number;
@@ -108,14 +108,14 @@ interface UpdateRiskData {
   assigneeId?: string | null;
 }
 
-export interface UseRisksOptions extends UseApiSWROptions<RisksResponse> {
+interface UseRisksOptions extends UseApiSWROptions<RisksResponse> {
   /** Initial data from server for hydration - avoids loading state on first render */
   initialData?: Risk[];
   /** Query parameters for filtering/pagination/sorting */
   queryParams?: RisksQueryParams;
 }
 
-export interface UseRiskOptions extends UseApiSWROptions<RiskResponse> {
+interface UseRiskOptions extends UseApiSWROptions<RiskResponse> {
   /** Initial data from server for hydration - avoids loading state on first render */
   initialData?: RiskResponse;
 }
@@ -123,11 +123,11 @@ export interface UseRiskOptions extends UseApiSWROptions<RiskResponse> {
 /**
  * Hook to fetch all risks for the current organization using SWR
  * Provides automatic caching, revalidation, and real-time updates
- * 
+ *
  * @example
  * // With server-side initial data (recommended for pages)
  * const { data, mutate } = useRisks({ initialData: serverRisks });
- * 
+ *
  * @example
  * // Without initial data (shows loading state)
  * const { data, isLoading, mutate } = useRisks();
@@ -171,38 +171,32 @@ export function useRisks(options: UseRisksOptions = {}) {
 /**
  * Hook to fetch a single risk by ID using SWR
  * Provides real-time updates via polling
- * 
+ *
  * @example
  * // With server-side initial data (recommended for detail pages)
  * const { data, mutate } = useRisk(riskId, { initialData: serverRisk });
- * 
+ *
  * @example
  * // Without initial data (shows loading state)
  * const { data, isLoading, mutate } = useRisk(riskId);
  */
-export function useRisk(
-  riskId: string | null,
-  options: UseRiskOptions = {},
-) {
+export function useRisk(riskId: string | null, options: UseRiskOptions = {}) {
   const { initialData, ...restOptions } = options;
 
-  const swrResult = useApiSWR<RiskResponse>(
-    riskId ? `/v1/risks/${riskId}` : null,
-    {
-      ...restOptions,
-      // Enable polling for real-time updates (when local-trigger tasks complete)
-      refreshInterval: restOptions.refreshInterval ?? DEFAULT_POLLING_INTERVAL,
-      // Continue polling even when window is not focused
-      refreshWhenHidden: false,
-      // Use initial data as fallback for instant render
-      ...(initialData && {
-        fallbackData: {
-          data: initialData,
-          status: 200,
-        } as ApiResponse<RiskResponse>,
-      }),
-    },
-  );
+  const swrResult = useApiSWR<RiskResponse>(riskId ? `/v1/risks/${riskId}` : null, {
+    ...restOptions,
+    // Enable polling for real-time updates (when local-trigger tasks complete)
+    refreshInterval: restOptions.refreshInterval ?? DEFAULT_POLLING_INTERVAL,
+    // Continue polling even when window is not focused
+    refreshWhenHidden: false,
+    // Use initial data as fallback for instant render
+    ...(initialData && {
+      fallbackData: {
+        data: initialData,
+        status: 200,
+      } as ApiResponse<RiskResponse>,
+    }),
+  });
 
   // Extract risk data from response
   const risk = swrResult.data?.data ?? null;
@@ -254,9 +248,7 @@ export function useRiskActions() {
   );
 
   const regenerateMitigation = useCallback(
-    async (
-      riskId: string,
-    ): Promise<{ runId: string; publicAccessToken: string }> => {
+    async (riskId: string): Promise<{ runId: string; publicAccessToken: string }> => {
       const response = await fetch(`/api/risks/${riskId}/regenerate-mitigation`, {
         method: 'POST',
         credentials: 'include',
@@ -335,10 +327,7 @@ export function useRiskActions() {
    * is the additive fresh-suggest flow.
    */
   const applyRiskLinks = useCallback(
-    async (
-      riskId: string,
-      params: { taskIds: string[]; replace: boolean },
-    ): Promise<void> => {
+    async (riskId: string, params: { taskIds: string[]; replace: boolean }): Promise<void> => {
       const response = await fetch(`/api/risks/${riskId}/auto-link/apply`, {
         method: 'POST',
         credentials: 'include',
@@ -360,9 +349,7 @@ export function useRiskActions() {
    * link route; this hook just fetches and re-mints the token.
    */
   const fetchActiveRiskAutoLinkRun = useCallback(
-    async (
-      riskId: string,
-    ): Promise<{ runId: string; publicAccessToken: string } | null> => {
+    async (riskId: string): Promise<{ runId: string; publicAccessToken: string } | null> => {
       const response = await fetch(`/api/risks/${riskId}/auto-link/active`, {
         credentials: 'include',
       });
@@ -370,8 +357,7 @@ export function useRiskActions() {
         return null;
       }
       const body = (await response.json()) as
-        | { runId: string; publicAccessToken: string }
-        | { runId: null };
+        { runId: string; publicAccessToken: string } | { runId: null };
       if (!body.runId) return null;
       return { runId: body.runId, publicAccessToken: body.publicAccessToken };
     },
@@ -379,17 +365,14 @@ export function useRiskActions() {
   );
 
   /** Clears the persisted runId — used when the user discards an AI run. */
-  const discardRiskAutoLinkRun = useCallback(
-    async (riskId: string): Promise<void> => {
-      await fetch(`/api/risks/${riskId}/auto-link/active`, {
-        method: 'DELETE',
-        credentials: 'include',
-      }).catch(() => {
-        /* best-effort; the next /auto-link call replaces the runId anyway */
-      });
-    },
-    [],
-  );
+  const discardRiskAutoLinkRun = useCallback(async (riskId: string): Promise<void> => {
+    await fetch(`/api/risks/${riskId}/auto-link/active`, {
+      method: 'DELETE',
+      credentials: 'include',
+    }).catch(() => {
+      /* best-effort; the next /auto-link call replaces the runId anyway */
+    });
+  }, []);
 
   return {
     createRisk,
@@ -404,55 +387,3 @@ export function useRiskActions() {
     discardRiskAutoLinkRun,
   };
 }
-
-/**
- * Combined hook for risks with data fetching and mutations
- * Provides a complete solution for risk management with optimistic updates
- */
-export function useRisksWithMutations(options: UseApiSWROptions<RisksResponse> = {}) {
-  const { data, error, isLoading, mutate } = useRisks(options);
-  const { createRisk, updateRisk, deleteRisk } = useRiskActions();
-
-  const create = useCallback(
-    async (riskData: CreateRiskData) => {
-      const result = await createRisk(riskData);
-      // Revalidate the risks list after creation
-      await mutate();
-      return result;
-    },
-    [createRisk, mutate],
-  );
-
-  const update = useCallback(
-    async (riskId: string, riskData: UpdateRiskData) => {
-      const result = await updateRisk(riskId, riskData);
-      // Revalidate the risks list after update
-      await mutate();
-      return result;
-    },
-    [updateRisk, mutate],
-  );
-
-  const remove = useCallback(
-    async (riskId: string) => {
-      const result = await deleteRisk(riskId);
-      // Revalidate the risks list after deletion
-      await mutate();
-      return result;
-    },
-    [deleteRisk, mutate],
-  );
-
-  return {
-    risks: data?.data?.data ?? [],
-    totalCount: data?.data?.totalCount ?? 0,
-    pageCount: data?.data?.pageCount ?? 0,
-    isLoading,
-    error,
-    mutate,
-    createRisk: create,
-    updateRisk: update,
-    deleteRisk: remove,
-  };
-}
-

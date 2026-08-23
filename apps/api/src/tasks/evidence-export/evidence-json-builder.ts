@@ -37,34 +37,6 @@ function stringifyRun(run: NormalizedEvidenceRun): string {
   return safeStringify(redactSensitiveData(rest), null, 2) ?? '{}';
 }
 
-export function buildAutomationJson(
-  summary: TaskEvidenceSummary,
-  automation: NormalizedAutomation,
-): string {
-  return (
-    safeStringify(
-      redactSensitiveData({
-        automation: {
-          id: automation.id,
-          name: automation.name,
-          type: automation.type,
-          integrationName: automation.integrationName,
-          totalRuns: automation.totalRuns,
-          successfulRuns: automation.successfulRuns,
-          failedRuns: automation.failedRuns,
-          latestRunAt: automation.latestRunAt,
-        },
-        runs: automation.runs.map(
-          ({ type, automationName, automationId, ...run }) => run,
-        ),
-        exportedAt: summary.exportedAt,
-      }),
-      null,
-      2,
-    ) ?? '{}'
-  );
-}
-
 export function buildAutomationJsonStream({
   summary,
   header,

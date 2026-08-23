@@ -21,7 +21,7 @@ import {
   type ReadFailure,
 } from './shared';
 
-export interface VpcInfo {
+interface VpcInfo {
   vpcId: string;
   region: string;
   environment: string | null;

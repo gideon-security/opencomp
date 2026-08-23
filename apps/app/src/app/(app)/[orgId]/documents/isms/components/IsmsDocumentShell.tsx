@@ -1,5 +1,6 @@
 'use client';
 
+import { usePermissions } from '@/hooks/use-permissions';
 import {
   Alert,
   AlertDescription,
@@ -16,29 +17,28 @@ import {
   Renew,
   WarningAlt,
 } from '@trycompai/design-system/icons';
-import { useState, type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
+import { useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
-import { usePermissions } from '@/hooks/use-permissions';
 import { useIsmsDocument, type UseIsmsDocumentReturn } from '../hooks/useIsmsDocument';
-import { useIsmsDrift } from '../hooks/useIsmsDrift';
 import { useIsmsDocumentVersions } from '../hooks/useIsmsDocumentVersions';
+import { useIsmsDrift } from '../hooks/useIsmsDrift';
 import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
 import { DriftBanner } from './DriftBanner';
-import { IsmsControlMappings } from './IsmsControlMappings';
 import { IsmsApprovalSection, type ApproverOption } from './IsmsApprovalSection';
+import { IsmsControlMappings } from './IsmsControlMappings';
 import { IsmsVersionHistory } from './IsmsVersionHistory';
 import { IsmsPageHeader } from './shared';
 
 /** Arguments passed to the per-document body render-prop. */
-export interface IsmsDocumentBodyArgs {
+interface IsmsDocumentBodyArgs {
   document: IsmsDocumentData;
   canManage: boolean;
   /** The full document hook surface, for register-specific create/update/delete wiring. */
   hook: UseIsmsDocumentReturn;
 }
 
-export interface IsmsDocumentShellProps {
+interface IsmsDocumentShellProps {
   organizationId: string;
   documentId: string;
   fallbackData: IsmsDocumentData | null;
@@ -242,11 +242,7 @@ export function IsmsDocumentShell({
           <AlertTitle>{t('shell.loadErrorTitle')}</AlertTitle>
           <AlertDescription>
             <div className="flex flex-col gap-3">
-              <div>
-                {error instanceof Error
-                  ? error.message
-                  : t('shell.loadErrorDescription')}
-              </div>
+              <div>{error instanceof Error ? error.message : t('shell.loadErrorDescription')}</div>
               <div className="flex">
                 <Button
                   type="button"
@@ -276,7 +272,11 @@ export function IsmsDocumentShell({
       )}
 
       {document && (
-        <IsmsControlMappings document={document} organizationId={organizationId} canManage={canManage} />
+        <IsmsControlMappings
+          document={document}
+          organizationId={organizationId}
+          canManage={canManage}
+        />
       )}
 
       {document && (

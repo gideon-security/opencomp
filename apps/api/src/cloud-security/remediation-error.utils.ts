@@ -1,10 +1,10 @@
-export interface PermissionErrorInfo {
+interface PermissionErrorInfo {
   isPermissionError: boolean;
   missingActions: string[];
   rawMessage: string;
 }
 
-export interface GcpPermissionErrorInfo {
+interface GcpPermissionErrorInfo {
   isPermissionError: boolean;
   missingPermissions: string[];
   suggestedRole: string | null;
@@ -175,7 +175,7 @@ export function parseGcpPermissionError(
   };
 }
 
-export interface AzurePermissionErrorInfo {
+interface AzurePermissionErrorInfo {
   isPermissionError: boolean;
   missingActions: string[];
   fixScript: string | null;

@@ -1,16 +1,16 @@
 import type { LoginAnalysis } from '../../hooks/types';
 
 /** A field the capture form renders, mapped back to the sign-in contract on submit. */
-export type CaptureFieldKind = 'identifier' | 'password' | 'text';
+type CaptureFieldKind = 'identifier' | 'password' | 'text';
 
-export interface CaptureField {
+interface CaptureField {
   label: string;
   kind: CaptureFieldKind;
   /** True when the user can rename the label (manual / user-added fields). */
   editableLabel?: boolean;
 }
 
-export interface DerivedCapture {
+interface DerivedCapture {
   fields: CaptureField[];
   /** Detection was unusable → generic form + "add a field" escape hatch. */
   manual: boolean;

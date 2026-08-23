@@ -1,14 +1,6 @@
 import { headers } from 'next/headers';
 import { auth } from './auth';
 
-export function formatEnumValue(value: string | null | undefined): string {
-  if (!value) return '';
-  return value
-    .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
-
 const ALLOWED_DOMAIN = 'gideondefender.com';
 
 export function isInternalUser(email: string): boolean {

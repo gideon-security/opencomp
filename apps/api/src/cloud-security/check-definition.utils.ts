@@ -59,7 +59,7 @@ export function resolveCheckKey(params: {
   return null;
 }
 
-export interface SourceHashInput {
+interface SourceHashInput {
   provider: string;
   serviceName: string | null;
   title: string;

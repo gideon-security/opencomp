@@ -1,16 +1,16 @@
 import 'server-only';
 
 import {
+  EMBEDDING_DIMENSIONS,
+  EMBEDDING_MODEL,
+  embedTexts,
   vectorIndex as pgVectorIndex,
   type VectorIndex,
   type VectorRangeResult,
-  embedTexts,
-  EMBEDDING_MODEL,
-  EMBEDDING_DIMENSIONS,
 } from '@gideon-defender/db';
 import { createHash } from 'node:crypto';
 
-export type EntityKind = 'risk' | 'vendor' | 'task';
+type EntityKind = 'risk' | 'vendor' | 'task';
 
 interface EntityInput {
   id: string;
@@ -35,7 +35,7 @@ interface UpsertOptions {
   existingHashes?: Map<string, string>;
 }
 
-export interface UpsertEntityEmbeddingsResult {
+interface UpsertEntityEmbeddingsResult {
   /** Newly embedded entities that should have their hash persisted. */
   appliedHashes: Array<{ id: string; hash: string }>;
   /** How many entities we skipped because their content was unchanged. */
@@ -48,7 +48,7 @@ interface FindSimilarTasksOptions {
   topK?: number;
 }
 
-export interface SimilarTaskResult {
+interface SimilarTaskResult {
   id: string; // raw task id (sourceId), not the prefixed embedding id
   score: number;
   department?: string;
@@ -89,11 +89,7 @@ function embeddingId(kind: EntityKind, organizationId: string, sourceId: string)
  * prefixed id never matches the raw-id `liveTaskIds` set) and clear the hash of
  * a row that doesn't exist.
  */
-function sourceIdFromEmbeddingId(
-  kind: EntityKind,
-  organizationId: string,
-  id: string,
-): string {
+function sourceIdFromEmbeddingId(kind: EntityKind, organizationId: string, id: string): string {
   const prefix = embeddingIdPrefix(kind, organizationId);
   return id.startsWith(prefix) ? id.slice(prefix.length) : id;
 }
@@ -107,7 +103,7 @@ function sourceIdFromEmbeddingId(
  * Exported so callers writing the hash back to Postgres can compute it
  * exactly the way the upsert path does.
  */
-export function computeEntityContentHash({
+function computeEntityContentHash({
   text,
   department,
 }: {
@@ -143,9 +139,7 @@ export async function upsertEntityEmbeddings({
     entity,
     hash: computeEntityContentHash({ text: entity.text, department: entity.department }),
   }));
-  const toEmbed = withHashes.filter(
-    ({ entity, hash }) => existingHashes?.get(entity.id) !== hash,
-  );
+  const toEmbed = withHashes.filter(({ entity, hash }) => existingHashes?.get(entity.id) !== hash);
   const skippedCount = withHashes.length - toEmbed.length;
   if (toEmbed.length === 0) {
     return { appliedHashes: [], skippedCount };
@@ -281,7 +275,7 @@ export async function findSimilarTasks({
     .slice(0, topK);
 }
 
-export interface PruneOrphanTaskVectorsResult {
+interface PruneOrphanTaskVectorsResult {
   /** sourceIds of the task vectors that were deleted from the vector store. */
   deletedSourceIds: string[];
   /** How many of the org's task vectors were examined. */
@@ -371,7 +365,10 @@ export async function pruneOrphanTaskVectors({
   for (let i = 0; i < orphans.length; i += BATCH) {
     const batch = orphans.slice(i, i + BATCH);
     try {
-      await index.delete(batch.map((o) => o.vectorId), organizationId);
+      await index.delete(
+        batch.map((o) => o.vectorId),
+        organizationId,
+      );
       deletedSourceIds.push(...batch.map((o) => o.sourceId));
     } catch (err) {
       console.error(
@@ -391,7 +388,7 @@ interface WaitForIndexedOptions {
   intervalMs?: number;
 }
 
-export interface WaitForIndexedResult {
+interface WaitForIndexedResult {
   waitedMs: number;
   polls: number;
   /** Defined only when we hit `maxWaitMs` without reaching pending=0. */

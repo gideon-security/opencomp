@@ -3,7 +3,7 @@
 import { useApi } from '@/hooks/use-api';
 import { useCallback } from 'react';
 
-export interface TrustCustomLink {
+interface TrustCustomLink {
   id: string;
   title: string;
   description: string | null;
@@ -29,10 +29,10 @@ export function useTrustPortalCustomLinks(orgId: string) {
 
   const createLink = useCallback(
     async (data: CreateLinkData) => {
-      const response = await api.post<TrustCustomLink>(
-        '/v1/trust-portal/custom-links',
-        { organizationId: orgId, ...data },
-      );
+      const response = await api.post<TrustCustomLink>('/v1/trust-portal/custom-links', {
+        organizationId: orgId,
+        ...data,
+      });
       if (response.error) throw new Error(response.error);
       return response.data;
     },
@@ -53,9 +53,7 @@ export function useTrustPortalCustomLinks(orgId: string) {
 
   const deleteLink = useCallback(
     async (linkId: string) => {
-      const response = await api.post(
-        `/v1/trust-portal/custom-links/${linkId}/delete`,
-      );
+      const response = await api.post(`/v1/trust-portal/custom-links/${linkId}/delete`);
       if (response.error) throw new Error(response.error);
       return response.data;
     },

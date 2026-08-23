@@ -7,16 +7,16 @@ import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
 import {
   combineReadFailures,
+  emitOutcomes,
   remediationForReadFailure,
   resolveAwsSessionOrFail,
   toReadFailure,
   type AwsSession,
   type CheckOutcome,
   type ReadFailure,
-  emitOutcomes,
 } from './shared';
 
-export interface RdsInstanceInfo {
+interface RdsInstanceInfo {
   id: string;
   region: string;
   encrypted: boolean;
@@ -25,7 +25,7 @@ export interface RdsInstanceInfo {
   engine: string;
 }
 
-export interface RdsClusterInfo {
+interface RdsClusterInfo {
   id: string;
   region: string;
   encrypted: boolean;
@@ -35,60 +35,68 @@ export interface RdsClusterInfo {
 }
 
 export function evaluateRdsEncryption(instances: RdsInstanceInfo[]): CheckOutcome[] {
-  return instances
-    // Aurora encryption is managed at the cluster level; the instance-level
-    // StorageEncrypted flag is unreliable, so don't evaluate Aurora instances
-    // here (they are evaluated by evaluateRdsClusterEncryption instead).
-    .filter((i) => !i.engine.toLowerCase().startsWith('aurora'))
-    .map((i) =>
-    i.encrypted
-      ? {
-          kind: 'pass',
-          title: `RDS storage encrypted: ${i.id}`,
-          description: `RDS instance "${i.id}" (${i.region}) has storage encryption enabled.`,
-          resourceType: 'aws-rds-instance',
-          resourceId: `${i.region}/${i.id}`,
-          evidence: { instance: i.id, region: i.region, encrypted: true },
-        }
-      : {
-          kind: 'fail',
-          title: `RDS storage not encrypted: ${i.id}`,
-          description: `RDS instance "${i.id}" (${i.region}) does not have storage encryption enabled.`,
-          resourceType: 'aws-rds-instance',
-          resourceId: `${i.region}/${i.id}`,
-          severity: 'high',
-          remediation:
-            'Enable storage encryption (encryption at rest must be set at creation; restore from an encrypted snapshot to remediate).',
-          evidence: { instance: i.id, region: i.region, encrypted: false },
-        },
+  return (
+    instances
+      // Aurora encryption is managed at the cluster level; the instance-level
+      // StorageEncrypted flag is unreliable, so don't evaluate Aurora instances
+      // here (they are evaluated by evaluateRdsClusterEncryption instead).
+      .filter((i) => !i.engine.toLowerCase().startsWith('aurora'))
+      .map((i) =>
+        i.encrypted
+          ? {
+              kind: 'pass',
+              title: `RDS storage encrypted: ${i.id}`,
+              description: `RDS instance "${i.id}" (${i.region}) has storage encryption enabled.`,
+              resourceType: 'aws-rds-instance',
+              resourceId: `${i.region}/${i.id}`,
+              evidence: { instance: i.id, region: i.region, encrypted: true },
+            }
+          : {
+              kind: 'fail',
+              title: `RDS storage not encrypted: ${i.id}`,
+              description: `RDS instance "${i.id}" (${i.region}) does not have storage encryption enabled.`,
+              resourceType: 'aws-rds-instance',
+              resourceId: `${i.region}/${i.id}`,
+              severity: 'high',
+              remediation:
+                'Enable storage encryption (encryption at rest must be set at creation; restore from an encrypted snapshot to remediate).',
+              evidence: { instance: i.id, region: i.region, encrypted: false },
+            },
+      )
   );
 }
 
 export function evaluateRdsBackups(instances: RdsInstanceInfo[]): CheckOutcome[] {
-  return instances
-    // Aurora backups are managed at the cluster level; the instance-level
-    // BackupRetentionPeriod is unreliable, so don't fail Aurora instances here.
-    .filter((i) => !i.engine.toLowerCase().startsWith('aurora'))
-    .map((i) =>
-    i.backupRetentionDays > 0
-      ? {
-          kind: 'pass',
-          title: `RDS automated backups enabled: ${i.id}`,
-          description: `RDS instance "${i.id}" (${i.region}) retains backups for ${i.backupRetentionDays} day(s).`,
-          resourceType: 'aws-rds-instance',
-          resourceId: `${i.region}/${i.id}`,
-          evidence: { instance: i.id, backupRetentionDays: i.backupRetentionDays },
-        }
-      : {
-          kind: 'fail',
-          title: `RDS automated backups disabled: ${i.id}`,
-          description: `RDS instance "${i.id}" (${i.region}) has automated backups disabled (retention 0).`,
-          resourceType: 'aws-rds-instance',
-          resourceId: `${i.region}/${i.id}`,
-          severity: 'medium',
-          remediation: 'Set a backup retention period of at least 7 days.',
-          evidence: { instance: i.id, region: i.region, backupRetentionDays: i.backupRetentionDays },
-        },
+  return (
+    instances
+      // Aurora backups are managed at the cluster level; the instance-level
+      // BackupRetentionPeriod is unreliable, so don't fail Aurora instances here.
+      .filter((i) => !i.engine.toLowerCase().startsWith('aurora'))
+      .map((i) =>
+        i.backupRetentionDays > 0
+          ? {
+              kind: 'pass',
+              title: `RDS automated backups enabled: ${i.id}`,
+              description: `RDS instance "${i.id}" (${i.region}) retains backups for ${i.backupRetentionDays} day(s).`,
+              resourceType: 'aws-rds-instance',
+              resourceId: `${i.region}/${i.id}`,
+              evidence: { instance: i.id, backupRetentionDays: i.backupRetentionDays },
+            }
+          : {
+              kind: 'fail',
+              title: `RDS automated backups disabled: ${i.id}`,
+              description: `RDS instance "${i.id}" (${i.region}) has automated backups disabled (retention 0).`,
+              resourceType: 'aws-rds-instance',
+              resourceId: `${i.region}/${i.id}`,
+              severity: 'medium',
+              remediation: 'Set a backup retention period of at least 7 days.',
+              evidence: {
+                instance: i.id,
+                region: i.region,
+                backupRetentionDays: i.backupRetentionDays,
+              },
+            },
+      )
   );
 }
 
@@ -281,7 +289,11 @@ export const rdsEncryptionCheck: IntegrationCheck = {
     // is unreliable for Aurora and produces false failures.
     const instances = await listRdsInstances(session, ctx);
     const clusters = await listRdsClusters(session, ctx);
-    failUnverifiedRegions(ctx, [...instances.failedRegions, ...clusters.failedRegions], 'encryption');
+    failUnverifiedRegions(
+      ctx,
+      [...instances.failedRegions, ...clusters.failedRegions],
+      'encryption',
+    );
     if (instances.items.length === 0 && clusters.items.length === 0) return;
     emitOutcomes(ctx, evaluateRdsEncryption(instances.items));
     emitOutcomes(ctx, evaluateRdsClusterEncryption(clusters.items));

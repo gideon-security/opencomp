@@ -28,13 +28,13 @@ type FrameworkEditorFrameworkWithRequirements = Prisma.FrameworkEditorFrameworkG
   include: { requirements: true };
 }>;
 
-export type InitializeOrganizationInput = {
+type InitializeOrganizationInput = {
   frameworkIds: string[];
   organizationId: string;
 };
 
 // Renamed for clarity and broader applicability
-export type UpsertOrgFrameworkStructureCoreInput = {
+type UpsertOrgFrameworkStructureCoreInput = {
   organizationId: string;
   targetFrameworkEditorIds: string[];
   frameworkEditorFrameworks: FrameworkEditorFrameworkWithRequirements[];
@@ -180,9 +180,7 @@ export const _upsertOrgFrameworkStructureCore = async ({
     // Policy.currentVersionId -> PolicyVersion.id and PolicyVersion.policyId ->
     // Policy.id form an FK cycle, so we insert Policy first (currentVersionId null),
     // insert PolicyVersion, then set currentVersionId in one bulk UPDATE.
-    const idPairs = await tx.$queryRaw<
-      Array<{ policy_id: string; version_id: string }>
-    >`
+    const idPairs = await tx.$queryRaw<Array<{ policy_id: string; version_id: string }>>`
       SELECT
         generate_prefixed_cuid('pol'::text) AS policy_id,
         generate_prefixed_cuid('pv'::text) AS version_id
@@ -220,8 +218,7 @@ export const _upsertOrgFrameworkStructureCore = async ({
 
     const currentVersionValues = Prisma.join(
       preparedPolicies.map(
-        ({ policyId, versionId }) =>
-          Prisma.sql`(${policyId}::text, ${versionId}::text)`,
+        ({ policyId, versionId }) => Prisma.sql`(${policyId}::text, ${versionId}::text)`,
       ),
     );
     await tx.$executeRaw`
@@ -314,7 +311,8 @@ export const _upsertOrgFrameworkStructureCore = async ({
   const controlDocumentTypeEntries: Prisma.ControlDocumentTypeCreateManyInput[] = [];
   const frameworkControlPolicyEntries: Prisma.FrameworkControlPolicyLinkCreateManyInput[] = [];
   const frameworkControlTaskEntries: Prisma.FrameworkControlTaskLinkCreateManyInput[] = [];
-  const frameworkControlDocumentTypeEntries: Prisma.FrameworkControlDocumentTypeLinkCreateManyInput[] = [];
+  const frameworkControlDocumentTypeEntries: Prisma.FrameworkControlDocumentTypeLinkCreateManyInput[] =
+    [];
   const controlTemplateById = new Map(controlTemplates.map((c) => [c.id, c]));
 
   for (const controlTemplateRelation of groupedControlTemplateRelations) {
@@ -366,9 +364,10 @@ export const _upsertOrgFrameworkStructureCore = async ({
       }
     }
 
-    const documentTypes = controlTemplateRelation.documentTypes.length > 0
-      ? controlTemplateRelation.documentTypes
-      : (controlTemplateById.get(controlTemplateRelation.controlTemplateId)?.documentTypes ?? []);
+    const documentTypes =
+      controlTemplateRelation.documentTypes.length > 0
+        ? controlTemplateRelation.documentTypes
+        : (controlTemplateById.get(controlTemplateRelation.controlTemplateId)?.documentTypes ?? []);
     for (const formType of documentTypes) {
       controlDocumentTypeEntries.push({ controlId: newControlId, formType });
       frameworkControlDocumentTypeEntries.push({
@@ -385,8 +384,7 @@ export const _upsertOrgFrameworkStructureCore = async ({
   if (controlToPolicyPairs.length > 0) {
     const rows = Prisma.join(
       controlToPolicyPairs.map(
-        ({ controlId, policyId }) =>
-          Prisma.sql`(${controlId}::text, ${policyId}::text)`,
+        ({ controlId, policyId }) => Prisma.sql`(${controlId}::text, ${policyId}::text)`,
       ),
     );
     await tx.$executeRaw`
@@ -399,8 +397,7 @@ export const _upsertOrgFrameworkStructureCore = async ({
   if (controlToTaskPairs.length > 0) {
     const rows = Prisma.join(
       controlToTaskPairs.map(
-        ({ controlId, taskId }) =>
-          Prisma.sql`(${controlId}::text, ${taskId}::text)`,
+        ({ controlId, taskId }) => Prisma.sql`(${controlId}::text, ${taskId}::text)`,
       ),
     );
     await tx.$executeRaw`

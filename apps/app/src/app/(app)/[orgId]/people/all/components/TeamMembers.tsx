@@ -4,16 +4,13 @@ import { trainingVideos as trainingVideosData } from '@/lib/data/training-videos
 import { serverApi } from '@/lib/server-api-client';
 import type { Invitation, Member, User } from '@db';
 import { db } from '@db/server';
+import type { BackgroundCheckStatus } from '../../[employeeId]/components/backgroundCheckTypes';
 import { getEmployeeSyncConnections } from '../data/queries';
 import { TeamMembersClient } from './TeamMembersClient';
-import type { BackgroundCheckStatus } from '../../[employeeId]/components/backgroundCheckTypes';
-import {
-  buildTwoFactorStatusMap,
-  type TwoFactorStatusesResponse,
-} from './two-factor-status-map';
+import { buildTwoFactorStatusMap, type TwoFactorStatusesResponse } from './two-factor-status-map';
 
-export type { BackgroundCheckStatus };
 export type { TwoFactorStatus } from './two-factor-status-map';
+export type { BackgroundCheckStatus };
 
 export interface MemberWithUser extends Member {
   user: User;
@@ -38,9 +35,7 @@ export interface TaskCompletion {
   hipaa?: { completed: number; total: number };
 }
 
-export type DeviceStatus = 'compliant' | 'non-compliant' | 'not-installed';
-
-export interface TeamMembersProps {
+interface TeamMembersProps {
   canManageMembers: boolean;
   canInviteUsers: boolean;
   isCurrentUserOwner: boolean;
@@ -48,12 +43,7 @@ export interface TeamMembersProps {
 }
 
 export async function TeamMembers(props: TeamMembersProps) {
-  const {
-    canManageMembers,
-    canInviteUsers,
-    isCurrentUserOwner,
-    organizationId,
-  } = props;
+  const { canManageMembers, canInviteUsers, isCurrentUserOwner, organizationId } = props;
 
   if (!organizationId) {
     return null;
@@ -61,13 +51,9 @@ export async function TeamMembers(props: TeamMembersProps) {
 
   // Fetch members, invitations, and 2FA statuses from API
   const [membersRes, invitationsRes, twoFactorRes] = await Promise.all([
-    serverApi.get<{ data: MemberWithUser[]; count: number }>(
-      '/v1/people?includeDeactivated=true',
-    ),
+    serverApi.get<{ data: MemberWithUser[]; count: number }>('/v1/people?includeDeactivated=true'),
     serverApi.get<{ data: Invitation[] }>('/v1/auth/invitations'),
-    serverApi.get<TwoFactorStatusesResponse>(
-      '/v1/integrations/sync/two-factor-statuses',
-    ),
+    serverApi.get<TwoFactorStatusesResponse>('/v1/integrations/sync/two-factor-statuses'),
   ]);
 
   const members: MemberWithUser[] = Array.isArray(membersRes.data?.data)
@@ -81,10 +67,7 @@ export async function TeamMembers(props: TeamMembersProps) {
 
   // Empty when no 2FA source is configured (or the fetch failed) — rows then
   // show no 2FA entry rather than a wrong one.
-  const twoFactorStatusMap = buildTwoFactorStatusMap(
-    members,
-    twoFactorRes.data ?? undefined,
-  );
+  const twoFactorStatusMap = buildTwoFactorStatusMap(members, twoFactorRes.data ?? undefined);
 
   // Fetch employee sync connections server-side
   const employeeSyncData = await getEmployeeSyncConnections(organizationId);
@@ -125,13 +108,11 @@ export async function TeamMembers(props: TeamMembersProps) {
   // columns (as dashes), never silently hides them.
   const requirementTracking = {
     policies: policies.length > 0,
-    training:
-      orgFlags?.securityTrainingStepEnabled === true && trainingVideosData.length > 0,
+    training: orgFlags?.securityTrainingStepEnabled === true && trainingVideosData.length > 0,
     hipaa: hasHipaaFramework,
   };
 
   if (employeeMembers.length > 0) {
-
     const employeeIds = employeeMembers.map((m) => m.id);
     const trainingCompletions = orgFlags?.securityTrainingStepEnabled
       ? await db.employeeTrainingVideoCompletion.findMany({
@@ -140,7 +121,9 @@ export async function TeamMembers(props: TeamMembersProps) {
       : [];
 
     const totalPolicies = policies.length;
-    const totalTrainingVideos = orgFlags?.securityTrainingStepEnabled ? trainingVideosData.length : 0;
+    const totalTrainingVideos = orgFlags?.securityTrainingStepEnabled
+      ? trainingVideosData.length
+      : 0;
     const totalHipaaTraining = hasHipaaFramework ? 1 : 0;
     const totalTasks = totalPolicies + totalTrainingVideos + totalHipaaTraining;
 

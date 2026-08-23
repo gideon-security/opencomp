@@ -12,13 +12,10 @@ import type { AuthenticatedRequest } from './types';
  *     resolved to the org's oldest owner. This keeps mutations API-callable
  *     without forcing callers to manage user IDs themselves.
  */
-export type ActingUserSource =
-  | 'session'
-  | 'service-token-acting'
-  | 'api-key-creator'
-  | 'org-owner-fallback';
+type ActingUserSource =
+  'session' | 'service-token-acting' | 'api-key-creator' | 'org-owner-fallback';
 
-export interface ResolvedActingUser {
+interface ResolvedActingUser {
   /** User ID to attribute the mutation to. Null only when no fallback was
    *  available (e.g. an org with zero owner-role members — caller should
    *  surface a 400 with an actionable message). */
@@ -167,9 +164,7 @@ export class ActingUserResolver {
    */
   private buildCallerLabel(req: AuthenticatedRequest): string {
     if (req.isApiKey) {
-      return req.apiKeyName
-        ? `via API key "${req.apiKeyName}"`
-        : 'via API key';
+      return req.apiKeyName ? `via API key "${req.apiKeyName}"` : 'via API key';
     }
     if (req.isServiceToken) {
       return req.serviceName

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { TaskItemEntityType, TaskItemStatus, TaskItemPriority } from '@db';
 
-export class TaskItemAssigneeDto {
+class TaskItemAssigneeDto {
   @ApiProperty({ description: 'Member ID' })
   id: string;
 
@@ -14,7 +14,7 @@ export class TaskItemAssigneeDto {
   };
 }
 
-export class TaskItemCreatorDto {
+class TaskItemCreatorDto {
   @ApiProperty({ description: 'Member ID' })
   id: string;
 
@@ -27,7 +27,7 @@ export class TaskItemCreatorDto {
   };
 }
 
-export class TaskItemUpdaterDto {
+class TaskItemUpdaterDto {
   @ApiProperty({ description: 'Member ID' })
   id: string;
 

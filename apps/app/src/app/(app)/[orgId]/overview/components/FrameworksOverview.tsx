@@ -1,23 +1,23 @@
 'use client';
 
+import { useFrameworks } from '@/hooks/use-frameworks';
+import { usePermissions } from '@/hooks/use-permissions';
+import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
+import type { FrameworkEditorFramework } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@gideon-defender/ui/card';
 import { Dialog } from '@gideon-defender/ui/dialog';
 import { ScrollArea } from '@gideon-defender/ui/scroll-area';
-import type { FrameworkEditorFramework } from '@db';
 import { Add } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import { usePermissions } from '@/hooks/use-permissions';
-import { useFrameworks } from '@/hooks/use-frameworks';
-import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import { AddFrameworkModal } from './AddFrameworkModal';
 import type { FrameworkInstanceWithComplianceScore } from './types';
 
-export interface FrameworksOverviewProps {
+interface FrameworksOverviewProps {
   frameworksWithControls: FrameworkInstanceWithControls[];
   allFrameworks: FrameworkEditorFramework[];
   frameworksWithCompliance?: FrameworkInstanceWithComplianceScore[];
@@ -25,12 +25,8 @@ export interface FrameworksOverviewProps {
   overallComplianceScore: number;
 }
 
-export function mapFrameworkToBadge(framework: FrameworkInstanceWithControls) {
-  const frameworkName = (
-    framework.framework?.name ??
-    framework.customFramework?.name ??
-    ''
-  ).trim();
+function mapFrameworkToBadge(framework: FrameworkInstanceWithControls) {
+  const frameworkName = (framework.framework?.name ?? framework.customFramework?.name ?? '').trim();
   const normalizedName = frameworkName.toLowerCase();
 
   if (frameworkName === 'SOC 2') {
@@ -112,9 +108,7 @@ export function FrameworksOverview({
   const availableFrameworksToAdd = allFrameworks.filter(
     (framework) =>
       !frameworks.some(
-        (fc) =>
-          fc.framework?.id === framework.id ||
-          fc.customFramework?.id === framework.id,
+        (fc) => fc.framework?.id === framework.id || fc.customFramework?.id === framework.id,
       ),
   );
 
@@ -142,13 +136,9 @@ export function FrameworksOverview({
                 const complianceScore = complianceMap.get(framework.id) ?? 0;
                 const badgeSrc = mapFrameworkToBadge(framework);
                 const displayName =
-                  framework.framework?.name ??
-                  framework.customFramework?.name ??
-                  '';
+                  framework.framework?.name ?? framework.customFramework?.name ?? '';
                 const displayDescription =
-                  framework.framework?.description ??
-                  framework.customFramework?.description ??
-                  '';
+                  framework.framework?.description ?? framework.customFramework?.description ?? '';
 
                 return (
                   <div key={framework.id}>
@@ -203,9 +193,7 @@ export function FrameworksOverview({
                         </div>
                       </div>
                     </Link>
-                    {index < frameworks.length - 1 && (
-                      <div className="border-t border-muted/30" />
-                    )}
+                    {index < frameworks.length - 1 && <div className="border-t border-muted/30" />}
                   </div>
                 );
               })}

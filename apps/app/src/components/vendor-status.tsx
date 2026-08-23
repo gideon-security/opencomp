@@ -2,7 +2,7 @@ import { cn } from '@gideon-defender/ui/cn';
 
 export const VENDOR_STATUS_TYPES = ['not_assessed', 'in_progress', 'assessed'] as const;
 
-export type VendorStatusType = Exclude<(typeof VENDOR_STATUS_TYPES)[number], 'draft' | 'published'>;
+type VendorStatusType = Exclude<(typeof VENDOR_STATUS_TYPES)[number], 'draft' | 'published'>;
 
 const VENDOR_STATUS_COLORS: Record<VendorStatusType, string> = {
   not_assessed: 'bg-yellow-400 dark:bg-yellow-500',

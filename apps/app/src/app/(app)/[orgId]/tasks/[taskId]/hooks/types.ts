@@ -96,11 +96,6 @@ export interface BrowserAutomation {
   runs?: BrowserAutomationRun[];
 }
 
-export interface ContextResponse {
-  contextId: string;
-  isNew: boolean;
-}
-
 export type BrowserAuthProfileStatus = 'unverified' | 'verified' | 'needs_reauth' | 'blocked';
 
 export interface BrowserAuthProfile {

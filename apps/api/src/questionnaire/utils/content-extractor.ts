@@ -348,33 +348,6 @@ export async function extractContentFromFile(
 }
 
 /**
- * AI-powered question extraction directly from file
- * Uses Gemini for speed, falls back to library + GPT if needed
- */
-export async function extractQuestionsWithAI(
-  fileData: string,
-  fileType: string,
-  logger: ContentExtractionLogger = defaultLogger,
-): Promise<{ question: string; answer: string | null }[]> {
-  const startTime = Date.now();
-
-  try {
-    const content = await extractContentFromFile(fileData, fileType, logger);
-    logger.info('Extracted content for questionnaire classification', {
-      contentLength: content.length,
-      extractionMs: Date.now() - startTime,
-    });
-    return parseQuestionsAndAnswers(content, logger);
-  } catch (error) {
-    logger.error('AI extraction failed', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      duration: Date.now() - startTime,
-    });
-    throw error;
-  }
-}
-
-/**
  * Structured raw content extraction for Excel files.
  * ExcelJS is the primary path; XML is only a fallback for unusual workbooks.
  */

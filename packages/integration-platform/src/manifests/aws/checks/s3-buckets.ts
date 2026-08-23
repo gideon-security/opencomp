@@ -64,7 +64,7 @@ export function regionalS3Clients(session: AwsSession): {
  * the legacy unpaginated form (no regions) if the partition rejects it, so a
  * genuine ListBuckets failure still surfaces as the account-level finding.
  */
-export async function listAllBuckets(
+async function listAllBuckets(
   s3: S3Client,
   log?: (message: string) => void,
 ): Promise<Array<{ name: string; region?: string }>> {

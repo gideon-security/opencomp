@@ -1,5 +1,7 @@
 'use client';
 
+import { useApi } from '@/hooks/use-api';
+import { Button } from '@gideon-defender/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -7,8 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import { Button } from '@gideon-defender/ui/button';
-import { useApi } from '@/hooks/use-api';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -32,7 +32,7 @@ function tomorrowLocalDateString(): string {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-export interface MarkExceptionModalProps {
+interface MarkExceptionModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   findingId: string | null;
@@ -84,14 +84,11 @@ export function MarkExceptionModal({
   const handleSubmit = async () => {
     if (!findingId || reasonTooShort) return;
     setSubmitting(true);
-    const response = await api.post(
-      `/v1/cloud-security/findings/${findingId}/exception`,
-      {
-        reason: reason.trim(),
-        reviewedBy: reviewedBy.trim() || undefined,
-        expiresAt: expiresAt || undefined,
-      },
-    );
+    const response = await api.post(`/v1/cloud-security/findings/${findingId}/exception`, {
+      reason: reason.trim(),
+      reviewedBy: reviewedBy.trim() || undefined,
+      expiresAt: expiresAt || undefined,
+    });
     setSubmitting(false);
 
     if (response.error) {
@@ -131,16 +128,11 @@ export function MarkExceptionModal({
         <div className="space-y-3 py-2">
           <div className="rounded-md border bg-muted/30 p-3 text-xs">
             <p className="font-medium">{findingTitle}</p>
-            {resourceLabel && (
-              <p className="text-muted-foreground mt-0.5">{resourceLabel}</p>
-            )}
+            {resourceLabel && <p className="text-muted-foreground mt-0.5">{resourceLabel}</p>}
           </div>
 
           <div>
-            <label
-              htmlFor="exception-reason"
-              className="block text-xs font-medium mb-1"
-            >
+            <label htmlFor="exception-reason" className="block text-xs font-medium mb-1">
               {reasonLabel}
             </label>
             <textarea
@@ -153,9 +145,7 @@ export function MarkExceptionModal({
             />
             <p
               className={`mt-1 text-[10px] ${
-                reasonTooShort
-                  ? 'text-muted-foreground'
-                  : 'text-primary'
+                reasonTooShort ? 'text-muted-foreground' : 'text-primary'
               }`}
             >
               {reason.trim().length}/{MIN_REASON_LENGTH}+ characters
@@ -164,10 +154,7 @@ export function MarkExceptionModal({
           </div>
 
           <div>
-            <label
-              htmlFor="exception-reviewer"
-              className="block text-xs font-medium mb-1"
-            >
+            <label htmlFor="exception-reviewer" className="block text-xs font-medium mb-1">
               Reviewed by (optional)
             </label>
             <input
@@ -181,10 +168,7 @@ export function MarkExceptionModal({
           </div>
 
           <div>
-            <label
-              htmlFor="exception-expires"
-              className="block text-xs font-medium mb-1"
-            >
+            <label htmlFor="exception-expires" className="block text-xs font-medium mb-1">
               Auto-review on (optional)
             </label>
             <input
@@ -213,9 +197,7 @@ export function MarkExceptionModal({
             onClick={handleSubmit}
             disabled={reasonTooShort || submitting || !findingId}
           >
-            {submitting ? (
-              <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-            ) : null}
+            {submitting ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}
             {confirmLabel}
           </Button>
         </div>

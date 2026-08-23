@@ -12,8 +12,7 @@ interface EmailPreferences {
   taskAssignments: boolean;
 }
 
-export const emailPreferencesKey = () =>
-  ['/v1/people/me/email-preferences'] as const;
+const emailPreferencesKey = () => ['/v1/people/me/email-preferences'] as const;
 
 interface UseEmailPreferencesOptions {
   initialPreferences?: EmailPreferences;
@@ -43,10 +42,7 @@ export function useEmailPreferences(options?: UseEmailPreferencesOptions) {
     await mutate(preferences, false);
 
     try {
-      const response = await apiClient.put(
-        '/v1/people/me/email-preferences',
-        { preferences },
-      );
+      const response = await apiClient.put('/v1/people/me/email-preferences', { preferences });
       if (response.error) throw new Error(response.error);
       await mutate();
     } catch (err) {

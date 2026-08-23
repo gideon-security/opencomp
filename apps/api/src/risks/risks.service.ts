@@ -11,7 +11,7 @@ import { GetRisksQueryDto } from './dto/get-risks-query.dto';
 import { UpdateRiskDto } from './dto/update-risk.dto';
 import { resolveStrategyDescriptionUpdate } from './strategy-descriptions';
 
-export interface PaginatedRisksResult {
+interface PaginatedRisksResult {
   data: Prisma.RiskGetPayload<{
     include: {
       assignee: {

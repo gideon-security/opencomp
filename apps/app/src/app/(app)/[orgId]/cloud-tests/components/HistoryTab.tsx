@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useApi } from '@/hooks/use-api';
 import { usePermissions } from '@/hooks/use-permissions';
 import { Button } from '@gideon-defender/ui/button';
-import { Loader2, ShieldCheck, RotateCcw, X } from 'lucide-react';
+import { Loader2, RotateCcw, ShieldCheck, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { mutate as globalMutate } from 'swr';
 
@@ -15,11 +15,7 @@ interface ResolutionRow {
   resourceId: string;
   resourceType: string | null;
   resolvedAt: string;
-  resolutionMethod:
-    | 'platform_fix'
-    | 'external_fix'
-    | 'resource_deleted'
-    | 'exception_marked';
+  resolutionMethod: 'platform_fix' | 'external_fix' | 'resource_deleted' | 'exception_marked';
   daysOpen: number | null;
 }
 
@@ -82,7 +78,7 @@ function resolutionMethodLabel(
   }
 }
 
-export interface HistoryTabProps {
+interface HistoryTabProps {
   connectionId: string;
 }
 
@@ -104,14 +100,10 @@ export function HistoryTab({ connectionId }: HistoryTabProps) {
   });
 
   const handleRevoke = async (exceptionId: string) => {
-    const response = await api.delete(
-      `/v1/cloud-security/exceptions/${exceptionId}`,
-    );
+    const response = await api.delete(`/v1/cloud-security/exceptions/${exceptionId}`);
     if (response.error) {
       toast.error(
-        typeof response.error === 'string'
-          ? response.error
-          : t('cloudTests_historyRevokeFailed'),
+        typeof response.error === 'string' ? response.error : t('cloudTests_historyRevokeFailed'),
       );
       return;
     }
@@ -230,15 +222,11 @@ function SummaryCard({ summary }: { summary: HistoryPayload['summary'] }) {
     <div className="grid grid-cols-3 gap-3 rounded-lg border bg-muted/20 p-3 text-xs">
       <div>
         <p className="text-muted-foreground">{t('cloudTests_historyResolved')}</p>
-        <p className="mt-0.5 text-lg font-semibold tabular-nums">
-          {summary.resolutions}
-        </p>
+        <p className="mt-0.5 text-lg font-semibold tabular-nums">{summary.resolutions}</p>
       </div>
       <div>
         <p className="text-muted-foreground">{t('cloudTests_historyActiveExceptions')}</p>
-        <p className="mt-0.5 text-lg font-semibold tabular-nums">
-          {summary.activeExceptions}
-        </p>
+        <p className="mt-0.5 text-lg font-semibold tabular-nums">{summary.activeExceptions}</p>
       </div>
       <div>
         <p className="text-muted-foreground">{t('cloudTests_historyRegressions')}</p>
@@ -312,12 +300,7 @@ function ExceptionRowView({
           {row.checkId} · {row.resourceId}
         </span>
         {canRevoke && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onRevoke}
-            className="ml-auto"
-          >
+          <Button variant="outline" size="sm" onClick={onRevoke} className="ml-auto">
             <X className="mr-1 h-3 w-3" />
             Remove exception
           </Button>
@@ -346,8 +329,8 @@ function RegressionRowView({ row }: { row: RegressionRow }) {
       </div>
       <p className="text-[10px] text-muted-foreground pl-5.5">
         Was clean {row.daysClean ?? '?'}d (previously resolved{' '}
-        {new Date(row.previouslyResolvedAt).toLocaleDateString()}). Failing
-        again as of {new Date(row.regressedAt).toLocaleString()}.
+        {new Date(row.previouslyResolvedAt).toLocaleDateString()}). Failing again as of{' '}
+        {new Date(row.regressedAt).toLocaleString()}.
       </p>
     </div>
   );

@@ -2,11 +2,11 @@ import { StatusType } from '@/components/status-indicator';
 import type { Control, Task } from '@db';
 import type { useTranslations } from 'next-intl';
 
-export type SelectedPolicy = {
+type SelectedPolicy = {
   status: string | null;
 };
 
-export interface DocumentType {
+interface DocumentType {
   formType: string;
   isNotRelevant?: boolean;
 }
@@ -85,9 +85,9 @@ export function getControlStatus(
   return 'in_progress';
 }
 
-export type RequirementStatusVariant = 'default' | 'secondary' | 'destructive';
+type RequirementStatusVariant = 'default' | 'secondary' | 'destructive';
 
-export interface RequirementStatusBadge {
+interface RequirementStatusBadge {
   label: string;
   variant: RequirementStatusVariant;
 }
@@ -169,7 +169,7 @@ export function getRequirementCompliancePercent(controlProgressPercents: number[
   return Math.round(sum / controlProgressPercents.length);
 }
 
-export interface ControlForRequirementCounts {
+interface ControlForRequirementCounts {
   id: string;
   policies?: Array<{ id: string; status: string | null }> | null;
   controlDocumentTypes?: Array<{ formType: string; isNotRelevant?: boolean }> | null;
@@ -250,22 +250,7 @@ export function getFrameworkAggregatePercent(
   return Math.round((completed / total) * 100);
 }
 
-export function isPolicyCompleted(policy: SelectedPolicy): boolean {
+function isPolicyCompleted(policy: SelectedPolicy): boolean {
   if (!policy) return false;
   return policy.status === 'published';
-}
-
-export function isControlCompliant(policies: SelectedPolicy[]): boolean {
-  if (!policies || policies.length === 0) return false;
-  return policies.every(isPolicyCompleted);
-}
-
-export function calculateControlStatus(
-  policies: SelectedPolicy[],
-): 'not_started' | 'in_progress' | 'completed' {
-  if (!policies || policies.length === 0) return 'not_started';
-  const completedPolicies = policies.filter(isPolicyCompleted).length;
-  if (completedPolicies === 0) return 'not_started';
-  if (completedPolicies === policies.length) return 'completed';
-  return 'in_progress';
 }

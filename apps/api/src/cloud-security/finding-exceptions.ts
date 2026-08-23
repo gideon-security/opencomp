@@ -5,7 +5,7 @@ import { db } from '@db';
  * documented reason next to a suppressed finding and to offer revoke (which
  * needs the row id) without a second query.
  */
-export interface ActiveExceptionInfo {
+interface ActiveExceptionInfo {
   id: string;
   reason: string;
 }
@@ -87,9 +87,7 @@ export class ActiveExceptionSet {
    * entirely (the common case: no exceptions).
    */
   exceptedResourceIds(connectionId: string, checkId: string): string[] {
-    const ids = this.resourceIdsByConnCheck.get(
-      `${connectionId}::${checkId}`,
-    );
+    const ids = this.resourceIdsByConnCheck.get(`${connectionId}::${checkId}`);
     return ids ? Array.from(ids) : [];
   }
 

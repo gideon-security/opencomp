@@ -1,4 +1,4 @@
-export interface DomainVerificationInputs {
+interface DomainVerificationInputs {
   /** Did the DNS CNAME record resolve and match a known Vercel target? */
   isCnameVerified: boolean;
   /** Did the DNS TXT record at the root match `opencomp-domain-verification=<orgId>`? */
@@ -28,7 +28,7 @@ export interface DomainVerificationInputs {
   vercelVerifiedAfterTrigger: boolean | null;
 }
 
-export interface DomainVerificationResult {
+interface DomainVerificationResult {
   success: boolean;
   error?: string;
   /**
@@ -40,7 +40,7 @@ export interface DomainVerificationResult {
   transient?: boolean;
 }
 
-export interface DnsVerifiedInputs {
+interface DnsVerifiedInputs {
   /** Whether the resolved CNAME target matched a known Vercel DNS pattern. */
   dnsRegexMatches: boolean;
   /**

@@ -9,7 +9,7 @@ import {
 } from './browser-evidence-step-timeline';
 
 /** A single line in the live test-run activity timeline (mirrors the sign-in flow). */
-export type InstructionTestStep = EvidenceTimelineStep;
+type InstructionTestStep = EvidenceTimelineStep;
 
 export interface InstructionTestResult {
   success: boolean;

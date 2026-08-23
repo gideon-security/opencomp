@@ -58,7 +58,7 @@ export interface IsmsPlatformData {
 }
 
 /** A row destined for one of the ISMS registers (interested parties, etc.). */
-export interface DerivedRegisterRow {
+interface DerivedRegisterRow {
   source: IsmsContextSource;
   derivedFrom: string;
   position: number;

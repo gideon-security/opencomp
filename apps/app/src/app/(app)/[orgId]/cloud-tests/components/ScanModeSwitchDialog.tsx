@@ -14,16 +14,14 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { mutate as globalMutate } from 'swr';
 
-import {
-  type AwsScanModeChoice,
-} from '../../integrations/[slug]/components/AwsScanModeStep';
+import { type AwsScanModeChoice } from '../../integrations/[slug]/components/AwsScanModeStep';
 
 const MODE_LABEL: Record<AwsScanModeChoice, string> = {
   comp_scanners: 'OpenComp Scanners',
   security_hub: 'AWS Security Hub',
 };
 
-export interface ScanModeSwitchDialogProps {
+interface ScanModeSwitchDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   connectionId: string;
@@ -59,10 +57,9 @@ export function ScanModeSwitchDialog({
 
   const handleConfirm = async () => {
     setSubmitting(true);
-    const response = await api.patch(
-      `/v1/cloud-security/connections/${connectionId}/scan-mode`,
-      { mode: targetMode },
-    );
+    const response = await api.patch(`/v1/cloud-security/connections/${connectionId}/scan-mode`, {
+      mode: targetMode,
+    });
     setSubmitting(false);
 
     if (response.error) {
@@ -116,17 +113,14 @@ export function ScanModeSwitchDialog({
             <p className="font-medium">What changes:</p>
             <ul className="mt-1.5 list-disc space-y-1 pl-4">
               <li>
-                The next scan is a fresh baseline — resolutions and
-                regressions only compare same-engine runs.
+                The next scan is a fresh baseline — resolutions and regressions only compare
+                same-engine runs.
               </li>
               <li>
-                Existing exceptions stay marked but may not match findings
-                from the new engine (different control identifiers).
+                Existing exceptions stay marked but may not match findings from the new engine
+                (different control identifiers).
               </li>
-              <li>
-                In-flight remediations from the previous engine continue
-                independently.
-              </li>
+              <li>In-flight remediations from the previous engine continue independently.</li>
             </ul>
           </div>
         </div>
@@ -141,9 +135,7 @@ export function ScanModeSwitchDialog({
             Cancel
           </Button>
           <Button size="sm" onClick={handleConfirm} disabled={submitting}>
-            {submitting && (
-              <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-            )}
+            {submitting && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
             Switch to {MODE_LABEL[targetMode]}
           </Button>
         </div>

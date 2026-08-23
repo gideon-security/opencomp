@@ -71,18 +71,9 @@ export interface Provider {
   supportsMultipleConnections?: boolean;
   latestRun?: ProviderLatestRun | null;
 }
-export type FailedIntegration = {
+type FailedIntegration = {
   id: string;
   integrationId: string;
   name: string;
   error: string;
-};
-
-export type IntegrationRunOutput = {
-  success: boolean;
-  organizationId: string;
-  integrationsCount: number;
-  batchHandleId?: string;
-  errors?: string[];
-  failedIntegrations?: FailedIntegration[];
 };

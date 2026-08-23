@@ -1,17 +1,22 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { db, Prisma, Frequency, Departments } from '@db';
 import { lockOrganizationForSync } from './org-advisory-lock';
 import { normalizeFormType } from './form-type-normalize';
 import type { UndoPayload } from './undo-payload.types';
 
-export interface RollbackParams {
+interface RollbackParams {
   organizationId: string;
   frameworkInstanceId: string;
   syncOperationId: string;
   memberId: string;
 }
 
-export interface RollbackResult {
+interface RollbackResult {
   rollbackOperationId: string;
 }
 
@@ -23,11 +28,18 @@ export class FrameworkRollbackService {
       include: { frameworkInstance: true },
     });
     if (!syncOp) throw new NotFoundException('Sync operation not found');
-    if (syncOp.frameworkInstance.organizationId !== params.organizationId) throw new ForbiddenException('Wrong organization');
-    if (syncOp.frameworkInstanceId !== params.frameworkInstanceId) throw new BadRequestException('Sync op does not belong to this framework instance');
-    if (syncOp.kind !== 'SYNC') throw new BadRequestException('Only sync operations can be rolled back');
-    if (syncOp.rolledBackByOperationId) throw new BadRequestException('Sync has already been rolled back');
-    if (!syncOp.rollbackExpiresAt || syncOp.rollbackExpiresAt <= new Date()) throw new BadRequestException('Rollback window has expired');
+    if (syncOp.frameworkInstance.organizationId !== params.organizationId)
+      throw new ForbiddenException('Wrong organization');
+    if (syncOp.frameworkInstanceId !== params.frameworkInstanceId)
+      throw new BadRequestException(
+        'Sync op does not belong to this framework instance',
+      );
+    if (syncOp.kind !== 'SYNC')
+      throw new BadRequestException('Only sync operations can be rolled back');
+    if (syncOp.rolledBackByOperationId)
+      throw new BadRequestException('Sync has already been rolled back');
+    if (!syncOp.rollbackExpiresAt || syncOp.rollbackExpiresAt <= new Date())
+      throw new BadRequestException('Rollback window has expired');
 
     // Only the latest non-reversed sync can be rolled back. Rolling back an
     // older sync in the middle of a chain would leave the instance in an
@@ -40,7 +52,11 @@ export class FrameworkRollbackService {
         rolledBackByOperationId: null,
         performedAt: { gt: syncOp.performedAt },
       },
-      select: { id: true, fromVersion: { select: { version: true } }, toVersion: { select: { version: true } } },
+      select: {
+        id: true,
+        fromVersion: { select: { version: true } },
+        toVersion: { select: { version: true } },
+      },
     });
     if (newerActiveSync) {
       throw new BadRequestException({
@@ -69,19 +85,24 @@ async function assertNoDataLoss(undo: UndoPayload): Promise<void> {
     });
     if (completed.length > 0) {
       throw new BadRequestException({
-        message: 'Rollback would cause data loss: tasks have been completed since the sync.',
+        message:
+          'Rollback would cause data loss: tasks have been completed since the sync.',
         details: completed,
       });
     }
   }
   if (undo.policies.created.length > 0) {
     const published = await db.policy.findMany({
-      where: { id: { in: undo.policies.created }, status: 'published' as const },
+      where: {
+        id: { in: undo.policies.created },
+        status: 'published' as const,
+      },
       select: { id: true, name: true },
     });
     if (published.length > 0) {
       throw new BadRequestException({
-        message: 'Rollback would cause data loss: policies have been published since the sync.',
+        message:
+          'Rollback would cause data loss: policies have been published since the sync.',
         details: published,
       });
     }
@@ -105,16 +126,22 @@ async function replayUndo(
 ): Promise<{ id: string }> {
   // Hard-delete rows created by the sync
   if (ctx.undo.controls.created.length) {
-    await tx.control.deleteMany({ where: { id: { in: ctx.undo.controls.created } } });
+    await tx.control.deleteMany({
+      where: { id: { in: ctx.undo.controls.created } },
+    });
   }
   if (ctx.undo.tasks.created.length) {
     await tx.task.deleteMany({ where: { id: { in: ctx.undo.tasks.created } } });
   }
   if (ctx.undo.policies.created.length) {
-    await tx.policy.deleteMany({ where: { id: { in: ctx.undo.policies.created } } });
+    await tx.policy.deleteMany({
+      where: { id: { in: ctx.undo.policies.created } },
+    });
   }
   if (ctx.undo.requirementMaps.created.length) {
-    await tx.requirementMap.deleteMany({ where: { id: { in: ctx.undo.requirementMaps.created } } });
+    await tx.requirementMap.deleteMany({
+      where: { id: { in: ctx.undo.requirementMaps.created } },
+    });
   }
 
   // ControlDocumentType: reverse hard-deletes (recreate) and hard-delete
@@ -123,38 +150,59 @@ async function replayUndo(
   const cdt = ctx.undo.controlDocumentTypes ?? { created: [], deleted: [] };
   const cdtCreated = Array.isArray(cdt.created) ? cdt.created : [];
   const cdtDeleted = Array.isArray((cdt as { deleted?: unknown }).deleted)
-    ? (cdt as { deleted: Array<{ controlId: string; formType: string }> }).deleted
+    ? (cdt as { deleted: Array<{ controlId: string; formType: string }> })
+        .deleted
     : [];
   if (cdtCreated.length) {
-    await tx.controlDocumentType.deleteMany({ where: { id: { in: cdtCreated } } });
+    await tx.controlDocumentType.deleteMany({
+      where: { id: { in: cdtCreated } },
+    });
   }
   for (const d of cdtDeleted) {
     await tx.controlDocumentType.create({
       // Defensive normalization — older undo payloads may have stored the
       // DB-mapped hyphen form before the sync-apply normalization was added.
-      data: { controlId: d.controlId, formType: normalizeFormType(d.formType) as never },
+      data: {
+        controlId: d.controlId,
+        formType: normalizeFormType(d.formType) as never,
+      },
     });
   }
 
   // Restore archived state
   for (const a of ctx.undo.controls.archived) {
-    await tx.control.update({ where: { id: a.id }, data: { archivedAt: a.prevArchivedAt } });
+    await tx.control.update({
+      where: { id: a.id },
+      data: { archivedAt: a.prevArchivedAt },
+    });
   }
   for (const a of ctx.undo.tasks.archived) {
-    await tx.task.update({ where: { id: a.id }, data: { archivedAt: a.prevArchivedAt } });
+    await tx.task.update({
+      where: { id: a.id },
+      data: { archivedAt: a.prevArchivedAt },
+    });
   }
   for (const a of ctx.undo.policies.archived) {
-    await tx.policy.update({ where: { id: a.id }, data: { archivedAt: a.prevArchivedAt } });
+    await tx.policy.update({
+      where: { id: a.id },
+      data: { archivedAt: a.prevArchivedAt },
+    });
   }
   for (const a of ctx.undo.requirementMaps.archived) {
-    await tx.requirementMap.update({ where: { id: a.id }, data: { archivedAt: a.prevArchivedAt } });
+    await tx.requirementMap.update({
+      where: { id: a.id },
+      data: { archivedAt: a.prevArchivedAt },
+    });
   }
 
   // Restore previous content
   for (const u of ctx.undo.controls.contentUpdated) {
     await tx.control.update({
       where: { id: u.id },
-      data: { name: u.prevContent.name, description: u.prevContent.description },
+      data: {
+        name: u.prevContent.name,
+        description: u.prevContent.description,
+      },
     });
   }
   for (const u of ctx.undo.tasks.contentUpdated) {
@@ -202,13 +250,17 @@ async function replayUndo(
   // for a connect that was already a no-op, or a manual edit removed the
   // edge between sync and rollback). Making rollback resilient here keeps
   // the 100%-reliable-undo guarantee we promise customers.
-  const cpl = ctx.undo.controlPolicyLinks ?? { connected: [], disconnected: [] };
+  const cpl = ctx.undo.controlPolicyLinks ?? {
+    connected: [],
+    disconnected: [],
+  };
   const ctl = ctx.undo.controlTaskLinks ?? { connected: [], disconnected: [] };
 
   if (cpl.connected.length > 0) {
     const pairs = Prisma.join(
       cpl.connected.map(
-        ({ controlId, otherId }) => Prisma.sql`(${controlId}::text, ${otherId}::text)`,
+        ({ controlId, otherId }) =>
+          Prisma.sql`(${controlId}::text, ${otherId}::text)`,
       ),
     );
     await tx.$executeRaw`DELETE FROM "_ControlToPolicy" WHERE ("A", "B") IN (${pairs})`;
@@ -216,7 +268,8 @@ async function replayUndo(
   if (cpl.disconnected.length > 0) {
     const rows = Prisma.join(
       cpl.disconnected.map(
-        ({ controlId, otherId }) => Prisma.sql`(${controlId}::text, ${otherId}::text)`,
+        ({ controlId, otherId }) =>
+          Prisma.sql`(${controlId}::text, ${otherId}::text)`,
       ),
     );
     await tx.$executeRaw`INSERT INTO "_ControlToPolicy" ("A", "B") VALUES ${rows} ON CONFLICT ("A", "B") DO NOTHING`;
@@ -224,7 +277,8 @@ async function replayUndo(
   if (ctl.connected.length > 0) {
     const pairs = Prisma.join(
       ctl.connected.map(
-        ({ controlId, otherId }) => Prisma.sql`(${controlId}::text, ${otherId}::text)`,
+        ({ controlId, otherId }) =>
+          Prisma.sql`(${controlId}::text, ${otherId}::text)`,
       ),
     );
     await tx.$executeRaw`DELETE FROM "_ControlToTask" WHERE ("A", "B") IN (${pairs})`;
@@ -232,7 +286,8 @@ async function replayUndo(
   if (ctl.disconnected.length > 0) {
     const rows = Prisma.join(
       ctl.disconnected.map(
-        ({ controlId, otherId }) => Prisma.sql`(${controlId}::text, ${otherId}::text)`,
+        ({ controlId, otherId }) =>
+          Prisma.sql`(${controlId}::text, ${otherId}::text)`,
       ),
     );
     await tx.$executeRaw`INSERT INTO "_ControlToTask" ("A", "B") VALUES ${rows} ON CONFLICT ("A", "B") DO NOTHING`;
@@ -316,20 +371,41 @@ async function replayUndo(
   if (ctx.undo.controlFamilies) {
     for (const entry of ctx.undo.controlFamilies.created) {
       await tx.frameworkControlFamily.deleteMany({
-        where: { frameworkInstanceId: entry.frameworkInstanceId, controlId: entry.controlId },
+        where: {
+          frameworkInstanceId: entry.frameworkInstanceId,
+          controlId: entry.controlId,
+        },
       });
     }
     for (const entry of ctx.undo.controlFamilies.updated) {
       await tx.frameworkControlFamily.upsert({
-        where: { frameworkInstanceId_controlId: { frameworkInstanceId: entry.frameworkInstanceId, controlId: entry.controlId } },
-        create: { frameworkInstanceId: entry.frameworkInstanceId, controlId: entry.controlId, controlFamily: entry.prevFamily },
+        where: {
+          frameworkInstanceId_controlId: {
+            frameworkInstanceId: entry.frameworkInstanceId,
+            controlId: entry.controlId,
+          },
+        },
+        create: {
+          frameworkInstanceId: entry.frameworkInstanceId,
+          controlId: entry.controlId,
+          controlFamily: entry.prevFamily,
+        },
         update: { controlFamily: entry.prevFamily },
       });
     }
     for (const entry of ctx.undo.controlFamilies.deleted) {
       await tx.frameworkControlFamily.upsert({
-        where: { frameworkInstanceId_controlId: { frameworkInstanceId: entry.frameworkInstanceId, controlId: entry.controlId } },
-        create: { frameworkInstanceId: entry.frameworkInstanceId, controlId: entry.controlId, controlFamily: entry.prevFamily },
+        where: {
+          frameworkInstanceId_controlId: {
+            frameworkInstanceId: entry.frameworkInstanceId,
+            controlId: entry.controlId,
+          },
+        },
+        create: {
+          frameworkInstanceId: entry.frameworkInstanceId,
+          controlId: entry.controlId,
+          controlFamily: entry.prevFamily,
+        },
         update: { controlFamily: entry.prevFamily },
       });
     }

@@ -1,5 +1,9 @@
 import { diffManifests } from './framework-diff';
-import { isControlEdited, isPolicyEdited, isTaskEdited } from './framework-drift';
+import {
+  isControlEdited,
+  isPolicyEdited,
+  isTaskEdited,
+} from './framework-drift';
 import type {
   FrameworkManifest,
   ManifestControl,
@@ -8,14 +12,14 @@ import type {
   ManifestTask,
 } from './manifest.types';
 
-export interface InstanceControl {
+interface InstanceControl {
   id: string;
   controlTemplateId: string | null;
   name: string;
   description: string;
 }
 
-export interface InstanceTask {
+interface InstanceTask {
   id: string;
   taskTemplateId: string | null;
   title: string;
@@ -24,7 +28,7 @@ export interface InstanceTask {
   department: string | null;
 }
 
-export interface InstancePolicy {
+interface InstancePolicy {
   id: string;
   policyTemplateId: string | null;
   name: string;
@@ -35,29 +39,56 @@ export interface InstancePolicy {
   status: 'draft' | 'published' | string;
 }
 
-export interface PolicyUpdatePreviewBuckets {
+interface PolicyUpdatePreviewBuckets {
   added: ManifestPolicy[];
   archived: Array<{ instanceId: string; manifest: ManifestPolicy }>;
-  updatedApplied: Array<{ instance: InstancePolicy; manifestFrom: ManifestPolicy; manifestTo: ManifestPolicy }>;
-  updatedPreserved: Array<{ instance: InstancePolicy; manifestFrom: ManifestPolicy; manifestTo: ManifestPolicy }>;
-  draftAddedForPublished: Array<{ instance: InstancePolicy; manifestTo: ManifestPolicy }>;
+  updatedApplied: Array<{
+    instance: InstancePolicy;
+    manifestFrom: ManifestPolicy;
+    manifestTo: ManifestPolicy;
+  }>;
+  updatedPreserved: Array<{
+    instance: InstancePolicy;
+    manifestFrom: ManifestPolicy;
+    manifestTo: ManifestPolicy;
+  }>;
+  draftAddedForPublished: Array<{
+    instance: InstancePolicy;
+    manifestTo: ManifestPolicy;
+  }>;
 }
 
-export interface UpdatePreview {
+interface UpdatePreview {
   fromVersion: { id: string; version: string };
   toVersion: { id: string; version: string };
   releaseNotes: string | null;
   controls: {
     added: ManifestControl[];
     archived: Array<{ instanceId: string; manifest: ManifestControl }>;
-    updatedApplied: Array<{ instance: InstanceControl; manifestFrom: ManifestControl; manifestTo: ManifestControl }>;
-    updatedPreserved: Array<{ instance: InstanceControl; manifestFrom: ManifestControl; manifestTo: ManifestControl }>;
+    updatedApplied: Array<{
+      instance: InstanceControl;
+      manifestFrom: ManifestControl;
+      manifestTo: ManifestControl;
+    }>;
+    updatedPreserved: Array<{
+      instance: InstanceControl;
+      manifestFrom: ManifestControl;
+      manifestTo: ManifestControl;
+    }>;
   };
   tasks: {
     added: ManifestTask[];
     archived: Array<{ instanceId: string; manifest: ManifestTask }>;
-    updatedApplied: Array<{ instance: InstanceTask; manifestFrom: ManifestTask; manifestTo: ManifestTask }>;
-    updatedPreserved: Array<{ instance: InstanceTask; manifestFrom: ManifestTask; manifestTo: ManifestTask }>;
+    updatedApplied: Array<{
+      instance: InstanceTask;
+      manifestFrom: ManifestTask;
+      manifestTo: ManifestTask;
+    }>;
+    updatedPreserved: Array<{
+      instance: InstanceTask;
+      manifestFrom: ManifestTask;
+      manifestTo: ManifestTask;
+    }>;
   };
   policies: PolicyUpdatePreviewBuckets;
   requirements: {
@@ -73,33 +104,33 @@ export interface UpdatePreview {
   };
 }
 
-export interface EdgePreviewBuckets<T> {
+interface EdgePreviewBuckets<T> {
   added: T[];
   removed: T[];
 }
 
-export interface ControlPolicyLink {
+interface ControlPolicyLink {
   controlName: string;
   policyName: string;
 }
 
-export interface ControlTaskLink {
+interface ControlTaskLink {
   controlName: string;
   taskName: string;
 }
 
-export interface ControlRequirementLink {
+interface ControlRequirementLink {
   controlName: string;
   requirementIdentifier: string;
   requirementName: string;
 }
 
-export interface ControlDocumentTypeLink {
+interface ControlDocumentTypeLink {
   controlName: string;
   formType: string;
 }
 
-export interface BuildUpdatePreviewInput {
+interface BuildUpdatePreviewInput {
   fromManifest: FrameworkManifest;
   toManifest: FrameworkManifest;
   instanceControls: InstanceControl[];
@@ -113,7 +144,9 @@ export interface BuildUpdatePreviewInput {
   releaseNotes?: string | null;
 }
 
-export function buildUpdatePreview(input: BuildUpdatePreviewInput): UpdatePreview {
+export function buildUpdatePreview(
+  input: BuildUpdatePreviewInput,
+): UpdatePreview {
   const d = diffManifests(input.fromManifest, input.toManifest);
 
   const ctlByTemplate = new Map(
@@ -145,7 +178,9 @@ export function buildUpdatePreview(input: BuildUpdatePreviewInput): UpdatePrevie
   for (const u of d.controls.updated) {
     const inst = ctlByTemplate.get(u.id);
     if (!inst) continue;
-    const bucket = isControlEdited(inst, u.from) ? controls.updatedPreserved : controls.updatedApplied;
+    const bucket = isControlEdited(inst, u.from)
+      ? controls.updatedPreserved
+      : controls.updatedApplied;
     bucket.push({ instance: inst, manifestFrom: u.from, manifestTo: u.to });
   }
 
@@ -162,7 +197,9 @@ export function buildUpdatePreview(input: BuildUpdatePreviewInput): UpdatePrevie
   for (const u of d.tasks.updated) {
     const inst = taskByTemplate.get(u.id);
     if (!inst) continue;
-    const bucket = isTaskEdited(inst, u.from) ? tasks.updatedPreserved : tasks.updatedApplied;
+    const bucket = isTaskEdited(inst, u.from)
+      ? tasks.updatedPreserved
+      : tasks.updatedApplied;
     bucket.push({ instance: inst, manifestFrom: u.from, manifestTo: u.to });
   }
 
@@ -181,10 +218,15 @@ export function buildUpdatePreview(input: BuildUpdatePreviewInput): UpdatePrevie
     const inst = polByTemplate.get(u.id);
     if (!inst) continue;
     if (inst.status === 'published') {
-      policies.draftAddedForPublished.push({ instance: inst, manifestTo: u.to });
+      policies.draftAddedForPublished.push({
+        instance: inst,
+        manifestTo: u.to,
+      });
       continue;
     }
-    const bucket = isPolicyEdited(inst, u.from) ? policies.updatedPreserved : policies.updatedApplied;
+    const bucket = isPolicyEdited(inst, u.from)
+      ? policies.updatedPreserved
+      : policies.updatedApplied;
     bucket.push({ instance: inst, manifestFrom: u.from, manifestTo: u.to });
   }
 

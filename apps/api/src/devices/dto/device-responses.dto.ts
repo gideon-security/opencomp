@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class FleetPolicyDto {
+class FleetPolicyDto {
   @ApiProperty({ description: 'Policy ID', example: 123 })
   id: number;
 

@@ -5,7 +5,7 @@ import { ArrowRight } from '@trycompai/design-system/icons';
 import Link from 'next/link';
 
 /** The resolved live task for a mapped template, when it exists in the org. */
-export interface EvidenceTaskRowTask {
+interface EvidenceTaskRowTask {
   taskId: string;
   name: string;
   description: string;

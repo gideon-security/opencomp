@@ -1,11 +1,8 @@
-import {
-  SendRawEmailCommand,
-  type RawMessage,
-} from '@aws-sdk/client-ses';
+import { SendRawEmailCommand, type RawMessage } from '@aws-sdk/client-ses';
 import { sesClient } from './aws';
 import type { EmailAttachment } from './email-message';
 
-export interface SesSendParams {
+interface SesSendParams {
   to: string | string[];
   from: string;
   subject: string;
@@ -39,7 +36,10 @@ function toBase64Lines(input: string, maxLineLength = 76): string {
   return lines.join('\r\n');
 }
 
-function toAttachmentLine(attachment: EmailAttachment, maxLineLength = 76): string {
+function toAttachmentLine(
+  attachment: EmailAttachment,
+  maxLineLength = 76,
+): string {
   const encoded = attachment.content.replace(/\s+/g, '');
   const lines: string[] = [];
   for (let i = 0; i < encoded.length; i += maxLineLength) {
@@ -53,9 +53,13 @@ function buildRawMessage(params: SesSendParams): RawMessage {
   const lines: string[] = [];
 
   lines.push(`From: ${sanitizeHeaderValue(params.from)}`);
-  lines.push(`To: ${toStringArray(params.to).map(sanitizeHeaderValue).join(',')}`);
+  lines.push(
+    `To: ${toStringArray(params.to).map(sanitizeHeaderValue).join(',')}`,
+  );
   if (params.cc) {
-    lines.push(`Cc: ${toStringArray(params.cc).map(sanitizeHeaderValue).join(',')}`);
+    lines.push(
+      `Cc: ${toStringArray(params.cc).map(sanitizeHeaderValue).join(',')}`,
+    );
   }
   lines.push(`Subject: ${encodeSubject(params.subject)}`);
   if (params.replyTo) {
@@ -80,8 +84,7 @@ function buildRawMessage(params: SesSendParams): RawMessage {
 
   if (params.attachments) {
     for (const attachment of params.attachments) {
-      const contentType =
-        attachment.contentType ?? 'application/octet-stream';
+      const contentType = attachment.contentType ?? 'application/octet-stream';
       lines.push('');
       lines.push(`--${boundary}`);
       lines.push(
@@ -106,9 +109,7 @@ export async function sendEmailViaSes(
   params: SesSendParams,
 ): Promise<{ id: string }> {
   if (!sesClient) {
-    throw new Error(
-      'SES not initialized - missing AWS credentials or region',
-    );
+    throw new Error('SES not initialized - missing AWS credentials or region');
   }
 
   const { MessageId } = await sesClient.send(

@@ -3,7 +3,7 @@
 import { createContext, useContext } from 'react';
 import type { OnboardingItemStatus } from '../../../risk/(overview)/hooks/use-onboarding-status';
 
-export type VendorOnboardingStatus = Record<string, OnboardingItemStatus>;
+type VendorOnboardingStatus = Record<string, OnboardingItemStatus>;
 
 interface VendorOnboardingContextValue {
   statuses: VendorOnboardingStatus;
@@ -32,4 +32,3 @@ export function useVendorOnboardingStatus() {
   }
   return context.statuses;
 }
-

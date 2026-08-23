@@ -9,7 +9,7 @@ import {
   mapTaskTemplates,
 } from './task-templates';
 
-export interface IntegrationPageData {
+interface IntegrationPageData {
   /** Null when the provider couldn't be loaded; the caller should redirect. */
   provider: IntegrationProviderResponse | null;
   providerErrored: boolean;
@@ -32,20 +32,15 @@ export async function loadIntegrationPageData(
   opts: { sortTasks?: boolean } = {},
 ): Promise<IntegrationPageData> {
   const [providerResult, connectionsResult, tasksResult] = await Promise.all([
-    serverApi.get<IntegrationProviderResponse>(
-      `/v1/integrations/connections/providers/${slug}`,
-    ),
+    serverApi.get<IntegrationProviderResponse>(`/v1/integrations/connections/providers/${slug}`),
     serverApi.get<ConnectionListItemResponse[]>('/v1/integrations/connections'),
     serverApi.get<IntegrationTaskApiResponse>('/v1/tasks'),
   ]);
 
-  const connections = (connectionsResult.data ?? []).filter(
-    (c) => c.providerSlug === slug,
-  );
-  const { templates: taskTemplates, errored: tasksErrored } = mapTaskTemplates(
-    tasksResult,
-    { sort: opts.sortTasks },
-  );
+  const connections = (connectionsResult.data ?? []).filter((c) => c.providerSlug === slug);
+  const { templates: taskTemplates, errored: tasksErrored } = mapTaskTemplates(tasksResult, {
+    sort: opts.sortTasks,
+  });
 
   return {
     provider: providerResult.data ?? null,

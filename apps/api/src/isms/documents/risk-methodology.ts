@@ -48,9 +48,7 @@ export const riskMethodologyNarrativeSchema = z.object({
   documentation: z.string(),
 });
 
-export type RiskMethodologyNarrative = z.infer<
-  typeof riskMethodologyNarrativeSchema
->;
+type RiskMethodologyNarrative = z.infer<typeof riskMethodologyNarrativeSchema>;
 
 /** Derive the default methodology narrative (all templated, org-name aware). */
 export function deriveRiskMethodologyNarrative(
@@ -77,7 +75,7 @@ export function defaultRiskMethodologyNarrative(
 }
 
 /** Soft fill per risk level for the matrix cells (hex, no '#'; black text stays legible). */
-export const LEVEL_FILL_HEX: Record<RiskLevel, string> = {
+const LEVEL_FILL_HEX: Record<RiskLevel, string> = {
   'very-low': 'DCFCE7',
   low: 'ECFCCB',
   medium: 'FEF9C3',

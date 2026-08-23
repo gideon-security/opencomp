@@ -22,9 +22,7 @@ export const internalAuditNarrativeSchema = z.object({
   programme: z.string().trim().min(1),
 });
 
-export type InternalAuditNarrative = z.infer<
-  typeof internalAuditNarrativeSchema
->;
+type InternalAuditNarrative = z.infer<typeof internalAuditNarrativeSchema>;
 
 /** Derive the default Programme paragraph (hardcoded default, editable). */
 export function deriveInternalAuditNarrative(

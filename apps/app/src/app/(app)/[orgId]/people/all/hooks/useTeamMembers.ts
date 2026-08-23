@@ -1,17 +1,17 @@
 'use client';
 
-import { apiClient } from '@/lib/api-client';
 import { usePeopleActions } from '@/hooks/use-people-api';
+import { apiClient } from '@/lib/api-client';
 import { authClient } from '@/utils/auth-client';
 import type { Invitation, Member, Role, User } from '@db';
 import { useCallback } from 'react';
 import useSWR from 'swr';
 
-export interface MemberWithUser extends Member {
+interface MemberWithUser extends Member {
   user: User;
 }
 
-export interface TeamMembersData {
+interface TeamMembersData {
   members: MemberWithUser[];
   pendingInvitations: Invitation[];
 }
@@ -36,9 +36,7 @@ async function fetchTeamMembers(): Promise<TeamMembersData> {
     apiClient.get<InvitationsApiResponse>('/v1/auth/invitations'),
   ]);
 
-  const members = Array.isArray(membersRes.data?.data)
-    ? membersRes.data.data
-    : [];
+  const members = Array.isArray(membersRes.data?.data) ? membersRes.data.data : [];
 
   // Handle case where invitations endpoint might not exist yet
   // Fall back to empty array if there's an error
@@ -49,12 +47,8 @@ async function fetchTeamMembers(): Promise<TeamMembersData> {
   return { members, pendingInvitations };
 }
 
-export function useTeamMembers({
-  organizationId,
-  initialData,
-}: UseTeamMembersOptions) {
-  const { removeMember: removeMemberAction, unlinkDevice } =
-    usePeopleActions();
+export function useTeamMembers({ organizationId, initialData }: UseTeamMembersOptions) {
+  const { removeMember: removeMemberAction, unlinkDevice } = usePeopleActions();
 
   const { data, error, isLoading, mutate } = useSWR<TeamMembersData>(
     organizationId ? ['team-members', organizationId] : null,
@@ -67,9 +61,7 @@ export function useTeamMembers({
   );
 
   const members = Array.isArray(data?.members) ? data.members : [];
-  const pendingInvitations = Array.isArray(data?.pendingInvitations)
-    ? data.pendingInvitations
-    : [];
+  const pendingInvitations = Array.isArray(data?.pendingInvitations) ? data.pendingInvitations : [];
 
   const removeMember = useCallback(
     async (memberId: string) => {
@@ -100,9 +92,7 @@ export function useTeamMembers({
 
   const cancelInvitation = useCallback(
     async (invitationId: string) => {
-      const response = await apiClient.delete(
-        `/v1/auth/invitations/${invitationId}`,
-      );
+      const response = await apiClient.delete(`/v1/auth/invitations/${invitationId}`);
       if (response.error) {
         throw new Error(response.error);
       }

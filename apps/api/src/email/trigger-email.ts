@@ -16,7 +16,7 @@ function resolveChannel(flags: TriggerEmailFlags): EmailChannel {
   return 'default';
 }
 
-export type EmailAttachmentInput = {
+type EmailAttachmentInput = {
   filename: string;
   content: Buffer | string;
   contentType?: string;

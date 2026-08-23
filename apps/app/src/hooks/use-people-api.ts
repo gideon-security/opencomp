@@ -3,7 +3,7 @@
 import { useApi } from '@/hooks/use-api';
 import { useCallback } from 'react';
 
-export interface PeopleResponseDto {
+interface PeopleResponseDto {
   id: string;
   organizationId: string;
   userId: string;
@@ -35,9 +35,7 @@ export function usePeopleActions() {
 
   const unlinkDevice = useCallback(
     async (memberId: string) => {
-      const response = await api.patch<PeopleResponseDto>(
-        `/v1/people/${memberId}/unlink-device`,
-      );
+      const response = await api.patch<PeopleResponseDto>(`/v1/people/${memberId}/unlink-device`);
       if (response.error) {
         throw new Error(response.error);
       }
@@ -89,9 +87,7 @@ export function usePeopleActions() {
 
   const reactivateMember = useCallback(
     async (memberId: string) => {
-      const response = await api.patch<PeopleResponseDto>(
-        `/v1/people/${memberId}/reactivate`,
-      );
+      const response = await api.patch<PeopleResponseDto>(`/v1/people/${memberId}/reactivate`);
       if (response.error) {
         throw new Error(response.error);
       }

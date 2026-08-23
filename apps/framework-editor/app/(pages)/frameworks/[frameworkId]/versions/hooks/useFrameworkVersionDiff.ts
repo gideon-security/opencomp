@@ -10,7 +10,7 @@ import type { DraftDiff } from './useFrameworkDraftDiff';
  * Shape mirrors DraftDiff for the diff/linkChanges portions so the same
  * VersionDiffView component renders both.
  */
-export interface VersionDiffResponse {
+interface VersionDiffResponse {
   version: {
     id: string;
     version: string;

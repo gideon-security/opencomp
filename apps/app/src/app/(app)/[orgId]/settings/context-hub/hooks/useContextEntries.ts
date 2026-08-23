@@ -10,7 +10,7 @@ interface ContextListResponse {
   pageCount: number;
 }
 
-export const contextEntriesKey = () => ['/v1/context'] as const;
+const contextEntriesKey = () => ['/v1/context'] as const;
 
 interface UseContextEntriesOptions {
   initialData?: Context[];
@@ -22,8 +22,7 @@ export function useContextEntries(options?: UseContextEntriesOptions) {
   const { data, error, isLoading, mutate } = useSWR(
     contextEntriesKey(),
     async () => {
-      const response =
-        await apiClient.get<ContextListResponse>('/v1/context?perPage=500');
+      const response = await apiClient.get<ContextListResponse>('/v1/context?perPage=500');
       if (response.error) throw new Error(response.error);
       if (!response.data?.data) return [];
       return response.data.data;
@@ -44,14 +43,8 @@ export function useContextEntries(options?: UseContextEntriesOptions) {
     return response.data!;
   };
 
-  const updateEntry = async (
-    id: string,
-    body: { question: string; answer: string },
-  ) => {
-    const response = await apiClient.patch<Context>(
-      `/v1/context/${id}`,
-      body,
-    );
+  const updateEntry = async (id: string, body: { question: string; answer: string }) => {
+    const response = await apiClient.patch<Context>(`/v1/context/${id}`, body);
     if (response.error) throw new Error(response.error);
     await mutate();
     return response.data!;

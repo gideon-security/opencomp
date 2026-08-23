@@ -44,11 +44,11 @@ export const INTERNAL_ISSUE_CATEGORIES = [
   'Culture & Values',
 ] as const;
 
-export type ExternalIssueCategory = (typeof EXTERNAL_ISSUE_CATEGORIES)[number];
-export type InternalIssueCategory = (typeof INTERNAL_ISSUE_CATEGORIES)[number];
+type ExternalIssueCategory = (typeof EXTERNAL_ISSUE_CATEGORIES)[number];
+type InternalIssueCategory = (typeof INTERNAL_ISSUE_CATEGORIES)[number];
 
 /** A single derived issue, ready to be written as an IsmsContextIssue row. */
-export interface DerivedContextIssue {
+interface DerivedContextIssue {
   kind: IsmsContextIssueKind;
   category: ExternalIssueCategory | InternalIssueCategory;
   description: string;

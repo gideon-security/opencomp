@@ -19,7 +19,7 @@ type ActivePage = Awaited<
  * the connect flow's first sign-in satisfy this shape, so neither is coupled to
  * the other's input type.
  */
-export interface CredentialLoginTarget {
+interface CredentialLoginTarget {
   profile: {
     id: string;
     vaultProvider?: string | null;
@@ -137,7 +137,7 @@ export async function performCredentialLogin({
   }
 }
 
-export interface CredentialReloginResult {
+interface CredentialReloginResult {
   isLoggedIn: boolean;
   page: ActivePage;
   reason?: string;
@@ -274,7 +274,12 @@ export async function signInAndClassify({
   if (outcome === 'needs_2fa' && credentials.totpCode) {
     const fresh = await resolveCredentials();
     if (fresh?.totpCode) {
-      await performCredentialLogin({ stagehand, credentials: fresh, log, usernameLabel });
+      await performCredentialLogin({
+        stagehand,
+        credentials: fresh,
+        log,
+        usernameLabel,
+      });
       outcome = await classifyLoginOutcome(stagehand);
     }
   }

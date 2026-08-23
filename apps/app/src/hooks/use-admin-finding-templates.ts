@@ -13,7 +13,7 @@ interface FindingTemplate {
   updatedAt: string;
 }
 
-export const findingTemplatesKey = () => ['/v1/finding-template'] as const;
+const findingTemplatesKey = () => ['/v1/finding-template'] as const;
 
 /**
  * Loads all finding templates from the platform API.

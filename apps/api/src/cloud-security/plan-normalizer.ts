@@ -54,7 +54,7 @@ const CLOUDTRAIL_TRAIL_COMMANDS = new Set([
   'UpdateTrailCommand',
 ]);
 
-export interface NormalizeFixPlanContext {
+interface NormalizeFixPlanContext {
   resourceId?: string | null;
 }
 

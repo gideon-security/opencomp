@@ -34,7 +34,7 @@ export const STATUS_TYPES = [
 export type StatusType = (typeof STATUS_TYPES)[number];
 
 // Updated STATUS_COLORS mapping using Tailwind classes
-export const STATUS_COLORS: Record<StatusType, string> = {
+const STATUS_COLORS: Record<StatusType, string> = {
   // General / Positive - Green
   published: 'bg-primary',
   open: 'bg-blue-500',

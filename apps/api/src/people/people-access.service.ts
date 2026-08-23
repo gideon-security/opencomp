@@ -7,7 +7,7 @@ import {
 } from '../integration-platform/services/check-results.service';
 
 /** One access record for the member from one integration's check results. */
-export interface MemberAccessEntry {
+interface MemberAccessEntry {
   /** The result row's database id — unique and stable; safe as a React key. */
   id: string;
   summary: string;
@@ -18,7 +18,7 @@ export interface MemberAccessEntry {
 }
 
 /** One integration's access information for a single member. */
-export interface MemberAccessSource {
+interface MemberAccessSource {
   slug: string;
   name: string;
   logoUrl: string | null;
@@ -35,7 +35,12 @@ export interface MemberAccessSource {
 }
 
 /** Evidence keys that duplicate row-level info or are noise in a field list. */
-const HIDDEN_EVIDENCE_KEYS = new Set(['checkedAt', 'fetchedAt', 'reviewedAt', 'raw']);
+const HIDDEN_EVIDENCE_KEYS = new Set([
+  'checkedAt',
+  'fetchedAt',
+  'reviewedAt',
+  'raw',
+]);
 const MAX_FIELDS = 12;
 
 /** camelCase / snake_case -> "Title Case" label. */
@@ -52,11 +57,19 @@ function labelize(key: string): string {
  */
 function toEntry(row: CheckResultRow): MemberAccessEntry {
   const fields: Record<string, string> = {};
-  if (row.evidence && typeof row.evidence === 'object' && !Array.isArray(row.evidence)) {
+  if (
+    row.evidence &&
+    typeof row.evidence === 'object' &&
+    !Array.isArray(row.evidence)
+  ) {
     for (const [key, value] of Object.entries(row.evidence)) {
       if (Object.keys(fields).length >= MAX_FIELDS) break;
       if (HIDDEN_EVIDENCE_KEYS.has(key) || value == null) continue;
-      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      if (
+        typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean'
+      ) {
         fields[labelize(key)] = String(value);
       }
     }
@@ -107,11 +120,15 @@ export class PeopleAccessService {
           });
           const userRows = results.filter((r) => r.resourceType === 'user');
           const memberRows = memberEmail
-            ? userRows.filter((r) => r.resourceId.toLowerCase().trim() === memberEmail)
+            ? userRows.filter(
+                (r) => r.resourceId.toLowerCase().trim() === memberEmail,
+              )
             : [];
           const lastCheckedAt = results.length
             ? new Date(
-                Math.max(...results.map((r) => new Date(r.collectedAt).getTime())),
+                Math.max(
+                  ...results.map((r) => new Date(r.collectedAt).getTime()),
+                ),
               ).toISOString()
             : null;
           const matchType: MemberAccessSource['matchType'] =

@@ -2,7 +2,7 @@ import { db } from '@db';
 import type { IsmsDocumentType } from '@db';
 import { ISMS_TYPE_DEFINITIONS, matchRequirementId } from './document-types';
 
-export interface IsmsDocumentPlan {
+interface IsmsDocumentPlan {
   type: IsmsDocumentType;
   title: string;
   requirementId: string | null;

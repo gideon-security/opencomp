@@ -11,7 +11,7 @@
  * roleValidationMessages (CS-698). Keep both copies in sync.
  */
 
-export type MetricCadenceValue = 'monthly' | 'quarterly';
+type MetricCadenceValue = 'monthly' | 'quarterly';
 
 const PERIOD_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -47,42 +47,21 @@ export function toPeriodKey(value: Date | string): string | null {
 }
 
 /** The first day of the period containing `date`, for the given cadence. */
-export function periodStartFor(
-  cadence: MetricCadenceValue,
-  date: Date,
-): string {
+export function periodStartFor(cadence: MetricCadenceValue, date: Date): string {
   const year = date.getUTCFullYear();
   const month = date.getUTCMonth();
   const step = monthsPerPeriod(cadence);
   return keyFrom(year, month - (month % step));
 }
 
-/** Whether `value` is a valid, cadence-aligned period key (1st of month/quarter). */
-export function isAlignedPeriodStart(
-  cadence: MetricCadenceValue,
-  value: string,
-): boolean {
-  const key = toPeriodKey(value);
-  if (!key || key.slice(8, 10) !== '01') return false;
-  const { month } = toUtcParts(key);
-  return month % monthsPerPeriod(cadence) === 0;
-}
-
 /** Shift a period key by `count` periods (negative = earlier). */
-export function addPeriods(
-  cadence: MetricCadenceValue,
-  periodKey: string,
-  count: number,
-): string {
+export function addPeriods(cadence: MetricCadenceValue, periodKey: string, count: number): string {
   const { year, month } = toUtcParts(periodKey);
   return keyFrom(year, month + count * monthsPerPeriod(cadence));
 }
 
 /** Human label for a period key: "July 2026" (monthly) or "Q3 2026" (quarterly). */
-export function periodLabel(
-  cadence: MetricCadenceValue,
-  periodKey: string,
-): string {
+export function periodLabel(cadence: MetricCadenceValue, periodKey: string): string {
   const { year, month } = toUtcParts(periodKey);
   if (cadence === 'quarterly') {
     return `Q${Math.floor(month / 3) + 1} ${year}`;

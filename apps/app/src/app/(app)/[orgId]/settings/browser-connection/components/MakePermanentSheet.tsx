@@ -15,7 +15,7 @@ import { MfaSetupHelp } from '../../../tasks/[taskId]/components/browser-automat
 
 /** The minimum the sheet needs — so both the settings list (Connection) and the
  *  task flow (BrowserAuthProfile) can reuse it without coupling their types. */
-export interface MakePermanentConnection {
+interface MakePermanentConnection {
   id: string;
   hostname: string;
   displayName: string;
@@ -26,10 +26,7 @@ interface MakePermanentSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   /** Store the authenticator setup key. Resolves true when it saved. */
-  onSave: (
-    connection: MakePermanentConnection,
-    totpSeed: string,
-  ) => Promise<boolean>;
+  onSave: (connection: MakePermanentConnection, totpSeed: string) => Promise<boolean>;
 }
 
 type Phase = 'form' | 'working' | 'success';
@@ -130,16 +127,13 @@ export function MakePermanentSheet({
             <SheetBody>
               <div className="flex flex-col gap-4">
                 <p className="text-[13px] leading-relaxed text-foreground">
-                  {vendorName} asks for a 6-digit code from an authenticator app when
-                  we sign in. Paste your authenticator setup key and OpenComp generates
-                  that code at every run — no manual re-sign-ins.
+                  {vendorName} asks for a 6-digit code from an authenticator app when we sign in.
+                  Paste your authenticator setup key and OpenComp generates that code at every run —
+                  no manual re-sign-ins.
                 </p>
 
                 <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="make-permanent-key"
-                    className="text-[12px] text-foreground"
-                  >
+                  <label htmlFor="make-permanent-key" className="text-[12px] text-foreground">
                     Authenticator setup key
                   </label>
                   <div className="relative">
@@ -165,13 +159,11 @@ export function MakePermanentSheet({
                     </button>
                   </div>
                   {error ? (
-                    <p className="text-[12px] leading-relaxed text-destructive">
-                      {error}
-                    </p>
+                    <p className="text-[12px] leading-relaxed text-destructive">{error}</p>
                   ) : (
                     <p className="text-[12px] leading-relaxed text-muted-foreground">
-                      The long one-time setup key shown when you add an authenticator
-                      app — not the rotating 6-digit code.
+                      The long one-time setup key shown when you add an authenticator app — not the
+                      rotating 6-digit code.
                     </p>
                   )}
                 </div>
@@ -179,9 +171,8 @@ export function MakePermanentSheet({
                 <MfaSetupHelp hostname={connection.hostname} />
 
                 <p className="text-[12px] leading-relaxed text-muted-foreground">
-                  You set up the authenticator on {vendorName} yourself — OpenComp never
-                  changes your 2FA settings. This key is only used to generate sign-in
-                  codes.
+                  You set up the authenticator on {vendorName} yourself — OpenComp never changes
+                  your 2FA settings. This key is only used to generate sign-in codes.
                 </p>
 
                 <div className="mt-1 flex items-center gap-2 text-[12px] text-muted-foreground">
@@ -236,8 +227,8 @@ export function MakePermanentSheet({
                 Stays signed in
               </span>
               <p className="max-w-[300px] text-[13px] leading-relaxed text-muted-foreground">
-                Every future run supplies the 6-digit code automatically — nothing
-                changed in your {vendorName} settings.
+                Every future run supplies the 6-digit code automatically — nothing changed in your{' '}
+                {vendorName} settings.
               </p>
               <div className="mt-2">
                 <Button onClick={() => onOpenChange(false)}>Done</Button>

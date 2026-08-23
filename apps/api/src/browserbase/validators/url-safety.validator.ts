@@ -77,7 +77,7 @@ export function isSafeUrl(value: string): boolean {
 }
 
 @ValidatorConstraint({ name: 'isSafeUrl', async: false })
-export class IsSafeUrlConstraint implements ValidatorConstraintInterface {
+class IsSafeUrlConstraint implements ValidatorConstraintInterface {
   validate(value: string): boolean {
     return isSafeUrl(value);
   }

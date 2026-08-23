@@ -5,14 +5,9 @@ import { useApiSWR, UseApiSWROptions } from '@/hooks/use-api-swr';
 import type { CommentEntityType } from '@db';
 import { useCallback } from 'react';
 
-// Helper function to convert API date strings to Date objects
-export function parseApiDate(dateString: string): Date {
-  return new Date(dateString);
-}
-
 // Types for the new generic comments API
 // Note: API returns dates as ISO strings, not Date objects
-export interface Comment {
+interface Comment {
   id: string;
   content: string;
   author: {
@@ -52,7 +47,7 @@ interface UpdateCommentData {
 // Default polling interval for real-time updates (5 seconds)
 const DEFAULT_COMMENTS_POLLING_INTERVAL = 5000;
 
-export interface UseCommentsOptions extends UseApiSWROptions<Comment[]> {
+interface UseCommentsOptions extends UseApiSWROptions<Comment[]> {
   /** Organization ID - MUST be passed to ensure correct org context */
   organizationId?: string;
 }
@@ -60,7 +55,7 @@ export interface UseCommentsOptions extends UseApiSWROptions<Comment[]> {
 /**
  * Generic hook to fetch comments for any entity using SWR
  * Includes polling for real-time updates (e.g., when local-trigger tasks create comments)
- * 
+ *
  * IMPORTANT: Always pass organizationId from URL params to ensure correct org context
  * when user navigates to a different org's page while active org is different.
  */
@@ -134,7 +129,7 @@ export function useCommentActions() {
   };
 }
 
-export interface UseCommentWithAttachmentsOptions {
+interface UseCommentWithAttachmentsOptions {
   /** Organization ID - for consistency with other hooks */
   organizationId?: string;
 }
@@ -190,183 +185,20 @@ export function useCommentWithAttachments(_options: UseCommentWithAttachmentsOpt
   };
 }
 
-/**
- * Enhanced hooks with optimistic updates following official SWR patterns
- */
-export function useOptimisticComments(entityId: string, entityType: CommentEntityType) {
-  const { data, error, isLoading, mutate } = useComments(entityId, entityType);
-  const { createComment, updateComment, deleteComment } = useCommentActions();
-
-  const optimisticCreate = useCallback(
-    async (
-      content: string,
-      attachments?: { fileName: string; fileType: string; fileData: string }[],
-    ) => {
-      // Create optimistic comment matching Comment type structure
-      const optimisticComment: Comment = {
-        id: `temp-${Date.now()}`,
-        content,
-        author: {
-          id: 'temp-user',
-          name: 'You', // Will be replaced with real author data
-          email: '',
-          image: null,
-          deactivated: false,
-        },
-        attachments: [], // Will be populated by real response
-        createdAt: new Date().toISOString(),
-      };
-
-      return mutate(
-        async () => {
-          // Call the API and transform single item response to array format for SWR cache
-          const newComment = await createComment({ content, entityId, entityType, attachments });
-          const currentComments = data?.data || [];
-
-          // Replace optimistic comment with real one, or add if not found
-          const optimisticIndex = currentComments.findIndex(
-            (comment) => comment.id === optimisticComment.id,
-          );
-          const updatedComments =
-            optimisticIndex >= 0
-              ? currentComments.map((comment) =>
-                  comment.id === optimisticComment.id ? newComment : comment,
-                )
-              : [newComment, ...currentComments]; // Add to beginning (newest first)
-
-          return {
-            data: updatedComments,
-            status: 200,
-          };
-        },
-        {
-          optimisticData: data
-            ? {
-                ...data,
-                data: [optimisticComment, ...(data.data || [])], // Add to beginning (newest first)
-              }
-            : { data: [optimisticComment], status: 200 },
-          populateCache: true,
-          revalidate: false,
-          rollbackOnError: true,
-        },
-      );
-    },
-    [mutate, createComment, data, entityId, entityType],
-  );
-
-  const optimisticUpdate = useCallback(
-    async (commentId: string, content: string) => {
-      return mutate(
-        async () => {
-          // Call the API and transform response to array format for SWR cache
-          const updatedComment = await updateComment(commentId, { content });
-          const currentComments = data?.data || [];
-
-          // Replace updated comment with real one
-          const updatedComments = currentComments.map((comment: any) =>
-            comment.id === commentId ? updatedComment : comment,
-          );
-
-          return {
-            data: updatedComments,
-            status: 200,
-          };
-        },
-        {
-          optimisticData: data
-            ? {
-                ...data,
-                data: (data.data || []).map((comment: any) =>
-                  comment.id === commentId ? { ...comment, content } : comment,
-                ),
-              }
-            : undefined,
-          populateCache: true,
-          revalidate: false,
-          rollbackOnError: true,
-        },
-      );
-    },
-    [mutate, updateComment, data],
-  );
-
-  const optimisticDelete = useCallback(
-    async (commentId: string) => {
-      return mutate(
-        async () => {
-          // Call the API and return updated cache data
-          await deleteComment(commentId);
-          const updatedComments = (data?.data || []).filter(
-            (comment: any) => comment.id !== commentId,
-          );
-
-          return {
-            data: updatedComments,
-            status: 200,
-          };
-        },
-        {
-          optimisticData: data
-            ? {
-                ...data,
-                data: (data.data || []).filter((comment: any) => comment.id !== commentId),
-              }
-            : undefined,
-          populateCache: true,
-          revalidate: false,
-          rollbackOnError: true,
-        },
-      );
-    },
-    [mutate, deleteComment, data],
-  );
-
-  return {
-    data,
-    error,
-    isLoading,
-    mutate,
-    optimisticCreate,
-    optimisticUpdate,
-    optimisticDelete,
-  };
-}
-
 // ==================== ENTITY-SPECIFIC CONVENIENCE HOOKS ====================
 
 /**
  * Convenience hook for task comments
  */
-export function useTaskComments(taskId: string | null, options: UseCommentsOptions = {}) {
+function useTaskComments(taskId: string | null, options: UseCommentsOptions = {}) {
   return useComments(taskId, 'task', options);
 }
 
 /**
  * Convenience hook for policy comments
  */
-export function usePolicyComments(
-  policyId: string | null,
-  options: UseCommentsOptions = {},
-) {
+function usePolicyComments(policyId: string | null, options: UseCommentsOptions = {}) {
   return useComments(policyId, 'policy', options);
-}
-
-/**
- * Convenience hook for vendor comments
- */
-export function useVendorComments(
-  vendorId: string | null,
-  options: UseCommentsOptions = {},
-) {
-  return useComments(vendorId, 'vendor', options);
-}
-
-/**
- * Convenience hook for risk comments
- */
-export function useRiskComments(riskId: string | null, options: UseCommentsOptions = {}) {
-  return useComments(riskId, 'risk', options);
 }
 
 /**

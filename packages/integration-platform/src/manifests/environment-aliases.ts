@@ -7,7 +7,7 @@ export interface EnvironmentAlias {
   tokens: readonly string[];
 }
 
-export interface EnvironmentAliasesConfig {
+interface EnvironmentAliasesConfig {
   aliases: readonly EnvironmentAlias[];
   invalidEntries: readonly string[];
 }

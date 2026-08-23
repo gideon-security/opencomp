@@ -24,7 +24,7 @@ import {
 } from './onepassword-credential-item';
 import { normalizeTotpSecret } from './browser-totp-secret';
 
-export interface StoreProfileCredentialsInput {
+interface StoreProfileCredentialsInput {
   organizationId: string;
   profileId: string;
   username: string;
@@ -279,7 +279,8 @@ export class BrowserCredentialStorageService {
     if (!vaultId || !itemId) return false;
     const item = await client.items.get(vaultId, itemId);
     return item.fields.some(
-      (field) => field.title === TOTP_FIELD_TITLE && field.value.trim().length > 0,
+      (field) =>
+        field.title === TOTP_FIELD_TITLE && field.value.trim().length > 0,
     );
   }
 
@@ -385,16 +386,21 @@ export class BrowserCredentialStorageService {
     vaultExternalItemRef?: string | null;
   }): Promise<void> {
     if (!isOnePasswordConfigured() || !profile.vaultExternalItemRef) return;
-    const { vaultId, itemId } = parseItemReference(profile.vaultExternalItemRef);
+    const { vaultId, itemId } = parseItemReference(
+      profile.vaultExternalItemRef,
+    );
     if (!vaultId || !itemId) return;
     try {
       const client = await getOnePasswordClient();
       await client.items.delete(vaultId, itemId);
       this.logger.log(`Deleted 1Password item for a removed connection.`);
     } catch (error) {
-      this.logger.warn('Failed to delete 1Password item on connection removal', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+      this.logger.warn(
+        'Failed to delete 1Password item on connection removal',
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
     }
   }
 

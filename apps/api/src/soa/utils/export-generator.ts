@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
 
-export type SOAExportFormat = 'pdf';
+type SOAExportFormat = 'pdf';
 
 export interface SOAExportQuestion {
   id: string;
@@ -25,7 +25,7 @@ export interface SOAExportMetadata {
   approverName?: string | null;
 }
 
-export interface SOAExportResult {
+interface SOAExportResult {
   fileBuffer: Buffer;
   mimeType: string;
   filename: string;
@@ -121,7 +121,11 @@ function generateSOAPDF(
         : 'Approver';
   pdf.text(`Approval status: ${approvalStatusText}`, margin, y);
   y += lineHeight;
-  pdf.text(`${approvalActorLabel}: ${metadata.approverName || 'N/A'}`, margin, y);
+  pdf.text(
+    `${approvalActorLabel}: ${metadata.approverName || 'N/A'}`,
+    margin,
+    y,
+  );
   y += lineHeight;
   pdf.text(`Exported: ${new Date().toLocaleDateString()}`, margin, y);
   y += lineHeight * 2;
@@ -149,9 +153,7 @@ function generateSOAPDF(
         : question.answer || 'No justification provided';
 
     const title = `${i + 1}. ${mapped.title || question.text || 'Untitled Control'}`;
-    const closure = mapped.closure
-      ? `Closure: ${mapped.closure}`
-      : null;
+    const closure = mapped.closure ? `Closure: ${mapped.closure}` : null;
     const objective = mapped.control_objective
       ? `Objective: ${mapped.control_objective}`
       : null;
@@ -188,4 +190,3 @@ function sanitizeFrameworkName(frameworkName: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 }
-

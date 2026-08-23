@@ -141,31 +141,6 @@ export function extractS3KeyFromUrl(url: string): string {
   return key;
 }
 
-export async function getFleetAgent({
-  os,
-}: {
-  os: 'macos' | 'windows' | 'linux';
-}): Promise<GetObjectCommandOutput['Body']> {
-  if (!s3Client) {
-    throw new Error('S3 client not configured');
-  }
-
-  const fleetBucketName = process.env.FLEET_AGENT_BUCKET_NAME;
-  const fleetAgentFileName = 'OpenComp Agent-1.0.0-arm64.dmg';
-
-  if (!fleetBucketName) {
-    throw new Error('FLEET_AGENT_BUCKET_NAME is not defined.');
-  }
-
-  const getFleetAgentCommand = new GetObjectCommand({
-    Bucket: fleetBucketName,
-    Key: `${os}/${fleetAgentFileName}`,
-  });
-
-  const response = await s3Client.send(getFleetAgentCommand);
-  return response.Body;
-}
-
 /**
  * Fetch an S3 object's full contents as a Buffer.
  *

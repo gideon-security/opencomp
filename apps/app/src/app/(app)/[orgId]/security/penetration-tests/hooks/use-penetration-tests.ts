@@ -275,7 +275,7 @@ export function usePenetrationTestEvents(
   };
 }
 
-export interface PentestCreditsStatus {
+interface PentestCreditsStatus {
   balance: number;
   totalGranted: number;
   totalConsumed: number;
@@ -284,32 +284,6 @@ export interface PentestCreditsStatus {
 
 const creditsKey = (organizationId: string): ReportsSWRKey =>
   [creditsStatusEndpoint, organizationId] as const;
-
-/**
- * Wallet status for the org. Drives the "X runs remaining" badge in the
- * RunList header and gates the "+ New" button. Re-fetched after each
- * successful create via SWR's `mutate(creditsKey(...))`.
- */
-export function usePentestCredits(organizationId: string): {
-  credits: PentestCreditsStatus | undefined;
-  isLoading: boolean;
-  error: Error | undefined;
-  mutate: () => Promise<PentestCreditsStatus | undefined>;
-} {
-  const shouldFetch = Boolean(organizationId);
-  const { data, error, mutate } = useSWR<PentestCreditsStatus>(
-    shouldFetch ? creditsKey(organizationId) : null,
-    fetchApiJson,
-    { revalidateOnFocus: true },
-  );
-
-  return {
-    credits: data,
-    isLoading: shouldFetch && data === undefined && !error,
-    error: error as Error | undefined,
-    mutate,
-  };
-}
 
 export function useCreatePenetrationTest(organizationId: string): UseCreatePenetrationTestReturn {
   const { mutate } = useSWRConfig();

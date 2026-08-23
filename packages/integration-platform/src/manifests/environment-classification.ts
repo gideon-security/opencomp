@@ -32,7 +32,7 @@ const ENV_TOKEN_SETS: ReadonlyArray<{ env: string; tokens: ReadonlySet<string> }
 ];
 
 /** Default tag/label keys that conventionally carry the environment. */
-export const ENV_TAG_KEYS = ['environment', 'env', 'stage', 'tier'] as const;
+const ENV_TAG_KEYS = ['environment', 'env', 'stage', 'tier'] as const;
 
 /** The single production bucket; every other bucket is non-production. */
 const PRODUCTION_ENV = 'production';

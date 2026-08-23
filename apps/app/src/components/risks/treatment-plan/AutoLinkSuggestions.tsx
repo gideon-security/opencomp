@@ -3,7 +3,6 @@
 import { MagicWandFilled } from '@trycompai/design-system/icons';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { LinkedWork } from './LinkedWork';
 import {
   EmptyState,
   FailedState,
@@ -17,14 +16,11 @@ import type {
   SuggestedControl,
   SuggestedTask,
 } from './AutoLinkSuggestions.types';
+import { LinkedWork } from './LinkedWork';
 
-export type {
-  SuggestedTask,
-  SuggestedControl,
-  LinkedTask,
-} from './AutoLinkSuggestions.types';
+export type { LinkedTask, SuggestedControl, SuggestedTask } from './AutoLinkSuggestions.types';
 
-export interface AutoLinkSuggestionsProps {
+interface AutoLinkSuggestionsProps {
   orgId: string;
   /** Existing linked tasks (rendered in `linked` state via <LinkedWork>). */
   tasks: LinkedTask[];

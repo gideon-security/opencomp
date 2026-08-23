@@ -2,16 +2,14 @@
 
 import { Card } from '@gideon-defender/ui';
 import { Button } from '@trycompai/design-system';
-import { ChevronUp, ChevronDown } from '@trycompai/design-system/icons';
+import { ChevronDown, ChevronUp } from '@trycompai/design-system/icons';
 import type {
   SOAFieldSavePayload,
   SOAProcessedResult,
   SOATableAnswerData,
 } from './EditableSOAFields';
-import { SOATableRow } from './SOATableRow';
 import { SOAMobileRow } from './SOAMobileRow';
-
-export type { SOATableAnswerData };
+import { SOATableRow } from './SOATableRow';
 
 type SOAColumn = {
   name: string;
@@ -139,10 +137,15 @@ export function SOATable({
 
 function getColumnWidth(colName: string): string {
   switch (colName) {
-    case 'isApplicable': return '15%';
-    case 'title': return '20%';
-    case 'control_objective': return '35%';
-    case 'justification': return '30%';
-    default: return '20%';
+    case 'isApplicable':
+      return '15%';
+    case 'title':
+      return '20%';
+    case 'control_objective':
+      return '35%';
+    case 'justification':
+      return '30%';
+    default:
+      return '20%';
   }
 }

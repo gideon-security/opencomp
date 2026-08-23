@@ -3,14 +3,10 @@
 import { apiClient } from '@/lib/api-client';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import {
-  computePoliciesOverview,
-  type AssigneeData,
-  type PoliciesOverview,
-} from '../lib/compute-overview';
+import { computePoliciesOverview, type PoliciesOverview } from '../lib/compute-overview';
 
 // Re-export types for convenience
-export type { AssigneeData, PoliciesOverview };
+export { PoliciesOverview };
 
 interface PolicyFromApi {
   id: string;

@@ -4,7 +4,7 @@
  * Only checks the path portion (before ?) to allow URLs in query params
  * like /dashboard?shareUrl=https://example.com
  */
-export const isValidRedirectPath = (path?: string | null): path is string => {
+const isValidRedirectPath = (path?: string | null): path is string => {
   if (!path || typeof path !== 'string') {
     return false;
   }

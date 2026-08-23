@@ -7,33 +7,33 @@ import type {
   ManifestTask,
 } from './manifest.types';
 
-export interface EntityDiff<T> {
+interface EntityDiff<T> {
   added: T[];
   removed: T[];
   updated: Array<{ id: string; from: T; to: T }>;
 }
 
-export interface EdgeDiff<E> {
+interface EdgeDiff<E> {
   added: E[];
   removed: E[];
 }
 
-export interface ControlRequirementEdge {
+interface ControlRequirementEdge {
   controlTemplateId: string;
   requirementTemplateId: string;
 }
 
-export interface ControlPolicyEdge {
+interface ControlPolicyEdge {
   controlTemplateId: string;
   policyTemplateId: string;
 }
 
-export interface ControlTaskEdge {
+interface ControlTaskEdge {
   controlTemplateId: string;
   taskTemplateId: string;
 }
 
-export interface ControlDocumentTypeEdge {
+interface ControlDocumentTypeEdge {
   controlTemplateId: string;
   formType: string;
 }
@@ -43,13 +43,13 @@ export interface ControlDocumentTypeEdge {
  * live in any entity list, so without this the diff treats a name- or
  * description-only edit as "no changes" and the Publish button stays disabled.
  */
-export interface FrameworkMetaDiff {
+interface FrameworkMetaDiff {
   changed: boolean;
   name?: { from: string; to: string };
   description?: { from: string | null; to: string | null };
 }
 
-export interface ManifestDiff {
+interface ManifestDiff {
   framework: FrameworkMetaDiff;
   controls: EntityDiff<ManifestControl>;
   requirements: EntityDiff<ManifestRequirement>;
@@ -93,21 +93,34 @@ function sanitizeManifestEdges(m: FrameworkManifest): FrameworkManifest {
   };
 }
 
-export function diffManifests(fromRaw: FrameworkManifest, toRaw: FrameworkManifest): ManifestDiff {
+export function diffManifests(
+  fromRaw: FrameworkManifest,
+  toRaw: FrameworkManifest,
+): ManifestDiff {
   const from = sanitizeManifestEdges(fromRaw);
   const to = sanitizeManifestEdges(toRaw);
   return {
     framework: diffFrameworkMeta(from.framework, to.framework),
     controls: diffEntities(from.controls, to.controls, controlEqual),
-    requirements: diffEntities(from.requirements, to.requirements, requirementEqual),
+    requirements: diffEntities(
+      from.requirements,
+      to.requirements,
+      requirementEqual,
+    ),
     policies: diffEntities(from.policies, to.policies, policyEqual),
     tasks: diffEntities(from.tasks, to.tasks, taskEqual),
     requirementMapEdges: diffEdges(
       edgesFromControls(from.controls, (c) =>
-        c.requirementIds.map((id) => ({ controlTemplateId: c.id, requirementTemplateId: id })),
+        c.requirementIds.map((id) => ({
+          controlTemplateId: c.id,
+          requirementTemplateId: id,
+        })),
       ),
       edgesFromControls(to.controls, (c) =>
-        c.requirementIds.map((id) => ({ controlTemplateId: c.id, requirementTemplateId: id })),
+        c.requirementIds.map((id) => ({
+          controlTemplateId: c.id,
+          requirementTemplateId: id,
+        })),
       ),
       (a, b) =>
         a.controlTemplateId === b.controlTemplateId &&
@@ -115,32 +128,54 @@ export function diffManifests(fromRaw: FrameworkManifest, toRaw: FrameworkManife
     ),
     controlPolicyEdges: diffEdges(
       edgesFromControls(from.controls, (c) =>
-        c.policyIds.map((id) => ({ controlTemplateId: c.id, policyTemplateId: id })),
+        c.policyIds.map((id) => ({
+          controlTemplateId: c.id,
+          policyTemplateId: id,
+        })),
       ),
       edgesFromControls(to.controls, (c) =>
-        c.policyIds.map((id) => ({ controlTemplateId: c.id, policyTemplateId: id })),
+        c.policyIds.map((id) => ({
+          controlTemplateId: c.id,
+          policyTemplateId: id,
+        })),
       ),
       (a, b) =>
-        a.controlTemplateId === b.controlTemplateId && a.policyTemplateId === b.policyTemplateId,
+        a.controlTemplateId === b.controlTemplateId &&
+        a.policyTemplateId === b.policyTemplateId,
     ),
     controlTaskEdges: diffEdges(
       edgesFromControls(from.controls, (c) =>
-        c.taskIds.map((id) => ({ controlTemplateId: c.id, taskTemplateId: id })),
+        c.taskIds.map((id) => ({
+          controlTemplateId: c.id,
+          taskTemplateId: id,
+        })),
       ),
       edgesFromControls(to.controls, (c) =>
-        c.taskIds.map((id) => ({ controlTemplateId: c.id, taskTemplateId: id })),
+        c.taskIds.map((id) => ({
+          controlTemplateId: c.id,
+          taskTemplateId: id,
+        })),
       ),
       (a, b) =>
-        a.controlTemplateId === b.controlTemplateId && a.taskTemplateId === b.taskTemplateId,
+        a.controlTemplateId === b.controlTemplateId &&
+        a.taskTemplateId === b.taskTemplateId,
     ),
     controlDocumentTypeEdges: diffEdges(
       edgesFromControls(from.controls, (c) =>
-        (c.documentTypes ?? []).map((formType) => ({ controlTemplateId: c.id, formType })),
+        (c.documentTypes ?? []).map((formType) => ({
+          controlTemplateId: c.id,
+          formType,
+        })),
       ),
       edgesFromControls(to.controls, (c) =>
-        (c.documentTypes ?? []).map((formType) => ({ controlTemplateId: c.id, formType })),
+        (c.documentTypes ?? []).map((formType) => ({
+          controlTemplateId: c.id,
+          formType,
+        })),
       ),
-      (a, b) => a.controlTemplateId === b.controlTemplateId && a.formType === b.formType,
+      (a, b) =>
+        a.controlTemplateId === b.controlTemplateId &&
+        a.formType === b.formType,
     ),
   };
 }
@@ -168,7 +203,11 @@ function diffEntities<T extends { id: string }>(
   return { added, removed, updated };
 }
 
-function diffEdges<E>(from: E[], to: E[], equal: (a: E, b: E) => boolean): EdgeDiff<E> {
+function diffEdges<E>(
+  from: E[],
+  to: E[],
+  equal: (a: E, b: E) => boolean,
+): EdgeDiff<E> {
   const added = to.filter((x) => !from.some((y) => equal(x, y)));
   const removed = from.filter((x) => !to.some((y) => equal(x, y)));
   return { added, removed };
@@ -199,10 +238,17 @@ function diffFrameworkMeta(
 }
 
 function controlEqual(a: ManifestControl, b: ManifestControl): boolean {
-  return a.name === b.name && a.description === b.description && (a.controlFamily ?? null) === (b.controlFamily ?? null);
+  return (
+    a.name === b.name &&
+    a.description === b.description &&
+    (a.controlFamily ?? null) === (b.controlFamily ?? null)
+  );
 }
 
-function requirementEqual(a: ManifestRequirement, b: ManifestRequirement): boolean {
+function requirementEqual(
+  a: ManifestRequirement,
+  b: ManifestRequirement,
+): boolean {
   return (
     a.identifier === b.identifier &&
     a.name === b.name &&

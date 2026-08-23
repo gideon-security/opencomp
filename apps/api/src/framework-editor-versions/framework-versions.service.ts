@@ -1,4 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { db } from '@db';
 import { buildManifestForFramework } from './framework-manifest-builder';
 import { diffManifests } from '../frameworks/framework-versioning/framework-diff';
@@ -6,7 +11,7 @@ import type { FrameworkManifest } from '../frameworks/framework-versioning/manif
 
 const SEMVER = /^\d+\.\d+\.\d+$/;
 
-export interface PublishParams {
+interface PublishParams {
   frameworkId: string;
   version: string;
   releaseNotes?: string;
@@ -15,18 +20,26 @@ export interface PublishParams {
 
 @Injectable()
 export class FrameworkVersionsService {
-  async publish({ frameworkId, version, releaseNotes, publishedById }: PublishParams) {
+  async publish({
+    frameworkId,
+    version,
+    releaseNotes,
+    publishedById,
+  }: PublishParams) {
     if (!SEMVER.test(version)) {
       throw new BadRequestException('version must be MAJOR.MINOR.PATCH');
     }
 
-    const framework = await db.frameworkEditorFramework.findUnique({ where: { id: frameworkId } });
+    const framework = await db.frameworkEditorFramework.findUnique({
+      where: { id: frameworkId },
+    });
     if (!framework) throw new NotFoundException('Framework not found');
 
     const existing = await db.frameworkVersion.findUnique({
       where: { frameworkId_version: { frameworkId, version } },
     });
-    if (existing) throw new ConflictException(`Version ${version} already published`);
+    if (existing)
+      throw new ConflictException(`Version ${version} already published`);
 
     const manifest = await buildManifestForFramework(frameworkId);
 
@@ -57,8 +70,11 @@ export class FrameworkVersionsService {
   }
 
   async get(frameworkId: string, versionId: string) {
-    const v = await db.frameworkVersion.findUnique({ where: { id: versionId } });
-    if (!v || v.frameworkId !== frameworkId) throw new NotFoundException('Version not found');
+    const v = await db.frameworkVersion.findUnique({
+      where: { id: versionId },
+    });
+    if (!v || v.frameworkId !== frameworkId)
+      throw new NotFoundException('Version not found');
     return v;
   }
 
@@ -68,7 +84,9 @@ export class FrameworkVersionsService {
       orderBy: { publishedAt: 'desc' },
     });
     if (!latest) {
-      throw new NotFoundException('No published version yet — publish v1.0.0 first');
+      throw new NotFoundException(
+        'No published version yet — publish v1.0.0 first',
+      );
     }
     const fromManifest = latest.manifest as unknown as FrameworkManifest;
     const toManifest = await buildManifestForFramework(frameworkId);
@@ -89,7 +107,9 @@ export class FrameworkVersionsService {
    * at its inception.
    */
   async getVersionDiff(frameworkId: string, versionId: string) {
-    const current = await db.frameworkVersion.findUnique({ where: { id: versionId } });
+    const current = await db.frameworkVersion.findUnique({
+      where: { id: versionId },
+    });
     if (!current || current.frameworkId !== frameworkId) {
       throw new NotFoundException('Version not found');
     }
@@ -113,8 +133,15 @@ export class FrameworkVersionsService {
     const diff = diffManifests(fromManifest, toManifest);
 
     return {
-      version: { id: current.id, version: current.version, publishedAt: current.publishedAt, releaseNotes: current.releaseNotes },
-      previousVersion: previous ? { id: previous.id, version: previous.version } : null,
+      version: {
+        id: current.id,
+        version: current.version,
+        publishedAt: current.publishedAt,
+        releaseNotes: current.releaseNotes,
+      },
+      previousVersion: previous
+        ? { id: previous.id, version: previous.version }
+        : null,
       diff,
       linkChanges: resolveLinkChanges(diff, fromManifest, toManifest),
     };
@@ -132,8 +159,16 @@ function resolveLinkChanges(
     fallback: string,
   ): { name: string; identifier?: string } => {
     const list = [
-      ...(toManifest[key] as Array<{ id: string; name?: string; identifier?: string }>),
-      ...(fromManifest[key] as Array<{ id: string; name?: string; identifier?: string }>),
+      ...(toManifest[key] as Array<{
+        id: string;
+        name?: string;
+        identifier?: string;
+      }>),
+      ...(fromManifest[key] as Array<{
+        id: string;
+        name?: string;
+        identifier?: string;
+      }>),
     ];
     const hit = list.find((x) => x.id === id);
     return {
@@ -145,43 +180,63 @@ function resolveLinkChanges(
   return {
     controlRequirement: {
       added: diff.requirementMapEdges.added.map((e) => ({
-        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control').name,
-        requirementName: nameFor('requirements', e.requirementTemplateId, 'Unknown requirement').name,
-        requirementIdentifier: nameFor('requirements', e.requirementTemplateId, '').identifier ?? '',
+        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control')
+          .name,
+        requirementName: nameFor(
+          'requirements',
+          e.requirementTemplateId,
+          'Unknown requirement',
+        ).name,
+        requirementIdentifier:
+          nameFor('requirements', e.requirementTemplateId, '').identifier ?? '',
       })),
       removed: diff.requirementMapEdges.removed.map((e) => ({
-        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control').name,
-        requirementName: nameFor('requirements', e.requirementTemplateId, 'Unknown requirement').name,
-        requirementIdentifier: nameFor('requirements', e.requirementTemplateId, '').identifier ?? '',
+        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control')
+          .name,
+        requirementName: nameFor(
+          'requirements',
+          e.requirementTemplateId,
+          'Unknown requirement',
+        ).name,
+        requirementIdentifier:
+          nameFor('requirements', e.requirementTemplateId, '').identifier ?? '',
       })),
     },
     controlPolicy: {
       added: diff.controlPolicyEdges.added.map((e) => ({
-        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control').name,
-        policyName: nameFor('policies', e.policyTemplateId, 'Unknown policy').name,
+        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control')
+          .name,
+        policyName: nameFor('policies', e.policyTemplateId, 'Unknown policy')
+          .name,
       })),
       removed: diff.controlPolicyEdges.removed.map((e) => ({
-        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control').name,
-        policyName: nameFor('policies', e.policyTemplateId, 'Unknown policy').name,
+        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control')
+          .name,
+        policyName: nameFor('policies', e.policyTemplateId, 'Unknown policy')
+          .name,
       })),
     },
     controlTask: {
       added: diff.controlTaskEdges.added.map((e) => ({
-        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control').name,
+        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control')
+          .name,
         taskName: nameFor('tasks', e.taskTemplateId, 'Unknown task').name,
       })),
       removed: diff.controlTaskEdges.removed.map((e) => ({
-        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control').name,
+        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control')
+          .name,
         taskName: nameFor('tasks', e.taskTemplateId, 'Unknown task').name,
       })),
     },
     controlDocumentType: {
       added: diff.controlDocumentTypeEdges.added.map((e) => ({
-        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control').name,
+        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control')
+          .name,
         formType: e.formType,
       })),
       removed: diff.controlDocumentTypeEdges.removed.map((e) => ({
-        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control').name,
+        controlName: nameFor('controls', e.controlTemplateId, 'Unknown control')
+          .name,
         formType: e.formType,
       })),
     },

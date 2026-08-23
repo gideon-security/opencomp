@@ -16,14 +16,14 @@ export interface Connection {
   automationCount?: number;
 }
 
-export type SignInMethod = 'password' | 'sso';
+type SignInMethod = 'password' | 'sso';
 
 /** Password = Comp signs in unattended (creds in the vault); otherwise SSO/manual. */
 export function methodOf(connection: Connection): SignInMethod {
   return connection.vaultExternalItemRef ? 'password' : 'sso';
 }
 
-export interface StatusMeta {
+interface StatusMeta {
   label: string;
   color: string;
   bg: string;
@@ -74,7 +74,7 @@ export function statusMeta(status: ConnectionStatus): StatusMeta {
  * - `sso`        — SSO: can't be renewed unattended; expect occasional re-sign-in.
  * - `reconnect`  — already paused (needs reconnect / blocked).
  */
-export type PermanenceState = 'permanent' | 'atrisk' | 'sso' | 'reconnect';
+type PermanenceState = 'permanent' | 'atrisk' | 'sso' | 'reconnect';
 
 export function permanenceStateOf(args: {
   connection: Connection;
@@ -94,7 +94,7 @@ export function permanenceStateOf(args: {
   return totpConfigured ? 'permanent' : 'atrisk';
 }
 
-export interface PermanenceMeta {
+interface PermanenceMeta {
   badge: string;
   color: string;
   bg: string;
@@ -151,8 +151,7 @@ export function permanenceHint(args: {
       return 'Signs in through SSO — sessions can’t be renewed unattended, so expect an occasional re-sign-in.';
     case 'reconnect':
       return (
-        blockedReason ||
-        `Paused — ${vendorName} needs to sign in again. Reconnect to resume runs.`
+        blockedReason || `Paused — ${vendorName} needs to sign in again. Reconnect to resume runs.`
       );
   }
 }
@@ -165,22 +164,8 @@ export function monogram(hostname: string): string {
   return name.slice(0, 2).toUpperCase();
 }
 
-/** Stable brand-ish color per host so rows are scannable. */
-export function hueFor(hostname: string): string {
-  let hash = 0;
-  for (let i = 0; i < hostname.length; i += 1) {
-    hash = (hash * 31 + hostname.charCodeAt(i)) >>> 0;
-  }
-  return HUES[hash % HUES.length];
-}
-
-export interface ConnectionSummary {
+interface ConnectionSummary {
   total: number;
   active: number;
   needAttention: number;
-}
-
-export function summarize(connections: Connection[]): ConnectionSummary {
-  const active = connections.filter((c) => c.status === 'verified').length;
-  return { total: connections.length, active, needAttention: connections.length - active };
 }

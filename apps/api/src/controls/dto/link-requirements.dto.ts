@@ -8,7 +8,7 @@ import {
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class LinkRequirementMappingDto {
+class LinkRequirementMappingDto {
   @ApiProperty({
     description: 'Platform requirement ID',
     required: false,

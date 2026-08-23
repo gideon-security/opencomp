@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { db } from '@db';
-import { AiDescriptionService, DESCRIPTION_MODEL_VERSION } from './ai-description.service';
+import {
+  AiDescriptionService,
+  DESCRIPTION_MODEL_VERSION,
+} from './ai-description.service';
 import type { CheckDescription } from './ai-description.prompt';
 import { buildProviderPassthroughDescription } from './check-definition-provider-passthrough';
 import { computeSourceHash, normalizeCheckId } from './check-definition.utils';
-
-export { normalizeCheckId };
 
 /**
  * The CheckDescription returned to clients. `source` lets the UI render a
@@ -16,7 +17,7 @@ export interface ResolvedCheckDescription extends CheckDescription {
   source: 'ai' | 'provider';
 }
 
-export interface CheckDescriptionRequest {
+interface CheckDescriptionRequest {
   organizationId: string;
   /** Normalized, resource-agnostic check identifier — see normalizeCheckId. */
   checkId: string;
@@ -30,7 +31,6 @@ export interface CheckDescriptionRequest {
   /** Raw evidence — used for GCP/Azure passthrough only. */
   evidence: Record<string, unknown> | null;
 }
-
 
 @Injectable()
 export class CheckDefinitionService {
@@ -235,5 +235,4 @@ export class CheckDefinitionService {
 
     return { ...generated, source: 'ai' };
   }
-
 }

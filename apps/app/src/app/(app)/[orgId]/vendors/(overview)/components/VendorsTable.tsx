@@ -4,7 +4,7 @@ import { OnboardingLoadingAnimation } from '@/components/onboarding-loading-anim
 import { RiskScoreBadge } from '@/components/risks/RiskScoreBadge';
 import { VendorStatus } from '@/components/vendor-status';
 import { usePermissions } from '@/hooks/use-permissions';
-import { useVendors, useVendorActions, type Vendor } from '@/hooks/use-vendors';
+import { useVendorActions, useVendors, type Vendor } from '@/hooks/use-vendors';
 import { getRiskScore } from '@/lib/risk-score';
 import {
   interpolatedResidualScore,
@@ -420,10 +420,7 @@ export function VendorsTable({
   }, [mergedVendors, searchQuery, sort]);
 
   // Calculate pageCount from filtered data and paginate
-  const filteredPageCount = Math.max(
-    1,
-    Math.ceil(filteredAndSortedVendors.length / perPage),
-  );
+  const filteredPageCount = Math.max(1, Math.ceil(filteredAndSortedVendors.length / perPage));
 
   const startIndex = (page - 1) * perPage;
   const paginatedVendors = filteredAndSortedVendors.slice(startIndex, startIndex + perPage);
@@ -513,9 +510,7 @@ export function VendorsTable({
   const isEmpty = mergedVendors.length === 0;
   const showEmptyState = isEmpty && onboardingRunId && isActive;
   const emptyTitle = searchQuery ? t('list.noVendorsFound') : t('list.noVendorsYet');
-  const emptyDescription = searchQuery
-    ? t('list.tryAdjustingSearch')
-    : t('list.createFirstVendor');
+  const emptyDescription = searchQuery ? t('list.tryAdjustingSearch') : t('list.createFirstVendor');
 
   if (showEmptyState) {
     return (
@@ -566,11 +561,17 @@ export function VendorsTable({
                 {assessmentProgress
                   ? assessmentProgress.completed === 0
                     ? t('list.analyzingOrg')
-                    : t('list.vendorsAssessed', { completed: assessmentProgress.completed, total: assessmentProgress.total })
+                    : t('list.vendorsAssessed', {
+                        completed: assessmentProgress.completed,
+                        total: assessmentProgress.total,
+                      })
                   : progress
                     ? progress.completed === 0
                       ? t('list.analyzingOrg')
-                      : t('list.vendorsCreated', { completed: progress.completed, total: progress.total })
+                      : t('list.vendorsCreated', {
+                          completed: progress.completed,
+                          total: progress.total,
+                        })
                     : t('list.analyzingOrg')}
               </span>
             </div>
@@ -608,34 +609,36 @@ export function VendorsTable({
                     onClick={() => handleSort('name')}
                     className="flex items-center hover:text-foreground"
                   >
-                      NAME
-                      {getSortIcon('name')}
-                    </button>
-                  </TableHead>
-                  <TableHead>{t('list.headerStatus')}</TableHead>
-                  <TableHead>
-                    <button
-                      type="button"
-                      onClick={() => handleSort('inherentRisk')}
-                      className="flex items-center hover:text-foreground"
-                    >
-                      {t('list.headerInherentRisk')}
-                      {getSortIcon('inherentRisk')}
-                    </button>
-                  </TableHead>
-                  <TableHead>
-                    <button
-                      type="button"
-                      onClick={() => handleSort('residualRisk')}
-                      className="flex items-center hover:text-foreground"
-                    >
-                      {t('list.headerCurrentRisk')}
-                      {getSortIcon('residualRisk')}
-                    </button>
-                  </TableHead>
-                  <TableHead>{t('list.headerCategory')}</TableHead>
-                  <TableHead>{t('list.headerOwner')}</TableHead>
-                  {hasPermission('vendor', 'delete') && <TableHead>{t('list.headerActions')}</TableHead>}
+                    NAME
+                    {getSortIcon('name')}
+                  </button>
+                </TableHead>
+                <TableHead>{t('list.headerStatus')}</TableHead>
+                <TableHead>
+                  <button
+                    type="button"
+                    onClick={() => handleSort('inherentRisk')}
+                    className="flex items-center hover:text-foreground"
+                  >
+                    {t('list.headerInherentRisk')}
+                    {getSortIcon('inherentRisk')}
+                  </button>
+                </TableHead>
+                <TableHead>
+                  <button
+                    type="button"
+                    onClick={() => handleSort('residualRisk')}
+                    className="flex items-center hover:text-foreground"
+                  >
+                    {t('list.headerCurrentRisk')}
+                    {getSortIcon('residualRisk')}
+                  </button>
+                </TableHead>
+                <TableHead>{t('list.headerCategory')}</TableHead>
+                <TableHead>{t('list.headerOwner')}</TableHead>
+                {hasPermission('vendor', 'delete') && (
+                  <TableHead>{t('list.headerActions')}</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -656,7 +659,9 @@ export function VendorsTable({
                     </TableCell>
                     <TableCell>
                       {vendor.status === 'not_assessed' ? (
-                        <Text variant="muted" size="sm">—</Text>
+                        <Text variant="muted" size="sm">
+                          —
+                        </Text>
                       ) : (
                         <RiskScoreBadge
                           likelihood={vendor.inherentProbability}
@@ -666,7 +671,9 @@ export function VendorsTable({
                     </TableCell>
                     <TableCell>
                       {vendor.status === 'not_assessed' ? (
-                        <Text variant="muted" size="sm">—</Text>
+                        <Text variant="muted" size="sm">
+                          —
+                        </Text>
                       ) : (
                         // Show the current (interpolated) score that
                         // reflects how far the linked tasks have driven
@@ -677,9 +684,7 @@ export function VendorsTable({
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary">
-                        {categoryLabel(t, vendor.category)}
-                      </Badge>
+                      <Badge variant="secondary">{categoryLabel(t, vendor.category)}</Badge>
                     </TableCell>
                     <TableCell>
                       {vendor.assignee ? (
@@ -696,7 +701,9 @@ export function VendorsTable({
                             </AvatarFallback>
                           </Avatar>
                           <Text size="sm">
-                            {vendor.assignee.user?.name || vendor.assignee.user?.email || t('list.unknownUser')}
+                            {vendor.assignee.user?.name ||
+                              vendor.assignee.user?.email ||
+                              t('list.unknownUser')}
                           </Text>
                         </HStack>
                       ) : (
@@ -754,7 +761,9 @@ export function VendorsTable({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={isDeleting}>{tCommon('common.cancel')}</AlertDialogCancel>
+              <AlertDialogCancel disabled={isDeleting}>
+                {tCommon('common.cancel')}
+              </AlertDialogCancel>
               <AlertDialogAction
                 variant="destructive"
                 onClick={handleConfirmDelete}

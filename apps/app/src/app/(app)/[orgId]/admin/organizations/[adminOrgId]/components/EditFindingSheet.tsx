@@ -20,7 +20,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-export interface EditableFinding {
+interface EditableFinding {
   id: string;
   content: string;
   severity: string;
@@ -70,9 +70,7 @@ export function EditFindingSheet<TFinding extends EditableFinding>({
   if (!finding) return null;
 
   const isDirty =
-    content !== finding.content ||
-    severity !== finding.severity ||
-    status !== finding.status;
+    content !== finding.content || severity !== finding.severity || status !== finding.status;
 
   const handleSave = async () => {
     setSaving(true);
@@ -147,11 +145,7 @@ export function EditFindingSheet<TFinding extends EditableFinding>({
               <div className="flex-1">
                 <Stack gap="xs">
                   <label className="text-sm font-medium">Status</label>
-                  <Select
-                    value={status}
-                    onValueChange={(v) => v && setStatus(v)}
-                    disabled={saving}
-                  >
+                  <Select value={status} onValueChange={(v) => v && setStatus(v)} disabled={saving}>
                     <SelectTrigger>{formatStatus(status)}</SelectTrigger>
                     <SelectContent>
                       {STATUS_OPTIONS.map((s) => (

@@ -18,7 +18,7 @@ export const IMPACT_SCORES: Record<Impact, number> = {
 
 export type RiskLevel = 'very-low' | 'low' | 'medium' | 'high' | 'very-high';
 
-export interface RiskScore {
+interface RiskScore {
   raw: number;
   score: number;
   level: RiskLevel;

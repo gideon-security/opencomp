@@ -3,7 +3,7 @@ import { db } from '@db';
 import type { IntegrationOAuthState } from '@db';
 import { randomBytes } from 'crypto';
 
-export interface CreateOAuthStateDto {
+interface CreateOAuthStateDto {
   providerSlug: string;
   organizationId: string;
   userId: string;

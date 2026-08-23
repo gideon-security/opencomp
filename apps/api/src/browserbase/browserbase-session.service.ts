@@ -10,7 +10,7 @@ import { isNoPageError } from './run-error-formatter';
 
 type Stagehand = import('@browserbasehq/stagehand').Stagehand;
 
-export interface BrowserViewport {
+interface BrowserViewport {
   width: number;
   height: number;
 }
@@ -20,12 +20,15 @@ export interface BrowserViewport {
 // upscaling — the latter is what looked soft, especially on HiDPI displays.
 // Browserbase exposes no device-pixel-ratio setting, so viewport size is the
 // only lever for capture sharpness. This is the default.
-export const CAPTURE_VIEWPORT: BrowserViewport = { width: 1920, height: 1080 };
+const CAPTURE_VIEWPORT: BrowserViewport = { width: 1920, height: 1080 };
 
 // A smaller viewport for human-facing sessions (sign-in, take-over, SSO,
 // reconnect): the page renders larger in the embedded live view, so forms are
 // easier to read and fill. Capture runs stay on CAPTURE_VIEWPORT.
-export const INTERACTIVE_VIEWPORT: BrowserViewport = { width: 1280, height: 800 };
+export const INTERACTIVE_VIEWPORT: BrowserViewport = {
+  width: 1280,
+  height: 800,
+};
 
 // How long a human-facing session may live before Browserbase auto-ends it.
 // Without an explicit timeout the session uses the project default (short), so
@@ -77,11 +80,17 @@ export function selectLiveViewUrl(
     if (exact) return exact.debuggerFullscreenUrl;
     const host = hostnameOrNull(matchUrl);
     const byHost =
-      host !== null ? pages.find((page) => hostnameOrNull(page.url) === host) : undefined;
+      host !== null
+        ? pages.find((page) => hostnameOrNull(page.url) === host)
+        : undefined;
     if (byHost) return byHost.debuggerFullscreenUrl;
   }
   // Newest tab is usually the just-opened sign-in.
-  return pages[pages.length - 1]?.debuggerFullscreenUrl ?? debug.debuggerFullscreenUrl ?? null;
+  return (
+    pages[pages.length - 1]?.debuggerFullscreenUrl ??
+    debug.debuggerFullscreenUrl ??
+    null
+  );
 }
 
 @Injectable()

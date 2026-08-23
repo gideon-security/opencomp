@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { db } from '@db';
 import type { IntegrationProvider } from '@db';
 
-export interface CreateProviderDto {
+interface CreateProviderDto {
   slug: string;
   name: string;
   category: string;

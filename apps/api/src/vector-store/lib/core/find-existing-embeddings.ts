@@ -1,15 +1,9 @@
-import {
-  findVectorsByFilter,
-  listVectorsByOrganization,
-} from './client';
-import {
-  type ExistingEmbedding,
-  type SourceType,
-} from './query-helpers';
+import { findVectorsByFilter, listVectorsByOrganization } from './client';
+import { type ExistingEmbedding, type SourceType } from './query-helpers';
 import { logger } from '../../logger';
 
 // Re-export types for backward compatibility
-export type { ExistingEmbedding, SourceType };
+export { ExistingEmbedding };
 
 const VALID_SOURCE_TYPES: SourceType[] = [
   'policy',

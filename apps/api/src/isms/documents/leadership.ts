@@ -13,7 +13,7 @@ export const leadershipNarrativeSchema = z.object({
   ),
 });
 
-export type LeadershipNarrative = z.infer<typeof leadershipNarrativeSchema>;
+type LeadershipNarrative = z.infer<typeof leadershipNarrativeSchema>;
 
 /**
  * The ISO 27001:2022 clause 5.1(a)-(h) leadership commitments, parameterized with

@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import useSWR from 'swr';
-import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
+import useSWR from 'swr';
 import type { IsmsContextIssueKind, IsmsDocument, IsmsExportFormat } from '../isms-types';
 import { exportIsmsDocument } from './exportIsmsDocument';
 
@@ -20,7 +20,7 @@ interface UseIsmsDocumentOptions {
  *   POST   /v1/isms/<segment>/:rowId
  *   DELETE /v1/isms/<segment>/:rowId
  */
-export type IsmsRegister =
+type IsmsRegister =
   | 'context-issues'
   | 'interested-parties'
   | 'requirements'

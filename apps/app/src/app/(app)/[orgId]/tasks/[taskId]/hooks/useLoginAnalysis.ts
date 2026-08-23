@@ -4,7 +4,7 @@ import { apiClient } from '@/lib/api-client';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
-export interface AnalysisRunHandle {
+interface AnalysisRunHandle {
   runId: string;
   publicAccessToken: string;
 }
@@ -17,27 +17,21 @@ export interface AnalysisRunHandle {
 export function useLoginAnalysis() {
   const [isStarting, setIsStarting] = useState(false);
 
-  const startAnalysis = useCallback(
-    async (url: string): Promise<AnalysisRunHandle | null> => {
-      setIsStarting(true);
-      try {
-        const res = await apiClient.post<AnalysisRunHandle>(
-          '/v1/browserbase/analyze-login',
-          { url },
-        );
-        if (res.error || !res.data?.runId) {
-          toast.error(res.error || 'Could not start the sign-in check.');
-          return null;
-        }
-        return res.data;
-      } catch {
+  const startAnalysis = useCallback(async (url: string): Promise<AnalysisRunHandle | null> => {
+    setIsStarting(true);
+    try {
+      const res = await apiClient.post<AnalysisRunHandle>('/v1/browserbase/analyze-login', { url });
+      if (res.error || !res.data?.runId) {
+        toast.error(res.error || 'Could not start the sign-in check.');
         return null;
-      } finally {
-        setIsStarting(false);
       }
-    },
-    [],
-  );
+      return res.data;
+    } catch {
+      return null;
+    } finally {
+      setIsStarting(false);
+    }
+  }, []);
 
   return { startAnalysis, isStarting };
 }

@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { TrustFramework } from '@db';
 
-export class ComplianceResourceBaseDto {
+class ComplianceResourceBaseDto {
   @ApiProperty({
     description: 'Organization ID that owns the compliance resource',
     example: 'org_6914cd0e16e4c7dccbb54426',

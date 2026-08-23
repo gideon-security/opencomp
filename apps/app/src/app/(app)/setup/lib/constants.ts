@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { Step } from './types';
 
-export const STORAGE_KEY = 'onboarding_answers';
-
 export const companyDetailsSchema = z.object({
   frameworkIds: z.array(z.string()).min(1, 'Please select at least one framework'),
   organizationName: z.string().min(2, 'Organization name must be at least 2 characters'),

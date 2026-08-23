@@ -3,7 +3,7 @@
  * Defined locally because the API's Prisma client hasn't been regenerated with
  * the timeline schema yet. Values MUST stay in sync with the Prisma enum.
  */
-export const PhaseCompletionType = {
+const PhaseCompletionType = {
   AUTO_TASKS: 'AUTO_TASKS',
   AUTO_POLICIES: 'AUTO_POLICIES',
   AUTO_PEOPLE: 'AUTO_PEOPLE',
@@ -50,7 +50,7 @@ export interface DefaultTimelineTemplate {
   phases: DefaultPhaseTemplate[];
 }
 
-export const DEFAULT_TIMELINE_TEMPLATES: DefaultTimelineTemplate[] = [
+const DEFAULT_TIMELINE_TEMPLATES: DefaultTimelineTemplate[] = [
   // SOC 2 Type 1 - quick point-in-time snapshot (cycle 1)
   {
     frameworkName: 'SOC 2',
@@ -78,7 +78,8 @@ export const DEFAULT_TIMELINE_TEMPLATES: DefaultTimelineTemplate[] = [
       },
       {
         name: 'People',
-        description: 'Ensure all employees complete security training and acknowledgements.',
+        description:
+          'Ensure all employees complete security training and acknowledgements.',
         groupLabel: 'Preparing for Audit',
         orderIndex: 2,
         defaultDurationWeeks: 2,
@@ -119,8 +120,7 @@ export const DEFAULT_TIMELINE_TEMPLATES: DefaultTimelineTemplate[] = [
     phases: [
       {
         name: 'Policies',
-        description:
-          'Review and publish all required compliance policies.',
+        description: 'Review and publish all required compliance policies.',
         groupLabel: 'Preparing for Audit',
         orderIndex: 0,
         defaultDurationWeeks: 3,
@@ -188,8 +188,7 @@ export const DEFAULT_TIMELINE_TEMPLATES: DefaultTimelineTemplate[] = [
     phases: [
       {
         name: 'Policies',
-        description:
-          'Review and publish all required compliance policies.',
+        description: 'Review and publish all required compliance policies.',
         groupLabel: 'Preparing for Audit',
         orderIndex: 0,
         defaultDurationWeeks: 3,
@@ -291,8 +290,7 @@ export const DEFAULT_TIMELINE_TEMPLATES: DefaultTimelineTemplate[] = [
     phases: [
       {
         name: 'Evidence Gathering',
-        description:
-          'Complete all platform tasks and employee requirements.',
+        description: 'Complete all platform tasks and employee requirements.',
         orderIndex: 0,
         defaultDurationWeeks: 8,
         completionType: PhaseCompletionType.AUTO_TASKS,
@@ -334,8 +332,7 @@ export const DEFAULT_TIMELINE_TEMPLATES: DefaultTimelineTemplate[] = [
       },
       {
         name: 'Review',
-        description:
-          'We review your compliance and address any findings.',
+        description: 'We review your compliance and address any findings.',
         orderIndex: 1,
         defaultDurationWeeks: 2,
         completionType: PhaseCompletionType.MANUAL,
@@ -369,8 +366,7 @@ export const DEFAULT_TIMELINE_TEMPLATES: DefaultTimelineTemplate[] = [
       },
       {
         name: 'Review',
-        description:
-          'We review your compliance and address any findings.',
+        description: 'We review your compliance and address any findings.',
         orderIndex: 1,
         defaultDurationWeeks: 2,
         completionType: PhaseCompletionType.MANUAL,
@@ -407,21 +403,24 @@ export const GENERIC_DEFAULT_TIMELINE_TEMPLATE: DefaultTimelineTemplate = {
     },
     {
       name: 'Evidence Collection',
-      description: 'Collect required evidence and complete implementation tasks.',
+      description:
+        'Collect required evidence and complete implementation tasks.',
       orderIndex: 1,
       defaultDurationWeeks: 6,
       completionType: PhaseCompletionType.MANUAL,
     },
     {
       name: 'Internal Review',
-      description: 'Validate readiness and resolve open findings before external review.',
+      description:
+        'Validate readiness and resolve open findings before external review.',
       orderIndex: 2,
       defaultDurationWeeks: 2,
       completionType: PhaseCompletionType.MANUAL,
     },
     {
       name: 'Final Report',
-      description: 'Upload final attestation, report, or certification deliverable.',
+      description:
+        'Upload final attestation, report, or certification deliverable.',
       orderIndex: 3,
       defaultDurationWeeks: 1,
       completionType: PhaseCompletionType.AUTO_UPLOAD,
@@ -458,7 +457,9 @@ export function getDefaultTemplateForCycle(
   const trackKey = options?.trackKey;
   const templatesForFramework = getDefaultTemplatesForFramework(frameworkName);
   const trackScopedTemplates = trackKey
-    ? templatesForFramework.filter((t) => (t.trackKey ?? 'primary') === trackKey)
+    ? templatesForFramework.filter(
+        (t) => (t.trackKey ?? 'primary') === trackKey,
+      )
     : templatesForFramework;
   const templates =
     trackScopedTemplates.length > 0
@@ -472,7 +473,9 @@ export function getDefaultTemplateForCycle(
     }
     return {
       ...GENERIC_DEFAULT_TIMELINE_TEMPLATE,
-      phases: GENERIC_DEFAULT_TIMELINE_TEMPLATE.phases.map((phase) => ({ ...phase })),
+      phases: GENERIC_DEFAULT_TIMELINE_TEMPLATE.phases.map((phase) => ({
+        ...phase,
+      })),
     };
   }
 

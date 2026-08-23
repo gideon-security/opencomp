@@ -9,7 +9,7 @@ export const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024; // 100MB
 export const SIGNED_URL_EXPIRATION_SECONDS = 3600; // 1 hour
 
 // MIME types that can be viewed inline in browser
-export const VIEWABLE_MIME_TYPES = [
+const VIEWABLE_MIME_TYPES = [
   'application/pdf',
   'image/png',
   'image/jpeg',

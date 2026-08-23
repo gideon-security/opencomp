@@ -35,7 +35,7 @@ export function metricValidationMessages({
 }
 
 /** The period keys of a metric's existing measurements. */
-export function measuredKeys(metric: IsmsMetric): Set<string> {
+function measuredKeys(metric: IsmsMetric): Set<string> {
   const keys = new Set<string>();
   for (const measurement of metric.measurements) {
     const key = toPeriodKey(measurement.periodStart);

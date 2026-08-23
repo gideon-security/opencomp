@@ -12,16 +12,10 @@ export interface TaskAutomationScript {
   key: string;
 }
 
-export interface TaskAutomationScriptItem {
+interface TaskAutomationScriptItem {
   key: string;
   lastModified: string;
   size: number;
-}
-
-export interface TaskAutomationScriptsListResponse {
-  success: boolean;
-  items: TaskAutomationScriptItem[];
-  count: number;
 }
 
 // ============================================================================
@@ -40,14 +34,6 @@ export interface TaskAutomationExecutionResult {
   evaluationReason?: string;
 }
 
-export interface TaskAutomationTestResult {
-  status: 'success' | 'error';
-  message?: string;
-  data?: any;
-  error?: string;
-  logs?: string[];
-}
-
 // ============================================================================
 // Analyze Types
 // ============================================================================
@@ -55,15 +41,7 @@ export interface TaskAutomationTestResult {
 export type AnalyzeStepType = 'trigger' | 'action' | 'condition' | 'output';
 
 export type AnalyzeIconType =
-  | 'start'
-  | 'fetch'
-  | 'login'
-  | 'check'
-  | 'process'
-  | 'filter'
-  | 'notify'
-  | 'complete'
-  | 'error';
+  'start' | 'fetch' | 'login' | 'check' | 'process' | 'filter' | 'notify' | 'complete' | 'error';
 
 export interface TaskAutomationAnalyzeStep {
   id: string;
@@ -94,13 +72,6 @@ export interface TaskAutomationUploadRequest {
   taskId: string;
   content: string;
   type: string;
-}
-
-export interface TaskAutomationUploadResponse {
-  success: boolean;
-  bucket: string;
-  key: string;
-  message: string;
 }
 
 export interface TaskAutomationExecuteRequest {
@@ -136,11 +107,6 @@ export interface UseTaskAutomationScriptOptions {
   enabled?: boolean;
 }
 
-export interface UseTaskAutomationScriptsListOptions {
-  orgId: string;
-  refreshInterval?: number;
-}
-
 export interface UseTaskAutomationExecutionOptions {
   onSuccess?: (result: TaskAutomationExecutionResult) => void;
   onError?: (error: Error) => void;
@@ -149,22 +115,4 @@ export interface UseTaskAutomationExecutionOptions {
 export interface UseTaskAutomationAnalyzeOptions {
   scriptContent?: string;
   enabled?: boolean;
-}
-
-// ============================================================================
-// Component Props Types
-// ============================================================================
-
-export interface TaskAutomationTesterProps {
-  className?: string;
-  orgId: string;
-}
-
-export interface TaskAutomationAnalyzeVisualizerProps {
-  className?: string;
-}
-
-export interface TaskAutomationScriptInitializerProps {
-  orgId: string;
-  taskId: string;
 }

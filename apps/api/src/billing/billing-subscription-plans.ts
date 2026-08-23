@@ -11,21 +11,6 @@ import {
 import { BillingEntitlementsService } from './billing-entitlements.service';
 import { StripeService } from '../stripe/stripe.service';
 
-export async function findActiveProductSubscription(params: {
-  organizationId: string;
-  productKey: BillingProductKey;
-}) {
-  const subscriptions = await findProductSubscriptions(params);
-  return (
-    subscriptions.find((subscription) => {
-      return (
-        subscription.stripeStatus === 'active' ||
-        subscription.stripeStatus === 'trialing'
-      );
-    }) ?? null
-  );
-}
-
 export async function findProductSubscriptions(params: {
   organizationId: string;
   productKey: BillingProductKey;

@@ -98,7 +98,7 @@ export function AccountRunGroups({
 }
 
 // Group runs by date for display
-export function GroupedCheckRuns({
+function GroupedCheckRuns({
   runs,
   maxRuns = 5,
   organizationName,
@@ -358,9 +358,7 @@ export function CheckRunItem({
                   </button>
                 )}
                 {moreFindings > 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    +{moreFindings} more issues
-                  </p>
+                  <p className="text-sm text-muted-foreground">+{moreFindings} more issues</p>
                 )}
               </div>
             )}
@@ -374,9 +372,7 @@ export function CheckRunItem({
                   return (
                     <div key={finding.id}>
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-sm font-medium text-muted-foreground">
-                          {finding.title}
-                        </p>
+                        <p className="text-sm font-medium text-muted-foreground">{finding.title}</p>
                         <Badge variant="outline" className="text-xs">
                           Out of scope
                         </Badge>
@@ -424,9 +420,7 @@ export function CheckRunItem({
                   </button>
                 )}
                 {moreExcepted > 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    +{moreExcepted} more out of scope
-                  </p>
+                  <p className="text-sm text-muted-foreground">+{moreExcepted} more out of scope</p>
                 )}
               </div>
             )}
@@ -464,9 +458,7 @@ export function CheckRunItem({
                     </div>
                   ))}
                   {morePassing > 0 && (
-                    <p className="text-sm text-muted-foreground">
-                      +{morePassing} more passed
-                    </p>
+                    <p className="text-sm text-muted-foreground">+{morePassing} more passed</p>
                   )}
                 </div>
               </details>

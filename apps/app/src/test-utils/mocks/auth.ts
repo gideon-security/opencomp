@@ -69,7 +69,7 @@ export const createMockUser = (overrides?: Partial<User>): User => ({
 });
 
 // Mock member data
-export const createMockMember = (overrides?: Partial<Member>): Member => ({
+const createMockMember = (overrides?: Partial<Member>): Member => ({
   id: 'member_test123',
   userId: 'user_test123',
   organizationId: 'org_test123',

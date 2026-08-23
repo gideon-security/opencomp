@@ -77,19 +77,14 @@ function isCustomerVisibleEvent(event: PentestEvent): boolean {
   return true;
 }
 
-export type PentestReportStatus =
-  | 'provisioning'
-  | 'cloning'
-  | 'running'
-  | 'completed'
-  | 'failed'
-  | 'cancelled';
+type PentestReportStatus =
+  'provisioning' | 'cloning' | 'running' | 'completed' | 'failed' | 'cancelled';
 
 // Alias the SDK progress type so callers inside this module don't import from
 // the SDK directly.
-export type PentestProgress = MacedPentestProgress;
+type PentestProgress = MacedPentestProgress;
 
-export interface SecurityPenetrationTest {
+interface SecurityPenetrationTest {
   id: string;
   targetUrl: string;
   repoUrl?: string | null;
@@ -108,7 +103,7 @@ export interface SecurityPenetrationTest {
   checks?: PentestCheck[];
 }
 
-export interface BinaryArtifact {
+interface BinaryArtifact {
   buffer: Buffer;
   contentType: string;
   contentDisposition?: string | null;
@@ -193,7 +188,7 @@ const ORIGINAL_RUN_LINEAGE: RunLineage = {
  * module does not provide it, so production construction falls back to the
  * env-configured client).
  */
-export const MACED_PENTEST_CLIENT = 'MACED_PENTEST_CLIENT';
+const MACED_PENTEST_CLIENT = 'MACED_PENTEST_CLIENT';
 
 function createUnconfiguredMacedClient(): MacedClient {
   const client: MacedClient = Object.create(MacedClient.prototype);

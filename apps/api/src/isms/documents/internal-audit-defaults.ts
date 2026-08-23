@@ -24,7 +24,7 @@ export const DEFAULT_AUDIT_CRITERIA =
  * The bracketed verdict choices in the conclusion template: "Overall, this
  * audit found the ISMS to [...] to ISO/IEC 27001:2022."
  */
-export const CONCLUSION_VERDICT_TEXT: Record<string, string> = {
+const CONCLUSION_VERDICT_TEXT: Record<string, string> = {
   conform: 'conform',
   substantially_conform:
     'substantially conform with the non-conformities recorded below',
@@ -65,7 +65,8 @@ export const SEED_AUDIT_CONTROL_DEFINITIONS: SeedAuditControlDefinition[] = [
     controlRef: 'Clause 5.2 Policy',
     whatWasTested:
       'Whether the information security policy is documented, approved, and communicated.',
-    whereToFind: 'OpenComp > Policies > Information Security & Privacy Governance',
+    whereToFind:
+      'OpenComp > Policies > Information Security & Privacy Governance',
   },
   {
     controlKey: 'clause_6_1_risk',

@@ -1,13 +1,8 @@
+import { LEVEL_COLOR, LEVEL_LABEL, getRiskLevelFromScore, getRiskScore } from '@/lib/risk-score';
 import { cn } from '@/lib/utils';
-import {
-  LEVEL_COLOR,
-  LEVEL_LABEL,
-  getRiskLevelFromScore,
-  getRiskScore,
-} from '@/lib/risk-score';
 import type { Impact, Likelihood } from '@db';
 
-export interface RiskScoreBadgeProps {
+interface RiskScoreBadgeProps {
   /**
    * Provide a precomputed 1-10 score directly, or pass `likelihood` + `impact`
    * to have the badge derive it via `getRiskScore`. The score-derived path is

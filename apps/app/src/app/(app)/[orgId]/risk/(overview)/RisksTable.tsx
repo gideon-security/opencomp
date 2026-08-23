@@ -15,9 +15,8 @@ import {
   previewResidual,
   suggestedResidual,
 } from '@/lib/suggested-residual';
-import { TaskStatus } from '@db';
 import type { Member, User } from '@db';
-import { Risk as RiskType } from '@db';
+import { Risk as RiskType, TaskStatus } from '@db';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -60,10 +59,7 @@ import { OverflowMenuVertical, Search, TrashCan } from '@trycompai/design-system
 import { ArrowDown, ArrowUp, ArrowUpDown, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import {
-  parseAsString,
-  useQueryState,
-} from 'nuqs';
+import { parseAsString, useQueryState } from 'nuqs';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { RiskOnboardingProvider } from './components/risk-onboarding-context';
@@ -112,7 +108,6 @@ function currentSeverityScore(risk: {
     completion,
   });
 }
-
 
 export type RiskListTranslator = ReturnType<typeof useTranslations<'risk'>>;
 
@@ -202,10 +197,7 @@ export const RisksTable = ({
 
   // Read current search params from URL
   const [title, setTitle] = useQueryState('title', parseAsString.withDefault(''));
-  const [statusFilter, setStatusFilter] = useQueryState(
-    'status',
-    parseAsString.withDefault(''),
-  );
+  const [statusFilter, setStatusFilter] = useQueryState('status', parseAsString.withDefault(''));
   const [assigneeFilter, setAssigneeFilter] = useQueryState(
     'assignee',
     parseAsString.withDefault(''),
@@ -240,7 +232,7 @@ export const RisksTable = ({
       ...(assigneeFilter && { assigneeId: assigneeFilter }),
       ...(currentSort && {
         sort: currentSort.id,
-        sortDirection: currentSort.desc ? 'desc' as const : 'asc' as const,
+        sortDirection: currentSort.desc ? ('desc' as const) : ('asc' as const),
       }),
     };
   }, [page, perPage, title, statusFilter, assigneeFilter, sort, fetchAllForSeverity]);
@@ -470,9 +462,7 @@ export const RisksTable = ({
   const isEmpty = mergedRisks.length === 0;
   const showEmptyState = isEmpty && onboardingRunId && isActive;
   const emptyTitle = title ? t('list.noRisksFound') : t('list.noRisksYet');
-  const emptyDescription = title
-    ? t('list.tryAdjustingSearch')
-    : t('list.createFirstRisk');
+  const emptyDescription = title ? t('list.tryAdjustingSearch') : t('list.createFirstRisk');
   const pageSizeOptions = [10, 25, 50, 100];
 
   if (showEmptyState) {
@@ -506,9 +496,7 @@ export const RisksTable = ({
               <SelectTrigger>
                 <SelectValue placeholder={t('list.severity')}>
                   {(value: string) =>
-                    value && value !== 'all'
-                      ? severityLabel(t, value)
-                      : t('list.allSeverities')
+                    value && value !== 'all' ? severityLabel(t, value) : t('list.allSeverities')
                   }
                 </SelectValue>
               </SelectTrigger>
@@ -530,9 +518,7 @@ export const RisksTable = ({
               <SelectTrigger>
                 <SelectValue placeholder={tCommon('common.status')}>
                   {(value: string) =>
-                    value && value !== 'all'
-                      ? statusLabel(t, value)
-                      : t('list.allStatuses')
+                    value && value !== 'all' ? statusLabel(t, value) : t('list.allStatuses')
                   }
                 </SelectValue>
               </SelectTrigger>
@@ -607,11 +593,17 @@ export const RisksTable = ({
                 {assessmentProgress
                   ? assessmentProgress.completed === 0
                     ? t('list.analyzingOrg')
-                    : t('list.risksAssessed', { completed: assessmentProgress.completed, total: assessmentProgress.total })
+                    : t('list.risksAssessed', {
+                        completed: assessmentProgress.completed,
+                        total: assessmentProgress.total,
+                      })
                   : progress
                     ? progress.completed === 0
                       ? t('list.analyzingOrg')
-                      : t('list.risksCreated', { completed: progress.completed, total: progress.total })
+                      : t('list.risksCreated', {
+                          completed: progress.completed,
+                          total: progress.total,
+                        })
                     : t('list.analyzingOrg')}
               </span>
             </div>
@@ -641,121 +633,123 @@ export const RisksTable = ({
               },
             }}
           >
-              <TableHeader>
-                <TableRow>
-                  <TableHead>
-                    <button
-                      type="button"
-                      onClick={() => handleSort('title')}
-                      className="flex items-center hover:text-foreground"
-                    >
-                      {t('list.headerRisk')}
-                      {getSortIcon('title')}
-                    </button>
-                  </TableHead>
-                  <TableHead>{t('list.headerSeverity')}</TableHead>
-                  <TableHead>{t('list.headerInherentRisk')}</TableHead>
-                  <TableHead>{t('list.headerCurrentRisk')}</TableHead>
-                  <TableHead>{t('list.headerStatus')}</TableHead>
-                  <TableHead>{t('list.headerOwner')}</TableHead>
-                  <TableHead>
-                    <button
-                      type="button"
-                      onClick={() => handleSort('updatedAt')}
-                      className="flex items-center hover:text-foreground"
-                    >
-                      {t('list.headerUpdated')}
-                      {getSortIcon('updatedAt')}
-                    </button>
-                  </TableHead>
-                  {hasPermission('risk', 'delete') && <TableHead>{t('list.headerActions')}</TableHead>}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {mergedRisks.map((risk) => {
-                  const blocked = isRowBlocked(risk);
-                  return (
-                    <TableRow
-                      key={risk.id}
-                      onClick={() => !blocked && handleRowClick(risk.id)}
-                      style={{ cursor: blocked ? 'default' : 'pointer' }}
-                      data-state={blocked ? 'disabled' : undefined}
-                    >
+            <TableHeader>
+              <TableRow>
+                <TableHead>
+                  <button
+                    type="button"
+                    onClick={() => handleSort('title')}
+                    className="flex items-center hover:text-foreground"
+                  >
+                    {t('list.headerRisk')}
+                    {getSortIcon('title')}
+                  </button>
+                </TableHead>
+                <TableHead>{t('list.headerSeverity')}</TableHead>
+                <TableHead>{t('list.headerInherentRisk')}</TableHead>
+                <TableHead>{t('list.headerCurrentRisk')}</TableHead>
+                <TableHead>{t('list.headerStatus')}</TableHead>
+                <TableHead>{t('list.headerOwner')}</TableHead>
+                <TableHead>
+                  <button
+                    type="button"
+                    onClick={() => handleSort('updatedAt')}
+                    className="flex items-center hover:text-foreground"
+                  >
+                    {t('list.headerUpdated')}
+                    {getSortIcon('updatedAt')}
+                  </button>
+                </TableHead>
+                {hasPermission('risk', 'delete') && (
+                  <TableHead>{t('list.headerActions')}</TableHead>
+                )}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {mergedRisks.map((risk) => {
+                const blocked = isRowBlocked(risk);
+                return (
+                  <TableRow
+                    key={risk.id}
+                    onClick={() => !blocked && handleRowClick(risk.id)}
+                    style={{ cursor: blocked ? 'default' : 'pointer' }}
+                    data-state={blocked ? 'disabled' : undefined}
+                  >
+                    <TableCell>
+                      <HStack gap="2" align="center">
+                        {blocked && <Spinner />}
+                        <Text>{risk.title}</Text>
+                      </HStack>
+                    </TableCell>
+                    {(() => {
+                      // Three score columns paint the before-vs-now picture:
+                      //   SEVERITY = current treatment-aware level (text).
+                      //   INHERENT = raw score before treatment, fixed.
+                      //   CURRENT  = treatment-aware score interpolated by
+                      //              linked-task completion. Named "Current"
+                      //              (not "Residual") because the canonical
+                      //              residual is the *target* score at 100%
+                      //              completion — what's shown here moves
+                      //              with progress and matches the hero's
+                      //              "Currently X/10" subline.
+                      // SEVERITY is plain text and CURRENT carries the
+                      // colored chip so we don't double-paint the band.
+                      const inherentScore = getRiskScore(risk.likelihood, risk.impact).score;
+                      const score = currentSeverityScore(risk);
+                      const level = getRiskLevelFromScore(score);
+                      return (
+                        <>
+                          <TableCell>
+                            <Text>{severityLabel(t, level)}</Text>
+                          </TableCell>
+                          <TableCell>
+                            <RiskScoreBadge score={inherentScore} />
+                          </TableCell>
+                          <TableCell>
+                            <RiskScoreBadge score={score} />
+                          </TableCell>
+                        </>
+                      );
+                    })()}
+                    <TableCell>{getStatusBadge(risk.status, t)}</TableCell>
+                    <TableCell>
+                      <Text>{risk.assignee?.user?.name || t('list.unassigned')}</Text>
+                    </TableCell>
+                    <TableCell>
+                      <Text>{formatDate(risk.updatedAt)}</Text>
+                    </TableCell>
+                    {hasPermission('risk', 'delete') && (
                       <TableCell>
-                        <HStack gap="2" align="center">
-                          {blocked && <Spinner />}
-                          <Text>{risk.title}</Text>
-                        </HStack>
-                      </TableCell>
-                      {(() => {
-                        // Three score columns paint the before-vs-now picture:
-                        //   SEVERITY = current treatment-aware level (text).
-                        //   INHERENT = raw score before treatment, fixed.
-                        //   CURRENT  = treatment-aware score interpolated by
-                        //              linked-task completion. Named "Current"
-                        //              (not "Residual") because the canonical
-                        //              residual is the *target* score at 100%
-                        //              completion — what's shown here moves
-                        //              with progress and matches the hero's
-                        //              "Currently X/10" subline.
-                        // SEVERITY is plain text and CURRENT carries the
-                        // colored chip so we don't double-paint the band.
-                        const inherentScore = getRiskScore(risk.likelihood, risk.impact).score;
-                        const score = currentSeverityScore(risk);
-                        const level = getRiskLevelFromScore(score);
-                        return (
-                          <>
-                            <TableCell>
-                              <Text>{severityLabel(t, level)}</Text>
-                            </TableCell>
-                            <TableCell>
-                              <RiskScoreBadge score={inherentScore} />
-                            </TableCell>
-                            <TableCell>
-                              <RiskScoreBadge score={score} />
-                            </TableCell>
-                          </>
-                        );
-                      })()}
-                      <TableCell>{getStatusBadge(risk.status, t)}</TableCell>
-                      <TableCell>
-                        <Text>{risk.assignee?.user?.name || t('list.unassigned')}</Text>
-                      </TableCell>
-                      <TableCell>
-                        <Text>{formatDate(risk.updatedAt)}</Text>
-                      </TableCell>
-                      {hasPermission('risk', 'delete') && (
-                        <TableCell>
-                          <div className="flex justify-center">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger
-                                variant="ellipsis"
-                                disabled={blocked}
-                                onClick={(e) => e.stopPropagation()}
+                        <div className="flex justify-center">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger
+                              variant="ellipsis"
+                              disabled={blocked}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <OverflowMenuVertical />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                variant="destructive"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteClick(risk);
+                                }}
                               >
-                                <OverflowMenuVertical />
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem
-                                  variant="destructive"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteClick(risk);
-                                  }}
-                                >
-                                  <TrashCan size={16} />
-                                  {tCommon('common.delete')}
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                                <TrashCan size={16} />
+                                {tCommon('common.delete')}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         )}
 
         {/* Delete Confirmation Dialog */}
@@ -768,7 +762,9 @@ export const RisksTable = ({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={isDeleting}>{tCommon('common.cancel')}</AlertDialogCancel>
+              <AlertDialogCancel disabled={isDeleting}>
+                {tCommon('common.cancel')}
+              </AlertDialogCancel>
               <AlertDialogAction
                 variant="destructive"
                 onClick={handleConfirmDelete}

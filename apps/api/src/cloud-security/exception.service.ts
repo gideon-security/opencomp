@@ -12,9 +12,9 @@ import { resolveCheckKey } from './check-definition.utils';
 /** Minimum chars for an exception reason — meant to discourage low-effort
  * reasons like "ok" or "test". Auditors rely on this field as the
  * documentation for why the finding isn't being fixed. */
-export const MIN_EXCEPTION_REASON_LENGTH = 20;
+const MIN_EXCEPTION_REASON_LENGTH = 20;
 
-export interface MarkExceptionInput {
+interface MarkExceptionInput {
   findingId: string;
   organizationId: string;
   /** User to attribute the mutation to. For session callers this is the

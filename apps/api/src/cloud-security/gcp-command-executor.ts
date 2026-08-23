@@ -7,7 +7,7 @@ const MAX_POLL_MS = 120_000;
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
-export interface GcpApiStep {
+interface GcpApiStep {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   url: string;
   body?: Record<string, unknown>;
@@ -20,7 +20,7 @@ interface GcpStepResult {
   output: Record<string, unknown>;
 }
 
-export interface GcpExecutionResult {
+interface GcpExecutionResult {
   results: GcpStepResult[];
   error?: {
     stepIndex: number;
@@ -215,9 +215,14 @@ async function executeOnce(
   }
 
   logger.log(`${step.method} ${url} — ${step.purpose}`);
-  if (effectiveBody && (step.method === 'POST' || step.method === 'PUT' || step.method === 'PATCH')) {
+  if (
+    effectiveBody &&
+    (step.method === 'POST' || step.method === 'PUT' || step.method === 'PATCH')
+  ) {
     const bodyStr = JSON.stringify(effectiveBody);
-    logger.debug(`  Body (${bodyStr.length} chars): ${bodyStr.substring(0, 2000)}${bodyStr.length > 2000 ? '...' : ''}`);
+    logger.debug(
+      `  Body (${bodyStr.length} chars): ${bodyStr.substring(0, 2000)}${bodyStr.length > 2000 ? '...' : ''}`,
+    );
   }
 
   const response = await fetch(url, {
@@ -386,8 +391,7 @@ async function waitForOperation(
     if (updated.status === 'DONE') {
       if (updated.error) {
         const errors = (updated.error as Record<string, unknown>).errors as
-          | Array<{ message: string }>
-          | undefined;
+          Array<{ message: string }> | undefined;
         if (errors?.length) {
           throw new Error(`GCP operation failed: ${errors[0].message}`);
         }
@@ -413,7 +417,9 @@ export function validateGcpPlanSteps(steps: GcpApiStep[]): string[] {
     if (!step.method) errors.push(`Step ${i + 1}: method is required`);
     // POST/PUT/PATCH to mutation endpoints must have a body
     if (
-      (step.method === 'POST' || step.method === 'PUT' || step.method === 'PATCH') &&
+      (step.method === 'POST' ||
+        step.method === 'PUT' ||
+        step.method === 'PATCH') &&
       !step.url.includes(':getIamPolicy') &&
       !step.url.includes('/stop') &&
       !step.url.includes('/start') &&

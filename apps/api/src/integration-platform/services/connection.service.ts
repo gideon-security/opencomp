@@ -11,7 +11,7 @@ import { ProviderRepository } from '../repositories/provider.repository';
 import { ConnectionAuthTeardownService } from './connection-auth-teardown.service';
 import type { IntegrationConnection, IntegrationConnectionStatus } from '@db';
 
-export interface CreateConnectionInput {
+interface CreateConnectionInput {
   providerSlug: string;
   organizationId: string;
   authStrategy: string;
@@ -286,8 +286,7 @@ export class ConnectionService {
 
     if (!hasCustom && !hasApp) return 'todo';
 
-    const allPassing =
-      (!hasCustom || customPassing) && (!hasApp || appPassing);
+    const allPassing = (!hasCustom || customPassing) && (!hasApp || appPassing);
     return allPassing ? 'done' : 'failed';
   }
 

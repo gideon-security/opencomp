@@ -21,7 +21,7 @@ import { LEVEL_LABEL, ratingLevel, type RiskLevel } from './risk-level';
 // the residual score changes, the acceptance needs re-recording; older events
 // stay in the history as the audit trail.
 
-export interface RiskAcceptanceView {
+interface RiskAcceptanceView {
   id: string;
   acceptedById: string | null;
   acceptedByName: string;

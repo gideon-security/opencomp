@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { db } from '@db';
 import type { IntegrationOAuthApp, Prisma } from '@db';
 
-export interface CreateOAuthAppDto {
+interface CreateOAuthAppDto {
   providerSlug: string;
   organizationId: string;
   encryptedClientId: object;
@@ -11,7 +11,7 @@ export interface CreateOAuthAppDto {
   customSettings?: Prisma.InputJsonValue;
 }
 
-export interface UpdateOAuthAppDto {
+interface UpdateOAuthAppDto {
   encryptedClientId?: object;
   encryptedClientSecret?: object;
   customScopes?: string[];

@@ -10,7 +10,7 @@
  *                  truncated run that must NOT be reported as success (CS-256).
  * - 'done':        completed with real content.
  */
-export type ProposalCardState = 'interrupted' | 'working' | 'error' | 'incomplete' | 'done';
+type ProposalCardState = 'interrupted' | 'working' | 'error' | 'incomplete' | 'done';
 
 export function getProposalCardState(
   toolState: string,

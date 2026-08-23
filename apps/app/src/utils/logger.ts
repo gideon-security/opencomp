@@ -155,6 +155,3 @@ export const logger = {
     console.error('[ERROR]', message, formatParams(params));
   },
 };
-
-// Export the validator class for advanced usage if needed
-export { LoggerValidatorLayer };

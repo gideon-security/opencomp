@@ -10,7 +10,7 @@ import { randomBytes } from 'node:crypto';
 import { hashApiKeyCurrent, matchesStoredKey } from './api-key-hash';
 
 /** Result from validating an API key */
-export interface ApiKeyValidationResult {
+interface ApiKeyValidationResult {
   /** API key row primary key — exposed on the request so downstream
    *  attribution logic (audit logs, owner-fallback resolver) can reference
    *  the exact key used without an extra DB lookup. */
@@ -46,7 +46,6 @@ export class ApiKeyService {
   ): boolean {
     return matchesStoredKey(presentedKey, storedHash, salt);
   }
-
 
   private generateApiKey(): string {
     const apiKey = randomBytes(32).toString('hex');

@@ -15,12 +15,7 @@ interface TimelinePhase {
   endDate: string | null;
   completedAt: string | null;
   completionType:
-    | 'AUTO_TASKS'
-    | 'AUTO_POLICIES'
-    | 'AUTO_PEOPLE'
-    | 'AUTO_FINDINGS'
-    | 'AUTO_UPLOAD'
-    | 'MANUAL';
+    'AUTO_TASKS' | 'AUTO_POLICIES' | 'AUTO_PEOPLE' | 'AUTO_FINDINGS' | 'AUTO_UPLOAD' | 'MANUAL';
   completionPercent?: number;
   readyForReview: boolean;
   readyForReviewAt: string | null;
@@ -58,8 +53,8 @@ interface TimelinesApiResponse {
   count: number;
 }
 
-export const timelinesKey = () => ['/v1/timelines'] as const;
-export const timelineKey = (id: string) => ['/v1/timelines', id] as const;
+const timelinesKey = () => ['/v1/timelines'] as const;
+const timelineKey = (id: string) => ['/v1/timelines', id] as const;
 
 interface UseTimelinesOptions {
   initialData?: Timeline[];
@@ -71,8 +66,7 @@ export function useTimelines(options?: UseTimelinesOptions) {
   const { data, error, isLoading, mutate } = useSWR(
     timelinesKey(),
     async () => {
-      const response =
-        await apiClient.get<TimelinesApiResponse>('/v1/timelines');
+      const response = await apiClient.get<TimelinesApiResponse>('/v1/timelines');
       if (response.error) throw new Error(response.error);
       if (!response.data?.data) return [];
       return response.data.data;
@@ -94,29 +88,6 @@ export function useTimelines(options?: UseTimelinesOptions) {
   };
 }
 
-export function useTimeline(id: string | null) {
-  const { data, error, isLoading, mutate } = useSWR(
-    id ? timelineKey(id) : null,
-    async () => {
-      const response = await apiClient.get<Timeline>(
-        `/v1/timelines/${id}`,
-      );
-      if (response.error) throw new Error(response.error);
-      return response.data ?? null;
-    },
-    {
-      revalidateOnFocus: false,
-    },
-  );
-
-  return {
-    timeline: data ?? null,
-    isLoading: isLoading && !data,
-    error,
-    mutate,
-  };
-}
-
 export async function markPhaseReadyForReview({
   timelineId,
   phaseId,
@@ -124,9 +95,7 @@ export async function markPhaseReadyForReview({
   timelineId: string;
   phaseId: string;
 }) {
-  const response = await apiClient.post(
-    `/v1/timelines/${timelineId}/phases/${phaseId}/ready`,
-  );
+  const response = await apiClient.post(`/v1/timelines/${timelineId}/phases/${phaseId}/ready`);
   if (response.error) throw new Error(response.error);
   return response.data;
 }

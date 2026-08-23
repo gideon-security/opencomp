@@ -24,5 +24,3 @@ export const UpdateVendorTrustSettingsSchema = z.object({
 export type UpdateVendorTrustSettingsDto = z.infer<
   typeof UpdateVendorTrustSettingsSchema
 >;
-
-export type ComplianceBadge = z.infer<typeof ComplianceBadgeSchema>;

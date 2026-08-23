@@ -6,7 +6,7 @@ import { isAutoLaunchEnabled, setAutoLaunch } from './auto-launch';
 import { log } from './logger';
 import { getPortalUrl } from './store';
 
-export type AutoUpdateStatus = 'downloading' | 'ready' | 'update-available' | null;
+type AutoUpdateStatus = 'downloading' | 'ready' | 'update-available' | null;
 
 let tray: Tray | null = null;
 let statusWindow: BrowserWindow | null = null;

@@ -11,7 +11,7 @@ const OP_INTEGRATION_VERSION = '1.0.0';
 const logger = new Logger('OnePasswordClient');
 let clientPromise: Promise<OnePasswordClient> | null = null;
 
-export function getOnePasswordServiceAccountToken(): string | undefined {
+function getOnePasswordServiceAccountToken(): string | undefined {
   const token = process.env.OP_SERVICE_ACCOUNT_TOKEN?.trim();
   return token ? token : undefined;
 }

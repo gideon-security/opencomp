@@ -10,13 +10,13 @@
  * returns the input verbatim as `steps` with empty/null metadata.
  */
 
-export interface ComplianceFramework {
+interface ComplianceFramework {
   standard: string;
   version: string | null;
   ids: string[];
 }
 
-export interface ParsedRemediation {
+interface ParsedRemediation {
   steps: string;
   referenceUrl: string | null;
   compliance: ComplianceFramework[];

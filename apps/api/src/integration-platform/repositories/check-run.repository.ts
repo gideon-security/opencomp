@@ -19,14 +19,14 @@ const MAX_HISTORY_PER_GROUP = 50;
  */
 const DISPLAY_RESULTS_PER_RUN = 30;
 
-export interface CreateCheckRunDto {
+interface CreateCheckRunDto {
   connectionId: string;
   taskId?: string;
   checkId: string;
   checkName: string;
 }
 
-export interface CompleteCheckRunDto {
+interface CompleteCheckRunDto {
   // 'inconclusive' = held our-side/transient failure (dynamic self-heal queue);
   // hidden from the customer and picked up by the agent. See run paths.
   status: 'success' | 'failed' | 'inconclusive';
@@ -38,7 +38,7 @@ export interface CompleteCheckRunDto {
   logs?: Prisma.InputJsonValue;
 }
 
-export interface CreateCheckResultDto {
+interface CreateCheckResultDto {
   checkRunId: string;
   passed: boolean;
   resourceType: string;

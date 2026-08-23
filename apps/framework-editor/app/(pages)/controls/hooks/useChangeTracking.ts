@@ -15,7 +15,12 @@ export interface ControlMutations {
   }) => Promise<{ id: string }>;
   updateControl: (
     id: string,
-    data: { name: string; description: string; controlFamily: string | null; documentTypes: string[] },
+    data: {
+      name: string;
+      description: string;
+      controlFamily: string | null;
+      documentTypes: string[];
+    },
   ) => Promise<unknown>;
   deleteControl: (id: string) => Promise<unknown>;
   /** Persist links picked on uncommitted rows. Optional per page context. */
@@ -24,7 +29,7 @@ export interface ControlMutations {
   linkTaskTemplate?: (controlId: string, taskTemplateId: string) => Promise<unknown>;
 }
 
-export interface ChangeTrackingOptions {
+interface ChangeTrackingOptions {
   /**
    * On a framework's Controls tab the listing only shows controls linked to
    * one of the framework's requirements — committing an unlinked control
@@ -248,9 +253,7 @@ export const useChangeTracking = (
           }
           successfullyCreatedIds.add(tempId);
 
-          setData((prev) =>
-            prev.map((r) => (r.id === tempId ? { ...r, id: newControl.id } : r)),
-          );
+          setData((prev) => prev.map((r) => (r.id === tempId ? { ...r, id: newControl.id } : r)));
         } catch (error) {
           results.errors.push(
             `Failed to create ${row.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,

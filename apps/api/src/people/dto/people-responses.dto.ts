@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BackgroundCheckStatus, Departments } from '@db';
 
-export class BackgroundCheckSummaryDto {
+class BackgroundCheckSummaryDto {
   @ApiProperty({
     description: 'Background check request ID',
     example: 'bcr_abc123def456',

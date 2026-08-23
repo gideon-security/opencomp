@@ -34,9 +34,7 @@ type SOAConfiguration = {
   questions: SOAQuestion[];
 };
 
-export function transformISOConfigToSOA(
-  controls: ISOControl[],
-): SOAConfiguration {
+function transformISOConfigToSOA(controls: ISOControl[]): SOAConfiguration {
   const columns: SOAColumn[] = [
     { name: 'closure', type: 'string' },
     { name: 'title', type: 'string' },

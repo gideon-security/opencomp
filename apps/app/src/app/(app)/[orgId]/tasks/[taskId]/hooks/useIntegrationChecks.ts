@@ -82,10 +82,10 @@ interface CheckRunAttempt {
 
 export type { CheckRunAttempt, StoredCheckRun, TaskIntegrationCheck };
 
-export const integrationChecksKey = (taskId: string, orgId: string) =>
+const integrationChecksKey = (taskId: string, orgId: string) =>
   ['/v1/integrations/tasks/checks', taskId, orgId] as const;
 
-export const integrationRunsKey = (taskId: string, orgId: string) =>
+const integrationRunsKey = (taskId: string, orgId: string) =>
   ['/v1/integrations/tasks/runs', taskId, orgId] as const;
 
 interface UseIntegrationChecksOptions {

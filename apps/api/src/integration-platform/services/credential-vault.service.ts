@@ -49,7 +49,7 @@ export interface EncryptedData {
   [key: string]: string; // Index signature for Prisma JSON compatibility
 }
 
-export interface OAuthTokens {
+interface OAuthTokens {
   access_token: string;
   refresh_token?: string;
   token_type?: string;
@@ -65,7 +65,7 @@ export interface OAuthTokens {
   api_domain?: string;
 }
 
-export interface TokenRefreshConfig {
+interface TokenRefreshConfig {
   tokenUrl: string;
   clientId: string;
   clientSecret: string;
@@ -660,11 +660,7 @@ export class CredentialVaultService {
       }
 
       if (isTerminalOAuthRefreshFailure(first)) {
-        await this.markTerminalTokenRefreshFailure(
-          connectionId,
-          config,
-          first,
-        );
+        await this.markTerminalTokenRefreshFailure(connectionId, config, first);
         return null;
       }
 

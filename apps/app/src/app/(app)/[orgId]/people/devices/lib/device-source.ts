@@ -57,7 +57,7 @@ export const CANONICAL_DEVICE_CHECKS = [
   { id: 'screen_lock', label: 'Screen Lock' },
 ] as const;
 
-export type SourceComplianceVerdict =
+type SourceComplianceVerdict =
   | { kind: 'compliant' }
   | { kind: 'non_compliant' }
   /** SOME canonical checks reported (>= 1), none failed. */
@@ -94,9 +94,7 @@ export function computeSourceComplianceVerdict(
   return {
     kind: 'unverified',
     reported: reportedIds.size,
-    missing: CANONICAL_DEVICE_CHECKS.filter((c) => !reportedIds.has(c.id)).map(
-      (c) => c.label,
-    ),
+    missing: CANONICAL_DEVICE_CHECKS.filter((c) => !reportedIds.has(c.id)).map((c) => c.label),
   };
 }
 

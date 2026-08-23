@@ -1,26 +1,5 @@
 import { type PentestReportStatus, type PentestRun } from '@/lib/security/penetration-tests-client';
 
-export const statusLabel: Record<PentestReportStatus, string> = {
-  provisioning: 'Queued',
-  cloning: 'Preparing',
-  running: 'Running',
-  completed: 'Completed',
-  failed: 'Failed',
-  cancelled: 'Cancelled',
-};
-
-export const statusVariant: Record<
-  PentestReportStatus,
-  'default' | 'destructive' | 'warning' | 'success'
-> = {
-  provisioning: 'warning',
-  cloning: 'warning',
-  running: 'warning',
-  completed: 'success',
-  failed: 'destructive',
-  cancelled: 'destructive',
-};
-
 export const isReportInProgress = (status: PentestReportStatus): boolean => {
   return status === 'provisioning' || status === 'cloning' || status === 'running';
 };

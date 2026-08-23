@@ -3,16 +3,16 @@
 import { useApi } from '@/hooks/use-api';
 import { useApiSWR, UseApiSWROptions } from '@/hooks/use-api-swr';
 import { ApiResponse } from '@/lib/api-client';
-import { useCallback } from 'react';
 import type {
-  VendorCategory,
-  VendorStatus,
-  Likelihood,
   Impact,
+  Likelihood,
   Prisma,
   RiskTreatmentType,
   TaskStatus,
+  VendorCategory,
+  VendorStatus,
 } from '@db';
+import { useCallback } from 'react';
 
 export interface VendorLinkedTask {
   id: string;
@@ -56,7 +56,7 @@ export interface Vendor {
   updatedAt: string;
 }
 
-export interface VendorsResponse {
+interface VendorsResponse {
   data: Vendor[];
   count: number;
 }
@@ -95,12 +95,12 @@ interface UpdateVendorData {
   treatmentStrategyDescription?: string | null;
 }
 
-export interface UseVendorsOptions extends UseApiSWROptions<VendorsResponse> {
+interface UseVendorsOptions extends UseApiSWROptions<VendorsResponse> {
   /** Initial data from server for hydration - avoids loading state on first render */
   initialData?: Vendor[];
 }
 
-export interface UseVendorOptions extends UseApiSWROptions<VendorResponse> {
+interface UseVendorOptions extends UseApiSWROptions<VendorResponse> {
   /** Initial data from server for hydration - avoids loading state on first render */
   initialData?: VendorResponse;
 }
@@ -108,11 +108,11 @@ export interface UseVendorOptions extends UseApiSWROptions<VendorResponse> {
 /**
  * Hook to fetch all vendors for the current organization using SWR
  * Provides automatic caching, revalidation, and real-time updates
- * 
+ *
  * @example
  * // With server-side initial data (recommended for pages)
  * const { vendors, mutate } = useVendors({ initialData: serverVendors });
- * 
+ *
  * @example
  * // Without initial data (shows loading state)
  * const { vendors, isLoading, mutate } = useVendors();
@@ -139,38 +139,32 @@ export function useVendors(options: UseVendorsOptions = {}) {
 /**
  * Hook to fetch a single vendor by ID using SWR
  * Provides real-time updates via polling
- * 
+ *
  * @example
  * // With server-side initial data (recommended for detail pages)
  * const { data, mutate } = useVendor(vendorId, { initialData: serverVendor });
- * 
+ *
  * @example
  * // Without initial data (shows loading state)
  * const { data, isLoading, mutate } = useVendor(vendorId);
  */
-export function useVendor(
-  vendorId: string | null,
-  options: UseVendorOptions = {},
-) {
+export function useVendor(vendorId: string | null, options: UseVendorOptions = {}) {
   const { initialData, ...restOptions } = options;
 
-  const swrResult = useApiSWR<VendorResponse>(
-    vendorId ? `/v1/vendors/${vendorId}` : null,
-    {
-      ...restOptions,
-      // Enable polling for real-time updates (when local-trigger tasks complete)
-      refreshInterval: restOptions.refreshInterval ?? DEFAULT_POLLING_INTERVAL,
-      // Continue polling even when window is not focused
-      refreshWhenHidden: false,
-      // Use initial data as fallback for instant render
-      ...(initialData && {
-        fallbackData: {
-          data: initialData,
-          status: 200,
-        } as ApiResponse<VendorResponse>,
-      }),
-    },
-  );
+  const swrResult = useApiSWR<VendorResponse>(vendorId ? `/v1/vendors/${vendorId}` : null, {
+    ...restOptions,
+    // Enable polling for real-time updates (when local-trigger tasks complete)
+    refreshInterval: restOptions.refreshInterval ?? DEFAULT_POLLING_INTERVAL,
+    // Continue polling even when window is not focused
+    refreshWhenHidden: false,
+    // Use initial data as fallback for instant render
+    ...(initialData && {
+      fallbackData: {
+        data: initialData,
+        status: 200,
+      } as ApiResponse<VendorResponse>,
+    }),
+  });
 
   // Extract vendor data from response
   const vendor = swrResult.data?.data ?? null;
@@ -242,9 +236,7 @@ export function useVendorActions() {
   );
 
   const regenerateMitigation = useCallback(
-    async (
-      vendorId: string,
-    ): Promise<{ runId: string; publicAccessToken: string }> => {
+    async (vendorId: string): Promise<{ runId: string; publicAccessToken: string }> => {
       const response = await fetch(`/api/vendors/${vendorId}/regenerate-mitigation`, {
         method: 'POST',
         credentials: 'include',
@@ -318,10 +310,7 @@ export function useVendorActions() {
    * re-assess flow (sync semantics).
    */
   const applyVendorLinks = useCallback(
-    async (
-      vendorId: string,
-      params: { taskIds: string[]; replace: boolean },
-    ): Promise<void> => {
+    async (vendorId: string, params: { taskIds: string[]; replace: boolean }): Promise<void> => {
       const response = await fetch(`/api/vendors/${vendorId}/auto-link/apply`, {
         method: 'POST',
         credentials: 'include',
@@ -338,33 +327,27 @@ export function useVendorActions() {
 
   /** See `useRiskActions.fetchActiveRiskAutoLinkRun`. */
   const fetchActiveVendorAutoLinkRun = useCallback(
-    async (
-      vendorId: string,
-    ): Promise<{ runId: string; publicAccessToken: string } | null> => {
+    async (vendorId: string): Promise<{ runId: string; publicAccessToken: string } | null> => {
       const response = await fetch(`/api/vendors/${vendorId}/auto-link/active`, {
         credentials: 'include',
       });
       if (!response.ok) return null;
       const body = (await response.json()) as
-        | { runId: string; publicAccessToken: string }
-        | { runId: null };
+        { runId: string; publicAccessToken: string } | { runId: null };
       if (!body.runId) return null;
       return { runId: body.runId, publicAccessToken: body.publicAccessToken };
     },
     [],
   );
 
-  const discardVendorAutoLinkRun = useCallback(
-    async (vendorId: string): Promise<void> => {
-      await fetch(`/api/vendors/${vendorId}/auto-link/active`, {
-        method: 'DELETE',
-        credentials: 'include',
-      }).catch(() => {
-        /* best-effort */
-      });
-    },
-    [],
-  );
+  const discardVendorAutoLinkRun = useCallback(async (vendorId: string): Promise<void> => {
+    await fetch(`/api/vendors/${vendorId}/auto-link/active`, {
+      method: 'DELETE',
+      credentials: 'include',
+    }).catch(() => {
+      /* best-effort */
+    });
+  }, []);
 
   return {
     createVendor,
@@ -380,54 +363,3 @@ export function useVendorActions() {
     discardVendorAutoLinkRun,
   };
 }
-
-/**
- * Combined hook for vendors with data fetching and mutations
- * Provides a complete solution for vendor management with optimistic updates
- */
-export function useVendorsWithMutations(options: UseApiSWROptions<VendorsResponse> = {}) {
-  const { data, error, isLoading, mutate } = useVendors(options);
-  const { createVendor, updateVendor, deleteVendor } = useVendorActions();
-
-  const create = useCallback(
-    async (vendorData: CreateVendorData) => {
-      const result = await createVendor(vendorData);
-      // Revalidate the vendors list after creation
-      await mutate();
-      return result;
-    },
-    [createVendor, mutate],
-  );
-
-  const update = useCallback(
-    async (vendorId: string, vendorData: UpdateVendorData) => {
-      const result = await updateVendor(vendorId, vendorData);
-      // Revalidate the vendors list after update
-      await mutate();
-      return result;
-    },
-    [updateVendor, mutate],
-  );
-
-  const remove = useCallback(
-    async (vendorId: string) => {
-      const result = await deleteVendor(vendorId);
-      // Revalidate the vendors list after deletion
-      await mutate();
-      return result;
-    },
-    [deleteVendor, mutate],
-  );
-
-  return {
-    vendors: data?.data?.data ?? [],
-    count: data?.data?.count ?? 0,
-    isLoading,
-    error,
-    mutate,
-    createVendor: create,
-    updateVendor: update,
-    deleteVendor: remove,
-  };
-}
-

@@ -1,8 +1,8 @@
 import { track } from '@/app/posthog';
 import { auth } from '@/utils/auth';
 import { logger } from '@/utils/logger';
-import { client, createRateLimiter } from '@gideon-defender/kv';
 import { AuditLogEntityType, db } from '@db/server';
+import { client, createRateLimiter } from '@gideon-defender/kv';
 import { DEFAULT_SERVER_ERROR_MESSAGE, createSafeActionClient } from 'next-safe-action';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
@@ -15,7 +15,7 @@ const ratelimit = createRateLimiter({
   prefix: 'app:ratelimit:action',
 });
 
-export const actionClientWithMeta = createSafeActionClient({
+const actionClientWithMeta = createSafeActionClient({
   handleServerError(e) {
     // Log the error for debugging
     logger.error('Server error:', e);
@@ -134,7 +134,7 @@ export const authActionClient = actionClientWithMeta
   })
   .use(async ({ next, metadata, clientInput, ctx }) => {
     const headersList = await headers();
-    
+
     // Use user and session from previous middleware for consistency
     // Only fetch activeMember as it may require fresh data
     if (!ctx.user || !ctx.session) {

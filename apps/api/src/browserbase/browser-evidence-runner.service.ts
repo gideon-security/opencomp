@@ -18,7 +18,7 @@ import {
 } from './browser-evidence-execution';
 import { browserRunCoordinator } from './browser-run-coordinator';
 
-export interface BrowserEvidenceRunnerInput {
+interface BrowserEvidenceRunnerInput {
   organizationId: string;
   taskId?: string;
   automationId: string;
@@ -72,13 +72,11 @@ export interface BrowserEvidenceRunResult {
 }
 
 const toJsonLogs = (logs: BrowserEvidenceLog[]): Prisma.InputJsonArray =>
-  logs.map(
-    (log): Prisma.InputJsonObject => ({
-      timestamp: log.timestamp,
-      stage: log.stage,
-      message: log.message,
-    }),
-  );
+  logs.map((log): Prisma.InputJsonObject => ({
+    timestamp: log.timestamp,
+    stage: log.stage,
+    message: log.message,
+  }));
 
 @Injectable()
 export class BrowserEvidenceRunnerService {

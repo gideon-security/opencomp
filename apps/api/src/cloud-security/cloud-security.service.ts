@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { db, Prisma } from '@db';
-import { getManifest, runAllChecks } from '@gideon-defender/integration-platform';
+import {
+  getManifest,
+  runAllChecks,
+} from '@gideon-defender/integration-platform';
 import { runs, tasks } from '@gideon-defender/trigger-local';
 import { CredentialVaultService } from '../integration-platform/services/credential-vault.service';
 import { OAuthCredentialsService } from '../integration-platform/services/oauth-credentials.service';
@@ -34,7 +37,7 @@ export interface SecurityFinding {
   passed?: boolean; // Whether this is a passing check (default: false)
 }
 
-export interface ScanResult {
+interface ScanResult {
   success: boolean;
   provider: string;
   findings: SecurityFinding[];
@@ -47,7 +50,7 @@ export interface ScanResult {
  * `not_configured` = nothing to do (check should no-op); `assume_failed` = the
  * assume genuinely failed and the check should surface a finding.
  */
-export type ResolveAwsSessionResult =
+type ResolveAwsSessionResult =
   | {
       ok: true;
       session: {
@@ -149,10 +152,12 @@ export class CloudSecurityService {
           });
 
         if (!accessToken) {
-          const refreshedConnection = await db.integrationConnection.findUnique({
-            where: { id: connectionId },
-            select: { errorMessage: true },
-          });
+          const refreshedConnection = await db.integrationConnection.findUnique(
+            {
+              where: { id: connectionId },
+              select: { errorMessage: true },
+            },
+          );
 
           return {
             success: false,
@@ -738,7 +743,9 @@ export class CloudSecurityService {
           detectedServices: [...existingDetected],
           disabledServices: [...updatedDisabled],
           serviceDetectionCompletedAt: new Date().toISOString(),
-          ...(gcpServicesByProject && { servicesByProject: gcpServicesByProject }),
+          ...(gcpServicesByProject && {
+            servicesByProject: gcpServicesByProject,
+          }),
         },
       },
     });

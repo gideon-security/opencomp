@@ -3,22 +3,22 @@ import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, FindingSeverity, IntegrationCheck } from '../../../types';
 import {
   combineReadFailures,
+  emitOutcomes,
   remediationForReadFailure,
   resolveAwsSessionOrFail,
   toReadFailure,
   type CheckOutcome,
   type ReadFailure,
-  emitOutcomes,
 } from './shared';
 
-export interface SgPermission {
+interface SgPermission {
   ipProtocol: string;
   fromPort?: number;
   toPort?: number;
   cidrs: string[];
 }
 
-export interface SgInfo {
+interface SgInfo {
   groupId: string;
   groupName?: string;
   region: string;
@@ -51,7 +51,13 @@ export function evaluateSecurityGroups(sgs: SgInfo[]): CheckOutcome[] {
           resourceId: sg.groupId,
           severity: 'critical',
           remediation: 'Restrict the inbound rule to specific CIDRs and ports.',
-          evidence: { groupId: sg.groupId, groupName: sg.groupName, region: sg.region, ipProtocol: perm.ipProtocol, cidrs: perm.cidrs },
+          evidence: {
+            groupId: sg.groupId,
+            groupName: sg.groupName,
+            region: sg.region,
+            ipProtocol: perm.ipProtocol,
+            cidrs: perm.cidrs,
+          },
         });
         continue;
       }
@@ -70,7 +76,13 @@ export function evaluateSecurityGroups(sgs: SgInfo[]): CheckOutcome[] {
             resourceId: sg.groupId,
             severity,
             remediation: `Remove the 0.0.0.0/0 rule for port ${port}; restrict ${label} to a VPN, bastion, or known CIDRs.`,
-            evidence: { groupId: sg.groupId, region: sg.region, port, ipProtocol: perm.ipProtocol, cidrs: perm.cidrs },
+            evidence: {
+              groupId: sg.groupId,
+              region: sg.region,
+              port,
+              ipProtocol: perm.ipProtocol,
+              cidrs: perm.cidrs,
+            },
           });
         }
       }
@@ -82,7 +94,13 @@ export function evaluateSecurityGroups(sgs: SgInfo[]): CheckOutcome[] {
         description: `Security group "${sg.groupName ?? sg.groupId}" (${sg.region}) does not expose SSH/RDP/all-ports to 0.0.0.0/0.`,
         resourceType: 'aws-security-group',
         resourceId: sg.groupId,
-        evidence: { groupId: sg.groupId, groupName: sg.groupName, region: sg.region, inboundRuleCount: sg.permissions.length, internetExposedSensitivePorts: false },
+        evidence: {
+          groupId: sg.groupId,
+          groupName: sg.groupName,
+          region: sg.region,
+          inboundRuleCount: sg.permissions.length,
+          internetExposedSensitivePorts: false,
+        },
       });
     }
   }

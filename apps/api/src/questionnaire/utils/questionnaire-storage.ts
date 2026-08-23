@@ -8,7 +8,7 @@ import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { randomBytes } from 'crypto';
 import { MAX_FILE_SIZE_BYTES } from './constants';
 
-export interface QuestionnaireAnswerData {
+interface QuestionnaireAnswerData {
   question: string;
   answer: string | null;
   sources?: unknown;

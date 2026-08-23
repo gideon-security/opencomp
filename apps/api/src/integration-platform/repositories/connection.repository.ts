@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { db } from '@db';
 import type { IntegrationConnection, IntegrationConnectionStatus } from '@db';
 
-export interface CreateConnectionDto {
+interface CreateConnectionDto {
   providerId: string;
   organizationId: string;
   authStrategy: string;
   metadata?: object;
 }
 
-export interface UpdateConnectionDto {
+interface UpdateConnectionDto {
   status?: IntegrationConnectionStatus;
   activeCredentialVersionId?: string | null;
   lastSyncAt?: Date;
@@ -70,7 +70,10 @@ export class ConnectionRepository {
     providerSlugs: string[],
     organizationId: string,
   ): Promise<
-    Map<string, { id: string; lastSyncAt: Date | null; nextSyncAt: Date | null }>
+    Map<
+      string,
+      { id: string; lastSyncAt: Date | null; nextSyncAt: Date | null }
+    >
   > {
     if (providerSlugs.length === 0) return new Map();
 

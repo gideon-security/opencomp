@@ -12,9 +12,7 @@ const MAX_SUBSCRIPTIONS = 50;
  * connections keep their exact pre-picker scan scope. */
 function legacySubscriptionId(ctx: CheckContext): string | null {
   const configured = ctx.variables.subscription_id;
-  return typeof configured === 'string' && configured.trim().length > 0
-    ? configured.trim()
-    : null;
+  return typeof configured === 'string' && configured.trim().length > 0 ? configured.trim() : null;
 }
 
 /**
@@ -29,9 +27,7 @@ function legacySubscriptionId(ctx: CheckContext): string | null {
  * Returns [] only after emitting an explicit "could not verify" finding, so a
  * scope failure never leaves the mapped tasks silently stale.
  */
-export async function resolveAzureSubscriptionIds(
-  ctx: CheckContext,
-): Promise<string[]> {
+export async function resolveAzureSubscriptionIds(ctx: CheckContext): Promise<string[]> {
   const selected = ctx.variables.subscription_ids;
   if (Array.isArray(selected)) {
     const cleaned = selected
@@ -113,9 +109,9 @@ export async function resolveAzureSubscriptionIds(
 }
 
 /** Paginate an Azure ARM list endpoint (`{ value: T[], nextLink? }`). */
-export type ArmListCoverageGap = 'page-cap' | 'unexpected-next-link-host';
+type ArmListCoverageGap = 'page-cap' | 'unexpected-next-link-host';
 
-export interface ArmListResult<T> {
+interface ArmListResult<T> {
   items: T[];
   coverageGaps: ArmListCoverageGap[];
 }

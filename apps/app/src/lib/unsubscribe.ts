@@ -25,7 +25,7 @@ function getBaseUrl(): string {
 /**
  * Generate a secure unsubscribe token for an email address
  */
-export function generateUnsubscribeToken(email: string): string {
+function generateUnsubscribeToken(email: string): string {
   if (!UNSUBSCRIBE_SECRET) {
     throw new Error('UNSUBSCRIBE_SECRET or AUTH_SECRET environment variable must be set');
   }
@@ -50,4 +50,3 @@ export function getUnsubscribeUrl(email: string): string {
   const baseUrl = getBaseUrl();
   return `${baseUrl}/unsubscribe/preferences?email=${encodeURIComponent(email)}&token=${token}`;
 }
-

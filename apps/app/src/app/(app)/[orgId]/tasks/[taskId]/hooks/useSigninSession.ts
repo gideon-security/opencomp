@@ -4,7 +4,7 @@ import { apiClient } from '@/lib/api-client';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
-export interface SigninLiveView {
+interface SigninLiveView {
   sessionId: string;
   liveViewUrl: string;
   profileId: string;

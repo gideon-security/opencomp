@@ -19,16 +19,6 @@ export const SEVERITY_INDEX: Record<IssueSeverity, number> = {
   info: 4,
 };
 
-/**
- * Severity palette — oklch values expressed as CSS variables scoped to the
- * `.pt-tokens` class. Keeps the global theme uncontaminated by pentest-only
- * colors while still letting dark mode swap via the existing `.dark` class.
- */
-export interface SeverityLabelProps {
-  label: string;
-  cssVar: string;
-}
-
 export const SEVERITY_BG_VAR: Record<IssueSeverity, string> = {
   critical: 'var(--pt-sev-critical-bg)',
   high: 'var(--pt-sev-high-bg)',
@@ -81,33 +71,12 @@ export function tallySeverities<T extends { severity: IssueSeverity }>(
   return tally;
 }
 
-export function sortBySeverity<T extends { severity: IssueSeverity }>(
-  items: readonly T[],
-): T[] {
-  return [...items].sort(
-    (a, b) =>
-      (SEVERITY_INDEX[a.severity] ?? 99) - (SEVERITY_INDEX[b.severity] ?? 99),
-  );
-}
-
 /**
  * Map of terminal vs. in-progress statuses. Keeps the split-view detail
  * router pure: `statusToView(run.status)` picks which detail pane renders.
  */
-export type RunStatus =
-  | 'provisioning'
-  | 'cloning'
-  | 'running'
-  | 'completed'
-  | 'failed'
-  | 'cancelled';
+type RunStatus = 'provisioning' | 'cloning' | 'running' | 'completed' | 'failed' | 'cancelled';
 
 export function isRunInProgress(status: RunStatus | string | undefined): boolean {
-  return (
-    status === 'provisioning' || status === 'cloning' || status === 'running'
-  );
-}
-
-export function isRunTerminal(status: RunStatus | string | undefined): boolean {
-  return status === 'completed' || status === 'failed' || status === 'cancelled';
+  return status === 'provisioning' || status === 'cloning' || status === 'running';
 }

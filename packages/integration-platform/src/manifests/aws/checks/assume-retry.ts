@@ -58,7 +58,7 @@ export function isRetryableAssumeError(error: unknown): boolean {
   );
 }
 
-export interface RetryAssumeOptions {
+interface RetryAssumeOptions {
   /** Total attempts including the first (default 4). */
   attempts?: number;
   /** Base backoff in ms; grows exponentially, capped by maxDelayMs (default 500). */

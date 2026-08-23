@@ -12,13 +12,9 @@ import {
 } from '@trycompai/design-system';
 import { Upload } from '@trycompai/design-system/icons';
 import { useRef, useState, type ChangeEvent, type DragEvent } from 'react';
-import {
-  FormFooterInfo,
-  FormFooterRow,
-  LabelRow,
-} from './BackgroundCheckFormHelpers';
+import { FormFooterInfo, FormFooterRow, LabelRow } from './BackgroundCheckFormHelpers';
 
-export const VENDOR_OPTIONS = [
+const VENDOR_OPTIONS = [
   { value: 'checkr', label: 'Checkr' },
   { value: 'sterling', label: 'Sterling' },
   { value: 'hireright', label: 'HireRight' },
@@ -50,12 +46,7 @@ const MAX_FILE_BYTES = 25 * 1024 * 1024;
 // most browsers can't display them, so they'd fail server-side or store
 // unviewable evidence. (Candidates' own uploads convert HEIC->JPEG in the
 // browser via apps/web normalizeIdImage; this admin attach form does not.)
-const ACCEPTED_MIME_TYPES = [
-  'application/pdf',
-  'image/png',
-  'image/jpeg',
-  'image/webp',
-];
+const ACCEPTED_MIME_TYPES = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'];
 
 const FILE_ACCEPT_ATTR =
   'application/pdf,image/png,image/jpeg,image/webp,.pdf,.png,.jpg,.jpeg,.webp';
@@ -109,10 +100,7 @@ export function BackgroundCheckAttachForm({
           <LabelRow htmlFor="bg-attach-vendor" required>
             Vendor
           </LabelRow>
-          <Select
-            value={values.vendor}
-            onValueChange={(next) => setField('vendor', next ?? '')}
-          >
+          <Select value={values.vendor} onValueChange={(next) => setField('vendor', next ?? '')}>
             <SelectTrigger id="bg-attach-vendor">
               <SelectValue placeholder="Select a vendor" />
             </SelectTrigger>
@@ -155,9 +143,7 @@ export function BackgroundCheckAttachForm({
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         className={`mb-4 rounded-[var(--radius)] border-[1.5px] border-dashed px-4 py-7 text-center transition-colors ${
-          dragOver
-            ? 'border-primary bg-[oklch(0.985_0.012_167)]'
-            : 'border-border bg-muted'
+          dragOver ? 'border-primary bg-[oklch(0.985_0.012_167)]' : 'border-border bg-muted'
         }`}
       >
         <div className="mb-1.5 flex justify-center text-muted-foreground">
@@ -182,9 +168,7 @@ export function BackgroundCheckAttachForm({
         <Text size="xs" variant="muted">
           PDF or image (PNG, JPG, WEBP) · up to 25 MB · stored encrypted in your evidence vault
         </Text>
-        {fileError && (
-          <p className="mt-2 text-xs text-destructive">{fileError}</p>
-        )}
+        {fileError && <p className="mt-2 text-xs text-destructive">{fileError}</p>}
       </div>
       <FormFooterRow
         info={

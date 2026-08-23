@@ -4,12 +4,6 @@ export interface StoredCredentials {
   apiUrl: string;
 }
 
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
-
 export interface Framework {
   id: string;
   name: string;
@@ -82,7 +76,7 @@ export type Frequency = 'monthly' | 'quarterly' | 'yearly';
 export type Department = 'none' | 'admin' | 'gov' | 'hr' | 'it' | 'itsm' | 'qms';
 export type TaskAutomationStatus = 'AUTOMATED' | 'MANUAL';
 
-export type EvidenceFormType =
+type EvidenceFormType =
   | 'board_meeting'
   | 'it_leadership_meeting'
   | 'risk_committee_meeting'

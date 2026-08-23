@@ -4,7 +4,7 @@ import { Logger } from '@nestjs/common';
 import { triggerEmail } from '../../email/trigger-email';
 import { UnassignedItemsNotificationEmail } from '../../email/templates/unassigned-items-notification';
 
-export interface UnassignedItem {
+interface UnassignedItem {
   type: 'task' | 'policy' | 'risk' | 'vendor';
   id: string;
   name: string;

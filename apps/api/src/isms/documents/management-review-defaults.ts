@@ -25,7 +25,7 @@ export const DEFAULT_REVIEW_CHANGES_TEXT =
  * found to be [suitable / adequate / effective] and no changes are required
  * except those recorded in the outputs section below."
  */
-export const REVIEW_CONCLUSION_VERDICT_TEXT: Record<string, string> = {
+const REVIEW_CONCLUSION_VERDICT_TEXT: Record<string, string> = {
   suitable: 'suitable',
   adequate: 'adequate',
   effective: 'effective',
@@ -124,7 +124,8 @@ export const SEED_REVIEW_INPUT_DEFINITIONS: SeedReviewInputDefinition[] = [
     inputRef: '(g) Improvement opportunities',
     whatItCovers:
       'Opportunities for continual improvement raised at the meeting or before.',
-    whereToFind: 'OpenComp > Findings (tagged OFI) + ideas raised at this meeting',
+    whereToFind:
+      'OpenComp > Findings (tagged OFI) + ideas raised at this meeting',
   },
 ];
 

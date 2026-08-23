@@ -2,9 +2,7 @@ import { Prisma, db } from '@db';
 
 const processingReclaimAfterMs = 15 * 60 * 1000;
 
-export type StripeWebhookClaim =
-  | { status: 'claimed' }
-  | { status: 'duplicate' };
+type StripeWebhookClaim = { status: 'claimed' } | { status: 'duplicate' };
 
 export async function claimStripeWebhookEvent(params: {
   stripeEventId: string;

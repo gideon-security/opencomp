@@ -26,7 +26,7 @@ interface EncryptedData {
 }
 
 // Common interface for all integration findings
-export interface IntegrationFinding {
+interface IntegrationFinding {
   title: string;
   description: string;
   remediation: string;
@@ -114,11 +114,7 @@ handlers.set('aws', {
   processCredentials: async (encryptedSettings, decrypt) => {
     const decrypted = await decryptSettings(encryptedSettings, decrypt);
     const region = typeof decrypted.region === 'string' ? decrypted.region : undefined;
-    const regions = Array.isArray(decrypted.regions)
-      ? decrypted.regions
-      : region
-        ? [region]
-        : [];
+    const regions = Array.isArray(decrypted.regions) ? decrypted.regions : region ? [region] : [];
     return {
       region,
       regions,
@@ -196,4 +192,4 @@ export const getIntegrationHandler = <T>(
 };
 
 // Export types
-export type { AWSCredentials, AzureCredentials, DecryptFunction, EncryptedData, GCPCredentials };
+export type { AWSCredentials, AzureCredentials, DecryptFunction, EncryptedData };

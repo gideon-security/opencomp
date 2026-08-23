@@ -1,13 +1,13 @@
 'use client';
 
-import { FrameworkEditorFramework, Policy, Task } from '@db';
 import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
+import { FrameworkEditorFramework, Policy, Task } from '@db';
 import { ComplianceOverview } from './ComplianceOverview';
 import { FrameworksOverview } from './FrameworksOverview';
 import { ToDoOverview } from './ToDoOverview';
 import { FrameworkInstanceWithComplianceScore } from './types';
 
-export interface PublishedPoliciesScore {
+interface PublishedPoliciesScore {
   totalPolicies: number;
   publishedPolicies: number;
   draftPolicies: Policy[];
@@ -15,24 +15,24 @@ export interface PublishedPoliciesScore {
   unpublishedPolicies: Policy[];
 }
 
-export interface DoneTasksScore {
+interface DoneTasksScore {
   totalTasks: number;
   doneTasks: number;
   incompleteTasks: Task[];
 }
 
-export interface PeopleScore {
+interface PeopleScore {
   totalMembers: number;
   completedMembers: number;
 }
 
-export interface DocumentsScore {
+interface DocumentsScore {
   totalDocuments: number;
   completedDocuments: number;
   outstandingDocuments: number;
 }
 
-export interface OverviewProps {
+interface OverviewProps {
   frameworksWithControls: FrameworkInstanceWithControls[];
   frameworksWithCompliance: FrameworkInstanceWithComplianceScore[];
   allFrameworks: FrameworkEditorFramework[];

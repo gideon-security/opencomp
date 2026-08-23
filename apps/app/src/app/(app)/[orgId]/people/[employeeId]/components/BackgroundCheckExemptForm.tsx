@@ -14,7 +14,7 @@ import {
 import { Warning } from '@trycompai/design-system/icons';
 import { FormFooterRow, LabelRow } from './BackgroundCheckFormHelpers';
 
-export const EXEMPT_REASONS = [
+const EXEMPT_REASONS = [
   {
     value: 'contractor_with_vendor_check',
     label: 'Contractor with vendor-provided check',
@@ -90,10 +90,7 @@ export function BackgroundCheckExemptForm({
         <LabelRow htmlFor="bg-exempt-reason" required>
           Reason for exemption
         </LabelRow>
-        <Select
-          value={values.reason}
-          onValueChange={(next) => setField('reason', next ?? '')}
-        >
+        <Select value={values.reason} onValueChange={(next) => setField('reason', next ?? '')}>
           <SelectTrigger id="bg-exempt-reason">
             <SelectValue placeholder="Select a reason…" />
           </SelectTrigger>

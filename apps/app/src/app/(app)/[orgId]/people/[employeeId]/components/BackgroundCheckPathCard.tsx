@@ -5,7 +5,7 @@ import type { ComponentType, KeyboardEvent, ReactNode } from 'react';
 
 type IconComponent = ComponentType<{ size?: number }>;
 
-export interface PathCardProps {
+interface PathCardProps {
   selected: boolean;
   onSelect: () => void;
   onNavigate?: (direction: 'next' | 'prev') => void;

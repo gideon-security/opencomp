@@ -5,7 +5,7 @@ import type { Edge, Node } from '@xyflow/react';
 import { useParams } from 'next/navigation';
 import useSWR from 'swr';
 
-export interface OrgChartData {
+interface OrgChartData {
   id: string;
   type: string;
   name: string;

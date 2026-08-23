@@ -8,7 +8,7 @@ import { z } from 'zod';
  */
 export type IsmsTranslator = ReturnType<typeof useTranslations<'isms'>>;
 
-export const leadershipCommitmentSchema = z.object({
+const leadershipCommitmentSchema = z.object({
   key: z.string().min(1),
   text: z.string(),
 });

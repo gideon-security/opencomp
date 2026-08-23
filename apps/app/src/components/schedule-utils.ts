@@ -5,7 +5,7 @@ import { TaskFrequency } from '@db';
  * server's `isDueToday` helper is the real scheduling authority; these values
  * back the "next run" UX hint shown on automation rows.
  */
-export const PERIOD_DAYS: Record<TaskFrequency, number> = {
+const PERIOD_DAYS: Record<TaskFrequency, number> = {
   daily: 1,
   weekly: 7,
   monthly: 30,
@@ -19,8 +19,18 @@ export function nextRunAfter(frequency: TaskFrequency, lastRunAt: Date): Date {
 }
 
 const MONTHS_ABBR = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
 ];
 
 /**

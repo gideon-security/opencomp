@@ -82,7 +82,7 @@ export async function createAdminSubscription(params: {
   });
 }
 
-export async function syncStripeSubscriptionItem(params: {
+async function syncStripeSubscriptionItem(params: {
   organizationId: string;
   skuKey: BillingSkuKey;
   stripePriceId: string;

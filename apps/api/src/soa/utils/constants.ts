@@ -38,55 +38,56 @@ export const INCLUSION_JUSTIFICATIONS = {
 } as const;
 
 // Maps each ISO 27001:2022 control closure code to a family key in INCLUSION_JUSTIFICATIONS.
-const CLOSURE_TO_FAMILY: Record<string, keyof typeof INCLUSION_JUSTIFICATIONS> = {
-  // Access control (organizational + technical)
-  '5.15': 'accessControl',
-  '5.16': 'accessControl',
-  '5.17': 'accessControl',
-  '5.18': 'accessControl',
-  '8.2': 'accessControl',
-  '8.3': 'accessControl',
-  '8.4': 'accessControl',
-  '8.5': 'accessControl',
-  // Supplier and cloud
-  '5.19': 'supplierCloud',
-  '5.20': 'supplierCloud',
-  '5.21': 'supplierCloud',
-  '5.22': 'supplierCloud',
-  '5.23': 'supplierCloud',
-  // Incident management and continuity
-  '5.24': 'incidentManagement',
-  '5.25': 'incidentManagement',
-  '5.26': 'incidentManagement',
-  '5.27': 'incidentManagement',
-  '5.28': 'incidentManagement',
-  '5.29': 'incidentManagement',
-  '5.30': 'incidentManagement',
-  '6.8': 'incidentManagement',
-  // Secure development
-  '8.25': 'secureDevelopment',
-  '8.26': 'secureDevelopment',
-  '8.27': 'secureDevelopment',
-  '8.28': 'secureDevelopment',
-  '8.29': 'secureDevelopment',
-  '8.30': 'secureDevelopment',
-  '8.31': 'secureDevelopment',
-  '8.32': 'secureDevelopment',
-  '8.33': 'secureDevelopment',
-  '8.34': 'secureDevelopment',
-  // Legal, privacy, compliance, data protection
-  '5.31': 'legalPrivacyCompliance',
-  '5.32': 'legalPrivacyCompliance',
-  '5.33': 'legalPrivacyCompliance',
-  '5.34': 'legalPrivacyCompliance',
-  '5.35': 'legalPrivacyCompliance',
-  '5.36': 'legalPrivacyCompliance',
-  '8.10': 'legalPrivacyCompliance',
-  '8.11': 'legalPrivacyCompliance',
-  '8.12': 'legalPrivacyCompliance',
-  // Physical and remote working (all section 7 plus 6.7)
-  '6.7': 'physicalRemoteWorking',
-};
+const CLOSURE_TO_FAMILY: Record<string, keyof typeof INCLUSION_JUSTIFICATIONS> =
+  {
+    // Access control (organizational + technical)
+    '5.15': 'accessControl',
+    '5.16': 'accessControl',
+    '5.17': 'accessControl',
+    '5.18': 'accessControl',
+    '8.2': 'accessControl',
+    '8.3': 'accessControl',
+    '8.4': 'accessControl',
+    '8.5': 'accessControl',
+    // Supplier and cloud
+    '5.19': 'supplierCloud',
+    '5.20': 'supplierCloud',
+    '5.21': 'supplierCloud',
+    '5.22': 'supplierCloud',
+    '5.23': 'supplierCloud',
+    // Incident management and continuity
+    '5.24': 'incidentManagement',
+    '5.25': 'incidentManagement',
+    '5.26': 'incidentManagement',
+    '5.27': 'incidentManagement',
+    '5.28': 'incidentManagement',
+    '5.29': 'incidentManagement',
+    '5.30': 'incidentManagement',
+    '6.8': 'incidentManagement',
+    // Secure development
+    '8.25': 'secureDevelopment',
+    '8.26': 'secureDevelopment',
+    '8.27': 'secureDevelopment',
+    '8.28': 'secureDevelopment',
+    '8.29': 'secureDevelopment',
+    '8.30': 'secureDevelopment',
+    '8.31': 'secureDevelopment',
+    '8.32': 'secureDevelopment',
+    '8.33': 'secureDevelopment',
+    '8.34': 'secureDevelopment',
+    // Legal, privacy, compliance, data protection
+    '5.31': 'legalPrivacyCompliance',
+    '5.32': 'legalPrivacyCompliance',
+    '5.33': 'legalPrivacyCompliance',
+    '5.34': 'legalPrivacyCompliance',
+    '5.35': 'legalPrivacyCompliance',
+    '5.36': 'legalPrivacyCompliance',
+    '8.10': 'legalPrivacyCompliance',
+    '8.11': 'legalPrivacyCompliance',
+    '8.12': 'legalPrivacyCompliance',
+    // Physical and remote working (all section 7 plus 6.7)
+    '6.7': 'physicalRemoteWorking',
+  };
 
 /**
  * Returns a default inclusion justification appropriate to the control's family,
@@ -103,7 +104,9 @@ export function getInclusionJustification(
   }
 
   const family = CLOSURE_TO_FAMILY[closure];
-  return family ? INCLUSION_JUSTIFICATIONS[family] : DEFAULT_INCLUSION_JUSTIFICATION;
+  return family
+    ? INCLUSION_JUSTIFICATIONS[family]
+    : DEFAULT_INCLUSION_JUSTIFICATION;
 }
 
 // System prompt for SOA RAG generation
@@ -195,7 +198,7 @@ IMPORTANT: Base your answer ONLY on information found in our organization's docu
 }
 
 // Indicators that an answer has insufficient data
-export const INSUFFICIENT_DATA_INDICATORS = [
+const INSUFFICIENT_DATA_INDICATORS = [
   'INSUFFICIENT_DATA',
   'N/A',
   'NO EVIDENCE FOUND',
