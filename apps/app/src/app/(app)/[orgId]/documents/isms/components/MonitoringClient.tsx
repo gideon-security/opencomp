@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
@@ -32,21 +33,22 @@ async function run(action: Promise<void>, successMessage: string, failMessage: s
 }
 
 export function MonitoringClient({ memberOptions, ...props }: MonitoringClientProps) {
+  const t = useTranslations('isms');
   return (
     <IsmsDocumentShell
       {...props}
       clause="9.1"
-      title="Monitoring, Measurement, Analysis and Evaluation"
-      description="Define what the organization measures, how, at what cadence, and who monitors and analyses the results (ISO 27001 clause 9.1). Record measurement values each period; history stays with each metric for auditor sampling."
-      sectionTitle="Monitoring metrics"
-      sectionDescription="Nine defaults ship active — edit, deactivate, or add custom metrics. Values are entered manually in v1."
-      generateSuccessMessage="Restored any missing seeded metrics"
+      title={t('monitoring.title')}
+      description={t('monitoring.description')}
+      sectionTitle={t('monitoring.sectionTitle')}
+      sectionDescription={t('monitoring.sectionDescription')}
+      generateSuccessMessage={t('monitoring.generateRestored')}
       getSubmitBlockedReason={(document) => {
         const messages = metricValidationMessages({
           metrics: Array.isArray(document.metrics) ? document.metrics : [],
         });
         return messages.length > 0
-          ? `Complete the metrics register before submitting: ${messages.join(' ')}`
+          ? t('monitoring.submitBlocked', { messages: messages.join(' ') })
           : null;
       }}
     >
@@ -63,22 +65,22 @@ export function MonitoringClient({ memberOptions, ...props }: MonitoringClientPr
             onCreateMetric={(values) =>
               run(
                 hook.createRow({ register: METRICS, data: toMetricPayload(values) }),
-                'Metric added',
-                'Failed to add metric',
+                t('monitoring.metricAdded'),
+                t('monitoring.metricAddFailed'),
               )
             }
             onUpdateMetric={(metricId, payload) =>
               run(
                 hook.updateRow({ register: METRICS, id: metricId, data: payload }),
-                'Metric updated',
-                'Failed to update metric',
+                t('monitoring.metricUpdated'),
+                t('monitoring.metricUpdateFailed'),
               )
             }
             onDeleteMetric={(metricId) =>
               run(
                 hook.deleteRow({ register: METRICS, id: metricId }),
-                'Metric deleted',
-                'Failed to delete metric',
+                t('monitoring.metricDeleted'),
+                t('monitoring.metricDeleteFailed'),
               )
             }
             onRecordMeasurement={(metricId, values) =>
@@ -92,22 +94,22 @@ export function MonitoringClient({ memberOptions, ...props }: MonitoringClientPr
                     note: values.note || null,
                   },
                 }),
-                'Measurement recorded',
-                'Failed to record measurement',
+                t('monitoring.measurementRecorded'),
+                t('monitoring.measurementRecordFailed'),
               )
             }
             onBulkSaveMeasurements={(rows) =>
               run(
                 hook.bulkCreateMeasurements(rows),
-                `Recorded ${rows.length} measurement${rows.length === 1 ? '' : 's'}`,
-                'Failed to record measurements',
+                t('monitoring.measurementsRecorded', { count: rows.length }),
+                t('monitoring.measurementsRecordFailed'),
               )
             }
             onDeleteMeasurement={(measurementId) =>
               run(
                 hook.deleteRow({ register: MEASUREMENTS, id: measurementId }),
-                'Measurement deleted',
-                'Failed to delete measurement',
+                t('monitoring.measurementDeleted'),
+                t('monitoring.measurementDeleteFailed'),
               )
             }
           />

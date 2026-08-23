@@ -291,8 +291,8 @@ describe('ManagementReviewClient', () => {
     expect(screen.queryByText('Add action')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Edit review MR-2026-01')).not.toBeInTheDocument();
     expect(screen.queryByText('Save sign-off')).not.toBeInTheDocument();
-    expect(screen.getByText('Export PDF')).toBeInTheDocument();
-    expect(screen.getByText('Export DOCX')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportPdf')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
   it('carries open actions forward to the next review', () => {

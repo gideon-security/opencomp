@@ -268,8 +268,8 @@ describe('InternalAuditClient', () => {
     expect(screen.queryByText('Add finding')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Edit audit IA-2026-01')).not.toBeInTheDocument();
     expect(screen.queryByText('Save sign-off')).not.toBeInTheDocument();
-    expect(screen.getByText('Export PDF')).toBeInTheDocument();
-    expect(screen.getByText('Export DOCX')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportPdf')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
   it('warns when no audit is recorded (clause 9.2 gate)', () => {

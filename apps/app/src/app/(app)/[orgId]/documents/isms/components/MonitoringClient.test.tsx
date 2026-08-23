@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   setMockPermissions,
@@ -73,6 +74,8 @@ vi.mock('./IsmsVersionHistory', () => ({
 
 import { MonitoringClient } from './MonitoringClient';
 import { addPeriods, periodStartFor } from './monitoring-periods';
+
+mockNextIntl();
 
 const NOW = new Date();
 const CURRENT = periodStartFor('monthly', NOW);
@@ -271,8 +274,8 @@ describe('MonitoringClient', () => {
     expect(screen.queryByText('Metrics due')).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/^Edit /)).not.toBeInTheDocument();
     expect(screen.queryByText('Deactivate')).not.toBeInTheDocument();
-    expect(screen.getByText('Export PDF')).toBeInTheDocument();
-    expect(screen.getByText('Export DOCX')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportPdf')).toBeInTheDocument();
+    expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
   it('warns when no metric is active (clause 9.1 gate)', () => {

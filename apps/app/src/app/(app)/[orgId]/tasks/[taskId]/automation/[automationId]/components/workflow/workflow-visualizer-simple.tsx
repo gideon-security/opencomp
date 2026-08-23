@@ -21,6 +21,7 @@ import {
 } from '@gideon-defender/ui/dropdown-menu';
 import { EvidenceAutomationVersion } from '@db';
 import { Code, Loader2, RotateCcw, Upload, Zap } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -52,6 +53,7 @@ interface Props {
 }
 
 export function WorkflowVisualizerSimple({ className }: Props) {
+  const t = useTranslations('tasks');
   const { scriptGenerated, viewMode, setViewMode, setScriptUrl } = useTaskAutomationStore();
   const { orgId, taskId, automationId } = useParams<{
     orgId: string;
@@ -93,16 +95,16 @@ export function WorkflowVisualizerSimple({ className }: Props) {
       const result = await restoreVersion(orgId, taskId, automationIdRef.current, version.version);
 
       if (!result.success) {
-        throw new Error(result.error || 'Failed to restore version');
+        throw new Error(result.error || t('workflow.visualizer.restoreFailed'));
       }
 
-      toast.success(`Draft overwritten with version ${version.version}`);
+      toast.success(t('workflow.visualizer.draftOverwrittenToast', { version: version.version }));
       setConfirmRestore(null);
 
       // Refresh the script to show the restored content
       await refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to restore version');
+      toast.error(error instanceof Error ? error.message : t('workflow.visualizer.restoreFailed'));
     } finally {
       setIsRestoring(false);
     }
@@ -183,7 +185,7 @@ export function WorkflowVisualizerSimple({ className }: Props) {
       automationIdRef.current !== 'new' ? automationIdRef.current : automationId;
 
     if (!orgId || !taskId || !resolvedAutomationId || resolvedAutomationId === 'new') {
-      toast.error('Save the automation before testing.');
+      toast.error(t('workflow.visualizer.saveBeforeTestToast'));
       return;
     }
 
@@ -192,10 +194,10 @@ export function WorkflowVisualizerSimple({ className }: Props) {
     }
 
     try {
-      toast.message('Running integration test...');
+      toast.message(t('workflow.visualizer.runningTestToast'));
       await execute();
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to run test';
+      const message = error instanceof Error ? error.message : t('workflow.visualizer.runTestFailed');
       toast.error(message);
     }
   };
@@ -253,7 +255,7 @@ Please fix the automation script to resolve this error.`;
             <div>
               <h2 className="text-sm font-semibold flex items-center gap-2">
                 <Zap className="w-4 h-4 text-primary" />
-                Integration Builder
+                {t('workflow.visualizer.builderTitle')}
               </h2>
             </div>
             <ViewModeSwitch value={viewMode} onChange={setViewMode} />
@@ -271,7 +273,7 @@ Please fix the automation script to resolve this error.`;
           <div>
             <h2 className="text-sm font-semibold flex items-center gap-2">
               <Code className={`w-4 h-4 text-primary ${isAnalyzing ? 'animate-pulse' : ''}`} />
-              Integration Builder
+              {t('workflow.visualizer.builderTitle')}
             </h2>
           </div>
           <div className="flex items-center gap-2">
@@ -285,13 +287,13 @@ Please fix the automation script to resolve this error.`;
                         variant="outline"
                         size="icon"
                         disabled={isRestoring}
-                        title="Rollback to version"
+                        title={t('workflow.visualizer.rollbackTitle')}
                       >
                         <RotateCcw className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-56">
-                      <DropdownMenuLabel>Overwrite draft with version</DropdownMenuLabel>
+                      <DropdownMenuLabel>{t('workflow.visualizer.overwriteMenuLabel')}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       {versions.map((version) => (
                         <DropdownMenuItem
@@ -300,7 +302,9 @@ Please fix the automation script to resolve this error.`;
                           className="cursor-pointer"
                         >
                           <div className="flex flex-col gap-1">
-                            <span className="text-sm font-medium">Version {version.version}</span>
+                            <span className="text-sm font-medium">
+                              {t('workflow.visualizer.versionLabel', { version: version.version })}
+                            </span>
                             {version.changelog && (
                               <span className="text-xs text-muted-foreground line-clamp-1">
                                 {version.changelog}
@@ -314,7 +318,7 @@ Please fix the automation script to resolve this error.`;
                 )}
                 <Button size="sm" onClick={() => setPublishDialogOpen(true)}>
                   <Upload className="h-4 w-4 mr-2" />
-                  Publish
+                  {t('workflow.visualizer.publish')}
                 </Button>
               </>
             )}
@@ -354,7 +358,7 @@ Please fix the automation script to resolve this error.`;
                     <UnifiedWorkflowCard
                       key={`workflow-${automation?.id}-${automation?.evaluationCriteria ? 'with-criteria' : 'no-criteria'}`}
                       steps={steps}
-                      title={title || 'Automation Workflow'}
+                      title={title || t('workflow.visualizer.defaultTitle')}
                       onTest={handleTest}
                       isTesting={isExecuting}
                       integrationsUsed={integrationsUsed || []}
@@ -381,16 +385,20 @@ Please fix the automation script to resolve this error.`;
       <Dialog open={!!confirmRestore} onOpenChange={(open) => !open && setConfirmRestore(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Overwrite Draft with Version {confirmRestore?.version}?</DialogTitle>
+            <DialogTitle>
+              {t('workflow.visualizer.overwriteDialogTitle', {
+                version: confirmRestore?.version ?? '',
+              })}
+            </DialogTitle>
             <DialogDescription>
-              This will replace your current draft with the script from version{' '}
-              {confirmRestore?.version}. This action is irreversible - your current draft will be
-              permanently lost.
+              {t('workflow.visualizer.overwriteDialogDescription', {
+                version: confirmRestore?.version ?? '',
+              })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmRestore(null)}>
-              Cancel
+              {t('workflow.visualizer.cancel')}
             </Button>
             <Button
               onClick={() => confirmRestore && handleRestoreVersion(confirmRestore)}
@@ -398,7 +406,9 @@ Please fix the automation script to resolve this error.`;
               disabled={isRestoring}
             >
               {isRestoring && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {isRestoring ? 'Overwriting...' : 'Overwrite Draft'}
+              {isRestoring
+                ? t('workflow.visualizer.overwriting')
+                : t('workflow.visualizer.overwriteDraft')}
             </Button>
           </DialogFooter>
         </DialogContent>

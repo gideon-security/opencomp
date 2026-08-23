@@ -1,5 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+
+mockNextIntl();
 
 const startTest = vi.fn();
 const closeTestSession = vi.fn();
@@ -48,9 +51,13 @@ describe('InstructionComposer', () => {
 
   it('renders the create heading and multi-step actions', () => {
     render(<InstructionComposer {...baseProps} mode="create" />);
-    expect(screen.getByText('New automation')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /save automation/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /add step/i })).toBeInTheDocument();
+    expect(screen.getByText('instructionComposer.titleCreate')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'instructionComposer.save' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'instructionComposer.addStep' }),
+    ).toBeInTheDocument();
   });
 
   it('tests the active step against its connection URL', async () => {
@@ -58,7 +65,7 @@ describe('InstructionComposer', () => {
     fireEvent.change(screen.getByPlaceholderText(/screenshot the two-factor/i), {
       target: { value: 'Screenshot the MFA policy' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /test this step/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'instructionComposer.testStep' }));
 
     await waitFor(() => expect(startTest).toHaveBeenCalledTimes(1));
     expect(startTest).toHaveBeenCalledWith({
@@ -78,7 +85,7 @@ describe('InstructionComposer', () => {
     fireEvent.change(screen.getByPlaceholderText(/two-factor authentication is enforced/i), {
       target: { value: 'MFA is on' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /test this step/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'instructionComposer.testStep' }));
 
     await waitFor(() => expect(startTest).toHaveBeenCalledTimes(1));
     expect(startTest.mock.calls[0][0].evaluationCriteria).toBe('MFA is on');
@@ -86,9 +93,9 @@ describe('InstructionComposer', () => {
 
   it('adds another step', () => {
     render(<InstructionComposer {...baseProps} mode="create" />);
-    expect(screen.getByText('1 step')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /add step/i }));
-    expect(screen.getByText('2 steps')).toBeInTheDocument();
+    expect(screen.getByText('instructionComposer.stepsCount')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'instructionComposer.addStep' }));
+    expect(screen.getByText('instructionComposer.stepsCount')).toBeInTheDocument();
   });
 
   it('saves as a one-step automation with a derived name and steps[]', async () => {
@@ -106,7 +113,7 @@ describe('InstructionComposer', () => {
         }}
       />,
     );
-    fireEvent.click(screen.getByRole('button', { name: /save automation/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'instructionComposer.save' }));
 
     await waitFor(() => expect(onUpdate).toHaveBeenCalledTimes(1));
     expect(onUpdate).toHaveBeenCalledWith({

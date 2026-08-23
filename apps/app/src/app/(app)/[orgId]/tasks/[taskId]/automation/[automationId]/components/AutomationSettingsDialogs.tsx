@@ -12,6 +12,7 @@ import {
 import { Input } from '@gideon-defender/ui/input';
 import { Label } from '@gideon-defender/ui/label';
 import { Textarea } from '@gideon-defender/ui/textarea';
+import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -36,6 +37,7 @@ interface DeleteDialogProps {
 }
 
 export function EditNameDialog({ open, onOpenChange, onSuccess }: EditNameDialogProps) {
+  const t = useTranslations('tasks');
   const { automation, updateAutomation } = useTaskAutomation();
 
   const [name, setName] = useState(automation?.name || '');
@@ -48,7 +50,7 @@ export function EditNameDialog({ open, onOpenChange, onSuccess }: EditNameDialog
 
   const handleSave = async () => {
     if (!name.trim()) {
-      toast.error('Name cannot be empty');
+      toast.error(t('settingsDialogs.nameRequiredToast'));
       return;
     }
 
@@ -57,9 +59,9 @@ export function EditNameDialog({ open, onOpenChange, onSuccess }: EditNameDialog
       await updateAutomation({ name: name.trim() });
       await onSuccess?.();
       onOpenChange(false);
-      toast.success('Automation name updated');
+      toast.success(t('settingsDialogs.nameUpdatedToast'));
     } catch {
-      toast.error('Failed to update name');
+      toast.error(t('settingsDialogs.nameUpdateFailedToast'));
     } finally {
       setIsSaving(false);
     }
@@ -69,30 +71,28 @@ export function EditNameDialog({ open, onOpenChange, onSuccess }: EditNameDialog
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Automation Name</DialogTitle>
-          <DialogDescription>
-            Update the name for this automation. This will help you identify it later.
-          </DialogDescription>
+          <DialogTitle>{t('settingsDialogs.editNameTitle')}</DialogTitle>
+          <DialogDescription>{t('settingsDialogs.editNameDescription')}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="automation-name">Automation Name</Label>
+            <Label htmlFor="automation-name">{t('settingsDialogs.nameLabel')}</Label>
             <Input
               id="automation-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter automation name"
+              placeholder={t('settingsDialogs.namePlaceholder')}
             />
           </div>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('settingsDialogs.cancel')}
           </Button>
           <Button onClick={handleSave} disabled={isSaving || !name.trim()}>
-            {isSaving ? 'Saving...' : 'Save Changes'}
+            {isSaving ? t('settingsDialogs.saving') : t('settingsDialogs.saveChanges')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -105,6 +105,7 @@ export function EditDescriptionDialog({
   onOpenChange,
   onSuccess,
 }: EditDescriptionDialogProps) {
+  const t = useTranslations('tasks');
   const { automation, updateAutomation } = useTaskAutomation();
   const [description, setDescription] = useState(automation?.description || '');
   const [isSaving, setIsSaving] = useState(false);
@@ -120,9 +121,9 @@ export function EditDescriptionDialog({
       await updateAutomation({ description: description.trim() });
       await onSuccess?.();
       onOpenChange(false);
-      toast.success('Automation description updated');
+      toast.success(t('settingsDialogs.descriptionUpdatedToast'));
     } catch {
-      toast.error('Failed to update description');
+      toast.error(t('settingsDialogs.descriptionUpdateFailedToast'));
     } finally {
       setIsSaving(false);
     }
@@ -132,20 +133,20 @@ export function EditDescriptionDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Automation Description</DialogTitle>
+          <DialogTitle>{t('settingsDialogs.editDescriptionTitle')}</DialogTitle>
           <DialogDescription>
-            Add or update the description for this automation to help others understand its purpose.
+            {t('settingsDialogs.editDescriptionDescription')}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="automation-description">Description</Label>
+            <Label htmlFor="automation-description">{t('settingsDialogs.descriptionLabel')}</Label>
             <Textarea
               id="automation-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describe what this automation does..."
+              placeholder={t('settingsDialogs.descriptionPlaceholder')}
               rows={4}
             />
           </div>
@@ -153,10 +154,10 @@ export function EditDescriptionDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('settingsDialogs.cancel')}
           </Button>
           <Button onClick={handleSave} disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save Changes'}
+            {isSaving ? t('settingsDialogs.saving') : t('settingsDialogs.saveChanges')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -165,6 +166,7 @@ export function EditDescriptionDialog({
 }
 
 export function DeleteAutomationDialog({ open, onOpenChange, onSuccess }: DeleteDialogProps) {
+  const t = useTranslations('tasks');
   const { automation, deleteAutomation } = useTaskAutomation();
   const { orgId, taskId } = useParams<{
     orgId: string;
@@ -178,12 +180,12 @@ export function DeleteAutomationDialog({ open, onOpenChange, onSuccess }: Delete
     try {
       await deleteAutomation();
       onOpenChange(false);
-      toast.success('Automation deleted');
+      toast.success(t('settingsDialogs.deletedToast'));
 
       // Redirect back to task page after successful deletion
       window.location.href = `/${orgId}/tasks/${taskId}`;
     } catch {
-      toast.error('Failed to delete automation');
+      toast.error(t('settingsDialogs.deleteFailedToast'));
     } finally {
       setIsDeleting(false);
     }
@@ -193,19 +195,18 @@ export function DeleteAutomationDialog({ open, onOpenChange, onSuccess }: Delete
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Automation</DialogTitle>
+          <DialogTitle>{t('settingsDialogs.deleteTitle')}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete "{automation?.name}"? This action cannot be undone and
-            will permanently remove the automation and all its data.
+            {t('settingsDialogs.deleteDescription', { name: automation?.name ?? '' })}
           </DialogDescription>
         </DialogHeader>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('settingsDialogs.cancel')}
           </Button>
           <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
-            {isDeleting ? 'Deleting...' : 'Delete Automation'}
+            {isDeleting ? t('settingsDialogs.deleting') : t('settingsDialogs.deleteButton')}
           </Button>
         </DialogFooter>
       </DialogContent>

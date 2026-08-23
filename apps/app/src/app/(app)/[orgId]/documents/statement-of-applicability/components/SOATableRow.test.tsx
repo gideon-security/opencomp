@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { describe, expect, it, vi } from 'vitest';
 import { SOATableRow } from './SOATableRow';
+
+mockNextIntl();
 
 vi.mock('../hooks/useSOADocument', () => ({
   useSOADocument: () => ({
@@ -51,7 +54,7 @@ describe('SOATableRow', () => {
     );
 
     expect(
-      screen.getByRole('button', { name: 'Edit answer' }),
+      screen.getByRole('button', { name: 'soa.editAnswer' }),
     ).toBeInTheDocument();
   });
 });

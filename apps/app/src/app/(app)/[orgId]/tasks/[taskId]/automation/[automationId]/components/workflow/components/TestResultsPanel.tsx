@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@gideon-defender/ui/button';
 import { AlertCircle, CheckCircle2, CircleX, Loader2, Sparkles, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -34,6 +35,7 @@ export function TestResultsPanel({
 
   const { automationIdRef } = useSharedChatContext();
   const { automation } = useTaskAutomation(automationIdRef.current);
+  const t = useTranslations('tasks');
 
   const actualEvaluationCriteria = automation?.evaluationCriteria || evaluationCriteria;
 
@@ -45,7 +47,7 @@ export function TestResultsPanel({
     if (result.status === 'error') {
       return {
         type: 'execution-error',
-        title: '🚨 Execution Error',
+        title: t('workflow.testResults.stateExecutionError'),
         color: 'destructive',
       } as const;
     }
@@ -54,12 +56,24 @@ export function TestResultsPanel({
     if (result.status === 'success') {
       // Check evaluation if available
       if (result.evaluationStatus === 'pass') {
-        return { type: 'pass', title: 'Test Passed', color: 'success' } as const;
+        return {
+          type: 'pass',
+          title: t('workflow.testResults.statePassed'),
+          color: 'success',
+        } as const;
       } else if (result.evaluationStatus === 'fail') {
-        return { type: 'fail', title: 'Test Failed', color: 'destructive' } as const;
+        return {
+          type: 'fail',
+          title: t('workflow.testResults.stateFailed'),
+          color: 'destructive',
+        } as const;
       }
       // No evaluation - just show execution success
-      return { type: 'success', title: '🎉 Execution Success', color: 'primary' } as const;
+      return {
+        type: 'success',
+        title: t('workflow.testResults.stateSuccess'),
+        color: 'primary',
+      } as const;
     }
 
     return null;
@@ -95,9 +109,11 @@ export function TestResultsPanel({
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
             </div>
           </div>
-          <h3 className="mt-6 text-lg font-semibold text-foreground">Running your automation</h3>
+          <h3 className="mt-6 text-lg font-semibold text-foreground">
+            {t('workflow.testResults.runningTitle')}
+          </h3>
           <p className="mt-2 text-sm text-muted-foreground text-center max-w-sm">
-            We're testing your script in a secure environment. This usually takes 15-30 seconds.
+            {t('workflow.testResults.runningDescription')}
           </p>
         </div>
       </div>
@@ -159,7 +175,7 @@ export function TestResultsPanel({
               <div className="flex justify-end -mt-2 mb-4">
                 <Button onClick={onBack} variant="outline" size="sm">
                   <X className="w-4 h-4 mr-1" />
-                  Close
+                  {t('workflow.testResults.close')}
                 </Button>
               </div>
 
@@ -181,21 +197,21 @@ export function TestResultsPanel({
                 <div>
                   <h3 className="text-2xl font-semibold text-foreground">
                     {testState.type === 'pass'
-                      ? 'Everything looks good'
+                      ? t('workflow.testResults.heroPassed')
                       : testState.type === 'execution-error'
-                        ? 'Something went wrong'
+                        ? t('workflow.testResults.heroExecutionError')
                         : testState.type === 'fail'
-                          ? 'Criteria not met'
-                          : 'Test completed'}
+                          ? t('workflow.testResults.heroFailed')
+                          : t('workflow.testResults.heroCompleted')}
                   </h3>
                   <p className="text-sm text-muted-foreground mt-2">
                     {testState.type === 'execution-error'
-                      ? 'The automation encountered an error during execution.'
+                      ? t('workflow.testResults.subExecutionError')
                       : testState.type === 'fail'
-                        ? 'The automation ran but did not meet success criteria.'
+                        ? t('workflow.testResults.subFailed')
                         : testState.type === 'pass'
-                          ? 'The automation ran and met all success criteria.'
-                          : 'The automation executed without errors.'}
+                          ? t('workflow.testResults.subPassed')
+                          : t('workflow.testResults.subCompleted')}
                   </p>
                 </div>
               </div>
@@ -203,7 +219,9 @@ export function TestResultsPanel({
               {/* Error Details */}
               {testState.type === 'execution-error' && result.error && (
                 <div className="p-4 bg-destructive/5 rounded-xl border border-destructive/20 text-left">
-                  <p className="text-xs font-semibold text-muted-foreground mb-2">Error Details</p>
+                  <p className="text-xs font-semibold text-muted-foreground mb-2">
+                    {t('workflow.testResults.errorDetails')}
+                  </p>
                   <p className="text-sm leading-relaxed text-foreground">{result.error}</p>
                 </div>
               )}
@@ -217,7 +235,7 @@ export function TestResultsPanel({
                     }
                     className={`text-muted-foreground hover:text-foreground transition-colors ${activeSection === 'reasoning' ? 'font-medium underline underline-offset-4' : ''}`}
                   >
-                    Reasoning
+                    {t('workflow.testResults.reasoning')}
                   </button>
                 )}
                 {result.evaluationReason && actualEvaluationCriteria && (
@@ -227,7 +245,7 @@ export function TestResultsPanel({
                   onClick={() => setActiveSection(activeSection === 'output' ? null : 'output')}
                   className={`text-muted-foreground hover:text-foreground transition-colors ${activeSection === 'output' ? 'font-medium underline underline-offset-4' : ''}`}
                 >
-                  Output
+                  {t('workflow.testResults.output')}
                 </button>
                 {result.logs && result.logs.length > 0 && (
                   <>
@@ -236,7 +254,7 @@ export function TestResultsPanel({
                       onClick={() => setActiveSection(activeSection === 'logs' ? null : 'logs')}
                       className={`text-muted-foreground hover:text-foreground transition-colors ${activeSection === 'logs' ? 'font-medium underline underline-offset-4' : ''}`}
                     >
-                      Logs
+                      {t('workflow.testResults.logs')}
                     </button>
                   </>
                 )}
@@ -296,7 +314,7 @@ export function TestResultsPanel({
                       <div className="space-y-3 text-left animate-in fade-in duration-300">
                         <div>
                           <p className="text-xs font-semibold text-muted-foreground mb-1">
-                            Criteria
+                            {t('workflow.testResults.criteria')}
                           </p>
                           <p className="text-xs leading-relaxed text-foreground">
                             {actualEvaluationCriteria}
@@ -304,7 +322,7 @@ export function TestResultsPanel({
                         </div>
                         <div>
                           <p className="text-xs font-semibold text-muted-foreground mb-1">
-                            Reasoning
+                            {t('workflow.testResults.reasoning')}
                           </p>
                           <p className="text-xs leading-relaxed text-foreground">
                             {result.evaluationReason}
@@ -323,7 +341,7 @@ export function TestResultsPanel({
                     className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-medium shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <Sparkles className="w-4 h-4" />
-                    Let AI Fix This
+                    {t('workflow.testResults.letAiFix')}
                   </button>
                 </div>
               )}

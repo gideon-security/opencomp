@@ -8,6 +8,7 @@ import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import MultipleSelector, { Option } from '@gideon-defender/ui/multiple-selector';
 import { Member, TaskFrequency, User } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import {
   Button,
   Drawer,
@@ -33,24 +34,27 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { taskFrequencies } from '../[taskId]/components/constants';
 
-const createTaskSchema = z.object({
-  title: z.string().min(1, {
-    message: 'Title is required',
-  }),
-  description: z.string().min(1, {
-    message: 'Description is required',
-  }),
-  assigneeId: z.string().nullable().optional(),
-  frequency: z.nativeEnum(TaskFrequency).nullable().optional(),
-  department: z
-    .string()
-    .trim()
-    .max(64, { message: 'Department must be at most 64 characters' })
-    .nullable()
-    .optional(),
-  controlIds: z.array(z.string()).optional(),
-  taskTemplateId: z.string().nullable().optional(),
-});
+const createCreateTaskSchema = (t: ReturnType<typeof useTranslations<'tasks'>>) =>
+  z.object({
+    title: z.string().min(1, {
+      message: t('createSheet.titleRequired'),
+    }),
+    description: z.string().min(1, {
+      message: t('createSheet.descriptionRequired'),
+    }),
+    assigneeId: z.string().nullable().optional(),
+    frequency: z.nativeEnum(TaskFrequency).nullable().optional(),
+    department: z
+      .string()
+      .trim()
+      .max(64, { message: t('createSheet.departmentMaxLength') })
+      .nullable()
+      .optional(),
+    controlIds: z.array(z.string()).optional(),
+    taskTemplateId: z.string().nullable().optional(),
+  });
+
+type CreateTaskFormValues = z.infer<ReturnType<typeof createCreateTaskSchema>>;
 
 interface CreateTaskPayload {
   title: string;
@@ -71,13 +75,16 @@ interface CreateTaskSheetProps {
 }
 
 export function CreateTaskSheet({ members, controls, open, onOpenChange, createTask }: CreateTaskSheetProps) {
+  const t = useTranslations('tasks');
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: taskTemplates } = useTaskTemplates();
 
-  const form = useForm<z.infer<typeof createTaskSchema>>({
-    resolver: zodResolver(createTaskSchema),
+  const schema = useMemo(() => createCreateTaskSchema(t), [t]);
+
+  const form = useForm<CreateTaskFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       title: '',
       description: '',
@@ -90,7 +97,7 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
   });
 
   const onSubmit = useCallback(
-    async (data: z.infer<typeof createTaskSchema>) => {
+    async (data: CreateTaskFormValues) => {
       setIsSubmitting(true);
       try {
         await createTask({
@@ -102,16 +109,16 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
           controlIds: data.controlIds,
           taskTemplateId: data.taskTemplateId,
         });
-        toast.success('Evidence created successfully');
+        toast.success(t('createSheet.createdToast'));
         onOpenChange(false);
         form.reset();
       } catch {
-        toast.error('Failed to create evidence');
+        toast.error(t('createSheet.createFailedToast'));
       } finally {
         setIsSubmitting(false);
       }
     },
-    [createTask, onOpenChange, form],
+    [createTask, onOpenChange, form, t],
   );
 
   // Memoize control options to prevent re-renders
@@ -194,14 +201,14 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
             const selectedTemplate = frameworkEditorTaskTemplates.find((t) => t.id === field.value);
             return (
               <FormItem className="w-full">
-                <FormLabel>Evidence Template (Optional)</FormLabel>
+                <FormLabel>{t('createSheet.templateLabel')}</FormLabel>
                 <Select
                   value={field.value || 'none'}
                   onValueChange={(value) => handleTaskTemplateChange(value, field.onChange)}
                 >
-                  <SelectTrigger>{selectedTemplate?.name || 'Select Template'}</SelectTrigger>
+                  <SelectTrigger>{selectedTemplate?.name || t('createSheet.selectTemplate')}</SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
+                    <SelectItem value="none">{t('createSheet.none')}</SelectItem>
                     {frameworkEditorTaskTemplates.map((template) => (
                       <SelectItem key={template.id} value={template.id}>
                         {template.name}
@@ -220,11 +227,11 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
           name="title"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Evidence Title</FormLabel>
+              <FormLabel>{t('createSheet.titleLabel')}</FormLabel>
               <FormControl>
                 <Input
                   {...field}
-                  placeholder="A short, descriptive title for the evidence"
+                  placeholder={t('createSheet.titlePlaceholder')}
                   autoCorrect="off"
                 />
               </FormControl>
@@ -238,11 +245,11 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
           name="description"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Description</FormLabel>
+              <FormLabel>{t('createSheet.descriptionLabel')}</FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
-                  placeholder="Provide a detailed description of what needs to be done"
+                  placeholder={t('createSheet.descriptionPlaceholder')}
                   rows={4}
                 />
               </FormControl>
@@ -256,7 +263,7 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
           name="assigneeId"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Assignee (Optional)</FormLabel>
+              <FormLabel>{t('createSheet.assigneeLabel')}</FormLabel>
               <FormControl>
                 <div className="w-full">
                   <SelectAssignee
@@ -276,10 +283,10 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
           control={form.control}
           name="frequency"
           render={({ field }) => {
-            const displayValue = field.value ? field.value.replace('_', ' ') : 'Select frequency';
+            const displayValue = field.value ? field.value.replace('_', ' ') : t('createSheet.selectFrequency');
             return (
               <FormItem className="w-full">
-                <FormLabel>Frequency (Optional)</FormLabel>
+                <FormLabel>{t('createSheet.frequencyLabel')}</FormLabel>
                 <Select
                   value={field.value || 'none'}
                   onValueChange={(value) => handleFrequencyChange(value, field.onChange)}
@@ -288,7 +295,7 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
                     <span className="capitalize">{displayValue}</span>
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
+                    <SelectItem value="none">{t('createSheet.none')}</SelectItem>
                     {taskFrequencies.map((frequency) => (
                       <SelectItem key={frequency} value={frequency}>
                         <span className="capitalize">{frequency.replace('_', ' ')}</span>
@@ -307,7 +314,7 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
           name="department"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>Department (Optional)</FormLabel>
+              <FormLabel>{t('createSheet.departmentLabel')}</FormLabel>
               <FormControl>
                 <DepartmentSelect
                   value={field.value || 'none'}
@@ -333,17 +340,17 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
 
             return (
               <FormItem className="w-full">
-                <FormLabel>Controls (Optional)</FormLabel>
+                <FormLabel>{t('createSheet.controlsLabel')}</FormLabel>
                 <FormControl>
                   <div className="relative overflow-visible">
                     <MultipleSelector
                       value={selectedOptions}
                       onChange={(options) => handleControlsChange(options, field.onChange)}
                       defaultOptions={controlOptions}
-                      placeholder="Search and select controls..."
+                      placeholder={t('createSheet.controlsPlaceholder')}
                       emptyIndicator={
                         <p className="text-center text-lg leading-10 text-muted-foreground">
-                          No controls found.
+                          {t('createSheet.noControlsFound')}
                         </p>
                       }
                       className="[&_[cmdk-list]]:!z-[9999] [&_[cmdk-list]]:!absolute [&_.relative]:!static"
@@ -366,7 +373,7 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
             loading={isSubmitting}
             iconRight={<ArrowRight size={16} />}
           >
-            Create Evidence
+            {t('createSheet.submit')}
           </Button>
         </div>
       </form>
@@ -378,7 +385,7 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Create New Evidence</SheetTitle>
+            <SheetTitle>{t('createSheet.title')}</SheetTitle>
           </SheetHeader>
           <SheetBody>{taskForm}</SheetBody>
         </SheetContent>
@@ -390,7 +397,7 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>Create New Evidence</DrawerTitle>
+          <DrawerTitle>{t('createSheet.title')}</DrawerTitle>
         </DrawerHeader>
         <div className="p-4">{taskForm}</div>
       </DrawerContent>
