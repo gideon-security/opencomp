@@ -2,7 +2,6 @@ import { createHash, pbkdf2Sync, randomBytes } from 'node:crypto';
 import {
   PBKDF2_ITERATIONS,
   hashApiKeyCurrent,
-  isLegacyStoredHash,
   matchesStoredKey,
 } from './api-key-hash';
 
@@ -29,19 +28,14 @@ describe('api-key-hash', () => {
     expect(matchesStoredKey(key, stored, 'deadbeef')).toBe(false);
   });
 
-  it('still verifies legacy unsalted sha256 rows (backward compat)', () => {
-    const legacyStored = createHash('sha256').update(key).digest('hex');
-    expect(matchesStoredKey(key, legacyStored, null)).toBe(true);
-    expect(matchesStoredKey(key, legacyStored, 'some-salt')).toBe(false);
-  });
-
-  it('still verifies legacy salted sha256 rows (backward compat)', () => {
+  it('fails closed on insecure legacy hash formats', () => {
+    const unsalted = createHash('sha256').update(key).digest('hex');
     const salt = randomBytes(16).toString('hex');
-    const legacyStored = createHash('sha256')
+    const salted = createHash('sha256')
       .update(key + salt)
       .digest('hex');
-    expect(matchesStoredKey(key, legacyStored, salt)).toBe(true);
-    expect(matchesStoredKey(key, legacyStored, null)).toBe(false);
+    expect(matchesStoredKey(key, unsalted, null)).toBe(false);
+    expect(matchesStoredKey(key, salted, salt)).toBe(false);
   });
 
   it('returns false instead of throwing on malformed stored hashes', () => {
@@ -56,17 +50,5 @@ describe('api-key-hash', () => {
     const salt = 'salt';
     const expected = pbkdf2Sync(key, salt, PBKDF2_ITERATIONS, 32, 'sha256').toString('hex');
     expect(hashApiKeyCurrent(key, salt)).toBe(`pbkdf2$${PBKDF2_ITERATIONS}$${expected}`);
-  });
-});
-
-describe('isLegacyStoredHash (upgrade-on-verify gate)', () => {
-  it('flags plain sha256 rows as legacy', () => {
-    const salt = randomBytes(16).toString('hex');
-    expect(isLegacyStoredHash(createHash('sha256').update(key + salt).digest('hex'))).toBe(true);
-  });
-
-  it('treats pbkdf2 rows as current', () => {
-    const salt = randomBytes(16).toString('hex');
-    expect(isLegacyStoredHash(hashApiKeyCurrent(key, salt))).toBe(false);
   });
 });

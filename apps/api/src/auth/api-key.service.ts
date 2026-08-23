@@ -7,11 +7,7 @@ import {
 import { db } from '@db';
 import { statement } from '@gideon-defender/auth';
 import { randomBytes } from 'node:crypto';
-import {
-  hashApiKeyCurrent,
-  isLegacyStoredHash,
-  matchesStoredKey,
-} from './api-key-hash';
+import { hashApiKeyCurrent, matchesStoredKey } from './api-key-hash';
 
 /** Result from validating an API key */
 export interface ApiKeyValidationResult {
@@ -51,27 +47,6 @@ export class ApiKeyService {
     return matchesStoredKey(presentedKey, storedHash, salt);
   }
 
-  /**
-   * Transparently upgrades pre-PBKDF2 stored hashes the first time a legacy
-   * key verifies. Keys migrate themselves as they are used; once no legacy
-   * rows remain, the SHA-256 fallback in api-key-hash.ts can be removed.
-   */
-  private async rehashIfNeeded(
-    record: { id: string; key: string; salt: string | null },
-    presentedKey: string,
-  ): Promise<void> {
-    if (!isLegacyStoredHash(record.key)) return;
-    try {
-      const upgraded = this.hashApiKey(presentedKey, record.salt ?? '');
-      await db.apiKey.update({
-        where: { id: record.id },
-        data: { key: upgraded },
-      });
-    } catch (error) {
-      // Upgrade is best-effort — verification already succeeded.
-      this.logger.warn('Failed to upgrade legacy API key hash', error);
-    }
-  }
 
   private generateApiKey(): string {
     const apiKey = randomBytes(32).toString('hex');
@@ -271,7 +246,6 @@ export class ApiKeyService {
               where: { id: legacyMatch.id },
               data: { keyPrefix, lastUsedAt: new Date() },
             });
-            await this.rehashIfNeeded(legacyMatch, apiKey);
             return {
               apiKeyId: legacyMatch.id,
               apiKeyName: legacyMatch.name,
@@ -285,9 +259,7 @@ export class ApiKeyService {
         return null;
       }
 
-      // Update the lastUsedAt timestamp (+ transparently upgrade the hash
-      // scheme for pre-PBKDF2 keys as they are used).
-      await this.rehashIfNeeded(matchingRecord, apiKey);
+      // Update the lastUsedAt timestamp
       await db.apiKey.update({
         where: {
           id: matchingRecord.id,
