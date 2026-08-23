@@ -17,6 +17,7 @@ import {
   TooltipTrigger,
 } from '@trycompai/design-system';
 import { CertificateCheck, Download, Upload, View } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { CustomFrameworkBadge } from './CustomFrameworkBadge';
@@ -46,6 +47,21 @@ import {
   SOC3,
   SOC3InProgress,
 } from './logos';
+
+type TrustTranslator = ReturnType<typeof useTranslations<'trust'>>;
+
+function statusLabel(t: TrustTranslator, status: string): string {
+  switch (status) {
+    case 'compliant':
+      return t('portal.frameworkCard.statusCompliant');
+    case 'in_progress':
+      return t('portal.frameworkCard.statusInProgress');
+    case 'started':
+      return t('portal.frameworkCard.statusStarted');
+    default:
+      return status;
+  }
+}
 
 export function ComplianceFrameworkLogo({
   title,
@@ -152,6 +168,7 @@ export function ComplianceFramework({
   orgId: string;
   disabled?: boolean;
 }) {
+  const t = useTranslations('trust');
   const [isEnabled, setIsEnabled] = useState(isEnabledProp);
   const [status, setStatus] = useState(statusProp);
 
@@ -175,13 +192,13 @@ export function ComplianceFramework({
 
   const processFile = async (file: File) => {
     if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-      toast.error('Please upload a PDF file');
+      toast.error(t('portal.frameworkCard.pdfOnlyError'));
       return;
     }
 
     const MAX_FILE_SIZE = 100 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
-      toast.error('File size must be less than 100MB');
+      toast.error(t('portal.frameworkCard.fileTooLarge'));
       return;
     }
 
@@ -189,9 +206,12 @@ export function ComplianceFramework({
       setIsUploading(true);
       try {
         await onFileUpload(file, frameworkKey);
-        toast.success('Certificate uploaded successfully');
+        toast.success(t('portal.frameworkCard.uploadSuccess'));
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to upload certificate';
+        const message =
+          error instanceof Error
+            ? error.message
+            : t('portal.frameworkCard.uploadFailed');
         toast.error(message);
         console.error('File upload error:', error);
       } finally {
@@ -296,37 +316,33 @@ export function ComplianceFramework({
                       <span
                         className={`inline-block h-4 w-4 rounded-sm ${status === 'compliant' ? 'bg-primary' : status === 'in_progress' ? 'bg-yellow-400' : 'bg-gray-300'}`}
                       />
-                      {status === 'compliant'
-                        ? 'Compliant'
-                        : status === 'in_progress'
-                          ? 'In Progress'
-                          : 'Started'}
+                      {statusLabel(t, status)}
                     </span>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="started">
                       <span className="flex items-center gap-2">
                         <span className="inline-block h-4 w-4 rounded-sm bg-gray-300" />
-                        Started
+                        {t('portal.frameworkCard.statusStarted')}
                       </span>
                     </SelectItem>
                     <SelectItem value="in_progress">
                       <span className="flex items-center gap-2">
                         <span className="inline-block h-4 w-4 rounded-sm bg-yellow-400" />
-                        In Progress
+                        {t('portal.frameworkCard.statusInProgress')}
                       </span>
                     </SelectItem>
                     <SelectItem value="compliant">
                       <span className="flex items-center gap-2">
                         <span className="inline-block h-4 w-4 rounded-sm bg-primary" />
-                        Compliant
+                        {t('portal.frameworkCard.statusCompliant')}
                       </span>
                     </SelectItem>
                   </SelectContent>
                 </Select>
               ) : (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">Disabled</span>
+                  <span className="text-sm font-medium">{t('portal.frameworkCard.disabled')}</span>
                 </div>
               )}
             </div>
@@ -371,7 +387,9 @@ export function ComplianceFramework({
               />
 
               {/* Section Header */}
-              <h4 className="text-sm font-semibold text-foreground mb-3">Compliance Certificate</h4>
+              <h4 className="text-sm font-semibold text-foreground mb-3">
+                {t('portal.frameworkCard.certificateTitle')}
+              </h4>
 
               {/* Certificate Content */}
               {fileName ? (
@@ -383,7 +401,9 @@ export function ComplianceFramework({
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-foreground truncate">{fileName}</p>
-                      <p className="text-xs text-muted-foreground">Certificate uploaded</p>
+                      <p className="text-xs text-muted-foreground">
+                        {t('portal.frameworkCard.certificateUploaded')}
+                      </p>
                     </div>
                     {onFilePreview && (
                       <Tooltip>
@@ -398,7 +418,7 @@ export function ComplianceFramework({
                                   const message =
                                     error instanceof Error
                                       ? error.message
-                                      : 'Failed to preview certificate';
+                                      : t('portal.frameworkCard.previewFailed');
                                   toast.error(message);
                                 }
                               }}
@@ -407,9 +427,11 @@ export function ComplianceFramework({
                           }
                         >
                           <View className="h-3.5 w-3.5" />
-                          View
+                          {t('portal.frameworkCard.view')}
                         </TooltipTrigger>
-                        <TooltipContent>Open certificate in new tab</TooltipContent>
+                        <TooltipContent>
+                          {t('portal.frameworkCard.openInNewTab')}
+                        </TooltipContent>
                       </Tooltip>
                     )}
                   </div>
@@ -429,9 +451,9 @@ export function ComplianceFramework({
                           />
                         }
                       >
-                        Replace
+                        {t('portal.frameworkCard.replace')}
                       </TooltipTrigger>
-                      <TooltipContent>Replace current certificate (PDF)</TooltipContent>
+                      <TooltipContent>{t('portal.frameworkCard.replaceHint')}</TooltipContent>
                     </Tooltip>
 
                     {onFilePreview && (
@@ -449,7 +471,7 @@ export function ComplianceFramework({
                                   const message =
                                     error instanceof Error
                                       ? error.message
-                                      : 'Failed to download certificate';
+                                      : t('portal.frameworkCard.downloadFailed');
                                   toast.error(message);
                                 }
                               }}
@@ -457,9 +479,11 @@ export function ComplianceFramework({
                             />
                           }
                         >
-                          Download
+                          {t('portal.frameworkCard.download')}
                         </TooltipTrigger>
-                        <TooltipContent>Download certificate</TooltipContent>
+                        <TooltipContent>
+                          {t('portal.frameworkCard.downloadHint')}
+                        </TooltipContent>
                       </Tooltip>
                     )}
                   </div>
@@ -502,10 +526,12 @@ export function ComplianceFramework({
                         ${isDragging ? 'text-primary' : 'text-foreground'}
                       `}
                       >
-                        {isDragging ? 'Drop your certificate here' : 'Drag & drop certificate'}
+                        {isDragging
+                          ? t('portal.frameworkCard.dropHere')
+                          : t('portal.frameworkCard.dragAndDrop')}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        or click to browse • PDF only, max 100MB
+                        {t('portal.frameworkCard.browseHint')}
                       </p>
                     </div>
                   </div>
@@ -514,7 +540,7 @@ export function ComplianceFramework({
                     <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-background/80">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                        Uploading...
+                        {t('portal.frameworkCard.uploading')}
                       </div>
                     </div>
                   )}

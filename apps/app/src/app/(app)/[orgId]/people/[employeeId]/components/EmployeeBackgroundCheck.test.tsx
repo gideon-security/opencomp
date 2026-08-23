@@ -162,7 +162,7 @@ describe('EmployeeBackgroundCheck — V1 two-paths', () => {
     await user.type(screen.getByLabelText(/Personal email/), 'not-an-email');
     await user.click(screen.getByRole('button', { name: /Send invite/i }));
 
-    expect(await screen.findByText('Enter a valid personal email')).toBeInTheDocument();
+    expect(await screen.findByText('backgroundCheck.main.invalidPersonalEmail')).toBeInTheDocument();
     expect(apiClient.post).not.toHaveBeenCalled();
   });
 
@@ -280,7 +280,7 @@ describe('EmployeeBackgroundCheck — V1 two-paths', () => {
       />,
     );
 
-    expect(screen.getByText(/this employee is exempt/i)).toBeInTheDocument();
+    expect(screen.getByText(/backgroundCheck\.main\.exemptNoticeTitle/i)).toBeInTheDocument();
     expect(screen.queryByRole('radio', { name: /Order a new check/i })).not.toBeInTheDocument();
   });
 
@@ -386,6 +386,6 @@ describe('EmployeeBackgroundCheck — V1 two-paths', () => {
       />,
     );
 
-    expect(screen.getByText(/this employee is exempt/i)).toBeInTheDocument();
+    expect(screen.getByText(/backgroundCheck\.main\.exemptNoticeTitle/i)).toBeInTheDocument();
   });
 });

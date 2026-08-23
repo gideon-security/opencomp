@@ -23,6 +23,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import {
@@ -107,6 +108,7 @@ function FindingPermissions({
   permissions: string[];
   onRetry: () => void;
 }) {
+  const t = useTranslations('integrations.list');
   const [copied, setCopied] = useState(false);
   const [retrying, setRetrying] = useState(false);
 
@@ -146,13 +148,13 @@ function FindingPermissions({
           onClick={() => {
             navigator.clipboard.writeText(script);
             setCopied(true);
-            toast.success('Script copied');
+            toast.success(t('cloudTests_batchScriptCopied'));
             setTimeout(() => setCopied(false), 2000);
           }}
           className="inline-flex items-center gap-1 rounded border bg-background px-2 py-0.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
         >
           {copied ? <Check className="h-2.5 w-2.5 text-emerald-500" /> : <Copy className="h-2.5 w-2.5" />}
-          {copied ? 'Copied' : 'Copy'}
+          {copied ? t('cloudTests_batchCopied') : t('cloudTests_batchCopy')}
         </button>
         <a
           href="https://console.aws.amazon.com/cloudshell"
@@ -174,7 +176,7 @@ function FindingPermissions({
           className="inline-flex items-center gap-1 rounded border border-primary/30 bg-primary/5 px-2 py-0.5 text-[10px] font-medium text-primary hover:bg-primary/10 transition-colors"
         >
           {retrying ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <RefreshCw className="h-2.5 w-2.5" />}
-          {retrying ? 'Retrying...' : 'Retry'}
+          {retrying ? t('cloudTests_batchRetryingShort') : t('cloudTests_batchRetry')}
         </button>
       </div>
     </div>
@@ -189,6 +191,7 @@ function MissingPermsBanner({
   findings: FindingProgress[];
   confirmedPermissions: string[];
 }) {
+  const t = useTranslations('integrations.list');
   const [copied, setCopied] = useState(false);
   const confirmed = useMemo(() => new Set(confirmedPermissions), [confirmedPermissions]);
 
@@ -243,7 +246,7 @@ function MissingPermsBanner({
   const handleCopy = () => {
     navigator.clipboard.writeText(script);
     setCopied(true);
-    toast.success('Permission script copied');
+    toast.success(t('cloudTests_batchPermScriptCopied'));
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -257,10 +260,13 @@ function MissingPermsBanner({
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-xs font-medium">
-            {allMissing.length} permission{allMissing.length !== 1 ? 's' : ''} needed across {serviceCount} service{serviceCount !== 1 ? 's' : ''}
+            {t('cloudTests_batchPermsNeededBanner', {
+              permCount: allMissing.length,
+              serviceCount,
+            })}
           </p>
           <p className="text-[11px] text-muted-foreground mt-0.5">
-            Run the script below — it merges with existing permissions, nothing gets overwritten.
+            {t('cloudTests_batchMergeScriptHint')}
           </p>
         </div>
       </div>
@@ -288,7 +294,7 @@ function MissingPermsBanner({
           className="inline-flex items-center gap-1.5 rounded-md border bg-background px-2.5 py-1 text-[11px] font-medium text-foreground hover:bg-muted transition-colors"
         >
           {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
-          {copied ? 'Copied' : 'Copy Script'}
+          {copied ? t('cloudTests_batchCopied') : t('cloudTests_batchCopyScript')}
         </button>
         <a
           href="https://console.aws.amazon.com/cloudshell"
@@ -315,6 +321,7 @@ export function BatchRemediationDialog({
   onRunStarted,
   activeBatch,
 }: BatchRemediationDialogProps) {
+  const t = useTranslations('integrations.list');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [acknowledged, setAcknowledged] = useState(false);
   const [batchId, setBatchId] = useState<string | null>(null);
@@ -389,10 +396,14 @@ export function BatchRemediationDialog({
     if (runId) {
       return findings
         .filter((f) => selected.has(f.id))
-        .map((f) => ({ id: f.id, title: f.title ?? 'Untitled', status: 'pending' as FindingStatus }));
+        .map((f) => ({
+          id: f.id,
+          title: f.title ?? t('cloudTests_batchUntitledFinding'),
+          status: 'pending' as FindingStatus,
+        }));
     }
     return [];
-  }, [progress, runId, findings, selected, activeBatch]);
+  }, [progress, runId, findings, selected, activeBatch, t]);
 
   const handleToggle = useCallback((id: string) => {
     setSelected((prev) => {
@@ -411,7 +422,7 @@ export function BatchRemediationDialog({
   const handleStart = async () => {
     const selectedFindings = findings
       .filter((f) => selected.has(f.id))
-      .map((f) => ({ id: f.id, key: f.key, title: f.title ?? 'Untitled' }));
+      .map((f) => ({ id: f.id, key: f.key, title: f.title ?? t('cloudTests_batchUntitledFinding') }));
     if (selectedFindings.length === 0) return;
 
     setStarting(true);
@@ -451,7 +462,9 @@ export function BatchRemediationDialog({
       .filter((f) => f.status === 'skipped' || f.status === 'failed')
       .map((f) => {
         const orig = findings.find((o) => o.id === f.id);
-        return orig ? { id: orig.id, key: orig.key, title: orig.title ?? 'Untitled' } : null;
+        return orig
+          ? { id: orig.id, key: orig.key, title: orig.title ?? t('cloudTests_batchUntitledFinding') }
+          : null;
       })
       .filter((f): f is { id: string; key: string; title: string } => f !== null);
 
@@ -494,12 +507,14 @@ export function BatchRemediationDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Zap className="h-4 w-4 text-primary" />
-            Fix All — {serviceName}
+            {t('cloudTests_batchFixAllTitle', { serviceName })}
           </DialogTitle>
           <DialogDescription>
             {runId
-              ? `Processing ${progress?.total ?? selectedCount} findings`
-              : `${selectedCount} finding${selectedCount !== 1 ? 's' : ''} selected for auto-fix`}
+              ? t('cloudTests_batchProcessingFindings', {
+                  count: progress?.total ?? selectedCount,
+                })
+              : t('cloudTests_batchSelectedForAutoFix', { count: selectedCount })}
           </DialogDescription>
         </DialogHeader>
 
@@ -509,9 +524,13 @@ export function BatchRemediationDialog({
             <div className="flex items-center gap-2 border-b pb-2">
               <Checkbox checked={allSelected} onCheckedChange={handleToggleAll} id="select-all" />
               <label htmlFor="select-all" className="text-xs font-medium text-muted-foreground cursor-pointer select-none">
-                {allSelected ? 'Deselect all' : 'Select all'}
+                {allSelected
+                  ? t('cloudTests_batchDeselectAll')
+                  : t('cloudTests_batchSelectAll')}
               </label>
-              <span className="ml-auto text-xs text-muted-foreground">{selectedCount} selected</span>
+              <span className="ml-auto text-xs text-muted-foreground">
+                {t('cloudTests_batchSelectedCount', { count: selectedCount })}
+              </span>
             </div>
 
             <div className="overflow-y-auto max-h-[40vh] -mx-1 px-1 space-y-0.5">
@@ -522,7 +541,7 @@ export function BatchRemediationDialog({
                 >
                   <Checkbox checked={selected.has(f.id)} onCheckedChange={() => handleToggle(f.id)} />
                   <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${SEVERITY_DOT[f.severity.toLowerCase()] ?? 'bg-gray-300'}`} />
-                  <span className="text-sm truncate min-w-0 flex-1">{f.title ?? 'Untitled'}</span>
+                  <span className="text-sm truncate min-w-0 flex-1">{f.title ?? t('cloudTests_batchUntitledFinding')}</span>
                   <Badge variant="outline" className="shrink-0 text-[9px]">{f.severity}</Badge>
                 </label>
               ))}
@@ -532,12 +551,14 @@ export function BatchRemediationDialog({
               <label className="flex items-start gap-2.5 cursor-pointer">
                 <Checkbox checked={acknowledged} onCheckedChange={(v) => setAcknowledged(v === true)} className="mt-0.5" />
                 <span className="text-xs leading-relaxed text-muted-foreground">
-                  I have reviewed the findings above and understand this will modify my cloud infrastructure.
+                  {t('cloudTests_batchAcknowledgeBody')}
                 </span>
               </label>
               <Button onClick={handleStart} disabled={!acknowledged || selectedCount === 0 || starting} className="w-full">
                 {starting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-                {starting ? 'Starting...' : `Fix ${selectedCount} Finding${selectedCount !== 1 ? 's' : ''}`}
+                {starting
+                  ? t('cloudTests_batchStarting')
+                  : t('cloudTests_batchFixCount', { count: selectedCount })}
               </Button>
             </div>
           </>
@@ -556,16 +577,39 @@ export function BatchRemediationDialog({
               </div>
               <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span>
-                  {isScanning ? 'Re-scanning to verify...'
-                    : isDone ? (progress?.phase === 'cancelled' ? 'Cancelled' : 'Complete')
-                    : isWaitingPerms ? `Waiting for permissions... (${progress?.permChecksLeft ?? 0} checks left)`
-                    : progress?.phase === 'retrying' ? 'Retrying with new permissions...'
-                    : `Fixing ${progress?.current ?? 0} of ${progress?.total ?? selectedCount}...`}
+                  {isScanning
+                    ? t('cloudTests_batchRescanning')
+                    : isDone
+                      ? progress?.phase === 'cancelled'
+                        ? t('cloudTests_batchCancelled')
+                        : t('cloudTests_batchComplete')
+                      : isWaitingPerms
+                        ? t('cloudTests_batchWaitingForPerms', {
+                            count: progress?.permChecksLeft ?? 0,
+                          })
+                        : progress?.phase === 'retrying'
+                          ? t('cloudTests_batchRetryingWithPerms')
+                          : t('cloudTests_batchFixingProgress', {
+                              current: progress?.current ?? 0,
+                              total: progress?.total ?? selectedCount,
+                            })}
                 </span>
                 <div className="flex gap-3">
-                  {(progress?.fixed ?? 0) > 0 && <span className="text-emerald-600">{progress!.fixed} fixed</span>}
-                  {(progress?.skipped ?? 0) > 0 && <span className="text-amber-600">{progress!.skipped} skipped</span>}
-                  {(progress?.failed ?? 0) > 0 && <span className="text-red-600">{progress!.failed} failed</span>}
+                  {(progress?.fixed ?? 0) > 0 && (
+                    <span className="text-emerald-600">
+                      {t('cloudTests_batchFixedCount', { count: progress!.fixed })}
+                    </span>
+                  )}
+                  {(progress?.skipped ?? 0) > 0 && (
+                    <span className="text-amber-600">
+                      {t('cloudTests_batchSkippedCount', { count: progress!.skipped })}
+                    </span>
+                  )}
+                  {(progress?.failed ?? 0) > 0 && (
+                    <span className="text-red-600">
+                      {t('cloudTests_batchFailedCount', { count: progress!.failed })}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -600,13 +644,21 @@ export function BatchRemediationDialog({
                           type="button"
                           onClick={() => handleSkipFinding(f.id)}
                           className="shrink-0 text-[10px] text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-                          title="Skip this finding"
+                          title={t('cloudTests_batchSkipFindingTooltip')}
                         >
                           <X className="h-3 w-3" />
                         </button>
                       )}
-                      {f.status === 'fixed' && <span className="text-[10px] text-emerald-600 font-medium shrink-0">Done</span>}
-                      {f.status === 'cancelled' && <span className="text-[10px] text-muted-foreground shrink-0">Removed</span>}
+                      {f.status === 'fixed' && (
+                        <span className="text-[10px] text-emerald-600 font-medium shrink-0">
+                          {t('cloudTests_batchDone')}
+                        </span>
+                      )}
+                      {f.status === 'cancelled' && (
+                        <span className="text-[10px] text-muted-foreground shrink-0">
+                          {t('cloudTests_batchRemoved')}
+                        </span>
+                      )}
                     </div>
                     {/* Per-finding permissions — only shows for THIS finding */}
                     {isMissingPerms && (
@@ -618,12 +670,12 @@ export function BatchRemediationDialog({
                           if (!orig) return;
                           const result = await retryFinding(connectionId, f.id, orig.key);
                           if (result.status === 'fixed') {
-                            toast.success(`Fixed: ${f.title}`);
+                            toast.success(t('cloudTests_batchFixedToast', { title: f.title }));
                             onComplete?.();
                           } else if (result.status === 'needs_permissions') {
-                            toast.error('Still missing permissions');
+                            toast.error(t('cloudTests_batchStillMissingPerms'));
                           } else {
-                            toast.error(result.error ?? 'Retry failed');
+                            toast.error(result.error ?? t('cloudTests_batchRetryFailed'));
                           }
                         }}
                       />
@@ -638,29 +690,31 @@ export function BatchRemediationDialog({
               {!isDone && !isScanning && (
                 <Button variant="outline" size="sm" onClick={handleCancel} disabled={cancelling}>
                   {cancelling ? <Loader2 className="h-3 w-3 animate-spin mr-1.5" /> : <X className="h-3 w-3 mr-1.5" />}
-                  {cancelling ? 'Cancelling...' : 'Cancel All'}
+                  {cancelling
+                    ? t('cloudTests_batchCancelling')
+                    : t('cloudTests_batchCancelAll')}
                 </Button>
               )}
               {isScanning && (
                 <Button variant="outline" size="sm" disabled>
                   <RefreshCw className="h-3 w-3 animate-spin mr-1.5" />
-                  Re-scanning...
+                  {t('cloudTests_batchRescanningButton')}
                 </Button>
               )}
               {isDone && hasSkippedOrFailed && (
                 <Button variant="outline" size="sm" onClick={handleRetrySkipped} disabled={starting}>
                   {starting ? <Loader2 className="h-3 w-3 animate-spin mr-1.5" /> : <RefreshCw className="h-3 w-3 mr-1.5" />}
-                  Retry Skipped
+                  {t('cloudTests_batchRetrySkipped')}
                 </Button>
               )}
               {isDone && (
                 <Button size="sm" onClick={() => onOpenChange(false)}>
-                  Done
+                  {t('cloudTests_batchDone')}
                 </Button>
               )}
               {!isDone && (
                 <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
-                  Minimize
+                  {t('cloudTests_batchMinimize')}
                 </Button>
               )}
             </div>

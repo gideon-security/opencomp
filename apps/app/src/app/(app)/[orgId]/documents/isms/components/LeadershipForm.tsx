@@ -13,14 +13,15 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { Save } from '@trycompai/design-system/icons';
-import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
+import { useEffect, useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import type { IsmsLeadershipNarrative } from '../isms-types';
 import { LeadershipCommitmentRow } from './LeadershipCommitmentRow';
 import {
   buildFormValues,
   LEADERSHIP_COMMITMENTS,
-  leadershipNarrativeSchema,
+  createLeadershipSchema,
   type LeadershipNarrativeValues,
 } from './leadership-schema';
 
@@ -36,8 +37,10 @@ interface LeadershipFormProps {
  * commitments as labelled editable rows. Read-only users see plain text.
  */
 export function LeadershipForm({ narrative, canEdit, onSave }: LeadershipFormProps) {
+  const t = useTranslations('isms');
+  const leadershipSchema = useMemo(() => createLeadershipSchema(t), [t]);
   const { control, handleSubmit, reset, formState } = useForm<LeadershipNarrativeValues>({
-    resolver: zodResolver(leadershipNarrativeSchema),
+    resolver: zodResolver(leadershipSchema),
     defaultValues: buildFormValues(narrative),
   });
 

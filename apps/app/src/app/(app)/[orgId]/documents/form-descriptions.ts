@@ -1,16 +1,14 @@
 export const conciseFormDescriptions: Record<string, string> = {
-  meeting: 'Record board, IT leadership, or risk committee meeting minutes.',
-  'board-meeting': 'Hold a board meeting and capture minutes.',
-  'it-leadership-meeting': 'Run an IT leadership meeting and document outcomes.',
-  'risk-committee-meeting': 'Conduct a risk committee meeting and record decisions.',
-  'access-request':
-    'Track and retain user access requests. Employees can request access to systems through the employee portal.',
-  'whistleblower-report': 'Submit a confidential whistleblower report.',
-  'penetration-test': 'Upload a third-party penetration test report.',
-  'rbac-matrix': 'Document role-based access by system, role, and approval.',
-  'infrastructure-inventory': 'Track infrastructure assets, ownership, and review dates.',
-  'employee-performance-evaluation': 'Capture structured employee review outcomes and sign-off.',
-  'network-diagram': 'Upload or link to a current network diagram.',
-  'tabletop-exercise':
-    'Conduct a tabletop exercise and document findings, attendees, and action items.',
+  meeting: 'formFields.meeting',
+  'board-meeting': 'formFields.boardMeeting',
+  'it-leadership-meeting': 'formFields.itLeadershipMeeting',
+  'risk-committee-meeting': 'formFields.riskCommitteeMeeting',
+  'access-request': 'formFields.accessRequest',
+  'whistleblower-report': 'formFields.whistleblowerReport',
+  'penetration-test': 'formFields.penetrationTest',
+  'rbac-matrix': 'formFields.rbacMatrix',
+  'infrastructure-inventory': 'formFields.infrastructureInventory',
+  'employee-performance-evaluation': 'formFields.employeePerformanceEvaluation',
+  'network-diagram': 'formFields.networkDiagram',
+  'tabletop-exercise': 'formFields.tabletopExercise',
 };
