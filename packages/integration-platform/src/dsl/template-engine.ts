@@ -14,7 +14,10 @@ export function interpolate(
   template: string,
   scope: Record<string, unknown>,
 ): string {
-  return template.replace(/\{\{([^}]+)\}\}/g, (_match, path: string) => {
+  // [^{}] (not [^}]) keeps the quantifier unambiguous — CodeQL
+  // js/polynomial-redos: `{{{{…` runs would backtrack quadratically with
+  // [^}]+. Placeholder paths never contain braces.
+  return template.replace(/\{\{([^{}]+)\}\}/g, (_match, path: string) => {
     const trimmedPath = path.trim();
 
     // Special built-in variables
