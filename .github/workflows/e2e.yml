@@ -11,6 +11,10 @@ on:
     branches:
       - main
 
+# Tests only need to check out code — no token writes required.
+permissions:
+  contents: read
+
 jobs:
   api-e2e:
     name: API e2e tests
