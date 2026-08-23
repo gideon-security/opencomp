@@ -11,7 +11,6 @@ import {
   FindingArea,
   FindingSeverity,
   FindingStatus,
-  FindingType,
 } from '@db';
 import {
   toDbEvidenceFormType,
@@ -21,7 +20,6 @@ import { CreateFindingDto } from './dto/create-finding.dto';
 import { UpdateFindingDto } from './dto/update-finding.dto';
 import { FindingAuditService } from './finding-audit.service';
 import { FindingNotifierService } from './finding-notifier.service';
-import { type EvidenceFormType } from '@/evidence-forms/evidence-forms.definitions';
 import { TimelinesService } from '../timelines/timelines.service';
 import { checkAutoCompletePhases } from '../frameworks/frameworks-timeline.helper';
 

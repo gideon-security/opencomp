@@ -11,9 +11,8 @@ import {
 import type React from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { toast } from 'sonner';
-import { Button, HStack, Section, Stack, Text } from '@trycompai/design-system';
+import { Button, Section, Stack, Text } from '@trycompai/design-system';
 import { ScheduleSummary } from '@/components/schedule-summary';
 import { useTaskAutomations } from '../hooks/use-task-automations';
 

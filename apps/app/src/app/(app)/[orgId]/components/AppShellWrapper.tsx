@@ -46,7 +46,7 @@ import { BrandLogo } from '@gideon-defender/ui/brand-logo';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Suspense, useCallback, useRef, useState } from 'react';
+import { Suspense, useCallback, useRef } from 'react';
 import { AdminSidebar } from '../admin/components/AdminSidebar';
 import { ImpersonationBanner } from '../admin/components/ImpersonationBanner';
 import { SettingsSidebar } from '../settings/components/SettingsSidebar';

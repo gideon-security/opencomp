@@ -1,5 +1,4 @@
 import { Test, type TestingModule } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
 import { TaskManagementService } from './task-management.service';
 import { TaskItemAssignmentNotifierService } from './task-item-assignment-notifier.service';
 import { TaskItemMentionNotifierService } from './task-item-mention-notifier.service';

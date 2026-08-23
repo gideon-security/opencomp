@@ -69,7 +69,6 @@ import { answerQuestion } from '@/trigger/questionnaire/answer-question';
 import { tasks } from '@gideon-defender/trigger-local';
 import {
   updateAnsweredCount,
-  persistQuestionnaireResult,
   uploadQuestionnaireFile,
   saveGeneratedAnswer,
 } from './utils/questionnaire-storage';

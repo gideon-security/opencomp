@@ -17,7 +17,6 @@ import {
   ApiResponse,
   ApiSecurity,
   ApiTags,
-  ApiExtraModels,
 } from '@nestjs/swagger';
 import { HybridAuthGuard } from '../auth/hybrid-auth.guard';
 import { AuthContext, OrganizationId } from '../auth/auth-context.decorator';

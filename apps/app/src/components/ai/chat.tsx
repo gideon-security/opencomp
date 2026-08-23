@@ -13,7 +13,7 @@ import type { UIMessage } from 'ai';
 import { useActiveOrganization } from '@/utils/auth-client';
 import { apiClient } from '@/lib/api-client';
 import { useParams } from 'next/navigation';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Conversation,
   ConversationContent,
@@ -32,7 +32,6 @@ import {
 } from '@/components/ai-elements/reasoning';
 import { Tool, ToolHeader, ToolContent } from '@/components/ai-elements/tool';
 import { LogoSpinner } from '../logo-spinner';
-import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
 
 const API_URL = env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
 

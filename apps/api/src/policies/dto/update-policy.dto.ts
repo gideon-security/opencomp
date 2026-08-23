@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsOptional, IsBoolean, IsString, IsEnum } from 'class-validator';
+import { IsOptional, IsBoolean, IsEnum } from 'class-validator';
 import { CreatePolicyDto } from './create-policy.dto';
 
 export enum DisplayFormat {

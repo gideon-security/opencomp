@@ -1,6 +1,5 @@
 'use client';
 
-import type { EvidenceAutomation, EvidenceAutomationRun } from '@db';
 import { CheckCircle2, Circle, Loader2, Sparkles, XCircle } from 'lucide-react';
 import { useMemo } from 'react';
 

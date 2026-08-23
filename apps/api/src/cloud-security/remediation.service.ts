@@ -10,7 +10,6 @@ import {
 import { GcpRemediationService } from './gcp-remediation.service';
 import { AzureRemediationService } from './azure-remediation.service';
 import {
-  executeAwsCommand,
   executePlanSteps,
   validatePlanSteps,
 } from './aws-command-executor';

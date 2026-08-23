@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
 import { Checkmark, ArrowLeft, Link, Tag, TrashCan, User as UserIcon } from '@trycompai/design-system/icons';
-import { cn } from '@/lib/utils';
 import { SelectAssignee } from '@/components/SelectAssignee';
 import { toast } from 'sonner';
 import type { TaskItem, TaskItemPriority, TaskItemStatus } from '@/hooks/use-task-items';
@@ -24,7 +23,6 @@ import {
   getStatusColor,
   getPriorityIcon,
   getPriorityColor,
-  getTaskIdShort,
 } from './task-item-utils';
 
 interface TaskItemFocusSidebarProps {

@@ -5,7 +5,6 @@ import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
 import { useParams } from 'next/navigation';
 import type { TaskItemEntityType } from '@/hooks/use-task-items';
-import { AttachmentEntityType } from '@db';
 
 interface UploadResult {
   id: string;

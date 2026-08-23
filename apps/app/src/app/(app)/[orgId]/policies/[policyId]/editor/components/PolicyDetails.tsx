@@ -32,7 +32,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   Button,
-  HStack,
   Label,
   Section,
   Stack,
@@ -41,7 +40,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@trycompai/design-system';
-import { Close, MagicWand } from '@trycompai/design-system/icons';
+import { MagicWand } from '@trycompai/design-system/icons';
 import { DefaultChatTransport } from 'ai';
 import { format } from 'date-fns';
 import { ArrowDownUp, ChevronDown, ChevronLeft, ChevronRight, FileText, Trash2, Upload } from 'lucide-react';

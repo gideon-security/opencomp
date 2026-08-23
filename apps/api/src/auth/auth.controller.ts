@@ -1,8 +1,6 @@
 import {
-  BadRequestException,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   NotFoundException,
   Param,

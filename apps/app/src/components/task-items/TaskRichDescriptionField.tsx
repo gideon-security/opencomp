@@ -7,7 +7,6 @@ import { createMentionExtension, type MentionUser } from '@gideon-defender/ui/ed
 import { FileAttachment } from '@gideon-defender/ui/editor/extensions/file-attachment';
 import { useDebouncedCallback } from 'use-debounce';
 import { defaultExtensions } from '@gideon-defender/ui/editor/extensions';
-import { Textarea } from '@gideon-defender/ui/textarea';
 import { toast } from 'sonner';
 import { Attachment } from '@trycompai/design-system/icons';
 import { Loader2 } from 'lucide-react';

@@ -60,7 +60,6 @@ import {
   CreateVersionDto,
   PublishVersionDto,
   SubmitForApprovalDto,
-  UpdateVersionContentDto,
 } from './dto/version.dto';
 import { PoliciesService } from './policies.service';
 import { GET_ALL_POLICIES_RESPONSES } from './schemas/get-all-policies.responses';

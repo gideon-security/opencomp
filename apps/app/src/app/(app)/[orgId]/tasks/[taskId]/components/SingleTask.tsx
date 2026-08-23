@@ -25,7 +25,6 @@ import {
   type Member,
   type Task,
   type TaskFrequency,
-  type TaskStatus,
   type User,
 } from '@db';
 import {

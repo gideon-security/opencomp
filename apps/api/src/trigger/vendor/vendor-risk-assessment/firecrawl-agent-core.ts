@@ -7,7 +7,6 @@ import type {
 } from './agent-types';
 import { validateVendorUrl } from './url-validation';
 import {
-  type FirecrawlSetup,
   handleFirecrawlError,
   normalizeIso,
   setupFirecrawlClient,

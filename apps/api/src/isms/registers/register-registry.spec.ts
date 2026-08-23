@@ -1,8 +1,4 @@
 import { BadRequestException } from '@nestjs/common';
-import type { IsmsContextIssueService } from '../isms-context-issue.service';
-import type { IsmsInterestedPartyService } from '../isms-interested-party.service';
-import type { IsmsObjectiveService } from '../isms-objective.service';
-import type { IsmsRequirementService } from '../isms-requirement.service';
 import {
   createRegisterRegistry,
   ISMS_REGISTER_KEYS,

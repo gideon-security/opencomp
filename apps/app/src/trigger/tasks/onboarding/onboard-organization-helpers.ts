@@ -22,7 +22,6 @@ import { z } from 'zod';
 import type { researchVendor } from '../scrape/research';
 import {
   applyMitigationPlanFields,
-  mirrorActiveDescriptionIntoMap,
 } from '@/lib/strategy-descriptions';
 import {
   CUSTOM_ONBOARDING_VENDOR_DESCRIPTION,
@@ -952,7 +951,7 @@ export async function triggerVendorResearch(vendors: any[]): Promise<void> {
       return false;
     }
     try {
-      // eslint-disable-next-line no-new
+       
       new URL(website);
       return true;
     } catch {

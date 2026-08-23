@@ -9,7 +9,6 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
-  ScrollArea,
   Sheet,
   SheetBody,
   SheetContent,

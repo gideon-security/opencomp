@@ -49,7 +49,6 @@ import {
   getAllManifests,
   getActiveManifests,
   TASK_TEMPLATE_INFO,
-  type OAuthConfig,
   type TaskTemplateId,
   type IntegrationCredentials,
 } from '@gideon-defender/integration-platform';

@@ -15,7 +15,6 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { startPreview, startSingleFix } from '../actions/single-fix';
-import { AcknowledgmentPanel } from './AcknowledgmentPanel';
 import { extractJsonSegments } from './extract-json-segments';
 import { PermissionErrorPanel } from './PermissionErrorPanel';
 

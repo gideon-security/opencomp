@@ -6,7 +6,6 @@ import {
   useRiskActions,
   useRisks,
   type Risk as ApiRisk,
-  type RiskAssignee,
   type RisksQueryParams,
 } from '@/hooks/use-risks';
 import { getSortingStateParser } from '@/lib/parsers';

@@ -21,7 +21,6 @@ import {
 } from 'better-auth/plugins';
 import { ac, allRoles } from '@gideon-defender/auth';
 import { createAuthMiddleware } from 'better-auth/api';
-import type { AccessControl } from 'better-auth/plugins/access';
 import { redisClient } from '../redis/redis.client';
 import {
   resolveMicrosoftEmail,

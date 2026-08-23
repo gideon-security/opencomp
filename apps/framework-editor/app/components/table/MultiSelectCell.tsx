@@ -1,7 +1,6 @@
 'use client';
 
-import { Button } from '@gideon-defender/ui';
-import { Check, Plus, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 export interface MultiSelectOption {

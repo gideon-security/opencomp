@@ -1,4 +1,3 @@
-import { logger } from '@gideon-defender/trigger-local';
 import { getDomain } from 'tldts';
 
 // Well-known trust portal domains that vendors use to host their security pages

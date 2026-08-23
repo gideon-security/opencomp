@@ -15,7 +15,6 @@ import {
   ApiConsumes,
   ApiProduces,
   ApiOkResponse,
-  ApiBody,
 } from '@nestjs/swagger';
 import { SOAService } from './soa.service';
 import { SaveSOAAnswerDto } from './dto/save-soa-answer.dto';

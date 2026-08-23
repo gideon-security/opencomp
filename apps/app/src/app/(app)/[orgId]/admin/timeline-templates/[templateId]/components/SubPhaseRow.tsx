@@ -23,7 +23,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  Text,
 } from '@trycompai/design-system';
 import {
   ArrowDown,
