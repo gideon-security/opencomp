@@ -473,14 +473,16 @@ function extractSharedStrings(fileBuffer: Buffer): string[] {
     const siMatches = content.match(/<si>[\s\S]*?<\/si>/g) || [];
 
     for (const si of siMatches) {
-      // Extract text from both <t>...</t> and <d:t>...</d:t> (or any namespace:t)
-      const textMatches = si.match(/<[^>]*:?t[^>]*>([^<]*)<\/[^>]*:?t>/g) || [];
+      // Extract text from both <t>...</t> and <d:t>...</d:t> (or any namespace:t).
+      // Case-insensitive + explicit namespace/attribute shape so arbitrary tags
+      // that merely contain the letter "t" can't slip through.
+      const textMatches = [
+        ...si.matchAll(/<(?:\w+:)?t(?:\s[^>]*)?>([^<]*)<\/(?:\w+:)?t>/gi),
+      ];
 
       let fullText = '';
       for (const match of textMatches) {
-        // Extract just the text content between tags
-        const textContent = match.replace(/<[^>]*>/g, '');
-        fullText += textContent;
+        fullText += match[1];
       }
 
       strings.push(fullText.trim());

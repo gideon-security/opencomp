@@ -188,15 +188,37 @@ function escapeLike(input: string): string {
 function filterConditions(filter?: string): Prisma.Sql[] {
   if (!filter) return [];
   const conditions: Prisma.Sql[] = [];
-  const re = /([A-Za-z_][A-Za-z0-9_]*)\s*=\s*"([^"]*)"/g;
-  let match: RegExpExecArray | null;
-  while ((match = re.exec(filter)) !== null) {
-    const key = match[1];
-    const value = match[2];
-    if (key === undefined || value === undefined) continue;
-    if (FILTER_COLUMNS.has(key)) {
-      conditions.push(Prisma.sql`"${Prisma.raw(key)}" = ${value}`);
+  // Linear scan for `key = "value"` pairs instead of a regex exec loop —
+  // CodeQL js/polynomial-redos: the equivalent pattern backtracks
+  // quadratically on uncontrolled filter strings (e.g. long word-char runs
+  // with no '='). This scan advances monotonically and never re-examines
+  // characters, so worst case stays O(n).
+  let idx = 0;
+  while (idx < filter.length) {
+    const eq = filter.indexOf('=', idx);
+    if (eq === -1) break;
+
+    // Walk backwards over whitespace, then over key characters.
+    let keyEnd = eq;
+    while (keyEnd > idx && /\s/.test(filter[keyEnd - 1]!)) keyEnd--;
+    const isKeyChar = (ch: string) => /[A-Za-z0-9_]/.test(ch);
+    let keyStart = keyEnd;
+    while (keyStart > 0 && isKeyChar(filter[keyStart - 1]!)) keyStart--;
+    const key = filter.slice(keyStart, keyEnd);
+
+    if (key.length > 0 && /^[A-Za-z_]/.test(key) && FILTER_COLUMNS.has(key)) {
+      // Skip whitespace after '=', then require an opening double quote.
+      let v = eq + 1;
+      while (v < filter.length && /\s/.test(filter[v]!)) v++;
+      if (filter[v] === '"') {
+        const close = filter.indexOf('"', v + 1);
+        if (close === -1) break; // unterminated quote — nothing more to parse
+        conditions.push(Prisma.sql`"${Prisma.raw(key)}" = ${filter.slice(v + 1, close)}`);
+        idx = close + 1;
+        continue;
+      }
     }
+    idx = eq + 1;
   }
   return conditions;
 }

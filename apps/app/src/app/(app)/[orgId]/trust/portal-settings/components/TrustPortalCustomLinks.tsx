@@ -11,6 +11,7 @@ import {
 } from '@trycompai/design-system';
 import { Add, Close, Edit, Link as LinkIcon, OverflowMenuVertical, TrashCan } from '@trycompai/design-system/icons';
 import { GripVertical } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useTrustPortalCustomLinks } from '@/hooks/use-trust-portal-custom-links';
 import { useState } from 'react';
@@ -58,6 +59,7 @@ function SortableLink({
   onDelete: (linkId: string) => void;
   canUpdate: boolean;
 }) {
+  const t = useTranslations('trust');
   const {
     attributes,
     listeners,
@@ -98,11 +100,11 @@ function SortableLink({
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => onEdit(link)}>
                   <Edit size={16} />
-                  Edit
+                  {t('portal.customLinks.edit')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onDelete(link.id)}>
                   <TrashCan size={16} />
-                  Delete
+                  {t('portal.customLinks.delete')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -129,6 +131,7 @@ export function TrustPortalCustomLinks({
   initialLinks,
   orgId,
 }: TrustPortalCustomLinksProps) {
+  const t = useTranslations('trust');
   const { hasPermission } = usePermissions();
   const canUpdate = hasPermission('trust', 'update');
   const {
@@ -166,7 +169,7 @@ export function TrustPortalCustomLinks({
     if (isMutating) return;
 
     if (!title.trim() || !url.trim()) {
-      toast.error('Title and URL are required');
+      toast.error(t('portal.customLinks.titleUrlRequired'));
       return;
     }
 
@@ -179,7 +182,7 @@ export function TrustPortalCustomLinks({
     try {
       new URL(normalizedUrl);
     } catch {
-      toast.error('Please enter a valid URL');
+      toast.error(t('portal.customLinks.invalidUrl'));
       return;
     }
 
@@ -198,7 +201,7 @@ export function TrustPortalCustomLinks({
             prev.map((l) => (l.id === (updated as CustomLink).id ? (updated as CustomLink) : l)),
           );
         }
-        toast.success('Link updated successfully');
+        toast.success(t('portal.customLinks.linkUpdated'));
       } else {
         const created = await createLinkApi({
           title,
@@ -208,11 +211,15 @@ export function TrustPortalCustomLinks({
         if (created) {
           setLinks((prev) => [...prev, created as CustomLink]);
         }
-        toast.success('Link created successfully');
+        toast.success(t('portal.customLinks.linkCreated'));
       }
       resetForm();
     } catch {
-      toast.error(editingLink ? 'Failed to update link' : 'Failed to create link');
+      toast.error(
+        editingLink
+          ? t('portal.customLinks.updateFailed')
+          : t('portal.customLinks.createFailed'),
+      );
     } finally {
       setIsMutating(false);
     }
@@ -230,9 +237,9 @@ export function TrustPortalCustomLinks({
     setLinks((prev) => prev.filter((l) => l.id !== linkId));
     try {
       await deleteLinkApi(linkId);
-      toast.success('Link deleted successfully');
+      toast.success(t('portal.customLinks.linkDeleted'));
     } catch {
-      toast.error('Failed to delete link');
+      toast.error(t('portal.customLinks.deleteFailed'));
     }
   };
 
@@ -246,8 +253,8 @@ export function TrustPortalCustomLinks({
         const newItems = arrayMove(items, oldIndex, newIndex);
 
         reorderLinksApi(newItems.map((item) => item.id)).then(
-          () => toast.success('Links reordered'),
-          () => toast.error('Failed to reorder links'),
+          () => toast.success(t('portal.customLinks.linksReordered')),
+          () => toast.error(t('portal.customLinks.reorderFailed')),
         );
 
         return newItems;
@@ -259,23 +266,21 @@ export function TrustPortalCustomLinks({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <h3 className="text-lg font-medium">Custom Links</h3>
+          <h3 className="text-lg font-medium">{t('portal.customLinks.title')}</h3>
           <p className="text-sm text-muted-foreground">
-            Add external links to display on your trust portal (e.g., StatusPage, support site)
+            {t('portal.customLinks.description')}
           </p>
         </div>
         {canUpdate && (
           <Button onClick={() => setIsModalOpen(true)} iconLeft={<Add size={16} />}>
-            Add Link
+            {t('portal.customLinks.addLink')}
           </Button>
         )}
       </div>
 
       {links.length === 0 ? (
         <div className="rounded-md border border-dashed border-border p-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            No custom links yet. Add one to get started.
-          </p>
+          <p className="text-sm text-muted-foreground">{t('portal.customLinks.emptyState')}</p>
         </div>
       ) : (
         <DndContext
@@ -307,7 +312,9 @@ export function TrustPortalCustomLinks({
           <div className="w-full max-w-md rounded-lg bg-background p-6 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold">
-                {editingLink ? 'Edit Link' : 'Add Link'}
+                {editingLink
+                  ? t('portal.customLinks.editLinkTitle')
+                  : t('portal.customLinks.addLink')}
               </h3>
               <button onClick={resetForm} type="button">
                 <Close size={20} />
@@ -317,11 +324,11 @@ export function TrustPortalCustomLinks({
             <div className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="link-title" className="text-sm font-medium">
-                  Title *
+                  {t('portal.customLinks.titleLabel')}
                 </label>
                 <Input
                   id="link-title"
-                  placeholder="e.g., System Status, Support Portal"
+                  placeholder={t('portal.customLinks.titlePlaceholder')}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   maxLength={100}
@@ -330,11 +337,11 @@ export function TrustPortalCustomLinks({
 
               <div className="space-y-2">
                 <label htmlFor="link-description" className="text-sm font-medium">
-                  Description (optional)
+                  {t('portal.customLinks.descriptionLabel')}
                 </label>
                 <Textarea
                   id="link-description"
-                  placeholder="Brief description of this link"
+                  placeholder={t('portal.customLinks.descriptionPlaceholder')}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
@@ -344,7 +351,7 @@ export function TrustPortalCustomLinks({
 
               <div className="space-y-2">
                 <label htmlFor="link-url" className="text-sm font-medium">
-                  URL *
+                  {t('portal.customLinks.urlLabel')}
                 </label>
                 <Input
                   id="link-url"
@@ -363,12 +370,14 @@ export function TrustPortalCustomLinks({
                     width="full"
                     loading={isMutating}
                   >
-                    {editingLink ? 'Update' : 'Create'}
+                    {editingLink
+                      ? t('portal.customLinks.update')
+                      : t('portal.customLinks.create')}
                   </Button>
                 </div>
                 <div className="flex-1">
                   <Button onClick={resetForm} variant="outline" width="full">
-                    Cancel
+                    {t('portal.customLinks.cancel')}
                   </Button>
                 </div>
               </div>

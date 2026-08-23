@@ -18,6 +18,7 @@ import {
   Stack,
 } from '@trycompai/design-system';
 import { Edit, TrashCan } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { IsmsAudit } from '../isms-types';
@@ -37,9 +38,9 @@ import {
   type SignoffFormValues,
 } from './audit-schema';
 import {
-  AUDIT_STATUS_LABELS,
+  auditStatusLabel,
   conclusionSentence,
-} from './internal-audit-constants';
+} from './internal-audit-labels';
 import { IsmsRegisterCard, IsmsRegisterField } from './shared';
 
 /** All mutations an audit card (and its child sections) can perform. */
@@ -90,6 +91,7 @@ export function AuditCard({
   onUpdateFinding,
   onDeleteFinding,
 }: AuditCardProps) {
+  const t = useTranslations('isms');
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -193,7 +195,7 @@ export function AuditCard({
       header={
         <HStack align="center" gap="2">
           <Heading level="4">{audit.reference}</Heading>
-          <Badge variant="secondary">{AUDIT_STATUS_LABELS[audit.status]}</Badge>
+          <Badge variant="secondary">{auditStatusLabel(t, audit.status)}</Badge>
         </HStack>
       }
       headerEnd={headerActions}
@@ -216,7 +218,7 @@ export function AuditCard({
           </Grid>
           <IsmsRegisterField label="Conclusion">
             {audit.conclusionVerdict
-              ? `${conclusionSentence(audit.conclusionVerdict)}${audit.conclusionNotes ? ` ${audit.conclusionNotes}` : ''}`
+              ? `${conclusionSentence(t, audit.conclusionVerdict)}${audit.conclusionNotes ? ` ${audit.conclusionNotes}` : ''}`
               : 'No conclusion recorded yet — pick the verdict in Edit details.'}
           </IsmsRegisterField>
 

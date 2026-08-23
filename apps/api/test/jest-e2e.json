@@ -1,12 +1,15 @@
 {
-  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleFileExtensions": ["js", "json", "ts", "tsx"],
   "rootDir": "..",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "testPathIgnorePatterns": ["/node_modules/"],
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.m?[tj]sx?$": "ts-jest"
   },
+  "transformIgnorePatterns": [
+    "node_modules/(?!(@maced/api-client|better-auth|@better-auth|@noble|@better-auth|@better-fetch|jose|nanostores|better-call|zod|kysely|rou3|@standard-schema|@opentelemetry|@inference)/)"
+  ],
   "moduleNameMapper": {
     "^@db$": "<rootDir>/test/__mocks__/db.ts",
     "^@/(.*)$": "<rootDir>/src/$1",

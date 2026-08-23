@@ -15,17 +15,20 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { Controller, useWatch, type Control } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import type { IsmsAuditControl } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
 import type { FindingFormValues } from './audit-schema';
 import {
-  FINDING_DESCRIPTION_PLACEHOLDER,
   FINDING_STATUSES,
-  FINDING_STATUS_LABELS,
   FINDING_TYPES,
-  FINDING_TYPE_DESCRIPTIONS,
-  FINDING_TYPE_LABELS,
 } from './internal-audit-constants';
+import {
+  findingDescriptionPlaceholder,
+  findingStatusLabel,
+  findingTypeDescription,
+  findingTypeLabel,
+} from './internal-audit-labels';
 import { IsmsFieldLabel } from './shared';
 
 const NONE = 'none';
@@ -46,6 +49,7 @@ export function AuditFindingFields({
   memberOptions,
   onRelatedControlPicked,
 }: AuditFindingFieldsProps) {
+  const t = useTranslations('isms');
   const selectedType = useWatch({ control, name: 'type' });
 
   return (
@@ -64,7 +68,7 @@ export function AuditFindingFields({
                   <SelectContent>
                     {FINDING_TYPES.map((type) => (
                       <SelectItem key={type} value={type}>
-                        {FINDING_TYPE_LABELS[type]}
+                        {findingTypeLabel(t, type)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -73,7 +77,7 @@ export function AuditFindingFields({
             />
             {selectedType ? (
               <Text size="xs" variant="muted">
-                {FINDING_TYPE_DESCRIPTIONS[selectedType]}
+                {findingTypeDescription(t, selectedType)}
               </Text>
             ) : null}
           </Stack>
@@ -166,7 +170,7 @@ export function AuditFindingFields({
                 <SelectContent>
                   {FINDING_STATUSES.map((status) => (
                     <SelectItem key={status} value={status}>
-                      {FINDING_STATUS_LABELS[status]}
+                      {findingStatusLabel(t, status)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -186,7 +190,7 @@ export function AuditFindingFields({
                   {...field}
                   rows={3}
                   aria-label="Finding description"
-                  placeholder={FINDING_DESCRIPTION_PLACEHOLDER}
+                  placeholder={findingDescriptionPlaceholder(t)}
                 />
                 <FieldError>{fieldState.error?.message}</FieldError>
               </>

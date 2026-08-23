@@ -183,7 +183,7 @@ export function InviteMembersModal({
         }>('/v1/people/invite', { invites: invitePayload });
 
         if (error || !data?.results) {
-          toast.error('Failed to process invitations.');
+          toast.error(t('invite.processFailed'));
           setIsLoading(false);
           return;
         }
@@ -354,7 +354,7 @@ export function InviteMembersModal({
             }>('/v1/people/invite', { invites: csvInvites });
 
             if (csvApiError || !csvData?.results) {
-              toast.error('Failed to process CSV invitations.');
+              toast.error(t('invite.processCsvFailed'));
               setIsLoading(false);
               return;
             }
@@ -391,12 +391,12 @@ export function InviteMembersModal({
           }
         } catch (csvError) {
           console.error('Error parsing CSV:', csvError);
-          toast.error('Failed to parse CSV file. Please check the format.');
+          toast.error(t('invite.parseCsvFailed'));
         }
       }
     } catch (error) {
       console.error('Error processing invitations:', error);
-      toast.error('An unexpected error occurred while processing invitations.');
+      toast.error(t('invite.unexpectedError'));
     } finally {
       setIsLoading(false);
     }

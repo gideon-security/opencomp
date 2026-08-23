@@ -1,8 +1,10 @@
 import { CompanySubmissionWizard } from '@/app/(app)/[orgId]/documents/components/CompanySubmissionWizard';
+import { formFieldLabel } from '@/app/(app)/[orgId]/documents/form-description-labels';
 import { conciseFormDescriptions } from '@/app/(app)/[orgId]/documents/form-descriptions';
 import { Breadcrumb, PageHeader, PageLayout, Text } from '@trycompai/design-system';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import { evidenceFormDefinitions, evidenceFormTypeSchema } from '../../forms';
 
 export default async function NewCompanySubmissionPage({
@@ -19,6 +21,7 @@ export default async function NewCompanySubmissionPage({
 
   const parsedFormType = parsedType.data;
   const formDefinition = evidenceFormDefinitions[parsedFormType];
+  const t = await getTranslations('isms');
 
   return (
     <PageLayout>
@@ -40,7 +43,9 @@ export default async function NewCompanySubmissionPage({
       <PageHeader title={`New ${formDefinition.title} Submission`} />
       <div className="space-y-6">
         <Text variant="muted">
-          {conciseFormDescriptions[parsedFormType] ?? formDefinition.description}
+          {conciseFormDescriptions[parsedFormType]
+            ? formFieldLabel(t, parsedFormType)
+            : formDefinition.description}
         </Text>
         <CompanySubmissionWizard organizationId={orgId} formType={parsedFormType} />
       </div>
