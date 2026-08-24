@@ -100,6 +100,11 @@ function dailyQuotaErrorMessage(): string {
   );
 }
 
+/** Thrown (instead of retrying) when the DAILY cap is hit. */
+export class DailyQuotaError extends Error {
+  readonly cause?: unknown;
+}
+
 function retryAfterSecondsFromMessage(error: unknown): number | null {
   if (!(error instanceof Error)) return null;
   const match = /retry in ([\d.]+)s/i.exec(error.message);
@@ -142,7 +147,7 @@ export async function generateObjectWithRetry<SCHEMA extends GenerateObjectSchem
         if (isDailyQuotaExhausted(error)) {
           // Daily caps can't clear within a retry window — fail fast with an
           // actionable message instead of burning 5 attempts (~2 min).
-          throw new Error(dailyQuotaErrorMessage(), { cause: error });
+          throw new DailyQuotaError(dailyQuotaErrorMessage(), { cause: error });
         }
         if (attempt === MAX_RETRIES || !isRetryableError(error)) {
           throw error;

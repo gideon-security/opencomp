@@ -1,6 +1,6 @@
 import { db } from '@db/server';
 import { logger } from '@gideon-defender/trigger-local';
-import { isDailyQuotaExhausted } from '@/lib/llm-call';
+import { DailyQuotaError, isDailyQuotaExhausted } from '@/lib/llm-call';
 
 /**
  * Durable deferral for onboarding LLM work that failed on transient
@@ -27,6 +27,9 @@ const NETWORK_ERROR_CODES = new Set([
 
 /** Transient failures worth deferring (quota + network/TLS + provider 5xx). */
 export function isTransientLlmFailure(error: unknown): boolean {
+  // Fail-fast daily-cap errors thrown by llm-call are exactly the case this
+  // module exists for — defer them to the next quota reset.
+  if (error instanceof DailyQuotaError) return true;
   if (isDailyQuotaExhausted(error)) return true;
   const message =
     error instanceof Error ? `${error.message}` : String(error);
