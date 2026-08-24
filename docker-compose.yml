@@ -245,6 +245,7 @@ services:
     environment:
       HOSTNAME: 0.0.0.0
       BACKEND_API_URL: http://api:3333
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/comp?sslmode=disable
       REDIS_URL: redis://comp_app:comp_app_local_dev_password@redis:6379
     depends_on:
       - api

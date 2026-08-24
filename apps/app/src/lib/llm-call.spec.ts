@@ -88,7 +88,7 @@ describe('generateObjectWithRetry', () => {
     generateObjectMock
       .mockRejectedValueOnce(
         new FakeAPICallError({
-          message: 'generate_content_free_tier_requests, limit: 5',
+          message: 'generate_content_free_tier_requests_per_minute, limit: 5',
           statusCode: 429,
           responseHeaders: { 'retry-after': '0.05' },
         }),
@@ -104,7 +104,7 @@ describe('generateObjectWithRetry', () => {
   it('honors retry-after from the error body when no header is present', async () => {
     const retryAfterMessage = new FakeAPICallError({
       message:
-        'Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash\nPlease retry in 14.341536868s.',
+        'Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests_per_minute, limit: 20, model: gemini-3.5-flash\nPlease retry in 14.341536868s.',
       statusCode: 429,
     });
     const t0 = Date.now();
@@ -133,8 +133,40 @@ describe('generateObjectWithRetry', () => {
     expect(result.object).toEqual({ ok: true });
   });
 
-  it('throws immediately on non-retryable errors (4xx)', async () => {
-    const badRequest = new FakeAPICallError({
+
+  it('fails fast on the Gemini free-tier DAILY quota cap (no retries)', async () => {
+    generateObjectMock.mockRejectedValue(
+      new FakeAPICallError({
+        message:
+          'AI_APICallError: You exceeded your current quota... Quota exceeded for metric: ' +
+          'generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.5-flash',
+        statusCode: 429,
+      }),
+    );
+
+    await expect(callWithSchema()).rejects.toThrow(
+      /daily request quota exhausted/i,
+    );
+    expect(generateObjectMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps retrying per-minute (RPM) quota errors', async () => {
+    generateObjectMock
+      .mockRejectedValueOnce(
+        new FakeAPICallError({
+          message:
+            'Quota exceeded for metric: generativelanguage.googleapis.com/' +
+            'generate_content_free_tier_requests_per_minute, limit: 10',
+          statusCode: 429,
+        }),
+      )
+      .mockResolvedValueOnce({ object: { ok: true } });
+
+    await expect(callWithSchema()).resolves.toEqual({ object: { ok: true } });
+    expect(generateObjectMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('throws immediately on non-retryable errors (4xx)', async () => {    const badRequest = new FakeAPICallError({
       message: 'Bad request',
       statusCode: 400,
     });

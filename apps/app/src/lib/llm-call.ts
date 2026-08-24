@@ -79,6 +79,32 @@ function isRetryableError(error: unknown): boolean {
   return false;
 }
 
+/**
+ * Detects the Gemini free-tier DAILY request cap (RPD — e.g.
+ * "generate_content_free_tier_requests, limit: 20"). Unlike per-minute
+ * throttling, waiting ≤60s can never clear it: the quota resets at midnight
+ * Pacific or when billing is enabled, so retrying only delays the failure.
+ */
+export function isDailyQuotaExhausted(error: unknown): boolean {
+  if (!APICallError.isInstance(error) || error.statusCode !== 429) {
+    return false;
+  }
+  const text = `${error.message ?? ''} ${JSON.stringify(error.data ?? {})}`;
+  return /free_tier_requests(?!_per_minute)/i.test(text);
+}
+
+function dailyQuotaErrorMessage(): string {
+  return (
+    'Gemini free-tier daily request quota exhausted (resets midnight Pacific). ' +
+    'Enable billing on the Gemini API key, use a higher-tier model, or retry after the reset.'
+  );
+}
+
+/** Thrown (instead of retrying) when the DAILY cap is hit. */
+export class DailyQuotaError extends Error {
+  readonly cause?: unknown;
+}
+
 function retryAfterSecondsFromMessage(error: unknown): number | null {
   if (!(error instanceof Error)) return null;
   const match = /retry in ([\d.]+)s/i.exec(error.message);
@@ -118,6 +144,11 @@ export async function generateObjectWithRetry<SCHEMA extends GenerateObjectSchem
         return await generateObject<SCHEMA>({ ...options, maxRetries: 0 });
       } catch (error) {
         lastError = error;
+        if (isDailyQuotaExhausted(error)) {
+          // Daily caps can't clear within a retry window — fail fast with an
+          // actionable message instead of burning 5 attempts (~2 min).
+          throw new DailyQuotaError(dailyQuotaErrorMessage(), { cause: error });
+        }
         if (attempt === MAX_RETRIES || !isRetryableError(error)) {
           throw error;
         }

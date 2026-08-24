@@ -140,7 +140,8 @@
       "statusLabel": "Status: {status}",
       "ariaExpand": "Expand",
       "ariaClose": "Close",
-      "ariaMinimize": "Minimize"
+      "ariaMinimize": "Minimize",
+      "backgroundContinuing": "{count, plural, =1 {# item is still being completed in the background} other {# items are still being completed in the background}}"
     }
   },
   "overview": {

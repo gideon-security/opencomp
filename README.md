@@ -59,8 +59,9 @@ Here is what you need to be able to run OpenComp.
 
 - Node.js (Version: >=22.x)
 - npm (Version: >=10.x)
-- Docker (Version: >=24.x)
+- Docker (Version: >=24.x) or Podman (Version: >=5.x)
 - Postgres with PgVector (Version: >=15.x)
+- A Gemini API key (for AI-powered onboarding — free tier works, but has a low daily request cap)
 
 ## Development
 
@@ -129,6 +130,7 @@ Create the following `.env` files and fill them out with your credentials
 
 - `opencomp/apps/app/.env`
 - `opencomp/apps/portal/.env`
+- `opencomp/apps/api/.env`
 - `opencomp/packages/db/.env`
 
 You can copy from the `.env.example` files:
@@ -138,6 +140,7 @@ You can copy from the `.env.example` files:
 ```sh
 cp apps/app/.env.example apps/app/.env
 cp apps/portal/.env.example apps/portal/.env
+cp apps/api/.env.example apps/api/.env
 cp packages/db/.env.example packages/db/.env
 ```
 
@@ -146,6 +149,7 @@ cp packages/db/.env.example packages/db/.env
 ```cmd
 copy apps\app\.env.example apps\app\.env
 copy apps\portal\.env.example apps\portal\.env
+copy apps\api\.env.example apps\api\.env
 copy packages\db\.env.example packages\db\.env
 ```
 
@@ -154,6 +158,7 @@ copy packages\db\.env.example packages\db\.env
 ```powershell
 Copy-Item apps\app\.env.example -Destination apps\app\.env
 Copy-Item apps\portal\.env.example -Destination apps\portal\.env
+Copy-Item apps\api\.env.example -Destination apps\api\.env
 Copy-Item packages\db\.env.example -Destination packages\db\.env
 ```
 
@@ -162,6 +167,8 @@ Additionally, ensure the following required environment variables are added to `
 ```env
 AUTH_SECRET=""                  # Use `openssl rand -base64 32` to generate
 DATABASE_URL="postgresql://user:password@host:port/database"
+REDIS_URL="redis://localhost:6379"  # Shared by the kv layer and BullMQ
+GOOGLE_GENERATIVE_AI_API_KEY="" # Gemini — powers AI onboarding (https://ai.google.dev/api-keys)
 RESEND_API_KEY="" # Resend (https://resend.com/api-keys) - Resend Dashboard -> API Keys
 NEXT_PUBLIC_PORTAL_URL="http://localhost:3002"
 REVALIDATION_SECRET=""         # Use `openssl rand -base64 32` to generate
@@ -203,9 +210,44 @@ Some environment variables may not load correctly from `.env` — in such cases,
 
 #### 2. Redis
 
-  ```
-  opencomp/packages/kv/src/index.ts
-  ```
+Redis is configured via the `REDIS_URL` environment variable (regular Redis —
+no Upstash required):
+
+```
+REDIS_URL="redis://localhost:6379"
+```
+
+The `@gideon-defender/kv` package and the local BullMQ trigger runtime both
+read this variable. Optional hardening: `LOCAL_TRIGGER_REDIS_URL` points at a
+full-access (`comp_service`) Redis role for BullMQ, falling back to
+`REDIS_URL` when unset.
+
+---
+
+### Languages (i18n)
+
+The app ships with English and Spanish locales. The locale is resolved from
+the `NEXT_LOCALE` cookie; clear that cookie to fall back to English. All UI
+strings live in `apps/app/messages/en.json` and `apps/app/messages/es.json`
+— keep both files in sync when adding keys.
+
+---
+
+### Testing
+
+```sh
+# App unit tests (Vitest)
+cd apps/app && npx vitest run
+
+# API unit tests (Jest) — loads apps/api/.env automatically
+cd apps/api && npx jest --forceExit
+
+# API e2e tests — needs a local Postgres + migrations applied
+cd apps/api && npm run test:e2e
+
+# App e2e tests (Playwright) — boots the full stack; see .github/workflows/e2e.yml
+cd apps/app && npx playwright test --project=chromium
+```
 
 ---
 
@@ -302,7 +344,7 @@ npm install -g turbo
 
 ### Full Stack with Docker Compose
 
-The monorepo ships a Docker-based local stack that runs everything with `node:22` + npm. It builds and starts the API, app, and portal along with Postgres, Redis, and LocalStack (AWS S3):
+The monorepo ships a Docker-based local stack that runs everything with `node:22` + npm. It builds and starts the API, app, and portal along with Postgres, Redis, and LocalStack (AWS S3). Podman works too (`alias docker=podman`, or `podman-compose`):
 
 ```sh
 # Build and start the whole stack (app on :3000, portal on :3002, api on :3333)
@@ -319,7 +361,11 @@ docker-compose logs -f app
 docker-compose down
 ```
 
-Services: `localstack` (S3 emulation), `postgres`, `migrator` (Prisma migrate), `seeder`, `api` (NestJS), `redis`, `app` (Next.js frontend), `portal` (employee portal).
+Services: `localstack` (S3/SES emulation), `postgres` (pgvector), `migrator` (Prisma migrate), `seeder`, `api` (NestJS), `redis`, `app` (Next.js frontend), `portal` (employee portal), `email-worker` (SQS email consumer), `embeddings` (self-hosted BAAI/bge-m3 via Ollama).
+
+> 💡 **Note:** each service's container env overrides the matching `.env` file
+> entries for in-container hostnames (e.g. the portal gets
+> `DATABASE_URL=…@postgres:5432` while host-side tooling uses `localhost:5432`).
 
 ## Deployment
 

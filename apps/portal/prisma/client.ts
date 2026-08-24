@@ -3,7 +3,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 
 const globalForPrisma = global as unknown as { prisma?: PrismaClient };
 
-const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
+const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1', 'postgres', 'db']);
 
 function stripSslMode(connectionString: string): string {
   const url = new URL(connectionString);
@@ -21,9 +21,17 @@ function isLocalhostUrl(connectionString: string): boolean {
   }
 }
 
+function hasSslModeDisable(connectionString: string): boolean {
+  try {
+    return new URL(connectionString).searchParams.get('sslmode') === 'disable';
+  } catch {
+    return false;
+  }
+}
+
 function createPrismaClient(): PrismaClient {
   const rawUrl = process.env.DATABASE_URL!;
-  const isLocalhost = isLocalhostUrl(rawUrl);
+  const isLocalhost = isLocalhostUrl(rawUrl) || hasSslModeDisable(rawUrl);
   const allowInsecure = process.env.PRISMA_ALLOW_INSECURE_TLS === '1';
 
   // See apps/app/prisma/client.ts for the rationale on dropping `ssl.ca`
