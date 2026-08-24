@@ -8,7 +8,7 @@ export interface Candidate {
   department?: string;
 }
 
-export interface LinkSuggestionsOptions {
+interface LinkSuggestionsOptions {
   source: { department?: string };
   candidates: Candidate[];
   threshold?: number;
@@ -16,7 +16,7 @@ export interface LinkSuggestionsOptions {
   departmentBoost?: number;
 }
 
-export interface LinkSuggestion {
+interface LinkSuggestion {
   id: string;
   score: number; // boosted score (may be > raw)
 }

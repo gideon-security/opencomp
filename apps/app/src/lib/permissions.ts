@@ -70,7 +70,7 @@ export function hasAnyPermission(
  * Maps route segments to required permissions (OR semantics).
  * Single source of truth for both nav visibility and route protection.
  */
-export const ROUTE_PERMISSIONS: Record<string, Array<{ resource: string; action: string }>> = {
+const ROUTE_PERMISSIONS: Record<string, Array<{ resource: string; action: string }>> = {
   // Main compliance pages
   overview: [{ resource: 'framework', action: 'read' }],
   frameworks: [{ resource: 'framework', action: 'read' }],
@@ -174,8 +174,19 @@ export function getDefaultRoute(permissions: UserPermissions, orgId: string): st
 
 /** Compliance route segments — used to determine if the Compliance rail icon should show. */
 const COMPLIANCE_ROUTE_SEGMENTS = [
-  'overview', 'frameworks', 'controls', 'policies', 'tasks', 'documents', 'people',
-  'risk', 'vendors', 'questionnaire', 'integrations', 'cloud-tests', 'auditor',
+  'overview',
+  'frameworks',
+  'controls',
+  'policies',
+  'tasks',
+  'documents',
+  'people',
+  'risk',
+  'vendors',
+  'questionnaire',
+  'integrations',
+  'cloud-tests',
+  'auditor',
 ] as const;
 
 /**
@@ -194,13 +205,6 @@ export function canAccessCompliance(permissions: UserPermissions): boolean {
  */
 export function canAccessApp(permissions: UserPermissions): boolean {
   return hasPermission(permissions, 'app', 'read');
-}
-
-/**
- * Check if any of the user's roles have the compliance obligation.
- */
-export function requiresComplianceObligation(obligations: Record<string, boolean>): boolean {
-  return Boolean(obligations?.compliance);
 }
 
 // ─── Permission resolver (no server-only imports) ────────────────────

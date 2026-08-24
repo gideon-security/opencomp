@@ -38,7 +38,7 @@ export class AttachmentResponseDto {
   createdAt: Date;
 }
 
-export class AttachmentMetadataDto {
+class AttachmentMetadataDto {
   @ApiProperty({
     description: 'Unique identifier for the attachment',
     example: 'att_abc123def456',
@@ -64,7 +64,7 @@ export class AttachmentMetadataDto {
   createdAt: Date;
 }
 
-export class AuthorResponseDto {
+class AuthorResponseDto {
   @ApiProperty({
     description: 'User ID',
     example: 'usr_abc123def456',

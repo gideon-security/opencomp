@@ -18,7 +18,7 @@ const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 /**
  * Session type matching better-auth's session structure
  */
-export interface Session {
+interface Session {
   session: {
     id: string;
     userId: string;
@@ -41,42 +41,6 @@ export interface Session {
   };
 }
 
-export interface ActiveOrganization {
-  id: string;
-  name: string;
-  slug?: string | null;
-  logo?: string | null;
-  createdAt: Date;
-  metadata?: Record<string, unknown> | null;
-}
-
-export interface Member {
-  id: string;
-  organizationId: string;
-  userId: string;
-  role: string;
-  createdAt: Date;
-}
-
-export interface Organization {
-  id: string;
-  name: string;
-  slug?: string | null;
-  logo?: string | null;
-  createdAt: Date;
-  metadata?: Record<string, unknown> | null;
-}
-
-export interface Invitation {
-  id: string;
-  organizationId: string;
-  email: string;
-  role: string;
-  status: string;
-  expiresAt: Date;
-  inviterId: string;
-}
-
 /**
  * Convert Headers to a plain object for fetch
  */
@@ -93,7 +57,9 @@ function headersToObject(headers: ReadonlyHeaders | Headers): Record<string, str
 /**
  * Get the current session from the API.
  */
-async function getSession(options: { headers: ReadonlyHeaders | Headers }): Promise<Session | null> {
+async function getSession(options: {
+  headers: ReadonlyHeaders | Headers;
+}): Promise<Session | null> {
   try {
     const response = await fetch(`${API_URL}/api/auth/get-session`, {
       method: 'GET',
@@ -156,6 +122,3 @@ export const auth = {
     setActiveOrganization,
   },
 };
-
-// Type exports for backwards compatibility with files that imported from better-auth types
-export type { Session as SessionType };

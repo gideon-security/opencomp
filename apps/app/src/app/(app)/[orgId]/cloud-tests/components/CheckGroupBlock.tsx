@@ -1,6 +1,5 @@
 'use client';
 
-import { Badge } from '@gideon-defender/ui/badge';
 import { ChevronDown, ChevronRight, ShieldCheck } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type { Finding } from '../types';
@@ -22,7 +21,7 @@ const SEVERITY_DOTS: Record<string, string> = {
   info: 'bg-gray-400',
 };
 
-export interface CheckGroupBlockProps {
+interface CheckGroupBlockProps {
   group: CheckGroup;
   /** Active severity filter from the parent — used to filter failing rows. */
   severityFilter: string | null;
@@ -30,20 +29,14 @@ export interface CheckGroupBlockProps {
   renderRow: (finding: Finding) => React.ReactNode;
 }
 
-export function CheckGroupBlock({
-  group,
-  severityFilter,
-  renderRow,
-}: CheckGroupBlockProps) {
+export function CheckGroupBlock({ group, severityFilter, renderRow }: CheckGroupBlockProps) {
   const [showAll, setShowAll] = useState(false);
   const [revealedMore, setRevealedMore] = useState(false);
 
   // Apply severity filter to the failing rows shown by default.
   const visibleFailing = useMemo(() => {
     if (!severityFilter) return group.failed;
-    return group.failed.filter(
-      (f) => f.severity?.toLowerCase() === severityFilter,
-    );
+    return group.failed.filter((f) => f.severity?.toLowerCase() === severityFilter);
   }, [group.failed, severityFilter]);
 
   // When user toggles "Show all results" we render every instance (passed +
@@ -62,9 +55,7 @@ export function CheckGroupBlock({
       <div className="flex items-center gap-2 px-4 py-2 text-xs text-primary">
         <ShieldCheck className="h-3 w-3" />
         <span className="font-medium">{group.checkTitle}</span>
-        <span className="text-muted-foreground">
-          — all {group.all.length} passing
-        </span>
+        <span className="text-muted-foreground">— all {group.all.length} passing</span>
         {group.all.length > 0 && (
           <button
             type="button"
@@ -86,9 +77,7 @@ export function CheckGroupBlock({
             SEVERITY_DOTS[group.severity] ?? SEVERITY_DOTS.info
           }`}
         />
-        <span className="text-xs font-medium truncate flex-1">
-          {group.checkTitle}
-        </span>
+        <span className="text-xs font-medium truncate flex-1">{group.checkTitle}</span>
         <span className="text-[10px] text-muted-foreground">
           {group.failed.length} of {group.all.length} failing
         </span>
@@ -134,5 +123,3 @@ export function CheckGroupBlock({
     </div>
   );
 }
-
-export { PER_CHECK_DISPLAY_LIMIT };

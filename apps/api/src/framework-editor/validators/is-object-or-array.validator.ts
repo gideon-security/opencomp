@@ -12,7 +12,7 @@ import {
  * object or as a bare array of ProseMirror nodes.
  */
 @ValidatorConstraint({ name: 'isObjectOrArray', async: false })
-export class IsObjectOrArrayConstraint implements ValidatorConstraintInterface {
+class IsObjectOrArrayConstraint implements ValidatorConstraintInterface {
   validate(value: unknown): boolean {
     return typeof value === 'object' && value !== null;
   }

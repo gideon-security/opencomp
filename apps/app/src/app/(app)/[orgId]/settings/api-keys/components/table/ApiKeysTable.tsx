@@ -37,7 +37,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Add, OverflowMenuVertical, Search, TrashCan } from '@trycompai/design-system/icons';
-import { groupScopesByResource, RESOURCE_LABELS, ACTION_LABELS } from '../../lib/scope-presets';
+import { groupScopesByResource } from '../../lib/scope-presets';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { CreateApiKeySheet } from './CreateApiKeySheet';

@@ -16,8 +16,8 @@ import {
   TabsTrigger,
   Text,
 } from '@trycompai/design-system';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { SyncConfirmDialog } from '../../components/SyncConfirmDialog';
@@ -518,7 +518,7 @@ function LinkRowItem({ row }: { row: LinkRow }) {
   );
 }
 
-export function describeRequirementChanges(
+function describeRequirementChanges(
   from: UpdatePreview['requirements']['updated'][number]['from'],
   to: UpdatePreview['requirements']['updated'][number]['to'],
   t: FrameworkTranslator,
@@ -535,9 +535,7 @@ export function describeRequirementChanges(
     } else if (fromFamily && !toFamily) {
       changes.push(t('reviewUpdate.familyRemoved'));
     } else {
-      changes.push(
-        t('reviewUpdate.familyChanged', { from: fromFamily ?? '', to: toFamily ?? '' }),
-      );
+      changes.push(t('reviewUpdate.familyChanged', { from: fromFamily ?? '', to: toFamily ?? '' }));
     }
   }
   return changes.join('. ') || t('reviewUpdate.modifiedFallback');
@@ -760,7 +758,11 @@ function buildGroups(preview: UpdatePreview, t: FrameworkTranslator): ChangeGrou
     });
   }
   if (preservedRows.length) {
-    out.push({ title: t('reviewUpdate.groupPreservedEdits'), kind: 'preserved', rows: preservedRows });
+    out.push({
+      title: t('reviewUpdate.groupPreservedEdits'),
+      kind: 'preserved',
+      rows: preservedRows,
+    });
   }
 
   return out;

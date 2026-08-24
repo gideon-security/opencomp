@@ -32,7 +32,7 @@ const clock = () =>
     second: '2-digit',
   });
 
-export interface EvidenceTimeline {
+interface EvidenceTimeline {
   /** Advance the timeline with a new active step (marks the prior one done). */
   step: (label: string) => void;
   /** Set the final state of the last step (done/warn/fail). */

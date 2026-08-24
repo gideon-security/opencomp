@@ -63,7 +63,6 @@ import { syncManualAnswerToVector } from '@/vector-store/lib';
 import {
   uploadToS3,
   generateDownloadUrl,
-  generateViewUrl,
   deleteFromS3,
 } from './utils/s3-operations';
 

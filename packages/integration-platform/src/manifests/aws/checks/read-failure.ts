@@ -23,24 +23,19 @@ export const REGION_DISABLED_REMEDIATION =
  */
 export function toReadFailure(err: unknown): ReadFailure {
   const error =
-    err instanceof Error
-      ? `${err.name}: ${err.message}`.slice(0, 300)
-      : String(err).slice(0, 300);
-  const status = (err as { $metadata?: { httpStatusCode?: number } } | null)
-    ?.$metadata?.httpStatusCode;
+    err instanceof Error ? `${err.name}: ${err.message}`.slice(0, 300) : String(err).slice(0, 300);
+  const status = (err as { $metadata?: { httpStatusCode?: number } } | null)?.$metadata
+    ?.httpStatusCode;
   // OptInRequired / AuthFailure are what opted-out or disabled regions throw —
   // a permanent condition for this connection, not something a re-run or an
   // IAM grant fixes. Classified BEFORE denied: OptInRequired arrives as HTTP
   // 403, so the status check alone would mislabel it as a permission gap.
-  const regionDisabled =
-    err instanceof Error && /OptInRequired|AuthFailure/i.test(err.name);
+  const regionDisabled = err instanceof Error && /OptInRequired|AuthFailure/i.test(err.name);
   const denied =
     !regionDisabled &&
     (status === 403 ||
       (err instanceof Error &&
-        /AccessDenied|UnauthorizedOperation|Forbidden|NotAuthorized/i.test(
-          err.name,
-        )));
+        /AccessDenied|UnauthorizedOperation|Forbidden|NotAuthorized/i.test(err.name)));
   return { error, denied, regionDisabled };
 }
 
@@ -50,9 +45,7 @@ export function toReadFailure(err: unknown): ReadFailure {
  * region-disabled applies only when EVERY failure is one — on mixed causes the
  * transient wording is used so nobody removes a healthy region.
  */
-export function combineReadFailures(
-  failures: ReadFailure[],
-): ReadFailure | undefined {
+export function combineReadFailures(failures: ReadFailure[]): ReadFailure | undefined {
   if (failures.length === 0) return undefined;
   return {
     error: failures

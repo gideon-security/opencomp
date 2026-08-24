@@ -9,10 +9,7 @@
  */
 
 import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
-import { ac, allRoles } from './permissions';
-
-// Re-export permissions for convenience
-export { ac, allRoles };
+import { allRoles } from './permissions';
 
 // Must point to the API server for server-to-server auth calls.
 const API_URL =
@@ -50,7 +47,7 @@ export interface Session {
 /**
  * Active organization type
  */
-export interface ActiveOrganization {
+interface ActiveOrganization {
   id: string;
   name: string;
   slug?: string | null;
@@ -62,7 +59,7 @@ export interface ActiveOrganization {
 /**
  * Member type with role information
  */
-export interface Member {
+interface Member {
   id: string;
   organizationId: string;
   userId: string;
@@ -73,7 +70,7 @@ export interface Member {
 /**
  * Organization type
  */
-export interface Organization {
+interface Organization {
   id: string;
   name: string;
   slug?: string | null;
@@ -85,7 +82,7 @@ export interface Organization {
 /**
  * Invitation type
  */
-export interface Invitation {
+interface Invitation {
   id: string;
   organizationId: string;
   email: string;
@@ -103,7 +100,7 @@ export type Role = keyof typeof allRoles;
 /**
  * Full session response including organization context
  */
-export interface FullSession extends Session {
+interface FullSession extends Session {
   activeOrganization?: ActiveOrganization | null;
   activeMember?: Member | null;
 }
@@ -134,7 +131,9 @@ function headersToObject(headers: ReadonlyHeaders | Headers): Record<string, str
  * @param options.headers - The request headers (must include cookies)
  * @returns The session data or null if not authenticated
  */
-async function getSession(options: { headers: ReadonlyHeaders | Headers }): Promise<Session | null> {
+async function getSession(options: {
+  headers: ReadonlyHeaders | Headers;
+}): Promise<Session | null> {
   try {
     const response = await fetch(`${API_URL}/api/auth/get-session`, {
       method: 'GET',
@@ -340,7 +339,9 @@ async function setActiveOrganization(options: {
       console.error('[auth] Failed to set active organization:', error);
     }
     if (options.asResponse) {
-      return new Response(JSON.stringify({ error: 'Failed to set active organization' }), { status: 500 });
+      return new Response(JSON.stringify({ error: 'Failed to set active organization' }), {
+        status: 500,
+      });
     }
     return null;
   }
@@ -349,7 +350,7 @@ async function setActiveOrganization(options: {
 /**
  * Full organization response including members
  */
-export interface FullOrganization extends Organization {
+interface FullOrganization extends Organization {
   members: Member[];
   invitations?: Invitation[];
 }
@@ -605,6 +606,3 @@ export const auth = {
     Invitation: {} as Invitation,
   },
 };
-
-// Re-export types for convenience (maintains compatibility with existing imports)
-export type { ReadonlyHeaders };

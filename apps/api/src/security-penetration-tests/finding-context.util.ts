@@ -4,7 +4,7 @@
  * them, and so they unit-test without mocks.
  */
 
-export interface FindingContextNote {
+interface FindingContextNote {
   issueTitle: string;
   context: string;
 }

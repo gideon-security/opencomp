@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { db } from '@db';
 import type { IntegrationCredentialVersion } from '@db';
 
-export interface CreateCredentialVersionDto {
+interface CreateCredentialVersionDto {
   connectionId: string;
   encryptedPayload: object;
   expiresAt?: Date;

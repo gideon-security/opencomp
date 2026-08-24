@@ -4,8 +4,6 @@
 
 // Chunk sizes for questionnaire item classification
 export const MAX_CHUNK_SIZE_CHARS = 25_000;
-export const MIN_CHUNK_SIZE_CHARS = 5_000;
-export const MAX_QUESTIONS_PER_CHUNK = 1;
 export const MAX_CLASSIFICATION_CONCURRENCY = 4;
 
 // File size limits

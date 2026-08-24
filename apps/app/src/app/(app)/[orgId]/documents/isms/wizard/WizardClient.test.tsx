@@ -262,7 +262,7 @@ describe('WizardClient', () => {
     // Walk through to the final step.
     for (let i = 0; i < 5; i += 1) {
       fireEvent.click(screen.getByText('Next'));
-      // eslint-disable-next-line no-await-in-loop
+       
       await waitFor(() => expect(screen.getByText(`Step ${i + 2} of 6`)).toBeInTheDocument());
     }
 

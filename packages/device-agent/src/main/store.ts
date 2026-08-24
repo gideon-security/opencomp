@@ -118,16 +118,8 @@ export function getPortalUrl(): string {
   return store.get('portalUrl');
 }
 
-export function setPortalUrl(url: string): void {
-  store.set('portalUrl', url);
-}
-
 export function getApiUrl(): string {
   return store.get('apiUrl');
-}
-
-export function setApiUrl(url: string): void {
-  store.set('apiUrl', url);
 }
 
 export function getLastCheckResults(): CheckResult[] {

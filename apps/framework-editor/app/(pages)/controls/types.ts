@@ -1,6 +1,5 @@
 import type { FrameworkEditorControlTemplate } from '@/db';
 // Import shared types from the common location
-import type { SortDirection, SortableColumnOption } from '../../types/common';
 
 // Basic item with id and name
 export interface ItemWithName {
@@ -42,32 +41,3 @@ export type ControlsPageGridData = {
   createdAt: Date | null;
   updatedAt: Date | null;
 };
-
-// react-datasheet-grid operation type
-export type DSGOperation =
-  | { type: 'CREATE'; fromRowIndex: number; toRowIndex: number }
-  | { type: 'UPDATE'; fromRowIndex: number; toRowIndex: number }
-  | { type: 'DELETE'; fromRowIndex: number; toRowIndex: number };
-
-// General types for sorting and toolbar options are now imported
-// export type SortDirection = 'asc' | 'desc'; // Moved to common.ts
-
-// Specific sortable column keys for the Controls page table
-export type ControlsPageSortableColumnKey =
-  | 'name'
-  | 'description'
-  // Update to use length fields for sorting
-  | 'policyTemplatesLength'
-  | 'requirementsLength'
-  | 'taskTemplatesLength'
-  | 'createdAt'
-  | 'updatedAt';
-
-// Generic type for options in the sort dropdown for the toolbar is now imported
-// export interface SortableColumnOption { // Moved to common.ts
-//   value: string;
-//   label: string;
-// }
-
-// Re-export for convenience if ControlsClientPage needs them directly from this file
-export type { SortDirection, SortableColumnOption };

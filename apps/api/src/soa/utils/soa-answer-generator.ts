@@ -18,12 +18,12 @@ import {
   isInsufficientDataAnswer,
 } from './constants';
 
-export interface SOAAnswerWithSources {
+interface SOAAnswerWithSources {
   answer: string | null;
   sources: Source[];
 }
 
-export interface SOAAnswerLogger {
+interface SOAAnswerLogger {
   log: (message: string, meta?: Record<string, unknown>) => void;
   warn: (message: string, meta?: Record<string, unknown>) => void;
   error: (message: string, meta?: Record<string, unknown>) => void;
@@ -98,50 +98,10 @@ function buildContextFromContent(
 }
 
 /**
- * Generates a SOA answer using RAG (Retrieval-Augmented Generation)
- * Performs vector search and LLM generation
- */
-export async function generateSOAAnswerWithRAG(
-  question: string,
-  organizationId: string,
-  logger: SOAAnswerLogger = defaultLogger,
-): Promise<SOAAnswerWithSources> {
-  try {
-    // Find similar content from vector database
-    const similarContent = await findSimilarContent(question, organizationId);
-
-    logger.log('Vector search results for SOA', {
-      question: question.substring(0, 100),
-      organizationId,
-      resultCount: similarContent.length,
-    });
-
-    // If no relevant content found, return null
-    if (similarContent.length === 0) {
-      logger.warn('No similar content found in vector database for SOA', {
-        question: question.substring(0, 100),
-        organizationId,
-      });
-      return { answer: null, sources: [] };
-    }
-
-    return generateSOAAnswerFromContent(question, similarContent);
-  } catch (error) {
-    logger.error('Failed to generate SOA answer with RAG', {
-      question: question.substring(0, 100),
-      organizationId,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
-
-    return { answer: null, sources: [] };
-  }
-}
-
-/**
  * Generates a SOA answer from pre-fetched similar content
  * Used for batch processing - skips individual vector search
  */
-export async function generateSOAAnswerFromContent(
+async function generateSOAAnswerFromContent(
   question: string,
   similarContent: SimilarContentResult[],
 ): Promise<SOAAnswerWithSources> {

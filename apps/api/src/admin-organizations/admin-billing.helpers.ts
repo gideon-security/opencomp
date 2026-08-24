@@ -81,7 +81,7 @@ export function readNumber(value: unknown, key: string): number | null {
   return typeof raw === 'number' ? raw : null;
 }
 
-export function extractStripeId(value: unknown): string | null {
+function extractStripeId(value: unknown): string | null {
   if (typeof value === 'string') return value;
   if (typeof value !== 'object' || value === null) return null;
   const raw = (value as Record<string, unknown>).id;

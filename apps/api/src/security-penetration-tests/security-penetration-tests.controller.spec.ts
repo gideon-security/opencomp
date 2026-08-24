@@ -24,7 +24,6 @@ jest.mock('../auth/permission.guard', () => ({
 
 import { SecurityPenetrationTestsController } from './security-penetration-tests.controller';
 import type { SecurityPenetrationTestsService } from './security-penetration-tests.service';
-import type { Request as ExpressRequest } from 'express';
 
 describe('SecurityPenetrationTestsController', () => {
   const originalWebhookBase =

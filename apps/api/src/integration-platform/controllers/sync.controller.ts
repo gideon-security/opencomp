@@ -21,8 +21,7 @@ import { IsOptional, IsString } from 'class-validator';
 import { HybridAuthGuard } from '../../auth/hybrid-auth.guard';
 import { PermissionGuard } from '../../auth/permission.guard';
 import { RequirePermission } from '../../auth/require-permission.decorator';
-import { OrganizationId, AuthContext } from '../../auth/auth-context.decorator';
-import type { AuthContext as AuthContextType } from '../../auth/types';
+import { OrganizationId } from '../../auth/auth-context.decorator';
 import { db } from '@db';
 import type { Prisma } from '@db';
 import { ConnectionRepository } from '../repositories/connection.repository';
@@ -35,7 +34,6 @@ import {
   parseSyncFilterTerms,
   interpretDeclarativeSync,
   interpretDeclarativeDeviceSync,
-  type OAuthConfig,
   type SyncDefinition,
 } from '@gideon-defender/integration-platform';
 import { IntegrationSyncLoggerService } from '../services/integration-sync-logger.service';

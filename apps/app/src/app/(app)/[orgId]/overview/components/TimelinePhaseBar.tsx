@@ -1,6 +1,5 @@
 'use client';
 
-
 interface Phase {
   id: string;
   name: string;
@@ -101,8 +100,11 @@ export function TimelinePhaseBar({
               {group.label ? (
                 <>
                   <span className="truncate text-[10px] text-muted-foreground px-1">
-                    {group.label}{(() => {
-                      const pcts = group.phases.map((p) => p.completionPercent).filter((p): p is number => p !== undefined);
+                    {group.label}
+                    {(() => {
+                      const pcts = group.phases
+                        .map((p) => p.completionPercent)
+                        .filter((p): p is number => p !== undefined);
                       if (pcts.length === 0) return '';
                       const avg = Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length);
                       return ` (${avg}%)`;
@@ -137,9 +139,16 @@ export function TimelinePhaseBar({
           }
 
           // Compute group-level average completion
-          const pcts = group.phases.map((p) => p.completionPercent).filter((p): p is number => p !== undefined);
-          const groupPct = pcts.length > 0 ? Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length) : null;
-          const allComplete = group.phases.every((p) => p.status === 'COMPLETED' && (p.completionPercent === undefined || p.completionPercent >= 100));
+          const pcts = group.phases
+            .map((p) => p.completionPercent)
+            .filter((p): p is number => p !== undefined);
+          const groupPct =
+            pcts.length > 0 ? Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length) : null;
+          const allComplete = group.phases.every(
+            (p) =>
+              p.status === 'COMPLETED' &&
+              (p.completionPercent === undefined || p.completionPercent >= 100),
+          );
 
           const groupRounded = `${isFirstGroup ? 'rounded-l-md' : ''} ${isLastGroup ? 'rounded-r-md' : ''}`;
 
@@ -156,7 +165,9 @@ export function TimelinePhaseBar({
                     className={`flex items-center justify-center ${pIdx < group.phases.length - 1 ? 'border-r border-primary-foreground/20' : ''}`}
                     style={{ flex: phase.durationWeeks }}
                   >
-                    <span className="truncate px-1 text-[11px] text-primary-foreground">{phase.name}</span>
+                    <span className="truncate px-1 text-[11px] text-primary-foreground">
+                      {phase.name}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -181,9 +192,15 @@ export function TimelinePhaseBar({
               {/* Single cohesive fill for the whole group */}
               {groupPct !== null && (
                 <>
-                  <div className="absolute inset-y-0 left-0 bg-primary/50" style={{ width: `${groupPct}%` }} />
+                  <div
+                    className="absolute inset-y-0 left-0 bg-primary/50"
+                    style={{ width: `${groupPct}%` }}
+                  />
                   {hasActivePhase && (
-                    <div className="absolute inset-y-0 w-[3px] bg-primary animate-pulse" style={{ left: `${groupPct}%` }} />
+                    <div
+                      className="absolute inset-y-0 w-[3px] bg-primary animate-pulse"
+                      style={{ left: `${groupPct}%` }}
+                    />
                   )}
                 </>
               )}
@@ -195,7 +212,8 @@ export function TimelinePhaseBar({
                   style={{ flex: phase.durationWeeks }}
                 >
                   <span className="truncate px-1 text-[11px] font-medium text-foreground">
-                    {phase.name}{phase.completionPercent !== undefined ? ` ${phase.completionPercent}%` : ''}
+                    {phase.name}
+                    {phase.completionPercent !== undefined ? ` ${phase.completionPercent}%` : ''}
                   </span>
                 </div>
               ))}
@@ -218,21 +236,35 @@ export function TimelinePhaseBar({
             );
           }
 
-          const mPcts = group.phases.map((p) => p.completionPercent).filter((p): p is number => p !== undefined);
-          const mGroupPct = mPcts.length > 0 ? Math.round(mPcts.reduce((a, b) => a + b, 0) / mPcts.length) : null;
-          const mAllComplete = group.phases.every((p) => p.status === 'COMPLETED' && (p.completionPercent === undefined || p.completionPercent >= 100));
+          const mPcts = group.phases
+            .map((p) => p.completionPercent)
+            .filter((p): p is number => p !== undefined);
+          const mGroupPct =
+            mPcts.length > 0 ? Math.round(mPcts.reduce((a, b) => a + b, 0) / mPcts.length) : null;
+          const mAllComplete = group.phases.every(
+            (p) =>
+              p.status === 'COMPLETED' &&
+              (p.completionPercent === undefined || p.completionPercent >= 100),
+          );
 
           return (
             <div
               key={`m-group-${gIdx}`}
               className={`relative flex overflow-hidden rounded-md ${mAllComplete ? 'bg-primary' : ''}`}
-              style={mAllComplete ? { height: 28 } : {
-                height: 28,
-                background: `repeating-linear-gradient(-45deg, var(--muted), var(--muted) 4px, color-mix(in oklch, var(--primary) 10%, transparent) 4px, color-mix(in oklch, var(--primary) 10%, transparent) 8px)`,
-              }}
+              style={
+                mAllComplete
+                  ? { height: 28 }
+                  : {
+                      height: 28,
+                      background: `repeating-linear-gradient(-45deg, var(--muted), var(--muted) 4px, color-mix(in oklch, var(--primary) 10%, transparent) 4px, color-mix(in oklch, var(--primary) 10%, transparent) 8px)`,
+                    }
+              }
             >
               {!mAllComplete && mGroupPct !== null && (
-                <div className="absolute inset-y-0 left-0 bg-primary/50" style={{ width: `${mGroupPct}%` }} />
+                <div
+                  className="absolute inset-y-0 left-0 bg-primary/50"
+                  style={{ width: `${mGroupPct}%` }}
+                />
               )}
               {group.phases.map((phase, pIdx) => (
                 <div
@@ -240,8 +272,11 @@ export function TimelinePhaseBar({
                   className={`relative z-10 flex items-center justify-center ${pIdx < group.phases.length - 1 ? 'border-r border-background/30' : ''}`}
                   style={{ flex: phase.durationWeeks }}
                 >
-                  <span className={`truncate px-1 text-[11px] ${mAllComplete ? 'text-primary-foreground' : 'font-medium text-foreground'}`}>
-                    {phase.name}{phase.completionPercent !== undefined ? ` ${phase.completionPercent}%` : ''}
+                  <span
+                    className={`truncate px-1 text-[11px] ${mAllComplete ? 'text-primary-foreground' : 'font-medium text-foreground'}`}
+                  >
+                    {phase.name}
+                    {phase.completionPercent !== undefined ? ` ${phase.completionPercent}%` : ''}
                   </span>
                 </div>
               ))}
@@ -297,9 +332,7 @@ function PhaseSegment({
         className={`relative flex items-center justify-center overflow-hidden bg-primary ${className}`}
         style={flexStyle}
       >
-        <span className="truncate px-2 text-[11px] text-primary-foreground">
-          {phase.name}
-        </span>
+        <span className="truncate px-2 text-[11px] text-primary-foreground">{phase.name}</span>
       </div>
     );
   }
@@ -317,7 +350,10 @@ function PhaseSegment({
       >
         <div className="absolute inset-y-0 left-0 bg-primary/50" style={{ width: `${pct}%` }} />
         {isActive && (
-          <div className="absolute inset-y-0 w-[3px] bg-primary animate-pulse" style={{ left: `${pct}%` }} />
+          <div
+            className="absolute inset-y-0 w-[3px] bg-primary animate-pulse"
+            style={{ left: `${pct}%` }}
+          />
         )}
         <span className="relative z-10 truncate px-2 text-[11px] font-semibold text-foreground">
           {phase.name} ({pct}%)
@@ -343,8 +379,14 @@ function PhaseSegment({
           )`,
         }}
       >
-        <div className="absolute inset-y-0 left-0 bg-primary/50" style={{ width: `${progress}%` }} />
-        <div className="absolute inset-y-0 w-[3px] bg-primary animate-pulse" style={{ left: `${progress}%` }} />
+        <div
+          className="absolute inset-y-0 left-0 bg-primary/50"
+          style={{ width: `${progress}%` }}
+        />
+        <div
+          className="absolute inset-y-0 w-[3px] bg-primary animate-pulse"
+          style={{ left: `${progress}%` }}
+        />
         <span className="relative z-10 truncate px-2 text-[11px] font-semibold text-foreground">
           {phase.name}
         </span>
@@ -358,11 +400,7 @@ function PhaseSegment({
       className={`relative flex items-center justify-center overflow-hidden bg-muted ${className}`}
       style={flexStyle}
     >
-      <span className="truncate px-2 text-[11px] text-muted-foreground">
-        {phase.name}
-      </span>
+      <span className="truncate px-2 text-[11px] text-muted-foreground">{phase.name}</span>
     </div>
   );
 }
-
-export type { Phase, TimelinePhaseBarProps };

@@ -11,7 +11,7 @@ interface UpdateInput {
   treatmentStrategyDescription?: string | null;
 }
 
-export interface ResolvedStrategyUpdate {
+interface ResolvedStrategyUpdate {
   treatmentStrategy?: RiskTreatmentType;
   treatmentStrategyDescription?: string | null;
   strategyDescriptions?: Record<string, string>;
@@ -49,7 +49,8 @@ export function resolveStrategyDescriptionUpdate(
   const oldStrategy = existing.treatmentStrategy;
   const newStrategy = update.treatmentStrategy ?? oldStrategy;
   const isStrategyChange =
-    update.treatmentStrategy !== undefined && update.treatmentStrategy !== oldStrategy;
+    update.treatmentStrategy !== undefined &&
+    update.treatmentStrategy !== oldStrategy;
 
   const result: ResolvedStrategyUpdate = {};
 

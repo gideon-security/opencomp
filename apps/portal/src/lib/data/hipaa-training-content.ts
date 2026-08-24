@@ -7,7 +7,7 @@ import type { TrainingVideoId } from '@gideon-defender/company';
 // canonical ID ever changes, so the two cannot drift.
 export const HIPAA_TRAINING_ID: Extract<TrainingVideoId, 'hipaa-sat-1'> = 'hipaa-sat-1';
 
-export interface HipaaTrainingSection {
+interface HipaaTrainingSection {
   title: string;
   content: string;
 }

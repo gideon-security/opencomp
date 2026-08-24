@@ -15,7 +15,7 @@ import {
   generateTaskSummaryPDF,
   sanitizeFilename,
 } from './evidence-pdf-generator';
-import { buildAutomationJson, buildAutomationJsonStream } from './evidence-json-builder';
+import { buildAutomationJsonStream } from './evidence-json-builder';
 import {
   appendAttachmentToArchive,
   createFilenameTracker,

@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
 
-export interface GcpOrg {
+interface GcpOrg {
   id: string;
   displayName: string;
   projects: Array<{ id: string; name: string }>;
@@ -29,12 +29,8 @@ export function GcpProjectPicker({
   const selectedSet = new Set(selectedProjectIds);
   const count = selectedProjectIds.length;
 
-  const allProjects = organizations.flatMap((o) =>
-    o.projects.map((p) => ({ ...p, orgId: o.id })),
-  );
-  const selectedNames = allProjects
-    .filter((p) => selectedSet.has(p.id))
-    .map((p) => p.name);
+  const allProjects = organizations.flatMap((o) => o.projects.map((p) => ({ ...p, orgId: o.id })));
+  const selectedNames = allProjects.filter((p) => selectedSet.has(p.id)).map((p) => p.name);
 
   const label =
     count === 0
@@ -48,8 +44,8 @@ export function GcpProjectPicker({
       <div>
         <p className="text-sm font-semibold">GCP Projects</p>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Select which projects to scan and monitor. Findings and service
-          detection are scoped to these projects.
+          Select which projects to scan and monitor. Findings and service detection are scoped to
+          these projects.
         </p>
       </div>
 
@@ -73,11 +69,7 @@ export function GcpProjectPicker({
                 stroke="currentColor"
                 strokeWidth={2}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 9l-7 7-7-7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
           </button>
@@ -89,9 +81,7 @@ export function GcpProjectPicker({
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
           {organizations.map((org) => {
-            const orgSelectedCount = org.projects.filter((p) =>
-              selectedSet.has(p.id),
-            ).length;
+            const orgSelectedCount = org.projects.filter((p) => selectedSet.has(p.id)).length;
             return (
               <DropdownMenuSub key={org.id}>
                 <DropdownMenuSubTrigger className="text-sm">
@@ -104,9 +94,7 @@ export function GcpProjectPicker({
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent className="max-h-[min(20rem,calc(100vh-4rem))] w-[min(20rem,calc(100vw-2rem))] overflow-y-auto">
                   {org.projects.length === 0 ? (
-                    <div className="px-3 py-2 text-xs text-muted-foreground">
-                      No projects found
-                    </div>
+                    <div className="px-3 py-2 text-xs text-muted-foreground">No projects found</div>
                   ) : (
                     org.projects.map((p) => {
                       const checked = selectedSet.has(p.id);
@@ -119,9 +107,7 @@ export function GcpProjectPicker({
                         >
                           <div
                             className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors ${
-                              checked
-                                ? 'border-primary bg-primary'
-                                : 'border-muted-foreground/40'
+                              checked ? 'border-primary bg-primary' : 'border-muted-foreground/40'
                             }`}
                           >
                             {checked && (
@@ -141,9 +127,7 @@ export function GcpProjectPicker({
                             )}
                           </div>
                           <span className="shrink-0">{p.name}</span>
-                          <span className="truncate text-xs text-muted-foreground">
-                            {p.id}
-                          </span>
+                          <span className="truncate text-xs text-muted-foreground">{p.id}</span>
                         </button>
                       );
                     })

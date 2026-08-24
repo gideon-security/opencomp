@@ -1,6 +1,6 @@
 import { db } from '@db';
 import { RESOURCE_TO_PRISMA_MODEL } from './audit-log.constants';
-import type { ChangesRecord, RelationMappingResult } from './audit-log.utils';
+import type { RelationMappingResult } from './audit-log.utils';
 
 export async function resolveMemberNames(
   memberIds: string[],

@@ -23,7 +23,6 @@ import { HybridAuthGuard } from '../auth/hybrid-auth.guard';
 import { PermissionGuard } from '../auth/permission.guard';
 import { RequirePermission } from '../auth/require-permission.decorator';
 import { OrganizationId } from '../auth/auth-context.decorator';
-import { AuthenticatedRequest } from '../auth/types';
 import {
   ApproveAccessRequestDto,
   CreateAccessRequestDto,

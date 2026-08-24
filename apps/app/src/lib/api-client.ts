@@ -17,17 +17,14 @@ export interface ApiResponse<T = unknown> {
  * API client for calling our internal NestJS API
  * Uses session cookies for authentication (via credentials: 'include')
  */
-export class ApiClient {
+class ApiClient {
   private baseUrl: string;
 
   constructor() {
     this.baseUrl = env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
   }
 
-  async call<T = unknown>(
-    endpoint: string,
-    options: ApiCallOptions = {},
-  ): Promise<ApiResponse<T>> {
+  async call<T = unknown>(endpoint: string, options: ApiCallOptions = {}): Promise<ApiResponse<T>> {
     const { organizationId, headers: customHeaders, ...fetchOptions } = options;
 
     const headers: Record<string, string> = {
@@ -79,10 +76,7 @@ export class ApiClient {
   /**
    * Raw request for non-JSON responses (e.g. PDF/markdown artifacts)
    */
-  async raw(
-    endpoint: string,
-    options: ApiCallOptions = {},
-  ): Promise<Response> {
+  async raw(endpoint: string, options: ApiCallOptions = {}): Promise<Response> {
     const { organizationId, headers: customHeaders, ...fetchOptions } = options;
 
     const headers: Record<string, string> = {
@@ -173,6 +167,8 @@ export const api = {
   delete: <T = unknown>(endpoint: string, organizationId?: string, body?: unknown) =>
     apiClient.delete<T>(endpoint, organizationId, body),
 
-  raw: (endpoint: string, options?: Omit<ApiCallOptions, 'organizationId'> & { organizationId?: string }) =>
-    apiClient.raw(endpoint, options),
+  raw: (
+    endpoint: string,
+    options?: Omit<ApiCallOptions, 'organizationId'> & { organizationId?: string },
+  ) => apiClient.raw(endpoint, options),
 };

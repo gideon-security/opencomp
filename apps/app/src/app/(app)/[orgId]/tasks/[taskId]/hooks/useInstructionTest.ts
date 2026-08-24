@@ -4,7 +4,7 @@ import { apiClient } from '@/lib/api-client';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
-export interface InstructionTestHandle {
+interface InstructionTestHandle {
   runId: string;
   publicAccessToken: string;
   /** Session the test runs on — shown as a live view to watch. */

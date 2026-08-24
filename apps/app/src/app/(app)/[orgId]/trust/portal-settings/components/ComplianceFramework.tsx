@@ -63,7 +63,7 @@ function statusLabel(t: TrustTranslator, status: string): string {
   }
 }
 
-export function ComplianceFrameworkLogo({
+function ComplianceFrameworkLogo({
   title,
   status,
   enabled,
@@ -209,9 +209,7 @@ export function ComplianceFramework({
         toast.success(t('portal.frameworkCard.uploadSuccess'));
       } catch (error) {
         const message =
-          error instanceof Error
-            ? error.message
-            : t('portal.frameworkCard.uploadFailed');
+          error instanceof Error ? error.message : t('portal.frameworkCard.uploadFailed');
         toast.error(message);
         console.error('File upload error:', error);
       } finally {
@@ -429,9 +427,7 @@ export function ComplianceFramework({
                           <View className="h-3.5 w-3.5" />
                           {t('portal.frameworkCard.view')}
                         </TooltipTrigger>
-                        <TooltipContent>
-                          {t('portal.frameworkCard.openInNewTab')}
-                        </TooltipContent>
+                        <TooltipContent>{t('portal.frameworkCard.openInNewTab')}</TooltipContent>
                       </Tooltip>
                     )}
                   </div>
@@ -481,9 +477,7 @@ export function ComplianceFramework({
                         >
                           {t('portal.frameworkCard.download')}
                         </TooltipTrigger>
-                        <TooltipContent>
-                          {t('portal.frameworkCard.downloadHint')}
-                        </TooltipContent>
+                        <TooltipContent>{t('portal.frameworkCard.downloadHint')}</TooltipContent>
                       </Tooltip>
                     )}
                   </div>

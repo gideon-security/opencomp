@@ -5,7 +5,7 @@ import { Badge } from '@gideon-defender/ui/badge';
 import { Button } from '@gideon-defender/ui/button';
 import type { ColumnDef } from '@tanstack/react-table';
 
-export type RequestTableRow = AccessRequest;
+type RequestTableRow = AccessRequest;
 
 interface RequestColumnHandlers {
   onApprove: (row: AccessRequest) => void;

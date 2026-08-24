@@ -6,7 +6,6 @@ import {
   type EnvironmentAlias,
 } from '../../environment-aliases';
 import {
-  classifyEnvironment,
   classifyEnvironmentWithAliases,
   confirmsEnvironmentSeparation,
   envTagValues,
@@ -22,18 +21,6 @@ interface ResourceGroup {
   name: string;
   location?: string;
   tags?: Record<string, string>;
-}
-
-/**
- * Classify a resource group into an environment: an explicit `environment` tag
- * value first, then the RG name. Only env-key tag values and the name are
- * considered (never arbitrary tag values).
- */
-export function classifyResourceGroupEnv(rg: {
-  name: string;
-  tags?: Record<string, string>;
-}): string | null {
-  return classifyEnvironment([...envTagValues(rg.tags), rg.name]);
 }
 
 function classifyResourceGroupEnvWithAliases({

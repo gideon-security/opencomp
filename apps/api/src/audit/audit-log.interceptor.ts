@@ -6,7 +6,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AuditLogEntityType, db, Prisma } from '@db';
+import { db, Prisma } from '@db';
 import { Observable, from, switchMap, tap } from 'rxjs';
 import { PERMISSIONS_KEY, RequiredPermission } from '../auth/permission.guard';
 import { AuthenticatedRequest } from '../auth/types';

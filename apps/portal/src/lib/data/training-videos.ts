@@ -4,7 +4,7 @@ import type { GeneralTrainingVideoId } from '@gideon-defender/company';
  * Represents a training video resource that can be used
  * for user education and compliance training.
  */
-export interface TrainingVideo {
+interface TrainingVideo {
   /** Unique identifier for the video */
   id: string;
   /** Title of the training video */

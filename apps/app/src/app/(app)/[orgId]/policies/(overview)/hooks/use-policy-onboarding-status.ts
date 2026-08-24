@@ -4,7 +4,7 @@ import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useMemo } from 'react';
 import type { PolicyTailoringStatus } from '../../all/components/policy-tailoring-context';
 
-export interface PolicyOnboardingItemInfo {
+interface PolicyOnboardingItemInfo {
   id: string;
   name: string;
 }
@@ -16,9 +16,7 @@ export interface PolicyOnboardingItemInfo {
  * conversion correctly (the shared hook's `itemType.slice(0, -1)` would
  * produce `policie_`).
  */
-export function usePolicyOnboardingStatus(
-  onboardingRunId: string | null | undefined,
-) {
+export function usePolicyOnboardingStatus(onboardingRunId: string | null | undefined) {
   const shouldSubscribe = Boolean(onboardingRunId);
   const { run } = useRealtimeRun(shouldSubscribe ? onboardingRunId! : '', {
     enabled: shouldSubscribe,
@@ -28,24 +26,20 @@ export function usePolicyOnboardingStatus(
     if (!run?.metadata) return {};
 
     const meta = run.metadata as Record<string, unknown>;
-    const itemsInfo =
-      (meta.policiesInfo as Array<{ id: string; name: string }>) || [];
+    const itemsInfo = (meta.policiesInfo as Array<{ id: string; name: string }>) || [];
 
-    return itemsInfo.reduce<Record<string, PolicyTailoringStatus>>(
-      (acc, item) => {
-        const status = meta[`policy_${item.id}_status`];
-        if (
-          status === 'queued' ||
-          status === 'pending' ||
-          status === 'processing' ||
-          status === 'completed'
-        ) {
-          acc[item.id] = status;
-        }
-        return acc;
-      },
-      {},
-    );
+    return itemsInfo.reduce<Record<string, PolicyTailoringStatus>>((acc, item) => {
+      const status = meta[`policy_${item.id}_status`];
+      if (
+        status === 'queued' ||
+        status === 'pending' ||
+        status === 'processing' ||
+        status === 'completed'
+      ) {
+        acc[item.id] = status;
+      }
+      return acc;
+    }, {});
   }, [run?.metadata]);
 
   const progress = useMemo(() => {
@@ -53,8 +47,7 @@ export function usePolicyOnboardingStatus(
 
     const meta = run.metadata as Record<string, unknown>;
     const total = typeof meta.policiesTotal === 'number' ? meta.policiesTotal : 0;
-    const completed =
-      typeof meta.policiesCompleted === 'number' ? meta.policiesCompleted : 0;
+    const completed = typeof meta.policiesCompleted === 'number' ? meta.policiesCompleted : 0;
 
     if (total === 0) return null;
     return { total, completed };
@@ -69,9 +62,7 @@ export function usePolicyOnboardingStatus(
   // Active if any item is not yet completed
   const hasActiveItems = useMemo(
     () =>
-      Object.values(itemStatuses).some(
-        (status) => status !== 'completed' && status !== undefined,
-      ),
+      Object.values(itemStatuses).some((status) => status !== 'completed' && status !== undefined),
     [itemStatuses],
   );
 
@@ -80,8 +71,7 @@ export function usePolicyOnboardingStatus(
     return ['EXECUTING', 'QUEUED', 'WAITING'].includes(run.status);
   }, [run]);
 
-  const hasActiveProgress =
-    progress !== null && progress.completed < progress.total;
+  const hasActiveProgress = progress !== null && progress.completed < progress.total;
   const isActive = isRunActive || hasActiveProgress || hasActiveItems;
 
   return {

@@ -4,12 +4,11 @@ import { DepartmentSelect } from '@/components/DepartmentSelect';
 import { SelectAssignee } from '@/components/SelectAssignee';
 import { useOrganizationMembers } from '@/hooks/use-organization-members';
 import { usePermissions } from '@/hooks/use-permissions';
-import type { Member, Task, TaskFrequency, TaskStatus, User } from '@db';
+import type { Task, TaskFrequency, TaskStatus } from '@db';
 import { format } from 'date-fns';
 import { useParams } from 'next/navigation';
 import {
   Grid,
-  Input,
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
@@ -20,7 +19,6 @@ import {
   SelectItem,
   SelectTrigger,
   Stack,
-  Text,
 } from '@trycompai/design-system';
 import { Calendar } from 'lucide-react';
 import { useState } from 'react';

@@ -8,8 +8,7 @@ interface RoleNotificationsResponse {
   data: RoleNotificationConfig[];
 }
 
-export const roleNotificationsKey = () =>
-  ['/v1/organization/role-notifications'] as const;
+const roleNotificationsKey = () => ['/v1/organization/role-notifications'] as const;
 
 interface UseRoleNotificationsOptions {
   initialData?: RoleNotificationConfig[];
@@ -38,15 +37,12 @@ export function useRoleNotifications(options?: UseRoleNotificationsOptions) {
   const settings = Array.isArray(data) ? data : [];
 
   const saveSettings = async (updatedSettings: RoleNotificationConfig[]) => {
-    const response = await apiClient.put(
-      '/v1/organization/role-notifications',
-      {
-        settings: updatedSettings.map((config) => ({
-          role: config.role,
-          ...config.notifications,
-        })),
-      },
-    );
+    const response = await apiClient.put('/v1/organization/role-notifications', {
+      settings: updatedSettings.map((config) => ({
+        role: config.role,
+        ...config.notifications,
+      })),
+    });
     if (response.error) throw new Error(response.error);
     await mutate(updatedSettings, false);
     await mutate();

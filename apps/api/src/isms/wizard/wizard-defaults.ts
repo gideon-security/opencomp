@@ -26,7 +26,7 @@ export const DEFAULT_CLOUD_SCOPE_SPLIT: {
 };
 
 /** The shape returned by GET /v1/isms/profile under `defaults`. */
-export interface WizardDefaults {
+interface WizardDefaults {
   capabilitiesInProduction: string[];
   certificateScopeSentence: string;
   objectives: Array<{ objective: string; target: string }>;

@@ -1,6 +1,12 @@
 'use client';
 
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
+import {
   Badge,
   DropdownMenu,
   DropdownMenuContent,
@@ -10,19 +16,8 @@ import {
   TableRow,
   Text,
 } from '@trycompai/design-system';
-import {
-  Information,
-  OverflowMenuVertical,
-  TrashCan,
-} from '@trycompai/design-system/icons';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@gideon-defender/ui/tooltip';
+import { Information, OverflowMenuVertical, TrashCan } from '@trycompai/design-system/icons';
 import Link from 'next/link';
-import type { DeviceWithChecks } from '../types';
 import {
   CANONICAL_DEVICE_CHECKS,
   CHECK_FIELDS,
@@ -39,6 +34,7 @@ import {
   staleTooltipCopy,
   unverifiedTooltipCopy,
 } from '../lib/device-source';
+import type { DeviceWithChecks } from '../types';
 
 function InfoTooltip({ label, copy }: { label: string; copy: string }) {
   return (
@@ -60,24 +56,22 @@ function InfoTooltip({ label, copy }: { label: string; copy: string }) {
   );
 }
 
-export function SourceBadge({ device }: { device: DeviceWithChecks }) {
+function SourceBadge({ device }: { device: DeviceWithChecks }) {
   return <Badge variant="outline">{sourceLabel(device)}</Badge>;
 }
 
-export function UserNameCell({
-  device,
-  orgId,
-}: {
-  device: DeviceWithChecks;
-  orgId: string;
-}) {
+function UserNameCell({ device, orgId }: { device: DeviceWithChecks; orgId: string }) {
   const memberId = device.memberId;
 
   if (!memberId) {
     return (
       <div className="flex flex-col">
-        <Text size="sm" weight="medium">{device.user.name}</Text>
-        <Text size="xs" variant="muted">{device.user.email}</Text>
+        <Text size="sm" weight="medium">
+          {device.user.name}
+        </Text>
+        <Text size="xs" variant="muted">
+          {device.user.email}
+        </Text>
       </div>
     );
   }
@@ -91,7 +85,9 @@ export function UserNameCell({
       >
         {device.user.name}
       </Link>
-      <Text size="xs" variant="muted">{device.user.email}</Text>
+      <Text size="xs" variant="muted">
+        {device.user.email}
+      </Text>
     </div>
   );
 }
@@ -104,15 +100,12 @@ export function NotTrackedBadge({ device }: { device: DeviceWithChecks }) {
   return (
     <div className="flex items-center gap-1">
       <Badge variant="secondary">Not tracked</Badge>
-      <InfoTooltip
-        label="Why is compliance not tracked?"
-        copy={notTrackedTooltipCopy(device)}
-      />
+      <InfoTooltip label="Why is compliance not tracked?" copy={notTrackedTooltipCopy(device)} />
     </div>
   );
 }
 
-export function CompliantBadge({ device }: { device: DeviceWithChecks }) {
+function CompliantBadge({ device }: { device: DeviceWithChecks }) {
   // Integration-imported devices are judged by CompAI's OWN standard — the
   // same four canonical checks the Comp agent measures — computed from the
   // source-reported check data. The vendor's own verdict (e.g. Intune
@@ -159,7 +152,7 @@ export function CompliantBadge({ device }: { device: DeviceWithChecks }) {
   return <Badge variant="destructive">No</Badge>;
 }
 
-export function CheckBadges({ device }: { device: DeviceWithChecks }) {
+function CheckBadges({ device }: { device: DeviceWithChecks }) {
   // Imported devices: render whatever checks the SOURCE reported, in the
   // provider's own naming. Nothing reported → placeholder dashes, as before.
   if (!isComplianceTracked(device)) {
@@ -205,7 +198,7 @@ export function CheckBadges({ device }: { device: DeviceWithChecks }) {
   );
 }
 
-export interface DeviceTableRowProps {
+interface DeviceTableRowProps {
   device: DeviceWithChecks;
   orgId: string;
   canRemoveDevice: boolean;

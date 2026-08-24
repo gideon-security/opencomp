@@ -5,7 +5,7 @@ const betterAuthConfigSchema = z.object({
   url: z.string().url('BASE_URL must be a valid URL'),
 });
 
-export type BetterAuthConfig = z.infer<typeof betterAuthConfigSchema>;
+type BetterAuthConfig = z.infer<typeof betterAuthConfigSchema>;
 
 /**
  * Better Auth configuration for the API.

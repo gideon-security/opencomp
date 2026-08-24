@@ -1,7 +1,7 @@
 'use client';
 
-import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
+import useSWR from 'swr';
 
 export interface AdminOrgFeatureFlag {
   key: string;
@@ -16,7 +16,7 @@ interface ListResponse {
   data: AdminOrgFeatureFlag[];
 }
 
-export const adminOrgFeatureFlagsKey = (orgId: string) =>
+const adminOrgFeatureFlagsKey = (orgId: string) =>
   ['/v1/admin/organizations', orgId, 'feature-flags'] as const;
 
 export function useAdminOrgFeatureFlags(orgId: string | null) {

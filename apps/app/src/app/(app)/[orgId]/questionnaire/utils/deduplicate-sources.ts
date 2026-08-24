@@ -1,6 +1,6 @@
 /**
  * Universal utility function to deduplicate sources for questionnaire answers.
- * 
+ *
  * Deduplication rules:
  * - Policies: Same policy name = same source (deduplicated by policyName)
  * - Context: All context entries = single "Context Q&A" source
@@ -9,7 +9,7 @@
  * - Other sources: Deduplicated by sourceId
  */
 
-export interface Source {
+interface Source {
   sourceType: string;
   sourceName?: string;
   sourceId?: string;
@@ -27,7 +27,7 @@ export interface Source {
  * - Manual Answers: sourceId (each manual answer is separate)
  * - Knowledge Base Documents: sourceId (each document is separate)
  * - Others: sourceId
- * 
+ *
  * When duplicates are found, keeps the one with the highest score.
  */
 export function deduplicateSources(sources: Source[]): Source[] {
@@ -111,30 +111,32 @@ function getSourceDisplayName(source: Source): string {
   if (source.sourceType === 'policy' && source.policyName) {
     return `Policy: ${source.policyName}`;
   }
-  
+
   if (source.sourceType === 'context') {
     return 'Context Q&A';
   }
-  
+
   if (source.sourceType === 'manual_answer') {
     // Show question from manual answer if available for better identification
     // This helps distinguish between different manual answers
     if (source.manualAnswerQuestion) {
-      const preview = source.manualAnswerQuestion.length > 50 
-        ? source.manualAnswerQuestion.substring(0, 50) + '...'
-        : source.manualAnswerQuestion;
+      const preview =
+        source.manualAnswerQuestion.length > 50
+          ? source.manualAnswerQuestion.substring(0, 50) + '...'
+          : source.manualAnswerQuestion;
       return `Manual Answer (${preview})`;
     }
     // Fallback: use sourceId if available to distinguish different manual answers
     if (source.sourceId) {
-      const shortId = source.sourceId.length > 8 
-        ? source.sourceId.substring(source.sourceId.length - 8)
-        : source.sourceId;
+      const shortId =
+        source.sourceId.length > 8
+          ? source.sourceId.substring(source.sourceId.length - 8)
+          : source.sourceId;
       return `Manual Answer (${shortId})`;
     }
     return 'Manual Answer';
   }
-  
+
   if (source.sourceType === 'knowledge_base_document') {
     // Show filename if available, otherwise just "Knowledge Base Document"
     if (source.documentName) {
@@ -142,11 +144,10 @@ function getSourceDisplayName(source: Source): string {
     }
     return 'Knowledge Base Document';
   }
-  
+
   if (source.sourceName) {
     return source.sourceName;
   }
-  
+
   return source.sourceType || 'Unknown Source';
 }
-

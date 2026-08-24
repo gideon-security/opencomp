@@ -18,34 +18,19 @@ export type IsmsDocumentType =
   | 'internal_audit'
   | 'management_review';
 
-export type IsmsDocumentStatus =
-  | 'draft'
-  | 'in_progress'
-  | 'needs_review'
-  | 'approved'
-  | 'declined';
+export type IsmsDocumentStatus = 'draft' | 'in_progress' | 'needs_review' | 'approved' | 'declined';
 
 export type IsmsContextIssueKind = 'internal' | 'external';
 export type IsmsContextSource = 'derived' | 'manual';
 export type IsmsExportFormat = 'pdf' | 'docx';
 export type IsmsObjectiveStatus = 'not_started' | 'on_track' | 'at_risk' | 'met';
-export type IsmsCompetenceBasis =
-  | 'education'
-  | 'training'
-  | 'experience'
-  | 'combination';
+export type IsmsCompetenceBasis = 'education' | 'training' | 'experience' | 'combination';
 export type IsmsAuditRoute = 'in_house' | 'external' | 'training_planned';
 export type IsmsMetricCadence = 'monthly' | 'quarterly';
 export type IsmsAuditStatus = 'planned' | 'in_progress' | 'complete';
-export type IsmsAuditConclusionVerdict =
-  | 'conform'
-  | 'substantially_conform'
-  | 'not_yet_conform';
+export type IsmsAuditConclusionVerdict = 'conform' | 'substantially_conform' | 'not_yet_conform';
 export type IsmsAuditControlResult =
-  | 'conformity_confirmed'
-  | 'nonconformity_raised'
-  | 'observation_raised'
-  | 'not_sampled';
+  'conformity_confirmed' | 'nonconformity_raised' | 'observation_raised' | 'not_sampled';
 export type IsmsAuditFindingType = 'nc_major' | 'nc_minor' | 'ofi' | 'observation';
 export type IsmsAuditFindingStatus = 'open' | 'in_progress' | 'closed';
 export type IsmsReviewStatus = 'planned' | 'in_progress' | 'complete';
@@ -56,26 +41,22 @@ export type IsmsReviewActionStatus = 'open' | 'in_progress' | 'closed';
  * The ISO 27001 clause 4.1 category taxonomy auditors expect, scoped by kind.
  * Mirrors the API derivation taxonomy (context-derivation.ts).
  */
-export const EXTERNAL_ISSUE_CATEGORIES = [
+const EXTERNAL_ISSUE_CATEGORIES = [
   'Regulatory & Legal',
   'Market & Economic',
   'Technological',
   'Social & Cultural',
 ] as const;
 
-export const INTERNAL_ISSUE_CATEGORIES = [
+const INTERNAL_ISSUE_CATEGORIES = [
   'Governance & Structure',
   'Strategy & Objectives',
   'Capabilities & Resources',
   'Culture & Values',
 ] as const;
 
-export function categoriesForKind(
-  kind: IsmsContextIssueKind,
-): readonly string[] {
-  return kind === 'external'
-    ? EXTERNAL_ISSUE_CATEGORIES
-    : INTERNAL_ISSUE_CATEGORIES;
+export function categoriesForKind(kind: IsmsContextIssueKind): readonly string[] {
+  return kind === 'external' ? EXTERNAL_ISSUE_CATEGORIES : INTERNAL_ISSUE_CATEGORIES;
 }
 
 /** Register: Context of the Organization (clause 4.1). */
@@ -515,7 +496,7 @@ export interface IsmsRiskTreatmentData {
 }
 
 /** Display metadata for each foundational-document card, keyed by type. */
-export interface IsmsTypeMeta {
+interface IsmsTypeMeta {
   type: IsmsDocumentType;
   clause: string;
   title: string;
@@ -649,10 +630,6 @@ const ISMS_TYPE_TO_SLUG: Record<IsmsDocumentType, string> = {
   internal_audit: 'internal-audit',
   management_review: 'management-review',
 };
-
-export function slugToType(slug: string): IsmsDocumentType | undefined {
-  return ISMS_SLUG_TO_TYPE[slug];
-}
 
 export function ismsTypeToSlug(type: IsmsDocumentType): string {
   return ISMS_TYPE_TO_SLUG[type];

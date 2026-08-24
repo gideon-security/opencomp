@@ -15,7 +15,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Separator,
   Stack,
   Tabs,
   TabsContent,

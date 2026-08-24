@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { db } from '@db';
 import { triggerEmail } from '../email/trigger-email';
 import { InviteEmail } from '../email/templates/invite-member';
@@ -18,7 +14,7 @@ import type { InviteItemDto } from './dto/invite-people.dto';
 import { checkAutoCompletePhases } from '../frameworks/frameworks-timeline.helper';
 import { TimelinesService } from '../timelines/timelines.service';
 
-export interface InviteResult {
+interface InviteResult {
   email: string;
   success: boolean;
   error?: string;
@@ -78,7 +74,11 @@ export class PeopleInviteService {
           callerMemberActions,
         );
         if (roleError) {
-          results.push({ email: invite.email, success: false, error: roleError });
+          results.push({
+            email: invite.email,
+            success: false,
+            error: roleError,
+          });
           continue;
         }
 
@@ -89,8 +89,7 @@ export class PeopleInviteService {
           invite.roles,
           organizationId,
         );
-        const shouldSendPortalEmail =
-          !!invite.sendPortalEmail && hasCompliance;
+        const shouldSendPortalEmail = !!invite.sendPortalEmail && hasCompliance;
         const shouldSendAppEmail = await this.rolesHaveAppAccess(
           invite.roles,
           organizationId,
@@ -527,9 +526,7 @@ export class PeopleInviteService {
       if (BUILT_IN_ROLE_PERMISSIONS[role]?.app) return true;
     }
 
-    const customRoleNames = roles.filter(
-      (r) => !BUILT_IN_ROLE_PERMISSIONS[r],
-    );
+    const customRoleNames = roles.filter((r) => !BUILT_IN_ROLE_PERMISSIONS[r]);
     if (customRoleNames.length === 0) return false;
 
     const customRoles = await db.organizationRole.findMany({
@@ -540,8 +537,8 @@ export class PeopleInviteService {
       select: { permissions: true },
     });
 
-    return customRoles.some((role) =>
-      parseRolePermissions(role.permissions)?.app,
+    return customRoles.some(
+      (role) => parseRolePermissions(role.permissions)?.app,
     );
   }
 
@@ -564,8 +561,8 @@ export class PeopleInviteService {
       select: { obligations: true },
     });
 
-    return customRoles.some((role) =>
-      parseRoleObligations(role.obligations).compliance,
+    return customRoles.some(
+      (role) => parseRoleObligations(role.obligations).compliance,
     );
   }
 
@@ -584,7 +581,8 @@ export class PeopleInviteService {
     if (hasWriteAccess) return null;
 
     const disallowed = targetRoles.filter(
-      (r) => !isRestrictedRole(r) && Object.hasOwn(BUILT_IN_ROLE_PERMISSIONS, r),
+      (r) =>
+        !isRestrictedRole(r) && Object.hasOwn(BUILT_IN_ROLE_PERMISSIONS, r),
     );
     if (disallowed.length > 0) {
       return `You cannot assign privileged roles: ${disallowed.join(', ')}.`;

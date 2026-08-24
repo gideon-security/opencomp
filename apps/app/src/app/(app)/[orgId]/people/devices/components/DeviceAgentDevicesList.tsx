@@ -1,5 +1,7 @@
 'use client';
 
+import { usePeopleActions } from '@/hooks/use-people-api';
+import { usePermissions } from '@/hooks/use-permissions';
 import {
   Button,
   Empty,
@@ -22,26 +24,18 @@ import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
-import { usePeopleActions } from '@/hooks/use-people-api';
-import { usePermissions } from '@/hooks/use-permissions';
-import type { DeviceWithChecks } from '../types';
-import {
-  buildDevicesCsv,
-  devicesCsvFilename,
-  downloadDevicesCsv,
-} from '../lib/devices-csv';
-import { DeviceTableRow } from './DeviceListCells';
-import { sourceKey, sourceLabel } from '../lib/device-source';
-import { DeviceDetails } from './DeviceDetails';
 import { RemoveDeviceAlert } from '../../all/components/RemoveDeviceAlert';
+import { sourceKey, sourceLabel } from '../lib/device-source';
+import { buildDevicesCsv, devicesCsvFilename, downloadDevicesCsv } from '../lib/devices-csv';
+import type { DeviceWithChecks } from '../types';
+import { DeviceDetails } from './DeviceDetails';
+import { DeviceTableRow } from './DeviceListCells';
 
-export interface DeviceAgentDevicesListProps {
+interface DeviceAgentDevicesListProps {
   devices: DeviceWithChecks[];
 }
 
-export const DeviceAgentDevicesList = ({
-  devices,
-}: DeviceAgentDevicesListProps) => {
+export const DeviceAgentDevicesList = ({ devices }: DeviceAgentDevicesListProps) => {
   const t = useTranslations('people');
   const { orgId } = useParams<{ orgId: string }>();
   const { removeDeviceAgent } = usePeopleActions();
@@ -113,9 +107,7 @@ export const DeviceAgentDevicesList = ({
         setSelectedDevice(null);
       }
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('devicesList.removeFailedToast'),
-      );
+      toast.error(error instanceof Error ? error.message : t('devicesList.removeFailedToast'));
     } finally {
       setIsRemovingDevice(false);
       setIsRemoveDeviceAlertOpen(false);

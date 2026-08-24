@@ -7,13 +7,13 @@ import type { SyncDevice } from '@gideon-defender/integration-platform';
 // Types
 // ============================================================================
 
-export interface DeviceSyncResultDetail {
+interface DeviceSyncResultDetail {
   identifier: string;
   status: 'imported' | 'updated' | 'skipped' | 'removed' | 'error';
   reason?: string;
 }
 
-export interface DeviceSyncResult {
+interface DeviceSyncResult {
   success: boolean;
   totalFound: number;
   imported: number;
@@ -281,9 +281,7 @@ export class GenericDeviceSyncService {
           }
         }
       } catch (error) {
-        this.logger.error(
-          `Error processing device ${identifier}: ${error}`,
-        );
+        this.logger.error(`Error processing device ${identifier}: ${error}`);
         result.errors++;
         result.details.push({
           identifier,

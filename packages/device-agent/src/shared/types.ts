@@ -23,17 +23,6 @@ export interface DeviceInfo {
   hardwareModel?: string;
 }
 
-export interface RegisterDeviceRequest {
-  name: string;
-  hostname: string;
-  platform: DevicePlatform;
-  osVersion: string;
-  serialNumber?: string;
-  hardwareModel?: string;
-  agentVersion?: string;
-  organizationId: string;
-}
-
 export interface RegisterDeviceResponse {
   deviceId: string;
 }
@@ -53,22 +42,6 @@ export interface CheckInResponse {
    * use it for all subsequent requests.
    */
   upgradedSessionToken?: string;
-}
-
-export interface DeviceStatus {
-  id: string;
-  name: string;
-  hostname: string;
-  platform: DevicePlatform;
-  osVersion: string;
-  isCompliant: boolean;
-  lastCheckIn: string | null;
-  checks: Array<{
-    checkType: DeviceCheckType;
-    passed: boolean;
-    details: Record<string, unknown> | null;
-    checkedAt: string;
-  }>;
 }
 
 /** A single organization registration with its device ID */

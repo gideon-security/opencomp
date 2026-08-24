@@ -2,7 +2,7 @@ import type { ApiResponseOptions } from '@nestjs/swagger';
 
 // Shared shape of one acceptance event, reused by the vendor acceptance
 // responses (apps/api/src/vendors/schemas/vendor-acceptances.responses.ts).
-export const RISK_ACCEPTANCE_SCHEMA = {
+const RISK_ACCEPTANCE_SCHEMA = {
   type: 'object' as const,
   properties: {
     id: {
@@ -131,8 +131,7 @@ const UNAUTHORIZED: ApiResponseOptions = {
 
 const FORBIDDEN: ApiResponseOptions = {
   status: 403,
-  description:
-    'Forbidden - User does not have permission to access this risk',
+  description: 'Forbidden - User does not have permission to access this risk',
   content: {
     'application/json': {
       schema: {

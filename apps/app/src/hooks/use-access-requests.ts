@@ -37,7 +37,7 @@ export type AccessGrant = {
   createdAt: string;
 };
 
-export type ApproveAccessRequestResponse = {
+type ApproveAccessRequestResponse = {
   message: string;
   request?: AccessRequest;
   grant?: AccessGrant;
@@ -50,9 +50,7 @@ export function useAccessRequests(orgId: string) {
   return useQuery({
     queryKey: ['trust-access-requests', orgId],
     queryFn: async () => {
-      const response = await api.get<AccessRequest[]>(
-        '/v1/trust-access/admin/requests',
-      );
+      const response = await api.get<AccessRequest[]>('/v1/trust-access/admin/requests');
 
       if (response.error) {
         throw new Error(response.error);
@@ -68,7 +66,13 @@ export function useApproveAccessRequest(orgId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ requestId, durationDays }: { requestId: string; durationDays: number }) => {
+    mutationFn: async ({
+      requestId,
+      durationDays,
+    }: {
+      requestId: string;
+      durationDays: number;
+    }) => {
       const response = await api.post<ApproveAccessRequestResponse>(
         `/v1/trust-access/admin/requests/${requestId}/approve`,
         { durationDays },
@@ -94,10 +98,9 @@ export function useDenyAccessRequest(orgId: string) {
 
   return useMutation({
     mutationFn: async ({ requestId, reason }: { requestId: string; reason: string }) => {
-      const response = await api.post(
-        `/v1/trust-access/admin/requests/${requestId}/deny`,
-        { reason },
-      );
+      const response = await api.post(`/v1/trust-access/admin/requests/${requestId}/deny`, {
+        reason,
+      });
 
       if (response.error) {
         throw new Error(response.error);
@@ -119,9 +122,7 @@ export function useAccessRequest(orgId: string, requestId: string) {
   return useQuery({
     queryKey: ['trust-access-request', orgId, requestId],
     queryFn: async () => {
-      const response = await api.get<AccessRequest>(
-        `/v1/trust-access/admin/requests/${requestId}`,
-      );
+      const response = await api.get<AccessRequest>(`/v1/trust-access/admin/requests/${requestId}`);
 
       if (response.error) {
         throw new Error(response.error);
@@ -138,9 +139,7 @@ export function useAccessGrants(orgId: string) {
   return useQuery({
     queryKey: ['trust-access-grants', orgId],
     queryFn: async () => {
-      const response = await api.get<AccessGrant[]>(
-        '/v1/trust-access/admin/grants',
-      );
+      const response = await api.get<AccessGrant[]>('/v1/trust-access/admin/grants');
 
       if (response.error) {
         throw new Error(response.error);
@@ -157,10 +156,9 @@ export function useRevokeAccessGrant(orgId: string) {
 
   return useMutation({
     mutationFn: async ({ grantId, reason }: { grantId: string; reason: string }) => {
-      const response = await api.post(
-        `/v1/trust-access/admin/grants/${grantId}/revoke`,
-        { reason },
-      );
+      const response = await api.post(`/v1/trust-access/admin/grants/${grantId}/revoke`, {
+        reason,
+      });
 
       if (response.error) {
         throw new Error(response.error);
@@ -224,10 +222,7 @@ export function usePreviewNda(orgId: string) {
         previewId: string;
         s3Key: string;
         pdfDownloadUrl: string;
-      }>(
-        `/v1/trust-access/admin/requests/${requestId}/preview-nda`,
-        {},
-      );
+      }>(`/v1/trust-access/admin/requests/${requestId}/preview-nda`, {});
 
       if (response.error) {
         throw new Error(response.error);

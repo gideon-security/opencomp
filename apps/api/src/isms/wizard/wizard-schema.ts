@@ -10,13 +10,13 @@ import { z } from 'zod';
  *   through the wizard (every field optional, deeply).
  */
 
-export const INTERNAL_AUDIT_APPROACHES = [
+const INTERNAL_AUDIT_APPROACHES = [
   'in_house',
   'external_firm',
   'training_planned',
 ] as const;
 
-export const EU_REP_STATUSES = ['appointed', 'not_required', 'pending'] as const;
+const EU_REP_STATUSES = ['appointed', 'not_required', 'pending'] as const;
 
 /**
  * Suggested sector-regulator options surfaced by the wizard. Customers may also
@@ -72,7 +72,7 @@ export const wizardAnswersSchema = z.object({
   intendedOutcomes: z.array(z.string()),
 });
 
-export type WizardAnswers = z.infer<typeof wizardAnswersSchema>;
+type WizardAnswers = z.infer<typeof wizardAnswersSchema>;
 
 /**
  * Deeply-partial variant for incremental saves. Nested objects/arrays are all
@@ -80,7 +80,10 @@ export type WizardAnswers = z.infer<typeof wizardAnswersSchema>;
  */
 export const partialWizardAnswersSchema = z.object({
   deputySpo: deputySpoSchema.partial().optional(),
-  internalAuditApproach: z.enum(INTERNAL_AUDIT_APPROACHES).nullable().optional(),
+  internalAuditApproach: z
+    .enum(INTERNAL_AUDIT_APPROACHES)
+    .nullable()
+    .optional(),
   certificationBody: z.string().optional(),
   insurance: insuranceSchema.partial().optional(),
   sectorRegulators: z.array(z.string()).optional(),
@@ -101,8 +104,6 @@ export const saveWizardProfileSchema = z.object({
   answers: partialWizardAnswersSchema,
   complete: z.boolean().optional(),
 });
-
-export type SaveWizardProfileInput = z.infer<typeof saveWizardProfileSchema>;
 
 /**
  * Parse a stored answers blob (Prisma JSON) into a partial WizardAnswers. Unknown

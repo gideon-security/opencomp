@@ -11,12 +11,7 @@ interface AdminTimelinePhaseTemplate {
   defaultDurationWeeks: number;
   orderIndex: number;
   completionType:
-    | 'AUTO_TASKS'
-    | 'AUTO_POLICIES'
-    | 'AUTO_PEOPLE'
-    | 'AUTO_FINDINGS'
-    | 'AUTO_UPLOAD'
-    | 'MANUAL';
+    'AUTO_TASKS' | 'AUTO_POLICIES' | 'AUTO_PEOPLE' | 'AUTO_FINDINGS' | 'AUTO_UPLOAD' | 'MANUAL';
   locksTimelineOnComplete: boolean;
 }
 
@@ -64,12 +59,7 @@ interface AdminOrgTimeline {
     description: string | null;
     groupLabel?: string | null;
     completionType:
-      | 'AUTO_TASKS'
-      | 'AUTO_POLICIES'
-      | 'AUTO_PEOPLE'
-      | 'AUTO_FINDINGS'
-      | 'AUTO_UPLOAD'
-      | 'MANUAL';
+      'AUTO_TASKS' | 'AUTO_POLICIES' | 'AUTO_PEOPLE' | 'AUTO_FINDINGS' | 'AUTO_UPLOAD' | 'MANUAL';
     status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
     durationWeeks: number;
     orderIndex: number;
@@ -97,23 +87,20 @@ interface AdminOrgTimelinesApiResponse {
   count: number;
 }
 
-export const adminTimelineTemplatesKey = () =>
-  ['/v1/admin/timeline-templates'] as const;
+const adminTimelineTemplatesKey = () => ['/v1/admin/timeline-templates'] as const;
 
-export const adminTimelineTemplateKey = (id: string) =>
-  ['/v1/admin/timeline-templates', id] as const;
+const adminTimelineTemplateKey = (id: string) => ['/v1/admin/timeline-templates', id] as const;
 
-export const adminOrgTimelinesKey = (orgId: string) =>
+const adminOrgTimelinesKey = (orgId: string) =>
   ['/v1/admin/organizations', orgId, 'timelines'] as const;
 
 export function useAdminTimelineTemplates() {
   const { data, error, isLoading, mutate } = useSWR(
     adminTimelineTemplatesKey(),
     async () => {
-      const response =
-        await apiClient.get<AdminTimelineTemplatesApiResponse>(
-          '/v1/admin/timeline-templates',
-        );
+      const response = await apiClient.get<AdminTimelineTemplatesApiResponse>(
+        '/v1/admin/timeline-templates',
+      );
       if (response.error) throw new Error(response.error);
       if (!response.data?.data) return [];
       return response.data.data;
@@ -161,10 +148,9 @@ export function useAdminOrgTimelines(orgId: string | null) {
   const { data, error, isLoading, mutate } = useSWR(
     orgId ? adminOrgTimelinesKey(orgId) : null,
     async () => {
-      const response =
-        await apiClient.get<AdminOrgTimelinesApiResponse>(
-          `/v1/admin/organizations/${orgId}/timelines`,
-        );
+      const response = await apiClient.get<AdminOrgTimelinesApiResponse>(
+        `/v1/admin/organizations/${orgId}/timelines`,
+      );
       if (response.error) throw new Error(response.error);
       if (!response.data?.data) return [];
       return response.data.data;
@@ -184,8 +170,4 @@ export function useAdminOrgTimelines(orgId: string | null) {
   };
 }
 
-export type {
-  AdminTimelineTemplate,
-  AdminTimelinePhaseTemplate,
-  AdminOrgTimeline,
-};
+export type { AdminOrgTimeline, AdminTimelinePhaseTemplate, AdminTimelineTemplate };

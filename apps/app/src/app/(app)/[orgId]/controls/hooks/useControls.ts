@@ -1,8 +1,8 @@
 'use client';
 
 import { apiClient } from '@/lib/api-client';
-import type { ControlWithRelations } from '../data/queries';
 import useSWR from 'swr';
+import type { ControlWithRelations } from '../data/queries';
 
 interface ControlsApiResponse {
   data: ControlWithRelations[];
@@ -22,7 +22,7 @@ interface CreateControlPayload {
   documentTypes?: string[];
 }
 
-export const controlsKey = () => ['/v1/controls'] as const;
+const controlsKey = () => ['/v1/controls'] as const;
 
 interface UseControlsOptions {
   initialData?: ControlWithRelations[];
@@ -34,8 +34,7 @@ export function useControls(options?: UseControlsOptions) {
   const { data, error, isLoading, mutate } = useSWR(
     controlsKey(),
     async () => {
-      const response =
-        await apiClient.get<ControlsApiResponse>('/v1/controls');
+      const response = await apiClient.get<ControlsApiResponse>('/v1/controls');
       if (response.error) throw new Error(response.error);
       if (!response.data?.data) return [];
       return response.data.data;

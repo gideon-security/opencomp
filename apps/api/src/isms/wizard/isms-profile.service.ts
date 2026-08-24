@@ -13,7 +13,7 @@ import {
 } from './wizard-schema';
 
 /** A member option surfaced for the Deputy SPO / sign-off pickers. */
-export interface WizardMemberOption {
+interface WizardMemberOption {
   id: string;
   name: string;
 }
@@ -113,7 +113,9 @@ export class IsmsProfileService {
       wizardAnswersSchema.parse(merged);
     }
 
-    const serialized: Prisma.InputJsonValue = JSON.parse(JSON.stringify(merged));
+    const serialized: Prisma.InputJsonValue = JSON.parse(
+      JSON.stringify(merged),
+    );
 
     const updated = await db.ismsProfile.update({
       where: { id: profile.id },

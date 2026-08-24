@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-export type RiskOnboardingStatus = 'pending' | 'processing' | 'created' | 'assessing' | 'completed';
+type RiskOnboardingStatus = 'pending' | 'processing' | 'created' | 'assessing' | 'completed';
 
 interface RiskOnboardingContextValue {
   getStatus: (riskId: string) => RiskOnboardingStatus | undefined;
@@ -17,14 +17,8 @@ interface RiskOnboardingProviderProps {
   children: React.ReactNode;
 }
 
-export function RiskOnboardingProvider({
-  statuses,
-  children,
-}: RiskOnboardingProviderProps) {
-  const getStatus = React.useCallback(
-    (riskId: string) => statuses[riskId],
-    [statuses],
-  );
+export function RiskOnboardingProvider({ statuses, children }: RiskOnboardingProviderProps) {
+  const getStatus = React.useCallback((riskId: string) => statuses[riskId], [statuses]);
 
   return (
     <RiskOnboardingContext.Provider value={{ getStatus }}>
@@ -42,4 +36,3 @@ export function useRiskOnboardingStatus(riskId: string) {
 
   return context.getStatus(riskId);
 }
-

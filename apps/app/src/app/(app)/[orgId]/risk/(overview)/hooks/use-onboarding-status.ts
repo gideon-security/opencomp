@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 
 export type OnboardingItemStatus = 'pending' | 'processing' | 'created' | 'assessing' | 'completed';
 
-export interface OnboardingItemInfo {
+interface OnboardingItemInfo {
   id: string;
   name: string;
 }

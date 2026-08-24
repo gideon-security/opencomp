@@ -21,7 +21,6 @@ import {
 } from 'better-auth/plugins';
 import { ac, allRoles } from '@gideon-defender/auth';
 import { createAuthMiddleware } from 'better-auth/api';
-import type { AccessControl } from 'better-auth/plugins/access';
 import { redisClient } from '../redis/redis.client';
 import {
   resolveMicrosoftEmail,
@@ -88,12 +87,17 @@ async function getCustomDomains(): Promise<Set<string>> {
   // Try Redis cache first (non-fatal if Redis is unavailable)
   if (corsRedisClient) {
     try {
-      const cached = await corsRedisClient.get<string[]>(CORS_DOMAINS_CACHE_KEY);
+      const cached = await corsRedisClient.get<string[]>(
+        CORS_DOMAINS_CACHE_KEY,
+      );
       if (cached) {
         return new Set(cached);
       }
     } catch (error) {
-      console.error('[CORS] Redis cache read failed, falling back to DB:', error);
+      console.error(
+        '[CORS] Redis cache read failed, falling back to DB:',
+        error,
+      );
     }
   }
 
@@ -607,4 +611,4 @@ export const auth = betterAuth({
   },
 });
 
-export type Auth = typeof auth;
+type Auth = typeof auth;

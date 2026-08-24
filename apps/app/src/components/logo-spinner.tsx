@@ -5,7 +5,7 @@ import { type SVGMotionProps, motion } from 'framer-motion';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-export interface LogoSpinnerProps extends React.SVGProps<SVGSVGElement> {
+interface LogoSpinnerProps extends React.SVGProps<SVGSVGElement> {
   size?: number;
   className?: string;
   raceColor?: string;

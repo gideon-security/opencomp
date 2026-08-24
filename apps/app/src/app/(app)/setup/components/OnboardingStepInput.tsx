@@ -7,12 +7,12 @@ import { Label } from '@gideon-defender/ui/label';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import type { GlobalVendors } from '@db';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
-import { AlertCircle, Check, ChevronDown, ChevronUp, HelpCircle, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
+import { AlertCircle, Check, ChevronDown, ChevronUp, HelpCircle, Plus, Search, Trash2, X } from 'lucide-react';
 import { useApi } from '@/hooks/use-api';
 import { useEffect, useRef, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { Controller, useFieldArray } from 'react-hook-form';
-import type { CompanyDetails, CSuiteEntry, CustomVendor, Step } from '../lib/types';
+import type { CompanyDetails, CustomVendor, Step } from '../lib/types';
 import { FrameworkSelection } from './FrameworkSelection';
 import { WebsiteInput } from './WebsiteInput';
 

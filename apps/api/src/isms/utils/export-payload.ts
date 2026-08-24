@@ -101,7 +101,7 @@ export type LoadedExportDocument = Prisma.IsmsDocumentGetPayload<{
 }>;
 
 /** Load a document with everything the export/snapshot builders need. */
-export async function loadExportDocument(
+async function loadExportDocument(
   documentId: string,
   organizationId: string,
 ): Promise<LoadedExportDocument | null> {
@@ -285,15 +285,14 @@ export function draftVersionNumber(document: LoadedExportDocument): number {
 }
 
 /** Build the full export snapshot ({type,input,metadata}) for the current draft. */
-export async function buildDraftSnapshot(
+async function buildDraftSnapshot(
   document: LoadedExportDocument,
 ): Promise<IsmsExportSnapshot> {
   const orgProfile = await resolveOrgProfile(document);
   const rolesExtras = await resolveRolesExtras(document);
   const monitoringExtras = await resolveMonitoringExtras(document);
   const internalAuditExtras = await resolveInternalAuditExtras(document);
-  const managementReviewExtras =
-    await resolveManagementReviewExtras(document);
+  const managementReviewExtras = await resolveManagementReviewExtras(document);
   const riskTreatmentExtras = await resolveRiskTreatmentExtras(document);
   const input = buildExportInput({
     document,

@@ -2,7 +2,7 @@ const MANUAL_PREFIX = '[MANUAL]';
 
 type ManualRemediationRisk = 'info' | 'low' | 'medium' | 'high' | 'critical';
 
-export interface ManualRemediationPreview {
+interface ManualRemediationPreview {
   currentState: Record<string, unknown>;
   proposedState: Record<string, unknown>;
   description: string;

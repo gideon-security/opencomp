@@ -1,12 +1,7 @@
 'use client';
 
-import {
-  RadioGroup,
-  RadioGroupItem,
-  Switch,
-  Text,
-} from '@trycompai/design-system';
 import { statement } from '@gideon-defender/auth';
+import { RadioGroup, RadioGroupItem, Switch, Text } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
 
 /** Access toggles — binary on/off permissions shown as switches above the matrix */
@@ -17,9 +12,23 @@ const OBLIGATION_TOGGLE_KEYS = ['compliance'] as const;
 
 /** UI-labeled permission resources. Keys kept in display order. */
 const RESOURCE_KEYS = [
-  'organization', 'member', 'control', 'evidence', 'policy', 'risk',
-  'vendor', 'task', 'framework', 'audit', 'finding', 'questionnaire',
-  'integration', 'apiKey', 'secret', 'trust', 'pentest',
+  'organization',
+  'member',
+  'control',
+  'evidence',
+  'policy',
+  'risk',
+  'vendor',
+  'task',
+  'framework',
+  'audit',
+  'finding',
+  'questionnaire',
+  'integration',
+  'apiKey',
+  'secret',
+  'trust',
+  'pentest',
 ] as const;
 
 /** Resources grouped by product section for the permission matrix UI. */
@@ -27,9 +36,22 @@ const RESOURCE_SECTIONS: Array<{ id: 'compliance' | 'security'; keys: readonly s
   {
     id: 'compliance',
     keys: [
-      'organization', 'member', 'control', 'evidence', 'policy', 'risk',
-      'vendor', 'task', 'framework', 'audit', 'finding', 'questionnaire',
-      'integration', 'apiKey', 'secret', 'trust',
+      'organization',
+      'member',
+      'control',
+      'evidence',
+      'policy',
+      'risk',
+      'vendor',
+      'task',
+      'framework',
+      'audit',
+      'finding',
+      'questionnaire',
+      'integration',
+      'apiKey',
+      'secret',
+      'trust',
     ],
   },
   {
@@ -47,9 +69,7 @@ const RESOURCES = RESOURCE_KEYS.filter((key) => key in statement).map((key) => (
 /** Resources grouped into sections, filtered to only those present in the auth statement. */
 const RESOURCE_SECTIONS_RESOLVED = RESOURCE_SECTIONS.map((section) => ({
   id: section.id,
-  resources: section.keys
-    .filter((key) => key in statement)
-    .map((key) => ({ key })),
+  resources: section.keys.filter((key) => key in statement).map((key) => ({ key })),
 })).filter((section) => section.resources.length > 0);
 
 type ResourceKey = string;
@@ -68,18 +88,20 @@ type AccessLevel = 'none' | 'view' | 'edit';
  * - view = ['read']
  * - edit = all actions the resource supports
  */
-const ACCESS_LEVEL_MAPPING: Record<string, Record<Exclude<AccessLevel, 'none'>, string[]>> =
-  Object.fromEntries(
-    Object.entries(statement)
-      .filter(([key]) => (RESOURCE_KEYS as readonly string[]).includes(key))
-      .map(([key, actions]) => [
-        key,
-        {
-          view: ['read'],
-          edit: [...actions],
-        },
-      ]),
-  );
+const ACCESS_LEVEL_MAPPING: Record<
+  string,
+  Record<Exclude<AccessLevel, 'none'>, string[]>
+> = Object.fromEntries(
+  Object.entries(statement)
+    .filter(([key]) => (RESOURCE_KEYS as readonly string[]).includes(key))
+    .map(([key, actions]) => [
+      key,
+      {
+        view: ['read'],
+        edit: [...actions],
+      },
+    ]),
+);
 
 interface PermissionMatrixProps {
   value: Record<string, string[]>;
@@ -110,7 +132,7 @@ function getAccessLevel(resourceKey: ResourceKey, permissions: string[]): Access
 
   // Check if it has edit-level permissions (includes create, update, or delete)
   const hasEditPermissions = permissions.some(
-    (p) => p === 'create' || p === 'update' || p === 'delete'
+    (p) => p === 'create' || p === 'update' || p === 'delete',
   );
 
   if (hasEditPermissions) {
@@ -139,71 +161,116 @@ type Translator = ReturnType<typeof useTranslations<'settings.roles'>>;
 
 function resourceLabel(t: Translator, key: string): string {
   switch (key) {
-    case 'organization': return t('matrix.organization');
-    case 'member': return t('matrix.member');
-    case 'control': return t('matrix.control');
-    case 'evidence': return t('matrix.evidence');
-    case 'policy': return t('matrix.policy');
-    case 'risk': return t('matrix.risk');
-    case 'vendor': return t('matrix.vendor');
-    case 'task': return t('matrix.task');
-    case 'framework': return t('matrix.framework');
-    case 'audit': return t('matrix.audit');
-    case 'finding': return t('matrix.finding');
-    case 'questionnaire': return t('matrix.questionnaire');
-    case 'integration': return t('matrix.integration');
-    case 'apiKey': return t('matrix.apiKey');
-    case 'secret': return t('matrix.secret');
-    case 'trust': return t('matrix.trust');
-    case 'pentest': return t('matrix.pentest');
-    default: return key;
+    case 'organization':
+      return t('matrix.organization');
+    case 'member':
+      return t('matrix.member');
+    case 'control':
+      return t('matrix.control');
+    case 'evidence':
+      return t('matrix.evidence');
+    case 'policy':
+      return t('matrix.policy');
+    case 'risk':
+      return t('matrix.risk');
+    case 'vendor':
+      return t('matrix.vendor');
+    case 'task':
+      return t('matrix.task');
+    case 'framework':
+      return t('matrix.framework');
+    case 'audit':
+      return t('matrix.audit');
+    case 'finding':
+      return t('matrix.finding');
+    case 'questionnaire':
+      return t('matrix.questionnaire');
+    case 'integration':
+      return t('matrix.integration');
+    case 'apiKey':
+      return t('matrix.apiKey');
+    case 'secret':
+      return t('matrix.secret');
+    case 'trust':
+      return t('matrix.trust');
+    case 'pentest':
+      return t('matrix.pentest');
+    default:
+      return key;
   }
 }
 
 function resourceDescription(t: Translator, key: string): string {
   switch (key) {
-    case 'organization': return t('matrix.organizationDescription');
-    case 'member': return t('matrix.memberDescription');
-    case 'control': return t('matrix.controlDescription');
-    case 'evidence': return t('matrix.evidenceDescription');
-    case 'policy': return t('matrix.policyDescription');
-    case 'risk': return t('matrix.riskDescription');
-    case 'vendor': return t('matrix.vendorDescription');
-    case 'task': return t('matrix.taskDescription');
-    case 'framework': return t('matrix.frameworkDescription');
-    case 'audit': return t('matrix.auditDescription');
-    case 'finding': return t('matrix.findingDescription');
-    case 'questionnaire': return t('matrix.questionnaireDescription');
-    case 'integration': return t('matrix.integrationDescription');
-    case 'apiKey': return t('matrix.apiKeyDescription');
-    case 'secret': return t('matrix.secretDescription');
-    case 'trust': return t('matrix.trustDescription');
-    case 'pentest': return t('matrix.pentestDescription');
-    default: return key;
+    case 'organization':
+      return t('matrix.organizationDescription');
+    case 'member':
+      return t('matrix.memberDescription');
+    case 'control':
+      return t('matrix.controlDescription');
+    case 'evidence':
+      return t('matrix.evidenceDescription');
+    case 'policy':
+      return t('matrix.policyDescription');
+    case 'risk':
+      return t('matrix.riskDescription');
+    case 'vendor':
+      return t('matrix.vendorDescription');
+    case 'task':
+      return t('matrix.taskDescription');
+    case 'framework':
+      return t('matrix.frameworkDescription');
+    case 'audit':
+      return t('matrix.auditDescription');
+    case 'finding':
+      return t('matrix.findingDescription');
+    case 'questionnaire':
+      return t('matrix.questionnaireDescription');
+    case 'integration':
+      return t('matrix.integrationDescription');
+    case 'apiKey':
+      return t('matrix.apiKeyDescription');
+    case 'secret':
+      return t('matrix.secretDescription');
+    case 'trust':
+      return t('matrix.trustDescription');
+    case 'pentest':
+      return t('matrix.pentestDescription');
+    default:
+      return key;
   }
 }
 
 function toggleLabel(t: Translator, key: string): string {
   switch (key) {
-    case 'app': return t('matrix.appAccess');
-    case 'compliance': return t('matrix.employeeCompliance');
-    default: return key;
+    case 'app':
+      return t('matrix.appAccess');
+    case 'compliance':
+      return t('matrix.employeeCompliance');
+    default:
+      return key;
   }
 }
 
 function toggleDescription(t: Translator, key: string): string {
   switch (key) {
-    case 'app': return t('matrix.appAccessDescription');
-    case 'compliance': return t('matrix.employeeComplianceDescription');
-    default: return key;
+    case 'app':
+      return t('matrix.appAccessDescription');
+    case 'compliance':
+      return t('matrix.employeeComplianceDescription');
+    default:
+      return key;
   }
 }
 
 function sectionTitle(t: Translator, id: 'compliance' | 'security'): string {
   switch (id) {
-    case 'compliance': return t('matrix.sectionCompliance');
-    case 'security': return t('matrix.sectionSecurity');
-    default: return id;
+    case 'compliance':
+      return t('matrix.sectionCompliance');
+    case 'security':
+      return t('matrix.sectionSecurity');
+    default:
+      return id;
   }
 }
 
@@ -270,16 +337,19 @@ function AccessToggle({
           {toggleDescription(t, toggleKey)}
         </Text>
       </div>
-      <Switch
-        checked={enabled}
-        onCheckedChange={onToggle}
-        disabled={disabled}
-      />
+      <Switch checked={enabled} onCheckedChange={onToggle} disabled={disabled} />
     </div>
   );
 }
 
-export function PermissionMatrix({ value, onChange, obligations, onObligationsChange, disabled = false, obligationsEditable = false }: PermissionMatrixProps) {
+export function PermissionMatrix({
+  value,
+  onChange,
+  obligations,
+  onObligationsChange,
+  disabled = false,
+  obligationsEditable = false,
+}: PermissionMatrixProps) {
   const t = useTranslations('settings.roles');
   const obligationsDisabled = disabled && !obligationsEditable;
   const handleObligationChange = (key: string, enabled: boolean) => {
@@ -346,7 +416,9 @@ export function PermissionMatrix({ value, onChange, obligations, onObligationsCh
     onChange(newPermissions);
   };
 
-  const getSectionAccessLevel = (sectionResources: Array<{ key: string }>): AccessLevel | 'mixed' => {
+  const getSectionAccessLevel = (
+    sectionResources: Array<{ key: string }>,
+  ): AccessLevel | 'mixed' => {
     if (sectionResources.length === 0) return 'none';
     const levels = sectionResources.map((r) => getAccessLevel(r.key, value[r.key] || []));
     const first = levels[0];
@@ -410,41 +482,39 @@ export function PermissionMatrix({ value, onChange, obligations, onObligationsCh
             </span>
           </div>
           {/* Select All Row */}
-          {section.resources.length > 1 && (() => {
-            const sectionLevel = getSectionAccessLevel(section.resources);
-            return (
-              <RadioGroup
-                value={sectionLevel === 'mixed' ? '' : sectionLevel}
-                onValueChange={(newValue) =>
-                  handleSetAllInSection(section.resources, newValue as AccessLevel)
-                }
-                disabled={disabled}
-              >
-                <div className="grid grid-cols-[1fr_100px_100px_100px] items-center border-b py-3 px-3 bg-muted/25">
-                  <div>
-                    <Text size="sm" weight="medium">
-                      {t('matrix.selectAll')}
-                    </Text>
+          {section.resources.length > 1 &&
+            (() => {
+              const sectionLevel = getSectionAccessLevel(section.resources);
+              return (
+                <RadioGroup
+                  value={sectionLevel === 'mixed' ? '' : sectionLevel}
+                  onValueChange={(newValue) =>
+                    handleSetAllInSection(section.resources, newValue as AccessLevel)
+                  }
+                  disabled={disabled}
+                >
+                  <div className="grid grid-cols-[1fr_100px_100px_100px] items-center border-b py-3 px-3 bg-muted/25">
+                    <div>
+                      <Text size="sm" weight="medium">
+                        {t('matrix.selectAll')}
+                      </Text>
+                    </div>
+                    <div className="flex justify-center">
+                      <RadioGroupItem value="none" />
+                    </div>
+                    <div className="flex justify-center">
+                      <RadioGroupItem value="view" />
+                    </div>
+                    <div className="flex justify-center">
+                      <RadioGroupItem value="edit" />
+                    </div>
                   </div>
-                  <div className="flex justify-center">
-                    <RadioGroupItem value="none" />
-                  </div>
-                  <div className="flex justify-center">
-                    <RadioGroupItem value="view" />
-                  </div>
-                  <div className="flex justify-center">
-                    <RadioGroupItem value="edit" />
-                  </div>
-                </div>
-              </RadioGroup>
-            );
-          })()}
+                </RadioGroup>
+              );
+            })()}
           {/* Rows */}
           {section.resources.map((resource) => {
-            const currentLevel = getAccessLevel(
-              resource.key,
-              value[resource.key] || []
-            );
+            const currentLevel = getAccessLevel(resource.key, value[resource.key] || []);
 
             return (
               <PermissionRow
@@ -463,5 +533,4 @@ export function PermissionMatrix({ value, onChange, obligations, onObligationsCh
 }
 
 // Export utilities for use in other components
-export { RESOURCES, ACCESS_LEVEL_MAPPING, getAccessLevel, accessLevelToPermissions };
-export type { ResourceKey, AccessLevel };
+export { accessLevelToPermissions, getAccessLevel, RESOURCES };

@@ -1,4 +1,4 @@
-export interface AttackCategory {
+interface AttackCategory {
   code: string;
   name: string;
   description: string;
@@ -15,6 +15,10 @@ export const ATTACK_CATEGORIES: AttackCategory[] = [
   { code: 'RL', name: 'Rate Limits', description: 'Credential stuffing, enumeration' },
   { code: 'CFG', name: 'Misconfiguration', description: 'Headers, CORS, exposed admin routes' },
   { code: 'CRY', name: 'Cryptography', description: 'TLS posture, weak ciphers, JWT bugs' },
-  { code: 'LEAK', name: 'Information Leak', description: 'Stack traces, version banners, debug data' },
+  {
+    code: 'LEAK',
+    name: 'Information Leak',
+    description: 'Stack traces, version banners, debug data',
+  },
   { code: 'LOG', name: 'Logic Flaws', description: 'Race conditions, workflow bypass' },
 ];

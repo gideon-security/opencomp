@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from '@gideon-defender/ui/form';
 import { Input } from '@gideon-defender/ui/input';
-import { Stack, Text } from '@trycompai/design-system';
+import { Stack } from '@trycompai/design-system';
 import { PermissionMatrix } from './PermissionMatrix';
 
 /**

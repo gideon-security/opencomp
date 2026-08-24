@@ -182,7 +182,7 @@ async function sendCompletionEmailIfComplete({
     // Use console.error, NOT the dev-only `logger` — a failed completion email is a
     // real operational error we must see in production (the `logger` util no-ops
     // outside development, which silently swallowed these failures).
-    // eslint-disable-next-line no-console
+     
     console.error('Error triggering training completion email', {
       error: error instanceof Error ? error.message : String(error),
       memberId,

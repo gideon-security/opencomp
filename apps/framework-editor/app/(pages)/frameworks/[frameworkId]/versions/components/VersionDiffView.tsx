@@ -14,7 +14,7 @@ import type {
  * diffs, so this component powers both the PublishVersionDialog and the
  * historical version-detail page.
  */
-export interface VersionDiffViewProps {
+interface VersionDiffViewProps {
   diff: DraftDiff['diff'];
   linkChanges: DraftDiff['linkChanges'];
 }
@@ -174,11 +174,7 @@ export function VersionDiffView({ diff, linkChanges }: VersionDiffViewProps) {
   );
 }
 
-function FrameworkMetaSection({
-  framework,
-}: {
-  framework: DraftDiff['diff']['framework'];
-}) {
+function FrameworkMetaSection({ framework }: { framework: DraftDiff['diff']['framework'] }) {
   if (!framework?.changed) return null;
   return (
     <div className="border-b last:border-b-0 px-4 py-3">
@@ -190,8 +186,8 @@ function FrameworkMetaSection({
           <DiffRow kind="modified">
             <span>
               Name:{' '}
-              <span className="text-muted-foreground line-through">{framework.name.from}</span>{' '}
-              → <span className="font-medium">{framework.name.to}</span>
+              <span className="text-muted-foreground line-through">{framework.name.from}</span> →{' '}
+              <span className="font-medium">{framework.name.to}</span>
             </span>
           </DiffRow>
         )}
@@ -265,11 +261,7 @@ function ControlChangeDetail({ from, to }: { from: DiffControl; to: DiffControl 
     }
   }
   if (changes.length === 0) return null;
-  return (
-    <span className="text-muted-foreground ml-2 text-xs">
-      ({changes.join(', ')})
-    </span>
-  );
+  return <span className="text-muted-foreground ml-2 text-xs">({changes.join(', ')})</span>;
 }
 
 function RequirementChangeDetail({ from, to }: { from: DiffRequirement; to: DiffRequirement }) {
@@ -289,11 +281,7 @@ function RequirementChangeDetail({ from, to }: { from: DiffRequirement; to: Diff
     }
   }
   if (changes.length === 0) return null;
-  return (
-    <span className="text-muted-foreground ml-2 text-xs">
-      ({changes.join(', ')})
-    </span>
-  );
+  return <span className="text-muted-foreground ml-2 text-xs">({changes.join(', ')})</span>;
 }
 
 function DiffRow({
@@ -390,8 +378,7 @@ function LinkEdgeSection({
 }
 
 function LinkRow({ kind, entry }: { kind: 'added' | 'removed'; entry: LinkEntry }) {
-  const markerClass =
-    kind === 'added' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
+  const markerClass = kind === 'added' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
   const marker = kind === 'added' ? '+' : '−';
   const label = kind === 'added' ? 'Added' : 'Removed';
   return (

@@ -1,8 +1,4 @@
-import type {
-  IsmsAuditRoute,
-  IsmsCompetenceBasis,
-  IsmsRole,
-} from '../isms-types';
+import type { IsmsAuditRoute, IsmsCompetenceBasis, IsmsRole } from '../isms-types';
 
 /** Team-size band derived from active headcount (matches the API: 1-3 = small). */
 export type IsmsTeamSizeBand = 'small' | 'standard';
@@ -21,10 +17,9 @@ export const COMPETENCE_BASIS_OPTIONS: {
   { value: 'combination', label: 'Combination' },
 ];
 
-export const COMPETENCE_BASIS_LABELS: Record<IsmsCompetenceBasis, string> =
-  Object.fromEntries(
-    COMPETENCE_BASIS_OPTIONS.map((option) => [option.value, option.label]),
-  ) as Record<IsmsCompetenceBasis, string>;
+export const COMPETENCE_BASIS_LABELS: Record<IsmsCompetenceBasis, string> = Object.fromEntries(
+  COMPETENCE_BASIS_OPTIONS.map((option) => [option.value, option.label]),
+) as Record<IsmsCompetenceBasis, string>;
 
 export const AUDIT_ROUTE_OPTIONS: { value: IsmsAuditRoute; label: string }[] = [
   { value: 'in_house', label: 'In-house person with audit competence' },
@@ -32,14 +27,13 @@ export const AUDIT_ROUTE_OPTIONS: { value: IsmsAuditRoute; label: string }[] = [
   { value: 'training_planned', label: 'Training planned' },
 ];
 
-export const AUDIT_ROUTE_LABELS: Record<IsmsAuditRoute, string> =
-  Object.fromEntries(
-    AUDIT_ROUTE_OPTIONS.map((option) => [option.value, option.label]),
-  ) as Record<IsmsAuditRoute, string>;
+export const AUDIT_ROUTE_LABELS: Record<IsmsAuditRoute, string> = Object.fromEntries(
+  AUDIT_ROUTE_OPTIONS.map((option) => [option.value, option.label]),
+) as Record<IsmsAuditRoute, string>;
 
 export const INTERNAL_AUDITOR_ROLE_KEY = 'internal_auditor';
 export const SPO_ROLE_KEY = 'spo';
-export const DEPUTY_SPO_ROLE_KEY = 'deputy_spo';
+const DEPUTY_SPO_ROLE_KEY = 'deputy_spo';
 
 /** Seeded roles that must be present + assigned to generate the doc (key + fallback label). */
 const REQUIRED_SEED_ROLES: { key: string; label: string }[] = [
@@ -70,9 +64,7 @@ function auditRouteMessages(role: IsmsRole, activeMemberIds: Set<string>): strin
   if (route === 'external') {
     return role.auditFirmName?.trim() && role.auditEvidenceRef?.trim()
       ? []
-      : [
-          'The external Internal Auditor needs a firm/person name and an evidence reference.',
-        ];
+      : ['The external Internal Auditor needs a firm/person name and an evidence reference.'];
   }
   const complete =
     hasActiveAuditMember(role, activeMemberIds) &&
@@ -80,9 +72,7 @@ function auditRouteMessages(role: IsmsRole, activeMemberIds: Set<string>): strin
     !!role.auditDueDate;
   return complete
     ? []
-    : [
-        'The training-planned Internal Auditor needs an active member, a course, and a due date.',
-      ];
+    : ['The training-planned Internal Auditor needs an active member, a course, and a due date.'];
 }
 
 /**
@@ -104,9 +94,7 @@ export function roleValidationMessages({
   /** ids of active People members; assignments to anyone else don't count. */
   activeMemberIds: Set<string>;
 }): string[] {
-  const byKey = new Map(
-    roles.filter((role) => role.roleKey).map((role) => [role.roleKey, role]),
-  );
+  const byKey = new Map(roles.filter((role) => role.roleKey).map((role) => [role.roleKey, role]));
   const messages: string[] = [];
   for (const { key, label } of REQUIRED_SEED_ROLES) {
     const role = byKey.get(key);

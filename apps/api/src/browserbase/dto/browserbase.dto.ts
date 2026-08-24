@@ -86,7 +86,7 @@ export class AnalyzeLoginDto {
   url: string;
 }
 
-export class LoginRecommendationDto {
+class LoginRecommendationDto {
   @ApiProperty({ enum: ['ready', 'works_with_checkins', 'manual'] })
   category: string;
 
@@ -105,23 +105,6 @@ export class AnalyzeLoginResponseDto {
 
   @ApiProperty({ description: 'Public access token to subscribe to the run' })
   publicAccessToken: string;
-}
-
-export class LoginAnalysisResponseDto {
-  @ApiProperty()
-  reachable: boolean;
-
-  @ApiProperty({ type: [String] })
-  detectedMethods: string[];
-
-  @ApiProperty({ enum: ['email', 'username', 'either', 'unknown'] })
-  identifierType: string;
-
-  @ApiProperty({ type: [Object] })
-  extraFields: { label: string }[];
-
-  @ApiProperty({ type: () => LoginRecommendationDto })
-  recommendation: LoginRecommendationDto;
 }
 
 // ===== Auth Profile DTOs =====
@@ -237,12 +220,13 @@ export class SignInAuthProfileResponseDto {
   sessionId: string;
 
   @ApiProperty({
-    description: 'Live view URL so the user can watch and take over the sign-in',
+    description:
+      'Live view URL so the user can watch and take over the sign-in',
   })
   liveViewUrl: string;
 }
 
-export class CredentialExtraFieldDto {
+class CredentialExtraFieldDto {
   @ApiProperty({ description: 'Field label as shown on the vendor login' })
   @IsString()
   @IsNotEmpty()
@@ -285,7 +269,7 @@ export class StoreAuthProfileCredentialsDto {
 
   @ApiPropertyOptional({
     description:
-      "The vendor's own label for the identifier field (e.g. \"IAM username\"), stored so sign-in steps and reconnects show the real field name.",
+      'The vendor\'s own label for the identifier field (e.g. "IAM username"), stored so sign-in steps and reconnects show the real field name.',
   })
   @IsString()
   @IsOptional()
@@ -339,7 +323,8 @@ export class BrowserAuthProfileResponseDto {
   updatedAt: Date;
 
   @ApiPropertyOptional({
-    description: 'Number of browser automations in the org that run on this connection',
+    description:
+      'Number of browser automations in the org that run on this connection',
   })
   automationCount?: number;
 }
@@ -362,7 +347,7 @@ export class VerifyAuthProfileResponseDto {
 
 // ===== Browser Automation DTOs =====
 
-export class BrowserAutomationStepDto {
+class BrowserAutomationStepDto {
   @ApiPropertyOptional({
     description: 'Connection (browser auth profile) this step runs on',
   })
@@ -382,7 +367,9 @@ export class BrowserAutomationStepDto {
   @IsNotEmpty()
   instruction: string;
 
-  @ApiPropertyOptional({ description: 'Optional pass/fail criterion for this step' })
+  @ApiPropertyOptional({
+    description: 'Optional pass/fail criterion for this step',
+  })
   @IsString()
   @IsOptional()
   evaluationCriteria?: string;
@@ -510,7 +497,7 @@ export class UpdateBrowserAutomationDto {
 }
 
 /** A draft step — everything optional, since a draft can be half-written. */
-export class DraftStepDto {
+class DraftStepDto {
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()
@@ -538,7 +525,9 @@ export class CreateBrowserAutomationDraftDto {
   @IsNotEmpty()
   taskId: string;
 
-  @ApiPropertyOptional({ description: 'Preview name, derived from the first step' })
+  @ApiPropertyOptional({
+    description: 'Preview name, derived from the first step',
+  })
   @IsString()
   @IsOptional()
   name?: string;
@@ -725,7 +714,9 @@ export class TestInstructionDto {
   @IsOptional()
   evaluationCriteria?: string;
 
-  @ApiPropertyOptional({ description: 'Connection (browser auth profile) to run under' })
+  @ApiPropertyOptional({
+    description: 'Connection (browser auth profile) to run under',
+  })
   @IsString()
   @IsOptional()
   profileId?: string;

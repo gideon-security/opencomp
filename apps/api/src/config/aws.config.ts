@@ -9,7 +9,7 @@ const awsConfigSchema = z.object({
   endpoint: z.string().optional(),
 });
 
-export type AwsConfig = z.infer<typeof awsConfigSchema>;
+type AwsConfig = z.infer<typeof awsConfigSchema>;
 
 export const awsConfig = registerAs('aws', (): AwsConfig => {
   const config = {

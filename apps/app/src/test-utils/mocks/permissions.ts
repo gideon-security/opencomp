@@ -1,6 +1,6 @@
-import { vi } from 'vitest';
-import { BUILT_IN_ROLE_PERMISSIONS } from '@gideon-defender/auth';
 import type { UserPermissions } from '@/lib/permissions';
+import { BUILT_IN_ROLE_PERMISSIONS } from '@gideon-defender/auth';
+import { vi } from 'vitest';
 
 /**
  * Default mock for usePermissions hook.
@@ -27,13 +27,11 @@ import type { UserPermissions } from '@/lib/permissions';
 
 let _permissions: UserPermissions = {};
 
-export const mockHasPermission = vi.fn(
-  (resource: string, action: string): boolean => {
-    return _permissions[resource]?.includes(action) ?? false;
-  },
-);
+export const mockHasPermission = vi.fn((resource: string, action: string): boolean => {
+  return _permissions[resource]?.includes(action) ?? false;
+});
 
-export const mockPermissions: UserPermissions = new Proxy(
+const mockPermissions: UserPermissions = new Proxy(
   {},
   {
     get(_target, prop: string) {
@@ -61,30 +59,20 @@ export const mockPermissions: UserPermissions = new Proxy(
 export function setMockPermissions(permissions: UserPermissions): void {
   _permissions = permissions;
   // Reset the mock implementation so it uses the new permissions
-  mockHasPermission.mockImplementation(
-    (resource: string, action: string): boolean => {
-      return _permissions[resource]?.includes(action) ?? false;
-    },
-  );
+  mockHasPermission.mockImplementation((resource: string, action: string): boolean => {
+    return _permissions[resource]?.includes(action) ?? false;
+  });
 }
 
 /**
  * Preset: admin permissions (full access to everything)
  */
-export const ADMIN_PERMISSIONS: UserPermissions =
-  BUILT_IN_ROLE_PERMISSIONS.admin;
+export const ADMIN_PERMISSIONS: UserPermissions = BUILT_IN_ROLE_PERMISSIONS.admin;
 
 /**
  * Preset: auditor permissions (read-only + export + findings)
  */
-export const AUDITOR_PERMISSIONS: UserPermissions =
-  BUILT_IN_ROLE_PERMISSIONS.auditor;
-
-/**
- * Preset: employee permissions (minimal access)
- */
-export const EMPLOYEE_PERMISSIONS: UserPermissions =
-  BUILT_IN_ROLE_PERMISSIONS.employee;
+export const AUDITOR_PERMISSIONS: UserPermissions = BUILT_IN_ROLE_PERMISSIONS.auditor;
 
 /**
  * Preset: no permissions at all

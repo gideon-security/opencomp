@@ -24,21 +24,3 @@ export async function healAndSetAccessToken(triggerJobId: string): Promise<strin
     return null;
   }
 }
-
-// Helper function for server components (doesn't set cookies)
-export async function createAccessToken(triggerJobId: string): Promise<string | null> {
-  try {
-    const token = await auth.createPublicToken({
-      scopes: {
-        read: {
-          runs: [triggerJobId],
-        },
-      },
-    });
-
-    return token;
-  } catch (error) {
-    console.error('Failed to create access token:', error);
-    return null;
-  }
-}

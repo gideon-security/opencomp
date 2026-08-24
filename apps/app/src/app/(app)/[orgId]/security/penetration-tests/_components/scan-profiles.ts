@@ -5,9 +5,9 @@ import type {
 } from '@/lib/security/penetration-tests-client';
 
 export type ScanProfileId = 'quick' | 'standard' | 'deep';
-export type EffectiveScanMode = ScanProfileId | 'custom';
+type EffectiveScanMode = ScanProfileId | 'custom';
 
-export interface ScanProfileDefaults {
+interface ScanProfileDefaults {
   scanDepth: ScanDepth;
   evidenceLevel: EvidenceLevel;
   checks: PentestCheck[];
@@ -71,15 +71,13 @@ export const checkDescriptions: Record<PentestCheck, string> = {
     'Checks for missing security headers, outdated libraries, and exposed admin panels.',
   xss: 'Cross-site scripting — reflected, stored, and DOM-based variants.',
   injection: 'SQL, NoSQL, command, and LDAP injection in user-controlled inputs.',
-  authentication:
-    'Login flow weaknesses, weak password policies, and broken session handling.',
+  authentication: 'Login flow weaknesses, weak password policies, and broken session handling.',
   authorization: 'Privilege escalation and missing access controls between roles.',
   idor_bola:
-    'Insecure Direct Object References — whether one user can access another user\'s data by changing an ID.',
+    "Insecure Direct Object References — whether one user can access another user's data by changing an ID.",
   ssrf_xxe: 'Server-side request forgery and XML external-entity attacks.',
   csrf: 'Cross-site request forgery — actions performed without user consent.',
-  race_conditions:
-    'Concurrency bugs like double-spend and time-of-check vs time-of-use issues.',
+  race_conditions: 'Concurrency bugs like double-spend and time-of-check vs time-of-use issues.',
   business_logic: 'App-specific workflow abuse (e.g., skipping payment or approval steps).',
 };
 

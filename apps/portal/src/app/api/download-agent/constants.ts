@@ -2,7 +2,7 @@ import type { SupportedOS } from './types';
 
 /** Environment subfolder: 'staging' or 'production' (default) */
 const S3_ENV = process.env.DEVICE_AGENT_S3_ENV || 'production';
-export const S3_PREFIX = `device-agent/${S3_ENV}`;
+const S3_PREFIX = `device-agent/${S3_ENV}`;
 
 export const DOWNLOAD_TARGETS: Record<
   SupportedOS,

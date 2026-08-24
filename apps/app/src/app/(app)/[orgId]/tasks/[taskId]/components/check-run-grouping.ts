@@ -1,9 +1,6 @@
-import type {
-  CheckRunAttempt,
-  StoredCheckRun,
-} from '../hooks/useIntegrationChecks';
+import type { CheckRunAttempt, StoredCheckRun } from '../hooks/useIntegrationChecks';
 
-export interface AccountRunGroup {
+interface AccountRunGroup {
   connectionId: string;
   label: string;
   /** This account's runs, newest-first. */
@@ -18,9 +15,7 @@ export interface AccountRunGroup {
  * Input is expected newest-first; the output preserves that order both across
  * accounts (ordered by each account's most recent run) and within each account.
  */
-export function groupRunsByConnection(
-  runs: StoredCheckRun[],
-): AccountRunGroup[] {
+export function groupRunsByConnection(runs: StoredCheckRun[]): AccountRunGroup[] {
   const groups = new Map<string, AccountRunGroup>();
   for (const run of runs) {
     const existing = groups.get(run.connectionId);
@@ -37,7 +32,7 @@ export function groupRunsByConnection(
   return Array.from(groups.values());
 }
 
-export interface RunsSummary {
+interface RunsSummary {
   accountCount: number;
   passed: number;
   failed: number;
@@ -86,10 +81,7 @@ export function summarizeLatestPerAccount(
 
   if (lastRunAt) {
     for (const attempt of lastAttempts) {
-      if (
-        attempt.lastAttemptAt &&
-        new Date(attempt.lastAttemptAt) > new Date(lastRunAt)
-      ) {
+      if (attempt.lastAttemptAt && new Date(attempt.lastAttemptAt) > new Date(lastRunAt)) {
         lastRunAt = attempt.lastAttemptAt;
       }
     }

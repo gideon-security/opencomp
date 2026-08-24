@@ -1,7 +1,7 @@
 import type { IsmsDocumentType } from '@db';
 
 /** ISO 27001 clause each foundational document type satisfies. */
-export interface IsmsTypeDefinition {
+interface IsmsTypeDefinition {
   type: IsmsDocumentType;
   /** Clause number used to match the FrameworkEditorRequirement (e.g. "4.1"). */
   clause: string;

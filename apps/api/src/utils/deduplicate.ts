@@ -1,7 +1,4 @@
-export function deduplicateBy<T>(
-  items: T[],
-  key: (item: T) => string,
-): T[] {
+function deduplicateBy<T>(items: T[], key: (item: T) => string): T[] {
   const seen = new Set<string>();
   return items.filter((item) => {
     const k = key(item);

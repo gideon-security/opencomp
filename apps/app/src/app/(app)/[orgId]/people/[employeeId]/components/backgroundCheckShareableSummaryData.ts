@@ -1,4 +1,4 @@
-export interface LinkedFinding {
+interface LinkedFinding {
   text: string;
   sourceUrl?: string | null;
   sourceLabel?: string | null;
@@ -12,7 +12,7 @@ export interface SummarySource {
   source?: string | null;
 }
 
-export interface ShareableSummary {
+interface ShareableSummary {
   overview: string;
   keyFindings: string[];
   linkedKeyFindings: LinkedFinding[];

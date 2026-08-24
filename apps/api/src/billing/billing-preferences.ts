@@ -14,7 +14,7 @@ export const billingTaxIdTypes = [
   'sg_uen',
 ] as const satisfies readonly Stripe.TaxId.Type[];
 
-export type BillingTaxIdType = (typeof billingTaxIdTypes)[number];
+type BillingTaxIdType = (typeof billingTaxIdTypes)[number];
 
 export interface BillingPreferences {
   companyName: string | null;

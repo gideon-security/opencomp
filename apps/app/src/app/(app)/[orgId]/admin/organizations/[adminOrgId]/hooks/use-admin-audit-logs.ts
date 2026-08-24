@@ -1,13 +1,13 @@
 'use client';
 
-import { apiClient } from '@/lib/api-client';
 import {
   useOffsetAuditLogs,
   type AuditLogsPage,
   type OffsetAuditLogsResult,
 } from '@/hooks/use-offset-audit-logs';
+import { apiClient } from '@/lib/api-client';
 
-export type UseAdminAuditLogsResult = OffsetAuditLogsResult;
+type UseAdminAuditLogsResult = OffsetAuditLogsResult;
 
 /**
  * Paginates the platform-admin org audit log by offset, accumulating batches so

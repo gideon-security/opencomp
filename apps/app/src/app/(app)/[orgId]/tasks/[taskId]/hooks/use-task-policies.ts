@@ -21,7 +21,7 @@ type ApiResponse = {
   count: number;
 };
 
-export const taskPoliciesKey = (taskId: string, organizationId: string) =>
+const taskPoliciesKey = (taskId: string, organizationId: string) =>
   ['/v1/tasks/policies', taskId, organizationId] as const;
 
 interface UseTaskPoliciesOptions {
@@ -30,17 +30,11 @@ interface UseTaskPoliciesOptions {
   initialData?: { data: TaskPolicyGroup[]; count: number } | null;
 }
 
-export function useTaskPolicies({
-  taskId,
-  organizationId,
-  initialData,
-}: UseTaskPoliciesOptions) {
+export function useTaskPolicies({ taskId, organizationId, initialData }: UseTaskPoliciesOptions) {
   const { data, error, isLoading, mutate } = useSWR(
     taskPoliciesKey(taskId, organizationId),
     async () => {
-      const response = await apiClient.get<ApiResponse>(
-        `/v1/tasks/${taskId}/policies`,
-      );
+      const response = await apiClient.get<ApiResponse>(`/v1/tasks/${taskId}/policies`);
       if (response.error) throw new Error(response.error);
       return response.data ?? { data: [], count: 0 };
     },

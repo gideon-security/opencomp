@@ -1,4 +1,4 @@
-export type RunStatus =
+type RunStatus =
   | 'WAITING_FOR_DEPLOY'
   | 'QUEUED'
   | 'EXECUTING'
@@ -31,8 +31,6 @@ const RUN_STATUS_VALUES_INTERNAL: readonly RunStatus[] = [
   'TIMED_OUT',
 ];
 
-export const RUN_STATUS_VALUES = RUN_STATUS_VALUES_INTERNAL;
-
 const KNOWN_STATUS_SET: ReadonlySet<RunStatus> = new Set<RunStatus>(RUN_STATUS_VALUES_INTERNAL);
 
 const TERMINAL_STATUS_SET: ReadonlySet<RunStatus> = new Set<RunStatus>([
@@ -58,7 +56,7 @@ const FAILURE_STATUS_SET: ReadonlySet<RunStatus> = new Set<RunStatus>([
   'CANCELED',
 ]);
 
-export const isRunStatus = (status: unknown): status is RunStatus =>
+const isRunStatus = (status: unknown): status is RunStatus =>
   typeof status === 'string' && KNOWN_STATUS_SET.has(status as RunStatus);
 
 export const isTerminalRunStatus = (status: unknown): status is RunStatus =>

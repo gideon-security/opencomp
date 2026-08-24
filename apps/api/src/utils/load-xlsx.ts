@@ -4,7 +4,7 @@ import { stripXlsxDataValidations } from './sanitize-xlsx';
 
 // Generous for questionnaires (HECVAT Full inflates to ~6 MB) while still
 // rejecting zip bombs that expand to multiple GB.
-export const MAX_XLSX_UNCOMPRESSED_BYTES = 512 * 1024 * 1024;
+const MAX_XLSX_UNCOMPRESSED_BYTES = 512 * 1024 * 1024;
 
 /**
  * Rejects xlsx archives whose declared uncompressed size exceeds the limit,

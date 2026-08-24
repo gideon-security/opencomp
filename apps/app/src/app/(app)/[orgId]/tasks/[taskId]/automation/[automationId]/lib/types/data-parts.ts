@@ -1,6 +1,6 @@
 import z from 'zod/v3';
 
-export const errorSchema = z.object({
+const errorSchema = z.object({
   message: z.string(),
 });
 

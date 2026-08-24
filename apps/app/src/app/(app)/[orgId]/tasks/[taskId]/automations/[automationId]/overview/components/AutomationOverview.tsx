@@ -12,7 +12,6 @@ import type {
 } from '@db';
 import {
   Breadcrumb,
-  Button as DSButton,
   HStack,
   PageLayout,
   Section,
@@ -28,7 +27,7 @@ import { Code2, Loader2, Play, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import {
   executeAutomationScript,

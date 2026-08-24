@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { Text } from '@trycompai/design-system';
-import { ChevronLeft, ChevronRight, Checkmark } from '@trycompai/design-system/icons';
+import { Checkmark, ChevronLeft, ChevronRight } from '@trycompai/design-system/icons';
 import { useEffect, useState } from 'react';
 import {
   isControlDerived,
@@ -60,7 +60,7 @@ function Pagination({
   );
 }
 
-export function ConfidencePill({ score }: { score: number }) {
+function ConfidencePill({ score }: { score: number }) {
   if (score <= 0) {
     return (
       <span className="mt-0.5 shrink-0 font-mono text-[11px] tabular-nums tracking-[-0.02em] text-muted-foreground">

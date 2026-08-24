@@ -18,7 +18,7 @@ export const managementReviewNarrativeSchema = z.object({
   procedure: z.string().trim().min(1),
 });
 
-export type ManagementReviewNarrative = z.infer<
+type ManagementReviewNarrative = z.infer<
   typeof managementReviewNarrativeSchema
 >;
 
@@ -42,7 +42,7 @@ export const reviewAttendeeSchema = z.object({
 
 export type ReviewAttendee = z.infer<typeof reviewAttendeeSchema>;
 
-export const reviewAttendeesSchema = z.array(reviewAttendeeSchema);
+const reviewAttendeesSchema = z.array(reviewAttendeeSchema);
 
 /**
  * Parse a stored attendees JSON value defensively (invalid → empty list,

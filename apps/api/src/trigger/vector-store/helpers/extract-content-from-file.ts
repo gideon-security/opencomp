@@ -3,7 +3,6 @@ import { logger } from '@/vector-store/logger';
 import { anthropic } from '@ai-sdk/anthropic';
 import { openai } from '@ai-sdk/openai';
 import { generateText } from 'ai';
-import ExcelJS from 'exceljs';
 import mammoth from 'mammoth';
 
 const htmlEntityMap = {

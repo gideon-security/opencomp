@@ -6,11 +6,8 @@ import { chunkText } from '../utils/chunk-text';
 import { logger } from '../../logger';
 import type { ExistingEmbedding } from '../core/find-existing-embeddings';
 
-export type SourceType =
-  | 'policy'
-  | 'context'
-  | 'manual_answer'
-  | 'knowledge_base_document';
+type SourceType =
+  'policy' | 'context' | 'manual_answer' | 'knowledge_base_document';
 
 export interface SyncStats {
   created: number;
@@ -22,7 +19,7 @@ export interface SyncStats {
   lastUpsertedEmbeddingId: string | null;
 }
 
-export interface ChunkItem {
+interface ChunkItem {
   id: string;
   text: string;
   metadata: {
@@ -38,7 +35,7 @@ export interface ChunkItem {
 /**
  * Creates an S3 client instance for Knowledge Base document processing
  */
-export function createKnowledgeBaseS3Client(): S3Client {
+function createKnowledgeBaseS3Client(): S3Client {
   const region = process.env.APP_AWS_REGION || 'us-east-1';
   const accessKeyId = process.env.APP_AWS_ACCESS_KEY_ID;
   const secretAccessKey = process.env.APP_AWS_SECRET_ACCESS_KEY;

@@ -5,15 +5,12 @@ import type { ApiResponse } from '@/lib/api-client';
  * Injected so this orchestrator can run in the browser AND be unit-tested
  * without a live API.
  */
-export type ApiPost = (
-  endpoint: string,
-  body?: unknown,
-) => Promise<ApiResponse<unknown>>;
+type ApiPost = (endpoint: string, body?: unknown) => Promise<ApiResponse<unknown>>;
 
 /** Reads a File's contents as base64 (without the `data:` URL prefix). */
-export type ReadFileAsBase64 = (file: File) => Promise<string>;
+type ReadFileAsBase64 = (file: File) => Promise<string>;
 
-export interface PolicyBulkUploadItemResult {
+interface PolicyBulkUploadItemResult {
   fileName: string;
   /**
    * File size in bytes. Combined with the name it identifies the source file,
@@ -31,7 +28,7 @@ export interface PolicyBulkUploadItemResult {
   httpStatus?: number;
 }
 
-export interface PolicyBulkUploadResult {
+interface PolicyBulkUploadResult {
   results: PolicyBulkUploadItemResult[];
   createdCount: number;
   failedCount: number;
@@ -42,7 +39,7 @@ export interface PolicyBulkUploadResult {
  * handful of (base64-inflated) PDF payloads in memory, while still being faster
  * than a strictly sequential migration.
  */
-export const DEFAULT_UPLOAD_CONCURRENCY = 3;
+const DEFAULT_UPLOAD_CONCURRENCY = 3;
 
 /**
  * Stable per-file identity (name + size). Shared with the UI so the map of

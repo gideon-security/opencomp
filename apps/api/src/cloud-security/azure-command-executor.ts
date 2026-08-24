@@ -6,7 +6,7 @@ const logger = new Logger('AzureCommandExecutor');
 const MAX_STEP_RETRIES = 3;
 const MAX_POLL_MS = 120_000;
 
-export interface AzureStepResult {
+interface AzureStepResult {
   step: AzureApiStep;
   success: boolean;
   statusCode?: number;
@@ -14,7 +14,7 @@ export interface AzureStepResult {
   error?: string;
 }
 
-export interface AzureExecutionResult {
+interface AzureExecutionResult {
   results: AzureStepResult[];
   error?: {
     stepIndex: number;

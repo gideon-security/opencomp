@@ -1,5 +1,5 @@
 import type { Session } from '@/utils/auth';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
 interface MockRequestOptions {
   session?: Session | null;
@@ -41,17 +41,4 @@ export async function createMockRequest(
   });
 
   return request;
-}
-
-// Helper to extract redirect location from response
-export function getRedirectLocation(response: NextResponse): string | null {
-  if (response.status === 307 || response.status === 302 || response.status === 301) {
-    return response.headers.get('location');
-  }
-  return null;
-}
-
-// Helper to check if response is a redirect
-export function isRedirect(response: NextResponse): boolean {
-  return [301, 302, 307, 308].includes(response.status);
 }

@@ -1,6 +1,16 @@
-import { Prisma, Frequency, Departments, type FrameworkInstance, type FrameworkVersion } from '@db';
+import {
+  Prisma,
+  Frequency,
+  Departments,
+  type FrameworkInstance,
+  type FrameworkVersion,
+} from '@db';
 import { diffManifests } from './framework-diff';
-import { isControlEdited, isPolicyEdited, isTaskEdited } from './framework-drift';
+import {
+  isControlEdited,
+  isPolicyEdited,
+  isTaskEdited,
+} from './framework-drift';
 import { buildCrossFrameworkRefs } from './cross-framework-refs';
 import { normalizeFormType } from './form-type-normalize';
 import type { FrameworkManifest } from './manifest.types';
@@ -8,9 +18,11 @@ import type { UndoPayload, SyncSummary } from './undo-payload.types';
 
 const ROLLBACK_WINDOW_DAYS = 14;
 
-export type VersionWithManifest = Omit<FrameworkVersion, 'manifest'> & { manifest: FrameworkManifest };
+export type VersionWithManifest = Omit<FrameworkVersion, 'manifest'> & {
+  manifest: FrameworkManifest;
+};
 
-export interface ApplySyncCtx {
+interface ApplySyncCtx {
   instance: FrameworkInstance;
   currentVersion: VersionWithManifest;
   targetVersion: VersionWithManifest;
@@ -25,33 +37,84 @@ export async function applySync(
   const to = ctx.targetVersion.manifest;
   const diff = diffManifests(from, to);
 
-  const allTemplateControlIds = new Set([...from.controls.map((c) => c.id), ...to.controls.map((c) => c.id)]);
-  const allTemplatePolicyIds = new Set([...from.policies.map((p) => p.id), ...to.policies.map((p) => p.id)]);
-  const allTemplateTaskIds = new Set([...from.tasks.map((t) => t.id), ...to.tasks.map((t) => t.id)]);
-
-  const [instanceControls, instancePolicies, instanceTasks, otherInstances] = await Promise.all([
-    tx.control.findMany({ where: { organizationId: ctx.instance.organizationId, controlTemplateId: { in: [...allTemplateControlIds] }, archivedAt: null } }),
-    tx.policy.findMany({ where: { organizationId: ctx.instance.organizationId, policyTemplateId: { in: [...allTemplatePolicyIds] }, archivedAt: null } }),
-    tx.task.findMany({ where: { organizationId: ctx.instance.organizationId, taskTemplateId: { in: [...allTemplateTaskIds] }, archivedAt: null } }),
-    tx.frameworkInstance.findMany({
-      where: { organizationId: ctx.instance.organizationId, id: { not: ctx.instance.id } },
-      include: { currentVersion: true },
-    }),
+  const allTemplateControlIds = new Set([
+    ...from.controls.map((c) => c.id),
+    ...to.controls.map((c) => c.id),
+  ]);
+  const allTemplatePolicyIds = new Set([
+    ...from.policies.map((p) => p.id),
+    ...to.policies.map((p) => p.id),
+  ]);
+  const allTemplateTaskIds = new Set([
+    ...from.tasks.map((t) => t.id),
+    ...to.tasks.map((t) => t.id),
   ]);
 
-  const ctlByTemplate = new Map(instanceControls.filter((c) => c.controlTemplateId).map((c) => [c.controlTemplateId!, c]));
-  const polByTemplate = new Map(instancePolicies.filter((p) => p.policyTemplateId).map((p) => [p.policyTemplateId!, p]));
-  const taskByTemplate = new Map(instanceTasks.filter((t) => t.taskTemplateId).map((t) => [t.taskTemplateId!, t]));
+  const [instanceControls, instancePolicies, instanceTasks, otherInstances] =
+    await Promise.all([
+      tx.control.findMany({
+        where: {
+          organizationId: ctx.instance.organizationId,
+          controlTemplateId: { in: [...allTemplateControlIds] },
+          archivedAt: null,
+        },
+      }),
+      tx.policy.findMany({
+        where: {
+          organizationId: ctx.instance.organizationId,
+          policyTemplateId: { in: [...allTemplatePolicyIds] },
+          archivedAt: null,
+        },
+      }),
+      tx.task.findMany({
+        where: {
+          organizationId: ctx.instance.organizationId,
+          taskTemplateId: { in: [...allTemplateTaskIds] },
+          archivedAt: null,
+        },
+      }),
+      tx.frameworkInstance.findMany({
+        where: {
+          organizationId: ctx.instance.organizationId,
+          id: { not: ctx.instance.id },
+        },
+        include: { currentVersion: true },
+      }),
+    ]);
+
+  const ctlByTemplate = new Map(
+    instanceControls
+      .filter((c) => c.controlTemplateId)
+      .map((c) => [c.controlTemplateId!, c]),
+  );
+  const polByTemplate = new Map(
+    instancePolicies
+      .filter((p) => p.policyTemplateId)
+      .map((p) => [p.policyTemplateId!, p]),
+  );
+  const taskByTemplate = new Map(
+    instanceTasks
+      .filter((t) => t.taskTemplateId)
+      .map((t) => [t.taskTemplateId!, t]),
+  );
 
   const refs = buildCrossFrameworkRefs({
     otherInstances: otherInstances
       .filter((i) => i.currentVersion)
-      .map((i) => ({ frameworkInstanceId: i.id, manifest: i.currentVersion!.manifest as unknown as FrameworkManifest })),
+      .map((i) => ({
+        frameworkInstanceId: i.id,
+        manifest: i.currentVersion!.manifest as unknown as FrameworkManifest,
+      })),
   });
 
   const undo: UndoPayload = {
     controls: { created: [], archived: [], contentUpdated: [] },
-    policies: { created: [], archived: [], contentUpdated: [], draftsAdded: [] },
+    policies: {
+      created: [],
+      archived: [],
+      contentUpdated: [],
+      draftsAdded: [],
+    },
     tasks: { created: [], archived: [], contentUpdated: [] },
     requirementMaps: { created: [], archived: [] },
     controlDocumentTypes: { created: [], deleted: [] },
@@ -63,11 +126,23 @@ export async function applySync(
     controlFamilies: { created: [], updated: [], deleted: [] },
   };
   const summary: SyncSummary = {
-    controlsAdded: 0, controlsArchived: 0, controlsUpdatedApplied: 0, controlsUpdatedPreserved: 0,
-    policiesAdded: 0, policiesArchived: 0, policiesUpdatedApplied: 0, policiesUpdatedPreserved: 0, policiesDraftAdded: 0,
-    tasksAdded: 0, tasksArchived: 0, tasksUpdatedApplied: 0, tasksUpdatedPreserved: 0,
-    requirementMapsAdded: 0, requirementMapsArchived: 0,
-    controlDocumentTypesAdded: 0, controlDocumentTypesArchived: 0,
+    controlsAdded: 0,
+    controlsArchived: 0,
+    controlsUpdatedApplied: 0,
+    controlsUpdatedPreserved: 0,
+    policiesAdded: 0,
+    policiesArchived: 0,
+    policiesUpdatedApplied: 0,
+    policiesUpdatedPreserved: 0,
+    policiesDraftAdded: 0,
+    tasksAdded: 0,
+    tasksArchived: 0,
+    tasksUpdatedApplied: 0,
+    tasksUpdatedPreserved: 0,
+    requirementMapsAdded: 0,
+    requirementMapsArchived: 0,
+    controlDocumentTypesAdded: 0,
+    controlDocumentTypesArchived: 0,
   };
 
   // --- Controls ---
@@ -104,7 +179,10 @@ export async function applySync(
     if (!inst) continue;
     if (refs.controlTemplateIds.has(removed.id)) continue;
     const prev = inst.archivedAt;
-    await tx.control.update({ where: { id: inst.id }, data: { archivedAt: new Date() } });
+    await tx.control.update({
+      where: { id: inst.id },
+      data: { archivedAt: new Date() },
+    });
     undo.controls.archived.push({ id: inst.id, prevArchivedAt: prev });
     summary.controlsArchived += 1;
   }
@@ -115,13 +193,27 @@ export async function applySync(
     // Sync family assignment regardless of whether the control content was edited.
     // Family is structural metadata, not user-authored content.
     const existingFamily = await tx.frameworkControlFamily.findUnique({
-      where: { frameworkInstanceId_controlId: { frameworkInstanceId: ctx.instance.id, controlId: inst.id } },
+      where: {
+        frameworkInstanceId_controlId: {
+          frameworkInstanceId: ctx.instance.id,
+          controlId: inst.id,
+        },
+      },
       select: { controlFamily: true },
     });
     if (u.to.controlFamily) {
       await tx.frameworkControlFamily.upsert({
-        where: { frameworkInstanceId_controlId: { frameworkInstanceId: ctx.instance.id, controlId: inst.id } },
-        create: { frameworkInstanceId: ctx.instance.id, controlId: inst.id, controlFamily: u.to.controlFamily },
+        where: {
+          frameworkInstanceId_controlId: {
+            frameworkInstanceId: ctx.instance.id,
+            controlId: inst.id,
+          },
+        },
+        create: {
+          frameworkInstanceId: ctx.instance.id,
+          controlId: inst.id,
+          controlFamily: u.to.controlFamily,
+        },
         update: { controlFamily: u.to.controlFamily },
       });
       if (existingFamily) {
@@ -151,8 +243,14 @@ export async function applySync(
       summary.controlsUpdatedPreserved += 1;
       continue;
     }
-    undo.controls.contentUpdated.push({ id: inst.id, prevContent: { name: inst.name, description: inst.description } });
-    await tx.control.update({ where: { id: inst.id }, data: { name: u.to.name, description: u.to.description } });
+    undo.controls.contentUpdated.push({
+      id: inst.id,
+      prevContent: { name: inst.name, description: inst.description },
+    });
+    await tx.control.update({
+      where: { id: inst.id },
+      data: { name: u.to.name, description: u.to.description },
+    });
     summary.controlsUpdatedApplied += 1;
   }
 
@@ -178,7 +276,10 @@ export async function applySync(
     if (!inst) continue;
     if (refs.taskTemplateIds.has(removed.id)) continue;
     const prev = inst.archivedAt;
-    await tx.task.update({ where: { id: inst.id }, data: { archivedAt: new Date() } });
+    await tx.task.update({
+      where: { id: inst.id },
+      data: { archivedAt: new Date() },
+    });
     undo.tasks.archived.push({ id: inst.id, prevArchivedAt: prev });
     summary.tasksArchived += 1;
   }
@@ -191,11 +292,21 @@ export async function applySync(
     }
     undo.tasks.contentUpdated.push({
       id: inst.id,
-      prevContent: { title: inst.title, description: inst.description, frequency: inst.frequency, department: inst.department },
+      prevContent: {
+        title: inst.title,
+        description: inst.description,
+        frequency: inst.frequency,
+        department: inst.department,
+      },
     });
     await tx.task.update({
       where: { id: inst.id },
-      data: { title: u.to.name, description: u.to.description, frequency: u.to.frequency as Frequency | null, department: u.to.department as Departments | null },
+      data: {
+        title: u.to.name,
+        description: u.to.description,
+        frequency: u.to.frequency as Frequency | null,
+        department: u.to.department as Departments | null,
+      },
     });
     summary.tasksUpdatedApplied += 1;
   }
@@ -237,7 +348,10 @@ export async function applySync(
     if (!inst) continue;
     if (refs.policyTemplateIds.has(removed.id)) continue;
     const prev = inst.archivedAt;
-    await tx.policy.update({ where: { id: inst.id }, data: { archivedAt: new Date() } });
+    await tx.policy.update({
+      where: { id: inst.id },
+      data: { archivedAt: new Date() },
+    });
     undo.policies.archived.push({ id: inst.id, prevArchivedAt: prev });
     summary.policiesArchived += 1;
   }
@@ -245,12 +359,24 @@ export async function applySync(
     const inst = polByTemplate.get(u.id);
     if (!inst) continue;
     if (inst.status === 'published') {
-      const latest = await tx.policyVersion.findFirst({ where: { policyId: inst.id }, orderBy: { version: 'desc' }, select: { version: true } });
+      const latest = await tx.policyVersion.findFirst({
+        where: { policyId: inst.id },
+        orderBy: { version: 'desc' },
+        select: { version: true },
+      });
       const nextVersion = (latest?.version ?? 0) + 1;
       const draft = await tx.policyVersion.create({
-        data: { policyId: inst.id, version: nextVersion, content: { set: toJsonArray(u.to.content) }, changelog: 'Template update available' },
+        data: {
+          policyId: inst.id,
+          version: nextVersion,
+          content: { set: toJsonArray(u.to.content) },
+          changelog: 'Template update available',
+        },
       });
-      undo.policies.draftsAdded.push({ policyId: inst.id, draftVersionId: draft.id });
+      undo.policies.draftsAdded.push({
+        policyId: inst.id,
+        draftVersionId: draft.id,
+      });
       summary.policiesDraftAdded += 1;
       continue;
     }
@@ -260,11 +386,23 @@ export async function applySync(
     }
     undo.policies.contentUpdated.push({
       id: inst.id,
-      prevContent: { name: inst.name, description: inst.description, content: inst.content, frequency: inst.frequency, department: inst.department },
+      prevContent: {
+        name: inst.name,
+        description: inst.description,
+        content: inst.content,
+        frequency: inst.frequency,
+        department: inst.department,
+      },
     });
     await tx.policy.update({
       where: { id: inst.id },
-      data: { name: u.to.name, description: u.to.description, content: { set: toJsonArray(u.to.content) }, frequency: u.to.frequency as Frequency | null, department: u.to.department as Departments | null },
+      data: {
+        name: u.to.name,
+        description: u.to.description,
+        content: { set: toJsonArray(u.to.content) },
+        frequency: u.to.frequency as Frequency | null,
+        department: u.to.department as Departments | null,
+      },
     });
     summary.policiesUpdatedApplied += 1;
   }
@@ -284,11 +422,19 @@ export async function applySync(
   // archived, unarchive it instead.
   const existingEdges = await tx.requirementMap.findMany({
     where: { frameworkInstanceId: ctx.instance.id },
-    select: { id: true, controlId: true, requirementId: true, archivedAt: true },
+    select: {
+      id: true,
+      controlId: true,
+      requirementId: true,
+      archivedAt: true,
+    },
   });
-  const keyOf = (controlId: string, requirementId: string) => `${controlId}::${requirementId}`;
+  const keyOf = (controlId: string, requirementId: string) =>
+    `${controlId}::${requirementId}`;
   const existingByKey = new Map(
-    existingEdges.filter((e) => e.requirementId).map((e) => [keyOf(e.controlId, e.requirementId!), e]),
+    existingEdges
+      .filter((e) => e.requirementId)
+      .map((e) => [keyOf(e.controlId, e.requirementId!), e]),
   );
 
   const toReqIds = new Set(to.requirements.map((r) => r.id));
@@ -336,13 +482,18 @@ export async function applySync(
   for (const edge of diff.requirementMapEdges.removed) {
     const ctlInst = ctlByTemplate.get(edge.controlTemplateId);
     if (!ctlInst) continue;
-    const existing = existingByKey.get(keyOf(ctlInst.id, edge.requirementTemplateId));
+    const existing = existingByKey.get(
+      keyOf(ctlInst.id, edge.requirementTemplateId),
+    );
     if (!existing || existing.archivedAt !== null) continue;
     await tx.requirementMap.updateMany({
       where: { id: existing.id, archivedAt: null },
       data: { archivedAt: new Date() },
     });
-    undo.requirementMaps.archived.push({ id: existing.id, prevArchivedAt: null });
+    undo.requirementMaps.archived.push({
+      id: existing.id,
+      prevArchivedAt: null,
+    });
     summary.requirementMapsArchived += 1;
   }
 
@@ -364,7 +515,10 @@ export async function applySync(
       : [];
   const existingCpKey = new Set(existingCp.map((r) => `${r.A}::${r.B}`));
   const existingScopedCp = await tx.frameworkControlPolicyLink.findMany({
-    where: { frameworkInstanceId: ctx.instance.id, controlId: { in: ctlInstIds } },
+    where: {
+      frameworkInstanceId: ctx.instance.id,
+      controlId: { in: ctlInstIds },
+    },
     select: { controlId: true, policyId: true },
   });
   const existingScopedCpKey = new Set(
@@ -390,7 +544,10 @@ export async function applySync(
       }
       if (existingCpKey.has(key)) continue;
       cpAdded.push({ controlId: ctlInst.id, policyId: polInst.id });
-      undo.controlPolicyLinks.connected.push({ controlId: ctlInst.id, otherId: polInst.id });
+      undo.controlPolicyLinks.connected.push({
+        controlId: ctlInst.id,
+        otherId: polInst.id,
+      });
       existingCpKey.add(key);
     }
   }
@@ -406,7 +563,10 @@ export async function applySync(
   }
   if (cpAdded.length > 0) {
     const rows = Prisma.join(
-      cpAdded.map(({ controlId, policyId }) => Prisma.sql`(${controlId}::text, ${policyId}::text)`),
+      cpAdded.map(
+        ({ controlId, policyId }) =>
+          Prisma.sql`(${controlId}::text, ${policyId}::text)`,
+      ),
     );
     await tx.$executeRaw`INSERT INTO "_ControlToPolicy" ("A", "B") VALUES ${rows} ON CONFLICT ("A", "B") DO NOTHING`;
   }
@@ -440,7 +600,10 @@ export async function applySync(
       : [];
   const existingCtKey = new Set(existingCt.map((r) => `${r.A}::${r.B}`));
   const existingScopedCt = await tx.frameworkControlTaskLink.findMany({
-    where: { frameworkInstanceId: ctx.instance.id, controlId: { in: ctlInstIds } },
+    where: {
+      frameworkInstanceId: ctx.instance.id,
+      controlId: { in: ctlInstIds },
+    },
     select: { controlId: true, taskId: true },
   });
   const existingScopedCtKey = new Set(
@@ -466,7 +629,10 @@ export async function applySync(
       }
       if (existingCtKey.has(key)) continue;
       ctAdded.push({ controlId: ctlInst.id, taskId: tInst.id });
-      undo.controlTaskLinks.connected.push({ controlId: ctlInst.id, otherId: tInst.id });
+      undo.controlTaskLinks.connected.push({
+        controlId: ctlInst.id,
+        otherId: tInst.id,
+      });
       existingCtKey.add(key);
     }
   }
@@ -482,7 +648,10 @@ export async function applySync(
   }
   if (ctAdded.length > 0) {
     const rows = Prisma.join(
-      ctAdded.map(({ controlId, taskId }) => Prisma.sql`(${controlId}::text, ${taskId}::text)`),
+      ctAdded.map(
+        ({ controlId, taskId }) =>
+          Prisma.sql`(${controlId}::text, ${taskId}::text)`,
+      ),
     );
     await tx.$executeRaw`INSERT INTO "_ControlToTask" ("A", "B") VALUES ${rows} ON CONFLICT ("A", "B") DO NOTHING`;
   }
@@ -518,16 +687,17 @@ export async function applySync(
     if (!ctlInst) continue;
     for (const rawFormType of c.documentTypes ?? []) {
       const formType = normalizeFormType(rawFormType);
-      const scopedExisting = await tx.frameworkControlDocumentTypeLink.findUnique({
-        where: {
-          frameworkInstanceId_controlId_formType: {
-            frameworkInstanceId: ctx.instance.id,
-            controlId: ctlInst.id,
-            formType: formType as never,
+      const scopedExisting =
+        await tx.frameworkControlDocumentTypeLink.findUnique({
+          where: {
+            frameworkInstanceId_controlId_formType: {
+              frameworkInstanceId: ctx.instance.id,
+              controlId: ctlInst.id,
+              formType: formType as never,
+            },
           },
-        },
-        select: { id: true },
-      });
+          select: { id: true },
+        });
       if (!scopedExisting) {
         await tx.frameworkControlDocumentTypeLink.create({
           data: {
@@ -542,7 +712,12 @@ export async function applySync(
         });
       }
       const existing = await tx.controlDocumentType.findUnique({
-        where: { controlId_formType: { controlId: ctlInst.id, formType: formType as never } },
+        where: {
+          controlId_formType: {
+            controlId: ctlInst.id,
+            formType: formType as never,
+          },
+        },
         select: { id: true },
       });
       if (existing) continue;

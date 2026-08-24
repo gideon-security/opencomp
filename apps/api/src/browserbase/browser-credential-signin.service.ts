@@ -14,7 +14,7 @@ type Stagehand = import('@browserbasehq/stagehand').Stagehand;
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export type AutoSignInFailure =
+type AutoSignInFailure =
   | 'invalid_credentials'
   | 'needs_2fa'
   | 'challenge'
@@ -22,7 +22,7 @@ export type AutoSignInFailure =
   | 'sso_handoff'
   | 'unknown';
 
-export interface SignInStep {
+interface SignInStep {
   /** Step label. */
   l: string;
   /** Clock timestamp, e.g. "06:02:14". */
@@ -98,7 +98,10 @@ export class BrowserCredentialSigninService {
     try {
       const pages = stagehand.context?.pages?.() ?? [];
       const activeUrl = pages[pages.length - 1]?.url();
-      const url = await this.sessions.getActivePageLiveViewUrl(sessionId, activeUrl);
+      const url = await this.sessions.getActivePageLiveViewUrl(
+        sessionId,
+        activeUrl,
+      );
       if (url) onLiveView(url);
     } catch {
       // Best-effort — keep the current live view.
@@ -193,7 +196,11 @@ export class BrowserCredentialSigninService {
       // The sign-in may have opened in a new tab — point the live view at
       // wherever the AI actually is, so the user watches (and can complete a
       // 2FA take-over on) the right page.
-      await this.streamActiveLiveView(activeStagehand, input.sessionId, input.onLiveView);
+      await this.streamActiveLiveView(
+        activeStagehand,
+        input.sessionId,
+        input.onLiveView,
+      );
 
       // SSO: we can't hold the customer's identity-provider credentials, so the
       // AI only clicks through to the provider, then hands the live browser to
@@ -210,7 +217,11 @@ export class BrowserCredentialSigninService {
         }
         await delay(2500);
         // The identity provider often opens in a new tab — follow it.
-        await this.streamActiveLiveView(activeStagehand, input.sessionId, input.onLiveView);
+        await this.streamActiveLiveView(
+          activeStagehand,
+          input.sessionId,
+          input.onLiveView,
+        );
         step('Finish signing in with your provider');
         await record('sso_handoff', FAILURE_REASON.sso_handoff);
         finish('warn');
@@ -225,7 +236,8 @@ export class BrowserCredentialSigninService {
         log: step,
         // On reconnect the caller doesn't pass a label (no capture form), so fall
         // back to the one detected + stored at connect time.
-        usernameLabel: input.usernameLabel ?? profile.identifierLabel ?? undefined,
+        usernameLabel:
+          input.usernameLabel ?? profile.identifierLabel ?? undefined,
       });
       // The sign-in attempt navigated — often to a 2FA / verification page, and
       // sometimes in a new tab. Re-point the live view at the tab the classifier

@@ -57,7 +57,7 @@ export interface ParsedQuestionnaireResult {
   questionsAndAnswers: QuestionnaireAnswer[];
 }
 
-export interface QuestionnaireExportResult {
+interface QuestionnaireExportResult {
   fileBuffer: Buffer;
   mimeType: string;
   filename: string;
@@ -301,9 +301,7 @@ export class QuestionnaireService {
     });
 
     if (!questionnaire) {
-      throw new NotFoundException(
-        `Questionnaire ${questionnaireId} not found`,
-      );
+      throw new NotFoundException(`Questionnaire ${questionnaireId} not found`);
     }
 
     if (questionnaire.totalQuestions === 0) {

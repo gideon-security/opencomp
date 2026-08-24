@@ -10,7 +10,7 @@
  * the public Trust Centre).
  */
 
-export type ComplianceBadge = {
+type ComplianceBadge = {
   type: string;
   verified: boolean;
 };
@@ -30,7 +30,10 @@ export type ComplianceBadge = {
  * `standardNumber` is always a hard-coded digit literal — never user input —
  * so building the RegExp from it carries no injection risk.
  */
-function matchesIsoStandard(normalized: string, standardNumber: string): boolean {
+function matchesIsoStandard(
+  normalized: string,
+  standardNumber: string,
+): boolean {
   return new RegExp(`iso(?:iec)?${standardNumber}(?:\\d{4})?(?!\\d)`).test(
     normalized,
   );

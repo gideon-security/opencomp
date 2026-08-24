@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { db, FindingStatus, FindingType } from '@db';
 
-export interface FindingAuditParams {
+interface FindingAuditParams {
   findingId: string;
   organizationId: string;
   userId: string;

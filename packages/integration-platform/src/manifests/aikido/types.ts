@@ -11,18 +11,11 @@
 
 export type AikidoSeverity = 'low' | 'medium' | 'high' | 'critical';
 
-export type AikidoIssueStatus = 'open' | 'ignored' | 'snoozed' | 'fixed';
+type AikidoIssueStatus = 'open' | 'ignored' | 'snoozed' | 'fixed';
 
-export type AikidoIssueType =
-  | 'dependency'
-  | 'sast'
-  | 'iac'
-  | 'secrets'
-  | 'container'
-  | 'cloud'
-  | 'dast';
+type AikidoIssueType = 'dependency' | 'sast' | 'iac' | 'secrets' | 'container' | 'cloud' | 'dast';
 
-export interface AikidoIssueGroup {
+interface AikidoIssueGroup {
   id: number;
   group_id?: number;
   rule: string;
@@ -54,16 +47,6 @@ export interface AikidoIssueGroup {
   snooze_until?: number | null;
   license?: string | null;
   programming_language?: string;
-}
-
-export interface AikidoIssueGroupsResponse {
-  /** Issue groups - API may use 'groups' key */
-  groups?: AikidoIssueGroup[];
-  /** Alternative key name - kept for backwards compatibility */
-  issue_groups?: AikidoIssueGroup[];
-  total?: number;
-  page?: number;
-  per_page?: number;
 }
 
 /**
@@ -135,7 +118,7 @@ export interface AikidoCodeRepositoriesResponse {
  * Individual requirement check in the compliance report.
  * Status can be 'complying', 'not_complying', or 'not_applicable'.
  */
-export interface AikidoComplianceRequirement {
+interface AikidoComplianceRequirement {
   title: string;
   status: 'complying' | 'not_complying' | 'not_applicable';
   type?: string;
@@ -145,7 +128,7 @@ export interface AikidoComplianceRequirement {
  * Group of requirements under a control criterion.
  * Groups are organized by type (e.g., "Protects unauthorized runtime access").
  */
-export interface AikidoComplianceGroup {
+interface AikidoComplianceGroup {
   type: string;
   requirements: AikidoComplianceRequirement[];
 }
@@ -154,7 +137,7 @@ export interface AikidoComplianceGroup {
  * Control criterion in the compliance framework (e.g., CC6.8 for SOC2).
  * Each control has a percentage score and groups of requirements.
  */
-export interface AikidoComplianceControl {
+interface AikidoComplianceControl {
   id: string;
   title: string;
   percentage: number;
@@ -166,39 +149,17 @@ export interface AikidoComplianceControl {
  * Response from the SOC2/ISO27001 overview API endpoint.
  * Contains an array of control criteria with their compliance status.
  */
-export interface AikidoComplianceOverviewResponse {
+interface AikidoComplianceOverviewResponse {
   controls: AikidoComplianceControl[];
-}
-
-/**
- * @deprecated Use AikidoComplianceOverviewResponse instead.
- * Kept for backwards compatibility.
- */
-export interface AikidoComplianceStatus {
-  framework: 'soc2' | 'iso27001' | 'nis2';
-  overall_status: 'compliant' | 'non_compliant' | 'partial';
-  passing_count: number;
-  failing_count: number;
-  not_applicable_count: number;
-  total_requirements: number;
-  requirements: Array<{
-    id: string;
-    name: string;
-    description: string;
-    status: 'passing' | 'failing' | 'not_applicable';
-    category: string;
-    evidence?: string;
-  }>;
-  last_checked_at: string;
 }
 
 // ============================================================================
 // Cloud Types
 // ============================================================================
 
-export type AikidoCloudProvider = 'aws' | 'azure' | 'gcp' | 'kubernetes';
+type AikidoCloudProvider = 'aws' | 'azure' | 'gcp' | 'kubernetes';
 
-export interface AikidoCloud {
+interface AikidoCloud {
   id: string;
   provider: AikidoCloudProvider;
   name: string;
@@ -211,16 +172,11 @@ export interface AikidoCloud {
   created_at: string;
 }
 
-export interface AikidoCloudsResponse {
-  clouds: AikidoCloud[];
-  total: number;
-}
-
 // ============================================================================
 // Container Types
 // ============================================================================
 
-export interface AikidoContainer {
+interface AikidoContainer {
   id: string;
   name: string;
   image: string;
@@ -232,37 +188,14 @@ export interface AikidoContainer {
   created_at: string;
 }
 
-export interface AikidoContainersResponse {
-  containers: AikidoContainer[];
-  total: number;
-  page: number;
-  per_page: number;
-}
-
-// ============================================================================
-// Workspace Types
-// ============================================================================
-
-export interface AikidoWorkspace {
-  id: string;
-  name: string;
-  plan: string;
-  created_at: string;
-}
-
 // ============================================================================
 // User Types
 // ============================================================================
 
-export interface AikidoUser {
+interface AikidoUser {
   id: string;
   email: string;
   name?: string;
   role: 'admin' | 'member' | 'viewer';
   created_at: string;
-}
-
-export interface AikidoUsersResponse {
-  users: AikidoUser[];
-  total: number;
 }

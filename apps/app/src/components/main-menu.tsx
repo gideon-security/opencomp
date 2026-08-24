@@ -6,7 +6,12 @@ import { Badge } from '@gideon-defender/ui/badge';
 import { Button } from '@gideon-defender/ui/button';
 import { cn } from '@gideon-defender/ui/cn';
 import { Icons } from '@gideon-defender/ui/icons';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
 import {
   ClipboardCheck,
   FileTextIcon,
@@ -20,9 +25,9 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 
 // Define menu item types with icon component
@@ -50,7 +55,7 @@ interface ItemProps {
   itemRef: (el: HTMLDivElement | null) => void;
 }
 
-export type Props = {
+type Props = {
   organizationId?: string;
   organization?: { advancedModeEnabled?: boolean } | null;
   isCollapsed?: boolean;

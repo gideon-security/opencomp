@@ -50,10 +50,3 @@ export function log(message: string, level: 'INFO' | 'ERROR' | 'WARN' = 'INFO'):
     // If file logging fails, console is still there
   }
 }
-
-/**
- * Returns the path to the current log file (useful for debugging info in UI).
- */
-export function getLogFilePath(): string {
-  return ensureLogFile();
-}

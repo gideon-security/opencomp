@@ -4,7 +4,7 @@ import type { QuestionAnswer } from './question-parser';
 
 export type ExportFormat = 'pdf' | 'csv' | 'xlsx';
 
-export interface ExportResult {
+interface ExportResult {
   fileBuffer: Buffer;
   mimeType: string;
   filename: string;

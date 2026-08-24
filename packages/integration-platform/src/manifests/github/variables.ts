@@ -43,9 +43,7 @@ export const targetReposVariable: CheckVariable = {
       const allAccessibleRepos = await ctx.fetchAllPages<GitHubRepo>(
         '/user/repos?affiliation=owner,collaborator,organization_member&visibility=all',
       );
-      const orgRepos = allAccessibleRepos.filter(
-        (repo) => repo.owner?.type === 'Organization',
-      );
+      const orgRepos = allAccessibleRepos.filter((repo) => repo.owner?.type === 'Organization');
       for (const repo of orgRepos) {
         addRepo(repo);
       }
@@ -127,13 +125,6 @@ export const parseRepoBranches = (value: string): { repo: string; branches: stri
 export const parseRepoBranch = (value: string): { repo: string; branch: string } => {
   const parsed = parseRepoBranches(value);
   return { repo: parsed.repo, branch: parsed.branches[0] || 'main' };
-};
-
-/**
- * Helper to format repo and branch into the stored format.
- */
-export const formatRepoBranch = (repo: string, branch: string): string => {
-  return `${repo}:${branch}`;
 };
 
 /**

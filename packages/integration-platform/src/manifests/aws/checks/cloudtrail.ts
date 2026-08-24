@@ -7,16 +7,16 @@ import {
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
 import {
+  type CheckOutcome,
+  type ReadFailure,
   combineReadFailures,
+  emitOutcomes,
   remediationForReadFailure,
   resolveAwsSessionOrFail,
   toReadFailure,
-  type CheckOutcome,
-  type ReadFailure,
-  emitOutcomes,
 } from './shared';
 
-export interface TrailInfo {
+interface TrailInfo {
   name: string;
   multiRegion: boolean;
   logValidation: boolean;
@@ -32,7 +32,7 @@ export interface TrailInfo {
   statusReadFailure?: ReadFailure;
 }
 
-export interface CloudTrailEvalOptions {
+interface CloudTrailEvalOptions {
   /** regions DescribeTrails ran in — shown when no trail is found */
   scannedRegions?: string[];
 }
@@ -52,7 +52,12 @@ export function evaluateCloudTrail(
         description: `Trail "${good.name}" is multi-region, actively logging, with log file validation enabled.`,
         resourceType: 'aws-cloudtrail',
         resourceId: good.name,
-        evidence: { trail: good.name, multiRegion: good.multiRegion, logging: good.logging, logValidation: good.logValidation },
+        evidence: {
+          trail: good.name,
+          multiRegion: good.multiRegion,
+          logging: good.logging,
+          logValidation: good.logValidation,
+        },
       },
     ];
   }
@@ -200,9 +205,7 @@ export const cloudTrailEnabledCheck: IntegrationCheck = {
                   maxAttempts: 5,
                 });
           try {
-            const status = await statusClient.send(
-              new GetTrailStatusCommand({ Name: t.TrailARN }),
-            );
+            const status = await statusClient.send(new GetTrailStatusCommand({ Name: t.TrailARN }));
             logging = status.IsLogging === true;
           } catch (err) {
             loggingKnown = false;
@@ -251,9 +254,6 @@ export const cloudTrailEnabledCheck: IntegrationCheck = {
       return;
     }
 
-    emitOutcomes(
-      ctx,
-      evaluateCloudTrail(trails, { scannedRegions: session.regions }),
-    );
+    emitOutcomes(ctx, evaluateCloudTrail(trails, { scannedRegions: session.regions }));
   },
 };

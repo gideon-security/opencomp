@@ -20,7 +20,7 @@ const DEFAULT_MAX_LENGTH = 2000;
  * JSON string that would otherwise sail through as a "valid" empty comment.
  */
 @ValidatorConstraint({ name: 'maxCommentTextLength', async: false })
-export class MaxCommentTextLengthConstraint implements ValidatorConstraintInterface {
+class MaxCommentTextLengthConstraint implements ValidatorConstraintInterface {
   validate(value: unknown, args: ValidationArguments): boolean {
     if (typeof value !== 'string') return false;
     const maxLength = (args.constraints[0] as number) ?? DEFAULT_MAX_LENGTH;

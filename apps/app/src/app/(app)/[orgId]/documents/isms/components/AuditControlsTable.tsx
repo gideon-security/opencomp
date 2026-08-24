@@ -12,7 +12,6 @@ import {
   Stack,
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,

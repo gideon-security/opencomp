@@ -52,9 +52,7 @@ function parseFormOAuthError(errorBody: string): ParsedOAuthError {
   };
 }
 
-export function parseOAuthRefreshError(
-  errorBody?: string,
-): ParsedOAuthError {
+function parseOAuthRefreshError(errorBody?: string): ParsedOAuthError {
   if (!errorBody) {
     return {};
   }
@@ -82,9 +80,10 @@ export function buildOAuthRefreshErrorMessage(params: {
   failure: OAuthRefreshFailure;
 }): string {
   const parsed = parseOAuthRefreshError(params.failure.errorBody);
-  const provider = params.providerHost === 'oauth2.googleapis.com'
-    ? 'Google'
-    : 'OAuth provider';
+  const provider =
+    params.providerHost === 'oauth2.googleapis.com'
+      ? 'Google'
+      : 'OAuth provider';
   const suffix =
     parsed.errorDescription && parsed.errorDescription !== parsed.error
       ? ` ${parsed.errorDescription}`

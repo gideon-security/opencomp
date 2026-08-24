@@ -52,7 +52,7 @@ export interface TaskItem {
   updatedAt: string;
 }
 
-export interface TaskItemsStats {
+interface TaskItemsStats {
   total: number;
   byStatus: {
     todo: number;
@@ -63,7 +63,7 @@ export interface TaskItemsStats {
   };
 }
 
-export interface PaginatedTaskItemsResponse {
+interface PaginatedTaskItemsResponse {
   data: TaskItem[];
   meta: {
     page: number;
@@ -207,10 +207,7 @@ export function useTaskItems(
     queryParams.append('assigneeId', filters.assigneeId);
   }
 
-  const endpoint =
-    entityId && entityType
-      ? `/v1/task-management?${queryParams.toString()}`
-      : null;
+  const endpoint = entityId && entityType ? `/v1/task-management?${queryParams.toString()}` : null;
 
   return useApiSWR<PaginatedTaskItemsResponse>(endpoint, {
     ...options,
@@ -262,10 +259,7 @@ export function useTaskItemActions() {
 
   const updateTaskItem = useCallback(
     async (taskItemId: string, data: UpdateTaskItemData) => {
-      const response = await api.put<TaskItem>(
-        `/v1/task-management/${taskItemId}`,
-        data,
-      );
+      const response = await api.put<TaskItem>(`/v1/task-management/${taskItemId}`, data);
       if (response.error) {
         throw new Error(response.error);
       }
@@ -306,7 +300,15 @@ export function useOptimisticTaskItems(
   sortOrder: TaskItemSortOrder = 'desc',
   filters: TaskItemFilters = {},
 ) {
-  const { data, error, isLoading, mutate } = useTaskItems(entityId, entityType, page, limit, sortBy, sortOrder, filters);
+  const { data, error, isLoading, mutate } = useTaskItems(
+    entityId,
+    entityType,
+    page,
+    limit,
+    sortBy,
+    sortOrder,
+    filters,
+  );
   const { createTaskItem, updateTaskItem, deleteTaskItem } = useTaskItemActions();
 
   const optimisticCreate = useCallback(
@@ -346,7 +348,9 @@ export function useOptimisticTaskItems(
             return {
               data: {
                 data: currentTaskItems,
-                meta: currentMeta || recomputeMeta(undefined, { page, limit, total: currentTaskItems.length }),
+                meta:
+                  currentMeta ||
+                  recomputeMeta(undefined, { page, limit, total: currentTaskItems.length }),
               },
               status: 200,
             };
@@ -377,7 +381,7 @@ export function useOptimisticTaskItems(
                         .filter((item) => matchesFilters(item, filters))
                         .sort((a, b) => compareTaskItems(a, b, sortBy, sortOrder))
                         .slice(0, limit)
-                    : (data.data?.data || []),
+                    : data.data?.data || [],
                   meta: matchesFilters(optimisticTaskItem, filters)
                     ? recomputeMeta(data.data?.meta, {
                         page,
@@ -385,7 +389,11 @@ export function useOptimisticTaskItems(
                         total: (data.data?.meta?.total ?? (data.data?.data || []).length) + 1,
                       })
                     : (data.data?.meta ??
-                        recomputeMeta(undefined, { page, limit, total: (data.data?.data || []).length })),
+                      recomputeMeta(undefined, {
+                        page,
+                        limit,
+                        total: (data.data?.data || []).length,
+                      })),
                 },
               }
             : {
@@ -434,7 +442,8 @@ export function useOptimisticTaskItems(
             );
           const matchedAfter = matchesFilters(updatedTaskItem, filters);
 
-          const totalDelta = matchedBefore && !matchedAfter ? -1 : !matchedBefore && matchedAfter ? 1 : 0;
+          const totalDelta =
+            matchedBefore && !matchedAfter ? -1 : !matchedBefore && matchedAfter ? 1 : 0;
           const nextTotal = (currentMeta?.total ?? currentTaskItems.length) + totalDelta;
 
           return {
@@ -451,15 +460,19 @@ export function useOptimisticTaskItems(
                 ...data,
                 data: {
                   data: (data.data?.data || [])
-                    .map((item) =>
-                      item.id === taskItemId ? { ...item, ...updateData } : item,
-                    )
+                    .map((item) => (item.id === taskItemId ? { ...item, ...updateData } : item))
                     .filter((item) => matchesFilters(item as TaskItem, filters))
                     .sort((a, b) =>
                       compareTaskItems(a as TaskItem, b as TaskItem, sortBy, sortOrder),
                     )
                     .slice(0, limit),
-                  meta: data.data?.meta ?? recomputeMeta(undefined, { page, limit, total: (data.data?.data || []).length }),
+                  meta:
+                    data.data?.meta ??
+                    recomputeMeta(undefined, {
+                      page,
+                      limit,
+                      total: (data.data?.data || []).length,
+                    }),
                 },
               }
             : undefined,
@@ -478,7 +491,7 @@ export function useOptimisticTaskItems(
       const currentResponse = data?.data;
       const currentTaskItems = currentResponse?.data || [];
       const itemExists = currentTaskItems.some((item) => item.id === taskItemId);
-      
+
       if (!itemExists) {
         // Item already removed, just return success
         return;
@@ -496,10 +509,8 @@ export function useOptimisticTaskItems(
               throw error;
             }
           }
-          
-          const updatedTaskItems = currentTaskItems.filter(
-            (item) => item.id !== taskItemId,
-          );
+
+          const updatedTaskItems = currentTaskItems.filter((item) => item.id !== taskItemId);
           const currentMeta = currentResponse?.meta;
 
           return {
@@ -528,9 +539,7 @@ export function useOptimisticTaskItems(
             ? {
                 ...data,
                 data: {
-                  data: (data.data?.data || []).filter(
-                    (item) => item.id !== taskItemId,
-                  ),
+                  data: (data.data?.data || []).filter((item) => item.id !== taskItemId),
                   meta: data.data?.meta
                     ? {
                         ...data.data.meta,
@@ -569,34 +578,3 @@ export function useOptimisticTaskItems(
     optimisticDelete,
   };
 }
-
-/**
- * Convenience hook for vendor task items
- */
-export function useVendorTaskItems(
-  vendorId: string | null,
-  page: number = 1,
-  limit: number = 5,
-  sortBy: TaskItemSortBy = 'createdAt',
-  sortOrder: TaskItemSortOrder = 'desc',
-  filters: TaskItemFilters = {},
-  options: UseApiSWROptions<PaginatedTaskItemsResponse> = {},
-) {
-  return useTaskItems(vendorId, 'vendor', page, limit, sortBy, sortOrder, filters, options);
-}
-
-/**
- * Convenience hook for risk task items
- */
-export function useRiskTaskItems(
-  riskId: string | null,
-  page: number = 1,
-  limit: number = 5,
-  sortBy: TaskItemSortBy = 'createdAt',
-  sortOrder: TaskItemSortOrder = 'desc',
-  filters: TaskItemFilters = {},
-  options: UseApiSWROptions<PaginatedTaskItemsResponse> = {},
-) {
-  return useTaskItems(riskId, 'risk', page, limit, sortBy, sortOrder, filters, options);
-}
-

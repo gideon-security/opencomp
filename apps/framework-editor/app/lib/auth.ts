@@ -14,7 +14,7 @@ const API_URL =
 
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
-export interface Session {
+interface Session {
   session: {
     id: string;
     userId: string;

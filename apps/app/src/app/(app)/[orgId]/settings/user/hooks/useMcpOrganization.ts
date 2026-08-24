@@ -8,7 +8,7 @@ export interface McpOrganizationData {
   selectedOrganizationId: string | null;
 }
 
-export const mcpOrganizationKey = () => ['/v1/mcp/organization'] as const;
+const mcpOrganizationKey = () => ['/v1/mcp/organization'] as const;
 
 interface UseMcpOrganizationOptions {
   initialData?: McpOrganizationData;
@@ -20,9 +20,7 @@ export function useMcpOrganization(options?: UseMcpOrganizationOptions) {
   const { data, error, isLoading, mutate } = useSWR(
     mcpOrganizationKey(),
     async () => {
-      const response = await apiClient.get<McpOrganizationData>(
-        '/v1/mcp/organization',
-      );
+      const response = await apiClient.get<McpOrganizationData>('/v1/mcp/organization');
       if (response.error) throw new Error(response.error);
       return response.data ?? null;
     },

@@ -39,16 +39,11 @@ export interface GoogleWorkspaceOrgUnitsResponse {
   organizationUnits: GoogleWorkspaceOrgUnit[];
 }
 
-export interface GoogleWorkspaceDomain {
+interface GoogleWorkspaceDomain {
   domainName: string;
   isPrimary: boolean;
   verified: boolean;
   creationTime: string;
-}
-
-export interface GoogleWorkspaceDomainsResponse {
-  kind: string;
-  domains: GoogleWorkspaceDomain[];
 }
 
 // Role types

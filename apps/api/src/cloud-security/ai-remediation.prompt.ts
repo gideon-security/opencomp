@@ -95,8 +95,6 @@ export const completePermissionsSchema = z.object({
     .describe('Brief explanation of why each permission group is needed'),
 });
 
-export type CompletePermissions = z.infer<typeof completePermissionsSchema>;
-
 // ─── Prompt Builders ────────────────────────────────────────────────────────
 
 function inferAwsPartition(finding: {

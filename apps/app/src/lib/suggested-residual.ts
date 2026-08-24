@@ -41,14 +41,14 @@ function stepDownImpact(current: Impact, steps: number): Impact {
   return IMPACT_ORDER[Math.max(0, idx - steps)];
 }
 
-export interface SuggestedResidualInput {
+interface SuggestedResidualInput {
   likelihood: Likelihood;
   impact: Impact;
   strategy: RiskTreatmentType;
   tasks: { status: TaskStatus }[];
 }
 
-export interface SuggestedResidualOutput {
+interface SuggestedResidualOutput {
   likelihood: Likelihood;
   impact: Impact;
   completion: number;
@@ -102,7 +102,7 @@ export function suggestedResidual({
   };
 }
 
-export interface PreviewResidualInput {
+interface PreviewResidualInput {
   inherentLikelihood: Likelihood;
   inherentImpact: Impact;
   strategy: RiskTreatmentType;
@@ -118,7 +118,7 @@ export interface PreviewResidualInput {
   hasLinkedWork?: boolean;
 }
 
-export interface PreviewResidualOutput {
+interface PreviewResidualOutput {
   likelihood: Likelihood;
   impact: Impact;
 }
@@ -168,7 +168,7 @@ export function previewResidual({
   }
 }
 
-export interface InterpolatedScoreInput {
+interface InterpolatedScoreInput {
   inherentScore: number;
   targetScore: number;
   /** 0..1 — only meaningful for Mitigate; non-Mitigate strategies pass 1. */

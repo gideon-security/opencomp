@@ -165,7 +165,11 @@ export const REQUIRED_PARAMS: Record<string, readonly string[]> = {
   StartConfigurationRecorderCommand: ['ConfigurationRecorderName'],
   PutBucketPolicyCommand: ['Bucket', 'Policy'],
   CreateTrailCommand: ['Name', 'S3BucketName'],
-  PutMetricFilterCommand: ['logGroupName', 'filterName', 'metricTransformations'],
+  PutMetricFilterCommand: [
+    'logGroupName',
+    'filterName',
+    'metricTransformations',
+  ],
   // A CreateLogGroup with no name is rejected by AWS with an opaque "Member must
   // not be null" error, silently failing the whole remediation (CS-787). Fail
   // fast with a clear message here. This covers CloudTrail AND every sibling
@@ -353,8 +357,7 @@ export function normalizeConfigRecordingGroup(
 
   const groupObj = group as Record<string, unknown>;
   const strategy = groupObj.recordingStrategy as
-    | { useOnly?: string }
-    | undefined;
+    { useOnly?: string } | undefined;
   const wantsAllSupported =
     groupObj.allSupported === true ||
     strategy?.useOnly === 'ALL_SUPPORTED_RESOURCE_TYPES' ||
@@ -734,12 +737,12 @@ function hasRequiredParamValue(value: unknown): boolean {
   return true;
 }
 
-export interface StepResult {
+interface StepResult {
   step: AwsCommandStep;
   output: Record<string, unknown>;
 }
 
-export interface PlanExecutionResult {
+interface PlanExecutionResult {
   results: StepResult[];
   error?: { stepIndex: number; message: string; step: AwsCommandStep };
 }
@@ -759,7 +762,7 @@ export interface PlanExecutionResult {
  * executor only cares about the in/out shape, so this scales to any
  * future AWS command without per-command changes here.
  */
-export type StepRepairFn = (args: {
+type StepRepairFn = (args: {
   step: AwsCommandStep;
   awsError: string;
   stepIndex: number;
@@ -769,7 +772,7 @@ export type StepRepairFn = (args: {
  * Execute a single AWS SDK v3 command.
  * Uses static imports — no dynamic require, no version mismatches.
  */
-export async function executeAwsCommand(params: {
+async function executeAwsCommand(params: {
   service: string;
   command: string;
   input: Record<string, unknown>;

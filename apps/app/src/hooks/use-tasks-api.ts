@@ -7,7 +7,7 @@ import { useCallback } from 'react';
 
 // Types for attachments API
 // Note: API returns dates as ISO strings, not Date objects
-export interface Attachment {
+interface Attachment {
   id: string;
   name: string;
   type: AttachmentType;
@@ -21,7 +21,7 @@ export interface Attachment {
   description: string | null;
 }
 
-export interface Task {
+interface Task {
   id: string;
   title: string;
   description: string | null;
@@ -33,7 +33,7 @@ export interface Task {
   updatedAt: string; // ISO string from API
 }
 
-export interface Comment {
+interface Comment {
   id: string;
   content: string;
   author: {
@@ -49,20 +49,6 @@ export interface Comment {
     createdAt: string; // ISO string from API
   }>;
   createdAt: string; // ISO string from API
-}
-
-/**
- * Hook to fetch all tasks using SWR
- */
-export function useTasks(options: UseApiSWROptions<Task[]> = {}) {
-  return useApiSWR<Task[]>('/v1/tasks', options);
-}
-
-/**
- * Hook to fetch a single task using SWR
- */
-export function useTask(taskId: string | null, options: UseApiSWROptions<Task> = {}) {
-  return useApiSWR<Task>(taskId ? `/v1/tasks/${taskId}` : null, options);
 }
 
 /**
@@ -141,162 +127,5 @@ export function useTaskAttachmentActions(taskId: string) {
     uploadAttachment,
     getDownloadUrl,
     deleteAttachment,
-  };
-}
-
-/**
- * Enhanced hooks with optimistic updates following official SWR patterns
- */
-export function useOptimisticTaskAttachments(taskId: string) {
-  const { data, error, isLoading, mutate } = useTaskAttachments(taskId);
-  const { uploadAttachment, deleteAttachment } = useTaskAttachmentActions(taskId);
-
-  const optimisticUpload = useCallback(
-    async (file: File) => {
-      // Create optimistic attachment matching full Attachment type
-      const optimisticAttachment: Attachment = {
-        id: `temp-${Date.now()}`,
-        name: file.name,
-        type: file.type.startsWith('image/') ? ('image' as any) : ('document' as any),
-        url: '', // Will be populated by real response
-        entityId: taskId,
-        entityType: 'task' as any,
-        organizationId: '',
-        commentId: null,
-        description: null,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      return mutate(
-        async () => {
-          // Call the API and transform single item response to array format for SWR cache
-          const newAttachment = await uploadAttachment(file);
-          const currentAttachments = data?.data || [];
-
-          // Replace optimistic attachment with real one, or add if not found
-          const optimisticIndex = currentAttachments.findIndex(
-            (att) => att.id === optimisticAttachment.id,
-          );
-          const updatedAttachments =
-            optimisticIndex >= 0
-              ? currentAttachments.map((att) =>
-                  att.id === optimisticAttachment.id ? newAttachment : att,
-                )
-              : [...currentAttachments, newAttachment];
-
-          return {
-            data: updatedAttachments,
-            status: 200,
-          };
-        },
-        {
-          optimisticData: data
-            ? {
-                ...data,
-                data: [...(data.data || []), optimisticAttachment],
-              }
-            : { data: [optimisticAttachment], status: 200 },
-          populateCache: true,
-          revalidate: false,
-          rollbackOnError: true,
-        },
-      );
-    },
-    [mutate, uploadAttachment, data],
-  );
-
-  const optimisticDelete = useCallback(
-    async (attachmentId: string) => {
-      return mutate(
-        async () => {
-          // Call the API and return updated cache data
-          await deleteAttachment(attachmentId);
-          const updatedAttachments = (data?.data || []).filter((att) => att.id !== attachmentId);
-
-          return {
-            data: updatedAttachments,
-            status: 200,
-          };
-        },
-        {
-          optimisticData: data
-            ? {
-                ...data,
-                data: (data.data || []).filter((att) => att.id !== attachmentId),
-              }
-            : undefined,
-          populateCache: true,
-          revalidate: false,
-          rollbackOnError: true,
-        },
-      );
-    },
-    [mutate, deleteAttachment, data],
-  );
-
-  return {
-    data,
-    error,
-    isLoading,
-    mutate,
-    optimisticUpload,
-    optimisticDelete,
-  };
-}
-
-/**
- * Legacy task comment hooks (deprecated - use generic comment hooks instead)
- * @deprecated Use useComments from '@/hooks/use-comments-api' instead
- */
-export function useTaskComments(taskId: string | null, options: UseApiSWROptions<Comment[]> = {}) {
-  return useApiSWR<Comment[]>(taskId ? `/v1/tasks/${taskId}/comments` : null, options);
-}
-
-/**
- * @deprecated Use useCommentActions from '@/hooks/use-comments-api' instead
- */
-export function useTaskCommentActions(taskId: string) {
-  const api = useApi();
-
-  const createComment = useCallback(
-    async (data: { content: string }) => {
-      const response = await api.post<Comment>(`/v1/tasks/${taskId}/comments`, data);
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      return response.data!;
-    },
-    [api, taskId],
-  );
-
-  const updateComment = useCallback(
-    async (commentId: string, data: { content: string }) => {
-      const response = await api.put<Comment>(`/v1/tasks/${taskId}/comments/${commentId}`, {
-        content: data.content,
-      });
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      return response.data!;
-    },
-    [api, taskId],
-  );
-
-  const deleteComment = useCallback(
-    async (commentId: string) => {
-      const response = await api.delete(`/v1/tasks/${taskId}/comments/${commentId}`);
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      return response;
-    },
-    [api, taskId],
-  );
-
-  return {
-    createComment,
-    updateComment,
-    deleteComment,
   };
 }

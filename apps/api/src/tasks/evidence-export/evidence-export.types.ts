@@ -80,14 +80,6 @@ export interface TaskEvidenceSummary {
 }
 
 /**
- * Export options for evidence
- */
-export interface EvidenceExportOptions {
-  includeRawJson: boolean;
-  format: 'pdf' | 'zip';
-}
-
-/**
  * Export result for a single PDF (buffered — small, fits in memory safely)
  */
 export interface EvidenceExportResult {

@@ -1,6 +1,6 @@
 import { BUILT_IN_ROLE_PERMISSIONS } from '@gideon-defender/auth';
 
-export interface SystemRole {
+interface SystemRole {
   name: string;
   key: string;
   description: string;
@@ -25,7 +25,8 @@ export const SYSTEM_ROLES: SystemRole[] = [
   {
     name: 'Employee',
     key: 'employee',
-    description: 'Employee portal with compliance tasks: sign policies, training videos, and device agent',
+    description:
+      'Employee portal with compliance tasks: sign policies, training videos, and device agent',
   },
   {
     name: 'Contractor',

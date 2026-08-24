@@ -1,16 +1,21 @@
 import type { FrameworkManifest } from './manifest.types';
 
-export interface CrossFrameworkRefs {
+interface CrossFrameworkRefs {
   controlTemplateIds: Set<string>;
   policyTemplateIds: Set<string>;
   taskTemplateIds: Set<string>;
 }
 
-export interface BuildRefsInput {
-  otherInstances: Array<{ frameworkInstanceId: string; manifest: FrameworkManifest }>;
+interface BuildRefsInput {
+  otherInstances: Array<{
+    frameworkInstanceId: string;
+    manifest: FrameworkManifest;
+  }>;
 }
 
-export function buildCrossFrameworkRefs({ otherInstances }: BuildRefsInput): CrossFrameworkRefs {
+export function buildCrossFrameworkRefs({
+  otherInstances,
+}: BuildRefsInput): CrossFrameworkRefs {
   const controlTemplateIds = new Set<string>();
   const policyTemplateIds = new Set<string>();
   const taskTemplateIds = new Set<string>();

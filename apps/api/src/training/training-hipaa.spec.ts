@@ -1,4 +1,4 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { TrainingService } from './training.service';
 
 jest.mock('@db', () => ({

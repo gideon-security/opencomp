@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PermissionGuard, PERMISSIONS_KEY } from './permission.guard';
+import { PermissionGuard } from './permission.guard';
 
 // Mock auth.server to provide auth.api.hasPermission
 const mockHasPermission = jest.fn();

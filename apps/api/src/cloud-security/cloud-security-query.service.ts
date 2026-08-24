@@ -11,10 +11,6 @@ import type {
   CloudProviderLatestRun,
 } from './cloud-security-query.types';
 
-// Re-export so existing imports of CloudProvider/CloudFinding from the service
-// path keep working (the controller imports them).
-export type { CloudFinding, CloudProvider, CloudProviderLatestRun };
-
 const CLOUD_PROVIDER_SLUGS = ['aws', 'gcp', 'azure'] as const;
 
 // The cloud-security scan persists exactly one run per connection under this
@@ -350,8 +346,7 @@ export class CloudSecurityQueryService {
       const serviceId = (rawEvidence.serviceId as string) ?? null;
       const findingKey = (rawEvidence.findingKey as string) ?? null;
       const projectDisplayNameFromEvidence = rawEvidence.projectDisplayName as
-        | string
-        | undefined;
+        string | undefined;
       return {
         id: result.id,
         title: result.title,

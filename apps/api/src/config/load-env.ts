@@ -27,9 +27,3 @@ function loadEnv(): void {
 if (!envLoaded) {
   loadEnv();
 }
-
-export function ensureEnvLoaded(): void {
-  if (!envLoaded) {
-    loadEnv();
-  }
-}

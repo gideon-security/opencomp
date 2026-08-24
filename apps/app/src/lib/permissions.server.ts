@@ -3,8 +3,8 @@ import 'server-only';
 import { auth } from '@/utils/auth';
 import { db } from '@db/server';
 import { headers } from 'next/headers';
-import { NextResponse } from 'next/server';
 import { redirect } from 'next/navigation';
+import { NextResponse } from 'next/server';
 import {
   type UserPermissions,
   canAccessAuditorView,
@@ -23,8 +23,7 @@ export async function resolveUserPermissions(
   roleString: string | null | undefined,
   organizationId: string,
 ): Promise<UserPermissions> {
-  const { permissions, customRoleNames } =
-    resolveBuiltInPermissions(roleString);
+  const { permissions, customRoleNames } = resolveBuiltInPermissions(roleString);
 
   if (customRoleNames.length > 0) {
     const customRoles = await db.organizationRole.findMany({
@@ -38,9 +37,7 @@ export async function resolveUserPermissions(
     for (const role of customRoles) {
       if (!role.permissions) continue;
       const parsed =
-        typeof role.permissions === 'string'
-          ? JSON.parse(role.permissions)
-          : role.permissions;
+        typeof role.permissions === 'string' ? JSON.parse(role.permissions) : role.permissions;
       if (parsed && typeof parsed === 'object') {
         mergePermissions(permissions, parsed as Record<string, string[]>);
       }
@@ -82,16 +79,11 @@ export async function resolveCurrentUserPermissions(
  * Resolves permissions for the current user and redirects if they
  * don't have access to the given route segment.
  */
-export async function requireRoutePermission(
-  routeSegment: string,
-  orgId: string,
-): Promise<void> {
+export async function requireRoutePermission(routeSegment: string, orgId: string): Promise<void> {
   const permissions = await resolveCurrentUserPermissions(orgId);
 
   if (!permissions || !canAccessRoute(permissions, routeSegment)) {
-    const defaultRoute = permissions
-      ? getDefaultRoute(permissions, orgId)
-      : null;
+    const defaultRoute = permissions ? getDefaultRoute(permissions, orgId) : null;
     redirect(defaultRoute ?? '/no-access');
   }
 }
@@ -118,9 +110,7 @@ export async function resolveCustomRolePermissions(
   for (const role of customRoles) {
     if (!role.permissions) continue;
     const parsed =
-      typeof role.permissions === 'string'
-        ? JSON.parse(role.permissions)
-        : role.permissions;
+      typeof role.permissions === 'string' ? JSON.parse(role.permissions) : role.permissions;
     if (parsed && typeof parsed === 'object') {
       mergePermissions(result, parsed as Record<string, string[]>);
     }
@@ -133,7 +123,7 @@ export async function resolveCustomRolePermissions(
  * `canAccessAuditorView` but pulls the custom-role permissions from the
  * DB for the current user. Returns null if the user isn't in the org.
  */
-export async function resolveAuditorViewAccess(
+async function resolveAuditorViewAccess(
   orgId: string,
 ): Promise<{ canAccess: boolean; roleString: string | null } | null> {
   const session = await auth.api.getSession({
@@ -169,13 +159,11 @@ export async function requireAuditorViewAccess(orgId: string): Promise<void> {
   if (result?.canAccess) return;
 
   const permissions = await resolveCurrentUserPermissions(orgId);
-  const defaultRoute = permissions
-    ? getDefaultRoute(permissions, orgId)
-    : null;
+  const defaultRoute = permissions ? getDefaultRoute(permissions, orgId) : null;
   redirect(defaultRoute ?? '/no-access');
 }
 
-export interface ApiPermissionContext {
+interface ApiPermissionContext {
   organizationId: string;
   userId: string;
   permissions: UserPermissions;

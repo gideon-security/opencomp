@@ -16,14 +16,14 @@ export interface AlertCounts {
   bySeverity: Record<AlertSeverity, number>;
 }
 
-export const VALID_ALERT_SEVERITIES: ReadonlySet<AlertSeverity> = new Set([
+const VALID_ALERT_SEVERITIES: ReadonlySet<AlertSeverity> = new Set([
   'critical',
   'high',
   'medium',
   'low',
 ]);
 
-export const DEFAULT_ALERT_SEVERITY_THRESHOLD: AlertSeverity = 'high';
+const DEFAULT_ALERT_SEVERITY_THRESHOLD: AlertSeverity = 'high';
 
 /**
  * Normalize an arbitrary string into a valid AlertSeverity, falling back to

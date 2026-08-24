@@ -3,7 +3,7 @@ import { auth } from '../auth/auth.server';
 /** One year in milliseconds. */
 export const DEVICE_AGENT_SESSION_TTL_MS = 365 * 24 * 60 * 60 * 1000;
 
-export interface CreatedDeviceAgentSession {
+interface CreatedDeviceAgentSession {
   sessionId: string;
   token: string;
   expiresAt: Date;

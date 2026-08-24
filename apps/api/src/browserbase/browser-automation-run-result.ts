@@ -5,7 +5,7 @@ import {
 } from './browser-automation-errors';
 import type { BrowserEvidenceRunResult } from './browser-evidence-runner.service';
 
-export function statusForBrowserFailureCode(
+function statusForBrowserFailureCode(
   code: BrowserAutomationFailureCode | undefined,
 ): 'failed' | 'blocked' {
   if (code === 'captcha_blocked' || code === 'needs_user_action') {

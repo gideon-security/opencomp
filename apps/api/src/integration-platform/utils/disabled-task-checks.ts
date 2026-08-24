@@ -22,7 +22,7 @@
 export const DISABLED_TASK_CHECKS_KEY = 'disabledTaskChecks';
 export const ENABLED_TASK_CHECKS_KEY = 'enabledTaskChecks';
 
-export type DisabledTaskChecksMap = Record<string, string[]>;
+type DisabledTaskChecksMap = Record<string, string[]>;
 
 const DEFAULT_DISCONNECTED_CHECK_IDS = new Set([
   'aws-environment-separation',
@@ -71,9 +71,7 @@ export function parseDisabledTaskChecks(
   return parseTaskChecksMap({ metadata, key: DISABLED_TASK_CHECKS_KEY });
 }
 
-export function parseEnabledTaskChecks(
-  metadata: unknown,
-): DisabledTaskChecksMap {
+function parseEnabledTaskChecks(metadata: unknown): DisabledTaskChecksMap {
   return parseTaskChecksMap({ metadata, key: ENABLED_TASK_CHECKS_KEY });
 }
 

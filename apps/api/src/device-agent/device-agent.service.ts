@@ -291,7 +291,7 @@ export class DeviceAgentService {
   }
 }
 
-export type UpdateFileResult =
+type UpdateFileResult =
   | {
       kind: 'stream';
       stream: Readable;
@@ -300,6 +300,6 @@ export type UpdateFileResult =
     }
   | { kind: 'redirect'; url: string };
 
-export type HeadUpdateFileResult =
+type HeadUpdateFileResult =
   | { kind: 'stream'; contentType: string; contentLength?: number }
   | { kind: 'redirect'; url: string };

@@ -28,7 +28,6 @@ import {
 } from './utils/export-generator';
 import {
   batchSearchSOAQuestions,
-  generateSOAAnswerWithRAG,
   generateSOAControlAnswer,
 } from './utils/soa-answer-generator';
 import {

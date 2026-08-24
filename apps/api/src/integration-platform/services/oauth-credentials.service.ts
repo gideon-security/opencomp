@@ -5,10 +5,13 @@ import {
   CredentialVaultService,
   EncryptedData,
 } from './credential-vault.service';
-import { getManifest, type OAuthConfig } from '@gideon-defender/integration-platform';
+import {
+  getManifest,
+  type OAuthConfig,
+} from '@gideon-defender/integration-platform';
 import type { Prisma } from '@db';
 
-export interface OAuthCredentials {
+interface OAuthCredentials {
   clientId: string;
   clientSecret: string;
   scopes: string[];
@@ -18,7 +21,7 @@ export interface OAuthCredentials {
   customSettings?: Record<string, unknown>;
 }
 
-export interface OAuthCredentialsAvailability {
+interface OAuthCredentialsAvailability {
   /** Whether credentials are available (from any source) */
   available: boolean;
   /** Whether org has custom credentials configured */

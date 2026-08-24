@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'crypto';
 
-export interface ServiceDefinition {
+interface ServiceDefinition {
   /** Environment variable holding the token */
   envVar: string;
   /** Human-readable name for audit logs */
@@ -13,7 +13,7 @@ export interface ServiceDefinition {
  * Service definitions for internal service-to-service authentication.
  * Each service gets its own token with explicit scoped permissions.
  */
-export const SERVICE_DEFINITIONS: Record<string, ServiceDefinition> = {
+const SERVICE_DEFINITIONS: Record<string, ServiceDefinition> = {
   trigger: {
     envVar: 'SERVICE_TOKEN_TRIGGER',
     name: 'Local trigger Workers',

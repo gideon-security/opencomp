@@ -2,7 +2,7 @@ import { Prisma } from '@db';
 import type { BackgroundCheckStatus } from '@db';
 import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
 
-export function shouldSyncReportSnapshot({
+function shouldSyncReportSnapshot({
   status,
   eventType,
 }: {
@@ -16,7 +16,7 @@ export function shouldSyncReportSnapshot({
   );
 }
 
-export function toInputJsonValue(value: unknown): Prisma.InputJsonValue | null {
+function toInputJsonValue(value: unknown): Prisma.InputJsonValue | null {
   if (value === null || value === undefined) {
     return null;
   }

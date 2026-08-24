@@ -9,7 +9,7 @@
 
 import type { ResolvedCheckDescription } from './check-definition.service';
 
-export interface PassthroughInput {
+interface PassthroughInput {
   provider: 'gcp' | 'azure' | string;
   title: string;
   description: string | null;

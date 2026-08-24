@@ -6,15 +6,15 @@ import {
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
 import {
+  emitOutcomes,
   remediationForReadFailure,
   resolveAwsSessionOrFail,
   toReadFailure,
   type CheckOutcome,
   type ReadFailure,
-  emitOutcomes,
 } from './shared';
 
-export interface IamAccountData {
+interface IamAccountData {
   /** null = no password policy configured */
   passwordPolicy: {
     MinimumPasswordLength?: number;
@@ -28,9 +28,7 @@ export interface IamAccountData {
 }
 
 /** Password-policy findings only (independent of the account summary). */
-export function evaluatePasswordPolicy(
-  pp: IamAccountData['passwordPolicy'],
-): CheckOutcome[] {
+export function evaluatePasswordPolicy(pp: IamAccountData['passwordPolicy']): CheckOutcome[] {
   const out: CheckOutcome[] = [];
   const id = 'account';
 
@@ -81,9 +79,7 @@ export function evaluatePasswordPolicy(
 }
 
 /** Root-account findings from the IAM account summary (MFA, access keys). */
-export function evaluateAccountSummary(
-  summary: Record<string, number>,
-): CheckOutcome[] {
+export function evaluateAccountSummary(summary: Record<string, number>): CheckOutcome[] {
   const out: CheckOutcome[] = [];
   const id = 'account';
 
@@ -138,17 +134,13 @@ export function evaluateAccountSummary(
 
 /** Pure evaluation of IAM account-level posture (unit-tested without the SDK). */
 export function evaluateIamAccount(data: IamAccountData): CheckOutcome[] {
-  return [
-    ...evaluatePasswordPolicy(data.passwordPolicy),
-    ...evaluateAccountSummary(data.summary),
-  ];
+  return [...evaluatePasswordPolicy(data.passwordPolicy), ...evaluateAccountSummary(data.summary)];
 }
 
 export const iamAccountSecurityCheck: IntegrationCheck = {
   id: 'aws-iam-account-security',
   name: 'IAM — password policy and root protections',
-  description:
-    'Verify a strong IAM password policy, root MFA enabled, and no root access keys.',
+  description: 'Verify a strong IAM password policy, root MFA enabled, and no root access keys.',
   service: 'iam-analyzer',
   taskMapping: TASK_TEMPLATES.rolebasedAccessControls,
   run: async (ctx: CheckContext) => {

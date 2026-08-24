@@ -3,7 +3,7 @@ import type { CheckInRequest, CheckInResponse, CheckResult } from '../shared/typ
 import { log } from './logger';
 import { getApiUrl, getAuth, setAuth } from './store';
 
-export interface ReportResult {
+interface ReportResult {
   allSucceeded: boolean;
   isCompliant: boolean;
   /** True if ANY org returned 401 — session has expired */
@@ -24,7 +24,12 @@ export async function reportCheckResults(checks: CheckResult[]): Promise<ReportR
   const auth = getAuth();
   if (!auth) {
     log('Cannot report check results: not authenticated', 'ERROR');
-    return { allSucceeded: false, isCompliant: false, sessionExpired: false, allDevicesNotFound: false };
+    return {
+      allSucceeded: false,
+      isCompliant: false,
+      sessionExpired: false,
+      allDevicesNotFound: false,
+    };
   }
 
   const apiUrl = getApiUrl();

@@ -7,22 +7,9 @@
 
 import { z } from 'zod';
 
-export const INTERNAL_AUDIT_APPROACHES = [
-  'in_house',
-  'external_firm',
-  'training_planned',
-] as const;
+export const INTERNAL_AUDIT_APPROACHES = ['in_house', 'external_firm', 'training_planned'] as const;
 
 export const EU_REP_STATUSES = ['appointed', 'not_required', 'pending'] as const;
-
-export const SECTOR_REGULATOR_OPTIONS = [
-  'FINMA',
-  'FCA',
-  'HIPAA',
-  'PCI DSS',
-  'healthcare',
-  'critical_infrastructure',
-] as const;
 
 export const INTERNAL_AUDIT_LABELS: Record<(typeof INTERNAL_AUDIT_APPROACHES)[number], string> = {
   in_house: 'In-house team',

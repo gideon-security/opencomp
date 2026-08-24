@@ -1,7 +1,5 @@
 import { serverApi } from '@/lib/api-server';
-import { parseRolesString } from '@/lib/permissions';
 import { PageHeader, PageLayout } from '@trycompai/design-system';
-import { Role } from '@db';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { AuditorView } from './components/AuditorView';

@@ -11,7 +11,7 @@ export interface AwsSession {
   regions: string[];
 }
 
-export interface AwsCredentialInputs {
+interface AwsCredentialInputs {
   roleArn: string;
   externalId: string;
   regions: string[];
@@ -29,10 +29,8 @@ export interface AwsCredentialInputs {
 export function resolveAwsCredentialInputs(
   credentials: Record<string, unknown>,
 ): AwsCredentialInputs | null {
-  const roleArn =
-    typeof credentials.roleArn === 'string' ? credentials.roleArn : '';
-  const externalId =
-    typeof credentials.externalId === 'string' ? credentials.externalId : '';
+  const roleArn = typeof credentials.roleArn === 'string' ? credentials.roleArn : '';
+  const externalId = typeof credentials.externalId === 'string' ? credentials.externalId : '';
   const rawRegions = credentials.regions;
   const regions = (
     Array.isArray(rawRegions)
@@ -56,9 +54,7 @@ export function resolveAwsCredentialInputs(
  * these directly instead of assuming the role itself — it runs in the Local trigger
  * runtime, which has no base AWS credentials or roleAssumer ARN.
  */
-function readInjectedAwsSession(
-  credentials: Record<string, unknown>,
-):
+function readInjectedAwsSession(credentials: Record<string, unknown>):
   | {
       credentials: {
         accessKeyId: string;
@@ -124,12 +120,8 @@ function awsBaseCredentials(
  * then (2) assume the customer role with the roleAssumer creds + external ID. A
  * single direct hop fails with "not authorized to perform sts:AssumeRole".
  */
-export async function assumeAwsSession(
-  ctx: CheckContext,
-): Promise<AwsSession | null> {
-  const inputs = resolveAwsCredentialInputs(
-    ctx.credentials as Record<string, unknown>,
-  );
+export async function assumeAwsSession(ctx: CheckContext): Promise<AwsSession | null> {
+  const inputs = resolveAwsCredentialInputs(ctx.credentials as Record<string, unknown>);
   if (!inputs) return null;
   const { roleArn, externalId, regions } = inputs;
 
@@ -137,9 +129,7 @@ export async function assumeAwsSession(
   // assume cannot run in the Local trigger runtime, which lacks base AWS creds and
   // the roleAssumer ARN), use it directly. An injected error surfaces the real
   // failure reason via the caller's "Could not assume AWS role" finding.
-  const injected = readInjectedAwsSession(
-    ctx.credentials as Record<string, unknown>,
-  );
+  const injected = readInjectedAwsSession(ctx.credentials as Record<string, unknown>);
   if (injected) {
     if ('error' in injected) throw new Error(injected.error);
     return { credentials: injected.credentials, regions };
@@ -173,11 +163,7 @@ export async function assumeAwsSession(
     ),
   );
   const assumer = assumerResp.Credentials;
-  if (
-    !assumer?.AccessKeyId ||
-    !assumer.SecretAccessKey ||
-    !assumer.SessionToken
-  ) {
+  if (!assumer?.AccessKeyId || !assumer.SecretAccessKey || !assumer.SessionToken) {
     return null;
   }
 
@@ -222,9 +208,7 @@ export async function assumeAwsSession(
  * explicit evidence with remediation rather than as a bare check error (or a
  * false non-compliant verdict). Use this instead of assumeAwsSession directly.
  */
-export async function resolveAwsSessionOrFail(
-  ctx: CheckContext,
-): Promise<AwsSession | null> {
+export async function resolveAwsSessionOrFail(ctx: CheckContext): Promise<AwsSession | null> {
   try {
     return await assumeAwsSession(ctx);
   } catch (err) {
@@ -250,9 +234,9 @@ export async function resolveAwsSessionOrFail(
 // existing imports from './shared' keep working.
 export {
   combineReadFailures,
+  REGION_DISABLED_REMEDIATION,
   remediationForReadFailure,
   toReadFailure,
-  REGION_DISABLED_REMEDIATION,
   TRANSIENT_READ_REMEDIATION,
   type ReadFailure,
 } from './read-failure';
@@ -288,11 +272,9 @@ export function awsAccountIdFromCtx(ctx: CheckContext): string | null {
  * customer's OWN label — we do not infer prod/stage from AWS — so it's shown
  * alongside the account id when present. Returns null when unset.
  */
-export function awsConnectionNameFromCtx(ctx: CheckContext): string | null {
+function awsConnectionNameFromCtx(ctx: CheckContext): string | null {
   const name = (ctx.credentials as Record<string, unknown>).connectionName;
-  return typeof name === 'string' && name.trim().length > 0
-    ? name.trim()
-    : null;
+  return typeof name === 'string' && name.trim().length > 0 ? name.trim() : null;
 }
 
 /**
@@ -312,8 +294,7 @@ export function emitOutcomes(ctx: CheckContext, outcomes: CheckOutcome[]): void 
   const label = accountId
     ? `AWS account ${accountId}${connectionName ? ` — ${connectionName}` : ''}`
     : null;
-  const describe = (description: string) =>
-    label ? `${description} (${label})` : description;
+  const describe = (description: string) => (label ? `${description} (${label})` : description);
   // Stamp a stable per-(check, resource) `findingKey` so the finding can be
   // marked as an exception and matched across scans. normalizeCheckId() strips
   // the "-<resourceId>" suffix back to the check id on the consuming side, so it
@@ -329,9 +310,7 @@ export function emitOutcomes(ctx: CheckContext, outcomes: CheckOutcome[]): void 
       ...(evidence ?? {}),
       ...(findingKey ? { findingKey } : {}),
       ...(accountId ? { awsAccountId: accountId } : {}),
-      ...(accountId && connectionName
-        ? { awsConnectionName: connectionName }
-        : {}),
+      ...(accountId && connectionName ? { awsConnectionName: connectionName } : {}),
     };
   };
 

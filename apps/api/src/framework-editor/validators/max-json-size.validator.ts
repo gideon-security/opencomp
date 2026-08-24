@@ -9,7 +9,7 @@ import {
 const DEFAULT_MAX_BYTES = 512_000; // 500 KB
 
 @ValidatorConstraint({ name: 'maxJsonSize', async: false })
-export class MaxJsonSizeConstraint implements ValidatorConstraintInterface {
+class MaxJsonSizeConstraint implements ValidatorConstraintInterface {
   validate(value: unknown, args: ValidationArguments): boolean {
     if (value === null || value === undefined) return true;
     try {

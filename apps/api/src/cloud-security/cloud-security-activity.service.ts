@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { db, Prisma } from '@db';
 
-export interface ActivityEntry {
+interface ActivityEntry {
   id: string;
   type: 'scan' | 'remediation' | 'rollback' | 'service_change';
   description: string;

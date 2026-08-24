@@ -13,7 +13,6 @@ import {
 import {
   ApiHeader,
   ApiOperation,
-  ApiQuery,
   ApiResponse,
   ApiSecurity,
   ApiTags,

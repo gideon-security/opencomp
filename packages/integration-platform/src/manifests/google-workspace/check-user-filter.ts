@@ -1,12 +1,15 @@
-import { matchesSyncFilterTerms, parseSyncFilterTerms } from '../../sync-filter/email-exclusion-terms';
+import {
+  matchesSyncFilterTerms,
+  parseSyncFilterTerms,
+} from '../../sync-filter/email-exclusion-terms';
 import type { CheckVariableValues } from '../../types';
 import type { GoogleWorkspaceUser } from './types';
 
 /** Sync mode for directory users — aligned with `sync_user_filter_mode` connection variables. */
-export type GoogleWorkspaceUserSyncFilterMode = 'all' | 'exclude' | 'include';
+type GoogleWorkspaceUserSyncFilterMode = 'all' | 'exclude' | 'include';
 
 /** Parsed filter state shared by GWS checks (2FA, employee access) and aligned with employee sync. */
-export interface GoogleWorkspaceCheckUserFilterConfig {
+interface GoogleWorkspaceCheckUserFilterConfig {
   targetOrgUnits: string[] | undefined;
   excludedTerms: string[];
   includedTerms: string[];
@@ -30,7 +33,8 @@ export function parseGoogleWorkspaceCheckUserFilter(
       variables.sync_excluded_emails ?? variables.excluded_emails,
     ),
     includedTerms: parseSyncFilterTerms(variables.sync_included_emails),
-    userFilterMode: variables.sync_user_filter_mode as GoogleWorkspaceUserSyncFilterMode | undefined,
+    userFilterMode: variables.sync_user_filter_mode as
+      GoogleWorkspaceUserSyncFilterMode | undefined,
     includeSuspended: variables.include_suspended === 'true',
   };
 }

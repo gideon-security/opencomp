@@ -1,4 +1,4 @@
-export interface SignInCallbackUrls {
+interface SignInCallbackUrls {
   /** Where better-auth sends the user after a successful OAuth sign-in. */
   callbackURL: string;
   /** Where better-auth sends the user when the OAuth callback errors. */

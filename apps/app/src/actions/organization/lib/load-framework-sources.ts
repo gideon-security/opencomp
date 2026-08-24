@@ -1,8 +1,8 @@
 import type {
-  Prisma,
+  Departments,
   EvidenceFormType,
   Frequency,
-  Departments,
+  Prisma,
   TaskAutomationStatus,
 } from '@db/server';
 
@@ -92,7 +92,7 @@ export interface LoadedFrameworkSources {
   requirementToFrameworkId: Map<string, string>;
 }
 
-export interface LoadSourcesInput {
+interface LoadSourcesInput {
   frameworkEditorIds: string[];
   frameworkEditorFrameworks: Prisma.FrameworkEditorFrameworkGetPayload<{
     include: { requirements: true };
@@ -360,9 +360,7 @@ export async function loadFrameworkSources({
       }
     }
 
-    const fallbackTaskIds = controlRelationsLive.flatMap((cr) =>
-      cr.taskTemplates.map((t) => t.id),
-    );
+    const fallbackTaskIds = controlRelationsLive.flatMap((cr) => cr.taskTemplates.map((t) => t.id));
     if (fallbackTaskIds.length > 0) {
       const liveTasks = await tx.frameworkEditorTaskTemplate.findMany({
         where: { id: { in: fallbackTaskIds } },

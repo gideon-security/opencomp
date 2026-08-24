@@ -14,7 +14,7 @@ interface AddFrameworksResponse {
   frameworksAdded: number;
 }
 
-export const frameworksKey = () => ['/v1/frameworks'] as const;
+const frameworksKey = () => ['/v1/frameworks'] as const;
 
 interface UseFrameworksOptions {
   initialData?: FrameworkInstanceWithControls[];
@@ -43,10 +43,9 @@ export function useFrameworks(options?: UseFrameworksOptions) {
   const frameworks = Array.isArray(data) ? data : [];
 
   const addFrameworks = async (frameworkIds: string[]) => {
-    const response = await apiClient.post<AddFrameworksResponse>(
-      '/v1/frameworks',
-      { frameworkIds },
-    );
+    const response = await apiClient.post<AddFrameworksResponse>('/v1/frameworks', {
+      frameworkIds,
+    });
     if (response.error) throw new Error(response.error);
     await mutate();
     return response.data;

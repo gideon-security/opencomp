@@ -3,10 +3,7 @@ import { generateEmbedding } from './generate-embedding';
 import { logger } from '../../logger';
 
 export type SourceType =
-  | 'policy'
-  | 'context'
-  | 'manual_answer'
-  | 'knowledge_base_document';
+  'policy' | 'context' | 'manual_answer' | 'knowledge_base_document';
 
 export interface ExistingEmbedding {
   id: string;
@@ -15,7 +12,7 @@ export interface ExistingEmbedding {
   updatedAt?: string;
 }
 
-export interface QueryFilter {
+interface QueryFilter {
   organizationId: string;
   sourceType: SourceType;
   sourceId: string;
@@ -24,7 +21,7 @@ export interface QueryFilter {
 /**
  * Execute a vector query and filter results by metadata
  */
-export async function executeVectorQuery(
+async function executeVectorQuery(
   queryText: string,
   filter: QueryFilter,
   strategyName: string,
@@ -60,7 +57,7 @@ export async function executeVectorQuery(
 /**
  * Filter vector query results by metadata and map to ExistingEmbedding
  */
-export function filterAndMapResults(
+function filterAndMapResults(
   results: Array<{ id: string | number; metadata?: unknown }>,
   filter: QueryFilter,
 ): ExistingEmbedding[] {
@@ -88,7 +85,7 @@ export function filterAndMapResults(
 /**
  * Add embeddings to a Map, avoiding duplicates
  */
-export function addToResultsMap(
+function addToResultsMap(
   resultsMap: Map<string, ExistingEmbedding>,
   embeddings: ExistingEmbedding[],
 ): void {
@@ -98,29 +95,3 @@ export function addToResultsMap(
     }
   }
 }
-
-/**
- * Execute multiple vector queries in sequence and collect unique results
- */
-export async function executeMultipleQueries(
-  queries: Array<{ text: string; strategyName: string }>,
-  filter: QueryFilter,
-): Promise<Map<string, ExistingEmbedding>> {
-  const allResults = new Map<string, ExistingEmbedding>();
-
-  for (const { text, strategyName } of queries) {
-    const results = await executeVectorQuery(text, filter, strategyName);
-    addToResultsMap(allResults, results);
-  }
-
-  return allResults;
-}
-
-/**
- * Generic queries for knowledge base documents
- */
-export const GENERIC_DOCUMENT_QUERIES = [
-  'document information content',
-  'knowledge base document',
-  'file content text',
-];

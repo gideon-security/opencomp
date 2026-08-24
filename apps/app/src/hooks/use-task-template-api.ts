@@ -2,7 +2,7 @@
 
 import { useApiSWR, UseApiSWROptions } from '@/hooks/use-api-swr';
 
-export interface TaskTemplate {
+interface TaskTemplate {
   id: string;
   name: string;
   description: string;

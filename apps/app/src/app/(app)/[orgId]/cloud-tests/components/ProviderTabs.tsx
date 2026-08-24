@@ -1,7 +1,7 @@
 import { useApi } from '@/hooks/use-api';
 import { useConnectionServices } from '@/hooks/use-integration-platform';
 import { CLOUD_RECONNECT_CUTOFF_LABEL } from '@/lib/cloud-reconnect-policy';
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger } from '@trycompai/design-system';
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, Tabs, TabsContent, TabsList, TabsTrigger } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';

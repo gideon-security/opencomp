@@ -40,9 +40,7 @@ export async function authorizeRoleChange({
   });
 
   if (!callerMember) {
-    throw new ForbiddenException(
-      'Caller is not a member of this organization',
-    );
+    throw new ForbiddenException('Caller is not a member of this organization');
   }
 
   const callerRoles = parseRoles(callerMember.role);

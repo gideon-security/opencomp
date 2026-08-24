@@ -8,16 +8,16 @@ import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
 import {
   combineReadFailures,
+  emitOutcomes,
   remediationForReadFailure,
   resolveAwsSessionOrFail,
   toReadFailure,
   type AwsSession,
   type CheckOutcome,
   type ReadFailure,
-  emitOutcomes,
 } from './shared';
 
-export interface KmsKeyInfo {
+interface KmsKeyInfo {
   keyId: string;
   region: string;
   /**
@@ -91,10 +91,7 @@ interface KmsKeyScan {
   unreadable: Array<{ id: string; failure: ReadFailure }>;
 }
 
-async function listKmsKeys(
-  ctx: CheckContext,
-  session: AwsSession,
-): Promise<KmsKeyScan> {
+async function listKmsKeys(ctx: CheckContext, session: AwsSession): Promise<KmsKeyScan> {
   const out: KmsKeyInfo[] = [];
   const unreadable: Array<{ id: string; failure: ReadFailure }> = [];
   for (const region of session.regions) {
@@ -107,59 +104,59 @@ async function listKmsKeys(
     });
     let marker: string | undefined;
     try {
-    do {
-      const resp = await kms.send(new ListKeysCommand({ Marker: marker }));
-      for (const k of resp.Keys ?? []) {
-        const keyId = k.KeyId;
-        if (!keyId) continue;
-        let meta;
-        try {
-          meta = (await kms.send(new DescribeKeyCommand({ KeyId: keyId }))).KeyMetadata;
-        } catch (err) {
-          // Can't classify this key's eligibility — record it as unreadable so
-          // an all-unreadable account isn't reported as a clean run (a denied
-          // kms:DescribeKey would otherwise leave zero eligible keys silently).
-          const failure = toReadFailure(err);
-          unreadable.push({ id: keyId, failure });
-          ctx.log(`KMS: could not describe key ${keyId} in ${region}: ${failure.error}`);
-          continue;
-        }
-        // Only symmetric, enabled, AWS-managed-material, encrypt/decrypt
-        // customer keys can have automatic rotation.
-        const rotationEligible =
-          meta?.KeyManager === 'CUSTOMER' &&
-          meta?.KeyState === 'Enabled' &&
-          meta?.KeySpec === 'SYMMETRIC_DEFAULT' &&
-          meta?.KeyUsage === 'ENCRYPT_DECRYPT' &&
-          meta?.Origin === 'AWS_KMS';
-
-        let rotationEnabled = false;
-        let rotationStatusKnown = false;
-        let rotationReadFailure: ReadFailure | undefined;
-        if (rotationEligible) {
+      do {
+        const resp = await kms.send(new ListKeysCommand({ Marker: marker }));
+        for (const k of resp.Keys ?? []) {
+          const keyId = k.KeyId;
+          if (!keyId) continue;
+          let meta;
           try {
-            const rot = await kms.send(new GetKeyRotationStatusCommand({ KeyId: keyId }));
-            rotationEnabled = rot.KeyRotationEnabled === true;
-            rotationStatusKnown = true;
+            meta = (await kms.send(new DescribeKeyCommand({ KeyId: keyId }))).KeyMetadata;
           } catch (err) {
-            rotationReadFailure = toReadFailure(err);
-            ctx.log(
-              `KMS: could not read rotation status for ${keyId} in ${region}: ${rotationReadFailure.error}`,
-            );
-            rotationStatusKnown = false;
+            // Can't classify this key's eligibility — record it as unreadable so
+            // an all-unreadable account isn't reported as a clean run (a denied
+            // kms:DescribeKey would otherwise leave zero eligible keys silently).
+            const failure = toReadFailure(err);
+            unreadable.push({ id: keyId, failure });
+            ctx.log(`KMS: could not describe key ${keyId} in ${region}: ${failure.error}`);
+            continue;
           }
+          // Only symmetric, enabled, AWS-managed-material, encrypt/decrypt
+          // customer keys can have automatic rotation.
+          const rotationEligible =
+            meta?.KeyManager === 'CUSTOMER' &&
+            meta?.KeyState === 'Enabled' &&
+            meta?.KeySpec === 'SYMMETRIC_DEFAULT' &&
+            meta?.KeyUsage === 'ENCRYPT_DECRYPT' &&
+            meta?.Origin === 'AWS_KMS';
+
+          let rotationEnabled = false;
+          let rotationStatusKnown = false;
+          let rotationReadFailure: ReadFailure | undefined;
+          if (rotationEligible) {
+            try {
+              const rot = await kms.send(new GetKeyRotationStatusCommand({ KeyId: keyId }));
+              rotationEnabled = rot.KeyRotationEnabled === true;
+              rotationStatusKnown = true;
+            } catch (err) {
+              rotationReadFailure = toReadFailure(err);
+              ctx.log(
+                `KMS: could not read rotation status for ${keyId} in ${region}: ${rotationReadFailure.error}`,
+              );
+              rotationStatusKnown = false;
+            }
+          }
+          out.push({
+            keyId,
+            region,
+            rotationEligible,
+            rotationStatusKnown,
+            rotationEnabled,
+            rotationReadFailure,
+          });
         }
-        out.push({
-          keyId,
-          region,
-          rotationEligible,
-          rotationStatusKnown,
-          rotationEnabled,
-          rotationReadFailure,
-        });
-      }
-      marker = resp.NextMarker;
-    } while (marker);
+        marker = resp.NextMarker;
+      } while (marker);
     } catch (err) {
       // ListKeys failed for this region — record a region marker so run()
       // surfaces "could not verify" instead of aborting / silently skipping it.
@@ -174,7 +171,8 @@ async function listKmsKeys(
 export const kmsKeyRotationCheck: IntegrationCheck = {
   id: 'aws-kms-key-rotation',
   name: 'KMS — customer key rotation enabled',
-  description: 'Verify rotation-eligible customer-managed KMS keys have automatic rotation enabled.',
+  description:
+    'Verify rotation-eligible customer-managed KMS keys have automatic rotation enabled.',
   service: 'kms',
   taskMapping: TASK_TEMPLATES.encryptionAtRest,
   run: async (ctx: CheckContext) => {
@@ -196,7 +194,9 @@ export const kmsKeyRotationCheck: IntegrationCheck = {
       const failedKeys = unreadable.filter((u) => !u.id.startsWith('region:'));
       const parts: string[] = [];
       if (failedRegions.length > 0) {
-        parts.push(`keys could not be listed in ${failedRegions.length} region(s) (${failedRegions.map((r) => r.region).join(', ')})`);
+        parts.push(
+          `keys could not be listed in ${failedRegions.length} region(s) (${failedRegions.map((r) => r.region).join(', ')})`,
+        );
       }
       if (failedKeys.length > 0) {
         parts.push(`metadata could not be read for ${failedKeys.length} key(s)`);

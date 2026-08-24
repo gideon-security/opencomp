@@ -12,7 +12,7 @@ export const ismsScopeNarrativeSchema = z.object({
   justification: z.string().optional(),
 });
 
-export type IsmsScopeNarrative = z.infer<typeof ismsScopeNarrativeSchema>;
+type IsmsScopeNarrative = z.infer<typeof ismsScopeNarrativeSchema>;
 
 /**
  * Collapse runs of whitespace to a single space and trim. Interpolated values

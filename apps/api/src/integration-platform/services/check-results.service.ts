@@ -37,7 +37,7 @@ export interface CheckResultRow {
 }
 
 /** A connected integration that can supply results for a given task. */
-export interface CheckSourceInfo {
+interface CheckSourceInfo {
   slug: string;
   name: string;
   logoUrl: string | null;
@@ -141,9 +141,13 @@ export class CheckResultsService {
     checkId: string;
     resourceType?: string;
   }): Promise<CheckResultRow[]> {
-    const latest = await this.checkRunRepo.findLatestResultsByConnectionAndCheck(
-      { connectionId, checkId, organizationId, resourceType },
-    );
+    const latest =
+      await this.checkRunRepo.findLatestResultsByConnectionAndCheck({
+        connectionId,
+        checkId,
+        organizationId,
+        resourceType,
+      });
     if (!latest) return [];
 
     return latest.results.map((r) => ({

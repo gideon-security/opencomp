@@ -8,7 +8,7 @@ import type { Request } from 'express';
 import type { AuthContext as AuthContextType } from '../auth/types';
 import type { RolesService } from '../roles/roles.service';
 
-export interface AssistantChatContext {
+interface AssistantChatContext {
   organizationId: string;
   userId: string;
   permissions: Record<string, string[]>;

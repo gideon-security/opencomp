@@ -1,6 +1,6 @@
 import type { DeviceWithChecks, Host } from '../../devices/types';
 
-export type MemberDeviceStatus = 'compliant' | 'non-compliant' | 'stale' | 'not-installed';
+type MemberDeviceStatus = 'compliant' | 'non-compliant' | 'stale' | 'not-installed';
 
 /**
  * Roll-up per-member device compliance for the People table.

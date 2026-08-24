@@ -19,7 +19,7 @@ interface EvidenceFile {
   createdAt: string;
 }
 
-export interface VendorRevocationItem {
+interface VendorRevocationItem {
   vendorId: string;
   vendorName: string;
   logoUrl: string | null;
@@ -49,7 +49,12 @@ export function useAccessRevocations(memberId: string) {
       if (opts?.notes) body.notes = opts.notes;
       if (opts?.file) {
         const base64 = await fileToBase64(opts.file);
-        body = { ...body, fileName: opts.file.name, fileType: opts.file.type || 'application/octet-stream', fileData: base64 };
+        body = {
+          ...body,
+          fileName: opts.file.name,
+          fileType: opts.file.type || 'application/octet-stream',
+          fileData: base64,
+        };
       }
       const response = await api.post(`${endpoint}/${vendorId}`, body);
       if (response.error) throw new Error(response.error);
@@ -67,14 +72,11 @@ export function useAccessRevocations(memberId: string) {
     [api, endpoint, mutate],
   );
 
-  const revokeAll = useCallback(
-    async () => {
-      const response = await api.post(`${endpoint}/confirm-all`);
-      if (response.error) throw new Error(response.error);
-      await mutate();
-    },
-    [api, endpoint, mutate],
-  );
+  const revokeAll = useCallback(async () => {
+    const response = await api.post(`${endpoint}/confirm-all`);
+    if (response.error) throw new Error(response.error);
+    await mutate();
+  }, [api, endpoint, mutate]);
 
   return {
     revocations,

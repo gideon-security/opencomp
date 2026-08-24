@@ -13,7 +13,7 @@ type GetForMemberFn = (params: {
   status: BackgroundCheckStatus;
 } | null>;
 
-export function assertTransitionAllowed(
+function assertTransitionAllowed(
   action: 'cancel' | 'retry',
   status: BackgroundCheckStatus,
 ): void {

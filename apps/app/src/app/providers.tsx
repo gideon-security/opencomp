@@ -1,12 +1,12 @@
 'use client';
 
+import { AnalyticsProvider } from '@gideon-defender/analytics';
+import { Toaster } from '@gideon-defender/ui/sooner';
 import {
   defaultShouldDehydrateQuery,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
-import { AnalyticsProvider } from '@gideon-defender/analytics';
-import { Toaster } from '@gideon-defender/ui/sooner';
 import { Session, User } from 'better-auth';
 import { ThemeProvider } from 'next-themes';
 import type { ReactNode } from 'react';
@@ -32,7 +32,7 @@ const getQueryClient = () => {
   }
 };
 
-export const createQueryClient = () =>
+const createQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {

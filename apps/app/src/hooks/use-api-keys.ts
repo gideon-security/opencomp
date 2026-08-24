@@ -18,7 +18,7 @@ interface ApiKeysListResponse {
   count: number;
 }
 
-export const apiKeysListKey = () => ['/v1/organization/api-keys'] as const;
+const apiKeysListKey = () => ['/v1/organization/api-keys'] as const;
 
 interface UseApiKeysOptions {
   initialData?: ApiKey[];
@@ -30,8 +30,7 @@ export function useApiKeys(options?: UseApiKeysOptions) {
   const { data, error, isLoading, mutate } = useSWR(
     apiKeysListKey(),
     async () => {
-      const response =
-        await apiClient.get<ApiKeysListResponse>('/v1/organization/api-keys');
+      const response = await apiClient.get<ApiKeysListResponse>('/v1/organization/api-keys');
       if (response.error) throw new Error(response.error);
       if (!response.data?.data) return [];
       return response.data.data;
@@ -50,10 +49,7 @@ export function useApiKeys(options?: UseApiKeysOptions) {
     expiresAt: string;
     scopes?: string[];
   }): Promise<{ key: string }> => {
-    const response = await apiClient.post<{ key: string }>(
-      '/v1/organization/api-keys',
-      body,
-    );
+    const response = await apiClient.post<{ key: string }>('/v1/organization/api-keys', body);
     if (response.error) throw new Error(response.error);
     await mutate();
     return response.data!;

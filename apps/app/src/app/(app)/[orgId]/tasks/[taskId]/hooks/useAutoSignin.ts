@@ -5,21 +5,14 @@ import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 import type { ResolveAuthProfileResponse } from './types';
 
-/** Why an automated sign-in couldn't complete (mirrors the API result). */
-export type AutoSignInFailure =
-  | 'invalid_credentials'
-  | 'needs_2fa'
-  | 'challenge'
-  | 'unknown';
-
-export interface AutoSigninCredentials {
+interface AutoSigninCredentials {
   username: string;
   password: string;
   totpSeed?: string;
   extraFields?: { label: string; value: string }[];
 }
 
-export interface AutoSigninHandle {
+interface AutoSigninHandle {
   runId: string;
   publicAccessToken: string;
   profileId: string;
@@ -72,9 +65,7 @@ export function useAutoSignin() {
               username: credentials.username,
               password: credentials.password,
               totpSeed: credentials.totpSeed?.trim() || undefined,
-              extraFields: credentials.extraFields?.length
-                ? credentials.extraFields
-                : undefined,
+              extraFields: credentials.extraFields?.length ? credentials.extraFields : undefined,
               // Persist the detected identifier label so reconnects show it too.
               usernameLabel: usernameLabel?.trim() || undefined,
             },

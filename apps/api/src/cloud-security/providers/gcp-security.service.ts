@@ -264,7 +264,8 @@ export class GCPSecurityService {
   // end with a hyphen (may also be a bare project number). Length floor is
   // deliberately loose (GCP itself enforces 6-30) — the charset whitelist is
   // what matters for URL safety.
-  private static readonly PROJECT_ID_RE = /^([a-z][a-z0-9-]{0,28}[a-z0-9]|[a-z]|\d{3,20})$/;
+  private static readonly PROJECT_ID_RE =
+    /^([a-z][a-z0-9-]{0,28}[a-z0-9]|[a-z]|\d{3,20})$/;
   // Organization/folder/resource IDs used in Resource Manager & SCC paths.
   private static readonly RESOURCE_ID_RE = /^\d{1,20}$/;
   // Service Usage API names, e.g. `compute.googleapis.com`.
@@ -1447,8 +1448,7 @@ export class GCPSecurityService {
             allFindings.push({
               id: f.name,
               title: this.formatTitle(f.category),
-              description:
-                f.description || `Security finding: ${f.category}`,
+              description: f.description || `Security finding: ${f.category}`,
               severity: this.mapSeverity(f.severity),
               resourceType: result.resource?.type ?? 'gcp-resource',
               // SCC sometimes omits the per-finding `resourceName` (notably
@@ -1525,7 +1525,9 @@ export class GCPSecurityService {
         ? this.safeProjectId(scope.id)
         : this.safeResourceId(scope.id);
     const parent =
-      scope.type === 'project' ? `projects/${safeId}` : `organizations/${safeId}`;
+      scope.type === 'project'
+        ? `projects/${safeId}`
+        : `organizations/${safeId}`;
     const url = new URL(
       `https://securitycenter.googleapis.com/v2/${parent}/sources/-/findings`,
     );
@@ -1667,7 +1669,7 @@ const FOLDER_QUERY_CONCURRENCY = 5;
  * at any moment. Preserves input order in the result array. No deps —
  * inlined here because the only call site is the GCP folder fan-out.
  */
-export async function mapWithConcurrency<T, R>(
+async function mapWithConcurrency<T, R>(
   items: T[],
   concurrency: number,
   fn: (item: T) => Promise<R>,

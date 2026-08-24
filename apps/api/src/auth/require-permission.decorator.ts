@@ -46,34 +46,3 @@ export const RequirePermission = (
  */
 export const RequirePermissions = (permissions: RequiredPermission[]) =>
   SetMetadata(PERMISSIONS_KEY, permissions);
-
-/**
- * Resource types available in the GRC permission system
- */
-export type GRCResource =
-  | 'organization'
-  | 'member'
-  | 'invitation'
-  | 'control'
-  | 'evidence'
-  | 'policy'
-  | 'risk'
-  | 'vendor'
-  | 'task'
-  | 'framework'
-  | 'audit'
-  | 'finding'
-  | 'questionnaire'
-  | 'integration'
-  | 'apiKey'
-  | 'cloud-security'
-  | 'training'
-  | 'app'
-  | 'trust'
-  | 'portal'
-  | 'secret';
-
-/**
- * Action types available for GRC resources — CRUD only
- */
-export type GRCAction = 'create' | 'read' | 'update' | 'delete';

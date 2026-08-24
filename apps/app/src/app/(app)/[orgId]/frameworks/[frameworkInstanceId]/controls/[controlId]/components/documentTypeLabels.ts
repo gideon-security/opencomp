@@ -6,7 +6,7 @@ import { EvidenceFormType } from '@db';
 
 // Typed as Record<EvidenceFormType, string> so adding a new form-type to the
 // Prisma enum without updating this map becomes a compile error.
-export const DOCUMENT_TYPE_LABELS: Record<EvidenceFormType, string> = {
+const DOCUMENT_TYPE_LABELS: Record<EvidenceFormType, string> = {
   meeting: 'Meeting',
   board_meeting: 'Board Meeting',
   it_leadership_meeting: 'IT Leadership Meeting',
@@ -22,9 +22,7 @@ export const DOCUMENT_TYPE_LABELS: Record<EvidenceFormType, string> = {
   account_types: 'Account Types',
 };
 
-export const ALL_DOCUMENT_TYPES = Object.keys(
-  DOCUMENT_TYPE_LABELS,
-) as EvidenceFormType[];
+export const ALL_DOCUMENT_TYPES = Object.keys(DOCUMENT_TYPE_LABELS) as EvidenceFormType[];
 
 export function getDocumentTypeLabel(formType: EvidenceFormType | string): string {
   return DOCUMENT_TYPE_LABELS[formType as EvidenceFormType] ?? formType;

@@ -1,8 +1,8 @@
 'use client';
 
 import { useApi } from '@/hooks/use-api';
-import { Button, Section, Stack, Text } from '@trycompai/design-system';
-import { RecentlyViewed, Undo } from '@trycompai/design-system/icons';
+import { Section, Stack, Text } from '@trycompai/design-system';
+import { RecentlyViewed } from '@trycompai/design-system/icons';
 import {
   Dialog,
   DialogContent,

@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class AssistantChatMessageDto {
+class AssistantChatMessageDto {
   @ApiProperty({ example: 'msg_abc123' })
   @IsString()
   id!: string;

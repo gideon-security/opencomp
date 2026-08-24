@@ -53,13 +53,13 @@ export type ReviewWithExportIncludes = Prisma.IsmsManagementReviewGetPayload<{
   include: { inputs: true; actions: true };
 }>;
 
-export const REVIEW_STATUS_LABELS: Record<string, string> = {
+const REVIEW_STATUS_LABELS: Record<string, string> = {
   planned: 'Planned',
   in_progress: 'In progress',
   complete: 'Complete',
 };
 
-export const REVIEW_ACTION_STATUS_LABELS: Record<string, string> = {
+const REVIEW_ACTION_STATUS_LABELS: Record<string, string> = {
   open: 'Open',
   in_progress: 'In progress',
   closed: 'Closed',
