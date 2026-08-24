@@ -1,4 +1,5 @@
 import { logger, metadata, queue, schemaTask } from '@gideon-defender/trigger-local';
+import { runOrDeferOnboardingWork } from '../../lib/onboarding-deferred';
 import { z } from 'zod';
 import { processPolicyUpdate } from './update-policies-helpers';
 
@@ -33,16 +34,22 @@ export const updatePolicy = schemaTask({
     memberId: z.string().optional(),
   }),
   run: async (params) => {
-    try {
-      logger.info(`Starting policy update for policy ${params.policyId}`);
+    return runOrDeferOnboardingWork({
+      organizationId: params.organizationId,
+      taskId: 'update-policy',
+      dedupeKey: `policy-update:${params.policyId}`,
+      payload: params,
+      run: async () => {
+        logger.info(`Starting policy update for policy ${params.policyId}`);
 
-      // Update parent metadata to mark this policy as processing
-      // Use individual metadata keys since we can't read the parent object
-      if (metadata.parent) {
-        metadata.parent.set(`policy_${params.policyId}_status`, 'processing');
-      }
+        // Update parent metadata to mark this policy as processing
+        // Use individual metadata keys since we can't read the parent object
+        if (metadata.parent) {
+          metadata.parent.set(`policy_${params.policyId}_status`, 'processing');
+        }
 
-      const result = await processPolicyUpdate(params);
+        const result = await processPolicyUpdate(params);
+
 
       // Update parent metadata to track progress
       if (metadata.parent) {
@@ -56,15 +63,9 @@ export const updatePolicy = schemaTask({
         metadata.parent.increment('policiesRemaining', -1);
       }
 
-      logger.info(`Successfully updated policy ${params.policyId}`);
-      return result;
-    } catch (error) {
-      logger.error(`Error updating policy ${params.policyId}:`, {
-        error: error instanceof Error ? error.message : String(error),
-        policyId: params.policyId,
-        organizationId: params.organizationId,
-      });
-      throw error;
-    }
+        logger.info(`Successfully updated policy ${params.policyId}`);
+        return result;
+      },
+    });
   },
 });

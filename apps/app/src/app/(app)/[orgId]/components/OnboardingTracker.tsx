@@ -121,6 +121,20 @@ export const OnboardingTracker = ({ onboarding }: { onboarding: Onboarding }) =>
     }
   }, [run?.status, run?.metadata, isMinimized]);
 
+  // Items deferred by transient LLM failures (quota/network) keep their
+  // "remaining" counters above zero after the run completes; they finish via
+  // the onboarding-deferred-sweeper in the background.
+  const deferredCount = useMemo(() => {
+    if (run?.status !== 'COMPLETED') return 0;
+    const meta = run?.metadata as Record<string, unknown> | undefined;
+    if (!meta) return 0;
+    const remaining =
+      ((meta.policiesRemaining as number) || 0) +
+      ((meta.risksRemaining as number) || 0) +
+      ((meta.vendorsRemaining as number) || 0);
+    return Math.max(0, remaining);
+  }, [run?.status, run?.metadata]);
+
   // Extract step completion from metadata (real-time updates)
   const stepStatus = useMemo(() => {
     if (!run?.metadata) {
@@ -724,6 +738,15 @@ export const OnboardingTracker = ({ onboarding }: { onboarding: Onboarding }) =>
                 </p>
               </div>
             </div>
+
+            {deferredCount > 0 && (
+              <div className="flex items-center gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2">
+                <Clock3 className="text-warning h-4 w-4 shrink-0" />
+                <span className="text-sm text-warning">
+                  {t('tracker.backgroundContinuing', { count: deferredCount })}
+                </span>
+              </div>
+            )}
 
             {/* Show completed steps */}
             <div className="flex flex-col gap-2.5 shrink-0">

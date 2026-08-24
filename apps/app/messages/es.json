@@ -140,7 +140,8 @@
       "statusLabel": "Estado: {status}",
       "ariaExpand": "Expandir",
       "ariaClose": "Cerrar",
-      "ariaMinimize": "Minimizar"
+      "ariaMinimize": "Minimizar",
+      "backgroundContinuing": "{count, plural, =1 {# elemento se sigue completando en segundo plano} other {# elementos se siguen completando en segundo plano}}"
     }
   },
   "overview": {
