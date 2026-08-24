@@ -1,6 +1,7 @@
 import { isOrgParticipant } from '@/lib/org-participation-rule';
 import { VendorStatus, db } from '@db/server';
 import { logger, metadata, queue, tags, task, tasks } from '@gideon-defender/trigger-local';
+import { runOrDeferOnboardingWork } from '../../lib/onboarding-deferred';
 import axios from 'axios';
 import {
   createVendorRiskComment,
@@ -30,6 +31,14 @@ export const generateVendorMitigation = task({
     const { organizationId, vendorId, authorId, policies } = payload;
     await tags.add([`org:${organizationId}`]);
     logger.info(`Generating vendor mitigation for vendor ${vendorId} in org ${organizationId}`);
+    // Transient Gemini failures (daily quota/network) defer instead of failing —
+    // the sweeper re-runs this work when the quota window clears.
+    return runOrDeferOnboardingWork({
+      organizationId,
+      taskId: 'generate-vendor-mitigation',
+      dedupeKey: `vendor-mitigation:${vendorId}`,
+      payload,
+      run: async () => {
 
     const vendor = await db.vendor.findFirst({ where: { id: vendorId, organizationId } });
 
@@ -99,6 +108,8 @@ export const generateVendorMitigation = task({
     } catch (e) {
       logger.error('Failed to revalidate vendor paths after mitigation', { e });
     }
+        },
+      });
   },
 });
 

@@ -129,4 +129,5 @@ model Organization {
   offboardingAccessRevocations     OffboardingAccessRevocation[]
 
   @@index([slug])
+  onboardingDeferredWork OnboardingDeferredWork[]
 }

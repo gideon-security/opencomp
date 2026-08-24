@@ -40,6 +40,7 @@ import './tasks/onboarding/generate-risk-mitigation';
 import './tasks/onboarding/generate-vendor-mitigation';
 import './tasks/onboarding/initialize-organization';
 import './tasks/onboarding/link-risks-and-vendors-to-work';
+import './tasks/onboarding/onboarding-deferred-sweeper';
 import './tasks/onboarding/onboard-organization-helpers';
 import './tasks/onboarding/onboard-organization';
 import './tasks/onboarding/process-policy-template';

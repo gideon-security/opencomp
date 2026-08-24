@@ -1,0 +1,32 @@
+/// Durable queue for onboarding work that failed on transient LLM-provider
+/// limits (Gemini daily quota, network/TLS resets). Instead of failing the
+/// onboarding run — which forced users to manually press "Retry" — affected
+/// units of work are parked here and re-executed by the
+/// `onboarding-deferred-sweeper` schedule once the quota window clears.
+///
+/// Semantics:
+/// - One row per logical unit (dedupeKey = kind + stable id), upserted on
+///   every transient failure.
+/// - `nextAttemptAt` is set to the next Gemini quota reset for daily-cap
+///   errors, or an exponential delay for network-type failures.
+/// - The sweeper re-triggers the original task by id and deletes the row;
+///   if the re-run fails transiently again, the generator simply defers a
+///   fresh row.
+model OnboardingDeferredWork {
+  id             String   @id @default(dbgenerated("generate_prefixed_cuid('odw'::text)"))
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  /// Task identifier to re-trigger (e.g. 'generate-risk-mitigation').
+  taskId         String
+  /// Stable identity of the unit of work (kind + entity id/name).
+  dedupeKey      String   @unique
+  payload        Json
+  attempts       Int      @default(0)
+  nextAttemptAt  DateTime @default(now())
+  lastError      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([nextAttemptAt])
+  @@index([organizationId])
+}

@@ -1,5 +1,6 @@
 import { Prisma, RiskStatus, db } from '@db/server';
 import { logger, metadata, queue, tags, task, tasks } from '@gideon-defender/trigger-local';
+import { runOrDeferOnboardingWork } from '../../lib/onboarding-deferred';
 import axios from 'axios';
 import {
   createRiskMitigationComment,
@@ -68,6 +69,14 @@ export const generateRiskMitigation = task({
     const { organizationId, riskId, authorId, policies } = payload;
     await tags.add([`org:${organizationId}`]);
     logger.info(`Generating risk mitigation for risk ${riskId} in org ${organizationId}`);
+    // Transient Gemini failures (daily quota/network) defer instead of failing —
+    // the sweeper re-runs this work when the quota window clears.
+    return runOrDeferOnboardingWork({
+      organizationId,
+      taskId: 'generate-risk-mitigation',
+      dedupeKey: `risk-mitigation:${riskId}`,
+      payload,
+      run: async () => {
 
     const risk = await db.risk.findFirst({ where: { id: riskId, organizationId } });
 
@@ -122,6 +131,8 @@ export const generateRiskMitigation = task({
     } catch (e) {
       logger.error('Failed to revalidate risk paths after mitigation', { e });
     }
+        },
+      });
   },
 });
 
