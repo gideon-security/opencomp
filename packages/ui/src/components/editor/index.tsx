@@ -4,7 +4,7 @@ import type { Extension } from '@tiptap/core';
 import type { JSONContent, Editor as TipTapEditorType } from '@tiptap/react';
 import { EditorContent, useEditor } from '@tiptap/react';
 import { useEffect, useState } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
+import { useDebouncedCallback } from '../../hooks/use-debounced-callback';
 import { Separator } from '../separator';
 import { defaultExtensions } from './extensions';
 import { LinkSelector } from './selectors/link-selector';

@@ -5,7 +5,6 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import { useMemo, useEffect, useRef, useCallback, useState } from 'react';
 import { createMentionExtension, type MentionUser } from '@gideon-defender/ui/editor';
 import { FileAttachment } from '@gideon-defender/ui/editor/extensions/file-attachment';
-import { useDebouncedCallback } from 'use-debounce';
 import { defaultExtensions } from '@gideon-defender/ui/editor/extensions';
 import { toast } from 'sonner';
 import { Attachment } from '@trycompai/design-system/icons';
@@ -122,9 +121,6 @@ export function TaskRichDescriptionField({
       .slice(0, 10);
   };
 
-  // Debounced version for when user is typing (to avoid too many filters)
-  const debouncedSearchMembers = useDebouncedCallback(searchMembers, 250);
-
   // Create mention extension with member search
   const mentionExtension = useMemo(
     () =>
@@ -132,11 +128,7 @@ export function TaskRichDescriptionField({
         suggestion: {
           char: '@',
           items: ({ query }) => {
-            // Use immediate search for empty query, debounced for typed queries
-            if (!query || query.trim() === '') {
-              return searchMembers(query) || [];
-            }
-            return debouncedSearchMembers(query) || [];
+            return searchMembers(query) || [];
           },
           onSelect: () => {
             // Notify parent that a mention is being selected
@@ -144,7 +136,7 @@ export function TaskRichDescriptionField({
           },
         },
       }),
-    [members, searchMembers, debouncedSearchMembers, onMentionSelect],
+    [members, searchMembers, onMentionSelect],
   );
 
   const resolveDownloadUrl = useCallback(
