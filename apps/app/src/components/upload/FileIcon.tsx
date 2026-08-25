@@ -1,18 +1,19 @@
 'use client';
 
 import { File, FileImage, FileText } from 'lucide-react';
+import { getFileKind } from '@gideon-defender/utils/file';
 
 interface FileIconProps {
   fileName: string;
 }
 
 export function FileIcon({ fileName }: FileIconProps) {
-  const extension = fileName.split('.').pop()?.toLowerCase();
+  const kind = getFileKind(fileName);
 
-  if (extension && ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+  if (kind === 'image') {
     return <FileImage className="text-muted-foreground h-12 w-12" />;
   }
-  if (extension && ['pdf', 'doc', 'docx', 'txt'].includes(extension)) {
+  if (kind === 'pdf' || kind === 'document') {
     return <FileText className="text-muted-foreground h-12 w-12" />;
   }
   return <File className="text-muted-foreground h-12 w-12" />;

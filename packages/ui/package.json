@@ -500,6 +500,14 @@
       "types": "./dist/hooks/use-controllable-state.d.ts",
       "import": "./dist/hooks/use-controllable-state.js"
     },
+    "./use-debounce": {
+      "types": "./dist/hooks/use-debounce.d.ts",
+      "import": "./dist/hooks/use-debounce.js"
+    },
+    "./use-debounced-callback": {
+      "types": "./dist/hooks/use-debounced-callback.d.ts",
+      "import": "./dist/hooks/use-debounced-callback.js"
+    },
     "./use-enter-submit": {
       "types": "./dist/hooks/use-enter-submit.d.ts",
       "import": "./dist/hooks/use-enter-submit.js"

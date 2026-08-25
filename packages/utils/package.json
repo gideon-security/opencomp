@@ -9,6 +9,7 @@
     ".": "./src/index.ts",
     "./devices": "./src/devices.ts",
     "./envs": "./src/envs.ts",
+    "./file": "./src/file.ts",
     "./format": "./src/format.ts"
   },
   "main": "src/index.ts",

@@ -10,6 +10,7 @@ export interface ApiResponse<T = unknown> {
 interface CallOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: unknown;
+  headers?: Record<string, string>;
 }
 
 /**
@@ -21,7 +22,7 @@ async function call<T = unknown>(
   endpoint: string,
   options: CallOptions = {},
 ): Promise<ApiResponse<T>> {
-  const { method = 'GET', body } = options;
+  const { method = 'GET', body, headers: customHeaders } = options;
   const baseUrl =
     env.BACKEND_API_URL || env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
 
@@ -34,6 +35,10 @@ async function call<T = unknown>(
   const cookieHeader = headerStore.get('cookie');
   if (cookieHeader) {
     requestHeaders['Cookie'] = cookieHeader;
+  }
+
+  if (customHeaders) {
+    Object.assign(requestHeaders, customHeaders);
   }
 
   try {
@@ -58,7 +63,9 @@ async function call<T = unknown>(
 
     return {
       data: response.ok ? data : undefined,
-      error: !response.ok ? data?.message || `HTTP ${response.status}` : undefined,
+      error: !response.ok
+        ? data?.message || data?.error || `HTTP ${response.status}`
+        : undefined,
       status: response.status,
     };
   } catch (error) {
@@ -70,18 +77,18 @@ async function call<T = unknown>(
 }
 
 export const serverApi = {
-  get: <T = unknown>(endpoint: string) =>
-    call<T>(endpoint, { method: 'GET' }),
+  get: <T = unknown>(endpoint: string, headers?: Record<string, string>) =>
+    call<T>(endpoint, { method: 'GET', headers }),
 
-  post: <T = unknown>(endpoint: string, body?: unknown) =>
-    call<T>(endpoint, { method: 'POST', body }),
+  post: <T = unknown>(endpoint: string, body?: unknown, headers?: Record<string, string>) =>
+    call<T>(endpoint, { method: 'POST', body, headers }),
 
-  put: <T = unknown>(endpoint: string, body?: unknown) =>
-    call<T>(endpoint, { method: 'PUT', body }),
+  put: <T = unknown>(endpoint: string, body?: unknown, headers?: Record<string, string>) =>
+    call<T>(endpoint, { method: 'PUT', body, headers }),
 
-  patch: <T = unknown>(endpoint: string, body?: unknown) =>
-    call<T>(endpoint, { method: 'PATCH', body }),
+  patch: <T = unknown>(endpoint: string, body?: unknown, headers?: Record<string, string>) =>
+    call<T>(endpoint, { method: 'PATCH', body, headers }),
 
-  delete: <T = unknown>(endpoint: string, body?: unknown) =>
-    call<T>(endpoint, { method: 'DELETE', body }),
+  delete: <T = unknown>(endpoint: string, headers?: Record<string, string>) =>
+    call<T>(endpoint, { method: 'DELETE', headers }),
 };
