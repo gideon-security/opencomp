@@ -1,11 +1,8 @@
 import { env } from '@/env.mjs';
 import { headers } from 'next/headers';
+import { buildApiResponse, handleNetworkError, parseResponseBody, type ApiResponse } from './api-base';
 
-export interface ApiResponse<T = unknown> {
-  data?: T;
-  error?: string;
-  status: number;
-}
+export type { ApiResponse };
 
 interface CallOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -49,30 +46,10 @@ async function call<T = unknown>(
       cache: 'no-store',
     });
 
-    let data = null;
-    if (response.status !== 204) {
-      const text = await response.text();
-      if (text) {
-        try {
-          data = JSON.parse(text);
-        } catch {
-          data = { message: text };
-        }
-      }
-    }
-
-    return {
-      data: response.ok ? data : undefined,
-      error: !response.ok
-        ? data?.message || data?.error || `HTTP ${response.status}`
-        : undefined,
-      status: response.status,
-    };
+    const data = await parseResponseBody(response);
+    return buildApiResponse<T>(data, response);
   } catch (error) {
-    return {
-      error: error instanceof Error ? error.message : 'Network error',
-      status: 0,
-    };
+    return handleNetworkError(error);
   }
 }
 

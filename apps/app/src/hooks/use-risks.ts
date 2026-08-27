@@ -1,8 +1,9 @@
 'use client';
 
-import { useApi } from '@/hooks/use-api';
 import { useApiSWR, UseApiSWROptions } from '@/hooks/use-api-swr';
 import { ApiResponse } from '@/lib/api-client';
+import { createEntityHooks, createLinkageActions, DEFAULT_POLLING_INTERVAL } from './create-entity-hooks';
+import { useApi } from '@/hooks/use-api';
 import type {
   Impact,
   Likelihood,
@@ -20,8 +21,10 @@ export interface RiskLinkedTask {
   controls: { id: string; name: string }[];
 }
 
-// Default polling interval for real-time updates (5 seconds)
-const DEFAULT_POLLING_INTERVAL = 5000;
+const riskHooks = createEntityHooks<Risk, RisksResponse, CreateRiskData, UpdateRiskData>({
+  basePath: '/v1/risks',
+});
+const riskLinkage = createLinkageActions('risks');
 
 export interface RiskAssignee {
   id: string;
@@ -181,30 +184,12 @@ export function useRisks(options: UseRisksOptions = {}) {
  * const { data, isLoading, mutate } = useRisk(riskId);
  */
 export function useRisk(riskId: string | null, options: UseRiskOptions = {}) {
-  const { initialData, ...restOptions } = options;
-
-  const swrResult = useApiSWR<RiskResponse>(riskId ? `/v1/risks/${riskId}` : null, {
-    ...restOptions,
-    // Enable polling for real-time updates (when local-trigger tasks complete)
-    refreshInterval: restOptions.refreshInterval ?? DEFAULT_POLLING_INTERVAL,
-    // Continue polling even when window is not focused
-    refreshWhenHidden: false,
-    // Use initial data as fallback for instant render
-    ...(initialData && {
-      fallbackData: {
-        data: initialData,
-        status: 200,
-      } as ApiResponse<RiskResponse>,
-    }),
-  });
-
-  // Extract risk data from response
-  const risk = swrResult.data?.data ?? null;
-
-  return {
-    ...swrResult,
-    risk,
+  const result = riskHooks.useOne(riskId, options as never) as unknown as ReturnType<typeof riskHooks.useOne> & {
+    risk?: RiskResponse | null;
+    entity: RiskResponse | null;
+    data: RiskResponse | null;
   };
+  return { ...result, risk: (result as { entity: unknown }).entity ?? (result as { data: unknown }).data ?? null } as unknown as ReturnType<typeof riskHooks.useOne> & { risk: RiskResponse | null };
 }
 
 /**
@@ -212,167 +197,20 @@ export function useRisk(riskId: string | null, options: UseRiskOptions = {}) {
  * Use alongside useRisks/useRisk and call mutate() after mutations
  */
 export function useRiskActions() {
-  const api = useApi();
+  const { create, update, remove } = riskHooks.useActions();
 
-  const createRisk = useCallback(
-    async (data: CreateRiskData) => {
-      const response = await api.post<Risk>('/v1/risks', data);
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      return response.data!;
-    },
-    [api],
-  );
+  const createRisk = create as (data: CreateRiskData) => Promise<Risk>;
+  const updateRisk = update as (id: string, data: UpdateRiskData) => Promise<Risk>;
+  const deleteRisk = remove as (id: string) => Promise<{ success: boolean; status: number }>;
 
-  const updateRisk = useCallback(
-    async (riskId: string, data: UpdateRiskData) => {
-      const response = await api.patch<Risk>(`/v1/risks/${riskId}`, data);
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      return response.data!;
-    },
-    [api],
-  );
-
-  const deleteRisk = useCallback(
-    async (riskId: string) => {
-      const response = await api.delete(`/v1/risks/${riskId}`);
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      return { success: true, status: response.status };
-    },
-    [api],
-  );
-
-  const regenerateMitigation = useCallback(
-    async (riskId: string): Promise<{ runId: string; publicAccessToken: string }> => {
-      const response = await fetch(`/api/risks/${riskId}/regenerate-mitigation`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || 'Failed to trigger mitigation regeneration');
-      }
-      return response.json();
-    },
-    [],
-  );
-
-  /**
-   * @deprecated Prefer `suggestRiskLinks` which returns AI suggestions for the
-   * user to review before applying. Kept for any direct callers.
-   */
-  const autoLinkRisk = useCallback(
-    async (riskId: string): Promise<{ runId: string; publicAccessToken: string }> => {
-      const response = await fetch(`/api/risks/${riskId}/auto-link`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || 'Failed to trigger auto-link');
-      }
-      return response.json();
-    },
-    [],
-  );
-
-  /**
-   * @deprecated The new flow runs `suggestRiskLinks` then `applyRiskLinks`
-   * with `replace: true`. This direct relink endpoint is kept for backwards
-   * compatibility but no longer used by the treatment-plan UI.
-   */
-  const relinkRisk = useCallback(
-    async (riskId: string): Promise<{ runId: string; publicAccessToken: string }> => {
-      const response = await fetch(`/api/risks/${riskId}/relink`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || 'Failed to trigger relink');
-      }
-      return response.json();
-    },
-    [],
-  );
-
-  /**
-   * Triggers an AI scan that returns suggestions WITHOUT persisting any link.
-   * The realtime run output contains `suggestions: { tasks, controls }` for the
-   * UI to render in a review-before-apply card.
-   */
-  const suggestRiskLinks = useCallback(
-    async (riskId: string): Promise<{ runId: string; publicAccessToken: string }> => {
-      const response = await fetch(`/api/risks/${riskId}/auto-link`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || 'Failed to trigger suggest');
-      }
-      return response.json();
-    },
-    [],
-  );
-
-  /**
-   * Persists the user-confirmed task selection. `replace: true` is used by the
-   * re-assess flow (sync semantics — connect ONLY these tasks). `replace: false`
-   * is the additive fresh-suggest flow.
-   */
-  const applyRiskLinks = useCallback(
-    async (riskId: string, params: { taskIds: string[]; replace: boolean }): Promise<void> => {
-      const response = await fetch(`/api/risks/${riskId}/auto-link/apply`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(params),
-      });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || 'Failed to apply suggestions');
-      }
-    },
-    [],
-  );
-
-  /**
-   * Returns the active auto-link run for a risk (and a fresh access token) so
-   * the UI can resume an in-flight scan after a page reload, or `null` when
-   * no run is in flight. The runId is persisted on the Risk row by the auto-
-   * link route; this hook just fetches and re-mints the token.
-   */
-  const fetchActiveRiskAutoLinkRun = useCallback(
-    async (riskId: string): Promise<{ runId: string; publicAccessToken: string } | null> => {
-      const response = await fetch(`/api/risks/${riskId}/auto-link/active`, {
-        credentials: 'include',
-      });
-      if (!response.ok) {
-        return null;
-      }
-      const body = (await response.json()) as
-        { runId: string; publicAccessToken: string } | { runId: null };
-      if (!body.runId) return null;
-      return { runId: body.runId, publicAccessToken: body.publicAccessToken };
-    },
-    [],
-  );
-
-  /** Clears the persisted runId — used when the user discards an AI run. */
-  const discardRiskAutoLinkRun = useCallback(async (riskId: string): Promise<void> => {
-    await fetch(`/api/risks/${riskId}/auto-link/active`, {
-      method: 'DELETE',
-      credentials: 'include',
-    }).catch(() => {
-      /* best-effort; the next /auto-link call replaces the runId anyway */
-    });
-  }, []);
+  // Delegated linkage actions — previously 8 duplicated fetch blocks
+  const regenerateMitigation = riskLinkage.regenerateMitigation;
+  const autoLinkRisk = riskLinkage.autoLink;
+  const relinkRisk = riskLinkage.relink;
+  const suggestRiskLinks = riskLinkage.suggestLinks;
+  const applyRiskLinks = riskLinkage.applyLinks;
+  const fetchActiveRiskAutoLinkRun = riskLinkage.fetchActiveRun;
+  const discardRiskAutoLinkRun = riskLinkage.discardRun;
 
   return {
     createRisk,

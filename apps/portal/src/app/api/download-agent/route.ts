@@ -82,6 +82,12 @@ const handleDownload = async (req: NextRequest, isHead: boolean) => {
 
   const target = getDownloadTarget(downloadInfo.os);
 
+  if (!s3Client) {
+    logger('Device agent download misconfigured: S3 client not configured');
+    return new NextResponse('Server configuration error', { status: 500 });
+  }
+  const s3 = s3Client;
+
   try {
     if (isHead) {
       const headCommand = new HeadObjectCommand({
@@ -89,7 +95,7 @@ const handleDownload = async (req: NextRequest, isHead: boolean) => {
         Key: target.key,
       });
 
-      const headResult = await s3Client.send(headCommand);
+      const headResult = await s3.send(headCommand);
 
       return new NextResponse(null, {
         headers: buildResponseHeaders(target, headResult.ContentLength ?? null),
@@ -101,7 +107,7 @@ const handleDownload = async (req: NextRequest, isHead: boolean) => {
       Key: target.key,
     });
 
-    const s3Response = await s3Client.send(getObjectCommand);
+    const s3Response = await s3.send(getObjectCommand);
 
     if (!s3Response.Body) {
       return new NextResponse('Installer file not found', { status: 404 });

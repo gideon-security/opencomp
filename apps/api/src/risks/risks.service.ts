@@ -5,7 +5,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { db, Prisma } from '@db';
-import { isMemberOrgParticipant } from '../utils/org-participation';
+import { validateAssigneeNotPlatformAdmin } from '../utils/assignee-validation';
+import { paginate } from '../utils/base-crud.service';
 import { CreateRiskDto } from './dto/create-risk.dto';
 import { GetRisksQueryDto } from './dto/get-risks-query.dto';
 import { UpdateRiskDto } from './dto/update-risk.dto';
@@ -31,26 +32,6 @@ interface PaginatedRisksResult {
 @Injectable()
 export class RisksService {
   private readonly logger = new Logger(RisksService.name);
-
-  private async validateAssigneeNotPlatformAdmin(
-    assigneeId: string,
-    organizationId: string,
-  ) {
-    const member = await db.member.findFirst({
-      where: { id: assigneeId, organizationId },
-      include: { user: { select: { role: true } } },
-    });
-    if (!member) {
-      throw new BadRequestException(
-        'Assignee is not a member of this organization',
-      );
-    }
-    if (!(await isMemberOrgParticipant(member.user.role, organizationId))) {
-      throw new BadRequestException(
-        'Cannot assign a platform admin as assignee',
-      );
-    }
-  }
 
   async findAllByOrganization(
     organizationId: string,
@@ -82,41 +63,34 @@ export class RisksService {
         ...(assigneeId && { assigneeId }),
       };
 
-      const [risks, totalCount] = await Promise.all([
-        db.risk.findMany({
-          where,
-          skip: (page - 1) * perPage,
-          take: perPage,
-          orderBy: { [sort]: sortDirection },
-          include: {
-            assignee: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                    image: true,
-                  },
+      const result = (await paginate({
+        model: db.risk,
+        where,
+        page,
+        perPage,
+        orderBy: { [sort]: sortDirection },
+        include: {
+          assignee: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
                 },
               },
             },
-            // Linked task statuses are needed by the table to compute the
-            // current (interpolated) severity score so the badge reflects
-            // treatment progress, not just inherent risk.
-            tasks: { select: { id: true, status: true } },
           },
-        }),
-        db.risk.count({ where }),
-      ]);
-
-      const pageCount = Math.ceil(totalCount / perPage);
+          tasks: { select: { id: true, status: true } },
+        },
+      })) as unknown as PaginatedRisksResult;
 
       this.logger.log(
-        `Retrieved ${risks.length} risks (page ${page}/${pageCount}) for organization ${organizationId}`,
+        `Retrieved ${result.data.length} risks (page ${result.page}/${result.pageCount}) for organization ${organizationId}`,
       );
 
-      return { data: risks, totalCount, page, pageCount };
+      return result;
     } catch (error) {
       this.logger.error(
         `Failed to retrieve risks for organization ${organizationId}:`,
@@ -170,10 +144,7 @@ export class RisksService {
   async create(organizationId: string, createRiskDto: CreateRiskDto) {
     try {
       if (createRiskDto.assigneeId) {
-        await this.validateAssigneeNotPlatformAdmin(
-          createRiskDto.assigneeId,
-          organizationId,
-        );
+        await validateAssigneeNotPlatformAdmin(createRiskDto.assigneeId, organizationId);
       }
       const risk = await db.risk.create({
         data: {
@@ -205,10 +176,7 @@ export class RisksService {
       const existing = await this.findById(id, organizationId);
 
       if (updateRiskDto.assigneeId) {
-        await this.validateAssigneeNotPlatformAdmin(
-          updateRiskDto.assigneeId,
-          organizationId,
-        );
+        await validateAssigneeNotPlatformAdmin(updateRiskDto.assigneeId, organizationId);
       }
 
       // Keep per-strategy descriptions independent in the strategyDescriptions

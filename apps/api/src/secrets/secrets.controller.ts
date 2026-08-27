@@ -22,6 +22,7 @@ import { RequirePermission } from '../auth/require-permission.decorator';
 import type { AuthContext as AuthContextType } from '../auth/types';
 import { SecretsService } from './secrets.service';
 
+import { authEnvelope } from '@/utils/auth-response';
 @ApiTags('Secrets')
 @Controller({ path: 'secrets', version: '1' })
 @UseGuards(HybridAuthGuard, PermissionGuard)
@@ -41,14 +42,7 @@ export class SecretsController {
     return {
       data: secrets,
       count: secrets.length,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -65,14 +59,7 @@ export class SecretsController {
 
     return {
       secret,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -106,14 +93,7 @@ export class SecretsController {
 
     return {
       secret,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -141,14 +121,7 @@ export class SecretsController {
 
     return {
       secret,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -165,14 +138,7 @@ export class SecretsController {
 
     return {
       ...result,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 }

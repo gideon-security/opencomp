@@ -35,6 +35,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: true, data: results });
   }
 
+  const s3 = s3Client;
   const withSignedUrls = await Promise.all(
     results.map(async (result) => {
       const signedAttachments = await Promise.all(
@@ -44,7 +45,7 @@ export async function GET(req: NextRequest) {
               Bucket: APP_AWS_ORG_ASSETS_BUCKET,
               Key: key,
             });
-            return await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+            return await getSignedUrl(s3, command, { expiresIn: 3600 });
           } catch {
             return key;
           }

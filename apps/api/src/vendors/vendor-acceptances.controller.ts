@@ -14,6 +14,7 @@ import { RequirePermission } from '../auth/require-permission.decorator';
 import type { AuthContext as AuthContextType } from '../auth/types';
 import { CreateRiskAcceptanceDto } from '../risks/dto/create-risk-acceptance.dto';
 import { RiskAcceptancesService } from '../risks/risk-acceptances.service';
+import { authEnvelope } from '@/utils/auth-response';
 import { VENDOR_OPERATIONS } from './schemas/vendor-operations';
 import { VENDOR_PARAMS } from './schemas/vendor-params';
 import { VENDOR_BODIES } from './schemas/vendor-bodies';
@@ -58,8 +59,7 @@ export class VendorAcceptancesController {
 
     return {
       data: acceptances,
-      authType: authContext.authType,
-      ...this.authenticatedUser(authContext),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -88,19 +88,7 @@ export class VendorAcceptancesController {
 
     return {
       ...acceptance,
-      authType: authContext.authType,
-      ...this.authenticatedUser(authContext),
+      ...authEnvelope(authContext),
     };
-  }
-
-  private authenticatedUser(authContext: AuthContextType) {
-    return authContext.userId && authContext.userEmail
-      ? {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }
-      : {};
   }
 }

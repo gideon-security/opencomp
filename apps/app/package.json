@@ -30,6 +30,7 @@
     "@gideon-defender/integration-platform": "*",
     "@gideon-defender/kv": "*",
     "@gideon-defender/trigger-local": "*",
+    "@gideon-defender/utils": "*",
     "@gideon-defender/trigger-react": "*",
     "@hookform/resolvers": "^5.1.1",
     "@monaco-editor/react": "^4.7.0",

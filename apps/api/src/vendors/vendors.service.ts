@@ -12,7 +12,7 @@ import { Prisma } from '@db';
 import type { TriggerVendorRiskAssessmentVendorDto } from './dto/trigger-vendor-risk-assessment.dto';
 import { resolveTaskCreatorAndAssignee } from '../trigger/vendor/vendor-risk-assessment/assignee';
 import { resolveStrategyDescriptionUpdate } from '../risks/strategy-descriptions';
-import { isMemberOrgParticipant } from '../utils/org-participation';
+import { validateAssigneeNotPlatformAdmin } from '../utils/assignee-validation';
 
 const normalizeWebsite = (
   website: string | null | undefined,
@@ -218,26 +218,6 @@ export class VendorsService {
     }
   }
 
-  private async validateAssigneeNotPlatformAdmin(
-    assigneeId: string,
-    organizationId: string,
-  ) {
-    const member = await db.member.findFirst({
-      where: { id: assigneeId, organizationId },
-      include: { user: { select: { role: true } } },
-    });
-    if (!member) {
-      throw new BadRequestException(
-        'Assignee is not a member of this organization',
-      );
-    }
-    if (!(await isMemberOrgParticipant(member.user.role, organizationId))) {
-      throw new BadRequestException(
-        'Cannot assign a platform admin as assignee',
-      );
-    }
-  }
-
   async create(
     organizationId: string,
     createVendorDto: CreateVendorDto,
@@ -245,10 +225,7 @@ export class VendorsService {
   ) {
     try {
       if (createVendorDto.assigneeId) {
-        await this.validateAssigneeNotPlatformAdmin(
-          createVendorDto.assigneeId,
-          organizationId,
-        );
+        await validateAssigneeNotPlatformAdmin(createVendorDto.assigneeId, organizationId);
       }
       const vendor = await db.vendor.create({
         data: {
@@ -640,10 +617,7 @@ export class VendorsService {
         updateVendorDto.assigneeId &&
         updateVendorDto.assigneeId !== existing.assigneeId
       ) {
-        await this.validateAssigneeNotPlatformAdmin(
-          updateVendorDto.assigneeId,
-          organizationId,
-        );
+        await validateAssigneeNotPlatformAdmin(updateVendorDto.assigneeId, organizationId);
       }
 
       // Keep per-strategy descriptions independent across treatment

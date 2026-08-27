@@ -1,16 +1,25 @@
 {
   "name": "@gideon-defender/utils",
   "version": "1.0.0",
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1013.0",
+    "@aws-sdk/s3-request-presigner": "3.1013.0",
+    "axios": "^1.16.0"
+  },
   "devDependencies": {
+    "@types/node": "^24.0.3",
     "typescript": "^5.8.3",
     "vitest": "^3.2.7"
   },
   "exports": {
     ".": "./src/index.ts",
     "./devices": "./src/devices.ts",
+    "./encryption": "./src/encryption.ts",
     "./envs": "./src/envs.ts",
     "./file": "./src/file.ts",
-    "./format": "./src/format.ts"
+    "./fleet": "./src/fleet.ts",
+    "./format": "./src/format.ts",
+    "./s3": "./src/s3.ts"
   },
   "main": "src/index.ts",
   "private": true,

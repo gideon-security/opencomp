@@ -42,6 +42,7 @@ import {
 import { TasksService } from './tasks.service';
 import { DEPARTMENT_MAX_LENGTH } from '../policies/dto/create-policy.dto';
 
+import { authEnvelope } from '@/utils/auth-response';
 /**
  * Normalises a free-form department value from a request body: trims whitespace,
  * enforces the shared max length, and rejects empty strings (use `null` to clear).
@@ -742,13 +743,7 @@ export class TasksController {
     return {
       data,
       count: uniquePolicyIds.size,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 

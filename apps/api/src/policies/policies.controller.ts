@@ -85,6 +85,7 @@ import {
 } from './schemas/version-responses';
 import { PolicyResponseDto } from './dto/policy-responses.dto';
 
+import { authEnvelope } from '@/utils/auth-response';
 function parsePolicyIdsParam(
   raw: string | string[] | undefined,
 ): string[] | undefined {
@@ -152,13 +153,7 @@ export class PoliciesController {
 
     return {
       data: policies,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -183,13 +178,7 @@ export class PoliciesController {
 
     return {
       ...data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -224,13 +213,7 @@ export class PoliciesController {
 
     return {
       ...result,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -314,13 +297,7 @@ export class PoliciesController {
     return {
       mappedControls: transform(policy?.controls ?? []),
       allControls: transform(allControls),
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -381,13 +358,7 @@ export class PoliciesController {
     return {
       data,
       count: uniqueTaskIds.size,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -469,13 +440,7 @@ export class PoliciesController {
 
     return {
       data: { runId: handle.id, publicAccessToken },
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -519,13 +484,7 @@ export class PoliciesController {
     if (!pdfUrl) {
       return {
         url: null,
-        authType: authContext.authType,
-        ...(authContext.userId && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+        ...authEnvelope(authContext),
       };
     }
 
@@ -553,13 +512,7 @@ export class PoliciesController {
 
     return {
       url,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -736,7 +689,7 @@ export class PoliciesController {
       }
     }
 
-    return { data: { s3Key }, authType: authContext.authType };
+    return { data: { s3Key }, ...authEnvelope(authContext) };
   }
 
   @Post(':id/pdf/upload-url')
@@ -764,13 +717,7 @@ export class PoliciesController {
 
     return {
       ...data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -798,13 +745,7 @@ export class PoliciesController {
 
     return {
       ...data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -903,13 +844,7 @@ export class PoliciesController {
 
     return {
       success: true,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -985,13 +920,7 @@ export class PoliciesController {
 
     return {
       success: true,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1030,13 +959,7 @@ export class PoliciesController {
 
     return {
       success: true,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1057,13 +980,7 @@ export class PoliciesController {
 
     return {
       ...policy,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1086,13 +1003,7 @@ export class PoliciesController {
 
     return {
       ...policy,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1119,13 +1030,7 @@ export class PoliciesController {
 
     return {
       ...updatedPolicy,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1145,13 +1050,7 @@ export class PoliciesController {
 
     return {
       ...result,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1172,13 +1071,7 @@ export class PoliciesController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1205,13 +1098,7 @@ export class PoliciesController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1240,13 +1127,7 @@ export class PoliciesController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1278,13 +1159,7 @@ export class PoliciesController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1311,13 +1186,7 @@ export class PoliciesController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1346,13 +1215,7 @@ export class PoliciesController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1379,13 +1242,7 @@ export class PoliciesController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1416,13 +1273,7 @@ export class PoliciesController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1448,13 +1299,7 @@ export class PoliciesController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -1476,13 +1321,7 @@ export class PoliciesController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 

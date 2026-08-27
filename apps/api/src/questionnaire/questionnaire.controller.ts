@@ -53,6 +53,7 @@ import {
 } from '@/vector-store/lib';
 import { generateAnswerFromContent } from '@/trigger/questionnaire/answer-question-helpers';
 import { TrustAccessService } from '../trust-portal/trust-access.service';
+import { authEnvelope } from '@/utils/auth-response';
 import {
   createSafeSSESender,
   setupSSEHeaders,
@@ -86,14 +87,7 @@ export class QuestionnaireController {
     return {
       data,
       count: data.length,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -115,14 +109,7 @@ export class QuestionnaireController {
     }
     return {
       ...questionnaire,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 

@@ -21,6 +21,7 @@ import { PermissionGuard } from '../auth/permission.guard';
 import { RequirePermission } from '../auth/require-permission.decorator';
 import type { AuthContext as AuthContextType } from '../auth/types';
 import { hasRiskAccess } from '../utils/assignment-filter';
+import { authEnvelope } from '@/utils/auth-response';
 import { CreateRiskAcceptanceDto } from './dto/create-risk-acceptance.dto';
 import { RiskAcceptancesService } from './risk-acceptances.service';
 import { RISK_OPERATIONS } from './schemas/risk-operations';
@@ -70,8 +71,7 @@ export class RiskAcceptancesController {
 
     return {
       data: acceptances,
-      authType: authContext.authType,
-      ...this.authenticatedUser(authContext),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -104,8 +104,7 @@ export class RiskAcceptancesController {
 
     return {
       ...acceptance,
-      authType: authContext.authType,
-      ...this.authenticatedUser(authContext),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -120,16 +119,5 @@ export class RiskAcceptancesController {
     ) {
       throw new ForbiddenException('You do not have access to this risk');
     }
-  }
-
-  private authenticatedUser(authContext: AuthContextType) {
-    return authContext.userId && authContext.userEmail
-      ? {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }
-      : {};
   }
 }
