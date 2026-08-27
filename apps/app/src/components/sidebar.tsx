@@ -31,6 +31,7 @@ export async function Sidebar({
   // Generate logo URLs for all organizations
   const logoUrls: Record<string, string> = {};
   if (s3Client && APP_AWS_ORG_ASSETS_BUCKET) {
+    const s3 = s3Client;
     await Promise.all(
       organizations.map(async (org) => {
         if (org.logo) {
@@ -39,7 +40,7 @@ export async function Sidebar({
               Bucket: APP_AWS_ORG_ASSETS_BUCKET,
               Key: org.logo,
             });
-            logoUrls[org.id] = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+            logoUrls[org.id] = await getSignedUrl(s3, command, { expiresIn: 3600 });
           } catch {
             // Logo not available
           }

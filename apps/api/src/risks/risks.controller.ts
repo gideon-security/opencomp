@@ -40,6 +40,7 @@ import { CREATE_RISK_RESPONSES } from './schemas/create-risk.responses';
 import { UPDATE_RISK_RESPONSES } from './schemas/update-risk.responses';
 import { DELETE_RISK_RESPONSES } from './schemas/delete-risk.responses';
 
+import { authEnvelope } from '@/utils/auth-response';
 @ApiTags('Risks')
 @Controller({ path: 'risks', version: '1' })
 @UseGuards(HybridAuthGuard)
@@ -78,14 +79,7 @@ export class RisksController {
       totalCount: result.totalCount,
       page: result.page,
       pageCount: result.pageCount,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -101,14 +95,7 @@ export class RisksController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -124,14 +111,7 @@ export class RisksController {
 
     return {
       data,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -163,14 +143,7 @@ export class RisksController {
 
     return {
       ...risk,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -193,14 +166,7 @@ export class RisksController {
 
     return {
       ...risk,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -229,14 +195,7 @@ export class RisksController {
 
     return {
       ...updatedRisk,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -258,14 +217,7 @@ export class RisksController {
 
     return {
       ...result,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 }

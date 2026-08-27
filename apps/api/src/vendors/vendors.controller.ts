@@ -41,6 +41,7 @@ import { CREATE_VENDOR_RESPONSES } from './schemas/create-vendor.responses';
 import { UPDATE_VENDOR_RESPONSES } from './schemas/update-vendor.responses';
 import { DELETE_VENDOR_RESPONSES } from './schemas/delete-vendor.responses';
 
+import { authEnvelope } from '@/utils/auth-response';
 @ApiTags('Vendors')
 @Controller({ path: 'vendors', version: '1' })
 @UseGuards(HybridAuthGuard, PermissionGuard)
@@ -80,14 +81,7 @@ export class VendorsController {
     return {
       data: vendors,
       count: vendors.length,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -108,14 +102,7 @@ export class VendorsController {
 
     return {
       ...vendor,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -155,14 +142,7 @@ export class VendorsController {
 
     return {
       ...vendor,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -190,14 +170,7 @@ export class VendorsController {
 
     return {
       ...updatedVendor,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -248,14 +221,7 @@ export class VendorsController {
 
     return {
       ...result,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 }

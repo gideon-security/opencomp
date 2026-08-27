@@ -2,6 +2,7 @@ import { metadata, schemaTask } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 import { PassThrough } from 'node:stream';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { s3Client as sharedS3Client } from '@/app/s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import archiver from 'archiver';
@@ -37,24 +38,13 @@ const PRESIGNED_URL_EXPIRY = 3600;
 const UPLOAD_PART_SIZE = 10 * 1024 * 1024;
 const UPLOAD_QUEUE_SIZE = 4;
 
-function createS3Client(): S3Client {
-  const region = process.env.APP_AWS_REGION || 'us-east-1';
-  const accessKeyId = process.env.APP_AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.APP_AWS_SECRET_ACCESS_KEY;
-
-  if (!accessKeyId || !secretAccessKey) {
+function getS3Client(): S3Client {
+  if (!sharedS3Client) {
     throw new Error(
       'AWS S3 credentials missing. Set APP_AWS_ACCESS_KEY_ID and APP_AWS_SECRET_ACCESS_KEY.',
     );
   }
-
-  return new S3Client({
-    region,
-    credentials: { accessKeyId, secretAccessKey },
-    ...(process.env.APP_AWS_ENDPOINT
-      ? { endpoint: process.env.APP_AWS_ENDPOINT, forcePathStyle: true }
-      : {}),
-  });
+  return sharedS3Client;
 }
 
 function getBucketName(): string {
@@ -103,7 +93,7 @@ export const exportOrganizationEvidenceTask = schemaTask({
     const exportDate = format(new Date(), 'yyyy-MM-dd');
     const s3Key = `${organizationId}/exports/evidence-${exportDate}-${ctx.run.id}.zip`;
 
-    const s3Client = createS3Client();
+    const s3Client = getS3Client();
     const bucket = getBucketName();
 
     await streamArchiveToS3({

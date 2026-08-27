@@ -8,6 +8,7 @@ import { RequirePermission } from '../auth/require-permission.decorator';
 import type { AuthContext as AuthContextType } from '../auth/types';
 import { MAX_AUDIT_LOG_OFFSET } from './audit-log.pagination';
 
+import { authEnvelope } from '@/utils/auth-response';
 @ApiTags('Audit Logs')
 @Controller({ path: 'audit-logs', version: '1' })
 @UseGuards(HybridAuthGuard, PermissionGuard)
@@ -117,13 +118,7 @@ export class AuditLogController {
     return {
       data: logs,
       total,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 }

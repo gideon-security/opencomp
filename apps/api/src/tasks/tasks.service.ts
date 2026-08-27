@@ -12,7 +12,10 @@ import { TaskResponseDto } from './dto/task-responses.dto';
 import { TaskNotifierService } from './task-notifier.service';
 import { checkAutoCompletePhases } from '../frameworks/frameworks-timeline.helper';
 import { TimelinesService } from '../timelines/timelines.service';
-import { isMemberOrgParticipant } from '../utils/org-participation';
+import {
+  validateApproverNotPlatformAdmin,
+  validateAssigneeNotPlatformAdmin,
+} from '../utils/assignee-validation';
 
 function computeNextTaskReviewDate(
   frequency: TaskFrequency | null | undefined,
@@ -468,27 +471,7 @@ export class TasksService {
     changedByUserId: string,
   ): Promise<{ updatedCount: number }> {
     try {
-      if (assigneeId) {
-        const assigneeMember = await db.member.findFirst({
-          where: { id: assigneeId, organizationId },
-          include: { user: { select: { role: true } } },
-        });
-        if (!assigneeMember) {
-          throw new BadRequestException(
-            'Assignee is not a member of this organization',
-          );
-        }
-        if (
-          !(await isMemberOrgParticipant(
-            assigneeMember.user.role,
-            organizationId,
-          ))
-        ) {
-          throw new BadRequestException(
-            'Cannot assign a platform admin as assignee',
-          );
-        }
-      }
+      await validateAssigneeNotPlatformAdmin(assigneeId, organizationId);
 
       const result = await db.task.updateMany({
         where: {
@@ -681,27 +664,7 @@ export class TasksService {
         }
       }
       if (updateData.assigneeId !== undefined) {
-        if (updateData.assigneeId !== null) {
-          const assigneeMember = await db.member.findFirst({
-            where: { id: updateData.assigneeId, organizationId },
-            include: { user: { select: { role: true } } },
-          });
-          if (!assigneeMember) {
-            throw new BadRequestException(
-              'Assignee is not a member of this organization',
-            );
-          }
-          if (
-            !(await isMemberOrgParticipant(
-              assigneeMember.user.role,
-              organizationId,
-            ))
-          ) {
-            throw new BadRequestException(
-              'Cannot assign a platform admin as assignee',
-            );
-          }
-        }
+        await validateAssigneeNotPlatformAdmin(updateData.assigneeId, organizationId);
         dataToUpdate.assigneeId =
           updateData.assigneeId === null ? null : updateData.assigneeId;
       }
@@ -1066,21 +1029,7 @@ export class TasksService {
       throw new BadRequestException('Task is already done');
     }
 
-    // Verify the approver exists and is active
-    const approver = await db.member.findFirst({
-      where: { id: approverId, organizationId, deactivated: false },
-      include: { user: true },
-    });
-
-    if (!approver) {
-      throw new BadRequestException('Approver not found or is deactivated');
-    }
-
-    if (!(await isMemberOrgParticipant(approver.user.role, organizationId))) {
-      throw new BadRequestException(
-        'Cannot assign a platform admin as approver',
-      );
-    }
+    const approver = await validateApproverNotPlatformAdmin(approverId, organizationId);
 
     const currentMember = await db.member.findFirst({
       where: { userId, organizationId, deactivated: false },
@@ -1145,21 +1094,7 @@ export class TasksService {
     userId: string,
     approverId: string,
   ): Promise<{ submittedCount: number }> {
-    // Verify the approver exists and is active
-    const approver = await db.member.findFirst({
-      where: { id: approverId, organizationId, deactivated: false },
-      include: { user: true },
-    });
-
-    if (!approver) {
-      throw new BadRequestException('Approver not found or is deactivated');
-    }
-
-    if (!(await isMemberOrgParticipant(approver.user.role, organizationId))) {
-      throw new BadRequestException(
-        'Cannot assign a platform admin as approver',
-      );
-    }
+    const approver = await validateApproverNotPlatformAdmin(approverId, organizationId);
 
     const tasks = await db.task.findMany({
       where: {

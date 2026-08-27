@@ -1,16 +1,13 @@
 'use client';
 
 import { env } from '@/env.mjs';
+import { buildApiResponse, handleNetworkError, parseResponseBody, type ApiResponse } from './api-base';
+
+export type { ApiResponse };
 
 interface ApiCallOptions extends Omit<RequestInit, 'headers'> {
   organizationId?: string;
   headers?: Record<string, string>;
-}
-
-export interface ApiResponse<T = unknown> {
-  data?: T;
-  error?: string;
-  status: number;
 }
 
 /**
@@ -43,33 +40,10 @@ class ApiClient {
         headers,
       });
 
-      let data = null;
-
-      if (response.status === 204) {
-        data = null;
-      } else {
-        const text = await response.text();
-        if (text) {
-          try {
-            data = JSON.parse(text);
-          } catch {
-            data = { message: text };
-          }
-        }
-      }
-
-      return {
-        data: response.ok ? data : undefined,
-        error: !response.ok
-          ? data?.message || `HTTP ${response.status}: ${response.statusText}`
-          : undefined,
-        status: response.status,
-      };
+      const data = await parseResponseBody(response);
+      return buildApiResponse<T>(data, response);
     } catch (error) {
-      return {
-        error: error instanceof Error ? error.message : 'Network error',
-        status: 0,
-      };
+      return handleNetworkError(error);
     }
   }
 

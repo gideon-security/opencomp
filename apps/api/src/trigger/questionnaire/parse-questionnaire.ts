@@ -1,5 +1,5 @@
-import { extractS3KeyFromUrl } from '@/app/s3';
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { extractS3KeyFromUrl, s3Client as sharedS3Client } from '@/app/s3';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { db } from '@db';
 import { logger, metadata, tags, task } from '@gideon-defender/trigger-local';
 
@@ -106,27 +106,13 @@ async function extractContentFromUrl(url: string): Promise<string> {
   }
 }
 
-/**
- * Creates an S3 client instance for Local trigger tasks
- */
-function createS3Client(): S3Client {
-  const region = process.env.APP_AWS_REGION || 'us-east-1';
-  const accessKeyId = process.env.APP_AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.APP_AWS_SECRET_ACCESS_KEY;
-
-  if (!accessKeyId || !secretAccessKey) {
+function getS3Client() {
+  if (!sharedS3Client) {
     throw new Error(
       'AWS S3 credentials are missing. Please set APP_AWS_ACCESS_KEY_ID and APP_AWS_SECRET_ACCESS_KEY environment variables in Local trigger.',
     );
   }
-
-  return new S3Client({
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
-  });
+  return sharedS3Client;
 }
 
 /**
@@ -155,7 +141,7 @@ async function extractContentFromAttachment(
   }
 
   const key = extractS3KeyFromUrl(attachment.url);
-  const s3Client = createS3Client();
+  const s3Client = getS3Client();
   const getCommand = new GetObjectCommand({
     Bucket: bucketName,
     Key: key,
@@ -202,7 +188,7 @@ async function extractContentFromS3Key(
     );
   }
 
-  const s3Client = createS3Client();
+  const s3Client = getS3Client();
 
   const getCommand = new GetObjectCommand({
     Bucket: questionnaireBucket,

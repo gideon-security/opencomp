@@ -38,6 +38,7 @@ import {
 } from './schemas/organization-api-bodies';
 import { ORGANIZATION_OPERATIONS } from './schemas/organization-operations';
 
+import { authEnvelope } from '@/utils/auth-response';
 @ApiTags('Organization')
 @Controller({ path: 'organization', version: '1' })
 @UseGuards(HybridAuthGuard, PermissionGuard)
@@ -69,13 +70,7 @@ export class OrganizationController {
     const result: Record<string, unknown> = {
       ...org,
       logoUrl,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
 
     if (includeOwnership === 'true' && authContext.userId) {
@@ -117,14 +112,7 @@ export class OrganizationController {
 
     return {
       ...updatedOrg,
-      authType: authContext.authType,
-      // Include user context for session auth (helpful for debugging)
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -194,14 +182,7 @@ export class OrganizationController {
 
     return {
       ...result,
-      authType: authContext.authType,
-      // Include user context for session auth (helpful for debugging)
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 

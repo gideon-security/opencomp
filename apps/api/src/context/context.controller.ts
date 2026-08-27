@@ -35,6 +35,7 @@ import { CREATE_CONTEXT_RESPONSES } from './schemas/create-context.responses';
 import { UPDATE_CONTEXT_RESPONSES } from './schemas/update-context.responses';
 import { DELETE_CONTEXT_RESPONSES } from './schemas/delete-context.responses';
 
+import { authEnvelope } from '@/utils/auth-response';
 @ApiTags('Context')
 @Controller({ path: 'context', version: '1' })
 @UseGuards(HybridAuthGuard, PermissionGuard)
@@ -78,14 +79,7 @@ export class ContextController {
 
     return {
       ...result,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -109,14 +103,7 @@ export class ContextController {
 
     return {
       ...contextEntry,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -141,14 +128,7 @@ export class ContextController {
 
     return {
       ...contextEntry,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -176,14 +156,7 @@ export class ContextController {
 
     return {
       ...updatedContextEntry,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -207,14 +180,7 @@ export class ContextController {
 
     return {
       ...result,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 }

@@ -1,5 +1,6 @@
 import { logger, tags, task } from '@gideon-defender/trigger-local';
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { s3Client as sharedS3Client } from '@/app/s3';
 import { db } from '@db';
 import { batchUpsertEmbeddings } from '@/vector-store/lib/core/upsert-embedding';
 import { chunkText } from '@/vector-store/lib/utils/chunk-text';
@@ -7,27 +8,13 @@ import { findEmbeddingsForSource } from '@/vector-store/lib/core/find-existing-e
 import { vectorIndex } from '@/vector-store/lib/core/client';
 import { extractContentFromFile } from './helpers/extract-content-from-file';
 
-/**
- * Creates an S3 client instance for Local trigger tasks
- */
-function createS3Client(): S3Client {
-  const region = process.env.APP_AWS_REGION || 'us-east-1';
-  const accessKeyId = process.env.APP_AWS_ACCESS_KEY_ID;
-  const secretAccessKey = process.env.APP_AWS_SECRET_ACCESS_KEY;
-
-  if (!accessKeyId || !secretAccessKey) {
+function getS3Client() {
+  if (!sharedS3Client) {
     throw new Error(
       'AWS S3 credentials are missing. Please set APP_AWS_ACCESS_KEY_ID and APP_AWS_SECRET_ACCESS_KEY environment variables in Local trigger.',
     );
   }
-
-  return new S3Client({
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
-  });
+  return sharedS3Client;
 }
 
 /**
@@ -45,7 +32,7 @@ async function extractContentFromKnowledgeBaseDocument(
     );
   }
 
-  const s3Client = createS3Client();
+  const s3Client = getS3Client();
 
   const getCommand = new GetObjectCommand({
     Bucket: knowledgeBaseBucket,

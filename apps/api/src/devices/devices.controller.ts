@@ -14,6 +14,7 @@ import type { AuthContext as AuthContextType } from '../auth/types';
 import { DevicesByMemberResponseDto } from './dto/devices-by-member-response.dto';
 import { DevicesService } from './devices.service';
 
+import { authEnvelope } from '@/utils/auth-response';
 @ApiTags('Devices')
 @Controller({ path: 'devices', version: '1' })
 @UseGuards(HybridAuthGuard, PermissionGuard)
@@ -132,14 +133,7 @@ export class DevicesController {
     return {
       data: devices,
       count: devices.length,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 
@@ -210,14 +204,7 @@ export class DevicesController {
       data: devices,
       count: devices.length,
       member,
-      authType: authContext.authType,
-      ...(authContext.userId &&
-        authContext.userEmail && {
-          authenticatedUser: {
-            id: authContext.userId,
-            email: authContext.userEmail,
-          },
-        }),
+      ...authEnvelope(authContext),
     };
   }
 

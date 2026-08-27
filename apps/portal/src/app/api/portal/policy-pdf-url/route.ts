@@ -68,11 +68,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'No PDF found.' });
     }
 
+    if (!s3Client || !BUCKET_NAME) {
+      return NextResponse.json({ success: false, error: 'File service not configured.' }, { status: 500 });
+    }
     const command = new GetObjectCommand({
       Bucket: BUCKET_NAME,
       Key: pdfUrl,
     });
-    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 900 });
+    const s3 = s3Client;
+    const signedUrl = await getSignedUrl(s3, command, { expiresIn: 900 });
 
     return NextResponse.json({ success: true, url: signedUrl });
   } catch (error) {

@@ -16,6 +16,7 @@ import {
 } from './dto/create-upload-url.dto';
 import { UploadsService } from './uploads.service';
 
+import { authEnvelope } from '@/utils/auth-response';
 /**
  * General file-upload entry point for API/MCP clients.
  *
@@ -60,13 +61,7 @@ export class UploadsController {
 
     return {
       ...data,
-      authType: authContext.authType,
-      ...(authContext.userId && {
-        authenticatedUser: {
-          id: authContext.userId,
-          email: authContext.userEmail,
-        },
-      }),
+      ...authEnvelope(authContext),
     };
   }
 }

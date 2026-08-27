@@ -1,18 +1,3 @@
-import { requireRoutePermission } from '@/lib/permissions.server';
+import { createGuardedLayout } from '@/lib/layout-helpers';
 
-export default async function Layout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: Promise<{ orgId: string }>;
-}) {
-  const { orgId } = await params;
-  await requireRoutePermission('tasks', orgId);
-
-  return (
-    <div className="h-full">
-      <main className="h-full">{children}</main>
-    </div>
-  );
-}
+export default createGuardedLayout('tasks');
