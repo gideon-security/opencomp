@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateShort } from '@/lib/format';
+
 import { Badge, Button, Input, Stack, Text } from '@trycompai/design-system';
 import { Download, Launch, Search } from '@trycompai/design-system/icons';
 import type React from 'react';
@@ -157,12 +159,8 @@ function formatAmount(amount: number, currency: string) {
   }).format(amount / 100);
 }
 
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date(date));
+function formatDate(date: string): string {
+  return formatDateShort(date);
 }
 
 function formatStatus(status: string) {

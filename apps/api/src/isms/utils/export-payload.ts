@@ -1,6 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { db } from '@db';
 import type { IsmsDocumentType, Prisma } from '@db';
+import { formatDateYmd } from '@gideon-defender/utils/format';
 import { buildExportSections } from '../documents/registry';
 import { loadOrgProfile } from '../documents/org-profile';
 import {
@@ -179,10 +180,6 @@ export async function resolveRiskTreatmentExtras(
     organizationId: document.organizationId,
     client,
   });
-}
-
-function formatDateYmd(date: Date | null): string | null {
-  return date ? date.toISOString().slice(0, 10) : null;
 }
 
 /** Map role rows + assignments into export rows, resolving holder names. */

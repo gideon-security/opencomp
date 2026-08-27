@@ -1,3 +1,4 @@
+import { formatDateYmd } from '@gideon-defender/utils/format';
 import { PDFDocument, PDFFont, rgb, StandardFonts } from 'pdf-lib';
 
 /**
@@ -20,7 +21,7 @@ const APPENDIX_DISCLAIMER =
   'They are customer statements, not findings or conclusions of the testing team.';
 
 function formatDate(date: Date): string {
-  return date.toISOString().slice(0, 10);
+  return formatDateYmd(date) ?? '';
 }
 
 export function appendContextNotesToMarkdown(params: {

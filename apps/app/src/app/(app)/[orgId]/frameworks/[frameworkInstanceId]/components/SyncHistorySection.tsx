@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateTime } from '@/lib/format';
+
 import { Badge, Button, Text } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -17,13 +19,7 @@ interface SyncHistorySectionProps {
 }
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
+  return formatDateTime(dateStr);
 }
 
 function isWithinRollbackWindow(item: SyncHistoryItem): boolean {

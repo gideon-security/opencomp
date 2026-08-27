@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateShort } from '@/lib/format';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -149,14 +151,7 @@ export function RolesTable({ roles }: RolesTableProps) {
     return roles.filter((role) => role.name.toLowerCase().includes(lowerSearch));
   }, [roles, search]);
 
-  const formatDate = (date: string | null | undefined) => {
-    if (!date) return '-';
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
+  const formatDate = (date: string | null | undefined): string => formatDateShort(date) || '-';
 
   const getPermissionCount = (permissions: Record<string, string[]>) => {
     return Object.keys(permissions).length;

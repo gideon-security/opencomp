@@ -1,7 +1,7 @@
 import { filterComplianceMembers } from '@/lib/compliance';
 import { HIPAA_TRAINING_ID } from '@/lib/data/hipaa-training-content';
 import { trainingVideos as trainingVideosData } from '@/lib/data/training-videos';
-import { serverApi } from '@/lib/server-api-client';
+import { serverApi } from '@/lib/api-server';
 import type { Invitation, Member, User } from '@db';
 import { db } from '@db/server';
 import type { BackgroundCheckStatus } from '../../[employeeId]/components/backgroundCheckTypes';

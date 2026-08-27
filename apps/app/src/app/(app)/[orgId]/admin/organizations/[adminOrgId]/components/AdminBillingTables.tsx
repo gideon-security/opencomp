@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateLocale } from '@/lib/format';
+
 import { useTranslations } from 'next-intl';
 import { Badge, Button, Text } from '@trycompai/design-system';
 import type {
@@ -57,8 +59,8 @@ function productLabel(t: BillingTranslator, productKey: string): string {
   }
 }
 
-function formatDate(value: string | null, notAvailableLabel: string) {
-  return value ? new Date(value).toLocaleDateString() : notAvailableLabel;
+function formatDate(value: string | null, notAvailableLabel: string): string {
+  return formatDateLocale(value) || notAvailableLabel;
 }
 
 function formatAmount(amount: number, currency: string) {

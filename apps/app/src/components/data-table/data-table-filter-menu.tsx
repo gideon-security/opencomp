@@ -5,11 +5,10 @@ import { BadgeCheck, CalendarIcon, Check, ListFilter, Text, X } from 'lucide-rea
 import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import { getDefaultFilterOperator, getFilterOperators } from '@/lib/data-table';
 import { formatDate } from '@/lib/format';
 import { generateId } from '@/lib/id';
-import { getFiltersStateParser } from '@/lib/parsers';
+import { useDebouncedFilters } from './hooks/use-debounced-filters';
 import type { ExtendedColumnFilter, FilterOperator } from '@/types/data-table';
 import { Button } from '@gideon-defender/ui/button';
 import { Calendar } from '@gideon-defender/ui/calendar';
@@ -27,7 +26,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@gideon-defender/ui/pop
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
 import { DataTableRangeFilter } from './data-table-range-filter';
 
-const FILTERS_KEY = 'filters';
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
 const OPEN_MENU_SHORTCUT = 'f';
@@ -85,17 +83,12 @@ export function DataTableFilterMenu<TData>({
     [inputValue, selectedColumn],
   );
 
-  const [filters, setFilters] = useQueryState(
-    FILTERS_KEY,
-    getFiltersStateParser<TData>(columns.map((field) => field.id))
-      .withDefault([])
-      .withOptions({
-        clearOnDefault: true,
-        shallow,
-        throttleMs,
-      }),
-  );
-  const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
+  const { filters, setFilters, debouncedSetFilters } = useDebouncedFilters<TData>({
+    columnIds: columns.map((field) => field.id),
+    debounceMs,
+    throttleMs,
+    shallow,
+  });
 
   const onFilterAdd = React.useCallback(
     (column: Column<TData>, value: string) => {

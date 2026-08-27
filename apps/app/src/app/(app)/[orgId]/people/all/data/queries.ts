@@ -1,4 +1,4 @@
-import { serverApi } from '@/lib/server-api-client';
+import { serverApi } from '@/lib/api-server';
 
 export interface SyncProviderInfo {
   slug: string;

@@ -1,7 +1,5 @@
-import { api } from '@/lib/api-client';
 import { Member, User } from '@db';
-import { useParams } from 'next/navigation';
-import useSWR from 'swr';
+import { createSimpleListHook } from './create-entity-hooks';
 
 interface MemberData extends Member {
   user: User;
@@ -12,47 +10,23 @@ interface UseOrganizationMembersReturn {
   isLoading: boolean;
   isError: boolean;
   error: Error | undefined;
-  mutate: () => Promise<any>;
+  mutate: () => Promise<unknown>;
 }
 
 interface UseOrganizationMembersOptions {
   initialData?: MemberData[];
 }
 
+interface PeopleResponse {
+  data: MemberData[];
+}
+
+const usePeopleList = createSimpleListHook<MemberData, PeopleResponse>('/v1/people');
+
 export function useOrganizationMembers({
   initialData,
 }: UseOrganizationMembersOptions = {}): UseOrganizationMembersReturn {
-  const { orgId } = useParams<{
-    orgId: string;
-  }>();
-
-  const { data, error, isLoading, mutate } = useSWR(
-    orgId ? [`organization-members-${orgId}`, orgId] : null,
-    async () => {
-      if (!orgId) {
-        throw new Error('Organization ID is required');
-      }
-
-      const { data } = await api.get<{
-        data: MemberData[];
-        error: string;
-        success: boolean;
-      }>(`/v1/people`);
-
-      if (!data?.data) {
-        console.error('[useOrganizationMembers] Failed to fetch organization members', data?.error);
-        throw new Error(data?.error || 'Failed to fetch organization members');
-      }
-
-      return data?.data || [];
-    },
-    {
-      fallbackData: initialData,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: true,
-    },
-  );
-
+  const { data, error, isLoading, mutate } = usePeopleList({ initialData });
   return {
     members: data,
     isLoading,

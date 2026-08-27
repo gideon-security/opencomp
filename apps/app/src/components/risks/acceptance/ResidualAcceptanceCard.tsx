@@ -11,6 +11,7 @@ import {
   type RiskAcceptanceEvent,
 } from '@/hooks/use-risk-acceptances';
 import { getRiskLevelFromScore, getRiskScore, LEVEL_LABEL } from '@/lib/risk-score';
+import { formatDateShort as formatDate } from '@/lib/format';
 import { RecordAcceptanceDialog, type AcceptorOption } from './RecordAcceptanceDialog';
 
 interface ResidualAcceptanceCardProps {
@@ -27,8 +28,7 @@ interface ResidualAcceptanceCardProps {
   canUpdate: boolean;
 }
 
-const formatDate = (value: string) =>
-  new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(value));
+
 
 function AcceptanceHistoryRow({ event, stale }: { event: RiskAcceptanceEvent; stale: boolean }) {
   return (

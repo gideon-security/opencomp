@@ -1,5 +1,6 @@
 import { db } from '@db';
 import type { Prisma } from '@db';
+import { formatDateYmd } from '@gideon-defender/utils/format';
 import { reviewConclusionSentence } from './management-review-defaults';
 import { parseReviewAttendees } from './management-review';
 import type { ReviewActionExportRow, ReviewExportRow } from './types';
@@ -64,10 +65,6 @@ const REVIEW_ACTION_STATUS_LABELS: Record<string, string> = {
   in_progress: 'In progress',
   closed: 'Closed',
 };
-
-function formatDateYmd(date: Date | null): string | null {
-  return date ? date.toISOString().slice(0, 10) : null;
-}
 
 function mapAction(
   review: ReviewWithExportIncludes,

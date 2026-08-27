@@ -1,4 +1,4 @@
-import { serverApi } from '@/lib/server-api-client';
+import { serverApi } from '@/lib/api-server';
 import { auth } from '@/utils/auth';
 import type { Member, User } from '@db';
 import { db } from '@db/server';

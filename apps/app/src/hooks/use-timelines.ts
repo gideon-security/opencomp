@@ -1,7 +1,7 @@
 'use client';
 
 import { apiClient } from '@/lib/api-client';
-import useSWR from 'swr';
+import { createSimpleListHook } from './create-entity-hooks';
 
 interface TimelinePhase {
   id: string;
@@ -53,8 +53,7 @@ interface TimelinesApiResponse {
   count: number;
 }
 
-const timelinesKey = () => ['/v1/timelines'] as const;
-const timelineKey = (id: string) => ['/v1/timelines', id] as const;
+const useTimelinesList = createSimpleListHook<Timeline, TimelinesApiResponse>('/v1/timelines');
 
 interface UseTimelinesOptions {
   initialData?: Timeline[];
@@ -62,27 +61,11 @@ interface UseTimelinesOptions {
 
 export function useTimelines(options?: UseTimelinesOptions) {
   const { initialData } = options ?? {};
-
-  const { data, error, isLoading, mutate } = useSWR(
-    timelinesKey(),
-    async () => {
-      const response = await apiClient.get<TimelinesApiResponse>('/v1/timelines');
-      if (response.error) throw new Error(response.error);
-      if (!response.data?.data) return [];
-      return response.data.data;
-    },
-    {
-      fallbackData: initialData,
-      revalidateOnMount: !initialData,
-      revalidateOnFocus: false,
-    },
-  );
-
+  const { data, error, isLoading, mutate } = useTimelinesList({ initialData });
   const timelines = Array.isArray(data) ? data : [];
-
   return {
     timelines,
-    isLoading: isLoading && !data,
+    isLoading,
     error,
     mutate,
   };

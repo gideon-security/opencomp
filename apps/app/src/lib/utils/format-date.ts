@@ -1,11 +1,3 @@
-import { format, isValid } from 'date-fns';
-
-export function formatDate(date: Date | string | null) {
-  if (!date) return '';
-
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-
-  if (!isValid(dateObj)) return '';
-
-  return format(dateObj, 'MM/dd/yyyy');
-}
+// Deprecated — use `formatDateSlash` from `@gideon-defender/utils/format` or `@/lib/format`.
+// Kept for backward compatibility; single-sources to the canonical implementation.
+export { formatDateSlash as formatDate } from '@gideon-defender/utils/format';

@@ -6,7 +6,7 @@ import {
   trainingVideos as trainingVideosData,
 } from '@/lib/data/training-videos';
 import { getFleetInstance } from '@/lib/fleet';
-import { serverApi } from '@/lib/server-api-client';
+import { serverApi } from '@/lib/api-server';
 import type { EmployeeTrainingVideoCompletion, Member, User } from '@db';
 import { db } from '@db/server';
 import { daysSinceCheckIn, getDeviceComplianceStatus } from '@gideon-defender/utils/devices';

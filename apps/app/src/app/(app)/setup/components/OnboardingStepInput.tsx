@@ -1,6 +1,6 @@
 import { AnimatedWrapper } from '@/components/animated-wrapper';
 import { SelectablePill } from '@/components/selectable-pill';
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
+import { useDebouncedCallback } from '@gideon-defender/ui/hooks/use-debounced-callback';
 import { Button } from '@gideon-defender/ui/button';
 import { Input } from '@gideon-defender/ui/input';
 import { Label } from '@gideon-defender/ui/label';

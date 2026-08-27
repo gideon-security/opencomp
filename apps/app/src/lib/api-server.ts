@@ -1,6 +1,6 @@
 import { env } from '@/env.mjs';
 import { headers } from 'next/headers';
-import { buildApiResponse, handleNetworkError, parseResponseBody, type ApiResponse } from './api-base';
+import { executeFetch, type ApiResponse } from './api-base';
 
 export type { ApiResponse };
 
@@ -38,19 +38,12 @@ async function call<T = unknown>(
     Object.assign(requestHeaders, customHeaders);
   }
 
-  try {
-    const response = await fetch(`${baseUrl}${endpoint}`, {
-      method,
-      headers: requestHeaders,
-      body: body ? JSON.stringify(body) : undefined,
-      cache: 'no-store',
-    });
-
-    const data = await parseResponseBody(response);
-    return buildApiResponse<T>(data, response);
-  } catch (error) {
-    return handleNetworkError(error);
-  }
+  return executeFetch<T>(`${baseUrl}${endpoint}`, {
+    method,
+    headers: requestHeaders,
+    body: body ? JSON.stringify(body) : undefined,
+    cache: 'no-store',
+  });
 }
 
 export const serverApi = {

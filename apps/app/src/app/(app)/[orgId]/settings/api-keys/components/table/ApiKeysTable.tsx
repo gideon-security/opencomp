@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateYmd } from '@/lib/format';
+
 import { useApiKeys } from '@/hooks/use-api-keys';
 import type { ApiKey } from '@/hooks/use-api-keys';
 import { usePermissions } from '@/hooks/use-permissions';
@@ -170,10 +172,7 @@ export function ApiKeysTable({ initialApiKeys }: { initialApiKeys: ApiKey[] }) {
     return apiKeys.filter((key) => key.name.toLowerCase().includes(lowerSearch));
   }, [apiKeys, search]);
 
-  const formatDate = (date: string | null | undefined) => {
-    if (!date) return 'Never';
-    return new Date(date).toISOString().slice(0, 10);
-  };
+  const formatDate = (date: string | null | undefined): string => formatDateYmd(date) ?? 'Never';
 
   return (
     <Stack gap="md">
