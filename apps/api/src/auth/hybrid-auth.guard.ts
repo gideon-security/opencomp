@@ -5,6 +5,7 @@ import {
   HttpException,
   Injectable,
   Logger,
+  Optional,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -16,6 +17,8 @@ import { IS_PUBLIC_KEY } from './public.decorator';
 import { SKIP_ORG_CHECK_KEY } from './skip-org-check.decorator';
 import { resolveServiceByToken } from './service-token.config';
 import { AuthenticatedRequest } from './types';
+import { GideonJwtService } from './gideon-jwt.service';
+import { GideonShadowService } from '../gideon/gideon-shadow.service';
 
 @Injectable()
 export class HybridAuthGuard implements CanActivate {
@@ -24,6 +27,8 @@ export class HybridAuthGuard implements CanActivate {
   constructor(
     private readonly apiKeyService: ApiKeyService,
     private readonly reflector: Reflector,
+    @Optional() private readonly gideonJwtService?: GideonJwtService,
+    @Optional() private readonly gideonShadowService?: GideonShadowService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -44,6 +49,14 @@ export class HybridAuthGuard implements CanActivate {
     const serviceToken = request.headers['x-service-token'] as string;
     if (serviceToken) {
       return this.handleServiceTokenAuth(request, serviceToken);
+    }
+
+    // Phase 0 — Gideon JWT shadow/verify (x-api-key → x-service-token → Gideon JWT → cookie)
+    // Behind flag: when GIDEON_JWT_ENABLED=false and no identityUrl, this returns null and falls through
+    const gideonResult = await this.tryGideonJwtAuth(request);
+    if (gideonResult === true) return true;
+    if (gideonResult === 'enforce_failed') {
+      throw new UnauthorizedException('Invalid Gideon JWT');
     }
 
     // Try session-based authentication (bearer token or cookies)
@@ -156,6 +169,100 @@ export class HybridAuthGuard implements CanActivate {
       `Service "${service.definition.name}" authenticated for org ${organizationId}`,
     );
 
+    return true;
+  }
+
+  /**
+   * Phase 0 — Gideon JWT shadow/verify.
+   * Tries `Authorization: Bearer <gideon_jwt>` via `GideonJwtService`.
+   * - In shadow mode (`GIDEON_JWT_SHADOW_ENABLED` or auto-shadow when configured), failures fall through to session.
+   * - In enforce mode (`GIDEON_JWT_ENABLED=true`), failures throw 401.
+   * - On success, populates `request` (organizationId=user's tenant, userId=sub) and logs shadow mismatch for
+   *   `GET /v1/platform/tenants/:id/operations` via `GideonShadowService`.
+   */
+  private async tryGideonJwtAuth(
+    request: AuthenticatedRequest,
+  ): Promise<true | 'enforce_failed' | null> {
+    if (!this.gideonJwtService || !this.gideonJwtService.isConfigured()) {
+      return null;
+    }
+
+    const authHeader = request.headers['authorization'] as string | undefined;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return null;
+    }
+    const token = authHeader.slice(7).trim();
+    if (!token) return null;
+
+    const result = await this.gideonJwtService.verify(token);
+    if (!result) {
+      if (this.gideonJwtService.isEnforceMode()) {
+        this.logger.warn('[Gideon] JWT verify failed in enforce mode');
+        return 'enforce_failed';
+      }
+      this.logger.debug('[GideonShadow] JWT verify failed, falling through to session');
+      return null;
+    }
+
+    const tenantId = this.gideonJwtService.resolveTenantId(result.payload);
+    const userId = this.gideonJwtService.resolveUserId(result.payload);
+    if (!tenantId || !userId) {
+      this.logger.warn('[Gideon] JWT missing tenant or sub');
+      if (this.gideonJwtService.isEnforceMode()) return 'enforce_failed';
+      return null;
+    }
+
+    // Verify org exists and user is member (same check as session)
+    const org = await db.organization.findUnique({
+      where: { id: tenantId },
+      select: { id: true },
+    });
+    if (!org) {
+      this.logger.warn(`[GideonShadow] tenant ${tenantId} not found in opencomp`);
+      if (this.gideonJwtService.isEnforceMode()) return 'enforce_failed';
+      return null;
+    }
+
+    const member = await db.member.findFirst({
+      where: { userId, organizationId: tenantId, deactivated: false },
+      select: { id: true, role: true, department: true },
+    });
+    if (!member) {
+      this.logger.warn(
+        `[GideonShadow] user ${userId} not member of tenant ${tenantId}`,
+      );
+      if (this.gideonJwtService.isEnforceMode()) return 'enforce_failed';
+      return null;
+    }
+
+    request.organizationId = tenantId;
+    request.userId = userId;
+    request.userEmail =
+      (result.payload.email as string | undefined) ||
+      (result.payload as Record<string, unknown>).email as string | undefined;
+    request.userRoles = member.role ? member.role.split(',') : null;
+    request.memberId = member.id;
+    request.memberDepartment = member.department;
+    request.authType = 'gideon';
+    request.isApiKey = false;
+    request.isServiceToken = false;
+    request.isGideonJwt = true;
+    request.gideonTenantId = tenantId;
+    // Gideon JWTs from KMS are already verified; platform admin is determined
+    // via opencomp Member role, not JWT role. Keep false here; PermissionGuard
+    // will check hasAppAccess.
+    request.isPlatformAdmin = false;
+
+    if (this.gideonShadowService) {
+      // Fire-and-forget shadow comparison for operations
+      this.gideonShadowService
+        .logTenantOperationsMismatch(tenantId, token)
+        .catch(() => {});
+    }
+
+    this.logger.log(
+      `[Gideon] JWT authenticated user ${userId} tenant ${tenantId} shadow=${this.gideonJwtService.isShadowMode()}`,
+    );
     return true;
   }
 

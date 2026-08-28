@@ -2,10 +2,12 @@
 
 export interface AuthenticatedRequest extends Request {
   organizationId: string;
-  authType: 'api-key' | 'session' | 'service';
+  authType: 'api-key' | 'session' | 'service' | 'gideon';
   isApiKey: boolean;
   isServiceToken?: boolean;
   serviceName?: string;
+  isGideonJwt?: boolean;
+  gideonTenantId?: string;
   isPlatformAdmin: boolean;
   userId?: string;
   userEmail?: string;
@@ -24,9 +26,10 @@ export interface AuthenticatedRequest extends Request {
 
 export interface AuthContext {
   organizationId: string;
-  authType: 'api-key' | 'session' | 'service';
+  authType: 'api-key' | 'session' | 'service' | 'gideon';
   isApiKey: boolean;
   isServiceToken?: boolean;
+  isGideonJwt?: boolean;
   serviceName?: string;
   isPlatformAdmin: boolean;
   userId?: string; // Only available for session auth

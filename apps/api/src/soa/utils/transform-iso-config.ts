@@ -1,4 +1,4 @@
-import { readFileSync } from 'fs';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 /**
@@ -77,34 +77,17 @@ function transformISOConfigToSOA(controls: ISOControl[]): SOAConfiguration {
  * Loads and transforms ISO config JSON file
  */
 export async function loadISOConfig(): Promise<SOAConfiguration> {
-  // Use fs.readFileSync instead of import to avoid ESM import attribute issues
-  // Read from source directory since JSON files aren't copied to dist during compilation
-  // __dirname in compiled code is dist/src/soa/utils
-  // We need to reference the source file relative to the project root (apps/api)
-  // From dist/src/soa/utils, go up to dist/src, then replace 'dist' with 'src'
-  const sourceDir = __dirname.replace(/dist[\\/]src/, 'src');
-  const configPath = join(sourceDir, '../seedJson/ISO/config.json');
+  // Nest copies seedJson beside the compiled SOA module. Keeping the lookup
+  // relative to this file makes the same path work in source and dist builds.
+  const configPath = join(__dirname, '../seedJson/ISO/config.json');
 
   try {
-    const configContent = readFileSync(configPath, 'utf-8');
+    const configContent = await readFile(configPath, 'utf-8');
     const isoControls: ISOControl[] = JSON.parse(configContent);
     return transformISOConfigToSOA(isoControls);
   } catch (error) {
-    // Fallback: try using process.cwd() (should be apps/api when running)
-    const fallbackPath = join(
-      process.cwd(),
-      'src/soa/seedJson/ISO/config.json',
+    throw new Error(
+      `Failed to load ISO config at ${configPath}: ${error instanceof Error ? error.message : 'Unknown error'}`,
     );
-    try {
-      const configContent = readFileSync(fallbackPath, 'utf-8');
-      const isoControls: ISOControl[] = JSON.parse(configContent);
-      return transformISOConfigToSOA(isoControls);
-    } catch {
-      throw new Error(
-        `Failed to load ISO config: ${error instanceof Error ? error.message : 'Unknown error'}. ` +
-          `Tried paths: ${configPath}, ${fallbackPath}. ` +
-          `__dirname: ${__dirname}, process.cwd(): ${process.cwd()}`,
-      );
-    }
   }
 }

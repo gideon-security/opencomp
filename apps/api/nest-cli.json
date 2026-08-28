@@ -4,6 +4,12 @@
   "sourceRoot": "src",
   "entryFile": "src/main",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "assets": [
+      {
+        "include": "soa/seedJson/**/*",
+        "outDir": "dist/src"
+      }
+    ]
   }
 }
