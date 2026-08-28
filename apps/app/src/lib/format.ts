@@ -1,17 +1,11 @@
-export function formatDate(
-  date: Date | string | number | undefined,
-  opts: Intl.DateTimeFormatOptions = {},
-) {
-  if (!date) return '';
-
-  try {
-    return new Intl.DateTimeFormat('en-US', {
-      month: opts.month ?? 'long',
-      day: opts.day ?? 'numeric',
-      year: opts.year ?? 'numeric',
-      ...opts,
-    }).format(new Date(date));
-  } catch (_err) {
-    return '';
-  }
-}
+// Re-export canonical formatters from @gideon-defender/utils/format
+// Keeps `@/lib/format` as the app's import path while single-sourcing logic.
+export {
+  formatDate,
+  formatDateLocale,
+  formatDateShort,
+  formatDateTime,
+  formatDateYmd,
+  formatDateSlash,
+  formatDateNumeric,
+} from '@gideon-defender/utils/format';

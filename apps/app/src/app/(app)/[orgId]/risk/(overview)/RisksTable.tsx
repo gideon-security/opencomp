@@ -10,6 +10,7 @@ import {
 } from '@/hooks/use-risks';
 import { getSortingStateParser } from '@/lib/parsers';
 import { getRiskLevelFromScore, getRiskScore } from '@/lib/risk-score';
+import { formatDateShort as formatDate } from '@/lib/format';
 import {
   interpolatedResidualScore,
   previewResidual,
@@ -154,14 +155,6 @@ function getStatusBadge(status: string, t: RiskListTranslator) {
     default:
       return <Badge variant="outline">{statusLabel(t, status)}</Badge>;
   }
-}
-
-function formatDate(date: string | Date): string {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date(date));
 }
 
 export const RisksTable = ({

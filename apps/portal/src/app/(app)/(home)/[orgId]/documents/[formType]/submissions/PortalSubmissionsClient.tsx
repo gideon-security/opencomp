@@ -17,6 +17,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import Link from 'next/link';
+import { formatDateNumeric } from '@gideon-defender/utils/format';
 
 type SubmissionRow = {
   id: string;
@@ -56,17 +57,9 @@ function StatusBadge({ status }: { status: string }) {
   }
 }
 
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: '2-digit',
-  day: '2-digit',
-  year: 'numeric',
-});
-
 function formatDate(value: unknown): string {
   if (typeof value !== 'string') return '—';
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return '—';
-  return dateFormatter.format(parsed);
+  return formatDateNumeric(value) || '—';
 }
 
 export function PortalSubmissionsClient({

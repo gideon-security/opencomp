@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/utils/auth';
-import { serverApi } from '@/lib/server-api-client';
+import { serverApi } from '@/lib/api-server';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 

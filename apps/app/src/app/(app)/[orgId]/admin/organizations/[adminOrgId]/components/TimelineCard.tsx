@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateShort } from '@/lib/format';
+
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
@@ -97,12 +99,7 @@ function completionTypeLabel(t: AdminTranslator, completionType: string) {
 }
 
 function formatDate(date: string | null): string {
-  if (!date) return '--';
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  return formatDateShort(date) || '--';
 }
 
 type PhaseEntry =

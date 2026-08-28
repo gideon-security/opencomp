@@ -34,3 +34,13 @@ export function handleNetworkError(error: unknown): ApiResponse<never> {
     status: 0,
   };
 }
+
+export async function executeFetch<T>(url: string, init: RequestInit): Promise<ApiResponse<T>> {
+  try {
+    const response = await fetch(url, init);
+    const data = await parseResponseBody(response);
+    return buildApiResponse<T>(data, response);
+  } catch (error) {
+    return handleNetworkError(error);
+  }
+}

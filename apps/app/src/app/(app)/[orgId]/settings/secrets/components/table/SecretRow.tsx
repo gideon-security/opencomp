@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateShort } from '@/lib/format';
+
 import { useTranslations } from 'next-intl';
 import {
   Badge,
@@ -44,11 +46,7 @@ function categoryLabel(t: SettingsTranslator, category: string): string {
 }
 
 function formatDate(date: string): string {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date(date));
+  return formatDateShort(date);
 }
 
 export function SecretRow({

@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateTime } from '@/lib/format';
+
 import { api } from '@/lib/api-client';
 import {
   Badge,
@@ -118,14 +120,8 @@ export function formatLabel(value: string) {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+export function formatDate(dateString: string): string {
+  return formatDateTime(dateString);
 }
 
 interface TipTapNode {

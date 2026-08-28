@@ -16,6 +16,11 @@ import {
   RiskTreatmentType,
 } from '@db';
 import { DEPARTMENT_MAX_LENGTH } from '../../policies/dto/create-policy.dto';
+import {
+  OptionalAssigneeProperty,
+  OptionalImpactProperty,
+  OptionalLikelihoodProperty,
+} from '../../common/dto/risk-vendor-fields';
 
 export class CreateRiskDto {
   @ApiProperty({
@@ -68,44 +73,32 @@ export class CreateRiskDto {
   @IsEnum(RiskStatus)
   status?: RiskStatus;
 
-  @ApiProperty({
+  @OptionalLikelihoodProperty({
     description: 'Likelihood of the risk occurring',
-    enum: Likelihood,
-    default: Likelihood.very_unlikely,
     example: Likelihood.possible,
+    defaultValue: Likelihood.very_unlikely,
   })
-  @IsOptional()
-  @IsEnum(Likelihood)
   likelihood?: Likelihood;
 
-  @ApiProperty({
+  @OptionalImpactProperty({
     description: 'Impact if the risk materializes',
-    enum: Impact,
-    default: Impact.insignificant,
     example: Impact.major,
+    defaultValue: Impact.insignificant,
   })
-  @IsOptional()
-  @IsEnum(Impact)
   impact?: Impact;
 
-  @ApiProperty({
+  @OptionalLikelihoodProperty({
     description: 'Residual likelihood after treatment',
-    enum: Likelihood,
-    default: Likelihood.very_unlikely,
     example: Likelihood.unlikely,
+    defaultValue: Likelihood.very_unlikely,
   })
-  @IsOptional()
-  @IsEnum(Likelihood)
   residualLikelihood?: Likelihood;
 
-  @ApiProperty({
+  @OptionalImpactProperty({
     description: 'Residual impact after treatment',
-    enum: Impact,
-    default: Impact.insignificant,
     example: Impact.minor,
+    defaultValue: Impact.insignificant,
   })
-  @IsOptional()
-  @IsEnum(Impact)
   residualImpact?: Impact;
 
   @ApiProperty({
@@ -128,12 +121,6 @@ export class CreateRiskDto {
   @IsEnum(RiskTreatmentType)
   treatmentStrategy?: RiskTreatmentType;
 
-  @ApiProperty({
-    description: 'ID of the user assigned to this risk',
-    required: false,
-    example: 'mem_abc123def456',
-  })
-  @IsOptional()
-  @IsString()
+  @OptionalAssigneeProperty('ID of the user assigned to this risk')
   assigneeId?: string;
 }

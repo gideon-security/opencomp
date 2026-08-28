@@ -124,6 +124,49 @@ export function createEntityHooks<
 }
 
 /**
+ * Lightweight list hook for simple CRUD resources that return `{ data: T[], count }`
+ * and need only `fallbackData` hydration. Replaces ~15 copies of
+ * `useSWR(key, () => apiClient.get(...), { fallbackData, revalidateOnMount })`.
+ *
+ * Keeps the existing consumer contract (`{ data: T[], isLoading, error, mutate }`)
+ * while single-sourcing the SWR boilerplate.
+ */
+export function createSimpleListHook<ListItem, ListResponse extends { data: ListItem[] }>(endpoint: string, defaultInterval = DEFAULT_LIST_INTERVAL) {
+  return function useSimpleList(options?: { initialData?: ListItem[] } & UseApiSWROptions<ListResponse>) {
+    const { initialData, ...restOptions } = (options ?? {}) as { initialData?: ListItem[] } & UseApiSWROptions<ListResponse>;
+    const swr = useApiSWR<ListResponse>(endpoint, {
+      refreshInterval: (restOptions as { refreshInterval?: number }).refreshInterval ?? defaultInterval,
+      revalidateOnFocus: false,
+      ...(restOptions as object),
+      ...(initialData
+        ? {
+            fallbackData: {
+              data: { data: initialData, count: initialData.length } as unknown as ListResponse,
+              status: 200,
+            } as ApiResponse<ListResponse>,
+          }
+        : {}),
+      revalidateOnMount: initialData ? false : true,
+    } as UseApiSWROptions<ListResponse>);
+
+    // Unwrap ApiResponse<ListResponse> -> ListItem[]
+    const raw = swr.data as unknown as ApiResponse<ListResponse> | undefined;
+    const listResponse = raw?.data as ListResponse | undefined;
+    const data = (listResponse as { data?: ListItem[] })?.data ?? [];
+    const list = Array.isArray(data) ? data : [];
+
+    return {
+      data: list,
+      error: swr.error,
+      isLoading: swr.isLoading,
+      mutate: swr.mutate,
+      raw: listResponse,
+      swr,
+    };
+  };
+}
+
+/**
  * Factory for Trigger orchestration helpers (auto-link, relink, mitigation).
  * Deduplicates 8-method blocks in useVendors/useRisks:
  *   regenerateMitigation, autoLink, relink, suggestLinks, applyLinks, fetchActiveRun, discardRun

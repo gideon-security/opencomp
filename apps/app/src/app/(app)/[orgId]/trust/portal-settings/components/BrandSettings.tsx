@@ -2,7 +2,7 @@
 
 import { usePermissions } from '@/hooks/use-permissions';
 import { useTrustPortalSettings } from '@/hooks/use-trust-portal-settings';
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounce } from '@gideon-defender/ui/hooks/use-debounce';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Card,

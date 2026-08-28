@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateYmd } from '@/lib/format';
+
 import {
   Button,
   HStack,
@@ -75,8 +77,7 @@ function buildHistoryRows(metric: IsmsMetric): HistoryRow[] {
 }
 
 function formatDate(value: string): string {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toISOString().slice(0, 10);
+  return formatDateYmd(value) ?? value;
 }
 
 export function MeasurementHistory({

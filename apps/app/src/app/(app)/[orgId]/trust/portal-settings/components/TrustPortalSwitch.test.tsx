@@ -27,7 +27,7 @@ vi.mock('@/hooks/use-trust-portal-settings', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useDebounce', () => ({
+vi.mock('@gideon-defender/ui/hooks/use-debounce', () => ({
   useDebounce: (value: string) => value,
 }));
 

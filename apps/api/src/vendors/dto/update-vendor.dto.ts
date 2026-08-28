@@ -10,12 +10,17 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import {
+  Impact,
+  Likelihood,
+  RiskTreatmentType,
   VendorCategory,
   VendorStatus,
-  Likelihood,
-  Impact,
-  RiskTreatmentType,
 } from '@db';
+import {
+  OptionalAssigneePropertyOptional,
+  OptionalImpactPropertyOptional,
+  OptionalLikelihoodPropertyOptional,
+} from '../../common/dto/risk-vendor-fields';
 
 /**
  * DTO for PATCH /vendors/:id
@@ -48,30 +53,16 @@ export class UpdateVendorDto {
   @IsEnum(VendorStatus)
   status?: VendorStatus;
 
-  @ApiPropertyOptional({
-    description: 'Inherent probability',
-    enum: Likelihood,
-  })
-  @IsOptional()
-  @IsEnum(Likelihood)
+  @OptionalLikelihoodPropertyOptional({ description: 'Inherent probability' })
   inherentProbability?: Likelihood;
 
-  @ApiPropertyOptional({ description: 'Inherent impact', enum: Impact })
-  @IsOptional()
-  @IsEnum(Impact)
+  @OptionalImpactPropertyOptional({ description: 'Inherent impact' })
   inherentImpact?: Impact;
 
-  @ApiPropertyOptional({
-    description: 'Residual probability',
-    enum: Likelihood,
-  })
-  @IsOptional()
-  @IsEnum(Likelihood)
+  @OptionalLikelihoodPropertyOptional({ description: 'Residual probability' })
   residualProbability?: Likelihood;
 
-  @ApiPropertyOptional({ description: 'Residual impact', enum: Impact })
-  @IsOptional()
-  @IsEnum(Impact)
+  @OptionalImpactPropertyOptional({ description: 'Residual impact' })
   residualImpact?: Impact;
 
   @ApiPropertyOptional({
@@ -104,8 +95,6 @@ export class UpdateVendorDto {
   @IsBoolean()
   isSubProcessor?: boolean;
 
-  @ApiPropertyOptional({ description: 'Assignee member ID' })
-  @IsOptional()
-  @IsString()
+  @OptionalAssigneePropertyOptional()
   assigneeId?: string;
 }

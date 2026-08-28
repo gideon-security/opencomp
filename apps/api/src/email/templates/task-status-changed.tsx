@@ -6,7 +6,6 @@ import {
   Font,
   Heading,
   Html,
-  Link,
   Preview,
   Section,
   Tailwind,
@@ -14,7 +13,7 @@ import {
 } from '@react-email/components';
 import { Footer } from '../components/footer';
 import { Logo } from '../components/logo';
-import { getUnsubscribeUrl } from '@gideon-defender/email';
+import { UnsubscribeFooter } from '../components/unsubscribe-footer';
 
 interface Props {
   toName: string;
@@ -37,7 +36,6 @@ export const TaskStatusChangedEmail = ({
   organizationName,
   taskUrl,
 }: Props) => {
-  const unsubscribeUrl = getUnsubscribeUrl(toEmail);
   const oldStatusText = oldStatus.charAt(0).toUpperCase() + oldStatus.slice(1);
   const newStatusText = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
 
@@ -98,15 +96,7 @@ export const TaskStatusChangedEmail = ({
               </a>
             </Text>
 
-            <Section className="mt-[30px] mb-[20px]">
-              <Text className="text-[12px] leading-[20px] text-[#666666]">
-                Don't want to receive task assignment notifications?{' '}
-                <Link href={unsubscribeUrl} className="text-[#121212] underline">
-                  Manage your email preferences
-                </Link>
-                .
-              </Text>
-            </Section>
+            <UnsubscribeFooter email={toEmail} message="Don't want to receive task assignment notifications?" />
 
             <br />
 

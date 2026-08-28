@@ -12,8 +12,8 @@ import {
 import { parseAsStringEnum, useQueryState } from 'nuqs';
 import * as React from 'react';
 
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import { getDefaultFilterOperator, getFilterOperators } from '@/lib/data-table';
+import { useDebouncedFilters } from './hooks/use-debounced-filters';
 import { dataTableConfig } from '@/lib/data-table-config';
 import { formatDate } from '@/lib/format';
 import { generateId } from '@/lib/id';
@@ -54,7 +54,6 @@ import {
   SortableOverlay,
 } from './sortable';
 
-const FILTERS_KEY = 'filters';
 const JOIN_OPERATOR_KEY = 'joinOperator';
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
@@ -85,17 +84,12 @@ export function DataTableFilterList<TData>({
     return table.getAllColumns().filter((column) => column.columnDef.enableColumnFilter);
   }, [table]);
 
-  const [filters, setFilters] = useQueryState(
-    FILTERS_KEY,
-    getFiltersStateParser<TData>(columns.map((field) => field.id))
-      .withDefault([])
-      .withOptions({
-        clearOnDefault: true,
-        shallow,
-        throttleMs,
-      }),
-  );
-  const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
+  const { filters, setFilters, debouncedSetFilters } = useDebouncedFilters<TData>({
+    columnIds: columns.map((field) => field.id),
+    debounceMs,
+    throttleMs,
+    shallow,
+  });
 
   const [joinOperator, setJoinOperator] = useQueryState(
     JOIN_OPERATOR_KEY,

@@ -1,4 +1,5 @@
 import type { IsmsMetric } from '../isms-types';
+import { formatDateYmd } from '@/lib/format';
 import { periodLabel, toPeriodKey } from './monitoring-periods';
 
 /**
@@ -16,8 +17,7 @@ function escapeCell(raw: string): string {
 }
 
 function formatDate(value: string): string {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toISOString().slice(0, 10);
+  return formatDateYmd(value) ?? value;
 }
 
 /** Build the history CSV: one row per measurement, newest first. */

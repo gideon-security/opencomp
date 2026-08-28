@@ -1,4 +1,4 @@
-import { getUnsubscribeUrl } from '@/lib/unsubscribe';
+import { getUnsubscribeUrl } from '@gideon-defender/email';
 import { db } from '@db/server';
 import { redirect } from 'next/navigation';
 

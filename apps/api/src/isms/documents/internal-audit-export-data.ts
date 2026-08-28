@@ -1,5 +1,6 @@
 import { db } from '@db';
 import type { Prisma } from '@db';
+import { formatDateYmd } from '@gideon-defender/utils/format';
 import { conclusionSentence } from './internal-audit-defaults';
 import type { AuditExportRow, AuditSignoffExportRow } from './types';
 
@@ -76,10 +77,6 @@ const FINDING_STATUS_LABELS: Record<string, string> = {
   in_progress: 'In progress',
   closed: 'Closed',
 };
-
-function formatDateYmd(date: Date | null): string | null {
-  return date ? date.toISOString().slice(0, 10) : null;
-}
 
 /** The three fixed sign-off slots, in the order the reference document uses. */
 function mapSignoffs(audit: AuditWithExportIncludes): AuditSignoffExportRow[] {

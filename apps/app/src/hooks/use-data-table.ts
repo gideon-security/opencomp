@@ -29,7 +29,7 @@ import {
 } from 'nuqs';
 import * as React from 'react';
 
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
+import { useDebouncedCallback } from '@gideon-defender/ui/hooks/use-debounced-callback';
 import { getSortingStateParser } from '@/lib/parsers';
 import type { ExtendedColumnSort } from '@/types/data-table';
 

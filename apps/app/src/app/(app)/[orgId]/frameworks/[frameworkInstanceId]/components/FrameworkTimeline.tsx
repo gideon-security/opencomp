@@ -16,6 +16,7 @@ import {
   type Timeline,
   type TimelinePhase,
 } from '@/hooks/use-timelines';
+import { formatDateShort } from '@/lib/format';
 import { TimelinePhaseBar } from '../../../overview/components/TimelinePhaseBar';
 
 interface FrameworkTimelineProps {
@@ -23,12 +24,7 @@ interface FrameworkTimelineProps {
 }
 
 function formatDate(date: string | Date | null): string {
-  if (!date) return '\u2014';
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  return formatDateShort(date) || '\u2014';
 }
 
 type TimeRemaining =

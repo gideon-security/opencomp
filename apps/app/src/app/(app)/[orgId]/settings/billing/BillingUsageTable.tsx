@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateShort } from '@/lib/format';
+
 import { getBillingSkuProductKey } from '@gideon-defender/billing';
 import { Card, CardContent, CardHeader, CardTitle, Stack, Text } from '@trycompai/design-system';
 import type React from 'react';
@@ -137,11 +139,6 @@ function formatRemaining(row: BillingUsageRow) {
   return `${row.subscriptionRemaining} of ${row.subscriptionIncluded}`;
 }
 
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: 'UTC',
-  }).format(new Date(date));
+function formatDate(date: string): string {
+  return formatDateShort(date, { timeZone: 'UTC' });
 }

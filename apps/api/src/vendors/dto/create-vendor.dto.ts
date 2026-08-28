@@ -8,7 +8,12 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { VendorCategory, VendorStatus, Likelihood, Impact } from '@db';
+import { Impact, Likelihood, VendorCategory, VendorStatus } from '@db';
+import {
+  OptionalAssigneeProperty,
+  OptionalImpactProperty,
+  OptionalLikelihoodProperty,
+} from '../../common/dto/risk-vendor-fields';
 
 export class CreateVendorDto {
   @ApiProperty({
@@ -48,44 +53,32 @@ export class CreateVendorDto {
   @IsEnum(VendorStatus)
   status?: VendorStatus;
 
-  @ApiProperty({
+  @OptionalLikelihoodProperty({
     description: 'Inherent probability of risk before controls',
-    enum: Likelihood,
-    default: Likelihood.very_unlikely,
     example: Likelihood.possible,
+    defaultValue: Likelihood.very_unlikely,
   })
-  @IsOptional()
-  @IsEnum(Likelihood)
   inherentProbability?: Likelihood;
 
-  @ApiProperty({
+  @OptionalImpactProperty({
     description: 'Inherent impact of risk before controls',
-    enum: Impact,
-    default: Impact.insignificant,
     example: Impact.moderate,
+    defaultValue: Impact.insignificant,
   })
-  @IsOptional()
-  @IsEnum(Impact)
   inherentImpact?: Impact;
 
-  @ApiProperty({
+  @OptionalLikelihoodProperty({
     description: 'Residual probability after controls are applied',
-    enum: Likelihood,
-    default: Likelihood.very_unlikely,
     example: Likelihood.unlikely,
+    defaultValue: Likelihood.very_unlikely,
   })
-  @IsOptional()
-  @IsEnum(Likelihood)
   residualProbability?: Likelihood;
 
-  @ApiProperty({
+  @OptionalImpactProperty({
     description: 'Residual impact after controls are applied',
-    enum: Impact,
-    default: Impact.insignificant,
     example: Impact.minor,
+    defaultValue: Impact.insignificant,
   })
-  @IsOptional()
-  @IsEnum(Impact)
   residualImpact?: Impact;
 
   @ApiProperty({
@@ -107,12 +100,6 @@ export class CreateVendorDto {
   @IsBoolean()
   isSubProcessor?: boolean;
 
-  @ApiProperty({
-    description: 'ID of the user assigned to manage this vendor',
-    required: false,
-    example: 'mem_abc123def456',
-  })
-  @IsOptional()
-  @IsString()
+  @OptionalAssigneeProperty('ID of the user assigned to manage this vendor')
   assigneeId?: string;
 }

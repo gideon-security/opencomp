@@ -1,4 +1,4 @@
-import { verifyUnsubscribeToken } from '@/lib/unsubscribe';
+import { verifyUnsubscribeToken } from '@gideon-defender/email';
 import { db } from '@db/server';
 import { UnsubscribePreferencesClient, type EmailPreferences } from './client';
 

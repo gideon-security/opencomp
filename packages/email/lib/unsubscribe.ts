@@ -33,6 +33,14 @@ export function generateUnsubscribeToken(email: string): string {
 }
 
 /**
+ * Verify an unsubscribe token matches an email address
+ */
+export function verifyUnsubscribeToken(email: string, token: string): boolean {
+  const expectedToken = generateUnsubscribeToken(email);
+  return expectedToken === token;
+}
+
+/**
  * Generate an unsubscribe URL for an email address (preferences page)
  */
 export function getUnsubscribeUrl(email: string): string {

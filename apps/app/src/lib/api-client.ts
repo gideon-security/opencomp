@@ -1,7 +1,7 @@
 'use client';
 
 import { env } from '@/env.mjs';
-import { buildApiResponse, handleNetworkError, parseResponseBody, type ApiResponse } from './api-base';
+import { executeFetch, type ApiResponse } from './api-base';
 
 export type { ApiResponse };
 
@@ -33,18 +33,11 @@ class ApiClient {
       headers['X-Organization-Id'] = organizationId;
     }
 
-    try {
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
-        credentials: 'include',
-        ...fetchOptions,
-        headers,
-      });
-
-      const data = await parseResponseBody(response);
-      return buildApiResponse<T>(data, response);
-    } catch (error) {
-      return handleNetworkError(error);
-    }
+    return executeFetch<T>(`${this.baseUrl}${endpoint}`, {
+      credentials: 'include',
+      ...fetchOptions,
+      headers,
+    });
   }
 
   /**

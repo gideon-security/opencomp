@@ -3,7 +3,7 @@
 import { usePermissions } from '@/hooks/use-permissions';
 import type { TrustCustomFrameworkItem } from '@/hooks/use-trust-portal-settings';
 import { useTrustPortalSettings } from '@/hooks/use-trust-portal-settings';
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounce } from '@gideon-defender/ui/hooks/use-debounce';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@trycompai/design-system';
 import { Form } from '@gideon-defender/ui/form';

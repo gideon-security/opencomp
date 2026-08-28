@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useTimelines, type Timeline } from '@/hooks/use-timelines';
+import { formatDateShort } from '@/lib/format';
 import { TimelinePhaseBar } from './TimelinePhaseBar';
 
 interface TimelineOverviewProps {
@@ -41,12 +42,7 @@ const STATUS_LABEL: Record<Timeline['status'], TimelineStatusKey> = {
 };
 
 function formatDate(date: string | Date | null): string {
-  if (!date) return '\u2014';
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  return formatDateShort(date) || '\u2014';
 }
 
 function getNextCycleDate(timeline: Timeline): string | null {

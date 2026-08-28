@@ -1,5 +1,5 @@
 import { db } from "@db/server";
-import { verifyUnsubscribeToken } from "@/lib/unsubscribe";
+import { verifyUnsubscribeToken } from "@gideon-defender/email";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
