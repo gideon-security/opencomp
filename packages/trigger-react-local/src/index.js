@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 export const TriggerAuthContext = createContext({
   accessToken: undefined,
@@ -24,8 +24,10 @@ async function fetchRun(runId, accessToken, baseURL, signal) {
 
 function useRunBase(runId, opts) {
   const options = opts || {};
-  const { accessToken, enabled = true, refreshInterval = 1000, baseURL } =
-    options;
+  const authContext = useContext(TriggerAuthContext);
+  const { enabled = true, refreshInterval = 1000 } = options;
+  const accessToken = options.accessToken ?? authContext.accessToken;
+  const baseURL = options.baseURL ?? authContext.baseURL;
   const [run, setRun] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(Boolean(runId));

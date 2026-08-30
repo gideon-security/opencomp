@@ -62,6 +62,7 @@ import { TimelinesModule } from './timelines/timelines.module';
 import { BackgroundChecksModule } from './background-checks/background-checks.module';
 import { BillingModule } from './billing/billing.module';
 import { OffboardingChecklistModule } from './offboarding-checklist/offboarding-checklist.module';
+import { GideonModule } from './gideon/gideon.module';
 
 @Module({
   imports: [
@@ -136,6 +137,7 @@ import { OffboardingChecklistModule } from './offboarding-checklist/offboarding-
     OffboardingChecklistModule,
     McpModule,
     McpDownloadModule,
+    GideonModule,
   ],
   controllers: [AppController],
   providers: [

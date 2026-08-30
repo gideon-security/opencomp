@@ -7,6 +7,8 @@ import { ApiKeyService } from './api-key.service';
 import { AuthController } from './auth.controller';
 import { HybridAuthGuard } from './hybrid-auth.guard';
 import { PermissionGuard } from './permission.guard';
+import { GideonJwtService } from './gideon-jwt.service';
+import { GideonShadowService } from '../gideon/gideon-shadow.service';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { PermissionGuard } from './permission.guard';
     HybridAuthGuard,
     PermissionGuard,
     ActingUserResolver,
+    GideonJwtService,
+    GideonShadowService,
   ],
   exports: [
     ApiKeyService,
@@ -38,6 +42,8 @@ import { PermissionGuard } from './permission.guard';
     HybridAuthGuard,
     PermissionGuard,
     ActingUserResolver,
+    GideonJwtService,
+    GideonShadowService,
     BetterAuthModule,
   ],
 })
