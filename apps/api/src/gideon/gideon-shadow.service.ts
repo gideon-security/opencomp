@@ -56,14 +56,16 @@ export class GideonShadowService {
 
     try {
       const url = `${base.replace(/\/$/, '')}/v1/platform/tenants/${encodeURIComponent(tenantId)}/operations`;
+      if (!gideonToken && !this.internalToken) {
+        this.logger.debug(
+          `[GideonShadow] skip tenant operations fetch tid=${tenantId}: no token (shadow, non-fatal)`,
+        );
+        return;
+      }
       const headers: Record<string, string> = {
-        Authorization: `Bearer ${gideonToken}`,
+        Authorization: `Bearer ${gideonToken || this.internalToken}`,
         'Content-Type': 'application/json',
       };
-      // Prefer Gideon JWT; fallback to internal token for service-to-service if configured
-      if (this.internalToken && !gideonToken) {
-        headers['Authorization'] = `Bearer ${this.internalToken}`;
-      }
 
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 3000);
@@ -92,12 +94,21 @@ export class GideonShadowService {
           id: true,
           name: true,
           createdAt: true,
-          members: { select: { id: true }, take: 1 },
         },
       }).catch(() => null);
 
+      const hasMembers = opencompOrg
+        ? await db.member
+            .findFirst({
+              where: { organizationId: tenantId },
+              select: { id: true },
+            })
+            .then((m) => !!m)
+            .catch(() => false)
+        : false;
+
       const opencompData = opencompOrg
-        ? { id: opencompOrg.id, name: opencompOrg.name, hasMembers: !!opencompOrg.members.length }
+        ? { id: opencompOrg.id, name: opencompOrg.name, hasMembers }
         : null;
 
       // Compare: if Gideon returns tenant but opencomp has no org, or names differ, log

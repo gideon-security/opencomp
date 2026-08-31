@@ -1,5 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { createRemoteJWKSet, jwtVerify, type JWTPayload } from 'jose';
+import {
+  createRemoteJWKSet,
+  decodeJwt,
+  decodeProtectedHeader,
+  jwtVerify,
+  type JWTPayload,
+} from 'jose';
 
 export interface GideonJwtPayload extends JWTPayload {
   sub: string;
@@ -125,17 +131,50 @@ export class GideonJwtService {
     const jwks = this.getRemoteJWKSet();
     if (!jwks) return null;
 
-    try {
-      const { payload, protectedHeader } = await jwtVerify(
-        token,
-        jwks,
-        this.issuer || this.audience
-          ? {
-              issuer: this.issuer || undefined,
-              audience: this.audience || undefined,
-            }
-          : undefined,
+    // Fail closed when Gideon is configured but issuer or audience is missing
+    // — otherwise any KMS-signed JWT would be accepted without iss/aud binding.
+    if (this.isConfigured() && (!this.issuer || !this.audience)) {
+      this.logger.warn(
+        'Gideon JWT misconfigured — GIDEON_JWT_ISSUER and GIDEON_JWT_AUDIENCE (or JWT_ISSUER/AUDIENCE) must be set when GIDEON_IDENTITY_URL is set; rejecting token',
       );
+      return null;
+    }
+
+    // Fast-path: peek iss without crypto/JWKS fetch. Avoids per-request JWKS work
+    // for better-auth session Bearer tokens when Gideon is in shadow mode.
+    if (this.issuer) {
+      try {
+        const peek = decodeJwt(token);
+        // `iss` is optional in JWT but expected for Gideon; if present and mismatched, skip verify
+        if (
+          typeof (peek as Record<string, unknown>).iss === 'string' &&
+          (peek as Record<string, unknown>).iss !== this.issuer
+        ) {
+          this.logger.debug(
+            `Gideon JWT iss mismatch — expected ${this.issuer}, got ${(peek as Record<string, unknown>).iss}`,
+          );
+          return null;
+        }
+        // Also peek protected header for `kid` presence — non-JWT opaque tokens lack it
+        try {
+          const header = decodeProtectedHeader(token);
+          if (!header.kid) {
+            this.logger.debug('Gideon JWT missing kid — likely not a Gideon JWT, skipping');
+            return null;
+          }
+        } catch {
+          return null;
+        }
+      } catch {
+        return null;
+      }
+    }
+
+    try {
+      const { payload, protectedHeader } = await jwtVerify(token, jwks, {
+        issuer: this.issuer || undefined,
+        audience: this.audience || undefined,
+      });
 
       // Enforce aal >=2 for admin routes if present (agent-comms README.md:104)
       const aalRaw = (payload as GideonJwtPayload).aal;

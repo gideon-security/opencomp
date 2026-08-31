@@ -43,8 +43,21 @@ export class GideonDevicesProxyController {
       process.env.GIDEON_AGENT_COMMS_URL ||
       process.env.AGENT_COMMS_URL ||
       process.env.AGENT_COMMUNICATIONS_URL ||
-      'http://localhost:8082'
+      'http://localhost:8080'
     ).replace(/\/$/, '');
+  }
+
+  private get legacyAgentCommsUrl(): string | null {
+    // Phase 0 migration: prior default was 8082 before agent-communications README fix.
+    // Keep as fallback for env-unset deployments still on 8082.
+    if (
+      process.env.GIDEON_AGENT_COMMS_URL ||
+      process.env.AGENT_COMMS_URL ||
+      process.env.AGENT_COMMUNICATIONS_URL
+    ) {
+      return null;
+    }
+    return 'http://localhost:8082';
   }
 
   @Get()
@@ -87,17 +100,20 @@ export class GideonDevicesProxyController {
       const tenant = req.headers['x-gideon-tenant-id'] as string | undefined;
       if (tenant) headers['x-gideon-tenant-id'] = tenant;
 
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-
       let upstream: globalThis.Response;
       try {
-        upstream = await fetch(targetUrl.toString(), {
-          headers,
-          signal: controller.signal,
-        });
-      } finally {
-        clearTimeout(timeout);
+        upstream = await this.fetchWithTimeout(targetUrl.toString(), headers, 5000);
+      } catch (primaryError) {
+        const fallback = this.legacyAgentCommsUrl;
+        if (fallback && targetUrl.toString().startsWith(this.agentCommsUrl)) {
+          const fallbackUrl = new URL(targetUrl.pathname + targetUrl.search, fallback).toString();
+          this.logger.warn(
+            `[GideonShadow] devices proxy primary ${targetUrl.toString()} failed, retrying legacy ${fallbackUrl}: ${(primaryError as Error).message}`,
+          );
+          upstream = await this.fetchWithTimeout(fallbackUrl, headers, 5000);
+        } else {
+          throw primaryError;
+        }
       }
 
       // Shadow log comparison with local Device table (non-fatal)
@@ -116,8 +132,21 @@ export class GideonDevicesProxyController {
       );
       res.status(502).json({
         message: 'Agent Communications upstream unavailable (shadow)',
-        error: (error as Error).message,
       });
+    }
+  }
+
+  private async fetchWithTimeout(
+    url: string,
+    headers: Record<string, string>,
+    timeoutMs: number,
+  ): Promise<globalThis.Response> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { headers, signal: controller.signal });
+    } finally {
+      clearTimeout(timeout);
     }
   }
 
