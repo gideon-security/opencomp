@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method -- spec references jest-mocked db methods directly; `this` scoping is not a concern for mocks */
 import { BackgroundCheckIdentityClient } from './background-check-identity.client';
 import { BillingService } from '../billing/billing.service';
 import { BackgroundCheckBillingService } from './background-check-billing.service';
@@ -80,10 +81,10 @@ describe('background checks', () => {
     jest.clearAllMocks();
     process.env = {
       ...originalEnv,
-      BACKGROUND_CHECK_API_KEY: 'bc_test',
-      BACKGROUND_CHECK_API_BASE_URL: 'https://glad-sturgeon-729.convex.site/',
-      BACKGROUND_CHECK_WEBHOOK_SECRET: 'whsec_test',
-      BACKGROUND_WH_ENDPOINT: '',
+      CHECKR_API_KEY: 'checkr_test',
+      CHECKR_PACKAGE: 'tasker_standard',
+      CHECKR_API_BASE_URL: 'https://api.checkr.com',
+      CHECKR_WEBHOOK_SECRET: 'whsec_test',
       STRIPE_BACKGROUND_CHECK_PRICE_ID: 'price_bg',
       NEXT_PUBLIC_APP_URL: 'https://app.gideondefender.com',
     };
@@ -93,17 +94,22 @@ describe('background checks', () => {
     process.env = originalEnv;
   });
 
-  it('creates an Identity request with expected headers and body', async () => {
-    const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'check_1',
-          status: 'invited',
-          candidateUrl: 'https://identity.gideondefender.com/cand_1',
-        }),
-        { status: 200 },
-      ),
-    );
+  it('creates a Checkr candidate with expected Basic auth and body', async () => {
+    const fetchSpy = jest
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ id: 'cand_1' }), { status: 200 }),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            id: 'rep_1',
+            status: 'pending',
+            invitation_url: 'https://checkr.com/invite',
+          }),
+          { status: 200 },
+        ),
+      );
 
     const client = new BackgroundCheckIdentityClient();
     await client.createBackgroundCheck({
@@ -115,51 +121,63 @@ describe('background checks', () => {
       idempotencyKey: 'comp-background-check:mem_1',
     });
 
-    expect(fetchSpy).toHaveBeenCalledWith(
-      'https://glad-sturgeon-729.convex.site/v1/background-checks',
+    expect(fetchSpy).toHaveBeenNthCalledWith(
+      1,
+      'https://api.checkr.com/v1/candidates',
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
-          Authorization: 'Bearer bc_test',
-          'Idempotency-Key': 'comp-background-check:mem_1',
+          Authorization: `Basic ${Buffer.from('checkr_test:').toString('base64')}`,
         }),
       }),
     );
-    const request = fetchSpy.mock.calls[0]?.[1];
-    const body = JSON.parse(String(request?.body)) as {
-      candidate: { name: string; email: string };
+    const firstBody = JSON.parse(
+      fetchSpy.mock.calls[0]?.[1]?.body as string,
+    ) as {
+      email: string;
+      first_name: string;
+      last_name: string;
       metadata: { compOrganizationId: string; compMemberId: string };
-      callbackUrl: string;
-      requesterNotes?: string;
     };
-    expect(body.candidate).toEqual({
-      name: 'Ada Lovelace',
-      email: 'ada@example.com',
-    });
-    expect(body.metadata).toEqual({
-      source: 'comp',
+    expect(firstBody.email).toBe('ada@example.com');
+    expect(firstBody.first_name).toBe('Ada');
+    expect(firstBody.last_name).toBe('Lovelace');
+    expect(firstBody.metadata).toEqual({
       compOrganizationId: 'org_1',
       compMemberId: 'mem_1',
+      rerunCount: 'comp-background-check:mem_1',
     });
-    expect(body.callbackUrl).toBe(
-      'https://api.gideondefender.com/v1/background-checks/webhook',
+    expect(fetchSpy).toHaveBeenNthCalledWith(
+      2,
+      'https://api.checkr.com/v1/invitations',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          Authorization: `Basic ${Buffer.from('checkr_test:').toString('base64')}`,
+        }),
+      }),
     );
-    expect(body.requesterNotes).toBeUndefined();
   });
 
-  it('uses BACKGROUND_WH_ENDPOINT as the Identity callback URL when configured', async () => {
+  it('ignores BACKGROUND_WH_ENDPOINT for Checkr (uses dashboard webhook)', async () => {
     process.env.BACKGROUND_WH_ENDPOINT =
       'https://delbert-unhopeful-misti.ngrok-free.dev/v1/background-checks/webhook/';
-    const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          id: 'check_1',
-          status: 'invited',
-          candidateUrl: 'https://identity.gideondefender.com/cand_1',
-        }),
-        { status: 200 },
-      ),
-    );
+    const fetchSpy = jest
+      .spyOn(global, 'fetch')
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ id: 'cand_1' }), { status: 200 }),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            id: 'rep_1',
+            invitation_url: 'https://checkr.com/invite',
+          }),
+          {
+            status: 200,
+          },
+        ),
+      );
 
     const client = new BackgroundCheckIdentityClient();
     await client.createBackgroundCheck({
@@ -171,14 +189,12 @@ describe('background checks', () => {
       idempotencyKey: 'comp-background-check:mem_1',
     });
 
-    const request = fetchSpy.mock.calls[0]?.[1];
-    const body = JSON.parse(String(request?.body)) as { callbackUrl: string };
-    expect(body.callbackUrl).toBe(
-      'https://delbert-unhopeful-misti.ngrok-free.dev/v1/background-checks/webhook',
-    );
+    // Checkr does not send callbackUrl per-request; webhook is configured in dashboard
+    const firstBody = JSON.parse(fetchSpy.mock.calls[0]?.[1]?.body as string);
+    expect(firstBody).not.toHaveProperty('callbackUrl');
   });
 
-  it('reports non-json Identity failures without throwing a parse error', async () => {
+  it('reports non-json Checkr failures without throwing a parse error', async () => {
     jest.spyOn(global, 'fetch').mockResolvedValueOnce(
       new Response('No matching routes found', {
         status: 404,
@@ -197,7 +213,7 @@ describe('background checks', () => {
         requesterEmail: 'admin@example.com',
         idempotencyKey: 'comp-background-check:mem_1',
       }),
-    ).rejects.toThrow('Identity background check request failed.');
+    ).rejects.toThrow('Checkr candidate creation failed.');
   });
 
   it('returns an existing request without charging or calling Identity', async () => {
@@ -558,13 +574,11 @@ describe('background checks', () => {
       >);
 
       const identityClient = {
-        createBackgroundCheck: jest
-          .fn()
-          .mockResolvedValue({
-            id: 'check_new',
-            status: 'invited',
-            candidateUrl: 'https://c/x',
-          }),
+        createBackgroundCheck: jest.fn().mockResolvedValue({
+          id: 'check_new',
+          status: 'invited',
+          candidateUrl: 'https://c/x',
+        }),
       };
       const paymentService = { charge: jest.fn(), refund: jest.fn() };
       const service = new BackgroundChecksService(
@@ -788,5 +802,426 @@ describe('background checks', () => {
       ],
     });
     expect(billingService.getStatus).toHaveBeenCalledWith('org_1');
+  });
+
+  describe('getById', () => {
+    function makeService(identityClient: unknown) {
+      return new BackgroundChecksService(
+        identityClient as BackgroundCheckIdentityClient,
+        {} as unknown as BackgroundCheckPaymentService,
+      );
+    }
+
+    it('returns the record alone when no Checkr report is linked', async () => {
+      const record = { id: 'bcr_1', identityBackgroundCheckId: null };
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findFirst>>
+      >(mockedDb.backgroundCheckRequest.findFirst).mockResolvedValueOnce(
+        record as Awaited<
+          ReturnType<typeof db.backgroundCheckRequest.findFirst>
+        >,
+      );
+      const identityClient = { getReport: jest.fn() };
+      const result = await makeService(identityClient).getById({
+        organizationId: 'org_1',
+        id: 'bcr_1',
+      });
+
+      expect(result).toEqual({ record });
+      expect(identityClient.getReport).not.toHaveBeenCalled();
+    });
+
+    it('fetches the Checkr report when linked and configured', async () => {
+      const record = { id: 'bcr_1', identityBackgroundCheckId: 'rep_1' };
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findFirst>>
+      >(mockedDb.backgroundCheckRequest.findFirst).mockResolvedValueOnce(
+        record as Awaited<
+          ReturnType<typeof db.backgroundCheckRequest.findFirst>
+        >,
+      );
+      const identityClient = {
+        getReport: jest.fn().mockResolvedValue({ id: 'rep_1' }),
+      };
+      const result = await makeService(identityClient).getById({
+        organizationId: 'org_1',
+        id: 'rep_1',
+      });
+
+      expect(identityClient.getReport).toHaveBeenCalledWith('rep_1');
+      expect(result).toEqual({ record, identity: { id: 'rep_1' } });
+    });
+
+    it('throws when no record matches', async () => {
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findFirst>>
+      >(mockedDb.backgroundCheckRequest.findFirst).mockResolvedValueOnce(null);
+      await expect(
+        makeService({ getReport: jest.fn() }).getById({
+          organizationId: 'org_1',
+          id: 'missing',
+        }),
+      ).rejects.toThrow('Background check not found.');
+    });
+  });
+
+  describe('syncForMember', () => {
+    function makeService(identityClient: unknown) {
+      return new BackgroundChecksService(
+        identityClient as BackgroundCheckIdentityClient,
+        {} as unknown as BackgroundCheckPaymentService,
+      );
+    }
+
+    it('persists the latest Checkr status and returns the sync payload', async () => {
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>
+      >(mockedDb.backgroundCheckRequest.findUnique).mockResolvedValueOnce({
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'rep_1',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findFirst>>
+      >(mockedDb.backgroundCheckRequest.findFirst).mockResolvedValueOnce({
+        id: 'bcr_1',
+        organizationId: 'org_1',
+        identityBackgroundCheckId: 'rep_1',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findFirst>>);
+      mockAsync<Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>>(
+        mockedDb.backgroundCheckRequest.update,
+      ).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'completed',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>);
+      const identityClient = {
+        getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
+      };
+
+      const result = await makeService(identityClient).syncForMember({
+        organizationId: 'org_1',
+        memberId: 'mem_1',
+      });
+
+      expect(mockedDb.backgroundCheckRequest.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            status: 'completed',
+            lastSyncedAt: expect.any(Date),
+          }),
+        }),
+      );
+      expect(result.syncedAt).toEqual(expect.any(String));
+      expect(result.identity).toEqual({ status: 'clear' });
+    });
+
+    it('throws when no Checkr check is linked', async () => {
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>
+      >(mockedDb.backgroundCheckRequest.findUnique).mockResolvedValueOnce({
+        id: 'bcr_1',
+        identityBackgroundCheckId: null,
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
+
+      await expect(
+        makeService({ getReport: jest.fn() }).syncForMember({
+          organizationId: 'org_1',
+          memberId: 'mem_1',
+        }),
+      ).rejects.toThrow('No background check to sync.');
+    });
+
+    it('backs off on unrecognized Checkr statuses without changing status', async () => {
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>
+      >(mockedDb.backgroundCheckRequest.findUnique).mockResolvedValueOnce({
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'rep_1',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findFirst>>
+      >(mockedDb.backgroundCheckRequest.findFirst).mockResolvedValueOnce({
+        id: 'bcr_1',
+        organizationId: 'org_1',
+        identityBackgroundCheckId: 'rep_1',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findFirst>>);
+      mockAsync<Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>>(
+        mockedDb.backgroundCheckRequest.update,
+      ).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'in_progress',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>);
+      const identityClient = {
+        getReport: jest.fn().mockResolvedValue({ status: 'frobnicated' }),
+      };
+
+      const result = await makeService(identityClient).syncForMember({
+        organizationId: 'org_1',
+        memberId: 'mem_1',
+      });
+
+      // Touches the timestamp so reconcile backs off, leaves status alone
+      expect(mockedDb.backgroundCheckRequest.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { lastSyncedAt: expect.any(Date) },
+        }),
+      );
+      const updateData = (mockedDb.backgroundCheckRequest.update as jest.Mock)
+        .mock.calls[0][0].data;
+      expect(updateData).not.toHaveProperty('status');
+      expect(result.syncedAt).toEqual(expect.any(String));
+      expect(result.identity).toEqual({ status: 'frobnicated' });
+    });
+
+    it('returns the record untouched when no report exists yet', async () => {
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>
+      >(mockedDb.backgroundCheckRequest.findUnique).mockResolvedValueOnce({
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'cand_1',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findFirst>>
+      >(mockedDb.backgroundCheckRequest.findFirst).mockResolvedValueOnce({
+        id: 'bcr_1',
+        organizationId: 'org_1',
+        identityBackgroundCheckId: 'cand_1',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findFirst>>);
+      mockAsync<Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>>(
+        mockedDb.backgroundCheckRequest.update,
+      ).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'invited',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>);
+      const identityClient = {
+        getReport: jest.fn().mockResolvedValue(null),
+      };
+
+      const result = await makeService(identityClient).syncForMember({
+        organizationId: 'org_1',
+        memberId: 'mem_1',
+      });
+
+      expect(identityClient.getReport).toHaveBeenCalledWith('cand_1');
+      expect(mockedDb.backgroundCheckRequest.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { lastSyncedAt: expect.any(Date) },
+        }),
+      );
+      expect(result.syncedAt).toEqual(expect.any(String));
+    });
+
+    it('leaves terminal rows with a snapshot untouched without calling Checkr', async () => {
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>
+      >(mockedDb.backgroundCheckRequest.findUnique).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'completed',
+        identityBackgroundCheckId: 'rep_1',
+        reportSnapshot: { id: 'rep_1' },
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
+      const identityClient = {
+        getReport: jest.fn(),
+      };
+
+      const result = await makeService(identityClient).syncForMember({
+        organizationId: 'org_1',
+        memberId: 'mem_1',
+      });
+
+      expect(identityClient.getReport).not.toHaveBeenCalled();
+      expect(mockedDb.backgroundCheckRequest.update).not.toHaveBeenCalled();
+      expect(result.record).toEqual(
+        expect.objectContaining({ status: 'completed' }),
+      );
+      expect(result.syncedAt).toEqual(expect.any(String));
+    });
+
+    it('backfills a missing snapshot on terminal rows without changing status', async () => {
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>
+      >(mockedDb.backgroundCheckRequest.findUnique).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'completed',
+        identityBackgroundCheckId: 'rep_1',
+        reportSnapshot: null,
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
+      mockAsync<Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>>(
+        mockedDb.backgroundCheckRequest.update,
+      ).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'completed',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>);
+      const identityClient = {
+        getReport: jest.fn().mockResolvedValue({ id: 'rep_1', status: 'clear' }),
+      };
+
+      const result = await makeService(identityClient).syncForMember({
+        organizationId: 'org_1',
+        memberId: 'mem_1',
+      });
+
+      expect(identityClient.getReport).toHaveBeenCalledWith('rep_1');
+      expect(mockedDb.backgroundCheckRequest.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            reportSnapshot: { id: 'rep_1', status: 'clear' },
+            reportSyncedAt: expect.any(Date),
+          }),
+        }),
+      );
+      const updateData = (mockedDb.backgroundCheckRequest.update as jest.Mock)
+        .mock.calls[0][0].data;
+      expect(updateData).not.toHaveProperty('status');
+      expect(result.syncedAt).toEqual(expect.any(String));
+    });
+
+    it('backs off when Checkr is unreachable instead of failing sync', async () => {
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>
+      >(mockedDb.backgroundCheckRequest.findUnique).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'in_progress',
+        identityBackgroundCheckId: 'rep_1',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
+      mockAsync<Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>>(
+        mockedDb.backgroundCheckRequest.update,
+      ).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'in_progress',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>);
+      const identityClient = {
+        getReport: jest.fn().mockRejectedValue(new Error('socket hang up')),
+      };
+
+      const result = await makeService(identityClient).syncForMember({
+        organizationId: 'org_1',
+        memberId: 'mem_1',
+      });
+
+      expect(mockedDb.backgroundCheckRequest.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { lastSyncedAt: expect.any(Date) },
+        }),
+      );
+      const updateData = (mockedDb.backgroundCheckRequest.update as jest.Mock)
+        .mock.calls[0][0].data;
+      expect(updateData).not.toHaveProperty('status');
+      expect(result.syncedAt).toEqual(expect.any(String));
+    });
+
+    it('graduates an invitation-id pointer once the report exists', async () => {
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>
+      >(mockedDb.backgroundCheckRequest.findUnique).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'invited',
+        identityBackgroundCheckId: 'inv_1',
+        checkrInvitationId: 'inv_1',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
+      mockAsync<Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>>(
+        mockedDb.backgroundCheckRequest.update,
+      ).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'completed',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>);
+      const identityClient = {
+        resolveReport: jest.fn().mockResolvedValue({
+          report: { status: 'clear' },
+          reportId: 'rep_9',
+        }),
+        getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
+      };
+
+      const result = await makeService(identityClient).syncForMember({
+        organizationId: 'org_1',
+        memberId: 'mem_1',
+      });
+
+      expect(identityClient.resolveReport).toHaveBeenCalledWith({
+        reportId: 'inv_1',
+        invitationId: 'inv_1',
+      });
+      expect(mockedDb.backgroundCheckRequest.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            identityBackgroundCheckId: 'rep_9',
+            status: 'completed',
+          }),
+        }),
+      );
+      expect(result.identity).toEqual({ status: 'clear' });
+    });
+  });
+
+  describe('requestForMember Checkr persistence', () => {
+    it('stores native Checkr ids alongside the report id', async () => {
+      mockAsync<
+        Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>
+      >(mockedDb.backgroundCheckRequest.findUnique).mockResolvedValueOnce(null);
+      mockAsync<Awaited<ReturnType<typeof db.member.findFirst>>>(
+        mockedDb.member.findFirst,
+      ).mockResolvedValueOnce({
+        id: 'mem_1',
+        organizationId: 'org_1',
+      } as Awaited<ReturnType<typeof db.member.findFirst>>);
+      mockAsync<Awaited<ReturnType<typeof db.backgroundCheckRequest.create>>>(
+        mockedDb.backgroundCheckRequest.create,
+      ).mockResolvedValueOnce({
+        id: 'bcr_1',
+        status: 'invited',
+      } as Awaited<ReturnType<typeof db.backgroundCheckRequest.create>>);
+      mockAsync<Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>>(
+        mockedDb.backgroundCheckRequest.update,
+      )
+        .mockResolvedValueOnce({
+          id: 'bcr_1',
+          status: 'invited',
+        } as Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>)
+        .mockResolvedValueOnce({
+          id: 'bcr_1',
+          status: 'invited',
+        } as Awaited<ReturnType<typeof db.backgroundCheckRequest.update>>);
+
+      const identityClient = {
+        createBackgroundCheck: jest.fn().mockResolvedValue({
+          id: 'cand_1',
+          status: 'invited',
+          candidateUrl: 'https://checkr.com/invite',
+          candidateId: 'cand_1',
+          invitationId: 'inv_1',
+        }),
+      };
+      const paymentService = {
+        charge: jest.fn().mockResolvedValue({
+          paymentIntentId: 'pi_1',
+          status: 'succeeded',
+          amount: 4900,
+          currency: 'usd',
+        }),
+        refund: jest.fn(),
+      };
+      const service = new BackgroundChecksService(
+        identityClient as unknown as BackgroundCheckIdentityClient,
+        paymentService as unknown as BackgroundCheckPaymentService,
+      );
+
+      await service.requestForMember({
+        organizationId: 'org_1',
+        memberId: 'mem_1',
+        employeeName: 'Ada Lovelace',
+        employeeEmail: 'ada@example.com',
+        requesterEmail: 'admin@example.com',
+      });
+
+      expect(mockedDb.backgroundCheckRequest.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            identityBackgroundCheckId: 'cand_1',
+            checkrCandidateId: 'cand_1',
+            checkrInvitationId: 'inv_1',
+          }),
+        }),
+      );
+    });
   });
 });

@@ -1,20 +1,19 @@
 import { BackgroundCheckStatus, db, Prisma } from '@db';
 import { logger, schedules } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
-import { BackgroundCheckIdentityClient } from '../../background-checks/background-check-identity.client';
+import { CheckrClient } from '../../background-checks/checkr.client';
 import { fetchCompletedReportSnapshot } from '../../background-checks/background-check-report-snapshot';
-import { backgroundCheckStatuses } from '../../background-checks/background-checks.types';
+import {
+  backgroundCheckStatuses,
+  mapCheckrReportToStatus,
+} from '../../background-checks/background-checks.types';
 
-// Checks in these states are still in flight and can still advance. Terminal
-// states (completed/completed_with_flags/failed/cancelled) are left untouched.
 const NON_TERMINAL_STATUSES: BackgroundCheckStatus[] = [
   BackgroundCheckStatus.invited,
   BackgroundCheckStatus.in_progress,
   BackgroundCheckStatus.in_review,
 ];
 
-// Only reconcile checks whose last sync is older than this, so the poller backs
-// off and lets the Identity webhook stay the primary update path.
 const STALE_AFTER_MS = 60 * 60 * 1000;
 
 const SUB_STATUS_SCHEMA = z
@@ -34,14 +33,6 @@ interface ReconciliationResult {
   unparseable: number;
 }
 
-/**
- * Identity's GET /v1/background-checks/:id returns the full check resource. We
- * only need the lifecycle `status` (+ granular sub-statuses) to recover a check
- * whose webhook never arrived (CS-473). The response is loosely structured, so
- * parse `status` and `statuses` INDEPENDENTLY: a malformed `statuses` must not
- * drop an otherwise-valid `status`. An absent/invalid `status` means "can't
- * determine" and the record is left untouched.
- */
 export function parseIdentityCheckState(raw: unknown): {
   status?: BackgroundCheckStatus;
   statuses?: z.infer<typeof SUB_STATUS_SCHEMA>;
@@ -49,30 +40,35 @@ export function parseIdentityCheckState(raw: unknown): {
   const record = z.record(z.string(), z.unknown()).safeParse(raw);
   if (!record.success) return {};
 
-  const status = z.enum(backgroundCheckStatuses).safeParse(record.data.status);
+  // Try direct status first (Checkr report has status at top level)
+  // Then try Checkr mapping via raw status string
+  const statusRaw = record.data.status as string | undefined;
+  const status = z.enum(backgroundCheckStatuses).safeParse(statusRaw);
+  if (status.success) {
+    const statuses = SUB_STATUS_SCHEMA.safeParse(record.data.statuses);
+    return {
+      status: status.data,
+      statuses: statuses.success ? statuses.data : undefined,
+    };
+  }
+
+  // For Checkr reports, an unmapped raw status falls through to undefined
+  // and the caller applies mapCheckrReportToStatus as a fallback.
   const statuses = SUB_STATUS_SCHEMA.safeParse(record.data.statuses);
 
   return {
-    status: status.success ? status.data : undefined,
+    status: undefined,
     statuses: statuses.success ? statuses.data : undefined,
   };
 }
 
-/**
- * Polls Identity for stale in-flight background checks and applies any status it
- * reports — recovering checks whose webhook was missed (CS-473). Background
- * check status is normally driven by Identity webhooks; this is the fallback.
- */
 export async function runReconciliation(): Promise<ReconciliationResult> {
-  if (!process.env.BACKGROUND_CHECK_API_KEY) {
-    logger.warn(
-      'BACKGROUND_CHECK_API_KEY not configured — skipping reconciliation',
-    );
+  const hasKey = !!process.env.CHECKR_API_KEY;
+  if (!hasKey) {
+    logger.warn('CHECKR_API_KEY not configured — skipping reconciliation');
     return { success: true, checked: 0, updated: 0, unparseable: 0 };
   }
 
-  // Base the stale cutoff on the ACTUAL run time, not the scheduled time — a
-  // cron that starts late would otherwise narrow the window and delay recovery.
   const staleBefore = new Date(Date.now() - STALE_AFTER_MS);
 
   const stuckChecks = await db.backgroundCheckRequest.findMany({
@@ -84,6 +80,7 @@ export async function runReconciliation(): Promise<ReconciliationResult> {
     select: {
       id: true,
       identityBackgroundCheckId: true,
+      checkrInvitationId: true,
       status: true,
       identityStatus: true,
       employmentStatus: true,
@@ -100,7 +97,7 @@ export async function runReconciliation(): Promise<ReconciliationResult> {
 
   logger.info(`Reconciling ${stuckChecks.length} stale background check(s)`);
 
-  const identityClient = new BackgroundCheckIdentityClient();
+  const checkrClient = new CheckrClient();
   let updated = 0;
   let unparseable = 0;
 
@@ -109,29 +106,67 @@ export async function runReconciliation(): Promise<ReconciliationResult> {
     if (!identityId) continue;
 
     let raw: unknown;
+    let effectiveId = identityId;
     try {
-      raw = await identityClient.getBackgroundCheck(identityId);
+      // Prefer resolveReport (report fetch plus invitation recovery);
+      // plain test doubles only expose getReport.
+      if (typeof checkrClient.resolveReport === 'function') {
+        const resolved = await checkrClient.resolveReport({
+          reportId: identityId,
+          invitationId: check.checkrInvitationId ?? null,
+        });
+        raw = resolved.report;
+        effectiveId = resolved.reportId;
+      } else {
+        raw = await checkrClient.getReport(identityId);
+      }
     } catch (error) {
-      logger.error('Failed to fetch Identity background check', {
+      logger.error('Failed to fetch Checkr report', {
         backgroundCheckRequestId: check.id,
         error: error instanceof Error ? error.message : String(error),
       });
       continue;
     }
 
-    const { status: nextStatus, statuses } = parseIdentityCheckState(raw);
-    if (!nextStatus) {
+    if (!raw) {
+      // Report missing in Checkr (deleted) or fetch returned nothing.
+      // Advance lastSyncedAt so this row is not re-polled every hour.
+      await db.backgroundCheckRequest.updateMany({
+        where: { id: check.id, status: { in: NON_TERMINAL_STATUSES } },
+        data: { lastSyncedAt: new Date() },
+      });
       unparseable += 1;
       continue;
     }
 
-    // Apply only the fields Identity actually reported AND that differ from what
-    // we already have. Never null out a sub-status the GET omitted, and refresh
-    // sub-statuses even when the top-level status is unchanged — a check can sit
-    // in `in_progress` while `Identity:Pending` advances to passed (CS-473).
+    const { status: nextStatus, statuses } = parseIdentityCheckState(raw);
+    // If direct parsing fails, try Checkr-specific handling
+    let finalStatus = nextStatus;
+    if (!finalStatus) {
+      const mapped = mapCheckrReportToStatus(raw);
+      const parsed = z.enum(backgroundCheckStatuses).safeParse(mapped);
+      if (parsed.success) finalStatus = parsed.data;
+    }
+
+    if (!finalStatus) {
+      // Status cannot be determined. Advance lastSyncedAt so this row backs
+      // off instead of being re-fetched on every run.
+      await db.backgroundCheckRequest.updateMany({
+        where: { id: check.id, status: { in: NON_TERMINAL_STATUSES } },
+        data: { lastSyncedAt: new Date() },
+      });
+      unparseable += 1;
+      continue;
+    }
+
     const data: Prisma.BackgroundCheckRequestUpdateManyMutationInput = {};
-    if (nextStatus !== check.status) {
-      data.status = nextStatus;
+    // Graduate a stale invitation-id pointer once the report exists, so
+    // later runs, webhooks, and manual sync hit the report directly.
+    if (effectiveId !== identityId) {
+      data.identityBackgroundCheckId = effectiveId;
+    }
+    if (finalStatus !== check.status) {
+      data.status = finalStatus;
     }
     if (
       statuses?.identity !== undefined &&
@@ -167,10 +202,10 @@ export async function runReconciliation(): Promise<ReconciliationResult> {
     const hasChange = Object.keys(data).length > 0;
     if (hasChange) {
       const reportSnapshot = await fetchCompletedReportSnapshot({
-        identityClient,
-        identityBackgroundCheckId: identityId,
+        checkrClient,
+        identityBackgroundCheckId: effectiveId,
         eventType: 'reconcile',
-        status: nextStatus,
+        status: finalStatus,
       });
       if (reportSnapshot) {
         data.reportSnapshot = reportSnapshot;
@@ -179,8 +214,6 @@ export async function runReconciliation(): Promise<ReconciliationResult> {
     }
     data.lastSyncedAt = new Date();
 
-    // Concurrency-safe: re-assert the row is still non-terminal in the WHERE, so
-    // a check cancelled/completed between selection and now is never resurrected.
     const result = await db.backgroundCheckRequest.updateMany({
       where: { id: check.id, status: { in: NON_TERMINAL_STATUSES } },
       data,
@@ -192,7 +225,8 @@ export async function runReconciliation(): Promise<ReconciliationResult> {
         logger.info('Reconciled background check status', {
           backgroundCheckRequestId: check.id,
           from: check.status,
-          to: nextStatus,
+          to: finalStatus,
+          provider: 'checkr',
         });
       }
     }
@@ -202,19 +236,16 @@ export async function runReconciliation(): Promise<ReconciliationResult> {
     checked: stuckChecks.length,
     updated,
     unparseable,
+    provider: 'checkr',
   });
 
   return { success: true, checked: stuckChecks.length, updated, unparseable };
 }
 
-/**
- * Hourly schedule (CS-473). Needs the latest deployment to run in prod/staging,
- * and the dev CLI running locally.
- */
 export const reconcileBackgroundChecksSchedule = schedules.task({
   id: 'reconcile-background-checks-schedule',
-  cron: '0 * * * *', // hourly (UTC)
-  maxDuration: 30 * 60, // 30 minutes — Local trigger maxDuration is in SECONDS
+  cron: '0 * * * *',
+  maxDuration: 30 * 60,
 
   run: () => runReconciliation(),
 });

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method -- spec references jest-mocked db methods directly; `this` scoping is not a concern for mocks */
 import { db } from '@db';
 import {
   parseIdentityCheckState,
@@ -27,10 +28,10 @@ jest.mock('@gideon-defender/trigger-local', () => ({
   schedules: { task: (config: unknown) => config },
 }));
 
-const mockGetBackgroundCheck = jest.fn();
-jest.mock('../../background-checks/background-check-identity.client', () => ({
-  BackgroundCheckIdentityClient: jest.fn().mockImplementation(() => ({
-    getBackgroundCheck: mockGetBackgroundCheck,
+const mockGetReport = jest.fn();
+jest.mock('../../background-checks/checkr.client', () => ({
+  CheckrClient: jest.fn().mockImplementation(() => ({
+    getReport: mockGetReport,
   })),
 }));
 
@@ -96,7 +97,7 @@ describe('runReconciliation', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env = { ...originalEnv, BACKGROUND_CHECK_API_KEY: 'bc_test' };
+    process.env = { ...originalEnv, CHECKR_API_KEY: 'bc_test' };
     mockFetchSnapshot.mockResolvedValue(null);
     updateMany.mockResolvedValue({ count: 1 });
   });
@@ -106,7 +107,7 @@ describe('runReconciliation', () => {
   });
 
   it('skips entirely when the API key is not configured', async () => {
-    delete process.env.BACKGROUND_CHECK_API_KEY;
+    delete process.env.CHECKR_API_KEY;
     const result = await runReconciliation();
     expect(findMany).not.toHaveBeenCalled();
     expect(result).toEqual({
@@ -125,7 +126,7 @@ describe('runReconciliation', () => {
         status: 'in_progress',
       },
     ]);
-    mockGetBackgroundCheck.mockResolvedValue({
+    mockGetReport.mockResolvedValue({
       status: 'completed',
       statuses: { identity: 'passed', employment: 'verified' },
     });
@@ -155,7 +156,7 @@ describe('runReconciliation', () => {
         identityStatus: 'pending',
       },
     ]);
-    mockGetBackgroundCheck.mockResolvedValue({
+    mockGetReport.mockResolvedValue({
       status: 'in_progress',
       statuses: { identity: 'passed' },
     });
@@ -176,7 +177,7 @@ describe('runReconciliation', () => {
         status: 'in_progress',
       },
     ]);
-    mockGetBackgroundCheck.mockResolvedValue({ status: 'in_progress' });
+    mockGetReport.mockResolvedValue({ status: 'in_progress' });
 
     const result = await runReconciliation();
 
@@ -187,7 +188,7 @@ describe('runReconciliation', () => {
     expect(result.updated).toBe(0);
   });
 
-  it('counts checks whose Identity status cannot be determined and leaves them untouched', async () => {
+  it('bumps lastSyncedAt for checks whose status cannot be determined', async () => {
     findMany.mockResolvedValue([
       {
         id: 'bcr_1',
@@ -195,17 +196,59 @@ describe('runReconciliation', () => {
         status: 'in_progress',
       },
     ]);
-    mockGetBackgroundCheck.mockResolvedValue({ id: 'check_1' });
+    mockGetReport.mockResolvedValue({ status: 'totally_made_up' });
 
     const result = await runReconciliation();
 
-    expect(updateMany).not.toHaveBeenCalled();
+    // lastSyncedAt advances so the row backs off instead of re-polling hourly
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: 'bcr_1', status: { in: NON_TERMINAL } },
+      data: { lastSyncedAt: expect.any(Date) },
+    });
     expect(result).toEqual({
       success: true,
       checked: 1,
       updated: 0,
       unparseable: 1,
     });
+  });
+
+  it('maps raw Checkr statuses via the Checkr fallback', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'rep_1',
+        status: 'in_progress',
+      },
+    ]);
+    mockGetReport.mockResolvedValue({ status: 'clear' });
+
+    const result = await runReconciliation();
+
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: 'bcr_1', status: { in: NON_TERMINAL } },
+      data: expect.objectContaining({ status: 'completed' }),
+    });
+    expect(result.updated).toBe(1);
+  });
+
+  it('bumps lastSyncedAt when the Checkr report is gone', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'rep_deleted',
+        status: 'in_progress',
+      },
+    ]);
+    mockGetReport.mockResolvedValue(null);
+
+    const result = await runReconciliation();
+
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: 'bcr_1', status: { in: NON_TERMINAL } },
+      data: { lastSyncedAt: expect.any(Date) },
+    });
+    expect(result.unparseable).toBe(1);
   });
 
   it('queries only stale, non-terminal checks with an Identity id', async () => {
@@ -223,6 +266,7 @@ describe('runReconciliation', () => {
       select: {
         id: true,
         identityBackgroundCheckId: true,
+        checkrInvitationId: true,
         status: true,
         identityStatus: true,
         employmentStatus: true,
