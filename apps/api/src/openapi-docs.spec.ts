@@ -70,6 +70,24 @@ jest.mock('@gideon-defender/auth', () => {
   };
 });
 
+// Mock Gideon services to avoid real JWKS fetch / timers in openapi generation
+jest.mock('./auth/gideon-jwt.service', () => ({
+  GideonJwtService: jest.fn().mockImplementation(() => ({
+    isConfigured: () => false,
+    isShadowMode: () => false,
+    isEnforceMode: () => false,
+    verify: jest.fn().mockResolvedValue(null),
+    resolveTenantId: jest.fn(),
+    resolveUserId: jest.fn(),
+  })),
+}));
+jest.mock('./gideon/gideon-shadow.service', () => ({
+  GideonShadowService: jest.fn().mockImplementation(() => ({
+    logTenantOperationsMismatch: jest.fn().mockResolvedValue(undefined),
+    logMismatch: jest.fn(),
+  })),
+}));
+
 // Mock @db — keep all Prisma enums from @prisma/client, replace only the db instance
 // so that module-level enum references (e.g. IsEnum(CommentEntityType)) resolve correctly
 jest.mock('@db', () => {

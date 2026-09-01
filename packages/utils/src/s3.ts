@@ -41,21 +41,20 @@ try {
     console.warn(
       '[S3] AWS S3 credentials or configuration missing. S3 operations will fail until credentials are configured.',
     );
-    s3ClientInstance = null;
-  } else {
-    s3ClientInstance = new S3Client({
-      endpoint: APP_AWS_ENDPOINT || undefined,
-      region: APP_AWS_REGION || 'us-east-1',
-      credentials: {
-        accessKeyId: APP_AWS_ACCESS_KEY_ID,
-        secretAccessKey: APP_AWS_SECRET_ACCESS_KEY,
-      },
-      forcePathStyle: !!APP_AWS_ENDPOINT,
-    });
   }
+
+  s3ClientInstance = new S3Client({
+    endpoint: APP_AWS_ENDPOINT || undefined,
+    region: APP_AWS_REGION || 'us-east-1',
+    credentials: {
+      accessKeyId: APP_AWS_ACCESS_KEY_ID || '',
+      secretAccessKey: APP_AWS_SECRET_ACCESS_KEY || '',
+    },
+    forcePathStyle: !!APP_AWS_ENDPOINT,
+  });
 } catch (error) {
   console.error('FAILED TO INITIALIZE S3 CLIENT', error instanceof Error ? error.stack : error);
-  s3ClientInstance = null;
+  s3ClientInstance = null as unknown as S3Client;
   console.error('[S3] Creating dummy S3 client - file uploads will fail until credentials are fixed');
 }
 
