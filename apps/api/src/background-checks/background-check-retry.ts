@@ -11,6 +11,7 @@ type GetForMemberFn = (params: {
   employeeName: string;
   employeeEmail: string;
   status: BackgroundCheckStatus;
+  identityBackgroundCheckId: string | null;
 } | null>;
 
 function assertTransitionAllowed(
@@ -47,13 +48,37 @@ export async function cancelForMember({
   }
   assertTransitionAllowed('cancel', existing.status);
 
-  return db.backgroundCheckRequest.update({
-    where: { organizationId_memberId: { organizationId, memberId } },
+  // Guard the write with the status predicate: a completion that lands
+  // between the read and the write must win over the cancel, never lose
+  // a terminal state to it.
+  const cancelled = await db.backgroundCheckRequest.updateMany({
+    where: {
+      organizationId,
+      memberId,
+      status: {
+        in: [
+          BackgroundCheckStatus.invited,
+          BackgroundCheckStatus.in_progress,
+          BackgroundCheckStatus.in_review,
+        ],
+      },
+    },
     data: {
       status: BackgroundCheckStatus.cancelled,
       lastSyncedAt: new Date(),
     },
   });
+  if (cancelled.count === 0) {
+    const current = await getForMember({ organizationId, memberId });
+    throw new BadRequestException(
+      `Cannot cancel a background check in '${current?.status ?? 'unknown'}' status.`,
+    );
+  }
+  const updated = await getForMember({ organizationId, memberId });
+  if (!updated) {
+    throw new NotFoundException('Background check not found.');
+  }
+  return updated;
 }
 
 export async function deleteForMember({
@@ -94,10 +119,21 @@ export async function retryForMember({
   if (!existing) {
     throw new NotFoundException('Background check not found.');
   }
-  assertTransitionAllowed('retry', existing.status);
+  // An `invited` row with no vendor pointer is an orphaned claim: the
+  // process died (or Step 5 failed) between the slot claim and the Checkr
+  // call. Normal `invited` rows always carry a pointer, so only orphans
+  // may retry from here — otherwise the row could never advance again.
+  if (existing.status === BackgroundCheckStatus.invited) {
+    if (existing.identityBackgroundCheckId) {
+      throw new BadRequestException(
+        `Cannot retry a background check in 'invited' status.`,
+      );
+    }
+  } else {
+    assertTransitionAllowed('retry', existing.status);
+  }
 
   const attempt = existing.rerunCount + 1;
-  const where = { organizationId_memberId: { organizationId, memberId } };
 
   // Free retry: no charge. Create a fresh Identity check first (varied
   // idempotency key) so a late webhook from the prior check cannot match
@@ -118,17 +154,34 @@ export async function retryForMember({
     // Restore the prior status (retry is only allowed from 'failed' or
     // 'cancelled'). Forcing 'failed' here would strip a cancelled check of the
     // webhook terminal-guard and let a late vendor webhook resurrect it.
-    await db.backgroundCheckRequest.update({
-      where,
+    // Guard on the vendor pointer: a concurrent retry may have swapped in a
+    // fresh check while this attempt was in flight, and the restore must not
+    // drag the new pointer back to the old status.
+    await db.backgroundCheckRequest.updateMany({
+      where: {
+        organizationId,
+        memberId,
+        identityBackgroundCheckId: existing.identityBackgroundCheckId,
+      },
       data: { status: existing.status, lastSyncedAt: new Date() },
     });
     throw error;
   }
 
-  return db.backgroundCheckRequest.update({
-    where,
+  // Guard on the status read above: a concurrent retry that already moved
+  // the row must win, and this attempt must not overwrite its fresh check.
+  const swapped = await db.backgroundCheckRequest.updateMany({
+    where: {
+      organizationId,
+      memberId,
+      status: existing.status,
+      identityBackgroundCheckId: existing.identityBackgroundCheckId,
+    },
     data: {
       identityBackgroundCheckId: identityResult.id,
+      checkrCandidateId: identityResult.candidateId ?? null,
+      checkrInvitationId: identityResult.invitationId ?? null,
+      checkrPackage: process.env.CHECKR_PACKAGE ?? null,
       candidateUrl: identityResult.candidateUrl ?? null,
       status: identityResult.status,
       rerunCount: attempt,
@@ -142,4 +195,14 @@ export async function retryForMember({
       lastSyncedAt: new Date(),
     },
   });
+  if (swapped.count === 0) {
+    throw new BadRequestException(
+      'Background check changed while retrying. Fetch the latest state and try again.',
+    );
+  }
+  const updated = await getForMember({ organizationId, memberId });
+  if (!updated) {
+    throw new NotFoundException('Background check not found.');
+  }
+  return updated;
 }

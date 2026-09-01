@@ -11,50 +11,17 @@ import {
   Req,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { createHmac, timingSafeEqual } from 'crypto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { getManifest } from '@gideon-defender/integration-platform';
 import type { WebhookConfig } from '@gideon-defender/integration-platform';
 import { ConnectionRepository } from '../repositories/connection.repository';
 import { db, Prisma } from '@db';
+import {
+  headerValue,
+  verifyHmacSignature,
+} from '../../utils/webhook-signature';
 
 type WebhookPayload = Record<string, unknown>;
-
-function extractSignature(
-  headers: Record<string, string>,
-  headerName: string,
-): string | null {
-  const key = headerName.toLowerCase();
-  return headers[key] ?? headers[headerName] ?? null;
-}
-
-function parseSignatureValue(signature: string): string {
-  // Handle formats like "sha256=abc123" or "v0=abc123"
-  const eqIndex = signature.indexOf('=');
-  return eqIndex >= 0 ? signature.slice(eqIndex + 1) : signature;
-}
-
-function verifyHmac(
-  rawBody: Buffer,
-  secret: string,
-  algorithm: string,
-  providedSignature: string,
-): boolean {
-  const hmac = createHmac(algorithm, secret);
-  hmac.update(rawBody);
-  const expected = hmac.digest('hex');
-
-  try {
-    const expectedBuf = Buffer.from(expected, 'hex');
-    const providedBuf = Buffer.from(providedSignature, 'hex');
-    return (
-      expectedBuf.length === providedBuf.length &&
-      timingSafeEqual(expectedBuf, providedBuf)
-    );
-  } catch {
-    return false;
-  }
-}
 
 function getEventType(headers: Record<string, string>): string {
   return headers['x-github-event'] ?? headers['x-event-type'] ?? 'unknown';
@@ -125,7 +92,7 @@ export class WebhookController {
     const { secretHeader, signatureAlgorithm } = config;
     if (!secretHeader || !signatureAlgorithm) return true;
 
-    const signature = extractSignature(headers, secretHeader);
+    const signature = headerValue(headers, secretHeader);
     if (!signature) {
       this.logger.warn(`Missing ${secretHeader} header`);
       return false;
@@ -145,12 +112,12 @@ export class WebhookController {
       return false;
     }
 
-    return verifyHmac(
+    return verifyHmacSignature({
       rawBody,
       secret,
-      signatureAlgorithm,
-      parseSignatureValue(signature),
-    );
+      providedSignature: signature,
+      algorithm: signatureAlgorithm,
+    });
   }
 
   private async processWebhook(

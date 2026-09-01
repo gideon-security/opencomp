@@ -40,7 +40,7 @@ export class BackgroundCheckBillingService {
     return this.billingService.createBillingPortalSession(params);
   }
 
-  async getBackgroundCheckPrice(): Promise<{
+  getBackgroundCheckPrice(): Promise<{
     id: string;
     unitAmount: number;
     currency: string;
@@ -52,10 +52,10 @@ export class BackgroundCheckBillingService {
       }),
       skuKey: 'background_check_one_time',
     });
-    return {
+    return Promise.resolve({
       id: sku.stripePriceId,
       unitAmount: sku.unitAmount,
       currency: sku.currency,
-    };
+    });
   }
 }

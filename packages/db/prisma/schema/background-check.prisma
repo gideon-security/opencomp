@@ -8,6 +8,10 @@ model BackgroundCheckRequest {
   identityBackgroundCheckId String?               @unique
   candidateUrl              String?
   status                    BackgroundCheckStatus @default(invited)
+  // Checkr native fields (added for native Checkr integration - see 2026-08-28 plan)
+  checkrCandidateId         String?
+  checkrInvitationId        String?
+  checkrPackage             String?
   identityStatus            String?
   employmentStatus          String?
   referenceStatus           String?
