@@ -152,6 +152,24 @@ export class PeopleBackgroundChecksController {
       memberId,
     });
   }
+
+  @Post(':id/background-check/sync')
+  @HttpCode(200)
+  @RequirePermission('member', 'update')
+  @ApiOperation({
+    summary: 'Sync background check from Checkr (manual)',
+    description:
+      'Fetches the latest Checkr report for a member and persists the status. Use when a webhook was missed.',
+  })
+  async syncForMember(
+    @Param('id') memberId: string,
+    @OrganizationId() organizationId: string,
+  ) {
+    return this.backgroundChecksService.syncForMember({
+      organizationId,
+      memberId,
+    });
+  }
 }
 
 @ApiTags('Background Checks')
@@ -176,7 +194,7 @@ export class BackgroundChecksController {
   @Post('webhook')
   @Public()
   @HttpCode(200)
-  @ApiOperation({ summary: 'Receive Identity background check webhook events' })
+  @ApiOperation({ summary: 'Receive Checkr background check webhook events' })
   async handleWebhook(
     @Headers() headers: Record<string, string | string[] | undefined>,
     @Req() req: RawBodyRequest<Request>,

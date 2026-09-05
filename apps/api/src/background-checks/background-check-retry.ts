@@ -129,6 +129,9 @@ export async function retryForMember({
     where,
     data: {
       identityBackgroundCheckId: identityResult.id,
+      checkrCandidateId: identityResult.candidateId ?? null,
+      checkrInvitationId: identityResult.invitationId ?? null,
+      checkrPackage: process.env.CHECKR_PACKAGE ?? null,
       candidateUrl: identityResult.candidateUrl ?? null,
       status: identityResult.status,
       rerunCount: attempt,
