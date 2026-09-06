@@ -1,4 +1,9 @@
-import { Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Logger,
+  ServiceUnavailableException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Prisma } from '@db';
 import type { BackgroundCheckStatus } from '@db';
 import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
@@ -84,21 +89,42 @@ export async function fetchCompletedReportSnapshot({
     } else if (client?.getBackgroundCheck) {
       snapshot = await client.getBackgroundCheck(identityBackgroundCheckId);
     } else {
-      return null;
+      // No capable client: a wanted terminal snapshot cannot be produced.
+      // Throw like a fetch failure so the caller backs off instead of
+      // committing a terminal row with no snapshot.
+      throw new ServiceUnavailableException(
+        'Checkr report snapshot is not available yet.',
+      );
     }
-    return toInputJsonValue(snapshot);
+    const value = toInputJsonValue(snapshot);
+    if (value === null) {
+      // A terminal snapshot was wanted but the report could not be read
+      // (vendor blip, eventual-consistency 404). Throw so the caller backs
+      // off and retries later instead of committing a terminal row with no
+      // snapshot that webhooks can never backfill.
+      throw new ServiceUnavailableException(
+        'Checkr report snapshot is not available yet.',
+      );
+    }
+    return value;
   } catch (error) {
-    // Never fail the caller on a snapshot fetch: the status update must
-    // still commit. Log loudly instead — a terminal row that commits without
-    // a snapshot can only be backfilled via manual sync.
-    logger.warn(
-      'Checkr report snapshot fetch failed; committing status without a snapshot',
-      {
-        identityBackgroundCheckId,
-        eventType,
-        error: error instanceof Error ? error.message : String(error),
-      },
+    if (error instanceof ServiceUnavailableException) throw error;
+    // Auth failures must surface to the operator, not dissolve into a
+    // backoff: a bad key never heals by waiting. A missing key (BadRequest
+    // from apiKey()) is the same: wrapping it in 503 would tell callers to
+    // retry a configuration that can never heal.
+    if (error instanceof UnauthorizedException) throw error;
+    if (error instanceof BadRequestException) throw error;
+    // A wanted terminal snapshot that cannot be read must back off and
+    // retry later — never commit a terminal row with no snapshot that
+    // webhooks can never backfill.
+    logger.warn('Checkr report snapshot fetch failed; backing off', {
+      identityBackgroundCheckId,
+      eventType,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    throw new ServiceUnavailableException(
+      'Checkr report snapshot is not available yet.',
     );
-    return null;
   }
 }

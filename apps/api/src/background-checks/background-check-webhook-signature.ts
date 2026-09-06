@@ -1,8 +1,6 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { headerValue, verifyHmacSignature } from '../utils/webhook-signature';
 
-export { headerValue };
-
 export function verifyCheckrWebhookSignature({
   rawBody,
   headers,
@@ -28,14 +26,4 @@ export function verifyCheckrWebhookSignature({
   if (!matches) {
     throw new UnauthorizedException('Invalid webhook signature.');
   }
-}
-
-export function verifyBackgroundCheckWebhookSignature({
-  rawBody,
-  headers,
-}: {
-  rawBody: Buffer;
-  headers: Record<string, string | string[] | undefined>;
-}): void {
-  verifyCheckrWebhookSignature({ rawBody, headers });
 }

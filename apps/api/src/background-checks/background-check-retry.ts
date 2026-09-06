@@ -1,6 +1,8 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
 import { BackgroundCheckStatus, db, Prisma } from '@db';
 import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
+
+const logger = new Logger('BackgroundCheckRetry');
 
 type GetForMemberFn = (params: {
   organizationId: string;
@@ -12,6 +14,7 @@ type GetForMemberFn = (params: {
   employeeEmail: string;
   status: BackgroundCheckStatus;
   identityBackgroundCheckId: string | null;
+  stripePaymentIntentId: string | null;
 } | null>;
 
 function assertTransitionAllowed(
@@ -123,10 +126,18 @@ export async function retryForMember({
   // process died (or Step 5 failed) between the slot claim and the Checkr
   // call. Normal `invited` rows always carry a pointer, so only orphans
   // may retry from here — otherwise the row could never advance again.
+  // The retry is free by design (the row already paid), so the orphan must
+  // carry a payment pointer: without one the charge never succeeded and a
+  // free retry would hand out a vendor check that was never charged for.
   if (existing.status === BackgroundCheckStatus.invited) {
     if (existing.identityBackgroundCheckId) {
       throw new BadRequestException(
         `Cannot retry a background check in 'invited' status.`,
+      );
+    }
+    if (!existing.stripePaymentIntentId) {
+      throw new BadRequestException(
+        'This background check has no payment. Delete it and request a new one.',
       );
     }
   } else {
@@ -134,6 +145,21 @@ export async function retryForMember({
   }
 
   const attempt = existing.rerunCount + 1;
+
+  // Re-check right before the vendor write: a concurrent retry may have
+  // moved the row while this attempt validated input. This narrows the
+  // orphan window to a concurrent retry landing during the vendor call
+  // itself — the guarded swap below still arbitrates that case.
+  const fresh = await getForMember({ organizationId, memberId });
+  if (
+    !fresh ||
+    fresh.status !== existing.status ||
+    fresh.identityBackgroundCheckId !== existing.identityBackgroundCheckId
+  ) {
+    throw new BadRequestException(
+      'Background check changed while retrying. Fetch the latest state and try again.',
+    );
+  }
 
   // Free retry: no charge. Create a fresh Identity check first (varied
   // idempotency key) so a late webhook from the prior check cannot match
@@ -154,13 +180,16 @@ export async function retryForMember({
     // Restore the prior status (retry is only allowed from 'failed' or
     // 'cancelled'). Forcing 'failed' here would strip a cancelled check of the
     // webhook terminal-guard and let a late vendor webhook resurrect it.
-    // Guard on the vendor pointer: a concurrent retry may have swapped in a
-    // fresh check while this attempt was in flight, and the restore must not
-    // drag the new pointer back to the old status.
+    // Guard on the status plus the vendor pointer: a concurrent cancel may
+    // have terminalized an orphan invited row while this attempt was in
+    // flight (cancel never touches the pointer), and a concurrent retry may
+    // have swapped in a fresh check. Either way the restore must not drag
+    // the row back to the old status.
     await db.backgroundCheckRequest.updateMany({
       where: {
         organizationId,
         memberId,
+        status: existing.status,
         identityBackgroundCheckId: existing.identityBackgroundCheckId,
       },
       data: { status: existing.status, lastSyncedAt: new Date() },
@@ -185,6 +214,20 @@ export async function retryForMember({
       candidateUrl: identityResult.candidateUrl ?? null,
       status: identityResult.status,
       rerunCount: attempt,
+      // Remember the superseded pointer: a late webhook for the prior
+      // attempt still resolves via the candidate/member fallback after
+      // this swap, and the stale guard needs the list to tell it apart
+      // from the new report arriving.
+      ...(existing.identityBackgroundCheckId
+        ? {
+            supersededIdentityBackgroundCheckIds: {
+              push: existing.identityBackgroundCheckId,
+            },
+          }
+        : {}),
+      // The new attempt is live and free: the prior attempt's refund marker
+      // must not ride along and read "refunded" on an active check.
+      stripeRefundId: null,
       identityStatus: null,
       employmentStatus: null,
       referenceStatus: null,
@@ -196,6 +239,17 @@ export async function retryForMember({
     },
   });
   if (swapped.count === 0) {
+    // Lost the race after creating a vendor check: that Checkr object is
+    // now orphaned (nothing points at it). Retries are free and uncompleted
+    // invitations expire, so the blast radius is bounded — but log the ids
+    // so ops can reconcile the dangling vendor object.
+    logger.warn('Retry lost the swap race; orphaned a vendor check', {
+      organizationId,
+      memberId,
+      orphanCandidateId: identityResult.candidateId ?? null,
+      orphanInvitationId: identityResult.invitationId ?? null,
+      orphanReportId: identityResult.id,
+    });
     throw new BadRequestException(
       'Background check changed while retrying. Fetch the latest state and try again.',
     );

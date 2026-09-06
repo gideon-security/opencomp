@@ -10,7 +10,7 @@ import { redactPathForLog } from './checkr.utils';
  * Keeps HTTP concerns out of CheckrClient so that file stays orchestration.
  */
 export class CheckrHttp {
-  protected readonly logger = new Logger('CheckrClient');
+  protected readonly logger = new Logger('CheckrHttp');
 
   protected apiKey(): string {
     const key = process.env.CHECKR_API_KEY;

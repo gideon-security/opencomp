@@ -1,31 +1,39 @@
-import { BadRequestException, Logger } from '@nestjs/common';
-import { BackgroundCheckStatus, db, Prisma } from '@db';
+import { BadRequestException } from '@nestjs/common';
+import { BackgroundCheckStatus } from '@db';
 import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
-import { fetchCompletedReportSnapshot } from './background-check-report-snapshot';
+import { applyWebhookEvent } from './background-check-webhook-apply';
 import {
-  isUniqueConstraintError,
+  ackWebhookDedupMarker,
   releaseWebhookDedupMarker,
 } from './background-check-webhook-dedup';
-import { processWebhookEvent } from './background-check-webhook-process';
-import { verifyBackgroundCheckWebhookSignature } from './background-check-webhook-signature';
+import { claimWebhookDedupMarker } from './background-check-webhook-claim';
+import { verifyCheckrWebhookSignature } from './background-check-webhook-signature';
 import {
   deriveWebhookEventIdentity,
   fingerprintReport,
-  isStaleIndirectEvent,
-  resolveWebhookRecord,
+  WEBHOOK_FUTURE_SKEW_MS,
   WEBHOOK_MAX_AGE_MS,
   webhookEventAgeMs,
+  webhookEventTimeMs,
 } from './background-check-webhook-resolve';
 import {
   backgroundCheckStatuses,
   checkrWebhookPayloadSchema,
   mapCheckrReportToStatus,
-  shouldWriteWebhookStatus,
 } from './background-checks.types';
 
-const logger = new Logger('CheckrWebhook');
-
 export { isUniqueConstraintError } from './background-check-webhook-dedup';
+
+/**
+ * True when the failure is a missing operator configuration (e.g. no
+ * CHECKR_API_KEY), not a malformed payload. A completion webhook that
+ * arrives before the key is configured must release the marker and retry
+ * later — acking it as permanent would drop the transition and redeliveries
+ * would ack duplicate once the key exists.
+ */
+function isMissingConfigurationError(error: BadRequestException): boolean {
+  return error.message.includes('not configured');
+}
 
 export async function handleCheckrWebhookRequest({
   rawBody,
@@ -40,7 +48,7 @@ export async function handleCheckrWebhookRequest({
     throw new BadRequestException('Raw body unavailable.');
   }
 
-  verifyBackgroundCheckWebhookSignature({ rawBody, headers });
+  verifyCheckrWebhookSignature({ rawBody, headers });
   let rawJson: unknown;
   try {
     rawJson = JSON.parse(rawBody.toString('utf8'));
@@ -114,13 +122,18 @@ async function handleCheckrWebhook(
   const status: BackgroundCheckStatus | null =
     mappedStatus === '' ? null : (mappedStatus as BackgroundCheckStatus);
 
-  // Replay guard BEFORE the dedup insert. Checkr sends no delivery timestamp,
-  // so freshness comes from the payload's event time. A rejection here 400s
-  // on every delivery and never touches the dedup key — a captured delivery
-  // replayed past the window can never apply, while missed updates still
-  // heal through sync and reconcile.
+  // Replay guard BEFORE the dedup insert. Freshness comes from the payload's
+  // own event time (Checkr sends no delivery timestamp). A rejection here
+  // 400s on every delivery and never touches the dedup key — a captured
+  // delivery replayed past the window can never apply, while missed updates
+  // still heal through sync and reconcile. Future-dated payloads are
+  // rejected too: a negative age never exceeds the max and would stay fresh
+  // forever.
   const eventAgeMs = webhookEventAgeMs(data);
-  if (eventAgeMs !== null && eventAgeMs > WEBHOOK_MAX_AGE_MS) {
+  if (
+    eventAgeMs !== null &&
+    (eventAgeMs > WEBHOOK_MAX_AGE_MS || eventAgeMs < -WEBHOOK_FUTURE_SKEW_MS)
+  ) {
     throw new BadRequestException('Checkr webhook delivery is too old.');
   }
 
@@ -132,29 +145,22 @@ async function handleCheckrWebhook(
     reportFingerprint: fingerprintReport(data),
   });
 
-  // Insert the event row BEFORE resolving or validating. A replay then hits
+  // Claim the event row BEFORE resolving or validating. A replay then hits
   // the unique key and acks as duplicate without re-running anything. The
-  // request link is filled in below. Permanent failures (unknown row,
-  // tenant mismatch) keep this row as a poison marker so the vendor's
-  // retry acks instead of throwing forever. Transient failures delete it
+  // request link is filled in below. Permanent failures (tenant mismatch)
+  // mark the row applied on the way out (see below) so the vendor's retry
+  // acks instead of throwing forever. Transient failures delete the marker
   // again (see below) so the retry reprocesses instead of acking
-  // duplicate on state that was never applied.
-  try {
-    await db.backgroundCheckWebhookEvent.create({
-      data: {
-        eventId,
-        eventType,
-        identityBackgroundCheckId: reportId,
-        payload: rawJson as Prisma.InputJsonValue,
-      },
-    });
-  } catch (error) {
-    if (isUniqueConstraintError(error)) {
-      // Replay: the event already applied once. Acknowledge without
-      // writing so a stale redelivery cannot regress current state.
-      return { ok: true, duplicate: true };
-    }
-    throw error;
+  // duplicate on state that was never applied. A marker from a crashed
+  // worker (old, never applied, never linked) is reclaimed and reprocessed.
+  const claim = await claimWebhookDedupMarker({
+    eventId,
+    eventType,
+    reportId,
+    rawJson,
+  });
+  if (claim === 'duplicate') {
+    return { ok: true, duplicate: true };
   }
 
   try {
@@ -164,6 +170,7 @@ async function handleCheckrWebhook(
       metadata: data.metadata,
       eventId,
       eventType,
+      eventTimeMs: webhookEventTimeMs(data),
       isReportEvent,
       status,
       rawStatus: data.status,
@@ -173,9 +180,16 @@ async function handleCheckrWebhook(
       identityClient,
     });
   } catch (error) {
-    if (error instanceof BadRequestException) {
-      // Permanent: the payload can never apply (tenant mismatch, unknown
-      // status). Keep the poison marker so retries ack instead of throwing.
+    if (
+      error instanceof BadRequestException &&
+      !isMissingConfigurationError(error)
+    ) {
+      // Permanent: the payload can never apply (tenant mismatch). Ack the
+      // marker so retries ack duplicate instead of throwing forever.
+      // Without this the row stays old, unapplied, and unlinked — exactly
+      // the reclaim predicate — and every redelivery past the stale window
+      // reprocesses just to 400 again.
+      await ackWebhookDedupMarker(eventId);
       throw error;
     }
     // Unknown row or transient failure: the row may appear later (a webhook
@@ -186,107 +200,4 @@ async function handleCheckrWebhook(
     await releaseWebhookDedupMarker(eventId);
     throw error;
   }
-}
-
-async function applyWebhookEvent({
-  reportId,
-  candidateId,
-  metadata,
-  eventId,
-  eventType,
-  isReportEvent,
-  status,
-  rawStatus,
-  candidateName,
-  candidateEmail,
-  statuses,
-  identityClient,
-}: {
-  reportId: string;
-  candidateId?: string;
-  metadata?: {
-    compOrganizationId?: string;
-    compMemberId?: string;
-  };
-  eventId: string;
-  eventType: string;
-  isReportEvent: boolean;
-  status: BackgroundCheckStatus | null;
-  rawStatus?: string;
-  candidateName?: string;
-  candidateEmail?: string;
-  statuses?: {
-    identity?: string;
-    employment?: string;
-    references?: string;
-    rightToWork?: string;
-    adjudication?: string;
-  };
-  identityClient: BackgroundCheckIdentityClient;
-}): Promise<{ ok: true; duplicate?: true }> {
-  const { record, via } = await resolveWebhookRecord({
-    reportId,
-    candidateId,
-    metadata,
-  });
-  await db.backgroundCheckWebhookEvent.updateMany({
-    where: { eventId },
-    data: { backgroundCheckRequestId: record.id },
-  });
-
-  // An indirectly resolved report event must never rewind a graduated
-  // pointer (see isStaleIndirectEvent): a late event for a superseded
-  // report still matches via fallback after a retry swapped in a check.
-  if (
-    isStaleIndirectEvent({ via, isReportEvent, record, reportId: reportId })
-  ) {
-    logger.warn('Ignoring stale indirect webhook event', {
-      eventId,
-      via,
-      backgroundCheckRequestId: record.id,
-    });
-    return { ok: true };
-  }
-
-  // Invitation events describe the hosted flow (created/completed/expired),
-  // not the report. They may advance in-flight state but must never
-  // terminalize the row — except an expired or deleted invitation on a
-  // still-invited row, which can never produce a report (see
-  // shouldWriteWebhookStatus). A null status (status-less event) never
-  // writes: there is no transition to apply.
-  const writeStatus = shouldWriteWebhookStatus({
-    isReportEvent,
-    status,
-    recordStatus: record.status,
-    rawStatus,
-  });
-  const effectiveStatus = writeStatus && status ? status : record.status;
-
-  // Fetch the report snapshot BEFORE the transaction below. Network I/O
-  // must never run inside an interactive transaction: a slow vendor
-  // response holds database locks and trips the transaction timeout.
-  // The fetch is best-effort and may go unused (e.g. the row turns out to
-  // be terminal inside the transaction) — that costs one read, not a
-  // stuck transaction.
-  const reportSnapshot = await fetchCompletedReportSnapshot({
-    identityClient,
-    identityBackgroundCheckId: reportId,
-    invitationId: record.checkrInvitationId,
-    eventType,
-    status: effectiveStatus,
-  });
-
-  return processWebhookEvent({
-    record,
-    eventId,
-    payloadId: reportId,
-    candidateId,
-    isReportEvent,
-    status,
-    rawStatus,
-    candidateName,
-    candidateEmail,
-    statuses,
-    reportSnapshot,
-  });
 }

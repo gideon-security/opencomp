@@ -47,7 +47,10 @@ export const checkrWebhookPayloadSchema = z
         candidate_id: z.string().optional(),
         adjudication: z.string().optional(),
         candidateName: z.string().optional(),
-        candidateEmail: z.string().email().optional(),
+        // Display-only vendor data: a malformed address must never fail the
+        // whole payload (that would 400 every vendor retry and wedge the
+        // status transition). Plausibility is checked at write time instead.
+        candidateEmail: z.string().optional(),
         metadata: z
           .object({
             source: z.string().optional(),
@@ -162,4 +165,21 @@ export function shouldWriteWebhookStatus({
   if (recordStatus !== 'invited') return false;
   const lower = rawStatus?.toLowerCase();
   return lower === 'expired' || lower === 'deleted';
+}
+
+/**
+ * Vendor email is display data, never a routing key. Accept the payload's
+ * value only when it looks like an address; otherwise keep the stored one
+ * so a garbage vendor field cannot overwrite the real employee email.
+ */
+export function normalizeWebhookEmail({
+  candidateEmail,
+  currentEmail,
+}: {
+  candidateEmail?: string;
+  currentEmail: string;
+}): string {
+  if (!candidateEmail) return currentEmail;
+  const ok = z.string().email().safeParse(candidateEmail).success;
+  return ok ? candidateEmail : currentEmail;
 }

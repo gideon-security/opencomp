@@ -1,11 +1,15 @@
 import {
+  BadRequestException,
   Logger,
   NotFoundException,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { BackgroundCheckStatus, db } from '@db';
+import { BackgroundCheckStatus, db, Prisma } from '@db';
 import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
 import { fetchCompletedReportSnapshot } from './background-check-report-snapshot';
+import { terminalStatusFromInvitation } from './background-check-invitation';
+import { backoffSync, writeSyncUpdate } from './background-check-sync-write';
 import {
   backgroundCheckStatuses,
   isTerminalBackgroundCheckStatus,
@@ -40,22 +44,54 @@ export async function syncBackgroundCheck({
     // report snapshot still heals here — manual sync is the only backfill
     // path for the warn-and-commit case in fetchCompletedReportSnapshot.
     if (!record.reportSnapshot) {
-      const missingSnapshot = await fetchCompletedReportSnapshot({
-        identityClient,
-        identityBackgroundCheckId: record.identityBackgroundCheckId,
-        invitationId: record.checkrInvitationId ?? null,
-        eventType: 'sync',
-        status: record.status,
-      });
+      let missingSnapshot: Prisma.InputJsonValue | null = null;
+      try {
+        missingSnapshot = await fetchCompletedReportSnapshot({
+          identityClient,
+          identityBackgroundCheckId: record.identityBackgroundCheckId,
+          invitationId: record.checkrInvitationId ?? null,
+          eventType: 'sync',
+          status: record.status,
+        });
+      } catch (error) {
+        // Snapshot still unavailable: leave the frozen row alone and back
+        // off via the touch below instead of failing manual sync.
+        if (!(error instanceof ServiceUnavailableException)) throw error;
+        logger.warn('Checkr snapshot backfill failed; leaving row frozen', {
+          organizationId,
+          memberId,
+        });
+      }
       if (missingSnapshot) {
-        const updated = await db.backgroundCheckRequest.update({
-          where: { organizationId_memberId: { organizationId, memberId } },
+        // Guard the backfill with the status-plus-pointer predicate: a
+        // retry that swaps in a new attempt between the read above and
+        // this write must win, or the old check's snapshot lands on the
+        // new vendor check. A lost race returns the fresh row unwritten.
+        const backfilled = await db.backgroundCheckRequest.updateMany({
+          where: {
+            organizationId,
+            memberId,
+            status: record.status,
+            identityBackgroundCheckId: record.identityBackgroundCheckId,
+          },
           data: {
             reportSnapshot: missingSnapshot,
             reportSyncedAt: new Date(),
             lastSyncedAt: new Date(),
           },
         });
+        if (backfilled.count === 0) {
+          logger.warn(
+            'Checkr snapshot backfill lost a concurrent update; returning fresh row',
+            { organizationId, memberId },
+          );
+        }
+        const updated = await db.backgroundCheckRequest.findUnique({
+          where: { organizationId_memberId: { organizationId, memberId } },
+        });
+        if (!updated) {
+          throw new NotFoundException('Background check not found.');
+        }
         return { record: updated, syncedAt: new Date().toISOString() };
       }
     }
@@ -90,8 +126,11 @@ export async function syncBackgroundCheck({
         };
   } catch (error) {
     // Auth failures must surface to the operator, not dissolve into a
-    // backoff: a bad key never heals by waiting.
+    // backoff: a bad key never heals by waiting. A missing key is the same
+    // class of misconfiguration (apiKey() throws BadRequest): succeeding
+    // with `identity: null` would hide it behind a touched timestamp.
     if (error instanceof UnauthorizedException) throw error;
+    if (error instanceof BadRequestException) throw error;
     // A Checkr outage is not fatal: back off like a missing report instead
     // of failing manual sync while the vendor is down. Log loudly anyway —
     // programming errors surface here too and must not fail
@@ -123,15 +162,13 @@ export async function syncBackgroundCheck({
     let terminalFromInvitation: BackgroundCheckStatus | null = null;
     if (record.status === 'invited' && record.checkrInvitationId) {
       try {
-        const invitation = await identityClient.getInvitation(
-          record.checkrInvitationId,
-        );
-        const mappedInvitation = mapCheckrReportToStatus(invitation);
-        if (mappedInvitation === 'failed' || mappedInvitation === 'cancelled') {
-          terminalFromInvitation = mappedInvitation;
-        }
+        terminalFromInvitation = await terminalStatusFromInvitation({
+          client: identityClient,
+          invitationId: record.checkrInvitationId,
+        });
       } catch (error) {
         if (error instanceof UnauthorizedException) throw error;
+        if (error instanceof BadRequestException) throw error;
         logger.warn('Checkr invitation lookup failed during manual sync', {
           organizationId,
           memberId,
@@ -139,8 +176,10 @@ export async function syncBackgroundCheck({
         });
       }
     }
-    const updated = await db.backgroundCheckRequest.update({
-      where: { organizationId_memberId: { organizationId, memberId } },
+    const updated = await writeSyncUpdate({
+      organizationId,
+      memberId,
+      expectedIdentityBackgroundCheckId: record.identityBackgroundCheckId,
       data: {
         ...pointerUpdate,
         ...(terminalFromInvitation ? { status: terminalFromInvitation } : {}),
@@ -154,22 +193,50 @@ export async function syncBackgroundCheck({
   if (!(backgroundCheckStatuses as readonly string[]).includes(mappedStatus)) {
     // Unknown vendor status. Do not throw: the row would 400 on every sync
     // and reconcile would re-fetch it every hour. Back off instead.
-    const updated = await db.backgroundCheckRequest.update({
-      where: { organizationId_memberId: { organizationId, memberId } },
-      data: { ...pointerUpdate, lastSyncedAt: new Date() },
+    const updated = await backoffSync({
+      organizationId,
+      memberId,
+      expectedIdentityBackgroundCheckId: record.identityBackgroundCheckId,
+      pointerUpdate,
     });
     return { record: updated, identity, syncedAt: new Date().toISOString() };
   }
 
-  const reportSnapshot = await fetchCompletedReportSnapshot({
-    identityClient,
-    identityBackgroundCheckId: resolved.reportId,
-    eventType: 'sync',
-    status: mappedStatus as BackgroundCheckStatus,
-  });
+  let reportSnapshot: Prisma.InputJsonValue | null;
+  try {
+    reportSnapshot = await fetchCompletedReportSnapshot({
+      identityClient,
+      identityBackgroundCheckId: resolved.reportId,
+      eventType: 'sync',
+      status: mappedStatus as BackgroundCheckStatus,
+    });
+  } catch (error) {
+    // The snapshot is unavailable (vendor blip). Back off without writing
+    // the terminal status: committing it now would leave a terminal row
+    // with no snapshot that only manual sync could backfill.
+    if (error instanceof ServiceUnavailableException) {
+      logger.warn(
+        'Checkr snapshot unavailable during manual sync; backing off',
+        {
+          organizationId,
+          memberId,
+        },
+      );
+      const updated = await backoffSync({
+        organizationId,
+        memberId,
+        expectedIdentityBackgroundCheckId: record.identityBackgroundCheckId,
+        pointerUpdate,
+      });
+      return { record: updated, identity, syncedAt: new Date().toISOString() };
+    }
+    throw error;
+  }
 
-  const updated = await db.backgroundCheckRequest.update({
-    where: { organizationId_memberId: { organizationId, memberId } },
+  const updated = await writeSyncUpdate({
+    organizationId,
+    memberId,
+    expectedIdentityBackgroundCheckId: record.identityBackgroundCheckId,
     data: {
       ...pointerUpdate,
       status: mappedStatus as BackgroundCheckStatus,

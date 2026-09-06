@@ -308,6 +308,37 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     expect(fetchMock.mock.calls[1][0]).toContain('/v1/invitations');
   });
 
+  it('surfaces auth failures from the direct-report fallback instead of masking them as 400', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify({ id: 'cand_1' })),
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        text: () => Promise.resolve('{}'),
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        text: () => Promise.resolve('{}'),
+      });
+    global.fetch = fetchMock;
+
+    // A revoked key must read 401 like the candidate and invitation
+    // paths — not mask as a client error that sends operators chasing
+    // the request instead of the credentials.
+    await expect(
+      new BackgroundCheckIdentityClient().createBackgroundCheck({
+        ...params,
+        idempotencyKey: 'comp-background-check:bcr_1',
+      }),
+    ).rejects.toThrow('Checkr credentials are invalid.');
+    expect(fetchMock.mock.calls[2][0]).toContain('/v1/reports');
+  });
+
   it('keeps the check invited on unrecognized Checkr statuses instead of failing creation', async () => {
     const fetchMock = jest
       .fn()
@@ -332,6 +363,40 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
 
     // Creation already wrote the candidate, invitation, and charge by this
     // point: fail open to `invited` and let webhooks/reconcile advance it.
+    expect(result.id).toBe('inv_1');
+    expect(result.status).toBe('invited');
+  });
+
+  it('persists a pending invitation as invited so expiry escapes can run', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify({ id: 'cand_1' })),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: () =>
+          Promise.resolve(
+            JSON.stringify({
+              id: 'inv_1',
+              status: 'pending',
+              report_id: null,
+              invitation_url: 'https://checkr.com/invite',
+            }),
+          ),
+      });
+    global.fetch = fetchMock;
+
+    const result =
+      await new BackgroundCheckIdentityClient().createBackgroundCheck({
+        ...params,
+        idempotencyKey: 'comp-background-check:bcr_1',
+      });
+
+    // A bare invitation describes the hosted flow, not a report: mapping it
+    // through the report lifecycle would land the row in `in_progress`,
+    // where the webhook, sync, and retry invitation-expiry escapes never run.
     expect(result.id).toBe('inv_1');
     expect(result.status).toBe('invited');
   });
@@ -431,6 +496,10 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
               { id: 'cand_other', email: 'mallory@example.com' },
             ]),
           ),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify([])),
       });
     global.fetch = fetchMock;
 
@@ -440,6 +509,47 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
         idempotencyKey: 'comp-background-check:bcr_1',
       }),
     ).rejects.toThrow('no matching candidate');
+  });
+
+  it('recovers from a 409 duplicate candidate found on a later search page', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 409,
+        text: () => Promise.resolve('{}'),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: () =>
+          Promise.resolve(
+            JSON.stringify([
+              { id: 'cand_other', email: 'mallory@example.com' },
+            ]),
+          ),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: () =>
+          Promise.resolve(
+            JSON.stringify([{ id: 'cand_existing', email: 'ada@example.com' }]),
+          ),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: () =>
+          Promise.resolve(JSON.stringify({ id: 'inv_1', report_id: 'rep_9' })),
+      });
+    global.fetch = fetchMock;
+
+    const result =
+      await new BackgroundCheckIdentityClient().createBackgroundCheck({
+        ...params,
+        idempotencyKey: 'comp-background-check:bcr_1',
+      });
+
+    expect(result.id).toBe('rep_9');
+    expect(result.candidateId).toBe('cand_existing');
   });
 
   it('surfaces invalid Checkr credentials from the 409 lookup instead of masking them', async () => {

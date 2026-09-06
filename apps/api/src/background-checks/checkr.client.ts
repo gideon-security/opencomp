@@ -117,6 +117,14 @@ export class CheckrClient extends CheckrReportsReader {
         );
       }
       this.throwForTransientFailure(candidateRes, 'create-candidate');
+      // Auth failures surface as-is, mirroring the invitation path: a
+      // revoked key must read 401, not mask as a 400 client error.
+      if (candidateRes.status === 401 || candidateRes.status === 403) {
+        this.logger.error('Checkr candidate creation rejected', {
+          status: candidateRes.status,
+        });
+        throw new UnauthorizedException('Checkr credentials are invalid.');
+      }
       this.logger.error('Checkr create candidate failed', {
         status: candidateRes.status,
       });
@@ -178,11 +186,19 @@ export class CheckrClient extends CheckrReportsReader {
       // data.id so they resolve on first lookup.
       // The pointer graduates to the report id via getInvitation recovery
       // (sync/reconcile) or the first report webhook.
-      const reportId = inv.report_id || inv.report?.id || inv.id;
+      const attachedReportId = inv.report_id || inv.report?.id || null;
+      const reportId = attachedReportId || inv.id;
       if (!reportId) {
         throw new BadRequestException('Checkr invitation returned no id.');
       }
-      const status = toCreateStatus(invitationJson);
+      // A bare invitation is not a report: its lifecycle status (e.g.
+      // `pending`) describes the hosted flow, not the check. Persist it as
+      // `invited` — mapping it through the report lifecycle would land the
+      // row in `in_progress` and strand it there, since the invitation-expiry
+      // escapes in webhooks, sync, and retry only run on `invited` rows.
+      const status = attachedReportId
+        ? toCreateStatus(inv.report ?? invitationJson)
+        : 'invited';
       return identityCreateResponseSchema.parse({
         id: reportId,
         status,
@@ -223,56 +239,11 @@ export class CheckrClient extends CheckrReportsReader {
     }
 
     // Fallback: direct report creation
-    const reportRes = await this.fetchCheckr('/v1/reports', {
-      method: 'POST',
-      headers: {
-        Authorization: this.authHeader(),
-        'Content-Type': 'application/json',
-        'Idempotency-Key': idempotencyKey,
-      },
-      body: JSON.stringify({
-        candidate_id: candidateId,
-        package: pkg,
-      }),
-    });
-
-    const reportJson = await this.readJson(reportRes);
-    if (!reportRes.ok) {
-      this.throwForTransientFailure(reportRes, 'create-report');
-      this.logger.error('Checkr create report/invitation failed', {
-        invitationStatus: invitationRes.status,
-        reportStatus: reportRes.status,
-      });
-      throw new BadRequestException('Checkr report creation failed.');
-    }
-
-    if (!isRecord(reportJson)) {
-      this.logger.error(
-        'Checkr report creation returned an unreadable payload',
-        {
-          reportStatus: reportRes.status,
-        },
-      );
-      throw new BadRequestException('Checkr report creation failed.');
-    }
-    const report = reportJson as {
-      id?: string;
-      status?: string;
-      adjudication?: string;
-      candidate_id?: string;
-    };
-    if (typeof report.id !== 'string' || !report.id) {
-      this.logger.error('Checkr report creation returned no id', {
-        reportStatus: reportRes.status,
-      });
-      throw new BadRequestException('Checkr report creation failed.');
-    }
-    return identityCreateResponseSchema.parse({
-      id: report.id,
-      status: toCreateStatus(report),
-      candidateUrl: null,
+    return this.createDirectReport({
       candidateId,
-      invitationId: null,
+      pkg,
+      idempotencyKey,
+      invitationStatus: invitationRes.status,
     });
   }
 }

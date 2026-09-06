@@ -2,6 +2,7 @@ import { BackgroundCheckStatus, db, Prisma } from '@db';
 import { logger, schedules } from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 import { CheckrClient } from '../../background-checks/checkr.client';
+import { handleMissingReport } from './reconcile-expired-invitation';
 import { fetchCompletedReportSnapshot } from '../../background-checks/background-check-report-snapshot';
 import {
   backgroundCheckStatuses,
@@ -125,17 +126,30 @@ export async function runReconciliation(): Promise<ReconciliationResult> {
         backgroundCheckRequestId: check.id,
         error: error instanceof Error ? error.message : String(error),
       });
+      // Back off like the !raw and !finalStatus branches: without this the
+      // row stays stale and is refetched and re-logged on every hourly run
+      // forever (worst with a revoked key, where every row throws alike).
+      await db.backgroundCheckRequest.updateMany({
+        where: { id: check.id, status: { in: NON_TERMINAL_STATUSES } },
+        data: { lastSyncedAt: new Date() },
+      });
       continue;
     }
 
     if (!raw) {
       // Report missing in Checkr (deleted) or fetch returned nothing.
-      // Advance lastSyncedAt so this row is not re-polled every hour.
-      await db.backgroundCheckRequest.updateMany({
-        where: { id: check.id, status: { in: NON_TERMINAL_STATUSES } },
-        data: { lastSyncedAt: new Date() },
+      // A still-invited row with an expired invitation terminalizes
+      // instead of backing off on it every hour forever.
+      const outcome = await handleMissingReport({
+        check,
+        checkrClient,
+        nonTerminalStatuses: NON_TERMINAL_STATUSES,
       });
-      unparseable += 1;
+      if (outcome === 'terminalized') {
+        updated += 1;
+      } else {
+        unparseable += 1;
+      }
       continue;
     }
 
@@ -201,15 +215,30 @@ export async function runReconciliation(): Promise<ReconciliationResult> {
 
     const hasChange = Object.keys(data).length > 0;
     if (hasChange) {
-      const reportSnapshot = await fetchCompletedReportSnapshot({
-        checkrClient,
-        identityBackgroundCheckId: effectiveId,
-        eventType: 'reconcile',
-        status: finalStatus,
-      });
-      if (reportSnapshot) {
-        data.reportSnapshot = reportSnapshot;
-        data.reportSyncedAt = new Date();
+      try {
+        const reportSnapshot = await fetchCompletedReportSnapshot({
+          checkrClient,
+          identityBackgroundCheckId: effectiveId,
+          eventType: 'reconcile',
+          status: finalStatus,
+        });
+        if (reportSnapshot) {
+          data.reportSnapshot = reportSnapshot;
+          data.reportSyncedAt = new Date();
+        }
+      } catch (error) {
+        // Snapshot unavailable (vendor blip): back off without writing the
+        // status. Committing a terminal state now would leave a row with no
+        // snapshot that reconcile never revisits once terminal.
+        logger.error('Failed to fetch Checkr report snapshot; backing off', {
+          backgroundCheckRequestId: check.id,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        await db.backgroundCheckRequest.updateMany({
+          where: { id: check.id, status: { in: NON_TERMINAL_STATUSES } },
+          data: { lastSyncedAt: new Date() },
+        });
+        continue;
       }
     }
     data.lastSyncedAt = new Date();

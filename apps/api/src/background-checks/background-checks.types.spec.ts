@@ -1,5 +1,6 @@
 import {
   mapCheckrReportToStatus,
+  normalizeWebhookEmail,
   shouldWriteWebhookStatus,
 } from './background-checks.types';
 
@@ -139,5 +140,34 @@ describe('shouldWriteWebhookStatus', () => {
         rawStatus: 'expired',
       }),
     ).toBe(false);
+  });
+});
+
+describe('normalizeWebhookEmail', () => {
+  it('keeps a valid vendor address', () => {
+    expect(
+      normalizeWebhookEmail({
+        candidateEmail: 'ada@example.com',
+        currentEmail: 'old@example.com',
+      }),
+    ).toBe('ada@example.com');
+  });
+
+  it('keeps the stored address when the vendor value is malformed', () => {
+    expect(
+      normalizeWebhookEmail({
+        candidateEmail: 'not-an-email',
+        currentEmail: 'old@example.com',
+      }),
+    ).toBe('old@example.com');
+  });
+
+  it('keeps the stored address when the vendor sends none', () => {
+    expect(
+      normalizeWebhookEmail({
+        candidateEmail: undefined,
+        currentEmail: 'old@example.com',
+      }),
+    ).toBe('old@example.com');
   });
 });

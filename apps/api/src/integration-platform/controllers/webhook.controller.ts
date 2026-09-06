@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from '../../auth/public.decorator';
 import { getManifest } from '@gideon-defender/integration-platform';
 import type { WebhookConfig } from '@gideon-defender/integration-platform';
 import { ConnectionRepository } from '../repositories/connection.repository';
@@ -22,6 +23,11 @@ import {
 } from '../../utils/webhook-signature';
 
 type WebhookPayload = Record<string, unknown>;
+
+/** Strip line breaks so attacker-controlled ids cannot forge log lines. */
+function sanitizeForLog(value: string): string {
+  return value.replace(/[\r\n]/g, '');
+}
 
 function getEventType(headers: Record<string, string>): string {
   return headers['x-github-event'] ?? headers['x-event-type'] ?? 'unknown';
@@ -35,6 +41,7 @@ export class WebhookController {
   constructor(private readonly connectionRepository: ConnectionRepository) {}
 
   @Post(':providerSlug/:connectionId')
+  @Public()
   @ApiOperation({ summary: 'Receive a provider webhook event' })
   async handleWebhook(
     @Param('providerSlug') providerSlug: string,
@@ -60,37 +67,53 @@ export class WebhookController {
 
     const connection = await this.connectionRepository.findById(connectionId);
     if (!connection) {
-      throw new HttpException('Connection not found', HttpStatus.NOT_FOUND);
-    }
-
-    if (connection.status !== 'active') {
-      throw new HttpException('Connection not active', HttpStatus.BAD_REQUEST);
+      // Generic auth failure on purpose: a distinct 404 here would let an
+      // unauthenticated caller enumerate valid connection ids.
+      throw new HttpException(
+        'Invalid webhook signature.',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     const webhookConfig = manifest.webhook;
-    if (webhookConfig.secretHeader && webhookConfig.signatureAlgorithm) {
-      const valid = await this.verifySignature(
-        req,
-        headers,
-        connection.id,
-        webhookConfig,
+    if (!webhookConfig.secretHeader || !webhookConfig.signatureAlgorithm) {
+      // Fail closed: without an HMAC the route is world-writable — an
+      // anonymous caller could forge runs and findings rows against any
+      // connection id. A provider that cannot sign deliveries must not
+      // expose this route.
+      this.logger.warn(
+        `Webhook provider ${sanitizeForLog(providerSlug)} has no signature config; rejecting unsigned delivery`,
       );
-      if (!valid) {
-        throw new HttpException('Invalid signature', HttpStatus.UNAUTHORIZED);
-      }
+      throw new HttpException(
+        'Invalid webhook signature.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    const valid = this.verifySignature(req, headers, connection, webhookConfig);
+    if (!valid) {
+      throw new HttpException(
+        'Invalid webhook signature.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    // Only checked after authentication: the status must not leak whether a
+    // connection id is valid to callers without the secret.
+    if (connection.status !== 'active') {
+      throw new HttpException('Connection not active', HttpStatus.BAD_REQUEST);
     }
 
     return this.processWebhook(connectionId, body, headers, manifest);
   }
 
-  private async verifySignature(
+  private verifySignature(
     req: RawBodyRequest<Request>,
     headers: Record<string, string>,
-    connectionId: string,
+    connection: { id: string; metadata: unknown },
     config: WebhookConfig,
-  ): Promise<boolean> {
+  ): boolean {
     const { secretHeader, signatureAlgorithm } = config;
-    if (!secretHeader || !signatureAlgorithm) return true;
+    if (!secretHeader || !signatureAlgorithm) return false;
 
     const signature = headerValue(headers, secretHeader);
     if (!signature) {
@@ -98,11 +121,14 @@ export class WebhookController {
       return false;
     }
 
-    const connection = await this.connectionRepository.findById(connectionId);
     const metadata = connection?.metadata as Record<string, unknown> | null;
     const secret = metadata?.webhookSecret as string | undefined;
     if (!secret) {
-      this.logger.warn(`No webhook secret for connection ${connectionId}`);
+      // Sanitize the attacker-controlled id before logging: a raw
+      // interpolation would let %0a forge log lines.
+      this.logger.warn(
+        `No webhook secret for connection ${sanitizeForLog(connection.id)}`,
+      );
       return false;
     }
 

@@ -194,7 +194,11 @@ export class BackgroundChecksController {
   @Post('webhook')
   @Public()
   @HttpCode(200)
-  @ApiOperation({ summary: 'Receive Checkr background check webhook events' })
+  @ApiOperation({
+    summary: 'Receive Checkr background check webhook events',
+    description:
+      'Verifies the Checkr HMAC signature, then claims and applies each report or invitation event. Use for vendor-driven status updates.',
+  })
   async handleWebhook(
     @Headers() headers: Record<string, string | string[] | undefined>,
     @Req() req: RawBodyRequest<Request>,
