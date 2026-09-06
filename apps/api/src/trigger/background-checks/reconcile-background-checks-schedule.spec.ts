@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method -- spec references jest-mocked db methods directly; `this` scoping is not a concern for mocks */
 import { db } from '@db';
 import {
   parseIdentityCheckState,
@@ -27,10 +28,14 @@ jest.mock('@gideon-defender/trigger-local', () => ({
   schedules: { task: (config: unknown) => config },
 }));
 
-const mockGetBackgroundCheck = jest.fn();
-jest.mock('../../background-checks/background-check-identity.client', () => ({
-  BackgroundCheckIdentityClient: jest.fn().mockImplementation(() => ({
-    getBackgroundCheck: mockGetBackgroundCheck,
+const mockGetReport = jest.fn();
+const mockGetInvitation = jest.fn();
+const mockResolveReport = jest.fn();
+jest.mock('../../background-checks/checkr.client', () => ({
+  CheckrClient: jest.fn().mockImplementation(() => ({
+    getReport: mockGetReport,
+    getInvitation: mockGetInvitation,
+    resolveReport: mockResolveReport,
   })),
 }));
 
@@ -96,9 +101,19 @@ describe('runReconciliation', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env = { ...originalEnv, BACKGROUND_CHECK_API_KEY: 'bc_test' };
+    process.env = { ...originalEnv, CHECKR_API_KEY: 'bc_test' };
     mockFetchSnapshot.mockResolvedValue(null);
     updateMany.mockResolvedValue({ count: 1 });
+    // Default to the plain read path so existing tests keep their shape;
+    // tests for the preferred path override resolveReport per case.
+    mockResolveReport.mockImplementation(
+      async ({
+        reportId,
+      }: {
+        reportId: string;
+        invitationId?: string | null;
+      }) => ({ report: await mockGetReport(reportId), reportId }),
+    );
   });
 
   afterAll(() => {
@@ -106,7 +121,7 @@ describe('runReconciliation', () => {
   });
 
   it('skips entirely when the API key is not configured', async () => {
-    delete process.env.BACKGROUND_CHECK_API_KEY;
+    delete process.env.CHECKR_API_KEY;
     const result = await runReconciliation();
     expect(findMany).not.toHaveBeenCalled();
     expect(result).toEqual({
@@ -125,7 +140,7 @@ describe('runReconciliation', () => {
         status: 'in_progress',
       },
     ]);
-    mockGetBackgroundCheck.mockResolvedValue({
+    mockGetReport.mockResolvedValue({
       status: 'completed',
       statuses: { identity: 'passed', employment: 'verified' },
     });
@@ -134,7 +149,11 @@ describe('runReconciliation', () => {
     const result = await runReconciliation();
 
     expect(updateMany).toHaveBeenCalledWith({
-      where: { id: 'bcr_1', status: { in: NON_TERMINAL } },
+      where: {
+        id: 'bcr_1',
+        status: { in: NON_TERMINAL },
+        identityBackgroundCheckId: 'check_1',
+      },
       data: expect.objectContaining({
         status: 'completed',
         identityStatus: 'passed',
@@ -155,7 +174,7 @@ describe('runReconciliation', () => {
         identityStatus: 'pending',
       },
     ]);
-    mockGetBackgroundCheck.mockResolvedValue({
+    mockGetReport.mockResolvedValue({
       status: 'in_progress',
       statuses: { identity: 'passed' },
     });
@@ -176,7 +195,165 @@ describe('runReconciliation', () => {
         status: 'in_progress',
       },
     ]);
-    mockGetBackgroundCheck.mockResolvedValue({ status: 'in_progress' });
+    mockGetReport.mockResolvedValue({ status: 'in_progress' });
+
+    const result = await runReconciliation();
+
+    expect(updateMany).toHaveBeenCalledWith({
+      where: {
+        id: 'bcr_1',
+        status: { in: NON_TERMINAL },
+        identityBackgroundCheckId: 'check_1',
+      },
+      data: { lastSyncedAt: expect.any(Date) },
+    });
+    expect(result.updated).toBe(0);
+  });
+
+  it('bumps lastSyncedAt for checks whose status cannot be determined', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'check_1',
+        status: 'in_progress',
+      },
+    ]);
+    mockGetReport.mockResolvedValue({ status: 'totally_made_up' });
+
+    const result = await runReconciliation();
+
+    // lastSyncedAt advances so the row backs off instead of re-polling hourly
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: 'bcr_1', status: { in: NON_TERMINAL } },
+      data: { lastSyncedAt: expect.any(Date) },
+    });
+    expect(result).toEqual({
+      success: true,
+      checked: 1,
+      updated: 0,
+      unparseable: 1,
+    });
+  });
+
+  it('backs off a non-string vendor status instead of aborting the batch', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_bad',
+        identityBackgroundCheckId: 'check_bad',
+        status: 'in_progress',
+      },
+      {
+        id: 'bcr_good',
+        identityBackgroundCheckId: 'rep_1',
+        status: 'in_progress',
+      },
+    ]);
+    mockGetReport
+      .mockResolvedValueOnce({ status: 42 })
+      .mockResolvedValueOnce({ status: 'clear' });
+
+    const result = await runReconciliation();
+
+    // The malformed payload backs off as unparseable while the rest of the
+    // batch still processes.
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: 'bcr_bad', status: { in: NON_TERMINAL } },
+      data: { lastSyncedAt: expect.any(Date) },
+    });
+    expect(updateMany).toHaveBeenCalledWith({
+      where: {
+        id: 'bcr_good',
+        status: { in: NON_TERMINAL },
+        identityBackgroundCheckId: 'rep_1',
+      },
+      data: expect.objectContaining({ status: 'completed' }),
+    });
+    expect(result).toEqual({
+      success: true,
+      checked: 2,
+      updated: 1,
+      unparseable: 1,
+    });
+  });
+
+  it('maps raw Checkr statuses via the Checkr fallback', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'rep_1',
+        status: 'in_progress',
+      },
+    ]);
+    mockGetReport.mockResolvedValue({ status: 'clear' });
+
+    const result = await runReconciliation();
+
+    expect(updateMany).toHaveBeenCalledWith({
+      where: {
+        id: 'bcr_1',
+        status: { in: NON_TERMINAL },
+        identityBackgroundCheckId: 'rep_1',
+      },
+      data: expect.objectContaining({ status: 'completed' }),
+    });
+    expect(result.updated).toBe(1);
+  });
+
+  it('bumps lastSyncedAt when the Checkr report is gone', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'rep_deleted',
+        status: 'in_progress',
+      },
+    ]);
+    mockGetReport.mockResolvedValue(null);
+
+    const result = await runReconciliation();
+
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: 'bcr_1', status: { in: NON_TERMINAL } },
+      data: { lastSyncedAt: expect.any(Date) },
+    });
+    expect(result.unparseable).toBe(1);
+  });
+
+  it('terminalizes a still-invited row whose invitation expired', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'inv_1',
+        checkrInvitationId: 'inv_1',
+        status: 'invited',
+      },
+    ]);
+    mockGetReport.mockResolvedValue(null);
+    mockGetInvitation.mockResolvedValue({ id: 'inv_1', status: 'expired' });
+
+    const result = await runReconciliation();
+
+    // An expired invitation can never produce a report: the row advances
+    // to failed instead of backing off forever.
+    expect(mockGetInvitation).toHaveBeenCalledWith('inv_1');
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { id: 'bcr_1', status: { in: NON_TERMINAL } },
+      data: { status: 'failed', lastSyncedAt: expect.any(Date) },
+    });
+    expect(result.updated).toBe(1);
+    expect(result.unparseable).toBe(0);
+  });
+
+  it('backs off a still-invited row whose invitation is still pending', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'inv_1',
+        checkrInvitationId: 'inv_1',
+        status: 'invited',
+      },
+    ]);
+    mockGetReport.mockResolvedValue(null);
+    mockGetInvitation.mockResolvedValue({ id: 'inv_1', status: 'pending' });
 
     const result = await runReconciliation();
 
@@ -185,27 +362,7 @@ describe('runReconciliation', () => {
       data: { lastSyncedAt: expect.any(Date) },
     });
     expect(result.updated).toBe(0);
-  });
-
-  it('counts checks whose Identity status cannot be determined and leaves them untouched', async () => {
-    findMany.mockResolvedValue([
-      {
-        id: 'bcr_1',
-        identityBackgroundCheckId: 'check_1',
-        status: 'in_progress',
-      },
-    ]);
-    mockGetBackgroundCheck.mockResolvedValue({ id: 'check_1' });
-
-    const result = await runReconciliation();
-
-    expect(updateMany).not.toHaveBeenCalled();
-    expect(result).toEqual({
-      success: true,
-      checked: 1,
-      updated: 0,
-      unparseable: 1,
-    });
+    expect(result.unparseable).toBe(1);
   });
 
   it('queries only stale, non-terminal checks with an Identity id', async () => {
@@ -223,6 +380,7 @@ describe('runReconciliation', () => {
       select: {
         id: true,
         identityBackgroundCheckId: true,
+        checkrInvitationId: true,
         status: true,
         identityStatus: true,
         employmentStatus: true,
@@ -230,6 +388,111 @@ describe('runReconciliation', () => {
         rightToWorkStatus: true,
         adjudicationStatus: true,
       },
+    });
+  });
+
+  it('graduates an invitation-id pointer through the preferred resolveReport path', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'inv_1',
+        checkrInvitationId: 'inv_1',
+        status: 'invited',
+      },
+    ]);
+    mockResolveReport.mockResolvedValue({
+      report: { status: 'clear' },
+      reportId: 'rep_9',
+    });
+
+    const result = await runReconciliation();
+
+    expect(mockResolveReport).toHaveBeenCalledWith({
+      reportId: 'inv_1',
+      invitationId: 'inv_1',
+    });
+    expect(mockGetReport).not.toHaveBeenCalled();
+    expect(updateMany).toHaveBeenCalledWith({
+      where: {
+        id: 'bcr_1',
+        status: { in: NON_TERMINAL },
+        identityBackgroundCheckId: 'inv_1',
+      },
+      data: expect.objectContaining({
+        identityBackgroundCheckId: 'rep_9',
+        status: 'completed',
+      }),
+    });
+    expect(result.updated).toBe(1);
+  });
+
+  it('backs off the row when the vendor fetch throws instead of refetching it every hour', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'check_1',
+        checkrInvitationId: null,
+        status: 'in_progress',
+      },
+    ]);
+    mockResolveReport.mockRejectedValue(new Error('Checkr down'));
+
+    const result = await runReconciliation();
+
+    // A poison row must not wedge the run. The timestamp advances so the
+    // row is not refetched and re-logged on every hourly pass — only the
+    // status is left alone.
+    expect(updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ id: 'bcr_1' }),
+        data: { lastSyncedAt: expect.any(Date) },
+      }),
+    );
+    expect(result).toEqual({
+      success: true,
+      checked: 1,
+      updated: 0,
+      unparseable: 0,
+    });
+  });
+
+  it('backs off without terminalizing when the report snapshot is unavailable', async () => {
+    findMany.mockResolvedValue([
+      {
+        id: 'bcr_1',
+        identityBackgroundCheckId: 'check_1',
+        checkrInvitationId: null,
+        status: 'in_progress',
+        identityStatus: null,
+        employmentStatus: null,
+        referenceStatus: null,
+        rightToWorkStatus: null,
+        adjudicationStatus: null,
+      },
+    ]);
+    mockResolveReport.mockResolvedValue({
+      report: { status: 'clear' },
+      reportId: 'check_1',
+    });
+    mockFetchSnapshot.mockRejectedValue(new Error('Checkr blip'));
+
+    const result = await runReconciliation();
+
+    // The terminal transition waits: committing it now would leave a row
+    // with no snapshot that reconcile never revisits once terminal.
+    const writes = updateMany.mock.calls.map((call) => call[0]);
+    expect(writes).toHaveLength(1);
+    expect(writes[0]).toEqual(
+      expect.objectContaining({
+        data: { lastSyncedAt: expect.any(Date) },
+      }),
+    );
+    expect(writes[0].data).not.toHaveProperty('status');
+    expect(result).toEqual({
+      success: true,
+      checked: 1,
+      updated: 0,
+      unparseable: 0,
     });
   });
 });

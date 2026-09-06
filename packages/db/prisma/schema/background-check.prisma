@@ -8,6 +8,16 @@ model BackgroundCheckRequest {
   identityBackgroundCheckId String?               @unique
   candidateUrl              String?
   status                    BackgroundCheckStatus @default(invited)
+  // Checkr native fields (added for native Checkr integration - see 2026-08-28 plan)
+  checkrCandidateId         String?
+  checkrInvitationId        String?
+  checkrPackage             String?
+  // Vendor pointers this row superseded via retry. A late webhook for a
+  // prior attempt still resolves through the candidate/member fallback
+  // after the pointer moved on, so the stale guard checks this list —
+  // without it the guard cannot tell a superseded report from the new
+  // report arriving for a retried row.
+  supersededIdentityBackgroundCheckIds String[] @default([])
   identityStatus            String?
   employmentStatus          String?
   referenceStatus           String?
@@ -45,6 +55,10 @@ model BackgroundCheckWebhookEvent {
   identityBackgroundCheckId String?
   payload                   Json
   processedAt               DateTime @default(now())
+  // Set when the event's state transition commits. Null means the worker
+  // crashed between the dedup insert and the commit — the next delivery
+  // reprocesses instead of acking duplicate on unwritten state.
+  appliedAt                 DateTime?
 
   backgroundCheckRequest BackgroundCheckRequest? @relation(fields: [backgroundCheckRequestId], references: [id], onDelete: SetNull)
 

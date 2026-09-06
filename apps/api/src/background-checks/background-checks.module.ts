@@ -5,6 +5,7 @@ import { BillingModule } from '../billing/billing.module';
 import { BackgroundCheckBillingController } from './background-check-billing.controller';
 import { BackgroundCheckBillingService } from './background-check-billing.service';
 import { BackgroundCheckCustomService } from './background-check-custom.service';
+import { CheckrClient } from './checkr.client';
 import { BackgroundCheckIdentityClient } from './background-check-identity.client';
 import { BackgroundCheckPaymentService } from './background-check-payment.service';
 import {
@@ -24,7 +25,13 @@ import { BackgroundChecksService } from './background-checks.service';
     BackgroundChecksService,
     BackgroundCheckBillingService,
     BackgroundCheckCustomService,
-    BackgroundCheckIdentityClient,
+    CheckrClient,
+    // Legacy alias for the same client. Single shared instance so both
+    // injection tokens resolve to one CheckrClient.
+    {
+      provide: BackgroundCheckIdentityClient,
+      useExisting: CheckrClient,
+    },
     BackgroundCheckPaymentService,
   ],
   exports: [BackgroundChecksService, BackgroundCheckBillingService],

@@ -24,6 +24,7 @@ describe('PeopleBackgroundChecksController admin actions', () => {
     retryForMember: jest.fn(),
     cancelForMember: jest.fn(),
     deleteForMember: jest.fn(),
+    syncForMember: jest.fn(),
   };
 
   const mockGuard = { canActivate: jest.fn().mockReturnValue(true) };
@@ -77,6 +78,14 @@ describe('PeopleBackgroundChecksController admin actions', () => {
   it('delegates delete', async () => {
     await controller.deleteForMember('mem_1', 'org_1');
     expect(service.deleteForMember).toHaveBeenCalledWith({
+      organizationId: 'org_1',
+      memberId: 'mem_1',
+    });
+  });
+
+  it('delegates sync', async () => {
+    await controller.syncForMember('mem_1', 'org_1');
+    expect(service.syncForMember).toHaveBeenCalledWith({
       organizationId: 'org_1',
       memberId: 'mem_1',
     });

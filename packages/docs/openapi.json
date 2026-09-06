@@ -527,9 +527,9 @@
           "metadata": {
             "title": "Get organization onboarding status | OpenComp API",
             "sidebarTitle": "Get organization onboarding status",
-            "description": "Get organization onboarding status in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings.",
+            "description": "Get organization onboarding status in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval.",
             "og:title": "Get organization onboarding status | OpenComp API",
-            "og:description": "Get organization onboarding status in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval settings."
+            "og:description": "Get organization onboarding status in OpenComp. Manage organization profile data, API keys, logos, ownership, role notifications, and access approval."
           }
         },
         "x-speakeasy-mcp": {
@@ -1098,9 +1098,9 @@
           "metadata": {
             "title": "Auto-approve organization access via domain | OpenComp API",
             "sidebarTitle": "Auto-approve organization access via domain or self-hosted check",
-            "description": "Grants hasAccess on the active organization if the requesting user is an internal gideondefender.com user, the deployment is self-hosted, or the user email domain.",
+            "description": "Grants hasAccess on the active organization if the requesting user is an internal gideondefender.com user, the deployment is self-hosted, or the user email.",
             "og:title": "Auto-approve organization access via domain | OpenComp API",
-            "og:description": "Grants hasAccess on the active organization if the requesting user is an internal gideondefender.com user, the deployment is self-hosted, or the user email domain."
+            "og:description": "Grants hasAccess on the active organization if the requesting user is an internal gideondefender.com user, the deployment is self-hosted, or the user email."
           }
         },
         "x-speakeasy-mcp": {
@@ -4404,9 +4404,9 @@
           "metadata": {
             "title": "Disconnect checks from a task | OpenComp API",
             "sidebarTitle": "Disconnect checks from a task",
-            "description": "Disconnect checks from a task in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect.",
+            "description": "Disconnect checks from a task in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables.",
             "og:title": "Disconnect checks from a task | OpenComp API",
-            "og:description": "Disconnect checks from a task in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect."
+            "og:description": "Disconnect checks from a task in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables."
           }
         },
         "x-speakeasy-mcp": {
@@ -5149,10 +5149,10 @@
         "description": "Per-user 2FA status from the configured source in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage variables, and collect automated evidence.",
         "x-mint": {
           "metadata": {
-            "title": "Per-user 2FA status from the configured source | OpenComp API",
+            "title": "Per-user 2FA status from the configured | OpenComp API",
             "sidebarTitle": "Per-user 2FA status from the configured source",
             "description": "Per-user 2FA status from the configured source in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage.",
-            "og:title": "Per-user 2FA status from the configured source | OpenComp API",
+            "og:title": "Per-user 2FA status from the configured | OpenComp API",
             "og:description": "Per-user 2FA status from the configured source in OpenComp. Connect vendor systems, configure OAuth apps, run compliance checks, sync employees, manage."
           }
         },
@@ -5216,9 +5216,9 @@
           "metadata": {
             "title": "List supported cloud providers | OpenComp API",
             "sidebarTitle": "List supported cloud providers",
-            "description": "List supported cloud providers in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture.",
+            "description": "List supported cloud providers in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud.",
             "og:title": "List supported cloud providers | OpenComp API",
-            "og:description": "List supported cloud providers in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud posture."
+            "og:description": "List supported cloud providers in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect cloud."
           }
         },
         "x-speakeasy-mcp": {
@@ -5597,9 +5597,9 @@
           "metadata": {
             "title": "Detect the GCP organization for a connection | OpenComp API",
             "sidebarTitle": "Detect the GCP organization for a connection",
-            "description": "Detect the GCP organization for a connection in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect.",
+            "description": "Detect the GCP organization for a connection in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings.",
             "og:title": "Detect the GCP organization for a connection | OpenComp API",
-            "og:description": "Detect the GCP organization for a connection in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings, and connect."
+            "og:description": "Detect the GCP organization for a connection in OpenComp. Run AWS, Azure, and GCP cloud security scans, detect enabled services, review findings."
           }
         },
         "x-speakeasy-mcp": {
@@ -6554,9 +6554,9 @@
           "metadata": {
             "title": "Get risk counts grouped by department | OpenComp API",
             "sidebarTitle": "Get risk counts grouped by department",
-            "description": "Get risk counts grouped by department in OpenComp. Create, update, and report on organizational risks with ownership, departments, and compliance remediation.",
+            "description": "Get risk counts grouped by department in OpenComp. Create, update, and report on organizational risks with ownership, departments, and compliance.",
             "og:title": "Get risk counts grouped by department | OpenComp API",
-            "og:description": "Get risk counts grouped by department in OpenComp. Create, update, and report on organizational risks with ownership, departments, and compliance remediation."
+            "og:description": "Get risk counts grouped by department in OpenComp. Create, update, and report on organizational risks with ownership, departments, and compliance."
           }
         },
         "x-speakeasy-mcp": {
@@ -7271,6 +7271,463 @@
         },
         "x-speakeasy-mcp": {
           "name": "delete-risk"
+        }
+      }
+    },
+    "/v1/risks/{id}/acceptances": {
+      "get": {
+        "description": "Returns the residual-risk acceptance history for a risk, newest first. Each event freezes the residual rating at acceptance and carries a stale flag set when the risk's residual rating has changed since (ISO 27001 6.1.3(f)).",
+        "operationId": "RiskAcceptancesController_listRiskAcceptances_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Risk ID",
+            "schema": {
+              "example": "rsk_abc123def456",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Acceptance history retrieved successfully (newest first)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Acceptance event ID",
+                            "example": "rska_abc123def456"
+                          },
+                          "acceptedById": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Member ID of the acceptor (null if since removed)",
+                            "example": "mem_abc123def456"
+                          },
+                          "acceptedByName": {
+                            "type": "string",
+                            "description": "Acceptor display name, frozen at acceptance",
+                            "example": "Jane Doe"
+                          },
+                          "notes": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "Residual risk reviewed at the Q2 risk review."
+                          },
+                          "residualLikelihood": {
+                            "type": "string",
+                            "enum": [
+                              "very_unlikely",
+                              "unlikely",
+                              "possible",
+                              "likely",
+                              "very_likely"
+                            ],
+                            "description": "Residual likelihood frozen at acceptance",
+                            "example": "unlikely"
+                          },
+                          "residualImpact": {
+                            "type": "string",
+                            "enum": [
+                              "insignificant",
+                              "minor",
+                              "moderate",
+                              "major",
+                              "severe"
+                            ],
+                            "description": "Residual impact frozen at acceptance",
+                            "example": "minor"
+                          },
+                          "level": {
+                            "type": "string",
+                            "enum": [
+                              "very-low",
+                              "low",
+                              "medium",
+                              "high",
+                              "very-high"
+                            ],
+                            "description": "Risk level of the accepted residual rating",
+                            "example": "low"
+                          },
+                          "levelLabel": {
+                            "type": "string",
+                            "description": "Human-readable level label",
+                            "example": "Low"
+                          },
+                          "stale": {
+                            "type": "boolean",
+                            "description": "True when the residual rating changed after this acceptance was recorded — re-acceptance is required",
+                            "example": false
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "When the acceptance was recorded (server-set, immutable)"
+                          }
+                        }
+                      }
+                    },
+                    "authType": {
+                      "type": "string",
+                      "enum": [
+                        "api-key",
+                        "session",
+                        "service"
+                      ],
+                      "description": "How the request was authenticated"
+                    },
+                    "authenticatedUser": {
+                      "type": "object",
+                      "description": "User information (only for session auth)",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "usr_def456ghi789"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "user@example.com"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired API key"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User does not have permission to access this risk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "You do not have access to this risk"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Risk not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Risk with ID abc123 not found in organization org_abc123def456"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "List risk-owner acceptance events",
+        "tags": [
+          "Risks"
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "List risk-owner acceptance events | OpenComp API",
+            "sidebarTitle": "List risk-owner acceptance events",
+            "description": "Returns the residual-risk acceptance history for a risk, newest first. Each event freezes the residual rating at acceptance and carries a stale flag set.",
+            "og:title": "List risk-owner acceptance events | OpenComp API",
+            "og:description": "Returns the residual-risk acceptance history for a risk, newest first. Each event freezes the residual rating at acceptance and carries a stale flag set."
+          }
+        },
+        "x-speakeasy-mcp": {
+          "name": "list-risk-acceptances"
+        }
+      },
+      "post": {
+        "description": "Records an immutable, timestamped acceptance of a risk's current residual risk by the risk owner (or a chosen member). Re-record after the residual rating changes; prior events remain in the history.",
+        "operationId": "RiskAcceptancesController_recordRiskAcceptance_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Risk ID",
+            "schema": {
+              "example": "rsk_abc123def456",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Acceptance data (acceptor defaults to the risk owner)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRiskAcceptanceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Acceptance recorded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Acceptance event ID",
+                      "example": "rska_abc123def456"
+                    },
+                    "acceptedById": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Member ID of the acceptor (null if since removed)",
+                      "example": "mem_abc123def456"
+                    },
+                    "acceptedByName": {
+                      "type": "string",
+                      "description": "Acceptor display name, frozen at acceptance",
+                      "example": "Jane Doe"
+                    },
+                    "notes": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Residual risk reviewed at the Q2 risk review."
+                    },
+                    "residualLikelihood": {
+                      "type": "string",
+                      "enum": [
+                        "very_unlikely",
+                        "unlikely",
+                        "possible",
+                        "likely",
+                        "very_likely"
+                      ],
+                      "description": "Residual likelihood frozen at acceptance",
+                      "example": "unlikely"
+                    },
+                    "residualImpact": {
+                      "type": "string",
+                      "enum": [
+                        "insignificant",
+                        "minor",
+                        "moderate",
+                        "major",
+                        "severe"
+                      ],
+                      "description": "Residual impact frozen at acceptance",
+                      "example": "minor"
+                    },
+                    "level": {
+                      "type": "string",
+                      "enum": [
+                        "very-low",
+                        "low",
+                        "medium",
+                        "high",
+                        "very-high"
+                      ],
+                      "description": "Risk level of the accepted residual rating",
+                      "example": "low"
+                    },
+                    "levelLabel": {
+                      "type": "string",
+                      "description": "Human-readable level label",
+                      "example": "Low"
+                    },
+                    "stale": {
+                      "type": "boolean",
+                      "description": "True when the residual rating changed after this acceptance was recorded — re-acceptance is required",
+                      "example": false
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the acceptance was recorded (server-set, immutable)"
+                    },
+                    "authType": {
+                      "type": "string",
+                      "enum": [
+                        "api-key",
+                        "session",
+                        "service"
+                      ],
+                      "description": "How the request was authenticated"
+                    },
+                    "authenticatedUser": {
+                      "type": "object",
+                      "description": "User information (only for session auth)",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "usr_def456ghi789"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "user@example.com"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No owner assigned, or the acceptor is not a valid member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "No owner is assigned. Assign an owner or choose an acceptor."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired API key"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User does not have permission to access this risk",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "You do not have access to this risk"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Risk not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Risk with ID abc123 not found in organization org_abc123def456"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Record risk-owner acceptance",
+        "tags": [
+          "Risks"
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Record risk-owner acceptance | OpenComp API",
+            "sidebarTitle": "Record risk-owner acceptance",
+            "description": "Records an immutable, timestamped acceptance of a risk's current residual risk by the risk owner (or a chosen member). Re-record after the residual rating.",
+            "og:title": "Record risk-owner acceptance | OpenComp API",
+            "og:description": "Records an immutable, timestamped acceptance of a risk's current residual risk by the risk owner (or a chosen member). Re-record after the residual rating."
+          }
+        },
+        "x-speakeasy-mcp": {
+          "name": "record-risk-acceptance"
         }
       }
     },
@@ -8490,6 +8947,463 @@
         }
       }
     },
+    "/v1/vendors/{id}/acceptances": {
+      "get": {
+        "description": "Returns the residual-risk acceptance history for a vendor, newest first. Each event freezes the residual rating at acceptance and carries a stale flag set when the vendor's residual rating has changed since (ISO 27001 6.1.3(f)).",
+        "operationId": "VendorAcceptancesController_listVendorAcceptances_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Vendor ID",
+            "schema": {
+              "example": "vnd_abc123def456",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Acceptance history retrieved successfully (newest first)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Acceptance event ID",
+                            "example": "rska_abc123def456"
+                          },
+                          "acceptedById": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Member ID of the acceptor (null if since removed)",
+                            "example": "mem_abc123def456"
+                          },
+                          "acceptedByName": {
+                            "type": "string",
+                            "description": "Acceptor display name, frozen at acceptance",
+                            "example": "Jane Doe"
+                          },
+                          "notes": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "Residual risk reviewed at the Q2 risk review."
+                          },
+                          "residualLikelihood": {
+                            "type": "string",
+                            "enum": [
+                              "very_unlikely",
+                              "unlikely",
+                              "possible",
+                              "likely",
+                              "very_likely"
+                            ],
+                            "description": "Residual likelihood frozen at acceptance",
+                            "example": "unlikely"
+                          },
+                          "residualImpact": {
+                            "type": "string",
+                            "enum": [
+                              "insignificant",
+                              "minor",
+                              "moderate",
+                              "major",
+                              "severe"
+                            ],
+                            "description": "Residual impact frozen at acceptance",
+                            "example": "minor"
+                          },
+                          "level": {
+                            "type": "string",
+                            "enum": [
+                              "very-low",
+                              "low",
+                              "medium",
+                              "high",
+                              "very-high"
+                            ],
+                            "description": "Risk level of the accepted residual rating",
+                            "example": "low"
+                          },
+                          "levelLabel": {
+                            "type": "string",
+                            "description": "Human-readable level label",
+                            "example": "Low"
+                          },
+                          "stale": {
+                            "type": "boolean",
+                            "description": "True when the residual rating changed after this acceptance was recorded — re-acceptance is required",
+                            "example": false
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "When the acceptance was recorded (server-set, immutable)"
+                          }
+                        }
+                      }
+                    },
+                    "authType": {
+                      "type": "string",
+                      "enum": [
+                        "api-key",
+                        "session",
+                        "service"
+                      ],
+                      "description": "How the request was authenticated"
+                    },
+                    "authenticatedUser": {
+                      "type": "object",
+                      "description": "User information (only for session auth)",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "usr_def456ghi789"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "user@example.com"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired API key"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User does not have permission to access vendor risks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Forbidden"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vendor not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Vendor with ID vnd_abc123def456 not found in organization org_abc123def456"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "List vendor risk acceptance events",
+        "tags": [
+          "Vendors"
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "List vendor risk acceptance events | OpenComp API",
+            "sidebarTitle": "List vendor risk acceptance events",
+            "description": "Returns the residual-risk acceptance history for a vendor, newest first. Each event freezes the residual rating at acceptance and carries a stale flag set.",
+            "og:title": "List vendor risk acceptance events | OpenComp API",
+            "og:description": "Returns the residual-risk acceptance history for a vendor, newest first. Each event freezes the residual rating at acceptance and carries a stale flag set."
+          }
+        },
+        "x-speakeasy-mcp": {
+          "name": "list-vendor-acceptances"
+        }
+      },
+      "post": {
+        "description": "Records an immutable, timestamped acceptance of a vendor's current residual risk by the vendor owner (or a chosen member). Re-record after the residual rating changes; prior events remain in the history.",
+        "operationId": "VendorAcceptancesController_recordVendorAcceptance_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Vendor ID",
+            "schema": {
+              "example": "vnd_abc123def456",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Acceptance data (acceptor defaults to the vendor owner)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRiskAcceptanceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Acceptance recorded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Acceptance event ID",
+                      "example": "rska_abc123def456"
+                    },
+                    "acceptedById": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Member ID of the acceptor (null if since removed)",
+                      "example": "mem_abc123def456"
+                    },
+                    "acceptedByName": {
+                      "type": "string",
+                      "description": "Acceptor display name, frozen at acceptance",
+                      "example": "Jane Doe"
+                    },
+                    "notes": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Residual risk reviewed at the Q2 risk review."
+                    },
+                    "residualLikelihood": {
+                      "type": "string",
+                      "enum": [
+                        "very_unlikely",
+                        "unlikely",
+                        "possible",
+                        "likely",
+                        "very_likely"
+                      ],
+                      "description": "Residual likelihood frozen at acceptance",
+                      "example": "unlikely"
+                    },
+                    "residualImpact": {
+                      "type": "string",
+                      "enum": [
+                        "insignificant",
+                        "minor",
+                        "moderate",
+                        "major",
+                        "severe"
+                      ],
+                      "description": "Residual impact frozen at acceptance",
+                      "example": "minor"
+                    },
+                    "level": {
+                      "type": "string",
+                      "enum": [
+                        "very-low",
+                        "low",
+                        "medium",
+                        "high",
+                        "very-high"
+                      ],
+                      "description": "Risk level of the accepted residual rating",
+                      "example": "low"
+                    },
+                    "levelLabel": {
+                      "type": "string",
+                      "description": "Human-readable level label",
+                      "example": "Low"
+                    },
+                    "stale": {
+                      "type": "boolean",
+                      "description": "True when the residual rating changed after this acceptance was recorded — re-acceptance is required",
+                      "example": false
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the acceptance was recorded (server-set, immutable)"
+                    },
+                    "authType": {
+                      "type": "string",
+                      "enum": [
+                        "api-key",
+                        "session",
+                        "service"
+                      ],
+                      "description": "How the request was authenticated"
+                    },
+                    "authenticatedUser": {
+                      "type": "object",
+                      "description": "User information (only for session auth)",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "usr_def456ghi789"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "user@example.com"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No owner assigned, or the acceptor is not a valid member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "No owner is assigned. Assign an owner or choose an acceptor."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid or expired API key"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - User does not have permission to access vendor risks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Forbidden"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vendor not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Vendor with ID vnd_abc123def456 not found in organization org_abc123def456"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Record vendor risk-owner acceptance",
+        "tags": [
+          "Vendors"
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Record vendor risk-owner acceptance | OpenComp API",
+            "sidebarTitle": "Record vendor risk-owner acceptance",
+            "description": "Records an immutable, timestamped acceptance of a vendor's current residual risk by the vendor owner (or a chosen member). Re-record after the residual.",
+            "og:title": "Record vendor risk-owner acceptance | OpenComp API",
+            "og:description": "Records an immutable, timestamped acceptance of a vendor's current residual risk by the vendor owner (or a chosen member). Re-record after the residual."
+          }
+        },
+        "x-speakeasy-mcp": {
+          "name": "record-vendor-acceptance"
+        }
+      }
+    },
     "/v1/context": {
       "get": {
         "description": "List organization context entries used as approved source material for evidence, questionnaires, policies, and AI workflows.",
@@ -9659,7 +10573,7 @@
     },
     "/v1/policies": {
       "get": {
-        "description": "Lists active compliance policies by default. Use includeArchived=true to include archived rows and excludeContent=true when you only need policy metadata.",
+        "description": "List compliance policies used for SOC 2, ISO 27001, HIPAA, and GDPR evidence. Active policies are returned by default; use includeArchived=true to include archived rows and excludeContent=true when you only need policy metadata.",
         "operationId": "PoliciesController_getAllPolicies_v1",
         "parameters": [
           {
@@ -9815,9 +10729,9 @@
           "metadata": {
             "title": "List compliance policies | OpenComp API",
             "sidebarTitle": "List compliance policies",
-            "description": "Lists active compliance policies by default. Use includeArchived=true to include archived rows and excludeContent=true when you only need policy metadata.",
+            "description": "List compliance policies used for SOC 2, ISO 27001, HIPAA, and GDPR evidence. Active policies are returned by default; use includeArchived=true to include.",
             "og:title": "List compliance policies | OpenComp API",
-            "og:description": "Lists active compliance policies by default. Use includeArchived=true to include archived rows and excludeContent=true when you only need policy metadata."
+            "og:description": "List compliance policies used for SOC 2, ISO 27001, HIPAA, and GDPR evidence. Active policies are returned by default; use includeArchived=true to include."
           }
         },
         "x-codeSamples": [
@@ -10593,10 +11507,10 @@
         },
         "x-mint": {
           "metadata": {
-            "title": "Request a presigned URL to upload a policy PDF | OpenComp API",
+            "title": "Request a presigned URL to upload a policy | OpenComp API",
             "sidebarTitle": "Request a presigned URL to upload a policy PDF",
             "description": "Generates a presigned S3 URL for uploading a policy PDF directly to storage. Use this when attaching a PDF to a compliance policy — the file bytes are.",
-            "og:title": "Request a presigned URL to upload a policy PDF | OpenComp API",
+            "og:title": "Request a presigned URL to upload a policy | OpenComp API",
             "og:description": "Generates a presigned S3 URL for uploading a policy PDF directly to storage. Use this when attaching a PDF to a compliance policy — the file bytes are."
           }
         }
@@ -10714,10 +11628,10 @@
         "description": "Get signed URL for policy PDF (alternate path) in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.",
         "x-mint": {
           "metadata": {
-            "title": "Get signed URL for policy PDF (alternate path) | OpenComp API",
+            "title": "Get signed URL for policy PDF (alternate | OpenComp API",
             "sidebarTitle": "Get signed URL for policy PDF (alternate path)",
             "description": "Get signed URL for policy PDF (alternate path) in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting.",
-            "og:title": "Get signed URL for policy PDF (alternate path) | OpenComp API",
+            "og:title": "Get signed URL for policy PDF (alternate | OpenComp API",
             "og:description": "Get signed URL for policy PDF (alternate path) in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting."
           }
         },
@@ -12014,9 +12928,9 @@
           "metadata": {
             "title": "Set active policy version | OpenComp API",
             "sidebarTitle": "Set active policy version",
-            "description": "Set active policy version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.",
+            "description": "Set active policy version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval.",
             "og:title": "Set active policy version | OpenComp API",
-            "og:description": "Set active policy version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows."
+            "og:description": "Set active policy version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval."
           }
         },
         "x-speakeasy-mcp": {
@@ -12205,10 +13119,10 @@
         "description": "Accept pending policy changes and publish the version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted drafting and approval workflows.",
         "x-mint": {
           "metadata": {
-            "title": "Accept pending policy changes and publish the | OpenComp API",
+            "title": "Accept pending policy changes and publish | OpenComp API",
             "sidebarTitle": "Accept pending policy changes and publish the version",
             "description": "Accept pending policy changes and publish the version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted.",
-            "og:title": "Accept pending policy changes and publish the | OpenComp API",
+            "og:title": "Accept pending policy changes and publish | OpenComp API",
             "og:description": "Accept pending policy changes and publish the version in OpenComp. Create, version, publish, export, map, and improve compliance policies with AI-assisted."
           }
         }
@@ -12443,9 +13357,9 @@
           "metadata": {
             "title": "Check a device-agent update's metadata | OpenComp API",
             "sidebarTitle": "Check a device-agent update's metadata",
-            "description": "Check a device-agent update's metadata in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint.",
+            "description": "Check a device-agent update's metadata in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage.",
             "og:title": "Check a device-agent update's metadata | OpenComp API",
-            "og:description": "Check a device-agent update's metadata in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint."
+            "og:description": "Check a device-agent update's metadata in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage."
           }
         },
         "x-speakeasy-mcp": {
@@ -12630,9 +13544,9 @@
           "metadata": {
             "title": "Get device-agent status | OpenComp API",
             "sidebarTitle": "Get device-agent status",
-            "description": "Get device-agent status in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status.",
+            "description": "Get device-agent status in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security.",
             "og:title": "Get device-agent status | OpenComp API",
-            "og:description": "Get device-agent status in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security status."
+            "og:description": "Get device-agent status in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security."
           }
         },
         "x-speakeasy-mcp": {
@@ -12700,7 +13614,7 @@
     },
     "/v1/device-agent/windows": {
       "get": {
-        "description": "Downloads a ZIP package containing the OpenComp Device Agent installer for Windows, along with setup scripts and instructions. The package includes an MSI installer, setup batch script customized for the organization and user, and a README.",
+        "description": "Downloads a ZIP package containing the OpenComp Device Agent installer for Windows, along with setup scripts and instructions. The package includes an MSI installer, setup batch script customized for the organization and user, and a.",
         "operationId": "DeviceAgentController_downloadWindowsAgent_v1",
         "parameters": [],
         "responses": {
@@ -12783,9 +13697,9 @@
           "metadata": {
             "title": "Revoke a device agent session | OpenComp API",
             "sidebarTitle": "Revoke a device agent session",
-            "description": "Revoke a device agent session in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security.",
+            "description": "Revoke a device agent session in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint.",
             "og:title": "Revoke a device agent session | OpenComp API",
-            "og:description": "Revoke a device agent session in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint security."
+            "og:description": "Revoke a device agent session in OpenComp. Register employee devices, submit device compliance check-ins, download agent builds, and manage endpoint."
           }
         },
         "x-speakeasy-mcp": {
@@ -13271,9 +14185,9 @@
           "metadata": {
             "title": "Update assignee for multiple tasks | OpenComp API",
             "sidebarTitle": "Update assignee for multiple tasks",
-            "description": "Update assignee for multiple tasks in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity.",
+            "description": "Update assignee for multiple tasks in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links.",
             "og:title": "Update assignee for multiple tasks | OpenComp API",
-            "og:description": "Update assignee for multiple tasks in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity."
+            "og:description": "Update assignee for multiple tasks in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links."
           }
         },
         "x-speakeasy-mcp": {
@@ -13774,11 +14688,11 @@
         "description": "Get policies that reference a task via shared controls in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy links, and activity history.",
         "x-mint": {
           "metadata": {
-            "title": "Get policies that reference a task via shared | OpenComp API",
+            "title": "Get policies that reference a task via | OpenComp API",
             "sidebarTitle": "Get policies that reference a task via shared controls",
-            "description": "Get policies that reference a task via shared controls in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy.",
-            "og:title": "Get policies that reference a task via shared | OpenComp API",
-            "og:description": "Get policies that reference a task via shared controls in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads, policy."
+            "description": "Get policies that reference a task via shared controls in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads.",
+            "og:title": "Get policies that reference a task via | OpenComp API",
+            "og:description": "Get policies that reference a task via shared controls in OpenComp. Manage compliance task lifecycle, assignments, review approvals, evidence uploads."
           }
         },
         "x-speakeasy-mcp": {
@@ -16004,10 +16918,10 @@
         "description": "List uploaded compliance certificates for the organization in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents, links, and vendor disclosures.",
         "x-mint": {
           "metadata": {
-            "title": "List uploaded compliance certificates for the | OpenComp API",
+            "title": "List uploaded compliance certificates for | OpenComp API",
             "sidebarTitle": "List uploaded compliance certificates for the organization",
             "description": "List uploaded compliance certificates for the organization in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance.",
-            "og:title": "List uploaded compliance certificates for the | OpenComp API",
+            "og:title": "List uploaded compliance certificates for | OpenComp API",
             "og:description": "List uploaded compliance certificates for the organization in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance."
           }
         },
@@ -17203,9 +18117,9 @@
           "metadata": {
             "title": "List vendors configured for trust portal | OpenComp API",
             "sidebarTitle": "List vendors configured for trust portal",
-            "description": "List vendors configured for trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents.",
+            "description": "List vendors configured for trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources.",
             "og:title": "List vendors configured for trust portal | OpenComp API",
-            "og:description": "List vendors configured for trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources, documents."
+            "og:description": "List vendors configured for trust portal in OpenComp. Configure the live Trust Center, custom domain, public overview, FAQs, compliance resources."
           }
         },
         "x-speakeasy-mcp": {
@@ -18037,11 +18951,11 @@
         ],
         "x-mint": {
           "metadata": {
-            "title": "Get org-authored custom frameworks shown on a | OpenComp API",
+            "title": "Get org-authored custom frameworks shown on | OpenComp API",
             "sidebarTitle": "Get org-authored custom frameworks shown on a trust portal",
-            "description": "Get org-authored custom frameworks shown on a trust portal in OpenComp. Manage external Trust Center access requests, NDA signing, grants, tokenized document.",
-            "og:title": "Get org-authored custom frameworks shown on a | OpenComp API",
-            "og:description": "Get org-authored custom frameworks shown on a trust portal in OpenComp. Manage external Trust Center access requests, NDA signing, grants, tokenized document."
+            "description": "Get org-authored custom frameworks shown on a trust portal in OpenComp. Manage external Trust Center access requests, NDA signing, grants, tokenized.",
+            "og:title": "Get org-authored custom frameworks shown on | OpenComp API",
+            "og:description": "Get org-authored custom frameworks shown on a trust portal in OpenComp. Manage external Trust Center access requests, NDA signing, grants, tokenized."
           }
         },
         "x-speakeasy-mcp": {
@@ -19001,6 +19915,9 @@
           },
           "404": {
             "description": "Role not found"
+          },
+          "409": {
+            "description": "Role was modified by another request since it was read. Retry the update."
           }
         },
         "security": [
@@ -20378,9 +21295,9 @@
           "metadata": {
             "title": "Delete all manual answers for an organization | OpenComp API",
             "sidebarTitle": "Delete all manual answers for an organization",
-            "description": "Delete all manual answers for an organization in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that power.",
+            "description": "Delete all manual answers for an organization in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that.",
             "og:title": "Delete all manual answers for an organization | OpenComp API",
-            "og:description": "Delete all manual answers for an organization in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that power."
+            "og:description": "Delete all manual answers for an organization in OpenComp. Upload source documents, process them for retrieval, and manage reusable manual answers that."
           }
         },
         "x-speakeasy-mcp": {
@@ -20815,14 +21732,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Ensure ISMS foundational documents exist in OpenComp.",
+        "description": "Ensure ISMS foundational documents exist in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Ensure ISMS foundational documents exist | OpenComp API",
             "sidebarTitle": "Ensure ISMS foundational documents exist",
-            "description": "Ensure ISMS foundational documents exist in OpenComp.",
+            "description": "Ensure ISMS foundational documents exist in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Ensure ISMS foundational documents exist | OpenComp API",
-            "og:description": "Ensure ISMS foundational documents exist in OpenComp."
+            "og:description": "Ensure ISMS foundational documents exist in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
@@ -20857,14 +21774,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Get an ISMS document with its latest version in OpenComp.",
+        "description": "Get an ISMS document with its latest version in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Get an ISMS document with its latest version | OpenComp API",
             "sidebarTitle": "Get an ISMS document with its latest version",
-            "description": "Get an ISMS document with its latest version in OpenComp.",
+            "description": "Get an ISMS document with its latest version in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives.",
             "og:title": "Get an ISMS document with its latest version | OpenComp API",
-            "og:description": "Get an ISMS document with its latest version in OpenComp."
+            "og:description": "Get an ISMS document with its latest version in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives."
           }
         },
         "x-speakeasy-mcp": {
@@ -20909,14 +21826,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Map organization controls to an ISMS document in OpenComp.",
+        "description": "Map organization controls to an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Map organization controls to an ISMS document | OpenComp API",
             "sidebarTitle": "Map organization controls to an ISMS document",
-            "description": "Map organization controls to an ISMS document in OpenComp.",
+            "description": "Map organization controls to an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives.",
             "og:title": "Map organization controls to an ISMS document | OpenComp API",
-            "og:description": "Map organization controls to an ISMS document in OpenComp."
+            "og:description": "Map organization controls to an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives."
           }
         },
         "x-speakeasy-mcp": {
@@ -20959,14 +21876,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Remove a control mapping from an ISMS document in OpenComp.",
+        "description": "Remove a control mapping from an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
-            "title": "Remove a control mapping from an ISMS document | OpenComp API",
+            "title": "Remove a control mapping from an ISMS | OpenComp API",
             "sidebarTitle": "Remove a control mapping from an ISMS document",
-            "description": "Remove a control mapping from an ISMS document in OpenComp.",
-            "og:title": "Remove a control mapping from an ISMS document | OpenComp API",
-            "og:description": "Remove a control mapping from an ISMS document in OpenComp."
+            "description": "Remove a control mapping from an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives.",
+            "og:title": "Remove a control mapping from an ISMS | OpenComp API",
+            "og:description": "Remove a control mapping from an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives."
           }
         },
         "x-speakeasy-mcp": {
@@ -21001,14 +21918,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Derive Context-of-the-Organization issues in OpenComp.",
+        "description": "Derive Context-of-the-Organization issues in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Derive Context-of-the-Organization issues | OpenComp API",
             "sidebarTitle": "Derive Context-of-the-Organization issues",
-            "description": "Derive Context-of-the-Organization issues in OpenComp.",
+            "description": "Derive Context-of-the-Organization issues in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Derive Context-of-the-Organization issues | OpenComp API",
-            "og:description": "Derive Context-of-the-Organization issues in OpenComp."
+            "og:description": "Derive Context-of-the-Organization issues in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
@@ -21053,14 +21970,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Submit an ISMS document for approval in OpenComp.",
+        "description": "Submit an ISMS document for approval in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Submit an ISMS document for approval | OpenComp API",
             "sidebarTitle": "Submit an ISMS document for approval",
-            "description": "Submit an ISMS document for approval in OpenComp.",
+            "description": "Submit an ISMS document for approval in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Submit an ISMS document for approval | OpenComp API",
-            "og:description": "Submit an ISMS document for approval in OpenComp."
+            "og:description": "Submit an ISMS document for approval in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
@@ -21095,14 +22012,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Approve an ISMS document in OpenComp.",
+        "description": "Approve an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Approve an ISMS document | OpenComp API",
             "sidebarTitle": "Approve an ISMS document",
-            "description": "Approve an ISMS document in OpenComp.",
+            "description": "Approve an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based.",
             "og:title": "Approve an ISMS document | OpenComp API",
-            "og:description": "Approve an ISMS document in OpenComp."
+            "og:description": "Approve an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based."
           }
         },
         "x-speakeasy-mcp": {
@@ -21137,14 +22054,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Decline an ISMS document in OpenComp.",
+        "description": "Decline an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Decline an ISMS document | OpenComp API",
             "sidebarTitle": "Decline an ISMS document",
-            "description": "Decline an ISMS document in OpenComp.",
+            "description": "Decline an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based.",
             "og:title": "Decline an ISMS document | OpenComp API",
-            "og:description": "Decline an ISMS document in OpenComp."
+            "og:description": "Decline an ISMS document in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based."
           }
         },
         "x-speakeasy-mcp": {
@@ -21179,18 +22096,60 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Detect drift against the approved snapshot in OpenComp.",
+        "description": "Detect drift against the approved snapshot in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Detect drift against the approved snapshot | OpenComp API",
             "sidebarTitle": "Detect drift against the approved snapshot",
-            "description": "Detect drift against the approved snapshot in OpenComp.",
+            "description": "Detect drift against the approved snapshot in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Detect drift against the approved snapshot | OpenComp API",
-            "og:description": "Detect drift against the approved snapshot in OpenComp."
+            "og:description": "Detect drift against the approved snapshot in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
           "name": "drift"
+        }
+      }
+    },
+    "/v1/isms/documents/{id}/risk-treatment": {
+      "get": {
+        "description": "Returns the organisational and supplier risk rows the Risk Treatment Plan renders (from the Risk Register and Vendors, with acceptance state per row) plus its submit-readiness messages.",
+        "operationId": "IsmsController_riskTreatment_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Risk + vendor treatment rows and readiness messages"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "The Risk Treatment Plan's rows (Clause 6.1.3)",
+        "tags": [
+          "ISMS"
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "The Risk Treatment Plan's rows (Clause 6.1.3) | OpenComp API",
+            "sidebarTitle": "The Risk Treatment Plan's rows (Clause 6.1.3)",
+            "description": "Returns the organisational and supplier risk rows the Risk Treatment Plan renders (from the Risk Register and Vendors, with acceptance state per row) plus.",
+            "og:title": "The Risk Treatment Plan's rows (Clause 6.1.3) | OpenComp API",
+            "og:description": "Returns the organisational and supplier risk rows the Risk Treatment Plan renders (from the Risk Register and Vendors, with acceptance state per row) plus."
+          }
+        },
+        "x-speakeasy-mcp": {
+          "name": "risk-treatment"
         }
       }
     },
@@ -21221,14 +22180,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "List an ISMS document's published version history in OpenComp.",
+        "description": "List an ISMS document's published version history in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "List an ISMS document's published version | OpenComp API",
             "sidebarTitle": "List an ISMS document's published version history",
-            "description": "List an ISMS document's published version history in OpenComp.",
+            "description": "List an ISMS document's published version history in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives.",
             "og:title": "List an ISMS document's published version | OpenComp API",
-            "og:description": "List an ISMS document's published version history in OpenComp."
+            "og:description": "List an ISMS document's published version history in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives."
           }
         },
         "x-speakeasy-mcp": {
@@ -21273,14 +22232,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Export an ISMS document as PDF or DOCX in OpenComp.",
+        "description": "Export an ISMS document as PDF or DOCX in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Export an ISMS document as PDF or DOCX | OpenComp API",
             "sidebarTitle": "Export an ISMS document as PDF or DOCX",
-            "description": "Export an ISMS document as PDF or DOCX in OpenComp.",
+            "description": "Export an ISMS document as PDF or DOCX in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Export an ISMS document as PDF or DOCX | OpenComp API",
-            "og:description": "Export an ISMS document as PDF or DOCX in OpenComp."
+            "og:description": "Export an ISMS document as PDF or DOCX in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
@@ -21514,7 +22473,10 @@
                     "enum": [
                       "conform",
                       "substantially_conform",
-                      "not_yet_conform"
+                      "not_yet_conform",
+                      "suitable",
+                      "adequate",
+                      "effective"
                     ],
                     "nullable": true
                   },
@@ -21597,6 +22559,65 @@
                     "type": "string",
                     "nullable": true
                   },
+                  "meetingDate": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "chairName": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "attendees": {
+                    "type": "array",
+                    "description": "Attendees frozen at selection (members picked from People)",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "memberId": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "memberId",
+                        "name"
+                      ]
+                    }
+                  },
+                  "decisionsText": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "changesText": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "signoffChairName": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "signoffChairDate": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "reviewId": {
+                    "type": "string"
+                  },
+                  "inputRef": {
+                    "type": "string"
+                  },
+                  "whatItCovers": {
+                    "type": "string"
+                  },
+                  "discussionNotes": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "discussed": {
+                    "type": "boolean"
+                  },
                   "position": {
                     "type": "integer",
                     "minimum": 0
@@ -21620,14 +22641,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Create a row in an ISMS register in OpenComp.",
+        "description": "Create a row in an ISMS register in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Create a row in an ISMS register | OpenComp API",
             "sidebarTitle": "Create a row in an ISMS register",
-            "description": "Create a row in an ISMS register in OpenComp.",
+            "description": "Create a row in an ISMS register in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Create a row in an ISMS register | OpenComp API",
-            "og:description": "Create a row in an ISMS register in OpenComp."
+            "og:description": "Create a row in an ISMS register in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
@@ -21861,7 +22882,10 @@
                     "enum": [
                       "conform",
                       "substantially_conform",
-                      "not_yet_conform"
+                      "not_yet_conform",
+                      "suitable",
+                      "adequate",
+                      "effective"
                     ],
                     "nullable": true
                   },
@@ -21944,6 +22968,65 @@
                     "type": "string",
                     "nullable": true
                   },
+                  "meetingDate": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "chairName": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "attendees": {
+                    "type": "array",
+                    "description": "Attendees frozen at selection (members picked from People)",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "memberId": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "memberId",
+                        "name"
+                      ]
+                    }
+                  },
+                  "decisionsText": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "changesText": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "signoffChairName": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "signoffChairDate": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "reviewId": {
+                    "type": "string"
+                  },
+                  "inputRef": {
+                    "type": "string"
+                  },
+                  "whatItCovers": {
+                    "type": "string"
+                  },
+                  "discussionNotes": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "discussed": {
+                    "type": "boolean"
+                  },
                   "position": {
                     "type": "integer",
                     "minimum": 0
@@ -21967,14 +23050,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Update a row in an ISMS register in OpenComp.",
+        "description": "Update a row in an ISMS register in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Update a row in an ISMS register | OpenComp API",
             "sidebarTitle": "Update a row in an ISMS register",
-            "description": "Update a row in an ISMS register in OpenComp.",
+            "description": "Update a row in an ISMS register in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Update a row in an ISMS register | OpenComp API",
-            "og:description": "Update a row in an ISMS register in OpenComp."
+            "og:description": "Update a row in an ISMS register in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
@@ -22015,14 +23098,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Delete a row in an ISMS register in OpenComp.",
+        "description": "Delete a row in an ISMS register in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Delete a row in an ISMS register | OpenComp API",
             "sidebarTitle": "Delete a row in an ISMS register",
-            "description": "Delete a row in an ISMS register in OpenComp.",
+            "description": "Delete a row in an ISMS register in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Delete a row in an ISMS register | OpenComp API",
-            "og:description": "Delete a row in an ISMS register in OpenComp."
+            "og:description": "Delete a row in an ISMS register in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
@@ -22101,14 +23184,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Record measurements for several metrics/periods in one save (Metrics due / backfill) in OpenComp.",
+        "description": "Record measurements for several metrics/periods in one save (Metrics due / backfill) in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift.",
         "x-mint": {
           "metadata": {
-            "title": "Record measurements for several metrics/period | OpenComp API",
+            "title": "Record measurements for several metrics/perio | OpenComp API",
             "sidebarTitle": "Record measurements for several metrics/periods in one save (Metrics due / backfill)",
-            "description": "Record measurements for several metrics/periods in one save (Metrics due / backfill) in OpenComp.",
-            "og:title": "Record measurements for several metrics/period | OpenComp API",
-            "og:description": "Record measurements for several metrics/periods in one save (Metrics due / backfill) in OpenComp."
+            "description": "Record measurements for several metrics/periods in one save (Metrics due / backfill) in OpenComp. Create and manage ISO 27001 ISMS documents, control.",
+            "og:title": "Record measurements for several metrics/perio | OpenComp API",
+            "og:description": "Record measurements for several metrics/periods in one save (Metrics due / backfill) in OpenComp. Create and manage ISO 27001 ISMS documents, control."
           }
         },
         "x-speakeasy-mcp": {
@@ -22164,14 +23247,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Save a singleton document narrative in OpenComp.",
+        "description": "Save a singleton document narrative in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Save a singleton document narrative | OpenComp API",
             "sidebarTitle": "Save a singleton document narrative",
-            "description": "Save a singleton document narrative in OpenComp.",
+            "description": "Save a singleton document narrative in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Save a singleton document narrative | OpenComp API",
-            "og:description": "Save a singleton document narrative in OpenComp."
+            "og:description": "Save a singleton document narrative in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
@@ -22206,14 +23289,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Get the ISMS wizard profile, defaults and members in OpenComp.",
+        "description": "Get the ISMS wizard profile, defaults and members in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Get the ISMS wizard profile, defaults and | OpenComp API",
             "sidebarTitle": "Get the ISMS wizard profile, defaults and members",
-            "description": "Get the ISMS wizard profile, defaults and members in OpenComp.",
+            "description": "Get the ISMS wizard profile, defaults and members in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives.",
             "og:title": "Get the ISMS wizard profile, defaults and | OpenComp API",
-            "og:description": "Get the ISMS wizard profile, defaults and members in OpenComp."
+            "og:description": "Get the ISMS wizard profile, defaults and members in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives."
           }
         },
         "x-speakeasy-mcp": {
@@ -22266,14 +23349,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Save (partial) ISMS wizard answers in OpenComp.",
+        "description": "Save (partial) ISMS wizard answers in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Save (partial) ISMS wizard answers | OpenComp API",
             "sidebarTitle": "Save (partial) ISMS wizard answers",
-            "description": "Save (partial) ISMS wizard answers in OpenComp.",
+            "description": "Save (partial) ISMS wizard answers in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Save (partial) ISMS wizard answers | OpenComp API",
-            "og:description": "Save (partial) ISMS wizard answers in OpenComp."
+            "og:description": "Save (partial) ISMS wizard answers in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
@@ -22309,14 +23392,14 @@
         "tags": [
           "ISMS"
         ],
-        "description": "Ensure and regenerate all ISMS documents in OpenComp.",
+        "description": "Ensure and regenerate all ISMS documents in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
         "x-mint": {
           "metadata": {
             "title": "Ensure and regenerate all ISMS documents | OpenComp API",
             "sidebarTitle": "Ensure and regenerate all ISMS documents",
-            "description": "Ensure and regenerate all ISMS documents in OpenComp.",
+            "description": "Ensure and regenerate all ISMS documents in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run.",
             "og:title": "Ensure and regenerate all ISMS documents | OpenComp API",
-            "og:description": "Ensure and regenerate all ISMS documents in OpenComp."
+            "og:description": "Ensure and regenerate all ISMS documents in OpenComp. Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run."
           }
         },
         "x-speakeasy-mcp": {
@@ -22990,6 +24073,56 @@
         },
         "x-speakeasy-mcp": {
           "name": "send-training-completion-email"
+        }
+      }
+    },
+    "/v1/training/send-hipaa-completion-email": {
+      "post": {
+        "description": "Checks if the member has completed the HIPAA Security Awareness Training. If so, sends an email with the HIPAA training certificate attached.",
+        "operationId": "TrainingController_sendHipaaTrainingCompletionEmail_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendTrainingCompletionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent or reason why it was not sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendTrainingCompletionResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "summary": "Send HIPAA training completion email with certificate",
+        "tags": [
+          "Training"
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Send HIPAA training completion email with | OpenComp API",
+            "sidebarTitle": "Send HIPAA training completion email with certificate",
+            "description": "Checks if the member has completed the HIPAA Security Awareness Training. If so, sends an email with the HIPAA training certificate attached.",
+            "og:title": "Send HIPAA training completion email with | OpenComp API",
+            "og:description": "Checks if the member has completed the HIPAA Security Awareness Training. If so, sends an email with the HIPAA training certificate attached."
+          }
+        },
+        "x-speakeasy-mcp": {
+          "name": "send-hipaa-training-completion-email"
         }
       }
     },
@@ -24554,9 +25687,9 @@
           "metadata": {
             "title": "Link existing org controls to a requirement | OpenComp API",
             "sidebarTitle": "Link existing org controls to a requirement",
-            "description": "Link existing org controls to a requirement in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync.",
+            "description": "Link existing org controls to a requirement in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores.",
             "og:title": "Link existing org controls to a requirement | OpenComp API",
-            "og:description": "Link existing org controls to a requirement in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync."
+            "og:description": "Link existing org controls to a requirement in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores."
           }
         },
         "x-speakeasy-mcp": {
@@ -24594,10 +25727,10 @@
         "description": "Get the update status for a framework instance in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.",
         "x-mint": {
           "metadata": {
-            "title": "Get the update status for a framework instance | OpenComp API",
+            "title": "Get the update status for a framework | OpenComp API",
             "sidebarTitle": "Get the update status for a framework instance",
             "description": "Get the update status for a framework instance in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores.",
-            "og:title": "Get the update status for a framework instance | OpenComp API",
+            "og:title": "Get the update status for a framework | OpenComp API",
             "og:description": "Get the update status for a framework instance in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores."
           }
         },
@@ -24742,9 +25875,9 @@
           "metadata": {
             "title": "Roll back a framework sync operation | OpenComp API",
             "sidebarTitle": "Roll back a framework sync operation",
-            "description": "Roll back a framework sync operation in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history.",
+            "description": "Roll back a framework sync operation in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync.",
             "og:title": "Roll back a framework sync operation | OpenComp API",
-            "og:description": "Roll back a framework sync operation in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history."
+            "og:description": "Roll back a framework sync operation in OpenComp. Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync."
           }
         },
         "x-speakeasy-mcp": {
@@ -25361,6 +26494,14 @@
             }
           },
           {
+            "name": "frameworkInstanceId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "formType",
             "required": true,
             "in": "path",
@@ -25383,14 +26524,6 @@
               ],
               "type": "string"
             }
-          },
-          {
-            "name": "frameworkInstanceId",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -25410,10 +26543,10 @@
         "description": "Remove a required document type from a control in OpenComp. Manage controls, map them to policies, tasks, framework requirements, and evidence document types, and track implementation progress.",
         "x-mint": {
           "metadata": {
-            "title": "Remove a required document type from a control | OpenComp API",
+            "title": "Remove a required document type from a | OpenComp API",
             "sidebarTitle": "Remove a required document type from a control",
             "description": "Remove a required document type from a control in OpenComp. Manage controls, map them to policies, tasks, framework requirements, and evidence document.",
-            "og:title": "Remove a required document type from a control | OpenComp API",
+            "og:title": "Remove a required document type from a | OpenComp API",
             "og:description": "Remove a required document type from a control in OpenComp. Manage controls, map them to policies, tasks, framework requirements, and evidence document."
           }
         },
@@ -25614,9 +26747,9 @@
           "metadata": {
             "title": "Get penetration test progress | OpenComp API",
             "sidebarTitle": "Get penetration test progress",
-            "description": "Get penetration test progress in OpenComp. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF.",
+            "description": "Get penetration test progress in OpenComp. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown.",
             "og:title": "Get penetration test progress | OpenComp API",
-            "og:description": "Get penetration test progress in OpenComp. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown or PDF."
+            "og:description": "Get penetration test progress in OpenComp. Create AI-powered penetration test runs, track progress, inspect findings and events, and download markdown."
           }
         },
         "x-speakeasy-mcp": {
@@ -26731,7 +27864,9 @@
       "description": "Manage SOC 2, ISO 27001, HIPAA, GDPR, and custom framework instances, requirements, scores, and sync history."
     },
     {
-      "name": "ISMS"
+      "name": "ISMS",
+      "description": "Create and manage ISO 27001 ISMS documents, control mappings, register rows, and narratives, and run wizard-based setup, approval, and drift review workflows.",
+      "x-group": "ISMS"
     },
     {
       "name": "Integrations",
@@ -27756,8 +28891,8 @@
               "likely",
               "very_likely"
             ],
-            "default": "very_unlikely",
-            "example": "possible"
+            "example": "possible",
+            "default": "very_unlikely"
           },
           "impact": {
             "type": "string",
@@ -27769,8 +28904,8 @@
               "major",
               "severe"
             ],
-            "default": "insignificant",
-            "example": "major"
+            "example": "major",
+            "default": "insignificant"
           },
           "residualLikelihood": {
             "type": "string",
@@ -27782,8 +28917,8 @@
               "likely",
               "very_likely"
             ],
-            "default": "very_unlikely",
-            "example": "unlikely"
+            "example": "unlikely",
+            "default": "very_unlikely"
           },
           "residualImpact": {
             "type": "string",
@@ -27795,8 +28930,8 @@
               "major",
               "severe"
             ],
-            "default": "insignificant",
-            "example": "minor"
+            "example": "minor",
+            "default": "insignificant"
           },
           "treatmentStrategyDescription": {
             "type": "string",
@@ -27826,10 +28961,6 @@
           "description",
           "category",
           "status",
-          "likelihood",
-          "impact",
-          "residualLikelihood",
-          "residualImpact",
           "treatmentStrategy"
         ]
       },
@@ -27892,8 +29023,8 @@
               "likely",
               "very_likely"
             ],
-            "default": "very_unlikely",
-            "example": "possible"
+            "example": "possible",
+            "default": "very_unlikely"
           },
           "impact": {
             "type": "string",
@@ -27905,8 +29036,8 @@
               "major",
               "severe"
             ],
-            "default": "insignificant",
-            "example": "major"
+            "example": "major",
+            "default": "insignificant"
           },
           "residualLikelihood": {
             "type": "string",
@@ -27918,8 +29049,8 @@
               "likely",
               "very_likely"
             ],
-            "default": "very_unlikely",
-            "example": "unlikely"
+            "example": "unlikely",
+            "default": "very_unlikely"
           },
           "residualImpact": {
             "type": "string",
@@ -27931,8 +29062,8 @@
               "major",
               "severe"
             ],
-            "default": "insignificant",
-            "example": "minor"
+            "example": "minor",
+            "default": "insignificant"
           },
           "treatmentStrategyDescription": {
             "type": "string",
@@ -27955,6 +29086,21 @@
             "type": "string",
             "description": "ID of the user assigned to this risk",
             "example": "mem_abc123def456"
+          }
+        }
+      },
+      "CreateRiskAcceptanceDto": {
+        "type": "object",
+        "properties": {
+          "acceptedById": {
+            "type": "string",
+            "description": "Member ID of the acceptor. Defaults to the risk owner (assignee) when omitted.",
+            "example": "mem_abc123def456"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional notes recorded with the acceptance.",
+            "example": "Residual risk reviewed at the Q2 risk review."
           }
         }
       },
@@ -28008,8 +29154,8 @@
               "likely",
               "very_likely"
             ],
-            "default": "very_unlikely",
-            "example": "possible"
+            "example": "possible",
+            "default": "very_unlikely"
           },
           "inherentImpact": {
             "type": "string",
@@ -28021,8 +29167,8 @@
               "major",
               "severe"
             ],
-            "default": "insignificant",
-            "example": "moderate"
+            "example": "moderate",
+            "default": "insignificant"
           },
           "residualProbability": {
             "type": "string",
@@ -28034,8 +29180,8 @@
               "likely",
               "very_likely"
             ],
-            "default": "very_unlikely",
-            "example": "unlikely"
+            "example": "unlikely",
+            "default": "very_unlikely"
           },
           "residualImpact": {
             "type": "string",
@@ -28047,8 +29193,8 @@
               "major",
               "severe"
             ],
-            "default": "insignificant",
-            "example": "minor"
+            "example": "minor",
+            "default": "insignificant"
           },
           "website": {
             "type": "string",
@@ -28070,11 +29216,7 @@
           "name",
           "description",
           "category",
-          "status",
-          "inherentProbability",
-          "inherentImpact",
-          "residualProbability",
-          "residualImpact"
+          "status"
         ]
       },
       "UpdateVendorDto": {
@@ -29741,9 +30883,9 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "Content of the comment",
+            "description": "Content of the comment (plain text or serialized Tiptap JSON). Limited to 2000 characters of visible text; maxLength bounds the serialized payload size, not the visible text.",
             "example": "This task needs to be completed by end of week",
-            "maxLength": 2000
+            "maxLength": 50000
           },
           "entityId": {
             "type": "string",
@@ -29792,9 +30934,9 @@
         "properties": {
           "content": {
             "type": "string",
-            "description": "Updated content of the comment",
+            "description": "Updated content of the comment (plain text or serialized Tiptap JSON). Limited to 2000 characters of visible text; maxLength bounds the serialized payload size, not the visible text.",
             "example": "This task needs to be completed by end of week (updated)",
-            "maxLength": 2000
+            "maxLength": 50000
           },
           "contextUrl": {
             "type": "string",
@@ -30431,6 +31573,16 @@
           }
         }
       },
+      "BuiltInObligationsBody": {
+        "type": "object",
+        "properties": {
+          "compliance": {
+            "type": "boolean",
+            "description": "Whether the role must complete compliance tasks.",
+            "example": false
+          }
+        }
+      },
       "CreateRoleDto": {
         "type": "object",
         "properties": {
@@ -30459,27 +31611,21 @@
             }
           },
           "obligations": {
-            "type": "object",
             "description": "Obligations for the role. Boolean flags for requirements like compliance.",
             "example": {
               "compliance": true
-            }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BuiltInObligationsBody"
+              }
+            ]
           }
         },
         "required": [
           "name",
           "permissions"
         ]
-      },
-      "BuiltInObligationsBody": {
-        "type": "object",
-        "properties": {
-          "compliance": {
-            "type": "boolean",
-            "description": "Whether the role must complete compliance tasks.",
-            "example": false
-          }
-        }
       },
       "UpdateBuiltInObligationsDto": {
         "type": "object",
@@ -30531,11 +31677,15 @@
             }
           },
           "obligations": {
-            "type": "object",
             "description": "Updated obligations for the role.",
             "example": {
               "compliance": true
-            }
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BuiltInObligationsBody"
+              }
+            ]
           }
         }
       },
