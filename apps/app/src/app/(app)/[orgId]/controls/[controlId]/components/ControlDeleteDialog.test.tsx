@@ -66,10 +66,10 @@ vi.mock('@gideon-defender/ui/dialog', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/form', () => ({
-  Form: ({ children, ...props }: any) => (
-    <div data-testid="form-provider" {...props}>
-      {children}
-    </div>
+  // The real Form is react-hook-form's FormProvider: it consumes the whole
+  // useForm() return via context and renders no DOM props. Spread nothing.
+  Form: ({ children }: any) => (
+    <div data-testid="form-provider">{children}</div>
   ),
 }));
 

@@ -43,12 +43,16 @@ vi.mock('@gideon-defender/ui/button', () => ({
     children,
     onClick,
     variant: _v,
+    size: _s,
+    asChild: _a,
     disabled,
     ...props
   }: {
     children: React.ReactNode;
     onClick?: () => void;
     variant?: string;
+    size?: string;
+    asChild?: boolean;
     disabled?: boolean;
   }) => (
     <button onClick={onClick} disabled={disabled} {...props}>
@@ -136,11 +140,25 @@ vi.mock('@trycompai/design-system', () => ({
     children,
     onClick,
     disabled,
+    iconLeft,
+    iconRight,
+    loading,
+    variant,
+    size,
+    width,
+    asChild,
     ...props
   }: {
     children: React.ReactNode;
     onClick?: () => void;
     disabled?: boolean;
+    iconLeft?: React.ReactNode;
+    iconRight?: React.ReactNode;
+    loading?: boolean;
+    variant?: string;
+    size?: string;
+    width?: string;
+    asChild?: boolean;
   }) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}

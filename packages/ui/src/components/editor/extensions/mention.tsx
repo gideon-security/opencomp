@@ -197,10 +197,10 @@ export function createMentionExtension({ suggestion }: CreateMentionExtensionOpt
     },
     suggestion: {
       ...suggestion,
-      items: ({ query, editor }) => {
+      items: ({ query, editor, signal }) => {
         try {
           if (!suggestion.items) return [];
-          const result = suggestion.items({ query, editor });
+          const result = suggestion.items({ query, editor, signal });
           return Array.isArray(result) ? result : [];
         } catch (error) {
           console.error('Error in mention items:', error);

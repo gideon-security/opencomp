@@ -52,7 +52,7 @@ vi.mock('@trycompai/design-system', () => ({
   AlertDialogHeader: ({ children }: any) => <div>{children}</div>,
   AlertDialogTitle: ({ children }: any) => <h2>{children}</h2>,
   Badge: ({ children }: any) => <span>{children}</span>,
-  Button: ({ children, ...props }: any) => (
+  Button: ({ children, iconLeft, iconRight, loading, variant, size, width, asChild, ...props }: any) => (
     <button {...props}>{children}</button>
   ),
   DropdownMenu: ({ children }: any) => <div>{children}</div>,

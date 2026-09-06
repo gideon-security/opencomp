@@ -30,7 +30,7 @@ vi.mock('../forms/risks/create-risk-form', () => ({
 
 // Mock design system components
 vi.mock('@trycompai/design-system', () => ({
-  Button: ({ children, ...props }: any) => (
+  Button: ({ children, iconLeft, iconRight, loading, variant, size, width, asChild, ...props }: any) => (
     <button {...props}>{children}</button>
   ),
   Sheet: ({ children }: any) => <div>{children}</div>,
