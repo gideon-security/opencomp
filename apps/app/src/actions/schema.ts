@@ -42,13 +42,6 @@ export const sendFeedbackSchema = z.object({
   feedback: z.string(),
 });
 
-export const updaterMenuSchema = z.array(
-  z.object({
-    path: z.string(),
-    name: z.string(),
-  }),
-);
-
 export const organizationWebsiteSchema = z.object({
   website: z
     .string()

@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { BackgroundCheckStatus } from '@db';
-import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
+import type { CheckrClient } from './checkr.client';
 import { applyWebhookEvent } from './background-check-webhook-apply';
 import {
   ackWebhookDedupMarker,
@@ -42,7 +42,7 @@ export async function handleCheckrWebhookRequest({
 }: {
   rawBody: Buffer | undefined;
   headers: Record<string, string | string[] | undefined>;
-  identityClient: BackgroundCheckIdentityClient;
+  identityClient: CheckrClient;
 }): Promise<{ ok: true; duplicate?: true }> {
   if (!rawBody) {
     throw new BadRequestException('Raw body unavailable.');
@@ -73,7 +73,7 @@ async function handleCheckrWebhook(
   {
     identityClient,
   }: {
-    identityClient: BackgroundCheckIdentityClient;
+    identityClient: CheckrClient;
   },
 ): Promise<{ ok: true; duplicate?: true }> {
   const data = parsed.data as {

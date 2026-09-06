@@ -1,6 +1,6 @@
 import { BadRequestException, Logger, NotFoundException } from '@nestjs/common';
 import { BackgroundCheckStatus, db, Prisma } from '@db';
-import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
+import type { CheckrClient } from './checkr.client';
 
 const logger = new Logger('BackgroundCheckRetry');
 
@@ -108,14 +108,12 @@ export async function deleteForMember({
 export async function retryForMember({
   organizationId,
   memberId,
-  requesterEmail,
   identityClient,
   getForMember,
 }: {
   organizationId: string;
   memberId: string;
-  requesterEmail: string;
-  identityClient: BackgroundCheckIdentityClient;
+  identityClient: CheckrClient;
   getForMember: GetForMemberFn;
 }) {
   const existing = await getForMember({ organizationId, memberId });
@@ -171,7 +169,6 @@ export async function retryForMember({
       memberId,
       employeeName: existing.employeeName,
       employeeEmail: existing.employeeEmail,
-      requesterEmail,
       // Per-record, per-attempt key so each retry creates a fresh vendor
       // check rather than colliding with a prior attempt's idempotency key.
       idempotencyKey: `comp-background-check:${existing.id}:${attempt}`,

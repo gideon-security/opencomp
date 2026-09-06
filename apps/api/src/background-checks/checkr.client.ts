@@ -58,7 +58,6 @@ export class CheckrClient extends CheckrReportsReader {
     memberId: string;
     employeeName: string;
     employeeEmail: string;
-    requesterEmail: string;
     idempotencyKey: string;
   }): Promise<IdentityCreateResponse> {
     const { first_name, last_name } = splitName(params.employeeName);
@@ -247,6 +246,3 @@ export class CheckrClient extends CheckrReportsReader {
     });
   }
 }
-
-// Backwards compat: keep old class name as alias
-export class BackgroundCheckIdentityClient extends CheckrClient {}

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { db, Prisma } from '@db';
 import { createHmac } from 'node:crypto';
-import { BackgroundCheckIdentityClient } from './background-check-identity.client';
+import { CheckrClient } from './checkr.client';
 import { BackgroundCheckPaymentService } from './background-check-payment.service';
 import { BackgroundChecksService } from './background-checks.service';
 
@@ -135,7 +135,7 @@ describe('BackgroundChecksService webhooks', () => {
 
   it('rejects invalid and stale webhook signatures', async () => {
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -184,11 +184,10 @@ describe('BackgroundChecksService webhooks', () => {
       report: { flags: ['Manual review required'] },
     };
     const identityClient = {
-      getBackgroundCheck: jest.fn().mockResolvedValue(reportSnapshot),
       getReport: jest.fn().mockResolvedValue(reportSnapshot),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -268,7 +267,7 @@ describe('BackgroundChecksService webhooks', () => {
       getReport: jest.fn().mockResolvedValue(reportSnapshot),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -339,7 +338,7 @@ describe('BackgroundChecksService webhooks', () => {
       getReport: jest.fn().mockResolvedValue(reportSnapshot),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -387,7 +386,7 @@ describe('BackgroundChecksService webhooks', () => {
       getReport: jest.fn().mockRejectedValue(new Error('unavailable')),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -444,7 +443,7 @@ describe('BackgroundChecksService webhooks', () => {
         ),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -497,11 +496,10 @@ describe('BackgroundChecksService webhooks', () => {
       checkrInvitationId: null,
     });
     const identityClient = {
-      getBackgroundCheck: jest.fn(),
       getReport: jest.fn(),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -513,7 +511,6 @@ describe('BackgroundChecksService webhooks', () => {
     });
 
     expect(identityClient.getReport).not.toHaveBeenCalled();
-    expect(identityClient.getBackgroundCheck).not.toHaveBeenCalled();
     expect(mockedDb.backgroundCheckRequest.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({ status: 'in_progress' }),
@@ -553,11 +550,10 @@ describe('BackgroundChecksService webhooks', () => {
       checkrInvitationId: 'inv_1',
     });
     const identityClient = {
-      getBackgroundCheck: jest.fn(),
       getReport: jest.fn(),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -571,7 +567,6 @@ describe('BackgroundChecksService webhooks', () => {
     // Invitation completion is not report completion: no snapshot fetch, and
     // no snapshot persisted on the row.
     expect(identityClient.getReport).not.toHaveBeenCalled();
-    expect(identityClient.getBackgroundCheck).not.toHaveBeenCalled();
     expect(mockedDb.backgroundCheckRequest.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.not.objectContaining({
@@ -587,7 +582,7 @@ describe('BackgroundChecksService webhooks', () => {
       Math.floor(Date.now() / 1000) - 8 * 24 * 60 * 60;
     const rawBody = JSON.stringify(payload);
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -634,7 +629,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue({ status: 'consider' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -675,8 +670,8 @@ describe('BackgroundChecksService webhooks', () => {
     });
     const service = new BackgroundChecksService(
       {
-        getBackgroundCheck: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+        getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -711,7 +706,7 @@ describe('BackgroundChecksService webhooks', () => {
         .mockResolvedValue({ status: 'completed_with_flags' }),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -759,8 +754,8 @@ describe('BackgroundChecksService webhooks', () => {
     });
     const service = new BackgroundChecksService(
       {
-        getBackgroundCheck: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+        getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -814,7 +809,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn(),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -891,7 +886,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue(null),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -941,7 +936,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1045,7 +1040,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn(),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1085,7 +1080,7 @@ describe('BackgroundChecksService webhooks', () => {
       employeeEmail: 'ada@example.com',
     } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findFirst>>);
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1139,7 +1134,7 @@ describe('BackgroundChecksService webhooks', () => {
       getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1184,7 +1179,7 @@ describe('BackgroundChecksService webhooks', () => {
       getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1208,7 +1203,7 @@ describe('BackgroundChecksService webhooks', () => {
   it('rejects webhooks with a non-JSON body', async () => {
     const rawBody = 'not-json{{{';
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1251,7 +1246,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1283,7 +1278,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1357,7 +1352,7 @@ describe('BackgroundChecksService webhooks', () => {
       {} as Awaited<ReturnType<typeof db.backgroundCheckWebhookEvent.create>>,
     );
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1428,7 +1423,7 @@ describe('BackgroundChecksService webhooks', () => {
       {} as Awaited<ReturnType<typeof db.backgroundCheckWebhookEvent.create>>,
     );
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1491,7 +1486,7 @@ describe('BackgroundChecksService webhooks', () => {
         getReport: jest
           .fn()
           .mockResolvedValue({ id: 'rep_9', status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1555,7 +1550,7 @@ describe('BackgroundChecksService webhooks', () => {
       getReport: jest.fn(),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1622,7 +1617,7 @@ describe('BackgroundChecksService webhooks', () => {
         .mockResolvedValue({ id: 'rep_old', status: 'clear' }),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1691,7 +1686,7 @@ describe('BackgroundChecksService webhooks', () => {
       getReport: jest.fn(),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1754,7 +1749,7 @@ describe('BackgroundChecksService webhooks', () => {
       getReport: jest.fn(),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1819,7 +1814,7 @@ describe('BackgroundChecksService webhooks', () => {
         .mockResolvedValue({ id: 'rep_new', status: 'clear' }),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1891,7 +1886,7 @@ describe('BackgroundChecksService webhooks', () => {
         .mockResolvedValue({ id: 'inv_new', report: { id: 'rep_new' } }),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -1959,7 +1954,7 @@ describe('BackgroundChecksService webhooks', () => {
         .mockResolvedValue({ id: 'inv_new', status: 'pending' }),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2034,7 +2029,7 @@ describe('BackgroundChecksService webhooks', () => {
         .mockResolvedValue({ id: 'inv_new', report_id: 'rep_new' }),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2097,7 +2092,7 @@ describe('BackgroundChecksService webhooks', () => {
       getInvitation: jest.fn().mockResolvedValue(null),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2157,7 +2152,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue(null),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2180,7 +2175,7 @@ describe('BackgroundChecksService webhooks', () => {
   it('rejects webhooks with an invalid payload shape', async () => {
     const rawBody = JSON.stringify({ nonsense: true });
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2196,7 +2191,7 @@ describe('BackgroundChecksService webhooks', () => {
 
   it('rejects webhooks with no raw body', async () => {
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2247,7 +2242,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2310,7 +2305,7 @@ describe('BackgroundChecksService webhooks', () => {
       mockedDb.backgroundCheckWebhookEvent.deleteMany,
     ).mockResolvedValueOnce({ count: 1 });
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2360,7 +2355,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn(),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2406,7 +2401,7 @@ describe('BackgroundChecksService webhooks', () => {
       processedAt: new Date(),
     });
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2427,7 +2422,7 @@ describe('BackgroundChecksService webhooks', () => {
       Math.floor(Date.now() / 1000) + 60 * 60;
     const rawBody = JSON.stringify(payload);
     const service = new BackgroundChecksService(
-      {} as unknown as BackgroundCheckIdentityClient,
+      {} as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2476,7 +2471,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2539,7 +2534,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2601,7 +2596,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2667,7 +2662,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 
@@ -2724,7 +2719,7 @@ describe('BackgroundChecksService webhooks', () => {
     const service = new BackgroundChecksService(
       {
         getReport: jest.fn().mockResolvedValue({ status: 'clear' }),
-      } as unknown as BackgroundCheckIdentityClient,
+      } as unknown as CheckrClient,
       {} as unknown as BackgroundCheckPaymentService,
     );
 

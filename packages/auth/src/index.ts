@@ -20,8 +20,6 @@ export {
   type RolePermissions,
 } from './permissions';
 
-export { createAuthServer, type AuthServer, type CreateAuthServerOptions } from './server';
-
 export {
   PLATFORM_ADMIN_ROLE,
   isExcludedFromOrgParticipation,

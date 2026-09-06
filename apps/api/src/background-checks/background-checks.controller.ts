@@ -54,7 +54,6 @@ export class PeopleBackgroundChecksController {
   async requestForMember(
     @Param('id') memberId: string,
     @OrganizationId() organizationId: string,
-    @AuthContext() authContext: AuthContextType,
     @Body() body: RequestBackgroundCheckDto,
   ) {
     return this.backgroundChecksService.requestForMember({
@@ -63,7 +62,6 @@ export class PeopleBackgroundChecksController {
       employeeName: body.employeeName,
       employeeEmail: body.employeeEmail.trim().toLowerCase(),
       requesterNotes: body.requesterNotes?.trim() || undefined,
-      requesterEmail: authContext.userEmail ?? 'api-key@gideondefender.com',
     });
   }
 
@@ -116,12 +114,10 @@ export class PeopleBackgroundChecksController {
   async retryForMember(
     @Param('id') memberId: string,
     @OrganizationId() organizationId: string,
-    @AuthContext() authContext: AuthContextType,
   ) {
     return this.backgroundChecksService.retryForMember({
       organizationId,
       memberId,
-      requesterEmail: authContext.userEmail ?? 'api-key@gideondefender.com',
     });
   }
 
