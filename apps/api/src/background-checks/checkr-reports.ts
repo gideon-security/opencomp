@@ -24,12 +24,6 @@ function toCandidateList(json: unknown): unknown[] {
  * 300-line limit.
  */
 export class CheckrReportsReader extends CheckrHttp {
-  async getBackgroundCheck(
-    identityBackgroundCheckId: string,
-  ): Promise<unknown> {
-    return this.getReport(identityBackgroundCheckId);
-  }
-
   async getReport(reportId: string): Promise<unknown> {
     if (!reportId) return null;
     // Fail loudly on missing config: returning null would read as "no

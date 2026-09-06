@@ -55,7 +55,6 @@
     "lint": "turbo lint && syncpack lint",
     "prepare": "husky",
     "test": "turbo test --parallel",
-    "test:release": "node scripts/test-release.js",
     "typecheck": "turbo typecheck",
     "typecheck:ci": "turbo typecheck --filter={apps/**} --filter={packages/**} --filter=!@gideon-defender/integrations --filter=!@gideon-defender/ui"
   },

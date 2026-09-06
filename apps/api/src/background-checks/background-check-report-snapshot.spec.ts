@@ -1,10 +1,10 @@
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { BackgroundCheckStatus } from '@db';
 import { fetchCompletedReportSnapshot } from './background-check-report-snapshot';
-import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
+import type { CheckrClient } from './checkr.client';
 
 function stubClient(impl: Record<string, unknown>) {
-  return impl as unknown as BackgroundCheckIdentityClient;
+  return impl as unknown as CheckrClient;
 }
 
 describe('fetchCompletedReportSnapshot', () => {

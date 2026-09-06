@@ -19,19 +19,6 @@ export const mockAuth = {
   api: mockAuthApi,
 };
 
-// Note: To use these mocks in your test files, add this at the top of your test file:
-//
-// import { vi } from 'vitest';
-//
-// // Mock auth module before any other imports
-// vi.mock('@/utils/auth', async () => {
-//   const { mockAuth } = await import('@/test-utils/mocks/auth');
-//   return { auth: mockAuth };
-// });
-//
-// // Then import the test utilities
-// import { mockAuth, setupAuthMocks } from '@/test-utils/mocks/auth';
-
 // Mock session data
 export const createMockSession = (overrides?: Partial<Session>): Session => ({
   id: 'session_test123',

@@ -6,14 +6,12 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@db';
 import type { BackgroundCheckStatus } from '@db';
-import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
 import type { CheckrClient } from './checkr.client';
 
 const logger = new Logger('BackgroundCheckReportSnapshot');
 
 interface ReportCapableClient {
   getReport?: (id: string) => Promise<unknown>;
-  getBackgroundCheck?: (id: string) => Promise<unknown>;
   resolveReport?: (params: {
     reportId: string;
     invitationId?: string | null;
@@ -58,7 +56,7 @@ export async function fetchCompletedReportSnapshot({
   eventType,
   status,
 }: {
-  identityClient?: BackgroundCheckIdentityClient;
+  identityClient?: CheckrClient;
   checkrClient?: CheckrClient;
   identityBackgroundCheckId: string;
   /**
@@ -86,8 +84,6 @@ export async function fetchCompletedReportSnapshot({
       snapshot = resolved.report;
     } else if (client?.getReport) {
       snapshot = await client.getReport(identityBackgroundCheckId);
-    } else if (client?.getBackgroundCheck) {
-      snapshot = await client.getBackgroundCheck(identityBackgroundCheckId);
     } else {
       // No capable client: a wanted terminal snapshot cannot be produced.
       // Throw like a fetch failure so the caller backs off instead of

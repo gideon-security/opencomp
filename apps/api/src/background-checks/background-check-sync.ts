@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { BackgroundCheckStatus, db, Prisma } from '@db';
-import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
+import type { CheckrClient } from './checkr.client';
 import { fetchCompletedReportSnapshot } from './background-check-report-snapshot';
 import { terminalStatusFromInvitation } from './background-check-invitation';
 import { backoffSync, writeSyncUpdate } from './background-check-sync-write';
@@ -30,7 +30,7 @@ export async function syncBackgroundCheck({
 }: {
   organizationId: string;
   memberId: string;
-  identityClient: BackgroundCheckIdentityClient;
+  identityClient: CheckrClient;
 }): Promise<{ record: unknown; identity?: unknown; syncedAt: string }> {
   const record = await db.backgroundCheckRequest.findUnique({
     where: { organizationId_memberId: { organizationId, memberId } },

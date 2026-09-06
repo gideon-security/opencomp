@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { db } from '@db';
-import { BackgroundCheckIdentityClient } from './background-check-identity.client';
+import { CheckrClient } from './checkr.client';
 import { BackgroundCheckPaymentService } from './background-check-payment.service';
 import { handleCheckrWebhookRequest } from './background-check-webhook';
 import { requestBackgroundCheckForMember } from './background-check-request';
@@ -18,7 +18,7 @@ import {
 @Injectable()
 export class BackgroundChecksService {
   constructor(
-    private readonly identityClient: BackgroundCheckIdentityClient,
+    private readonly identityClient: CheckrClient,
     private readonly paymentService: BackgroundCheckPaymentService,
   ) {}
 
@@ -40,14 +40,12 @@ export class BackgroundChecksService {
     employeeName,
     employeeEmail,
     requesterNotes,
-    requesterEmail,
   }: {
     organizationId: string;
     memberId: string;
     employeeName: string;
     employeeEmail: string;
     requesterNotes?: string;
-    requesterEmail: string;
   }) {
     return requestBackgroundCheckForMember({
       organizationId,
@@ -55,7 +53,6 @@ export class BackgroundChecksService {
       employeeName,
       employeeEmail,
       requesterNotes,
-      requesterEmail,
       identityClient: this.identityClient,
       paymentService: this.paymentService,
       getForMember: (params) => this.getForMember(params),
@@ -146,11 +143,7 @@ export class BackgroundChecksService {
     });
   }
 
-  async retryForMember(params: {
-    organizationId: string;
-    memberId: string;
-    requesterEmail: string;
-  }) {
+  async retryForMember(params: { organizationId: string; memberId: string }) {
     return retryForMemberFn({
       ...params,
       identityClient: this.identityClient,

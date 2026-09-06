@@ -1,6 +1,6 @@
 import { Logger, ServiceUnavailableException } from '@nestjs/common';
 import { BackgroundCheckStatus, db } from '@db';
-import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
+import type { CheckrClient } from './checkr.client';
 import { fetchCompletedReportSnapshot } from './background-check-report-snapshot';
 import { processWebhookEvent } from './background-check-webhook-process';
 import {
@@ -53,7 +53,7 @@ async function verifyReportMatchesCurrentInvitation({
   invitationId,
   reportId,
 }: {
-  identityClient: BackgroundCheckIdentityClient;
+  identityClient: CheckrClient;
   invitationId: string;
   reportId: string;
 }): Promise<boolean | null> {
@@ -109,7 +109,7 @@ export async function applyWebhookEvent({
     rightToWork?: string;
     adjudication?: string;
   };
-  identityClient: BackgroundCheckIdentityClient;
+  identityClient: CheckrClient;
 }): Promise<{ ok: true; duplicate?: true }> {
   const { record, via } = await resolveWebhookRecord({
     reportId,

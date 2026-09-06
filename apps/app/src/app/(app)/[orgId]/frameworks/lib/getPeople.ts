@@ -59,9 +59,6 @@ export async function getPeopleScore(organizationId: string) {
     ? trainingVideos.map((video) => video.id)
     : [];
 
-  // Get fleet instance for device checks
-  // const fleet = await getFleetInstance();
-
   // Check each employee's completion status
   let completedMembers = 0;
 

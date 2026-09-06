@@ -1,6 +1,6 @@
 import { Logger, NotFoundException } from '@nestjs/common';
 import { BackgroundCheckStatus, db } from '@db';
-import type { BackgroundCheckIdentityClient } from './background-check-identity.client';
+import type { CheckrClient } from './checkr.client';
 import type { BackgroundCheckPaymentService } from './background-check-payment.service';
 import {
   chargeOrRollbackClaim,
@@ -37,7 +37,6 @@ export async function requestBackgroundCheckForMember({
   employeeName,
   employeeEmail,
   requesterNotes,
-  requesterEmail,
   identityClient,
   paymentService,
   getForMember,
@@ -47,8 +46,7 @@ export async function requestBackgroundCheckForMember({
   employeeName: string;
   employeeEmail: string;
   requesterNotes?: string;
-  requesterEmail: string;
-  identityClient: BackgroundCheckIdentityClient;
+  identityClient: CheckrClient;
   paymentService: BackgroundCheckPaymentService;
   getForMember: GetForMemberFn;
 }) {
@@ -112,7 +110,6 @@ export async function requestBackgroundCheckForMember({
             employeeName,
             employeeEmail,
             requesterNotes,
-            requesterEmail,
             identityClient,
             paymentService,
             getForMember,
@@ -190,7 +187,6 @@ export async function requestBackgroundCheckForMember({
       memberId,
       employeeName,
       employeeEmail,
-      requesterEmail,
       idempotencyKey: `comp-background-check:${created.id}`,
     });
   } catch (error) {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method -- spec references jest-mocked db methods directly; `this` scoping is not a concern for mocks */
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
-import { BackgroundCheckIdentityClient } from './background-check-identity.client';
+import { CheckrClient } from './checkr.client';
 import { BillingService } from '../billing/billing.service';
 import { BackgroundCheckBillingService } from './background-check-billing.service';
 import { BackgroundCheckPaymentService } from './background-check-payment.service';
@@ -129,13 +129,13 @@ describe('background checks', () => {
         ),
       );
 
-    const client = new BackgroundCheckIdentityClient();
+    const client = new CheckrClient();
     await client.createBackgroundCheck({
       organizationId: 'org_1',
       memberId: 'mem_1',
       employeeName: 'Ada Lovelace',
       employeeEmail: 'ada@example.com',
-      requesterEmail: 'admin@example.com',
+
       idempotencyKey: 'comp-background-check:mem_1',
     });
 
@@ -177,9 +177,7 @@ describe('background checks', () => {
     );
   });
 
-  it('ignores BACKGROUND_WH_ENDPOINT for Checkr (uses dashboard webhook)', async () => {
-    process.env.BACKGROUND_WH_ENDPOINT =
-      'https://delbert-unhopeful-misti.ngrok-free.dev/v1/background-checks/webhook/';
+  it('does not send a per-request callbackUrl (webhook is configured in dashboard)', async () => {
     const fetchSpy = jest
       .spyOn(global, 'fetch')
       .mockResolvedValueOnce(
@@ -197,13 +195,12 @@ describe('background checks', () => {
         ),
       );
 
-    const client = new BackgroundCheckIdentityClient();
+    const client = new CheckrClient();
     await client.createBackgroundCheck({
       organizationId: 'org_1',
       memberId: 'mem_1',
       employeeName: 'Ada Lovelace',
       employeeEmail: 'ada@example.com',
-      requesterEmail: 'admin@example.com',
       idempotencyKey: 'comp-background-check:mem_1',
     });
 
@@ -220,7 +217,7 @@ describe('background checks', () => {
       }),
     );
 
-    const client = new BackgroundCheckIdentityClient();
+    const client = new CheckrClient();
 
     await expect(
       client.createBackgroundCheck({
@@ -228,7 +225,7 @@ describe('background checks', () => {
         memberId: 'mem_1',
         employeeName: 'Ada Lovelace',
         employeeEmail: 'ada@example.com',
-        requesterEmail: 'admin@example.com',
+
         idempotencyKey: 'comp-background-check:mem_1',
       }),
     ).rejects.toThrow('Checkr candidate creation failed.');
@@ -246,7 +243,7 @@ describe('background checks', () => {
     const identityClient = { createBackgroundCheck: jest.fn() };
     const paymentService = { charge: jest.fn(), refund: jest.fn() };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       paymentService as unknown as BackgroundCheckPaymentService,
     );
 
@@ -255,7 +252,6 @@ describe('background checks', () => {
       memberId: 'mem_1',
       employeeName: 'Ada Lovelace',
       employeeEmail: 'ada@example.com',
-      requesterEmail: 'admin@example.com',
     });
 
     expect(result).toBe(existing);
@@ -310,7 +306,7 @@ describe('background checks', () => {
       refund: jest.fn().mockResolvedValue('re_1'),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       paymentService as unknown as BackgroundCheckPaymentService,
     );
 
@@ -320,7 +316,6 @@ describe('background checks', () => {
         memberId: 'mem_1',
         employeeName: 'Ada Lovelace',
         employeeEmail: 'ada@example.com',
-        requesterEmail: 'admin@example.com',
       }),
     ).rejects.toThrow('identity down');
 
@@ -390,7 +385,7 @@ describe('background checks', () => {
       refund: jest.fn().mockResolvedValue('re_1'),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       paymentService as unknown as BackgroundCheckPaymentService,
     );
 
@@ -403,7 +398,6 @@ describe('background checks', () => {
         memberId: 'mem_1',
         employeeName: 'Ada Lovelace',
         employeeEmail: 'ada@example.com',
-        requesterEmail: 'admin@example.com',
       }),
     ).rejects.toThrow('identity down');
 
@@ -483,7 +477,7 @@ describe('background checks', () => {
       refund: jest.fn(),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       paymentService as unknown as BackgroundCheckPaymentService,
     );
 
@@ -494,7 +488,6 @@ describe('background checks', () => {
       memberId: 'mem_1',
       employeeName: 'Ada Lovelace',
       employeeEmail: 'ada@example.com',
-      requesterEmail: 'admin@example.com',
     });
 
     expect(result).toBe(liveAttempt);
@@ -556,7 +549,7 @@ describe('background checks', () => {
       refund: jest.fn().mockRejectedValue(new Error('stripe down')),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       paymentService as unknown as BackgroundCheckPaymentService,
     );
 
@@ -568,7 +561,6 @@ describe('background checks', () => {
         memberId: 'mem_1',
         employeeName: 'Ada Lovelace',
         employeeEmail: 'ada@example.com',
-        requesterEmail: 'admin@example.com',
       }),
     ).rejects.toThrow('identity down');
     expect(mockedDb.backgroundCheckRequest.updateMany).toHaveBeenCalledWith(
@@ -638,7 +630,7 @@ describe('background checks', () => {
       refund: jest.fn(),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       paymentService as unknown as BackgroundCheckPaymentService,
     );
 
@@ -647,7 +639,7 @@ describe('background checks', () => {
       memberId: 'mem_1',
       employeeName: 'Ada Lovelace',
       employeeEmail: 'ada@example.com',
-      requesterEmail: 'admin@example.com',
+
       requesterNotes: 'Expedite this check.',
     });
 
@@ -705,7 +697,7 @@ describe('background checks', () => {
       createBackgroundCheck: jest.fn(),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       paymentService as unknown as BackgroundCheckPaymentService,
     );
 
@@ -715,7 +707,6 @@ describe('background checks', () => {
         memberId: 'mem_1',
         employeeName: 'Madonna',
         employeeEmail: 'madonna@example.com',
-        requesterEmail: 'admin@example.com',
       }),
     ).rejects.toThrow('first and last name');
 
@@ -756,7 +747,7 @@ describe('background checks', () => {
       createBackgroundCheck: jest.fn(),
     };
     const service = new BackgroundChecksService(
-      identityClient as unknown as BackgroundCheckIdentityClient,
+      identityClient as unknown as CheckrClient,
       paymentService as unknown as BackgroundCheckPaymentService,
     );
 
@@ -765,7 +756,6 @@ describe('background checks', () => {
       memberId: 'mem_1',
       employeeName: 'Ada Lovelace',
       employeeEmail: 'ada@example.com',
-      requesterEmail: 'admin@example.com',
     });
 
     expect(result).toEqual(expect.objectContaining({ id: 'bcr_1' }));
@@ -808,7 +798,7 @@ describe('background checks', () => {
       const identityClient = { createBackgroundCheck: jest.fn() };
       const paymentService = { charge: jest.fn(), refund: jest.fn() };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         paymentService as unknown as BackgroundCheckPaymentService,
       );
       return { service, identityClient, paymentService };
@@ -948,14 +938,13 @@ describe('background checks', () => {
       };
       const paymentService = { charge: jest.fn(), refund: jest.fn() };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         paymentService as unknown as BackgroundCheckPaymentService,
       );
 
       await service.retryForMember({
         organizationId: 'org_1',
         memberId: 'mem_1',
-        requesterEmail: 'admin@example.com',
       });
 
       expect(paymentService.charge).not.toHaveBeenCalled();
@@ -1029,14 +1018,13 @@ describe('background checks', () => {
         }),
       };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         {} as unknown as BackgroundCheckPaymentService,
       );
 
       await service.retryForMember({
         organizationId: 'org_1',
         memberId: 'mem_1',
-        requesterEmail: 'a@b.c',
       });
 
       expect(identityClient.createBackgroundCheck).toHaveBeenCalledWith(
@@ -1057,14 +1045,13 @@ describe('background checks', () => {
       } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
       const identityClient = { createBackgroundCheck: jest.fn() };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         {} as unknown as BackgroundCheckPaymentService,
       );
       await expect(
         service.retryForMember({
           organizationId: 'org_1',
           memberId: 'mem_1',
-          requesterEmail: 'a@b.c',
         }),
       ).rejects.toThrow("Cannot retry a background check in 'invited' status.");
       expect(identityClient.createBackgroundCheck).not.toHaveBeenCalled();
@@ -1084,14 +1071,13 @@ describe('background checks', () => {
       } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
       const identityClient = { createBackgroundCheck: jest.fn() };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         {} as unknown as BackgroundCheckPaymentService,
       );
       await expect(
         service.retryForMember({
           organizationId: 'org_1',
           memberId: 'mem_1',
-          requesterEmail: 'a@b.c',
         }),
       ).rejects.toThrow('has no payment');
       expect(identityClient.createBackgroundCheck).not.toHaveBeenCalled();
@@ -1107,14 +1093,13 @@ describe('background checks', () => {
       } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
       const identityClient = { createBackgroundCheck: jest.fn() };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         {} as unknown as BackgroundCheckPaymentService,
       );
       await expect(
         service.retryForMember({
           organizationId: 'org_1',
           memberId: 'mem_1',
-          requesterEmail: 'a@b.c',
         }),
       ).rejects.toThrow(
         "Cannot retry a background check in 'in_progress' status.",
@@ -1153,7 +1138,7 @@ describe('background checks', () => {
           .mockRejectedValue(new Error('identity down')),
       };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         {
           charge: jest.fn(),
           refund: jest.fn(),
@@ -1164,7 +1149,6 @@ describe('background checks', () => {
         service.retryForMember({
           organizationId: 'org_1',
           memberId: 'mem_1',
-          requesterEmail: 'a@b.c',
         }),
       ).rejects.toThrow('identity down');
       expect(mockedDb.backgroundCheckRequest.updateMany).toHaveBeenCalledWith(
@@ -1211,7 +1195,7 @@ describe('background checks', () => {
           .mockRejectedValue(new Error('identity down')),
       };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         {
           charge: jest.fn(),
           refund: jest.fn(),
@@ -1222,7 +1206,6 @@ describe('background checks', () => {
         service.retryForMember({
           organizationId: 'org_1',
           memberId: 'mem_1',
-          requesterEmail: 'a@b.c',
         }),
       ).rejects.toThrow('identity down');
       // Cancel never touches the vendor pointer, so the pointer-only guard
@@ -1261,7 +1244,7 @@ describe('background checks', () => {
         } as Awaited<ReturnType<typeof db.backgroundCheckRequest.findUnique>>);
       const identityClient = { createBackgroundCheck: jest.fn() };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         {} as unknown as BackgroundCheckPaymentService,
       );
 
@@ -1271,7 +1254,6 @@ describe('background checks', () => {
         service.retryForMember({
           organizationId: 'org_1',
           memberId: 'mem_1',
-          requesterEmail: 'a@b.c',
         }),
       ).rejects.toThrow('changed while retrying');
       expect(identityClient.createBackgroundCheck).not.toHaveBeenCalled();
@@ -1287,14 +1269,13 @@ describe('background checks', () => {
       );
       const identityClient = { createBackgroundCheck: jest.fn() };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         {} as unknown as BackgroundCheckPaymentService,
       );
       await expect(
         service.retryForMember({
           organizationId: 'org_1',
           memberId: 'mem_1',
-          requesterEmail: 'a@b.c',
         }),
       ).rejects.toThrow('Background check not found.');
       expect(identityClient.createBackgroundCheck).not.toHaveBeenCalled();
@@ -1316,7 +1297,7 @@ describe('background checks', () => {
       >);
 
       const service = new BackgroundChecksService(
-        {} as unknown as BackgroundCheckIdentityClient,
+        {} as unknown as CheckrClient,
         {} as unknown as BackgroundCheckPaymentService,
       );
       const result = await service.deleteForMember({
@@ -1344,7 +1325,7 @@ describe('background checks', () => {
         >,
       );
       const service = new BackgroundChecksService(
-        {} as unknown as BackgroundCheckIdentityClient,
+        {} as unknown as CheckrClient,
         {} as unknown as BackgroundCheckPaymentService,
       );
       await expect(
@@ -1404,7 +1385,7 @@ describe('background checks', () => {
   describe('getById', () => {
     function makeService(identityClient: unknown) {
       return new BackgroundChecksService(
-        identityClient as BackgroundCheckIdentityClient,
+        identityClient as CheckrClient,
         {} as unknown as BackgroundCheckPaymentService,
       );
     }
@@ -1542,7 +1523,7 @@ describe('background checks', () => {
   describe('syncForMember', () => {
     function makeService(identityClient: unknown) {
       return new BackgroundChecksService(
-        identityClient as BackgroundCheckIdentityClient,
+        identityClient as CheckrClient,
         {} as unknown as BackgroundCheckPaymentService,
       );
     }
@@ -2256,7 +2237,7 @@ describe('background checks', () => {
         refund: jest.fn(),
       };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         paymentService as unknown as BackgroundCheckPaymentService,
       );
 
@@ -2265,7 +2246,6 @@ describe('background checks', () => {
         memberId: 'mem_1',
         employeeName: 'Ada Lovelace',
         employeeEmail: 'ada@example.com',
-        requesterEmail: 'admin@example.com',
       });
 
       expect(mockedDb.backgroundCheckRequest.updateMany).toHaveBeenCalledWith(
@@ -2337,7 +2317,7 @@ describe('background checks', () => {
         refund: jest.fn().mockResolvedValue('re_1'),
       };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         paymentService as unknown as BackgroundCheckPaymentService,
       );
 
@@ -2347,7 +2327,6 @@ describe('background checks', () => {
           memberId: 'mem_1',
           employeeName: 'Ada Lovelace',
           employeeEmail: 'ada@example.com',
-          requesterEmail: 'admin@example.com',
         }),
       ).rejects.toThrow('Step 5 write failed');
 
@@ -2406,7 +2385,7 @@ describe('background checks', () => {
         refund: jest.fn(),
       };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         paymentService as unknown as BackgroundCheckPaymentService,
       );
 
@@ -2416,7 +2395,6 @@ describe('background checks', () => {
           memberId: 'mem_1',
           employeeName: 'Ada Lovelace',
           employeeEmail: 'ada@example.com',
-          requesterEmail: 'admin@example.com',
         }),
       ).rejects.toThrow('card declined');
 
@@ -2470,7 +2448,7 @@ describe('background checks', () => {
         refund: jest.fn().mockResolvedValue('re_1'),
       };
       const service = new BackgroundChecksService(
-        identityClient as unknown as BackgroundCheckIdentityClient,
+        identityClient as unknown as CheckrClient,
         paymentService as unknown as BackgroundCheckPaymentService,
       );
 
@@ -2480,7 +2458,6 @@ describe('background checks', () => {
           memberId: 'mem_1',
           employeeName: 'Ada Lovelace',
           employeeEmail: 'ada@example.com',
-          requesterEmail: 'admin@example.com',
         }),
       ).rejects.toThrow('Step 3 write failed');
 

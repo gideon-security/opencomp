@@ -1,6 +1,6 @@
-import { BackgroundCheckIdentityClient } from './background-check-identity.client';
+import { CheckrClient } from './checkr.client';
 
-describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
+describe('CheckrClient (Checkr) idempotency', () => {
   const originalEnv = { ...process.env };
   const originalFetch = global.fetch;
 
@@ -48,12 +48,11 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     memberId: 'mem_1',
     employeeName: 'Ada',
     employeeEmail: 'ada@example.com',
-    requesterEmail: 'admin@example.com',
   };
 
   it('creates Checkr candidate with Basic auth', async () => {
     const fetchMock = mockFetchCheckr();
-    await new BackgroundCheckIdentityClient().createBackgroundCheck({
+    await new CheckrClient().createBackgroundCheck({
       ...params,
       idempotencyKey: 'comp-background-check:bcr_1',
     });
@@ -67,11 +66,10 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
 
   it('stores the invitation id (not the shared candidate id) as the placeholder', async () => {
     const fetchMock = mockFetchCheckr();
-    const result =
-      await new BackgroundCheckIdentityClient().createBackgroundCheck({
-        ...params,
-        idempotencyKey: 'comp-background-check:bcr_1',
-      });
+    const result = await new CheckrClient().createBackgroundCheck({
+      ...params,
+      idempotencyKey: 'comp-background-check:bcr_1',
+    });
 
     // The candidate id is shared across organizations for the same email,
     // while the invitation id is unique per request — so the placeholder
@@ -100,7 +98,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     global.fetch = fetchMock;
 
     await expect(
-      new BackgroundCheckIdentityClient().createBackgroundCheck({
+      new CheckrClient().createBackgroundCheck({
         ...params,
         idempotencyKey: 'comp-background-check:bcr_1',
       }),
@@ -127,7 +125,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
       });
     global.fetch = fetchMock;
 
-    const resolved = await new BackgroundCheckIdentityClient().resolveReport({
+    const resolved = await new CheckrClient().resolveReport({
       reportId: 'inv_1',
       invitationId: 'inv_1',
     });
@@ -154,7 +152,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
       });
     global.fetch = fetchMock;
 
-    const resolved = await new BackgroundCheckIdentityClient().resolveReport({
+    const resolved = await new CheckrClient().resolveReport({
       reportId: 'inv_1',
       invitationId: 'inv_1',
     });
@@ -164,7 +162,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
 
   it('handles per-attempt retry idempotency via candidate metadata', async () => {
     const fetchMock = mockFetchCheckr();
-    await new BackgroundCheckIdentityClient().createBackgroundCheck({
+    await new CheckrClient().createBackgroundCheck({
       ...params,
       idempotencyKey: 'comp-background-check:bcr_1:2',
     });
@@ -178,7 +176,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
 
   it('sends the idempotency key as a header on every Checkr write', async () => {
     const fetchMock = mockFetchCheckr();
-    await new BackgroundCheckIdentityClient().createBackgroundCheck({
+    await new CheckrClient().createBackgroundCheck({
       ...params,
       idempotencyKey: 'comp-background-check:bcr_1',
     });
@@ -213,11 +211,10 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
       });
     global.fetch = fetchMock;
 
-    const result =
-      await new BackgroundCheckIdentityClient().createBackgroundCheck({
-        ...params,
-        idempotencyKey: 'comp-background-check:bcr_1',
-      });
+    const result = await new CheckrClient().createBackgroundCheck({
+      ...params,
+      idempotencyKey: 'comp-background-check:bcr_1',
+    });
 
     expect(result.id).toBe('rep_9');
     expect(result.candidateId).toBe('cand_existing');
@@ -243,7 +240,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     global.fetch = fetchMock;
 
     await expect(
-      new BackgroundCheckIdentityClient().createBackgroundCheck({
+      new CheckrClient().createBackgroundCheck({
         ...params,
         idempotencyKey: 'comp-background-check:bcr_1',
       }),
@@ -271,11 +268,10 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
       });
     global.fetch = fetchMock;
 
-    const result =
-      await new BackgroundCheckIdentityClient().createBackgroundCheck({
-        ...params,
-        idempotencyKey: 'comp-background-check:bcr_1',
-      });
+    const result = await new CheckrClient().createBackgroundCheck({
+      ...params,
+      idempotencyKey: 'comp-background-check:bcr_1',
+    });
 
     expect(fetchMock.mock.calls[2][0]).toContain('/v1/reports');
     expect(result.id).toBe('rep_direct');
@@ -297,7 +293,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     global.fetch = fetchMock;
 
     await expect(
-      new BackgroundCheckIdentityClient().createBackgroundCheck({
+      new CheckrClient().createBackgroundCheck({
         ...params,
         idempotencyKey: 'comp-background-check:bcr_1',
       }),
@@ -331,7 +327,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     // paths — not mask as a client error that sends operators chasing
     // the request instead of the credentials.
     await expect(
-      new BackgroundCheckIdentityClient().createBackgroundCheck({
+      new CheckrClient().createBackgroundCheck({
         ...params,
         idempotencyKey: 'comp-background-check:bcr_1',
       }),
@@ -355,11 +351,10 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
       });
     global.fetch = fetchMock;
 
-    const result =
-      await new BackgroundCheckIdentityClient().createBackgroundCheck({
-        ...params,
-        idempotencyKey: 'comp-background-check:bcr_1',
-      });
+    const result = await new CheckrClient().createBackgroundCheck({
+      ...params,
+      idempotencyKey: 'comp-background-check:bcr_1',
+    });
 
     // Creation already wrote the candidate, invitation, and charge by this
     // point: fail open to `invited` and let webhooks/reconcile advance it.
@@ -388,11 +383,10 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
       });
     global.fetch = fetchMock;
 
-    const result =
-      await new BackgroundCheckIdentityClient().createBackgroundCheck({
-        ...params,
-        idempotencyKey: 'comp-background-check:bcr_1',
-      });
+    const result = await new CheckrClient().createBackgroundCheck({
+      ...params,
+      idempotencyKey: 'comp-background-check:bcr_1',
+    });
 
     // A bare invitation describes the hosted flow, not a report: mapping it
     // through the report lifecycle would land the row in `in_progress`,
@@ -403,7 +397,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
 
   it('sends an empty last name for mononyms instead of duplicating the first name', async () => {
     const fetchMock = mockFetchCheckr();
-    await new BackgroundCheckIdentityClient().createBackgroundCheck({
+    await new CheckrClient().createBackgroundCheck({
       ...params,
       employeeName: 'Madonna',
       idempotencyKey: 'comp-background-check:bcr_1',
@@ -431,7 +425,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     global.fetch = fetchMock;
 
     await expect(
-      new BackgroundCheckIdentityClient().createBackgroundCheck({
+      new CheckrClient().createBackgroundCheck({
         ...params,
         idempotencyKey: 'comp-background-check:bcr_1',
       }),
@@ -454,7 +448,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     global.fetch = fetchMock;
 
     await expect(
-      new BackgroundCheckIdentityClient().createBackgroundCheck({
+      new CheckrClient().createBackgroundCheck({
         ...params,
         idempotencyKey: 'comp-background-check:bcr_1',
       }),
@@ -473,7 +467,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     global.fetch = fetchMock;
 
     await expect(
-      new BackgroundCheckIdentityClient().createBackgroundCheck({
+      new CheckrClient().createBackgroundCheck({
         ...params,
         idempotencyKey: 'comp-background-check:bcr_1',
       }),
@@ -504,7 +498,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     global.fetch = fetchMock;
 
     await expect(
-      new BackgroundCheckIdentityClient().createBackgroundCheck({
+      new CheckrClient().createBackgroundCheck({
         ...params,
         idempotencyKey: 'comp-background-check:bcr_1',
       }),
@@ -542,11 +536,10 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
       });
     global.fetch = fetchMock;
 
-    const result =
-      await new BackgroundCheckIdentityClient().createBackgroundCheck({
-        ...params,
-        idempotencyKey: 'comp-background-check:bcr_1',
-      });
+    const result = await new CheckrClient().createBackgroundCheck({
+      ...params,
+      idempotencyKey: 'comp-background-check:bcr_1',
+    });
 
     expect(result.id).toBe('rep_9');
     expect(result.candidateId).toBe('cand_existing');
@@ -568,7 +561,7 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
     global.fetch = fetchMock;
 
     await expect(
-      new BackgroundCheckIdentityClient().createBackgroundCheck({
+      new CheckrClient().createBackgroundCheck({
         ...params,
         idempotencyKey: 'comp-background-check:bcr_1',
       }),
@@ -582,9 +575,9 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
       text: () => Promise.resolve('{}'),
     });
 
-    await expect(
-      new BackgroundCheckIdentityClient().getReport('rep_1'),
-    ).rejects.toThrow('credentials are invalid');
+    await expect(new CheckrClient().getReport('rep_1')).rejects.toThrow(
+      'credentials are invalid',
+    );
   });
 
   it('throws on invalid credentials in getInvitation instead of returning null', async () => {
@@ -594,9 +587,9 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
       text: () => Promise.resolve('{}'),
     });
 
-    await expect(
-      new BackgroundCheckIdentityClient().getInvitation('inv_1'),
-    ).rejects.toThrow('credentials are invalid');
+    await expect(new CheckrClient().getInvitation('inv_1')).rejects.toThrow(
+      'credentials are invalid',
+    );
   });
 
   it('returns null with a warning on transient invitation failures', async () => {
@@ -606,8 +599,6 @@ describe('BackgroundCheckIdentityClient (Checkr) idempotency', () => {
       text: () => Promise.resolve('{}'),
     });
 
-    await expect(
-      new BackgroundCheckIdentityClient().getInvitation('inv_1'),
-    ).resolves.toBeNull();
+    await expect(new CheckrClient().getInvitation('inv_1')).resolves.toBeNull();
   });
 });

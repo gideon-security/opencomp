@@ -4,7 +4,6 @@ import { BackgroundChecksService } from './background-checks.service';
 import { BackgroundCheckCustomService } from './background-check-custom.service';
 import { HybridAuthGuard } from '../auth/hybrid-auth.guard';
 import { PermissionGuard } from '../auth/permission.guard';
-import type { AuthContext as AuthContextType } from '../auth/types';
 
 jest.mock('../auth/auth.server', () => ({
   auth: { api: { getSession: jest.fn() } },
@@ -29,17 +28,6 @@ describe('PeopleBackgroundChecksController admin actions', () => {
 
   const mockGuard = { canActivate: jest.fn().mockReturnValue(true) };
 
-  const authContext: AuthContextType = {
-    authType: 'session',
-    userId: 'usr_1',
-    userEmail: 'user@example.com',
-    organizationId: 'org_1',
-    memberId: 'mem_admin',
-    isApiKey: false,
-    isPlatformAdmin: false,
-    userRoles: null,
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PeopleBackgroundChecksController],
@@ -58,12 +46,11 @@ describe('PeopleBackgroundChecksController admin actions', () => {
     jest.clearAllMocks();
   });
 
-  it('delegates retry with the requester email', async () => {
-    await controller.retryForMember('mem_1', 'org_1', authContext);
+  it('delegates retry', async () => {
+    await controller.retryForMember('mem_1', 'org_1');
     expect(service.retryForMember).toHaveBeenCalledWith({
       organizationId: 'org_1',
       memberId: 'mem_1',
-      requesterEmail: 'user@example.com',
     });
   });
 

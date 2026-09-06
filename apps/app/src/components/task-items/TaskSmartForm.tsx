@@ -1,7 +1,18 @@
 'use client';
 
-import { useOptimisticTaskItems } from '@/hooks/use-task-items';
+import { SelectAssignee } from '@/components/SelectAssignee';
 import { useAssignableMembers } from '@/hooks/use-organization-members';
+import { usePermissions } from '@/hooks/use-permissions';
+import type {
+  TaskItemEntityType,
+  TaskItemFilters,
+  TaskItemPriority,
+  TaskItemSortBy,
+  TaskItemSortOrder,
+  TaskItemStatus,
+} from '@/hooks/use-task-items';
+import { useOptimisticTaskItems } from '@/hooks/use-task-items';
+import { filterMembersByOwnerOrAdmin } from '@/utils/filter-members-by-role';
 import { Button } from '@gideon-defender/ui/button';
 import { Input } from '@gideon-defender/ui/input';
 import { Label } from '@gideon-defender/ui/label';
@@ -12,23 +23,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@gideon-defender/ui/select';
-import type {
-  TaskItemEntityType,
-  TaskItemFilters,
-  TaskItemPriority,
-  TaskItemSortBy,
-  TaskItemSortOrder,
-  TaskItemStatus,
-} from '@/hooks/use-task-items';
+import type { JSONContent } from '@tiptap/react';
 import { Loader2 } from 'lucide-react';
-import { useState, useMemo, useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { SelectAssignee } from '@/components/SelectAssignee';
-import { filterMembersByOwnerOrAdmin } from '@/utils/filter-members-by-role';
 import { TaskRichDescriptionField } from './TaskRichDescriptionField';
 import { useTaskItemAttachmentUpload } from './hooks/use-task-item-attachment-upload';
-import type { JSONContent } from '@tiptap/react';
-import { usePermissions } from '@/hooks/use-permissions';
 
 interface TaskSmartFormProps {
   entityId: string;
@@ -40,7 +40,6 @@ interface TaskSmartFormProps {
   filters?: TaskItemFilters;
   onSuccess?: () => void;
   onCancel?: () => void;
-  mode?: 'create' | 'edit';
   initialValues?: {
     title?: string;
     description?: JSONContent | string;
@@ -75,24 +74,15 @@ export function TaskSmartForm({
   filters = {},
   onSuccess,
   onCancel,
-  mode = 'create',
   initialValues,
 }: TaskSmartFormProps) {
   const [title, setTitle] = useState(initialValues?.title || '');
   const [description, setDescription] = useState<JSONContent | null>(
-    typeof initialValues?.description === 'object'
-      ? initialValues.description
-      : null,
+    typeof initialValues?.description === 'object' ? initialValues.description : null,
   );
-  const [status, setStatus] = useState<TaskItemStatus>(
-    initialValues?.status || 'todo',
-  );
-  const [priority, setPriority] = useState<TaskItemPriority>(
-    initialValues?.priority || 'medium',
-  );
-  const [assigneeId, setAssigneeId] = useState<string | null>(
-    initialValues?.assigneeId ?? null,
-  );
+  const [status, setStatus] = useState<TaskItemStatus>(initialValues?.status || 'todo');
+  const [priority, setPriority] = useState<TaskItemPriority>(initialValues?.priority || 'medium');
+  const [assigneeId, setAssigneeId] = useState<string | null>(initialValues?.assigneeId ?? null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { hasPermission } = usePermissions();
@@ -183,25 +173,18 @@ export function TaskSmartForm({
 
     try {
       // Convert description JSON to string for API
-      const descriptionText = description
-        ? JSON.stringify(description)
-        : undefined;
+      const descriptionText = description ? JSON.stringify(description) : undefined;
 
-      if (mode === 'create') {
-        await optimisticCreate({
-          title: title.trim(),
-          description: descriptionText,
-          status,
-          priority,
-          entityId,
-          entityType,
-          assigneeId: assigneeId || undefined,
-        });
-        toast.success('Task created!');
-      } else {
-        // TODO: Implement update when we have task item ID
-        toast.error('Edit mode not yet implemented');
-      }
+      await optimisticCreate({
+        title: title.trim(),
+        description: descriptionText,
+        status,
+        priority,
+        entityId,
+        entityType,
+        assigneeId: assigneeId || undefined,
+      });
+      toast.success('Task created!');
 
       // Reset form
       setTitle('');
@@ -214,9 +197,7 @@ export function TaskSmartForm({
       onSuccess?.();
     } catch (error) {
       console.error('Error creating task item:', error);
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to create task',
-      );
+      toast.error(error instanceof Error ? error.message : 'Failed to create task');
     } finally {
       setIsSubmitting(false);
     }
@@ -272,10 +253,7 @@ export function TaskSmartForm({
           <Label htmlFor="task-status" className="text-sm font-medium">
             Status
           </Label>
-          <Select
-            value={status}
-            onValueChange={(value) => setStatus(value as TaskItemStatus)}
-          >
+          <Select value={status} onValueChange={(value) => setStatus(value as TaskItemStatus)}>
             <SelectTrigger id="task-status" className="bg-background">
               <SelectValue />
             </SelectTrigger>
@@ -338,20 +316,19 @@ export function TaskSmartForm({
         <Button
           size="sm"
           onClick={handleSubmit}
-          disabled={isSubmitting || isUploading || !title.trim() || (mode === 'create' && !canCreate)}
+          disabled={isSubmitting || isUploading || !title.trim() || !canCreate}
           className="h-8 px-3"
         >
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-              {mode === 'create' ? 'Creating...' : 'Updating...'}
+              {'Creating...'}
             </>
           ) : (
-            mode === 'create' ? 'Create Task' : 'Update Task'
+            'Create Task'
           )}
         </Button>
       </div>
     </div>
   );
 }
-
