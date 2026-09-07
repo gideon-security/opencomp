@@ -35,7 +35,7 @@ For a functional deployment:
 ### Prerequisites
 
 - Docker Desktop or Docker Engine
-- External PostgreSQL 14+ with SSL
+- External PostgreSQL 15+ with SSL (pgvector; compose pins pg16/pg17 images)
 - [Resend](https://resend.com) account for email
 
 ### Build & Run
