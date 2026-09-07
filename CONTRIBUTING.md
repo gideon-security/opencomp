@@ -46,7 +46,7 @@ Contributions are what makes the open source community such an amazing place to 
   </tr>
   <tr>
     <td>
-      Core Features (Booking page, availability, timezone calculation)
+      Core Features (Evidence collection, Framework controls, Policy management)
     </td>
     <td>
       <a href="https://github.com/gideon-security/opencomp/issues?q=is:issue+is:open+sort:updated-desc+label:%22High+priority%22">
@@ -56,7 +56,7 @@ Contributions are what makes the open source community such an amazing place to 
   </tr>
   <tr>
     <td>
-      Core Bugs (Login, Booking page, Emails are not working)
+      Core Bugs (Login, Evidence collection, Emails are not working)
     </td>
     <td>
       <a href="https://github.com/gideon-security/opencomp/issues?q=is:issue+is:open+sort:updated-desc+label:Urgent">

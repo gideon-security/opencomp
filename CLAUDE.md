@@ -23,13 +23,19 @@
 
 ```
 apps/
-  api/          # NestJS API (auth, RBAC, business logic)
-  app/          # Next.js frontend (compliance + security products)
-  portal/       # Employee portal
+  api/                # NestJS API (auth, RBAC, business logic)
+  app/                # Next.js frontend (compliance + security products, :3000)
+  portal/             # Employee portal (:3002)
+  browser-extension/  # Browser extension
+  framework-editor/   # Framework editor (:3004)
+  mcp-server/         # Speakeasy-generated MCP server, standalone (excluded from npm workspaces, own lockfile)
 packages/
-  auth/         # RBAC definitions (permissions.ts) — single source of truth
-  db/           # Prisma schema + client
-  ui/           # Legacy component library (being phased out)
+  auth/               # RBAC definitions (permissions.ts) — single source of truth
+  db/                 # Prisma schema + client
+  ui/                 # Legacy component library (being phased out)
+  analytics/ billing/ company/ device-agent/ docs/ email/ framework-editor-cli/
+  integration-platform/ integrations/ kv/ trigger-local/ trigger-react-local/
+  tsconfig/ utils/
 ```
 
 ## Authentication & Session
