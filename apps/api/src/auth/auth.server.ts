@@ -30,6 +30,8 @@ import {
   getBetterAuthTrustedOrigins,
   isStaticTrustedOrigin,
 } from './origin-policy';
+import { getCookieDomain } from './session-cookie';
+import { resolveActiveOrganizationId } from './gideon-oidc-provisioning';
 
 export {
   getBetterAuthTrustedOrigins,
@@ -44,35 +46,6 @@ export {
 } from './origin-policy';
 
 const MAGIC_LINK_EXPIRES_IN_SECONDS = 60 * 60; // 1 hour
-
-/**
- * Determine the cookie domain based on environment.
- */
-function getCookieDomain(): string | undefined {
-  const baseUrl = process.env.BASE_URL || '';
-
-  // Hostname-exact matching (CodeQL js/incomplete-url-substring-sanitization):
-  // substring checks would match crafted URLs like
-  // "https://staging.gideondefender.com.evil.com".
-  try {
-    const { hostname } = new URL(baseUrl);
-    if (
-      hostname === 'staging.gideondefender.com' ||
-      hostname.endsWith('.staging.gideondefender.com')
-    ) {
-      return '.staging.gideondefender.com';
-    }
-    if (
-      hostname === 'gideondefender.com' ||
-      hostname.endsWith('.gideondefender.com')
-    ) {
-      return '.gideondefender.com';
-    }
-  } catch {
-    // Unparseable BASE_URL — no cookie domain (host-only cookies).
-  }
-  return undefined;
-}
 
 // ── Custom domain lookup via Redis cache ─────────────────────────────────────
 
@@ -338,33 +311,24 @@ export const auth = betterAuth({
             );
           }
           try {
-            const userOrganization = await db.organization.findFirst({
-              where: {
-                members: {
-                  some: {
-                    userId: session.userId,
-                  },
-                },
-              },
-              orderBy: {
-                createdAt: 'desc',
-              },
-              select: {
-                id: true,
-                name: true,
-              },
-            });
+            const activeOrganizationId = await resolveActiveOrganizationId(
+              session.userId,
+            );
 
-            if (userOrganization) {
+            if (activeOrganizationId) {
               if (isDev) {
+                const org = await db.organization.findUnique({
+                  where: { id: activeOrganizationId },
+                  select: { name: true },
+                });
                 console.log(
-                  `[Better Auth] Setting activeOrganizationId to ${userOrganization.id} (${userOrganization.name}) for user ${session.userId}`,
+                  `[Better Auth] Setting activeOrganizationId to ${activeOrganizationId} (${org?.name}) for user ${session.userId}`,
                 );
               }
               return {
                 data: {
                   ...session,
-                  activeOrganizationId: userOrganization.id,
+                  activeOrganizationId,
                 },
               };
             } else {

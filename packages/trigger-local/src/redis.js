@@ -17,7 +17,19 @@ function redisUrl() {
   );
 }
 
+function isTestEnv() {
+  return (
+    process.env.NODE_ENV === 'test' ||
+    typeof process.env.JEST_WORKER_ID !== 'undefined' ||
+    typeof process.env.VITEST_WORKER_ID !== 'undefined'
+  );
+}
+
 function getRedis() {
+  // Unit tests (Jest/Vitest) have no Redis. Return null so callers fall back
+  // to their in-process/no-op paths instead of creating a client whose
+  // reconnect timers keep the test worker alive after the run.
+  if (isTestEnv()) return null;
   if (typeof globalThis === 'undefined') return null;
   if (!globalThis[GLOBAL_REDIS_KEY]) {
     const client = new Redis(redisUrl(), {
@@ -35,4 +47,4 @@ function getRedis() {
   return globalThis[GLOBAL_REDIS_KEY];
 }
 
-module.exports = { getRedis, redisUrl };
+module.exports = { getRedis, redisUrl, isTestEnv };

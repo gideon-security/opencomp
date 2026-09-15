@@ -8,6 +8,8 @@ import { AuthController } from './auth.controller';
 import { HybridAuthGuard } from './hybrid-auth.guard';
 import { PermissionGuard } from './permission.guard';
 import { GideonJwtService } from './gideon-jwt.service';
+import { GideonOidcController } from './gideon-oidc.controller';
+import { GideonOidcService } from './gideon-oidc.service';
 import { GideonShadowService } from '../gideon/gideon-shadow.service';
 
 @Module({
@@ -26,7 +28,7 @@ import { GideonShadowService } from '../gideon/gideon-shadow.service';
       disableBodyParser: true,
     }),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, GideonOidcController],
   providers: [
     ApiKeyService,
     ApiKeyGuard,
@@ -34,6 +36,7 @@ import { GideonShadowService } from '../gideon/gideon-shadow.service';
     PermissionGuard,
     ActingUserResolver,
     GideonJwtService,
+    GideonOidcService,
     GideonShadowService,
   ],
   exports: [
@@ -43,6 +46,7 @@ import { GideonShadowService } from '../gideon/gideon-shadow.service';
     PermissionGuard,
     ActingUserResolver,
     GideonJwtService,
+    GideonOidcService,
     GideonShadowService,
     BetterAuthModule,
   ],
