@@ -46,18 +46,28 @@ describe('BrowserAuthProfileService', () => {
 
   describe('tenant guards (cross-org IDOR)', () => {
     it('assertContextOwnedByOrg passes when a profile in the org owns the context', async () => {
-      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue({ id: 'bap_1' });
+      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue({
+        id: 'bap_1',
+      });
       (db.browserbaseContext.findFirst as jest.Mock).mockResolvedValue(null);
       await expect(
-        service.assertContextOwnedByOrg({ organizationId: 'org_1', contextId: 'ctx_1' }),
+        service.assertContextOwnedByOrg({
+          organizationId: 'org_1',
+          contextId: 'ctx_1',
+        }),
       ).resolves.toBeUndefined();
     });
 
     it('assertContextOwnedByOrg passes when the org-level context row owns it', async () => {
       (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(null);
-      (db.browserbaseContext.findFirst as jest.Mock).mockResolvedValue({ id: 'bbc_1' });
+      (db.browserbaseContext.findFirst as jest.Mock).mockResolvedValue({
+        id: 'bbc_1',
+      });
       await expect(
-        service.assertContextOwnedByOrg({ organizationId: 'org_1', contextId: 'ctx_1' }),
+        service.assertContextOwnedByOrg({
+          organizationId: 'org_1',
+          contextId: 'ctx_1',
+        }),
       ).resolves.toBeUndefined();
     });
 
@@ -65,32 +75,48 @@ describe('BrowserAuthProfileService', () => {
       (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(null);
       (db.browserbaseContext.findFirst as jest.Mock).mockResolvedValue(null);
       await expect(
-        service.assertContextOwnedByOrg({ organizationId: 'org_1', contextId: 'ctx_other' }),
+        service.assertContextOwnedByOrg({
+          organizationId: 'org_1',
+          contextId: 'ctx_other',
+        }),
       ).rejects.toBeInstanceOf(ForbiddenException);
     });
 
     it('assertSessionOwnedByOrg returns the contextId when the org owns the session', async () => {
       jest.spyOn(sessions, 'getSessionContextId').mockResolvedValue('ctx_1');
-      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue({ id: 'bap_1' });
+      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue({
+        id: 'bap_1',
+      });
       (db.browserbaseContext.findFirst as jest.Mock).mockResolvedValue(null);
       await expect(
-        service.assertSessionOwnedByOrg({ organizationId: 'org_1', sessionId: 'sess_1' }),
+        service.assertSessionOwnedByOrg({
+          organizationId: 'org_1',
+          sessionId: 'sess_1',
+        }),
       ).resolves.toBe('ctx_1');
     });
 
     it('assertSessionOwnedByOrg rejects a session whose context is another org', async () => {
-      jest.spyOn(sessions, 'getSessionContextId').mockResolvedValue('ctx_other');
+      jest
+        .spyOn(sessions, 'getSessionContextId')
+        .mockResolvedValue('ctx_other');
       (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(null);
       (db.browserbaseContext.findFirst as jest.Mock).mockResolvedValue(null);
       await expect(
-        service.assertSessionOwnedByOrg({ organizationId: 'org_1', sessionId: 'sess_x' }),
+        service.assertSessionOwnedByOrg({
+          organizationId: 'org_1',
+          sessionId: 'sess_x',
+        }),
       ).rejects.toBeInstanceOf(ForbiddenException);
     });
 
     it('assertSessionOwnedByOrg rejects when the session context cannot be resolved', async () => {
       jest.spyOn(sessions, 'getSessionContextId').mockResolvedValue(undefined);
       await expect(
-        service.assertSessionOwnedByOrg({ organizationId: 'org_1', sessionId: 'gone' }),
+        service.assertSessionOwnedByOrg({
+          organizationId: 'org_1',
+          sessionId: 'gone',
+        }),
       ).rejects.toBeInstanceOf(ForbiddenException);
     });
   });
@@ -290,7 +316,9 @@ describe('BrowserAuthProfileService', () => {
     });
 
     it('updates only the display name (trimmed)', async () => {
-      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(existing);
+      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(
+        existing,
+      );
       await service.updateProfile({
         organizationId: 'org_1',
         profileId: 'bap_1',
@@ -303,7 +331,9 @@ describe('BrowserAuthProfileService', () => {
     });
 
     it('keeps the connection signed in when the URL stays on the same host', async () => {
-      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(existing);
+      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(
+        existing,
+      );
       await service.updateProfile({
         organizationId: 'org_1',
         profileId: 'bap_1',
@@ -318,7 +348,9 @@ describe('BrowserAuthProfileService', () => {
     });
 
     it('marks needs_reauth when the URL moves to a different host', async () => {
-      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(existing);
+      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(
+        existing,
+      );
       await service.updateProfile({
         organizationId: 'org_1',
         profileId: 'bap_1',
@@ -330,7 +362,9 @@ describe('BrowserAuthProfileService', () => {
     });
 
     it('deletes the profile', async () => {
-      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(existing);
+      (db.browserAuthProfile.findFirst as jest.Mock).mockResolvedValue(
+        existing,
+      );
       const result = await service.deleteProfile({
         organizationId: 'org_1',
         profileId: 'bap_1',
@@ -370,7 +404,8 @@ describe('BrowserAuthProfileService', () => {
         where: { id: 'bap_1', organizationId: 'org_1' },
         data: expect.objectContaining({
           lastSignInOutcome: 'needs_2fa',
-          lastSignInDetail: 'The account requires a two-factor code to sign in.',
+          lastSignInDetail:
+            'The account requires a two-factor code to sign in.',
           lastSignInAt: expect.any(Date),
         }),
       });

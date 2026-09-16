@@ -18,9 +18,7 @@ export default async function Page() {
 
   const hasSession = !!session?.user;
   const isAllowed =
-    hasSession &&
-    session.user.role === 'admin' &&
-    isInternalUser(session.user.email);
+    hasSession && session.user.role === 'admin' && isInternalUser(session.user.email);
 
   if (hasSession && !isAllowed) {
     return <Unauthorized />;

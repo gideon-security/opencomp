@@ -12,4 +12,3 @@ export class ExportSOADocumentDto {
   @IsIn(['pdf'])
   format!: 'pdf';
 }
-

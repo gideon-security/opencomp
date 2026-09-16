@@ -1,6 +1,13 @@
 'use client';
 
-import { HStack, Input, Label, RadioGroup, RadioGroupItem, Section } from '@trycompai/design-system';
+import {
+  HStack,
+  Input,
+  Label,
+  RadioGroup,
+  RadioGroupItem,
+  Section,
+} from '@trycompai/design-system';
 import { Controller, type Control } from 'react-hook-form';
 import { WizardField } from './WizardField';
 import { EU_REP_LABELS, EU_REP_STATUSES, type WizardFormValues } from './wizard-types';

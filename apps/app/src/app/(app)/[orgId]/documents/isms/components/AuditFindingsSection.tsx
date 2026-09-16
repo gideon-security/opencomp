@@ -1,14 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Badge,
-  Button,
-  Heading,
-  HStack,
-  Stack,
-  Text,
-} from '@trycompai/design-system';
+import { Badge, Button, Heading, HStack, Stack, Text } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
 import { useForm } from 'react-hook-form';
 import type { IsmsAudit } from '../isms-types';

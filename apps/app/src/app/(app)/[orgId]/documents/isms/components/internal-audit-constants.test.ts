@@ -1,10 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseProgramme } from './internal-audit-constants';
 import type { InternalAuditTranslator } from './internal-audit-labels';
-import {
-  auditValidationMessages,
-  conclusionSentence,
-} from './internal-audit-labels';
+import { auditValidationMessages, conclusionSentence } from './internal-audit-labels';
 
 // The helpers take a next-intl translator; under test the mock resolves keys
 // verbatim, so a bare key-identity function satisfies the contract.
@@ -53,9 +50,7 @@ describe('auditValidationMessages (clause 9.2 client mirror)', () => {
 
 describe('conclusionSentence', () => {
   it('assembles the ticket template around the chosen verdict', () => {
-    expect(conclusionSentence(t, 'conform')).toBe(
-      'internalAuditValidation.conclusions.conform',
-    );
+    expect(conclusionSentence(t, 'conform')).toBe('internalAuditValidation.conclusions.conform');
     expect(conclusionSentence(t, 'substantially_conform')).toBe(
       'internalAuditValidation.conclusions.substantiallyConform',
     );

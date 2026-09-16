@@ -17,10 +17,7 @@ if (!mgmtUrl || !dbName) {
 const client = new Client({ connectionString: mgmtUrl });
 try {
   await client.connect();
-  const { rowCount } = await client.query(
-    'SELECT 1 FROM pg_database WHERE datname = $1',
-    [dbName],
-  );
+  const { rowCount } = await client.query('SELECT 1 FROM pg_database WHERE datname = $1', [dbName]);
   if (rowCount === 0) {
     // dbName is validated upstream (shell slug: [a-z0-9_]+), safe to interpolate.
     await client.query(`CREATE DATABASE "${dbName}"`);

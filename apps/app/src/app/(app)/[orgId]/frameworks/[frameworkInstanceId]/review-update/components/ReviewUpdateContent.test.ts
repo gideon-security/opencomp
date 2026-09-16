@@ -1,5 +1,5 @@
-import type { ManifestControl } from '@/types/framework-versioning';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import type { ManifestControl } from '@/types/framework-versioning';
 import { describe, expect, it } from 'vitest';
 import { describeControlChanges, type FrameworkTranslator } from './ReviewUpdateContent';
 

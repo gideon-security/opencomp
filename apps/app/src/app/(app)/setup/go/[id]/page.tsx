@@ -19,9 +19,7 @@ export default async function RunPage({ params }: PageProps) {
   const cookieStore = await cookies();
   const publicAccessToken = cookieStore.get('publicAccessToken')?.value || undefined;
 
-  const onboardingRes = await serverApi.get<OnboardingResponse>(
-    '/v1/organization/onboarding',
-  );
+  const onboardingRes = await serverApi.get<OnboardingResponse>('/v1/organization/onboarding');
 
   const triggerJobId = onboardingRes.data?.triggerJobId;
 
@@ -32,9 +30,7 @@ export default async function RunPage({ params }: PageProps) {
           <div className="flex flex-col justify-center space-y-4">
             <div className="flex flex-col justify-center gap-2 text-center">
               <h2 className="text-xl font-semibold tracking-tight">{t('onboardingNotFound')}</h2>
-              <p className="text-muted-foreground text-sm">
-                {t('onboardingNotFoundDescription')}
-              </p>
+              <p className="text-muted-foreground text-sm">{t('onboardingNotFoundDescription')}</p>
             </div>
           </div>
         </div>

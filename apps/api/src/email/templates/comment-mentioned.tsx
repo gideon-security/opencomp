@@ -40,7 +40,7 @@ export const CommentMentionedEmail = ({
   commentUrl,
 }: Props) => {
   const unsubscribeUrl = getUnsubscribeUrl(toEmail);
-  
+
   // Extract plain text from TipTap JSON if needed
   const getPlainText = (content: string): string => {
     try {
@@ -49,7 +49,8 @@ export const CommentMentionedEmail = ({
         // Extract text from TipTap JSON
         const extractText = (node: any): string => {
           if (node.type === 'text') return node.text || '';
-          if (node.type === 'mention') return `@${node.attrs?.label || node.attrs?.id || ''}`;
+          if (node.type === 'mention')
+            return `@${node.attrs?.label || node.attrs?.id || ''}`;
           if (node.content && Array.isArray(node.content)) {
             return node.content.map(extractText).join('');
           }
@@ -64,9 +65,10 @@ export const CommentMentionedEmail = ({
   };
 
   const plainTextContent = getPlainText(commentContent);
-  const previewText = plainTextContent.length > 100 
-    ? plainTextContent.substring(0, 100) + '...' 
-    : plainTextContent;
+  const previewText =
+    plainTextContent.length > 100
+      ? plainTextContent.substring(0, 100) + '...'
+      : plainTextContent;
 
   return (
     <Html>
@@ -131,7 +133,10 @@ export const CommentMentionedEmail = ({
             <Section className="mt-[30px] mb-[20px]">
               <Text className="text-[12px] leading-[20px] text-[#666666]">
                 Don't want to receive comment mention notifications?{' '}
-                <Link href={unsubscribeUrl} className="text-[#121212] underline">
+                <Link
+                  href={unsubscribeUrl}
+                  className="text-[#121212] underline"
+                >
                   Manage your email preferences
                 </Link>
                 .
@@ -149,4 +154,3 @@ export const CommentMentionedEmail = ({
 };
 
 export default CommentMentionedEmail;
-

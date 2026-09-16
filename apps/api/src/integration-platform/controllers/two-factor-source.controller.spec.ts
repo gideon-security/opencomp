@@ -63,7 +63,9 @@ beforeEach(() => {
 
 describe('TwoFactorSourceController.getTwoFactorSource', () => {
   it('returns the configured provider', async () => {
-    mockOrgFindUnique.mockResolvedValue({ twoFactorSource: 'google-workspace' });
+    mockOrgFindUnique.mockResolvedValue({
+      twoFactorSource: 'google-workspace',
+    });
     expect(await makeController().getTwoFactorSource(ORG)).toEqual({
       provider: 'google-workspace',
     });
@@ -71,9 +73,9 @@ describe('TwoFactorSourceController.getTwoFactorSource', () => {
 
   it('throws when the org does not exist', async () => {
     mockOrgFindUnique.mockResolvedValue(null);
-    await expect(makeController().getTwoFactorSource(ORG)).rejects.toBeInstanceOf(
-      HttpException,
-    );
+    await expect(
+      makeController().getTwoFactorSource(ORG),
+    ).rejects.toBeInstanceOf(HttpException);
   });
 });
 
@@ -100,7 +102,9 @@ describe('TwoFactorSourceController.setTwoFactorSource', () => {
       source('google-workspace', false),
     ]);
     await expect(
-      makeController().setTwoFactorSource(ORG, { provider: 'google-workspace' }),
+      makeController().setTwoFactorSource(ORG, {
+        provider: 'google-workspace',
+      }),
     ).rejects.toBeInstanceOf(HttpException);
     expect(mockOrgUpdate).not.toHaveBeenCalled();
   });
@@ -156,7 +160,9 @@ describe('TwoFactorSourceController.setTwoFactorSource', () => {
     ]);
 
     await expect(
-      makeController().setTwoFactorSource(ORG, { provider: 'google-workspace' }),
+      makeController().setTwoFactorSource(ORG, {
+        provider: 'google-workspace',
+      }),
     ).rejects.toMatchObject({ status: 404 });
     expect(mockOrgUpdate).not.toHaveBeenCalled();
   });
@@ -189,7 +195,8 @@ describe('TwoFactorSourceController.getAvailableTwoFactorSources', () => {
       source('github', false, 'GitHub', 'Development'),
     ]);
 
-    const { providers } = await makeController().getAvailableTwoFactorSources(ORG);
+    const { providers } =
+      await makeController().getAvailableTwoFactorSources(ORG);
 
     expect(providers.map((p) => p.slug)).toEqual(['google-workspace']);
     expect(providers[0]).not.toHaveProperty('checkId');
@@ -217,7 +224,9 @@ describe('TwoFactorSourceController.getTwoFactorStatuses', () => {
   });
 
   it('maps the service results to lowercased email + enabled/missing', async () => {
-    mockOrgFindUnique.mockResolvedValue({ twoFactorSource: 'google-workspace' });
+    mockOrgFindUnique.mockResolvedValue({
+      twoFactorSource: 'google-workspace',
+    });
     mockCheckResults.getLatestResultsForTask.mockResolvedValue([
       { resourceId: 'Alice@X.com', passed: true },
       { resourceId: 'bob@x.com', passed: false },
@@ -243,7 +252,9 @@ describe('TwoFactorSourceController.getTwoFactorStatuses', () => {
   });
 
   it('resolves conflicting rows for one email deterministically — a fail always wins', async () => {
-    mockOrgFindUnique.mockResolvedValue({ twoFactorSource: 'google-workspace' });
+    mockOrgFindUnique.mockResolvedValue({
+      twoFactorSource: 'google-workspace',
+    });
     mockCheckResults.listSourcesBoundToTask.mockResolvedValue([
       source('google-workspace', true),
     ]);
@@ -269,7 +280,9 @@ describe('TwoFactorSourceController.getTwoFactorStatuses', () => {
   });
 
   it('returns empty statuses when the source has no results', async () => {
-    mockOrgFindUnique.mockResolvedValue({ twoFactorSource: 'google-workspace' });
+    mockOrgFindUnique.mockResolvedValue({
+      twoFactorSource: 'google-workspace',
+    });
     mockCheckResults.getLatestResultsForTask.mockResolvedValue([]);
 
     expect(await makeController().getTwoFactorStatuses(ORG)).toEqual({

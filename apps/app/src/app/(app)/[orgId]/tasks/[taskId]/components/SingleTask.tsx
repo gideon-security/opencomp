@@ -1,22 +1,12 @@
 'use client';
 
-import { SelectAssignee } from '@/components/SelectAssignee';
 import { RecentAuditLogs } from '@/components/RecentAuditLogs';
-import { MarkdownRenderer } from '../automation/[automationId]/components/markdown-renderer/markdown-renderer';
+import { SelectAssignee } from '@/components/SelectAssignee';
 import { useAuditLogs } from '@/hooks/use-audit-logs';
 import { useOrganizationMembers } from '@/hooks/use-organization-members';
-import { downloadTaskEvidenceZip } from '@/lib/evidence-download';
 import { usePermissions } from '@/hooks/use-permissions';
+import { downloadTaskEvidenceZip } from '@/lib/evidence-download';
 import { useActiveMember } from '@/utils/auth-client';
-import { Button } from '@gideon-defender/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@gideon-defender/ui/dialog';
 import {
   CommentEntityType,
   EvidenceAutomation,
@@ -27,6 +17,15 @@ import {
   type TaskFrequency,
   type User,
 } from '@db';
+import { Button } from '@gideon-defender/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@gideon-defender/ui/dialog';
 import {
   Breadcrumb,
   HStack,
@@ -40,13 +39,22 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { SubtractAlt } from '@trycompai/design-system/icons';
-import { CheckCircle2, Clock, Download, RefreshCw, SendHorizontal, Trash2, XCircle } from 'lucide-react';
-import Link from 'next/link';
+import {
+  CheckCircle2,
+  Clock,
+  Download,
+  RefreshCw,
+  SendHorizontal,
+  Trash2,
+  XCircle,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Comments } from '../../../../../../components/comments/Comments';
+import { MarkdownRenderer } from '../automation/[automationId]/components/markdown-renderer/markdown-renderer';
 import { useTask } from '../hooks/use-task';
 import { useTaskAutomations } from '../hooks/use-task-automations';
 import { BrowserAutomations } from './BrowserAutomations';
@@ -180,7 +188,9 @@ export function SingleTask({
   };
 
   const handleUpdateTask = async (
-    updates: Partial<Pick<Task, 'status' | 'assigneeId' | 'approverId' | 'frequency' | 'reviewDate'>> & {
+    updates: Partial<
+      Pick<Task, 'status' | 'assigneeId' | 'approverId' | 'frequency' | 'reviewDate'>
+    > & {
       department?: string | null;
       notRelevantJustification?: string;
     },
@@ -346,7 +356,9 @@ export function SingleTask({
         <Stack gap="lg">
           <TabsList variant="underline">
             <TabsTrigger value="overview">{t('tabOverview')}</TabsTrigger>
-            {task.automationStatus !== 'MANUAL' && <TabsTrigger value="automations">{t('tabAutomations')}</TabsTrigger>}
+            {task.automationStatus !== 'MANUAL' && (
+              <TabsTrigger value="automations">{t('tabAutomations')}</TabsTrigger>
+            )}
             {canReadPolicy && <TabsTrigger value="mappings">{t('tabMappings')}</TabsTrigger>}
             <TabsTrigger value="comments">{t('tabComments')}</TabsTrigger>
             <TabsTrigger value="activity">{t('tabActivity')}</TabsTrigger>
@@ -387,9 +399,7 @@ export function SingleTask({
                 isManualTask={task.automationStatus === 'MANUAL'}
                 scheduleFrequency={task.integrationScheduleFrequency ?? undefined}
                 lastRunAt={task.integrationLastRunAt ?? null}
-                onScheduleChange={
-                  canUpdateTask ? handleUpdateIntegrationSchedule : undefined
-                }
+                onScheduleChange={canUpdateTask ? handleUpdateIntegrationSchedule : undefined}
               />
               <TaskAutomations
                 automations={automations || []}
@@ -421,7 +431,9 @@ export function SingleTask({
             <Stack gap="lg">
               <HStack justify="between" align="center">
                 <Stack gap="none">
-                  <Text size="sm" weight="medium">{t('downloadEvidence')}</Text>
+                  <Text size="sm" weight="medium">
+                    {t('downloadEvidence')}
+                  </Text>
                   <Text size="xs" variant="muted">
                     {t('downloadEvidenceDescription')}
                   </Text>
@@ -431,7 +443,11 @@ export function SingleTask({
                   size="sm"
                   onClick={async () => {
                     try {
-                      await downloadTaskEvidenceZip({ taskId: task.id, taskTitle: task.title, includeJson: true });
+                      await downloadTaskEvidenceZip({
+                        taskId: task.id,
+                        taskTitle: task.title,
+                        includeJson: true,
+                      });
                       toast.success(t('evidenceDownloaded'));
                     } catch {
                       toast.error(t('evidenceDownloadFailed'));
@@ -449,7 +465,9 @@ export function SingleTask({
                 <>
                   <HStack justify="between" align="center">
                     <Stack gap="none">
-                      <Text size="sm" weight="medium">{t('resetToDefaults')}</Text>
+                      <Text size="sm" weight="medium">
+                        {t('resetToDefaults')}
+                      </Text>
                       <Text size="xs" variant="muted">
                         {t('resetToDefaultsDescription')}
                       </Text>
@@ -469,7 +487,9 @@ export function SingleTask({
               {canDeleteTask && (
                 <HStack justify="between" align="center">
                   <Stack gap="none">
-                    <Text size="sm" weight="medium">{t('deleteEvidence')}</Text>
+                    <Text size="sm" weight="medium">
+                      {t('deleteEvidence')}
+                    </Text>
                     <Text size="xs" variant="muted">
                       {t('deleteEvidenceDescription')}
                     </Text>
@@ -501,9 +521,7 @@ export function SingleTask({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('regenerateTitle')}</DialogTitle>
-            <DialogDescription>
-              {t('regenerateDescription')}
-            </DialogDescription>
+            <DialogDescription>{t('regenerateDescription')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setRegenerateConfirmOpen(false)}>
@@ -530,9 +548,7 @@ export function SingleTask({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('requestApprovalTitle')}</DialogTitle>
-            <DialogDescription>
-              {t('requestApprovalDescription')}
-            </DialogDescription>
+            <DialogDescription>{t('requestApprovalDescription')}</DialogDescription>
           </DialogHeader>
           <SelectAssignee
             assignees={members?.filter((m) => m.id !== activeMember?.id) ?? []}
@@ -567,8 +583,12 @@ function NotRelevantBanner({ justification }: { justification: string }) {
       <HStack gap="sm" align="start">
         <SubtractAlt size={20} className="text-muted-foreground mt-0.5 shrink-0" />
         <Stack gap="xs">
-          <Text size="sm" weight="medium">{t('markedNotRelevant')}</Text>
-          <Text size="sm" variant="muted">{justification}</Text>
+          <Text size="sm" weight="medium">
+            {t('markedNotRelevant')}
+          </Text>
+          <Text size="sm" variant="muted">
+            {justification}
+          </Text>
         </Stack>
       </HStack>
     </div>
@@ -596,8 +616,12 @@ function ApprovalBanner({
           <HStack gap="sm" align="start">
             <CheckCircle2 className="h-5 w-5 text-orange-500 mt-0.5 shrink-0" />
             <Stack gap="none">
-              <Text size="sm" weight="medium">{t('yourApprovalRequired')}</Text>
-              <Text size="xs" variant="muted">{t('reviewAndDecide')}</Text>
+              <Text size="sm" weight="medium">
+                {t('yourApprovalRequired')}
+              </Text>
+              <Text size="xs" variant="muted">
+                {t('reviewAndDecide')}
+              </Text>
             </Stack>
           </HStack>
           <HStack gap="sm">
@@ -625,8 +649,12 @@ function ApprovalBanner({
         <HStack gap="sm" align="start">
           <Clock className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
           <Stack gap="none">
-            <Text size="sm" weight="medium">{t('pendingApproval')}</Text>
-            <Text size="xs" variant="muted">{t('waitingForReview', { approverName })}</Text>
+            <Text size="sm" weight="medium">
+              {t('pendingApproval')}
+            </Text>
+            <Text size="xs" variant="muted">
+              {t('waitingForReview', { approverName })}
+            </Text>
           </Stack>
         </HStack>
         {canCancel && (

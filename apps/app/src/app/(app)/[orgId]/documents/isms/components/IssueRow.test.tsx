@@ -46,9 +46,7 @@ describe('IssueRow', () => {
     fireEvent.click(screen.getByText('Save'));
 
     await waitFor(() => expect(onSave).toHaveBeenCalled());
-    expect(onSave).toHaveBeenCalledWith(
-      expect.objectContaining({ description: 'Updated issue' }),
-    );
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ description: 'Updated issue' }));
     // Back in read mode: the edit affordance returns, inputs are gone.
     await waitFor(() => expect(screen.getByLabelText('Edit issue')).toBeInTheDocument());
     expect(screen.queryByLabelText('Issue description')).not.toBeInTheDocument();
@@ -118,9 +116,7 @@ describe('IssueRow', () => {
     });
     fireEvent.click(screen.getByText('Save'));
 
-    await waitFor(() =>
-      expect(screen.getByLabelText('Issue description')).toHaveValue(''),
-    );
+    await waitFor(() => expect(screen.getByLabelText('Issue description')).toHaveValue(''));
     expect(onSave).not.toHaveBeenCalled();
   });
 });

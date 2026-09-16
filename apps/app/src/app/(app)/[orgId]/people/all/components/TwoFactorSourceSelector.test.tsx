@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { TwoFactorSourceSelector } from './TwoFactorSourceSelector';
 import type { TwoFactorSourceProviderInfo } from '../hooks/use2faSource';
+import { TwoFactorSourceSelector } from './TwoFactorSourceSelector';
 
 const { mockHasPermission, mockUse2faSource } = vi.hoisted(() => ({
   mockHasPermission: vi.fn(),
@@ -10,7 +10,9 @@ const { mockHasPermission, mockUse2faSource } = vi.hoisted(() => ({
 
 vi.mock('next/link', () => ({
   default: ({ children, href, ...rest }: { children: React.ReactNode; href: string }) => (
-    <a href={href} {...rest}>{children}</a>
+    <a href={href} {...rest}>
+      {children}
+    </a>
   ),
 }));
 
@@ -24,8 +26,7 @@ vi.mock('@/hooks/use-permissions', () => ({
 }));
 
 vi.mock('../hooks/use2faSource', () => ({
-  use2faSource: (opts: { organizationId: string; enabled?: boolean }) =>
-    mockUse2faSource(opts),
+  use2faSource: (opts: { organizationId: string; enabled?: boolean }) => mockUse2faSource(opts),
 }));
 
 const source: TwoFactorSourceProviderInfo = {
@@ -52,8 +53,7 @@ beforeEach(() => {
 describe('TwoFactorSourceSelector — RBAC gating', () => {
   it('renders the selector for a user with integration:update', () => {
     mockHasPermission.mockImplementation(
-      (resource: string, action: string) =>
-        resource === 'integration' && action === 'update',
+      (resource: string, action: string) => resource === 'integration' && action === 'update',
     );
 
     render(<TwoFactorSourceSelector />);
@@ -63,13 +63,9 @@ describe('TwoFactorSourceSelector — RBAC gating', () => {
     expect(screen.getAllByText('Google Workspace').length).toBeGreaterThan(0);
     // The inline "2FA status from ·" prefix tells users what the control is for and
     // makes it part of the trigger's accessible name for screen readers.
-    expect(
-      screen.getByRole('combobox', { name: /2FA status/ }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /2FA status/ })).toBeInTheDocument();
     // Hook is enabled (and therefore allowed to hit the 2FA-source APIs).
-    expect(mockUse2faSource).toHaveBeenCalledWith(
-      expect.objectContaining({ enabled: true }),
-    );
+    expect(mockUse2faSource).toHaveBeenCalledWith(expect.objectContaining({ enabled: true }));
   });
 
   it('renders nothing for a user without integration:update and disables the hook', () => {
@@ -79,9 +75,7 @@ describe('TwoFactorSourceSelector — RBAC gating', () => {
 
     expect(container).toBeEmptyDOMElement();
     // The hook must be disabled so no 2FA-source API is called without permission.
-    expect(mockUse2faSource).toHaveBeenCalledWith(
-      expect.objectContaining({ enabled: false }),
-    );
+    expect(mockUse2faSource).toHaveBeenCalledWith(expect.objectContaining({ enabled: false }));
   });
 
   it('fills the Sources popover width (visible at every breakpoint inside it)', () => {

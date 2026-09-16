@@ -1,6 +1,12 @@
 'use client';
 
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
+import {
   Badge,
   Button,
   Card,
@@ -16,9 +22,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { ArrowLeft, Information } from '@trycompai/design-system/icons';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
 import { useTranslations } from 'next-intl';
-import type { DeviceWithChecks } from '../types';
 import {
   CANONICAL_DEVICE_CHECKS,
   CHECK_FIELDS,
@@ -31,6 +35,7 @@ import {
   staleTooltipCopy,
   unverifiedTooltipCopy,
 } from '../lib/device-source';
+import type { DeviceWithChecks } from '../types';
 import { NotTrackedBadge } from './DeviceListCells';
 import { RevokeAgentAccessDialog } from './RevokeAgentAccessDialog';
 
@@ -133,21 +138,17 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
                 {/* Live status: agent devices report directly; imported devices
                     carry the provider's last-contact timestamp (lastSeenAt), so
                     the same rule applies — and stays consistent with the list. */}
-                {(device.source === 'device_agent' ||
-                  device.source === 'integration') && (
+                {(device.source === 'device_agent' || device.source === 'integration') && (
                   <span
                     className={`inline-block h-2.5 w-2.5 shrink-0 rounded-full ${
-                      isDeviceOnline(device.lastCheckIn)
-                        ? 'bg-green-500'
-                        : 'bg-gray-300'
+                      isDeviceOnline(device.lastCheckIn) ? 'bg-green-500' : 'bg-gray-300'
                     }`}
                   />
                 )}
                 <Text size="lg" weight="semibold">
                   {device.name}
                 </Text>
-                {(device.source === 'device_agent' ||
-                  device.source === 'integration') && (
+                {(device.source === 'device_agent' || device.source === 'integration') && (
                   <Badge variant="outline">
                     {isDeviceOnline(device.lastCheckIn)
                       ? t('devices.online')
@@ -275,12 +276,9 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
               otherwise — then any extra provider-specific checks below. */}
           {device.source === 'integration' &&
             (() => {
-              const provider =
-                device.integrationProvider?.name ?? t('devices.theIntegration');
+              const provider = device.integrationProvider?.name ?? t('devices.theIntegration');
               const bySourceId = new Map(sourceChecks(device).map((c) => [c.id, c]));
-              const canonicalIds = new Set<string>(
-                CANONICAL_DEVICE_CHECKS.map((c) => c.id),
-              );
+              const canonicalIds = new Set<string>(CANONICAL_DEVICE_CHECKS.map((c) => c.id));
               const extras = sourceChecks(device).filter((c) => !canonicalIds.has(c.id));
               return [
                 ...CANONICAL_DEVICE_CHECKS.map(({ id, label }) => {
@@ -343,53 +341,45 @@ export const DeviceDetails = ({ device, onClose }: DeviceDetailsProps) => {
               ];
             })()}
           {device.source !== 'integration' &&
-          CHECK_FIELDS.map(({ key, dbKey, label }) => {
-            const isUntracked =
-              device.source === 'fleet' && key !== 'diskEncryptionEnabled';
-            const untrackedCopy = t('devices.notTrackedByFleet');
-            const isStale = device.complianceStatus === 'stale';
-            const passed = device[key];
-            const details = device.checkDetails?.[dbKey];
-            return (
-              <TableRow key={key}>
-                <TableCell>
-                  <Text size="sm" weight="medium">
-                    {label}
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text size="sm" variant="muted">
-                    {isUntracked
-                      ? untrackedCopy
-                      : isStale
-                        ? '—'
-                        : (details?.message ?? '—')}
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  {isUntracked ? (
-                    <Badge variant="outline">{t('devices.notAvailable')}</Badge>
-                  ) : isStale ? (
-                    <Badge
-                      variant="secondary"
-                      title={t('devices.staleUnknownTitle', { label })}
-                    >
-                      —
-                    </Badge>
-                  ) : (
-                    <Badge variant={passed ? 'default' : 'destructive'}>
-                      {passed ? t('devices.pass') : t('devices.fail')}
-                    </Badge>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Text size="sm" variant="muted">
-                    {isUntracked || isStale ? '—' : (details?.exception ?? '—')}
-                  </Text>
-                </TableCell>
-              </TableRow>
-            );
-          })}
+            CHECK_FIELDS.map(({ key, dbKey, label }) => {
+              const isUntracked = device.source === 'fleet' && key !== 'diskEncryptionEnabled';
+              const untrackedCopy = t('devices.notTrackedByFleet');
+              const isStale = device.complianceStatus === 'stale';
+              const passed = device[key];
+              const details = device.checkDetails?.[dbKey];
+              return (
+                <TableRow key={key}>
+                  <TableCell>
+                    <Text size="sm" weight="medium">
+                      {label}
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <Text size="sm" variant="muted">
+                      {isUntracked ? untrackedCopy : isStale ? '—' : (details?.message ?? '—')}
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    {isUntracked ? (
+                      <Badge variant="outline">{t('devices.notAvailable')}</Badge>
+                    ) : isStale ? (
+                      <Badge variant="secondary" title={t('devices.staleUnknownTitle', { label })}>
+                        —
+                      </Badge>
+                    ) : (
+                      <Badge variant={passed ? 'default' : 'destructive'}>
+                        {passed ? t('devices.pass') : t('devices.fail')}
+                      </Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Text size="sm" variant="muted">
+                      {isUntracked || isStale ? '—' : (details?.exception ?? '—')}
+                    </Text>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
     </Stack>

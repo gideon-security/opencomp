@@ -85,8 +85,7 @@ function noOpLimiter(options: CreateRateLimiterOptions): RateLimiter {
 }
 
 function luaLimiter(options: CreateRateLimiterOptions): RateLimiter {
-  const script =
-    options.algorithm === 'sliding' ? SLIDING_WINDOW_SCRIPT : FIXED_WINDOW_SCRIPT;
+  const script = options.algorithm === 'sliding' ? SLIDING_WINDOW_SCRIPT : FIXED_WINDOW_SCRIPT;
   const keyPrefix = options.prefix ?? 'app:ratelimit';
 
   return {
@@ -105,7 +104,10 @@ function luaLimiter(options: CreateRateLimiterOptions): RateLimiter {
         success: rawAllowed === 1,
         limit: limitValue,
         remaining: Math.max(0, limitValue - current),
-        reset: rawReset && rawReset > 0 ? rawReset : Math.floor(Date.now() / 1000) + options.windowSeconds,
+        reset:
+          rawReset && rawReset > 0
+            ? rawReset
+            : Math.floor(Date.now() / 1000) + options.windowSeconds,
       };
     },
   };

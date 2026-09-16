@@ -76,8 +76,12 @@ describe('TimelinesLifecycleService', () => {
       },
     };
 
-    (mockDb.timelineInstance.findUnique as jest.Mock).mockResolvedValue(instance);
-    (mockDb.$transaction as jest.Mock).mockImplementation(async (fn: any) => fn(tx));
+    (mockDb.timelineInstance.findUnique as jest.Mock).mockResolvedValue(
+      instance,
+    );
+    (mockDb.$transaction as jest.Mock).mockImplementation(async (fn: any) =>
+      fn(tx),
+    );
 
     const startDate = new Date('2026-01-01T00:00:00.000Z');
     await service.activate('tli_1', 'org_1', startDate);
@@ -147,8 +151,12 @@ describe('TimelinesLifecycleService', () => {
       },
     };
 
-    (mockDb.timelineInstance.findUnique as jest.Mock).mockResolvedValue(instance);
-    (mockDb.$transaction as jest.Mock).mockImplementation(async (fn: any) => fn(tx));
+    (mockDb.timelineInstance.findUnique as jest.Mock).mockResolvedValue(
+      instance,
+    );
+    (mockDb.$transaction as jest.Mock).mockImplementation(async (fn: any) =>
+      fn(tx),
+    );
 
     await service.resume('tli_1', 'org_1');
 
@@ -242,7 +250,9 @@ describe('TimelinesLifecycleService', () => {
         },
       ],
     });
-    (mockDb.$transaction as jest.Mock).mockImplementation(async (fn: any) => fn(tx));
+    (mockDb.$transaction as jest.Mock).mockImplementation(async (fn: any) =>
+      fn(tx),
+    );
 
     await service.completePhase('tli_1', 'p1', 'org_1', 'usr_1');
 
@@ -339,7 +349,9 @@ describe('TimelinesLifecycleService', () => {
         },
       ],
     });
-    (mockDb.$transaction as jest.Mock).mockImplementation(async (fn: any) => fn(tx));
+    (mockDb.$transaction as jest.Mock).mockImplementation(async (fn: any) =>
+      fn(tx),
+    );
 
     await service.completePhase('tli_1', 'p1', 'org_1', 'usr_1');
 
@@ -393,7 +405,12 @@ describe('TimelinesLifecycleService', () => {
     });
 
     await expect(
-      service.unlock('tli_1', 'org_1', 'usr_admin', 'Need to adjust phase data'),
+      service.unlock(
+        'tli_1',
+        'org_1',
+        'usr_admin',
+        'Need to adjust phase data',
+      ),
     ).rejects.toThrow(BadRequestException);
   });
 
@@ -406,7 +423,12 @@ describe('TimelinesLifecycleService', () => {
     });
 
     await expect(
-      service.unlock('tli_1', 'org_1', 'usr_admin', 'Need to adjust phase data'),
+      service.unlock(
+        'tli_1',
+        'org_1',
+        'usr_admin',
+        'Need to adjust phase data',
+      ),
     ).rejects.toThrow(BadRequestException);
 
     expect(mockDb.timelineInstance.update).not.toHaveBeenCalled();

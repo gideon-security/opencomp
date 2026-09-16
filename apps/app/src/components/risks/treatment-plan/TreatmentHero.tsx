@@ -6,8 +6,8 @@ import {
   previewResidual,
   suggestedResidual,
 } from '@/lib/suggested-residual';
-import { Impact, Likelihood, RiskTreatmentType, TaskStatus } from '@db';
 import { Popover as BasePopover } from '@base-ui/react/popover';
+import { Impact, Likelihood, RiskTreatmentType, TaskStatus } from '@db';
 import { Card, CardContent } from '@trycompai/design-system';
 import { ArrowRight, Information } from '@trycompai/design-system/icons';
 import { RiskMatrix5x5 } from './RiskMatrix5x5';
@@ -79,10 +79,7 @@ const STRATEGY_NARRATIVE: Record<RiskTreatmentType, string> = {
   avoid: 'because we are eliminating the activity that causes this risk.',
 };
 
-const STRATEGY_THIRD_STAT: Record<
-  RiskTreatmentType,
-  { label: string; value: string }
-> = {
+const STRATEGY_THIRD_STAT: Record<RiskTreatmentType, { label: string; value: string }> = {
   mitigate: { label: 'Task Completion', value: '' }, // value computed live
   accept: { label: 'Strategy', value: 'Accepted as-is' },
   transfer: { label: 'Strategy', value: 'Impact transferred' },
@@ -117,8 +114,7 @@ export function TreatmentHero({
     hasLinkedWork,
   });
   const targetScore = getRiskScore(target.likelihood, target.impact);
-  const isGatedByCoverage =
-    !hasLinkedWork && strategy !== RiskTreatmentType.accept;
+  const isGatedByCoverage = !hasLinkedWork && strategy !== RiskTreatmentType.accept;
 
   // Mitigate is the only strategy with a meaningful in-progress concept.
   // Non-Mitigate strategies are "always at full completion" — the strategy
@@ -181,9 +177,7 @@ export function TreatmentHero({
                     sideOffset={6}
                     className="isolate z-50"
                   >
-                    <BasePopover.Popup
-                      className="bg-popover text-popover-foreground ring-foreground/10 origin-(--transform-origin) data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2 flex w-[360px] flex-col gap-2.5 rounded-lg p-3 text-sm shadow-md ring-1 outline-hidden duration-100"
-                    >
+                    <BasePopover.Popup className="bg-popover text-popover-foreground ring-foreground/10 origin-(--transform-origin) data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2 flex w-[360px] flex-col gap-2.5 rounded-lg p-3 text-sm shadow-md ring-1 outline-hidden duration-100">
                       <ScoreExplainer />
                     </BasePopover.Popup>
                   </BasePopover.Positioner>
@@ -218,17 +212,11 @@ export function TreatmentHero({
             )}
             <p className="max-w-[540px] text-sm leading-[1.55] text-foreground">
               The plan moves this risk from{' '}
-              <strong
-                className="font-bold"
-                style={{ color: LEVEL_COLOR[inherentLevel] }}
-              >
+              <strong className="font-bold" style={{ color: LEVEL_COLOR[inherentLevel] }}>
                 {LEVEL_LABEL[inherentLevel]}
               </strong>{' '}
               to{' '}
-              <strong
-                className="font-bold"
-                style={{ color: LEVEL_COLOR[residualLevel] }}
-              >
+              <strong className="font-bold" style={{ color: LEVEL_COLOR[residualLevel] }}>
                 {LEVEL_LABEL[residualLevel]}
               </strong>{' '}
               —{' '}
@@ -254,10 +242,10 @@ export function TreatmentHero({
               {isEmpty
                 ? 'since no mitigation plan is in place yet.'
                 : isGatedByCoverage
-                ? strategy === RiskTreatmentType.transfer
-                  ? 'until a task documenting the transfer arrangement is linked.'
-                  : 'until tasks supporting the strategy are linked.'
-                : STRATEGY_NARRATIVE[strategy]}
+                  ? strategy === RiskTreatmentType.transfer
+                    ? 'until a task documenting the transfer arrangement is linked.'
+                    : 'until tasks supporting the strategy are linked.'
+                  : STRATEGY_NARRATIVE[strategy]}
             </p>
             <div className="mt-6 grid grid-cols-3 gap-4 border-t border-border pt-5">
               <HeroStatPair

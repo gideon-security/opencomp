@@ -1,7 +1,7 @@
 'use client';
 
-import { Text } from '@trycompai/design-system';
 import { getRiskLevelFromScore, LEVEL_COLOR, LEVEL_LABEL } from '@/lib/risk-score';
+import { Text } from '@trycompai/design-system';
 
 /**
  * Read-only preview of the 5x5 risk level matrix rendered into the 6.1.2
@@ -58,10 +58,10 @@ export function RiskLevelMatrixPreview() {
         </table>
       </div>
       <Text variant="muted">
-        Computed from likelihood x impact (1-25), normalized to the same 1-10 score the risk
-        badges use (score bands: Very low 1-2, Low 3-4, Medium 5-6, High 7-8, Very high 9-10 —
-        i.e. raw products 1-5, 6-10, 11-15, 16-20, 21-25). This table renders into the document
-        and is not editable.
+        Computed from likelihood x impact (1-25), normalized to the same 1-10 score the risk badges
+        use (score bands: Very low 1-2, Low 3-4, Medium 5-6, High 7-8, Very high 9-10 — i.e. raw
+        products 1-5, 6-10, 11-15, 16-20, 21-25). This table renders into the document and is not
+        editable.
       </Text>
     </div>
   );

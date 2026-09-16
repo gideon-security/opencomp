@@ -45,7 +45,8 @@ export class WindowsDiskEncryptionCheck implements ComplianceCheck {
       details: {
         method: 'Get-BitLockerVolume + manage-bde',
         raw: 'Commands failed but encryption appears available',
-        message: 'Disk encryption is not enabled or could not be detected. Enable BitLocker in Settings. If your device is managed by an MDM (e.g. Intune), try running the agent as Administrator.',
+        message:
+          'Disk encryption is not enabled or could not be detected. Enable BitLocker in Settings. If your device is managed by an MDM (e.g. Intune), try running the agent as Administrator.',
       },
       checkedAt: new Date().toISOString(),
     };
@@ -123,7 +124,8 @@ export class WindowsDiskEncryptionCheck implements ComplianceCheck {
     if (edition === 'home' && !hasTpm) {
       return {
         available: false,
-        reason: 'Windows Home edition without TPM — neither BitLocker nor Device Encryption is supported',
+        reason:
+          'Windows Home edition without TPM — neither BitLocker nor Device Encryption is supported',
       };
     }
 
@@ -132,7 +134,8 @@ export class WindowsDiskEncryptionCheck implements ComplianceCheck {
     if (edition === 'home') {
       return {
         available: false,
-        reason: 'Windows Home edition — BitLocker requires Windows Pro. Device Encryption may not be supported by your hardware',
+        reason:
+          'Windows Home edition — BitLocker requires Windows Pro. Device Encryption may not be supported by your hardware',
       };
     }
 

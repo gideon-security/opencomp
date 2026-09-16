@@ -1,5 +1,6 @@
 'use client';
 
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { Badge } from '@gideon-defender/ui/badge';
 import { Button } from '@gideon-defender/ui/button';
 import {
@@ -9,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { AlertTriangle, ListOrdered, Loader2, RotateCcw } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -91,8 +91,18 @@ function RichText({ text }: { text: string }) {
     <p className="text-muted-foreground leading-relaxed">
       {parts.map((part, i) =>
         part.match(urlRegex) ? (
-          <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:text-primary/80 break-all">{part}</a>
-        ) : (<span key={i}>{part}</span>),
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary underline underline-offset-2 hover:text-primary/80 break-all"
+          >
+            {part}
+          </a>
+        ) : (
+          <span key={i}>{part}</span>
+        ),
       )}
     </p>
   );
@@ -115,9 +125,7 @@ function SecurityHubFixDisclosure() {
   return (
     <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
       <p className="font-medium">{t('cloudTests_securityHubFindingTitle')}</p>
-      <p className="mt-1 leading-relaxed">
-        {t('cloudTests_securityHubFindingBody')}
-      </p>
+      <p className="mt-1 leading-relaxed">{t('cloudTests_securityHubFindingBody')}</p>
     </div>
   );
 }
@@ -139,11 +147,23 @@ function CodeBlock({ code }: { code: string }) {
         title={t('cloudTests_copyToClipboard')}
       >
         {copied ? (
-          <svg className="h-3 w-3 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <svg
+            className="h-3 w-3 text-primary"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         ) : (
-          <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg
+            className="h-3 w-3"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
             <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
           </svg>
@@ -166,7 +186,14 @@ function TextSegment({ text }: { text: string }) {
       if (code.length > 60 || code.startsWith('aws ') || code.includes(' --')) {
         rendered.push(<CodeBlock key={`cb${i}`} code={code} />);
       } else {
-        rendered.push(<code key={`ic${i}`} className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono text-foreground">{code}</code>);
+        rendered.push(
+          <code
+            key={`ic${i}`}
+            className="rounded bg-muted px-1 py-0.5 text-[11px] font-mono text-foreground"
+          >
+            {code}
+          </code>,
+        );
       }
     } else if (part.trim()) {
       rendered.push(<RichText key={`rt${i}`} text={part} />);
@@ -201,7 +228,15 @@ function StepContent({ text }: { text: string }) {
       <>
         {tripleBacktickParts.map((part, i) => {
           if (part.startsWith('```') && part.endsWith('```')) {
-            return <CodeBlock key={i} code={part.slice(3, -3).replace(/^\w*\n?/, '').trim()} />;
+            return (
+              <CodeBlock
+                key={i}
+                code={part
+                  .slice(3, -3)
+                  .replace(/^\w*\n?/, '')
+                  .trim()}
+              />
+            );
           }
           const trimmed = part.trim();
           if (!trimmed) return null;
@@ -216,8 +251,12 @@ function StepContent({ text }: { text: string }) {
 function StateBlock({ label, state }: { label: string; state: Record<string, unknown> }) {
   return (
     <div className="min-w-0 rounded-md border p-2.5 overflow-hidden">
-      <p className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
-      <pre className="text-[11px] leading-relaxed text-foreground whitespace-pre-wrap break-words">{JSON.stringify(state, null, 2)}</pre>
+      <p className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
+      <pre className="text-[11px] leading-relaxed text-foreground whitespace-pre-wrap break-words">
+        {JSON.stringify(state, null, 2)}
+      </pre>
     </div>
   );
 }
@@ -238,8 +277,14 @@ function LoadingSteps({ providerSlug }: { providerSlug?: string }) {
   const providerName = providerSlug === 'gcp' ? 'GCP' : providerSlug === 'azure' ? 'Azure' : 'AWS';
   const steps = [
     { label: t('cloudTests_stepAnalyzing'), sub: t('cloudTests_stepAnalyzingSub') },
-    { label: t('cloudTests_stepReadingConfig', { provider: providerName }), sub: t('cloudTests_stepReadingConfigSub') },
-    { label: t('cloudTests_stepCheckingPermissions'), sub: t('cloudTests_stepCheckingPermissionsSub') },
+    {
+      label: t('cloudTests_stepReadingConfig', { provider: providerName }),
+      sub: t('cloudTests_stepReadingConfigSub'),
+    },
+    {
+      label: t('cloudTests_stepCheckingPermissions'),
+      sub: t('cloudTests_stepCheckingPermissionsSub'),
+    },
     { label: t('cloudTests_stepPreparingFix'), sub: t('cloudTests_stepPreparingFixSub') },
   ];
 
@@ -270,7 +315,13 @@ function LoadingSteps({ providerSlug }: { providerSlug?: string }) {
             >
               <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center">
                 {done ? (
-                  <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <svg
+                    className="h-5 w-5 text-primary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 ) : active ? (
@@ -280,12 +331,12 @@ function LoadingSteps({ providerSlug }: { providerSlug?: string }) {
                 )}
               </div>
               <div className="min-w-0">
-                <p className={`text-sm leading-tight ${active ? 'font-medium text-foreground' : done ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}>
+                <p
+                  className={`text-sm leading-tight ${active ? 'font-medium text-foreground' : done ? 'text-muted-foreground' : 'text-muted-foreground/70'}`}
+                >
                   {label}
                 </p>
-                {active && (
-                  <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
-                )}
+                {active && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
               </div>
             </div>
           );
@@ -319,7 +370,10 @@ export function RemediationDialog({
   const [isWaitingPropagation, setIsWaitingPropagation] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [permissionError, setPermissionError] = useState<{ missingActions: string[]; fixScript?: string } | null>(null);
+  const [permissionError, setPermissionError] = useState<{
+    missingActions: string[];
+    fixScript?: string;
+  } | null>(null);
   const [acknowledgment, setAcknowledgment] = useState<string | null>(null);
 
   // Local trigger state for preview (async)
@@ -363,12 +417,13 @@ export function RemediationDialog({
       setPreviewRunId(null);
       setPreviewAccessToken(null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previewRun?.metadata]);
 
   // Watch execute task progress
   useEffect(() => {
-    const progress = (executeRun?.metadata as { progress?: SingleFixProgress } | undefined)?.progress;
+    const progress = (executeRun?.metadata as { progress?: SingleFixProgress } | undefined)
+      ?.progress;
     if (!progress || progress.phase === 'executing') return;
 
     if (progress.phase === 'success') {
@@ -418,34 +473,38 @@ export function RemediationDialog({
       setExecuteRunId(null);
       setExecuteAccessToken(null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [executeRun?.metadata]);
 
-  const loadPreview = useCallback(async (recheck = false) => {
-    setIsLoadingPreview(true);
-    setError(null);
-    try {
-      const result = await startPreview({
-        connectionId,
-        checkResultId,
-        remediationKey,
-        ...(recheck && permissionsRef.current && {
-          cachedPermissions: permissionsRef.current,
-        }),
-      });
-      if (result.error || !result.data) {
-        setError(result.error || t('cloudTests_failedToLoadPreview'));
+  const loadPreview = useCallback(
+    async (recheck = false) => {
+      setIsLoadingPreview(true);
+      setError(null);
+      try {
+        const result = await startPreview({
+          connectionId,
+          checkResultId,
+          remediationKey,
+          ...(recheck &&
+            permissionsRef.current && {
+              cachedPermissions: permissionsRef.current,
+            }),
+        });
+        if (result.error || !result.data) {
+          setError(result.error || t('cloudTests_failedToLoadPreview'));
+          setIsLoadingPreview(false);
+          return;
+        }
+        // Task started — preview effect handles the rest
+        setPreviewRunId(result.data.runId);
+        setPreviewAccessToken(result.data.accessToken);
+      } catch {
+        setError(t('cloudTests_failedToLoadPreview'));
         setIsLoadingPreview(false);
-        return;
       }
-      // Task started — preview effect handles the rest
-      setPreviewRunId(result.data.runId);
-      setPreviewAccessToken(result.data.accessToken);
-    } catch {
-      setError(t('cloudTests_failedToLoadPreview'));
-      setIsLoadingPreview(false);
-    }
-  }, [connectionId, checkResultId, remediationKey]);
+    },
+    [connectionId, checkResultId, remediationKey],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -515,8 +574,7 @@ export function RemediationDialog({
   // An auto-fix plan with no API calls has nothing to apply (the AI returned
   // an empty/unusable plan). Block Apply so the user can't submit a no-op that
   // fails server-side — they can Cancel and re-open to regenerate.
-  const hasNothingToApply =
-    !isGuided && (preview?.apiCalls?.length ?? 0) === 0;
+  const hasNothingToApply = !isGuided && (preview?.apiCalls?.length ?? 0) === 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -525,288 +583,314 @@ export function RemediationDialog({
         style={{ maxWidth: preview && !isLoadingPreview && !succeeded ? '48rem' : '28rem' }}
       >
         <div className="min-w-0 overflow-hidden">
-        <DialogHeader>
-          <DialogTitle>
-            {isGuided ? t('cloudTests_remediateTitle') : t('cloudTests_autoRemediateTitle')}
-          </DialogTitle>
-          <DialogDescription className="line-clamp-2">
-            {findingTitle}
-          </DialogDescription>
-        </DialogHeader>
+          <DialogHeader>
+            <DialogTitle>
+              {isGuided ? t('cloudTests_remediateTitle') : t('cloudTests_autoRemediateTitle')}
+            </DialogTitle>
+            <DialogDescription className="line-clamp-2">{findingTitle}</DialogDescription>
+          </DialogHeader>
 
-        {fromSecurityHub && <SecurityHubFixDisclosure />}
+          {fromSecurityHub && <SecurityHubFixDisclosure />}
 
-        <div className="space-y-3 min-w-0">
-          {/* Applying state — shown while executing */}
-          {isExecuting && !succeeded && !error && (
-            <div className="flex flex-col items-center justify-center py-12 gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                <Loader2 className="h-6 w-6 text-primary animate-spin" />
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-semibold">{t('cloudTests_applyingFix')}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t('cloudTests_applyingFixDescription')}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Success state */}
-          {succeeded && (
-            <div className="flex flex-col items-center justify-center py-12 gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-semibold">{t('cloudTests_fixApplied')}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t('cloudTests_rescanning')}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {isLoadingPreview && !succeeded && (
-            preview ? (
-              /* Recheck — just verifying permissions */
-              <div className="flex items-center justify-center py-6 gap-2.5">
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">{t('cloudTests_verifyingPermissions')}</p>
-              </div>
-            ) : (
-              /* First load — full analysis */
-              <LoadingSteps providerSlug={providerSlug} />
-            )
-          )}
-
-          {error && !succeeded && (
-            <PermissionErrorPanel
-              error={error}
-              missingActions={permissionError?.missingActions}
-              fixScript={permissionError?.fixScript}
-              apiCalls={preview?.apiCalls}
-              onRetry={handleRetry}
-              isRetrying={isExecuting}
-              isWaiting={isWaitingPropagation}
-            />
-          )}
-
-          {preview && !isLoadingPreview && (
-            <>
-              {/* Guided-only: show steps directly */}
-              {isGuided && preview.guidedSteps && (
-                <div className="space-y-3">
-                  {/* Description + risk row */}
-                  <div className="flex items-start justify-between gap-3">
-                    {preview.description && (
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {preview.description}
-                      </p>
-                    )}
-                    <Badge
-                      variant="outline"
-                      className={`shrink-0 ${RISK_STYLES[preview.risk] ?? RISK_STYLES.medium}`}
-                    >
-                      {preview.risk}
-                    </Badge>
-                  </div>
-
-                  {/* Steps card */}
-                  <div className="rounded-lg border bg-muted/30 overflow-hidden">
-                    <div className="flex items-center gap-2.5 border-b bg-primary/5 px-4 py-3">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
-                        <ListOrdered className="h-3.5 w-3.5 text-primary" />
-                      </div>
-                      <span className="text-sm font-medium">
-                        {t('cloudTests_followStepsIn', {
-                          provider: providerSlug ?? 'aws',
-                        })}
-                      </span>
-                    </div>
-                    <div className="px-4 py-3">
-                      <ol className="space-y-4">
-                        {preview.guidedSteps.map((step, i) => (
-                          <li key={i} className="flex gap-3 text-[13px]">
-                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary mt-0.5">
-                              {i + 1}
-                            </span>
-                            <div className="min-w-0 flex-1 space-y-1.5">
-                              <StepContent text={step} />
-                            </div>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                  </div>
-
-                  {/* Footer */}
-                  <div className="flex items-center justify-between pt-1">
-                    <p className="text-[11px] text-muted-foreground/60">
-                      {t('cloudTests_stepsToComplete', { count: preview.guidedSteps.length })}
-                    </p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onOpenChange(false)}
-                    >
-                      {t('cloudTests_cancel')}
-                    </Button>
-                  </div>
+          <div className="space-y-3 min-w-0">
+            {/* Applying state — shown while executing */}
+            {isExecuting && !succeeded && !error && (
+              <div className="flex flex-col items-center justify-center py-12 gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                  <Loader2 className="h-6 w-6 text-primary animate-spin" />
                 </div>
-              )}
-
-              {/* Auto-fix: show preview + execute */}
-              {!isGuided && (
-                <>
-                  <p className="text-xs text-muted-foreground leading-relaxed break-words">
-                    {preview.description}
+                <div className="text-center">
+                  <p className="text-sm font-semibold">{t('cloudTests_applyingFix')}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {t('cloudTests_applyingFixDescription')}
                   </p>
+                </div>
+              </div>
+            )}
 
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-muted-foreground">{t('cloudTests_riskLabel')}</span>
-                      <Badge variant="outline" className={`text-[10px] ${RISK_STYLES[preview.risk] ?? RISK_STYLES.medium}`}>
+            {/* Success state */}
+            {succeeded && (
+              <div className="flex flex-col items-center justify-center py-12 gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                  <svg
+                    className="h-6 w-6 text-primary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-semibold">{t('cloudTests_fixApplied')}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t('cloudTests_rescanning')}</p>
+                </div>
+              </div>
+            )}
+
+            {isLoadingPreview &&
+              !succeeded &&
+              (preview ? (
+                /* Recheck — just verifying permissions */
+                <div className="flex items-center justify-center py-6 gap-2.5">
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                  <p className="text-sm text-muted-foreground">
+                    {t('cloudTests_verifyingPermissions')}
+                  </p>
+                </div>
+              ) : (
+                /* First load — full analysis */
+                <LoadingSteps providerSlug={providerSlug} />
+              ))}
+
+            {error && !succeeded && (
+              <PermissionErrorPanel
+                error={error}
+                missingActions={permissionError?.missingActions}
+                fixScript={permissionError?.fixScript}
+                apiCalls={preview?.apiCalls}
+                onRetry={handleRetry}
+                isRetrying={isExecuting}
+                isWaiting={isWaitingPropagation}
+              />
+            )}
+
+            {preview && !isLoadingPreview && (
+              <>
+                {/* Guided-only: show steps directly */}
+                {isGuided && preview.guidedSteps && (
+                  <div className="space-y-3">
+                    {/* Description + risk row */}
+                    <div className="flex items-start justify-between gap-3">
+                      {preview.description && (
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {preview.description}
+                        </p>
+                      )}
+                      <Badge
+                        variant="outline"
+                        className={`shrink-0 ${RISK_STYLES[preview.risk] ?? RISK_STYLES.medium}`}
+                      >
                         {preview.risk}
                       </Badge>
                     </div>
-                    {preview.rollbackSupported !== false && (
-                      <div className="flex items-center gap-1 text-[10px] text-emerald-600">
-                        <RotateCcw className="h-3 w-3" />
-                        {t('cloudTests_rollbackAvailable')}
-                      </div>
-                    )}
-                    {preview.rollbackSupported === false && (
-                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                        <AlertTriangle className="h-3 w-3" />
-                        {t('cloudTests_irreversible')}
-                      </div>
-                    )}
-                  </div>
 
-                  {/* Current vs Proposed */}
-                  <div className="grid grid-cols-2 gap-2 min-w-0">
-                    <StateBlock label={t('cloudTests_currentState')} state={preview.currentState} />
-                    <StateBlock label={t('cloudTests_proposedState')} state={preview.proposedState} />
-                  </div>
-
-                  {/* API calls — collapsible if many */}
-                  {preview.apiCalls.length > 0 && (
-                    <details className="text-xs" open>
-                      <summary className="cursor-pointer text-muted-foreground font-medium">
-                        {t('cloudTests_apiCallsCount', { count: preview.apiCalls.length })}
-                      </summary>
-                      <div className="flex flex-wrap gap-1 mt-1.5">
-                        {preview.apiCalls.map((call, i) => {
-                          const label = typeof call === 'string'
-                            ? call
-                            : `${(call as { method?: string }).method} ${(call as { endpoint?: string }).endpoint}`;
-                          return (
-                            <code key={i} className="rounded bg-muted px-1 py-0.5 text-[10px]">{label}</code>
-                          );
-                        })}
-                      </div>
-                    </details>
-                  )}
-
-                  {/* Missing permissions — show setup step BEFORE apply */}
-                  {preview.missingPermissions && preview.missingPermissions.length > 0 ? (
-                    <div className="rounded-lg border overflow-hidden">
-                      <div className="flex items-center justify-between border-b bg-muted/30 px-3 py-2">
-                        <p className="text-xs font-medium">
-                          {t('cloudTests_permissionsNeeded', { count: preview.missingPermissions.length })}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground">{t('cloudTests_runInCloudShellHint')}</p>
-                      </div>
-                      <div className="p-3 space-y-2">
-                        {preview.permissionFixScript && (
-                          <pre className="rounded-md border bg-muted/20 px-3 py-2 text-[10px] font-mono leading-relaxed whitespace-pre-wrap break-words max-h-28 overflow-y-auto">
-                            {preview.permissionFixScript}
-                          </pre>
-                        )}
-                        <div className="flex gap-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (preview.permissionFixScript) {
-                                navigator.clipboard.writeText(preview.permissionFixScript.replace(/\s*\\\n\s*/g, ' '));
-                                toast.success(t('cloudTests_copiedShort'));
-                              }
-                            }}
-                            className="flex items-center gap-1.5 rounded-md bg-primary px-2.5 py-1 text-[11px] font-medium text-primary-foreground hover:bg-primary/90"
-                          >
-                            {t('cloudTests_copy')}
-                          </button>
-                          <a
-                            href="https://console.aws.amazon.com/cloudshell"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium hover:bg-muted"
-                          >
-                            CloudShell
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => loadPreview(true)}
-                            disabled={isLoadingPreview}
-                            className="flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium hover:bg-muted disabled:opacity-50"
-                          >
-                            {isLoadingPreview ? t('cloudTests_checking') : t('cloudTests_recheck')}
-                          </button>
+                    {/* Steps card */}
+                    <div className="rounded-lg border bg-muted/30 overflow-hidden">
+                      <div className="flex items-center gap-2.5 border-b bg-primary/5 px-4 py-3">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
+                          <ListOrdered className="h-3.5 w-3.5 text-primary" />
                         </div>
+                        <span className="text-sm font-medium">
+                          {t('cloudTests_followStepsIn', {
+                            provider: providerSlug ?? 'aws',
+                          })}
+                        </span>
+                      </div>
+                      <div className="px-4 py-3">
+                        <ol className="space-y-4">
+                          {preview.guidedSteps.map((step, i) => (
+                            <li key={i} className="flex gap-3 text-[13px]">
+                              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary mt-0.5">
+                                {i + 1}
+                              </span>
+                              <div className="min-w-0 flex-1 space-y-1.5">
+                                <StepContent text={step} />
+                              </div>
+                            </li>
+                          ))}
+                        </ol>
                       </div>
                     </div>
-                  ) : (
-                    /* Permissions OK — show acknowledgment */
-                    <label className="flex items-start gap-2.5 rounded-md border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-800 cursor-pointer select-none dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                      <input
-                        type="checkbox"
-                        checked={acknowledgment === 'acknowledged'}
-                        onChange={(e) => setAcknowledgment(e.target.checked ? 'acknowledged' : null)}
-                        className="mt-0.5 shrink-0"
-                      />
-                      <span>
-                        {t('cloudTests_acknowledgeChanges')}
-                      </span>
-                    </label>
-                  )}
 
-                  {hasNothingToApply && (
-                    <p className="text-xs text-muted-foreground">
-                      {t('cloudTests_noAutoFixBody')}
-                    </p>
-                  )}
-
-                  <div className="flex justify-end gap-2 pt-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onOpenChange(false)}
-                      disabled={isExecuting}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={handleExecute}
-                      disabled={isExecuting || acknowledgment !== 'acknowledged' || (preview.missingPermissions?.length ?? 0) > 0 || hasNothingToApply}
-                    >
-                      {isExecuting ? (
-                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-                      ) : null}
-                      {isExecuting ? t('cloudTests_applying') : t('cloudTests_applyFix')}
-                    </Button>
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-1">
+                      <p className="text-[11px] text-muted-foreground/60">
+                        {t('cloudTests_stepsToComplete', { count: preview.guidedSteps.length })}
+                      </p>
+                      <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+                        {t('cloudTests_cancel')}
+                      </Button>
+                    </div>
                   </div>
-                </>
-              )}
-            </>
-          )}
-        </div>
+                )}
+
+                {/* Auto-fix: show preview + execute */}
+                {!isGuided && (
+                  <>
+                    <p className="text-xs text-muted-foreground leading-relaxed break-words">
+                      {preview.description}
+                    </p>
+
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-muted-foreground">
+                          {t('cloudTests_riskLabel')}
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] ${RISK_STYLES[preview.risk] ?? RISK_STYLES.medium}`}
+                        >
+                          {preview.risk}
+                        </Badge>
+                      </div>
+                      {preview.rollbackSupported !== false && (
+                        <div className="flex items-center gap-1 text-[10px] text-emerald-600">
+                          <RotateCcw className="h-3 w-3" />
+                          {t('cloudTests_rollbackAvailable')}
+                        </div>
+                      )}
+                      {preview.rollbackSupported === false && (
+                        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                          <AlertTriangle className="h-3 w-3" />
+                          {t('cloudTests_irreversible')}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Current vs Proposed */}
+                    <div className="grid grid-cols-2 gap-2 min-w-0">
+                      <StateBlock
+                        label={t('cloudTests_currentState')}
+                        state={preview.currentState}
+                      />
+                      <StateBlock
+                        label={t('cloudTests_proposedState')}
+                        state={preview.proposedState}
+                      />
+                    </div>
+
+                    {/* API calls — collapsible if many */}
+                    {preview.apiCalls.length > 0 && (
+                      <details className="text-xs" open>
+                        <summary className="cursor-pointer text-muted-foreground font-medium">
+                          {t('cloudTests_apiCallsCount', { count: preview.apiCalls.length })}
+                        </summary>
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          {preview.apiCalls.map((call, i) => {
+                            const label =
+                              typeof call === 'string'
+                                ? call
+                                : `${(call as { method?: string }).method} ${(call as { endpoint?: string }).endpoint}`;
+                            return (
+                              <code key={i} className="rounded bg-muted px-1 py-0.5 text-[10px]">
+                                {label}
+                              </code>
+                            );
+                          })}
+                        </div>
+                      </details>
+                    )}
+
+                    {/* Missing permissions — show setup step BEFORE apply */}
+                    {preview.missingPermissions && preview.missingPermissions.length > 0 ? (
+                      <div className="rounded-lg border overflow-hidden">
+                        <div className="flex items-center justify-between border-b bg-muted/30 px-3 py-2">
+                          <p className="text-xs font-medium">
+                            {t('cloudTests_permissionsNeeded', {
+                              count: preview.missingPermissions.length,
+                            })}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {t('cloudTests_runInCloudShellHint')}
+                          </p>
+                        </div>
+                        <div className="p-3 space-y-2">
+                          {preview.permissionFixScript && (
+                            <pre className="rounded-md border bg-muted/20 px-3 py-2 text-[10px] font-mono leading-relaxed whitespace-pre-wrap break-words max-h-28 overflow-y-auto">
+                              {preview.permissionFixScript}
+                            </pre>
+                          )}
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (preview.permissionFixScript) {
+                                  navigator.clipboard.writeText(
+                                    preview.permissionFixScript.replace(/\s*\\\n\s*/g, ' '),
+                                  );
+                                  toast.success(t('cloudTests_copiedShort'));
+                                }
+                              }}
+                              className="flex items-center gap-1.5 rounded-md bg-primary px-2.5 py-1 text-[11px] font-medium text-primary-foreground hover:bg-primary/90"
+                            >
+                              {t('cloudTests_copy')}
+                            </button>
+                            <a
+                              href="https://console.aws.amazon.com/cloudshell"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium hover:bg-muted"
+                            >
+                              CloudShell
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => loadPreview(true)}
+                              disabled={isLoadingPreview}
+                              className="flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium hover:bg-muted disabled:opacity-50"
+                            >
+                              {isLoadingPreview
+                                ? t('cloudTests_checking')
+                                : t('cloudTests_recheck')}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Permissions OK — show acknowledgment */
+                      <label className="flex items-start gap-2.5 rounded-md border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-800 cursor-pointer select-none dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                        <input
+                          type="checkbox"
+                          checked={acknowledgment === 'acknowledged'}
+                          onChange={(e) =>
+                            setAcknowledgment(e.target.checked ? 'acknowledged' : null)
+                          }
+                          className="mt-0.5 shrink-0"
+                        />
+                        <span>{t('cloudTests_acknowledgeChanges')}</span>
+                      </label>
+                    )}
+
+                    {hasNothingToApply && (
+                      <p className="text-xs text-muted-foreground">
+                        {t('cloudTests_noAutoFixBody')}
+                      </p>
+                    )}
+
+                    <div className="flex justify-end gap-2 pt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onOpenChange(false)}
+                        disabled={isExecuting}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={handleExecute}
+                        disabled={
+                          isExecuting ||
+                          acknowledgment !== 'acknowledged' ||
+                          (preview.missingPermissions?.length ?? 0) > 0 ||
+                          hasNothingToApply
+                        }
+                      >
+                        {isExecuting ? (
+                          <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                        ) : null}
+                        {isExecuting ? t('cloudTests_applying') : t('cloudTests_applyFix')}
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
   );
 }
-

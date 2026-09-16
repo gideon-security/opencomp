@@ -10,9 +10,7 @@ interface DepartmentStat {
 }
 
 export async function RisksByDepartment() {
-  const res = await serverApi.get<{ data: DepartmentStat[] }>(
-    '/v1/risks/stats/by-department',
-  );
+  const res = await serverApi.get<{ data: DepartmentStat[] }>('/v1/risks/stats/by-department');
   const risks = Array.isArray(res.data?.data) ? res.data.data : [];
 
   const data = ALL_DEPARTMENTS.map((dept) => {

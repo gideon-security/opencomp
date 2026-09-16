@@ -31,7 +31,9 @@ describe('InstructionTestPanel', () => {
       evaluationReason: 'MFA is enforced for all members',
       screenshotUrl: 'https://s3/x.png',
     };
-    render(<InstructionTestPanel phase="result" host="app.example.com" steps={[]} result={result} />);
+    render(
+      <InstructionTestPanel phase="result" host="app.example.com" steps={[]} result={result} />,
+    );
     expect(screen.getByText('Passed')).toBeInTheDocument();
     expect(screen.getByText('Check passed')).toBeInTheDocument();
     expect(screen.getByText(/mfa is enforced/i)).toBeInTheDocument();
@@ -43,7 +45,9 @@ describe('InstructionTestPanel', () => {
       error: 'The AI got stuck on the login page',
       failureCode: 'action_failed',
     };
-    render(<InstructionTestPanel phase="result" host="app.example.com" steps={[]} result={result} />);
+    render(
+      <InstructionTestPanel phase="result" host="app.example.com" steps={[]} result={result} />,
+    );
     expect(screen.getByText('Failed')).toBeInTheDocument();
     expect(screen.getByText(/got stuck/i)).toBeInTheDocument();
   });
@@ -54,7 +58,9 @@ describe('InstructionTestPanel', () => {
       needsReauth: true,
       blockedReason: 'Session expired',
     };
-    render(<InstructionTestPanel phase="result" host="app.example.com" steps={[]} result={result} />);
+    render(
+      <InstructionTestPanel phase="result" host="app.example.com" steps={[]} result={result} />,
+    );
     expect(screen.getByText('Needs reconnect')).toBeInTheDocument();
   });
 });

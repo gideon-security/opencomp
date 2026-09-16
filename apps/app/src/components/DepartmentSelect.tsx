@@ -21,8 +21,7 @@ const DEPARTMENT_MAX_LENGTH = 64;
 
 // Padded beyond DEPARTMENT_MAX_LENGTH so this sentinel can never equal a
 // persisted custom department value.
-const ADD_CUSTOM_VALUE =
-  '__compai_add_custom_department_action_sentinel_do_not_use_as_a_value__';
+const ADD_CUSTOM_VALUE = '__compai_add_custom_department_action_sentinel_do_not_use_as_a_value__';
 
 interface DepartmentSelectProps {
   value: string;
@@ -104,12 +103,7 @@ export function DepartmentSelect({
 
   const handleSaveCustom = () => {
     const trimmed = draft.trim();
-    if (
-      !trimmed ||
-      trimmed === ADD_CUSTOM_VALUE ||
-      trimmed.length > DEPARTMENT_MAX_LENGTH
-    )
-      return;
+    if (!trimmed || trimmed === ADD_CUSTOM_VALUE || trimmed.length > DEPARTMENT_MAX_LENGTH) return;
     setSeen((prev) => {
       if (prev.has(trimmed)) return prev;
       const next = new Set(prev);
@@ -153,9 +147,7 @@ export function DepartmentSelect({
             variant="ghost"
             onClick={handleSaveCustom}
             disabled={
-              disabled ||
-              draft.trim().length === 0 ||
-              draft.trim().length > DEPARTMENT_MAX_LENGTH
+              disabled || draft.trim().length === 0 || draft.trim().length > DEPARTMENT_MAX_LENGTH
             }
             aria-label="Save custom department"
           >
@@ -178,7 +170,7 @@ export function DepartmentSelect({
 
   return (
     <div className={className}>
-      <Select value={value} onValueChange={v => handleSelectChange(v)} disabled={disabled}>
+      <Select value={value} onValueChange={(v) => handleSelectChange(v)} disabled={disabled}>
         <SelectTrigger>
           <SelectValue placeholder={placeholder}>{labelFor(value)}</SelectValue>
         </SelectTrigger>

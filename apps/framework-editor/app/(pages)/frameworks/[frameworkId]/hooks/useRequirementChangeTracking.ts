@@ -165,10 +165,9 @@ export function useRequirementChangeTracking(
         const failedLinks: string[] = [];
         for (const controlTemplate of row.controlTemplates) {
           try {
-            await apiClient(
-              `/control-template/${controlTemplate.id}/requirements/${created.id}`,
-              { method: 'POST' },
-            );
+            await apiClient(`/control-template/${controlTemplate.id}/requirements/${created.id}`, {
+              method: 'POST',
+            });
           } catch {
             failedLinks.push(controlTemplate.name);
           }
@@ -181,9 +180,7 @@ export function useRequirementChangeTracking(
           results.successes.push(`Created: ${row.name}`);
         }
         okCreated.add(tempId);
-        setData((prev) =>
-          prev.map((r) => (r.id === tempId ? { ...r, id: created.id } : r)),
-        );
+        setData((prev) => prev.map((r) => (r.id === tempId ? { ...r, id: created.id } : r)));
       } catch (error) {
         results.errors.push(
           `Failed to create ${row.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,

@@ -6,6 +6,7 @@ description: Audit & fix unit tests for permission-gated components
 Check that unit tests exist and pass for permission-gated components. **Write missing tests immediately.**
 
 ## Infrastructure
+
 - **Framework**: Vitest with jsdom
 - **Component testing**: `@testing-library/react` + `@testing-library/jest-dom`
 - **Setup**: `apps/app/src/test-utils/setup.ts`
@@ -23,6 +24,7 @@ Every component importing `usePermissions` MUST have tests covering:
 Use `setMockPermissions`, `ADMIN_PERMISSIONS`, `AUDITOR_PERMISSIONS` from test utils.
 
 ## Process
+
 1. Find components with `usePermissions` in `$ARGUMENTS`
 2. Check for corresponding `.test.tsx` files
 3. Write missing tests following the pattern above

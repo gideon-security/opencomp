@@ -3,15 +3,15 @@
  * This ensures a single source of truth for role definitions.
  */
 export {
-  ac,
-  owner,
-  admin,
-  auditor,
-  employee,
-  contractor,
-  allRoles,
-  ROLE_HIERARCHY,
-  RESTRICTED_ROLES,
   PRIVILEGED_ROLES,
+  RESTRICTED_ROLES,
+  ROLE_HIERARCHY,
+  ac,
+  admin,
+  allRoles,
+  auditor,
+  contractor,
+  employee,
+  owner,
   type RoleName,
 } from '@gideon-defender/auth';

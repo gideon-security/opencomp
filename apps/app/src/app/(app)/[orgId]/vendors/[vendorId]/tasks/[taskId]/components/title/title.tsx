@@ -1,10 +1,10 @@
 'use client';
 
+import type { Member, Task, User } from '@db';
 import { Alert, AlertDescription, AlertTitle } from '@gideon-defender/ui/alert';
 import { Button } from '@gideon-defender/ui/button';
 import { Icons } from '@gideon-defender/ui/icons';
 import { Sheet, SheetContent } from '@gideon-defender/ui/sheet';
-import type { Member, Task, User } from '@db';
 import { PencilIcon } from 'lucide-react';
 import { useState } from 'react';
 import { UpdateTaskSheet } from './update-task-sheet';
@@ -41,7 +41,9 @@ export default function Title({ task, assignees }: TitleProps) {
 
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent className="sm:max-w-md md:max-w-lg lg:max-w-xl">
-          {open && <UpdateTaskSheet task={task} assignees={assignees} onClose={() => setOpen(false)} />}
+          {open && (
+            <UpdateTaskSheet task={task} assignees={assignees} onClose={() => setOpen(false)} />
+          )}
         </SheetContent>
       </Sheet>
     </div>

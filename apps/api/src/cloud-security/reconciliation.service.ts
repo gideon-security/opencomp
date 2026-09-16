@@ -94,7 +94,9 @@ export class CloudReconciliationService {
         connectionId: currentRun.connectionId,
         id: { not: currentRun.id },
         status: 'success',
-        completedAt: { lt: currentRun.completedAt ?? currentRun.startedAt ?? new Date() },
+        completedAt: {
+          lt: currentRun.completedAt ?? currentRun.startedAt ?? new Date(),
+        },
         // Only compare runs that used the same scan engine. The two AWS
         // modes ('comp_scanners' vs 'security_hub') emit findingKeys in
         // different namespaces — cross-mode diffs would mark every
@@ -146,7 +148,11 @@ export class CloudReconciliationService {
 
       const checkKey = normalizeCheckId(prior.findingKey, prior.resourceId);
 
-      if (treatPartialScan && prior.serviceId && !scannedServices.has(prior.serviceId)) {
+      if (
+        treatPartialScan &&
+        prior.serviceId &&
+        !scannedServices.has(prior.serviceId)
+      ) {
         // Service wasn't scanned this run — carry forward, don't resolve.
         continue;
       }

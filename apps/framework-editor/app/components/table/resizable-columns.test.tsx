@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
 import type { MouseEvent as ReactMouseEvent } from 'react';
+import { afterEach, describe, expect, it } from 'vitest';
 import { useResizableColumns } from './resizable-columns';
 
 afterEach(() => {

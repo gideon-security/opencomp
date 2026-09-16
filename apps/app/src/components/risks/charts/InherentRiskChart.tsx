@@ -29,11 +29,9 @@ export function InherentRiskChart({ risk }: InherentRiskChartProps) {
           likelihood: probability,
           impact,
         });
-        globalMutate(
-          (key) => Array.isArray(key) && key[0]?.includes('/v1/risks'),
-          undefined,
-          { revalidate: true },
-        );
+        globalMutate((key) => Array.isArray(key) && key[0]?.includes('/v1/risks'), undefined, {
+          revalidate: true,
+        });
       }}
     />
   );

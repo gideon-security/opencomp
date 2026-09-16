@@ -30,9 +30,7 @@ interface ImportPreview {
   taskTemplatesCount: number;
 }
 
-function parseImportFile(
-  json: Record<string, unknown>,
-): ImportPreview | string {
+function parseImportFile(json: Record<string, unknown>): ImportPreview | string {
   if (typeof json.version !== 'string' || json.version !== '1') {
     return 'Unsupported export format version. Expected version "1".';
   }
@@ -45,30 +43,17 @@ function parseImportFile(
   return {
     frameworkName: fw.name,
     frameworkVersion: fw.version,
-    requirementsCount: Array.isArray(json.requirements)
-      ? json.requirements.length
-      : 0,
-    controlTemplatesCount: Array.isArray(json.controlTemplates)
-      ? json.controlTemplates.length
-      : 0,
-    policyTemplatesCount: Array.isArray(json.policyTemplates)
-      ? json.policyTemplates.length
-      : 0,
-    taskTemplatesCount: Array.isArray(json.taskTemplates)
-      ? json.taskTemplates.length
-      : 0,
+    requirementsCount: Array.isArray(json.requirements) ? json.requirements.length : 0,
+    controlTemplatesCount: Array.isArray(json.controlTemplates) ? json.controlTemplates.length : 0,
+    policyTemplatesCount: Array.isArray(json.policyTemplates) ? json.policyTemplates.length : 0,
+    taskTemplatesCount: Array.isArray(json.taskTemplates) ? json.taskTemplates.length : 0,
   };
 }
 
-export function ImportFrameworkDialog({
-  isOpen,
-  onOpenChange,
-}: ImportFrameworkDialogProps) {
+export function ImportFrameworkDialog({ isOpen, onOpenChange }: ImportFrameworkDialogProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [fileData, setFileData] = useState<Record<string, unknown> | null>(
-    null,
-  );
+  const [fileData, setFileData] = useState<Record<string, unknown> | null>(null);
   const [preview, setPreview] = useState<ImportPreview | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isImporting, setIsImporting] = useState(false);
@@ -82,40 +67,37 @@ export function ImportFrameworkDialog({
     }
   }, []);
 
-  const handleFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-      setError(null);
-      setPreview(null);
-      setFileData(null);
+    setError(null);
+    setPreview(null);
+    setFileData(null);
 
-      const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
-      if (file.size > MAX_FILE_SIZE) {
-        setError('File is too large. Maximum size is 50 MB.');
-        return;
-      }
+    const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+    if (file.size > MAX_FILE_SIZE) {
+      setError('File is too large. Maximum size is 50 MB.');
+      return;
+    }
 
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const json = JSON.parse(event.target?.result as string);
-          const result = parseImportFile(json);
-          if (typeof result === 'string') {
-            setError(result);
-          } else {
-            setPreview(result);
-            setFileData(json);
-          }
-        } catch {
-          setError('Failed to parse JSON file.');
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = JSON.parse(event.target?.result as string);
+        const result = parseImportFile(json);
+        if (typeof result === 'string') {
+          setError(result);
+        } else {
+          setPreview(result);
+          setFileData(json);
         }
-      };
-      reader.readAsText(file);
-    },
-    [],
-  );
+      } catch {
+        setError('Failed to parse JSON file.');
+      }
+    };
+    reader.readAsText(file);
+  }, []);
 
   const handleImport = useCallback(async () => {
     if (!fileData) {
@@ -134,8 +116,7 @@ export function ImportFrameworkDialog({
       router.refresh();
     } catch (err) {
       console.error('[ImportFramework] Error:', err);
-      const message =
-        err instanceof Error ? err.message : 'Failed to import framework.';
+      const message = err instanceof Error ? err.message : 'Failed to import framework.';
       toast.error(message);
     } finally {
       setIsImporting(false);
@@ -165,9 +146,7 @@ export function ImportFrameworkDialog({
           >
             <FileUp className="text-muted-foreground h-8 w-8" />
             <p className="text-muted-foreground text-sm">
-              {preview
-                ? 'Click to choose a different file'
-                : 'Click to select a JSON file'}
+              {preview ? 'Click to choose a different file' : 'Click to select a JSON file'}
             </p>
             <input
               ref={fileInputRef}
@@ -179,9 +158,7 @@ export function ImportFrameworkDialog({
           </div>
 
           {error && (
-            <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">
-              {error}
-            </div>
+            <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">{error}</div>
           )}
 
           {preview && (
@@ -194,21 +171,13 @@ export function ImportFrameworkDialog({
               </h4>
               <div className="text-muted-foreground grid grid-cols-2 gap-1 text-sm">
                 <span>Requirements:</span>
-                <span className="font-mono">
-                  {preview.requirementsCount}
-                </span>
+                <span className="font-mono">{preview.requirementsCount}</span>
                 <span>Control Templates:</span>
-                <span className="font-mono">
-                  {preview.controlTemplatesCount}
-                </span>
+                <span className="font-mono">{preview.controlTemplatesCount}</span>
                 <span>Policy Templates:</span>
-                <span className="font-mono">
-                  {preview.policyTemplatesCount}
-                </span>
+                <span className="font-mono">{preview.policyTemplatesCount}</span>
                 <span>Task Templates:</span>
-                <span className="font-mono">
-                  {preview.taskTemplatesCount}
-                </span>
+                <span className="font-mono">{preview.taskTemplatesCount}</span>
               </div>
             </div>
           )}
@@ -220,10 +189,7 @@ export function ImportFrameworkDialog({
               Cancel
             </Button>
           </DialogClose>
-          <Button
-            onClick={handleImport}
-            disabled={!fileData || isImporting}
-          >
+          <Button onClick={handleImport} disabled={!fileData || isImporting}>
             {isImporting ? 'Importing...' : 'Import Framework'}
           </Button>
         </DialogFooter>

@@ -8,7 +8,8 @@ import type { GoogleWorkspaceOrgUnitsResponse } from './types';
 export const targetOrgUnitsVariable: CheckVariable = {
   id: 'target_org_units',
   label: 'Organizational Units',
-  helpText: 'Select which organizational units to include in checks and employee sync (leave empty for all)',
+  helpText:
+    'Select which organizational units to include in checks and employee sync (leave empty for all)',
   type: 'multi-select',
   required: false,
   fetchOptions: async (ctx) => {

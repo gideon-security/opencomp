@@ -3,9 +3,9 @@
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsContextIssueKind, IsmsDocument as IsmsDocumentData } from '../isms-types';
+import type { ApproverOption } from './IsmsApprovalSection';
 import { IsmsDocumentShell } from './IsmsDocumentShell';
 import { IssuesRegister } from './IssuesRegister';
-import type { ApproverOption } from './IsmsApprovalSection';
 
 interface ContextOfOrganizationClientProps {
   organizationId: string;
@@ -38,9 +38,7 @@ export function ContextOfOrganizationClient(props: ContextOfOrganizationClientPr
             await hook.createIssue(params);
             toast.success(t('contextOrg.issueAdded'));
           } catch (caught) {
-            toast.error(
-              caught instanceof Error ? caught.message : t('contextOrg.issueAddFailed'),
-            );
+            toast.error(caught instanceof Error ? caught.message : t('contextOrg.issueAddFailed'));
             // Re-throw so the form keeps the user's input and stays open on failure.
             throw caught;
           }

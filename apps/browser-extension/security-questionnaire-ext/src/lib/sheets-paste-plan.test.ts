@@ -9,9 +9,7 @@ function planFor(answer: string): string {
 
 describe('buildSheetPastePlan', () => {
   it('keeps ordinary answers untouched', () => {
-    expect(planFor('We encrypt customer data at rest.')).toBe(
-      'We encrypt customer data at rest.',
-    );
+    expect(planFor('We encrypt customer data at rest.')).toBe('We encrypt customer data at rest.');
   });
 
   it.each(['=', '+', '-', '@'])(

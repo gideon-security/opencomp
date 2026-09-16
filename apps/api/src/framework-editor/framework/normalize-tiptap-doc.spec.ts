@@ -12,7 +12,10 @@ describe('normalizeTipTapDoc', () => {
   });
 
   it('empties a doc node with a non-array content', () => {
-    expect(normalizeTipTapDoc({ type: 'doc' })).toEqual({ type: 'doc', content: [] });
+    expect(normalizeTipTapDoc({ type: 'doc' })).toEqual({
+      type: 'doc',
+      content: [],
+    });
   });
 
   it('wraps a single non-doc node', () => {
@@ -30,7 +33,10 @@ describe('normalizeTipTapDoc', () => {
   });
 
   it('returns an empty doc for primitive values', () => {
-    expect(normalizeTipTapDoc('a string')).toEqual({ type: 'doc', content: [] });
+    expect(normalizeTipTapDoc('a string')).toEqual({
+      type: 'doc',
+      content: [],
+    });
     expect(normalizeTipTapDoc(42)).toEqual({ type: 'doc', content: [] });
   });
 });

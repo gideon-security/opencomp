@@ -1,13 +1,13 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Finding } from '@/hooks/use-findings-api';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import type { Finding } from '@/hooks/use-findings-api';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -29,8 +29,7 @@ vi.mock('@/hooks/use-findings-api', async () => {
   );
   return {
     ...actual,
-    useOrganizationFindings: (...args: unknown[]) =>
-      mockUseOrganizationFindings(...args),
+    useOrganizationFindings: (...args: unknown[]) => mockUseOrganizationFindings(...args),
   };
 });
 
@@ -111,9 +110,7 @@ describe('FindingsTab', () => {
     render(<FindingsTab organizationId="org_1" />);
 
     expect(screen.getByText('findings.taskTarget')).toBeInTheDocument();
-    expect(
-      screen.getByText(/evidence missing a timestamp/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/evidence missing a timestamp/i)).toBeInTheDocument();
   });
 
   it('does not render the CreateFindingSheet mount for users without finding:create (admin)', () => {

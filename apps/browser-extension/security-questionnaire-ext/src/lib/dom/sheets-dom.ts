@@ -26,9 +26,7 @@ export function detectVisibleSheetQuestions(params: {
 
   const maxRow = Math.max(...cells.map((cell) => cell.row));
   const maxCol = Math.max(...cells.map((cell) => cell.col));
-  const rows = Array.from({ length: maxRow }, () =>
-    Array.from({ length: maxCol }, () => ''),
-  );
+  const rows = Array.from({ length: maxRow }, () => Array.from({ length: maxCol }, () => ''));
 
   for (const cell of cells) {
     rows[cell.row - 1][cell.col - 1] = cell.text;

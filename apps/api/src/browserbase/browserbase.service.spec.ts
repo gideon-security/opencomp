@@ -276,7 +276,9 @@ describe('BrowserbaseService schedule frequency passthrough', () => {
     (db.browserAutomation.findFirst as jest.Mock).mockResolvedValue({
       scheduleFrequency: TaskFrequency.weekly,
     });
-    (db.browserAutomation.create as jest.Mock).mockResolvedValue({ id: 'bau_2' });
+    (db.browserAutomation.create as jest.Mock).mockResolvedValue({
+      id: 'bau_2',
+    });
 
     await service.createBrowserAutomation({
       taskId: 'tsk_1',
@@ -293,9 +295,14 @@ describe('BrowserbaseService schedule frequency passthrough', () => {
   });
 
   it('sets one schedule for every automation on the task', async () => {
-    (db.browserAutomation.updateMany as jest.Mock).mockResolvedValue({ count: 3 });
+    (db.browserAutomation.updateMany as jest.Mock).mockResolvedValue({
+      count: 3,
+    });
 
-    const result = await service.setTaskSchedule('tsk_1', TaskFrequency.monthly);
+    const result = await service.setTaskSchedule(
+      'tsk_1',
+      TaskFrequency.monthly,
+    );
 
     expect(db.browserAutomation.updateMany).toHaveBeenCalledWith({
       where: { taskId: 'tsk_1' },
@@ -309,7 +316,9 @@ describe('BrowserbaseService schedule frequency passthrough', () => {
   });
 
   it('stores explicit steps and mirrors the first onto the legacy columns', async () => {
-    (db.browserAutomation.create as jest.Mock).mockResolvedValue({ id: 'bau_1' });
+    (db.browserAutomation.create as jest.Mock).mockResolvedValue({
+      id: 'bau_1',
+    });
 
     await service.createBrowserAutomation({
       taskId: 't1',
@@ -327,7 +336,8 @@ describe('BrowserbaseService schedule frequency passthrough', () => {
       ],
     });
 
-    const data = (db.browserAutomation.create as jest.Mock).mock.calls[0][0].data;
+    const data = (db.browserAutomation.create as jest.Mock).mock.calls[0][0]
+      .data;
     expect(data.targetUrl).toBe('https://github.com'); // mirrored from step 0
     expect(data.instruction).toBe('screenshot 2fa');
     expect(data.steps.create).toHaveLength(2);
@@ -340,7 +350,9 @@ describe('BrowserbaseService schedule frequency passthrough', () => {
   });
 
   it('wraps a single inline instruction as one step', async () => {
-    (db.browserAutomation.create as jest.Mock).mockResolvedValue({ id: 'bau_1' });
+    (db.browserAutomation.create as jest.Mock).mockResolvedValue({
+      id: 'bau_1',
+    });
 
     await service.createBrowserAutomation({
       taskId: 't1',
@@ -349,7 +361,8 @@ describe('BrowserbaseService schedule frequency passthrough', () => {
       instruction: 'do it',
     });
 
-    const data = (db.browserAutomation.create as jest.Mock).mock.calls[0][0].data;
+    const data = (db.browserAutomation.create as jest.Mock).mock.calls[0][0]
+      .data;
     expect(data.steps.create).toHaveLength(1);
     expect(data.steps.create[0]).toMatchObject({
       order: 0,
@@ -359,7 +372,9 @@ describe('BrowserbaseService schedule frequency passthrough', () => {
   });
 
   it('replaces the step list when steps are supplied on update', async () => {
-    (db.browserAutomation.update as jest.Mock).mockResolvedValue({ id: 'bau_1' });
+    (db.browserAutomation.update as jest.Mock).mockResolvedValue({
+      id: 'bau_1',
+    });
 
     await service.updateBrowserAutomation('bau_1', {
       steps: [{ targetUrl: 'https://okta.com', instruction: 'sso' }],
@@ -368,7 +383,8 @@ describe('BrowserbaseService schedule frequency passthrough', () => {
     expect(db.browserAutomationStep.deleteMany).toHaveBeenCalledWith({
       where: { automationId: 'bau_1' },
     });
-    const data = (db.browserAutomation.update as jest.Mock).mock.calls[0][0].data;
+    const data = (db.browserAutomation.update as jest.Mock).mock.calls[0][0]
+      .data;
     expect(data.targetUrl).toBe('https://okta.com');
     expect(data.steps.create).toHaveLength(1);
   });

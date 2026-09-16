@@ -28,22 +28,16 @@ interface LogoUploadResponse {
  * Provides create/update/delete helpers for organization-level operations.
  */
 export function useOrganizationMutations() {
-  const updateOrganization = useCallback(
-    async (data: UpdateOrganizationData) => {
-      const response = await apiClient.patch('/v1/organization', data);
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      return response.data;
-    },
-    [],
-  );
+  const updateOrganization = useCallback(async (data: UpdateOrganizationData) => {
+    const response = await apiClient.patch('/v1/organization', data);
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    return response.data;
+  }, []);
 
   const uploadLogo = useCallback(async (data: UploadLogoData) => {
-    const response = await apiClient.post<LogoUploadResponse>(
-      '/v1/organization/logo',
-      data,
-    );
+    const response = await apiClient.post<LogoUploadResponse>('/v1/organization/logo', data);
     if (response.error) {
       throw new Error(response.error);
     }

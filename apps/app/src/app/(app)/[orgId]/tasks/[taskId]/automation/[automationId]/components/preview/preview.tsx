@@ -23,9 +23,7 @@ function toSafeUrl(value: string | undefined | null): string | undefined {
   if (!value) return undefined;
   try {
     const parsed = new URL(value);
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
-      ? parsed.href
-      : undefined;
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:' ? parsed.href : undefined;
   } catch {
     return undefined;
   }

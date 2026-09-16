@@ -32,7 +32,9 @@ describe('TimelinesPhasesService', () => {
 
   it('auto-completes AUTO_UPLOAD phase when documentUrl is provided', async () => {
     const lifecycle = {
-      completePhase: jest.fn().mockResolvedValue({ id: 'phase_1', status: 'COMPLETED' }),
+      completePhase: jest
+        .fn()
+        .mockResolvedValue({ id: 'phase_1', status: 'COMPLETED' }),
     };
     const service = new TimelinesPhasesService(lifecycle as any);
 
@@ -60,7 +62,11 @@ describe('TimelinesPhasesService', () => {
       documentUrl: 'https://files.example.com/final-report.pdf',
     });
 
-    expect(lifecycle.completePhase).toHaveBeenCalledWith('tli_1', 'phase_1', 'org_1');
+    expect(lifecycle.completePhase).toHaveBeenCalledWith(
+      'tli_1',
+      'phase_1',
+      'org_1',
+    );
     expect(result).toEqual({ id: 'phase_1', status: 'COMPLETED' });
   });
 
@@ -228,7 +234,9 @@ describe('TimelinesPhasesService', () => {
   });
 
   it('throws when timeline instance is missing', async () => {
-    const service = new TimelinesPhasesService({ completePhase: jest.fn() } as any);
+    const service = new TimelinesPhasesService({
+      completePhase: jest.fn(),
+    } as any);
     (mockDb.timelineInstance.findUnique as jest.Mock).mockResolvedValue(null);
 
     await expect(

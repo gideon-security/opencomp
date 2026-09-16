@@ -87,9 +87,11 @@ describe('IsmsProfileService', () => {
       ismsService as unknown as IsmsService,
       contextService as unknown as IsmsContextService,
     );
-    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue({
-      id: 'fw_1',
-    });
+    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue(
+      {
+        id: 'fw_1',
+      },
+    );
     mockDefaults.mockResolvedValue(defaultsFixture);
     (mockDb.member.findMany as jest.Mock).mockResolvedValue([]);
     mockCollect.mockResolvedValue(platformData);
@@ -173,7 +175,8 @@ describe('IsmsProfileService', () => {
         complete: false,
       });
 
-      const updateArg = (mockDb.ismsProfile.update as jest.Mock).mock.calls[0][0];
+      const updateArg = (mockDb.ismsProfile.update as jest.Mock).mock
+        .calls[0][0];
       expect(updateArg.data.answers).toEqual({
         certificationBody: 'BSI',
         hasContractors: true,
@@ -199,7 +202,8 @@ describe('IsmsProfileService', () => {
         complete: true,
       });
 
-      const updateArg = (mockDb.ismsProfile.update as jest.Mock).mock.calls[0][0];
+      const updateArg = (mockDb.ismsProfile.update as jest.Mock).mock
+        .calls[0][0];
       expect(updateArg.data.completedAt).toBeInstanceOf(Date);
     });
 

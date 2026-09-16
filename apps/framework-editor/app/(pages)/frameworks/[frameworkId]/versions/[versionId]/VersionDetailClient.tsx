@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { Button } from '@gideon-defender/ui';
-import { useFrameworkVersionDiff } from '../hooks/useFrameworkVersionDiff';
+import Link from 'next/link';
 import { VersionDiffView, hasAnyChanges } from '../components/VersionDiffView';
+import { useFrameworkVersionDiff } from '../hooks/useFrameworkVersionDiff';
 
 interface VersionDetailClientProps {
   frameworkId: string;
@@ -26,9 +26,7 @@ export function VersionDetailClient({ frameworkId, versionId }: VersionDetailCli
   }
 
   if (!data) {
-    return (
-      <p className="text-muted-foreground py-8 text-center text-sm">Version not found.</p>
-    );
+    return <p className="text-muted-foreground py-8 text-center text-sm">Version not found.</p>;
   }
 
   const { version, previousVersion, diff, linkChanges } = data;

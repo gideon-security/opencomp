@@ -51,7 +51,9 @@ for (const m of manifests) {
       if (!isWorkspaceSpec && !isExactLocalVersion) continue;
       const target = nameToDir.get(name);
       if (!target) {
-        throw new Error(`[convert-workspace-specs] no local workspace for "${name}" (required by ${m})`);
+        throw new Error(
+          `[convert-workspace-specs] no local workspace for "${name}" (required by ${m})`,
+        );
       }
       let rel = path.relative(dir, target);
       if (!rel.startsWith('.')) rel = './' + rel;
@@ -63,4 +65,6 @@ for (const m of manifests) {
   if (changed) fs.writeFileSync(m, JSON.stringify(pkg, null, 2) + '\n');
 }
 
-console.log(`[convert-workspace-specs] converted ${converted} workspace specs across ${manifests.length} manifests`);
+console.log(
+  `[convert-workspace-specs] converted ${converted} workspace specs across ${manifests.length} manifests`,
+);

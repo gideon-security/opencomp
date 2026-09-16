@@ -43,9 +43,7 @@ export function ControlRequirementSelect({
   const filtered = useMemo(() => {
     const term = search.toLowerCase().trim();
     if (!term) return requirements;
-    return requirements.filter((req) =>
-      requirementLabel(req).toLowerCase().includes(term),
-    );
+    return requirements.filter((req) => requirementLabel(req).toLowerCase().includes(term));
   }, [requirements, search]);
 
   const toggle = (id: string) => {
@@ -71,8 +69,7 @@ export function ControlRequirementSelect({
           Back
         </Button>
         <span className="text-muted-foreground truncate text-sm">
-          Link <span className="text-foreground font-medium">{controlName}</span> to
-          requirements
+          Link <span className="text-foreground font-medium">{controlName}</span> to requirements
         </span>
       </div>
 
@@ -113,7 +110,9 @@ export function ControlRequirementSelect({
                 >
                   <span
                     className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border ${
-                      selected ? 'border-primary bg-primary text-primary-foreground' : 'border-border'
+                      selected
+                        ? 'border-primary bg-primary text-primary-foreground'
+                        : 'border-border'
                     }`}
                   >
                     {selected && <Check className="h-3 w-3" />}
@@ -127,9 +126,7 @@ export function ControlRequirementSelect({
       </ScrollArea>
 
       <div className="flex items-center justify-between">
-        <span className="text-muted-foreground text-xs">
-          {selectedIds.size} selected
-        </span>
+        <span className="text-muted-foreground text-xs">{selectedIds.size} selected</span>
         <Button
           size="sm"
           className="rounded-sm"

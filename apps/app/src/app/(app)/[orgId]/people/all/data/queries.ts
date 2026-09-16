@@ -45,9 +45,11 @@ export async function getEmployeeSyncConnections(
       serverApi.get<{ provider: string | null }>(
         `/v1/integrations/sync/employee-sync-provider?organizationId=${organizationId}`,
       ),
-      serverApi.get<{ providers: SyncProviderInfo[] }>(
-        `/v1/integrations/sync/available-providers?organizationId=${organizationId}`,
-      ).catch(() => ({ data: null, error: null, status: 500 })),
+      serverApi
+        .get<{ providers: SyncProviderInfo[] }>(
+          `/v1/integrations/sync/available-providers?organizationId=${organizationId}`,
+        )
+        .catch(() => ({ data: null, error: null, status: 500 })),
     ]);
 
   const availableProviders = availableResponse.data?.providers ?? [];
@@ -67,7 +69,10 @@ export async function getEmployeeSyncConnections(
     // Dynamic provider — get sync times from available-providers data
     const dynProvider = availableProviders.find((p) => p.slug === selectedProviderSlug);
     if (dynProvider) {
-      selectedSyncTimes = { lastSyncAt: dynProvider.lastSyncAt, nextSyncAt: dynProvider.nextSyncAt };
+      selectedSyncTimes = {
+        lastSyncAt: dynProvider.lastSyncAt,
+        nextSyncAt: dynProvider.nextSyncAt,
+      };
     }
   }
 

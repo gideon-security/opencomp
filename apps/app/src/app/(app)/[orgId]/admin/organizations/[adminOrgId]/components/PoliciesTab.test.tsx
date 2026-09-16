@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -57,9 +57,7 @@ describe('PoliciesTab', () => {
     render(<PoliciesTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(
-        screen.getByText('Information Security Policy'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Information Security Policy')).toBeInTheDocument();
     });
     expect(screen.getByText('Acceptable Use Policy')).toBeInTheDocument();
     expect(screen.getByText('Alice')).toBeInTheDocument();
@@ -79,9 +77,7 @@ describe('PoliciesTab', () => {
     render(<PoliciesTab orgId="org_test" />);
 
     await waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_test/policies',
-      );
+      expect(mockGet).toHaveBeenCalledWith('/v1/admin/organizations/org_test/policies');
     });
   });
 
@@ -102,9 +98,7 @@ describe('PoliciesTab', () => {
     render(<PoliciesTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(
-        screen.getByText('Information Security Policy'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Information Security Policy')).toBeInTheDocument();
     });
 
     const infoSecRow = screen.getByText('Information Security Policy').closest('tr');

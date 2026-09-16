@@ -1,6 +1,12 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { FrameworkEditorFrameworkFamilyStatus } from '@db';
-import { IsEnum, IsString, MaxLength, MinLength, ValidateIf } from 'class-validator';
+import {
+  IsEnum,
+  IsString,
+  MaxLength,
+  MinLength,
+  ValidateIf,
+} from 'class-validator';
 
 // Each field is optional (may be omitted) but must NOT be null when present —
 // @ValidateIf runs the validators whenever the key is sent (incl. null), so a

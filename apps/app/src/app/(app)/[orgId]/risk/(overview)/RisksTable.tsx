@@ -8,9 +8,9 @@ import {
   type Risk as ApiRisk,
   type RisksQueryParams,
 } from '@/hooks/use-risks';
+import { formatDateShort as formatDate } from '@/lib/format';
 import { getSortingStateParser } from '@/lib/parsers';
 import { getRiskLevelFromScore, getRiskScore } from '@/lib/risk-score';
-import { formatDateShort as formatDate } from '@/lib/format';
 import {
   interpolatedResidualScore,
   previewResidual,

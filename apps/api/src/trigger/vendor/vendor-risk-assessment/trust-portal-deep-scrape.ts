@@ -24,19 +24,29 @@ const SECTION_CONCURRENCY = 5;
 const MARKDOWN_TRUNCATE_LIMIT = 200_000;
 
 const certificationExtractionSchema = z.object({
-  certifications: z.array(z.object({
-    type: z.string().describe(
-      'Canonical certification name, e.g. "SOC 2 Type II", "ISO 27001", "PCI DSS", "ISO 27017", "FedRAMP", "HIPAA", "GDPR", "ISO 42001"',
-    ),
-    status: z.enum(['verified', 'expired', 'not_certified', 'unknown']).describe(
-      'verified when the page lists this framework as current; expired only if explicitly said so; not_certified only if the page explicitly says so; unknown otherwise',
-    ),
-    issued_at: z.string().optional().nullable(),
-    expires_at: z.string().optional().nullable(),
-    evidence_snippet: z.string().describe(
-      'Short quote from the markdown (< 200 chars) that supports this certification. Must be present in the markdown verbatim.',
-    ),
-  })).default([]),
+  certifications: z
+    .array(
+      z.object({
+        type: z
+          .string()
+          .describe(
+            'Canonical certification name, e.g. "SOC 2 Type II", "ISO 27001", "PCI DSS", "ISO 27017", "FedRAMP", "HIPAA", "GDPR", "ISO 42001"',
+          ),
+        status: z
+          .enum(['verified', 'expired', 'not_certified', 'unknown'])
+          .describe(
+            'verified when the page lists this framework as current; expired only if explicitly said so; not_certified only if the page explicitly says so; unknown otherwise',
+          ),
+        issued_at: z.string().optional().nullable(),
+        expires_at: z.string().optional().nullable(),
+        evidence_snippet: z
+          .string()
+          .describe(
+            'Short quote from the markdown (< 200 chars) that supports this certification. Must be present in the markdown verbatim.',
+          ),
+      }),
+    )
+    .default([]),
 });
 
 type ScrapeResponse = { markdown?: string; links?: string[] };
@@ -73,7 +83,6 @@ Markdown from the trust portal and its sections:
 ${args.combinedMarkdown}`;
 }
 
-
 async function mapWithConcurrency<T, R>(
   items: T[],
   concurrency: number,
@@ -81,17 +90,23 @@ async function mapWithConcurrency<T, R>(
 ): Promise<Array<PromiseSettledResult<R>>> {
   const results: Array<PromiseSettledResult<R>> = new Array(items.length);
   let cursor = 0;
-  const runners = Array.from({ length: Math.min(concurrency, items.length) }, async () => {
-    while (true) {
-      const index = cursor++;
-      if (index >= items.length) return;
-      try {
-        results[index] = { status: 'fulfilled', value: await worker(items[index]) };
-      } catch (reason) {
-        results[index] = { status: 'rejected', reason };
+  const runners = Array.from(
+    { length: Math.min(concurrency, items.length) },
+    async () => {
+      while (true) {
+        const index = cursor++;
+        if (index >= items.length) return;
+        try {
+          results[index] = {
+            status: 'fulfilled',
+            value: await worker(items[index]),
+          };
+        } catch (reason) {
+          results[index] = { status: 'rejected', reason };
+        }
       }
-    }
-  });
+    },
+  );
   await Promise.all(runners);
   return results;
 }
@@ -249,8 +264,11 @@ export async function deepScrapeTrustPortal(
   }
   // 4. AI extraction
   type ExtractedCert = {
-    type: string; status: VendorRiskAssessmentCertificationStatus;
-    issued_at?: string | null; expires_at?: string | null; evidence_snippet: string;
+    type: string;
+    status: VendorRiskAssessmentCertificationStatus;
+    issued_at?: string | null;
+    expires_at?: string | null;
+    evidence_snippet: string;
   };
   let extracted: { certifications: ExtractedCert[] };
   try {
@@ -270,9 +288,7 @@ export async function deepScrapeTrustPortal(
 
   const certifications: VendorRiskAssessmentCertification[] =
     extracted.certifications
-      .filter(
-        (c) => c.evidence_snippet && c.evidence_snippet.trim().length > 0,
-      )
+      .filter((c) => c.evidence_snippet && c.evidence_snippet.trim().length > 0)
       .map((c) => ({
         type: c.type,
         status: c.status,

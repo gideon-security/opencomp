@@ -104,12 +104,7 @@ export function UpdateOrganizationLogo({ currentLogoUrl }: UpdateOrganizationLog
           {/* Logo preview */}
           <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-muted">
             {previewUrl ? (
-              <Image
-                src={previewUrl}
-                alt="Organization logo"
-                fill
-                className="object-contain p-2"
-              />
+              <Image src={previewUrl} alt="Organization logo" fill className="object-contain p-2" />
             ) : (
               <ImagePlus className="h-8 w-8 text-muted-foreground/50" />
             )}

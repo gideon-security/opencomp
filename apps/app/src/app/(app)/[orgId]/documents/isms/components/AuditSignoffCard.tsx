@@ -1,16 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Badge,
-  Button,
-  Grid,
-  Heading,
-  HStack,
-  Input,
-  Stack,
-  Text,
-} from '@trycompai/design-system';
+import { Badge, Button, Grid, Heading, HStack, Input, Stack, Text } from '@trycompai/design-system';
 import { useEffect } from 'react';
 import { Controller, useForm, type Control } from 'react-hook-form';
 import type { IsmsAudit } from '../isms-types';
@@ -165,8 +156,8 @@ export function AuditSignoffCard({ audit, canEdit, onSave }: AuditSignoffCardPro
         ) : null}
       </HStack>
       <Text size="sm" variant="muted">
-        Record who signed the completed audit and when. The three slots render as the sign-off
-        table in the generated document.
+        Record who signed the completed audit and when. The three slots render as the sign-off table
+        in the generated document.
       </Text>
       <Stack gap="4">
         {SLOTS.map((slot) => (

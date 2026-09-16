@@ -2,15 +2,22 @@
 
 import { updateResidualRiskSchema } from '@/actions/schema';
 import { useRiskMutations } from '@/hooks/use-risk-mutations';
-import { Button } from '@gideon-defender/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@gideon-defender/ui/form';
-import { Slider } from '@gideon-defender/ui/slider';
 import { Impact, Likelihood } from '@db';
+import { Button } from '@gideon-defender/ui/button';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@gideon-defender/ui/form';
+import { Slider } from '@gideon-defender/ui/slider';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
 import { useQueryState } from 'nuqs';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type { z } from 'zod';
@@ -125,16 +132,8 @@ export function VendorResidualRiskForm({
         />
 
         <div className="flex justify-end">
-          <Button
-            type="submit"
-            variant="default"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              tCommon('common.save')
-            )}
+          <Button type="submit" variant="default" disabled={isSubmitting}>
+            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : tCommon('common.save')}
           </Button>
         </div>
       </form>

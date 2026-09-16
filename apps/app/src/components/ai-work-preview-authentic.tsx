@@ -209,7 +209,9 @@ export function AiWorkPreviewAuthentic() {
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Background job progress</span>
-          <span className="text-lg font-semibold tabular-nums text-primary">{overallProgress}%</span>
+          <span className="text-lg font-semibold tabular-nums text-primary">
+            {overallProgress}%
+          </span>
         </div>
         <Progress value={overallProgress} className="h-2" />
         <p className="text-xs text-muted-foreground/70">
@@ -262,12 +264,7 @@ export function AiWorkPreviewAuthentic() {
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Icon className="h-3.5 w-3.5 text-muted-foreground/60" />
-                          <p
-                            className={cn(
-                              'font-medium text-sm',
-                              isComplete && 'text-primary',
-                            )}
-                          >
+                          <p className={cn('font-medium text-sm', isComplete && 'text-primary')}>
                             {item.title}
                           </p>
                         </div>

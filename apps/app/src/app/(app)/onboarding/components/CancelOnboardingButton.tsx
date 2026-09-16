@@ -1,8 +1,8 @@
 'use client';
 
 import { Button } from '@gideon-defender/ui/button';
-import { useAction } from 'next-safe-action/hooks';
 import { useTranslations } from 'next-intl';
+import { useAction } from 'next-safe-action/hooks';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { cancelOnboarding } from '../actions/cancel-onboarding';
@@ -62,12 +62,7 @@ export function CancelOnboardingButton({
       >
         {cancelAction.isExecuting ? t('canceling') : t('yesCancel')}
       </Button>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={() => setConfirming(false)}
-      >
+      <Button type="button" variant="ghost" size="sm" onClick={() => setConfirming(false)}>
         {t('no')}
       </Button>
     </div>

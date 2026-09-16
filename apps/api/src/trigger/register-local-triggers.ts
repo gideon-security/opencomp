@@ -1,4 +1,7 @@
-import { registerFromDirectory, schedules } from '@gideon-defender/trigger-local';
+import {
+  registerFromDirectory,
+  schedules,
+} from '@gideon-defender/trigger-local';
 
 let initialized = false;
 

@@ -149,8 +149,7 @@ export function InstructionTestPanel({
   // result
   if (!result) return null;
   const badge = verdict(result);
-  const hasEvaluation =
-    result.evaluationStatus === 'pass' || result.evaluationStatus === 'fail';
+  const hasEvaluation = result.evaluationStatus === 'pass' || result.evaluationStatus === 'fail';
   const errorText = result.blockedReason || result.error;
 
   return (
@@ -207,9 +206,7 @@ export function InstructionTestPanel({
               className="grid h-4 w-4 place-items-center rounded-full text-white"
               style={{
                 background:
-                  result.evaluationStatus === 'pass'
-                    ? 'var(--success)'
-                    : 'var(--destructive)',
+                  result.evaluationStatus === 'pass' ? 'var(--success)' : 'var(--destructive)',
               }}
             >
               {result.evaluationStatus === 'pass' ? <Checkmark size={9} /> : <Close size={8} />}

@@ -22,10 +22,7 @@ function isRunGoneError(err: unknown): boolean {
   return msg.includes('not found') || msg.includes('purged');
 }
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ vendorId: string }> },
-) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ vendorId: string }> }) {
   try {
     const ctx = await requireApiPermission(req, 'vendor', 'read');
     if (ctx instanceof NextResponse) return ctx;

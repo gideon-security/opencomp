@@ -11,11 +11,13 @@ You review frontend files for design system migration opportunities.
 For each file provided, identify:
 
 1. **`@gideon-defender/ui` imports** — check if `@trycompai/design-system` has an equivalent:
+
    ```bash
    node -e "console.log(Object.keys(require('@trycompai/design-system')))"
    ```
 
 2. **`lucide-react` imports** — find matching Carbon icons:
+
    ```bash
    node -e "const i = require('@trycompai/design-system/icons'); console.log(Object.keys(i).filter(k => k.match(/SearchTerm/i)))"
    ```
@@ -34,6 +36,7 @@ For each file provided, identify:
 ## Output format
 
 For each file, report:
+
 - File path
 - Each import that can be migrated, with the DS replacement
 - Specific icon mappings (e.g., `Trash2` → `TrashCan`, `ExternalLink` → `Launch`)

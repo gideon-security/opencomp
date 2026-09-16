@@ -38,7 +38,9 @@ export class WindowsAntivirusCheck implements ComplianceCheck {
       });
 
       const passed = activeProducts.length > 0;
-      const productNames = activeProducts.map((p: { displayName: string }) => p.displayName).join(', ');
+      const productNames = activeProducts
+        .map((p: { displayName: string }) => p.displayName)
+        .join(', ');
 
       return {
         checkType: this.checkType,

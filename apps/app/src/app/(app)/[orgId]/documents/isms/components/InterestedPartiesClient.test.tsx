@@ -1,15 +1,15 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { ReactNode } from 'react';
-import { useState } from 'react';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDriftResult, IsmsInterestedParty } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
 
@@ -298,9 +298,9 @@ describe('InterestedPartiesClient', () => {
     });
     // The handler re-throws, so the form stays open with the user's input intact.
     expect(screen.getByLabelText('New interested party name')).toHaveValue('Suppliers');
-    expect(
-      screen.getByLabelText('New interested party needs and expectations'),
-    ).toHaveValue('Timely security disclosures');
+    expect(screen.getByLabelText('New interested party needs and expectations')).toHaveValue(
+      'Timely security disclosures',
+    );
   });
 
   it('keeps the row in edit mode with the user changes when hook.updateRow rejects', async () => {

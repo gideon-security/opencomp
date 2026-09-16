@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { QuestionnaireResult, QuestionnaireQuestionAnswer } from './types';
+import type { QuestionnaireQuestionAnswer, QuestionnaireResult } from './types';
 
 interface UseQuestionnaireDetailStateProps {
   initialQuestions: QuestionnaireQuestionAnswer[];
@@ -22,7 +22,7 @@ export function useQuestionnaireDetailState({
       questionAnswerId: q.id,
       status: q.status,
       failedToGenerate: false,
-    }))
+    })),
   );
 
   // State management
@@ -34,7 +34,7 @@ export function useQuestionnaireDetailState({
   >(new Map());
   // Use Set to track multiple questions being processed in parallel
   const [answeringQuestionIndices, setAnsweringQuestionIndices] = useState<Set<number>>(new Set());
-  
+
   // Keep answeringQuestionIndex for backward compatibility (will be removed)
   const [answeringQuestionIndex, setAnsweringQuestionIndex] = useState<number | null>(null);
   const [isAutoAnswerProcessStarted, setIsAutoAnswerProcessStarted] = useState(false);
@@ -44,7 +44,7 @@ export function useQuestionnaireDetailState({
   const [singleAnswerToken, setSingleAnswerToken] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const isAutoAnswerProcessStartedRef = useRef(false);
-  
+
   // Queue for single question answers - allows users to click multiple questions
   // Questions will be processed sequentially
   const [answerQueue, setAnswerQueue] = useState<number[]>([]);
@@ -92,4 +92,3 @@ export function useQuestionnaireDetailState({
     answerQueueRef,
   };
 }
-

@@ -47,7 +47,8 @@ jest.mock('./utils/soa-answer-parser', () => ({
   createDefaultYesResult: jest.fn(),
   createFullyRemoteResult: jest.fn(),
   isPhysicalSecurityControl: jest.fn(
-    (closure: string) => typeof closure === 'string' && closure.startsWith('7.'),
+    (closure: string) =>
+      typeof closure === 'string' && closure.startsWith('7.'),
   ),
 }));
 jest.mock('./utils/soa-storage', () => ({
@@ -492,7 +493,7 @@ describe('SOAService', () => {
       );
     });
 
-    it('sources applicability + justification from this org\'s answers, not the shared configuration', async () => {
+    it("sources applicability + justification from this org's answers, not the shared configuration", async () => {
       const generated = {
         fileBuffer: Buffer.from('pdf'),
         mimeType: 'application/pdf',
@@ -596,7 +597,7 @@ describe('SOAService', () => {
       expect(result).toEqual(generated);
     });
 
-    it('keeps a fully remote org\'s saved answer on physical-security (7.x) controls so the export matches the editable SoA', async () => {
+    it("keeps a fully remote org's saved answer on physical-security (7.x) controls so the export matches the editable SoA", async () => {
       // Regression (CS-749): a fully remote org can mark a 7.x control
       // Applicable, and the export must reflect the saved answer instead of
       // force-locking it to Not Applicable — the org can move to a physical
@@ -654,7 +655,11 @@ describe('SOAService', () => {
             answer: 'We maintain physical access controls at our office',
             isApplicable: true,
           },
-          { questionId: 'q-other', answer: 'Our own 5.1 justification', isApplicable: true },
+          {
+            questionId: 'q-other',
+            answer: 'Our own 5.1 justification',
+            isApplicable: true,
+          },
         ],
       });
 
@@ -674,7 +679,9 @@ describe('SOAService', () => {
       );
       // Non-physical controls are unaffected and use the org's own answer.
       expect(other?.columnMapping.isApplicable).toBe(true);
-      expect(other?.columnMapping.justification).toBe('Our own 5.1 justification');
+      expect(other?.columnMapping.justification).toBe(
+        'Our own 5.1 justification',
+      );
     });
 
     it('defaults an unanswered physical-security (7.x) control to Not Applicable for a fully remote org', async () => {

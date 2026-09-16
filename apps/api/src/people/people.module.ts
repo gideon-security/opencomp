@@ -10,9 +10,19 @@ import { PeopleInviteService } from './people-invite.service';
 import { PeopleAccessService } from './people-access.service';
 
 @Module({
-  imports: [AuthModule, AttachmentsModule, TimelinesModule, IntegrationPlatformModule],
+  imports: [
+    AuthModule,
+    AttachmentsModule,
+    TimelinesModule,
+    IntegrationPlatformModule,
+  ],
   controllers: [PeopleController],
-  providers: [PeopleService, PeopleInviteService, PeopleAccessService, FleetService],
+  providers: [
+    PeopleService,
+    PeopleInviteService,
+    PeopleAccessService,
+    FleetService,
+  ],
   exports: [PeopleService],
 })
 export class PeopleModule {}

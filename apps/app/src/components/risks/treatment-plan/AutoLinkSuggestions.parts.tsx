@@ -1,8 +1,8 @@
 'use client';
 
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { Button } from '@trycompai/design-system';
 import { MagicWandFilled } from '@trycompai/design-system/icons';
-import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useEffect, useMemo, useRef } from 'react';
 import { ControlsSection, TasksSection } from './AutoLinkSuggestions.sections';
 import {
@@ -240,8 +240,7 @@ export function LoadingState({
   const { run } = useRealtimeRun(runId, { accessToken, enabled: true });
   const status = run?.status;
   const output = run?.output as
-    | { suggestions?: { tasks?: SuggestedTask[]; controls?: SuggestedControl[] } }
-    | undefined;
+    { suggestions?: { tasks?: SuggestedTask[]; controls?: SuggestedControl[] } } | undefined;
   const meta = (run?.metadata ?? {}) as {
     phase?: PhaseName;
     current?: number;
@@ -296,7 +295,8 @@ export function LoadingState({
   }
 
   const { headline, sub } = describeStatus(status, meta.phase, meta.current, meta.total);
-  const showProgress = meta.phase === 'embedding-tasks' && typeof meta.total === 'number' && meta.total > 0;
+  const showProgress =
+    meta.phase === 'embedding-tasks' && typeof meta.total === 'number' && meta.total > 0;
   const pct = showProgress
     ? Math.min(100, Math.round(((meta.current ?? 0) / (meta.total ?? 1)) * 100))
     : null;

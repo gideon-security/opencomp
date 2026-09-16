@@ -1,10 +1,8 @@
 'use client';
 
+import { loadColumnWidths, saveColumnWidths } from '@/app/components/table/column-widths-cookie';
 import { apiClient } from '@/app/lib/api-client';
-import {
-  loadColumnWidths,
-  saveColumnWidths,
-} from '@/app/components/table/column-widths-cookie';
+import { Button } from '@gideon-defender/ui';
 import {
   createColumnHelper,
   flexRender,
@@ -13,14 +11,13 @@ import {
   useReactTable,
   type SortingState,
 } from '@tanstack/react-table';
-import { Button } from '@gideon-defender/ui';
 import { ArrowDown, ArrowUp, ArrowUpDown, Download, PencilIcon, Plus, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { ComboboxCell, DateCell, EditableCell, RelationalCell } from '../../../components/table';
-import { EditFrameworkDialog } from './components/EditFrameworkDialog';
 import { DeleteFrameworkDialog } from './components/DeleteFrameworkDialog';
+import { EditFrameworkDialog } from './components/EditFrameworkDialog';
 import {
   simpleUUID,
   useRequirementChangeTracking,
@@ -216,9 +213,7 @@ export function FrameworkRequirementsClientPage({
                   ? `Edit Requirement Description - ${titleSuffix}`
                   : 'Edit Requirement Description'
               }
-              onExpandedChange={(open) =>
-                setExpandedRowId(open ? row.original.id : null)
-              }
+              onExpandedChange={(open) => setExpandedRowId(open ? row.original.id : null)}
             />
           );
         },
@@ -237,9 +232,7 @@ export function FrameworkRequirementsClientPage({
               getAllItems={fetchAllControlTemplates}
               onLink={linkControlToRequirement}
               onUnlink={unlinkControlFromRequirement}
-              onLocalUpdate={(newItems) =>
-                updateRelational(row.original.id, newItems)
-              }
+              onLocalUpdate={(newItems) => updateRelational(row.original.id, newItems)}
               label="Control"
               labelPlural="Controls"
             />
@@ -340,17 +333,14 @@ export function FrameworkRequirementsClientPage({
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      const safeName = frameworkDetails.name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-');
+      const safeName = frameworkDetails.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       link.download = `${safeName}.json`;
       link.click();
       URL.revokeObjectURL(url);
       toast.success('Framework exported successfully');
     } catch (error) {
       console.error('[ExportFramework] Error:', error);
-      const message =
-        error instanceof Error ? error.message : 'Failed to export framework';
+      const message = error instanceof Error ? error.message : 'Failed to export framework';
       toast.error(message);
     } finally {
       setIsExporting(false);

@@ -87,12 +87,8 @@ describe('classifyExecuteResult', () => {
   it('does NOT trigger the manual type when guidedOnly is true but steps are missing or empty', () => {
     // Must have BOTH the flag and a non-empty list. Without real steps,
     // the customer would see "manual mode" with nothing to do.
-    expect(
-      classifyExecuteResult({ guidedOnly: true, guidedSteps: [] }).type,
-    ).not.toBe('manual');
-    expect(
-      classifyExecuteResult({ guidedOnly: true }).type,
-    ).not.toBe('manual');
+    expect(classifyExecuteResult({ guidedOnly: true, guidedSteps: [] }).type).not.toBe('manual');
+    expect(classifyExecuteResult({ guidedOnly: true }).type).not.toBe('manual');
     expect(
       classifyExecuteResult({
         guidedOnly: true,

@@ -1,10 +1,6 @@
-import { useCallback, useEffect } from 'react';
 import { Button } from '@trycompai/design-system';
-import {
-  ChevronDown,
-  ChevronUp,
-  Close,
-} from '@trycompai/design-system/icons';
+import { ChevronDown, ChevronUp, Close } from '@trycompai/design-system/icons';
+import { useCallback, useEffect } from 'react';
 
 interface SuggestionsTopBarProps {
   activeCount: number;
@@ -34,10 +30,7 @@ export function SuggestionsTopBar({
         onNext();
         return;
       }
-      if (
-        (e.shiftKey && e.key === 'F7') ||
-        ((e.metaKey || e.ctrlKey) && e.key === '[')
-      ) {
+      if ((e.shiftKey && e.key === 'F7') || ((e.metaKey || e.ctrlKey) && e.key === '[')) {
         e.preventDefault();
         onPrev();
         return;
@@ -76,38 +69,21 @@ export function SuggestionsTopBar({
         <span className="ml-1 text-sm text-muted-foreground tabular-nums">
           {activeCount > 0 ? `${currentIndex + 1}/${activeCount}` : '0/0'}
           {activeCount !== totalCount && (
-            <span className="ml-1 text-xs">
-              ({totalCount - activeCount} resolved)
-            </span>
+            <span className="ml-1 text-xs">({totalCount - activeCount} resolved)</span>
           )}
         </span>
       </div>
 
       {/* Right: bulk actions + dismiss */}
       <div className="flex items-center gap-1">
-        <Button
-          variant="default"
-          size="sm"
-          onClick={onAcceptAll}
-          disabled={activeCount === 0}
-        >
+        <Button variant="default" size="sm" onClick={onAcceptAll} disabled={activeCount === 0}>
           Accept all
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onRejectAll}
-          disabled={activeCount === 0}
-        >
+        <Button variant="outline" size="sm" onClick={onRejectAll} disabled={activeCount === 0}>
           Reject all
         </Button>
         <div className="mx-1 h-4 w-px bg-border" />
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onClick={onDismiss}
-          title="Dismiss all suggestions"
-        >
+        <Button variant="ghost" size="icon-sm" onClick={onDismiss} title="Dismiss all suggestions">
           <Close size={14} />
         </Button>
       </div>

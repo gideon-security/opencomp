@@ -4,7 +4,9 @@ jest.mock('@db', () => ({
 // The real auth guards import better-auth, which fails to load under jest's ESM
 // shim. Mock them so the controller module can be imported; they're not under
 // test here (we test the record() handler logic).
-jest.mock('../../auth/hybrid-auth.guard', () => ({ HybridAuthGuard: class {} }));
+jest.mock('../../auth/hybrid-auth.guard', () => ({
+  HybridAuthGuard: class {},
+}));
 jest.mock('../../auth/permission.guard', () => ({ PermissionGuard: class {} }));
 jest.mock('../../auth/require-permission.decorator', () => ({
   RequirePermission: () => () => undefined,

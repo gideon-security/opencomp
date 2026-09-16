@@ -1,7 +1,7 @@
 'use client';
 
-import { api } from '@/lib/api-client';
 import { isFailureRunStatus } from '@/app/(app)/[orgId]/cloud-tests/status';
+import { api } from '@/lib/api-client';
 import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -76,17 +76,17 @@ export function useQuestionnaireParse({
     if (!parseRun?.status) return;
 
     if (parseRun.status === 'COMPLETED') {
-      const output = parseRun.output as {
-        success: boolean;
-        questionnaireId: string;
-        questionsAndAnswers: { question: string; answer: string | null }[];
-      } | undefined;
+      const output = parseRun.output as
+        | {
+            success: boolean;
+            questionnaireId: string;
+            questionsAndAnswers: { question: string; answer: string | null }[];
+          }
+        | undefined;
 
       if (output?.success && output.questionnaireId) {
         setQuestionnaireId(output.questionnaireId);
-        toast.success(
-          `Successfully parsed ${output.questionsAndAnswers?.length ?? 0} questions`,
-        );
+        toast.success(`Successfully parsed ${output.questionsAndAnswers?.length ?? 0} questions`);
         router.push(`/${orgId}/questionnaire/${output.questionnaireId}`);
       } else {
         setIsParseProcessStarted(false);
@@ -164,11 +164,7 @@ export function useQuestionnaireParse({
         setUploadStatus('idle');
         setParseStatus('idle');
         console.error('Parse error:', error);
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : 'Failed to parse questionnaire',
-        );
+        toast.error(error instanceof Error ? error.message : 'Failed to parse questionnaire');
       }
     },
     [setIsParseProcessStarted],

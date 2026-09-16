@@ -33,9 +33,7 @@ describe('ServiceCard — evidence task count', () => {
   });
 
   it('falls back to all mapped tasks when addedTemplateIds is absent', () => {
-    render(
-      <ServiceCard service={service} connectionId="c1" orgId="org-1" slug="aws" />,
-    );
+    render(<ServiceCard service={service} connectionId="c1" orgId="org-1" slug="aws" />);
     expect(screen.getByText('2 evidence tasks')).toBeInTheDocument();
   });
 

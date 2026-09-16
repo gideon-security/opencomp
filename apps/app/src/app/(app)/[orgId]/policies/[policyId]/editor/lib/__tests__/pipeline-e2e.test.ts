@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { EditorState } from '@tiptap/pm/state';
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
+import { EditorState } from '@tiptap/pm/state';
+import { describe, expect, it } from 'vitest';
+import { buildReplacementNodes, extendDeleteRangesToSections } from '../apply-suggestion';
 import { buildPositionMap } from '../build-position-map';
 import { computeSuggestionRanges } from '../compute-suggestion-ranges';
-import { buildReplacementNodes, extendDeleteRangesToSections } from '../apply-suggestion';
 import { sanitizeMarkdown } from '../policy-markdown';
 import { schema } from '../test-helpers/editor-schema';
 
@@ -276,7 +276,11 @@ describe('E2E pipeline: realistic policy with two lists', () => {
       h(2, 'Password Requirements'),
       ul('Minimum 12 characters.', 'No forced rotation.', 'Unique per system.'),
       h(2, 'Multi-Factor Authentication (MFA)'),
-      ul('Enforce MFA for admins.', 'Prefer authenticator apps; SMS only as fallback.', 'Apply step-up MFA for sensitive actions.'),
+      ul(
+        'Enforce MFA for admins.',
+        'Prefer authenticator apps; SMS only as fallback.',
+        'Apply step-up MFA for sensitive actions.',
+      ),
     );
     const proposed = [
       '## Password Requirements',
@@ -302,7 +306,11 @@ describe('E2E pipeline: realistic policy with two lists', () => {
         lists.push(items);
       }
     });
-    expect(lists[0]).toEqual(['Minimum 12 characters.', 'No forced rotation.', 'Unique per system.']);
+    expect(lists[0]).toEqual([
+      'Minimum 12 characters.',
+      'No forced rotation.',
+      'Unique per system.',
+    ]);
     expect(lists[1]).toEqual([
       'Enforce MFA for admins.',
       'Prefer hardware tokens or authenticator apps; SMS only as a last resort.',
@@ -468,20 +476,10 @@ describe('E2E pipeline: delete first / last section', () => {
 
 describe('E2E pipeline: two separate lists', () => {
   it('edits a bullet in the second list, leaving the first untouched', () => {
-    const start = doc(
-      ul('A1', 'A2'),
-      p('Divider paragraph.'),
-      ul('B1', 'B2'),
+    const start = doc(ul('A1', 'A2'), p('Divider paragraph.'), ul('B1', 'B2'));
+    const proposed = ['- A1', '- A2', '', 'Divider paragraph.', '', '- B1', '- B2 revised'].join(
+      '\n',
     );
-    const proposed = [
-      '- A1',
-      '- A2',
-      '',
-      'Divider paragraph.',
-      '',
-      '- B1',
-      '- B2 revised',
-    ].join('\n');
     const { doc: result } = acceptAll(start, proposed);
     const lists: string[][] = [];
     result.forEach((n) => {
@@ -499,10 +497,7 @@ describe('E2E pipeline: two separate lists', () => {
 
 describe('E2E pipeline: blockquote edit', () => {
   it('edits a blockquote in place', () => {
-    const start = doc(
-      schema.node('blockquote', null, [p('Quoted guidance.')]),
-      p('After.'),
-    );
+    const start = doc(schema.node('blockquote', null, [p('Quoted guidance.')]), p('After.'));
     const proposed = ['> Updated quoted guidance.', '', 'After.'].join('\n');
     const { doc: result } = acceptAll(start, proposed);
     expect(result.textContent).toContain('Updated quoted guidance.');

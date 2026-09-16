@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { evaluateCondition, evaluateOperator, resolvePath } from '../expression-evaluator';
 import type { Condition } from '../types';
 
@@ -8,7 +8,9 @@ describe('resolvePath', () => {
   });
 
   it('resolves nested paths', () => {
-    expect(resolvePath({ user: { profile: { email: 'a@b.com' } } }, 'user.profile.email')).toBe('a@b.com');
+    expect(resolvePath({ user: { profile: { email: 'a@b.com' } } }, 'user.profile.email')).toBe(
+      'a@b.com',
+    );
   });
 
   it('returns undefined for missing paths', () => {
@@ -121,7 +123,9 @@ describe('evaluateCondition', () => {
     };
 
     expect(evaluateCondition(condition, { user: { active: true, mfa_enabled: true } })).toBe(true);
-    expect(evaluateCondition(condition, { user: { active: true, mfa_enabled: false } })).toBe(false);
+    expect(evaluateCondition(condition, { user: { active: true, mfa_enabled: false } })).toBe(
+      false,
+    );
   });
 
   it('evaluates OR condition', () => {
@@ -134,7 +138,9 @@ describe('evaluateCondition', () => {
     };
 
     expect(evaluateCondition(condition, { user: { admin: false, mfa_enabled: true } })).toBe(true);
-    expect(evaluateCondition(condition, { user: { admin: false, mfa_enabled: false } })).toBe(false);
+    expect(evaluateCondition(condition, { user: { admin: false, mfa_enabled: false } })).toBe(
+      false,
+    );
   });
 
   it('evaluates NOT condition', () => {
@@ -162,8 +168,14 @@ describe('evaluateCondition', () => {
       ],
     };
 
-    expect(evaluateCondition(condition, { user: { active: true, role: 'user', mfa_enabled: true } })).toBe(true);
-    expect(evaluateCondition(condition, { user: { active: true, role: 'user', mfa_enabled: false } })).toBe(false);
-    expect(evaluateCondition(condition, { user: { active: false, role: 'admin', mfa_enabled: true } })).toBe(false);
+    expect(
+      evaluateCondition(condition, { user: { active: true, role: 'user', mfa_enabled: true } }),
+    ).toBe(true);
+    expect(
+      evaluateCondition(condition, { user: { active: true, role: 'user', mfa_enabled: false } }),
+    ).toBe(false);
+    expect(
+      evaluateCondition(condition, { user: { active: false, role: 'admin', mfa_enabled: true } }),
+    ).toBe(false);
   });
 });

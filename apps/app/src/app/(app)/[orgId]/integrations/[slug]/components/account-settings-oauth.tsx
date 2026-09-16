@@ -6,8 +6,8 @@ import {
   useIntegrationConnection,
   useIntegrationMutations,
 } from '@/hooks/use-integration-platform';
-import { Button } from '@trycompai/design-system';
 import { Badge } from '@gideon-defender/ui/badge';
+import { Button } from '@trycompai/design-system';
 import { AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';

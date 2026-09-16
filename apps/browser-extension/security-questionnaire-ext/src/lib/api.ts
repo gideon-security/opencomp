@@ -79,9 +79,7 @@ async function fetchJson(path: string, init: RequestInit = {}): Promise<unknown>
   return data;
 }
 
-export async function getAuthState(
-  selectedOrganizationId: string | null,
-): Promise<AuthState> {
+export async function getAuthState(selectedOrganizationId: string | null): Promise<AuthState> {
   const [data, sessionData] = await Promise.all([
     fetchJson('/v1/auth/me', { method: 'GET' }),
     fetchJson('/api/auth/get-session', { method: 'GET' }).catch(() => null),
@@ -104,9 +102,7 @@ export async function getAuthState(
   };
 }
 
-export async function setActiveOrganization(
-  organizationId: string,
-): Promise<void> {
+export async function setActiveOrganization(organizationId: string): Promise<void> {
   await fetchJson('/api/auth/organization/set-active', {
     method: 'POST',
     body: JSON.stringify({ organizationId }),

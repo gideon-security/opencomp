@@ -1,12 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NextRequest } from 'next/server';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/lib/people-api', () => ({
   inviteMembersViaApi: vi.fn(),
 }));
 
-import { POST } from './route';
 import { inviteMembersViaApi } from '@/lib/people-api';
+import { POST } from './route';
 
 const mockInviteMembersViaApi = vi.mocked(inviteMembersViaApi);
 

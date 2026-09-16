@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -45,9 +45,7 @@ describe('TaskItemsHeader permission gating', () => {
 
     render(<TaskItemsHeader {...defaultProps} />);
 
-    expect(
-      screen.getByRole('button', { name: /create task/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /create task/i })).toBeInTheDocument();
   });
 
   it('hides the create button when user lacks task:create permission', () => {
@@ -55,9 +53,7 @@ describe('TaskItemsHeader permission gating', () => {
 
     render(<TaskItemsHeader {...defaultProps} />);
 
-    expect(
-      screen.queryByRole('button', { name: /create task/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /create task/i })).not.toBeInTheDocument();
   });
 
   it('hides the create button when user has no permissions', () => {
@@ -65,9 +61,7 @@ describe('TaskItemsHeader permission gating', () => {
 
     render(<TaskItemsHeader {...defaultProps} />);
 
-    expect(
-      screen.queryByRole('button', { name: /create task/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /create task/i })).not.toBeInTheDocument();
   });
 
   it('renders title and description regardless of permissions', () => {
@@ -94,8 +88,6 @@ describe('TaskItemsHeader permission gating', () => {
 
     render(<TaskItemsHeader {...defaultProps} isCreateOpen={true} />);
 
-    expect(
-      screen.getByRole('button', { name: /close create task/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /close create task/i })).toBeInTheDocument();
   });
 });

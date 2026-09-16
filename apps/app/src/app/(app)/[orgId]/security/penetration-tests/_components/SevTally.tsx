@@ -1,11 +1,6 @@
-import { cn } from '@trycompai/design-system/cn';
 import type { IssueSeverity } from '@/lib/security/penetration-tests-client';
-import {
-  SEVERITY_BG_VAR,
-  SEVERITY_FG_VAR,
-  SEVERITY_LABEL,
-  SEVERITY_ORDER,
-} from './severity';
+import { cn } from '@trycompai/design-system/cn';
+import { SEVERITY_BG_VAR, SEVERITY_FG_VAR, SEVERITY_LABEL, SEVERITY_ORDER } from './severity';
 
 interface SevTallyProps {
   /** Counts keyed by severity. Missing severities render as 0. */
@@ -36,11 +31,7 @@ export function SevTally({ counts, size = 'mid', className }: SevTallyProps) {
               size === 'mid' && 'gap-1 px-3 py-3',
               size === 'sm' && 'gap-0.5 px-2 py-2',
             )}
-            style={
-              active
-                ? { backgroundColor: SEVERITY_BG_VAR[sev] }
-                : undefined
-            }
+            style={active ? { backgroundColor: SEVERITY_BG_VAR[sev] } : undefined}
           >
             <span
               className={cn(

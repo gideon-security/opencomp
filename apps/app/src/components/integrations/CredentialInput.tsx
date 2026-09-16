@@ -10,10 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@gideon-defender/ui/select';
-import {
-  Input,
-  Textarea,
-} from '@trycompai/design-system';
+import { Input, Textarea } from '@trycompai/design-system';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 
@@ -58,13 +55,7 @@ export function CredentialInput({
   }
 
   if (field.type === 'textarea') {
-    return (
-      <Textarea
-        value={stringValue}
-        onChange={handleChange}
-        placeholder={field.placeholder}
-      />
-    );
+    return <Textarea value={stringValue} onChange={handleChange} placeholder={field.placeholder} />;
   }
 
   if (field.type === 'select') {
@@ -73,7 +64,9 @@ export function CredentialInput({
     return (
       <Select
         value={stringValue}
-        onValueChange={(v) => { if (v) onChange(v); }}
+        onValueChange={(v) => {
+          if (v) onChange(v);
+        }}
         disabled={disabled}
       >
         <SelectTrigger>
@@ -145,7 +138,12 @@ export function CredentialInput({
 
   return (
     <div className="[&_input]:h-10">
-      <Input type={inputType} value={stringValue} onChange={handleChange} placeholder={placeholder} />
+      <Input
+        type={inputType}
+        value={stringValue}
+        onChange={handleChange}
+        placeholder={placeholder}
+      />
     </div>
   );
 }

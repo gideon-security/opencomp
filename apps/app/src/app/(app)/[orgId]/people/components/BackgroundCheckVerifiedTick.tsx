@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@trycompai/design-system';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@trycompai/design-system';
 import { Security } from '@trycompai/design-system/icons';
 
 const TOOLTIP_LABEL = 'Employee has completed a background check';

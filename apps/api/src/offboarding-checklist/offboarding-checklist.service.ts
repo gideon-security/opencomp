@@ -163,7 +163,9 @@ export class OffboardingChecklistService {
             id: attachment.id,
             name: attachment.name,
             type: attachment.type,
-            downloadUrl: await this.attachmentsService.getPresignedDownloadUrl(attachment.url),
+            downloadUrl: await this.attachmentsService.getPresignedDownloadUrl(
+              attachment.url,
+            ),
             createdAt: attachment.createdAt,
           })),
         );
@@ -222,7 +224,9 @@ export class OffboardingChecklistService {
       template.evidenceRequired &&
       (!hasEvidenceFile || !dto.fileName || !dto.fileType)
     ) {
-      throw new BadRequestException('Evidence is required to complete this item');
+      throw new BadRequestException(
+        'Evidence is required to complete this item',
+      );
     }
 
     const completion = await db.offboardingChecklistCompletion.create({
@@ -428,16 +432,18 @@ export class OffboardingChecklistService {
             title: item.title,
             description: item.description,
             evidenceRequired: item.evidenceRequired,
-          isAccessRevocation: item.isAccessRevocation,
-          sortOrder: item.sortOrder,
-          isDefault: true,
-          isEnabled: true,
-        })),
+            isAccessRevocation: item.isAccessRevocation,
+            sortOrder: item.sortOrder,
+            isDefault: true,
+            isEnabled: true,
+          })),
         });
       });
     } catch (err) {
       const isPrismaConflict =
-        err instanceof Error && 'code' in err && (err as { code: string }).code === 'P2002';
+        err instanceof Error &&
+        'code' in err &&
+        (err as { code: string }).code === 'P2002';
       if (!isPrismaConflict) throw err;
     }
   }

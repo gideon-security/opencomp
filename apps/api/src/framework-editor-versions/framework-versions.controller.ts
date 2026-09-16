@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import { PlatformAdminGuard } from '../auth/platform-admin.guard';
 import { type AdminRequest } from '../admin-organizations/platform-admin-auth-context';
@@ -6,7 +14,10 @@ import { FrameworkVersionsService } from './framework-versions.service';
 import { PublishVersionDto } from './dto/publish-version.dto';
 
 @ApiExcludeController()
-@Controller({ path: 'framework-editor/framework/:frameworkId/versions', version: '1' })
+@Controller({
+  path: 'framework-editor/framework/:frameworkId/versions',
+  version: '1',
+})
 @UseGuards(PlatformAdminGuard)
 export class FrameworkVersionsController {
   constructor(private readonly service: FrameworkVersionsService) {}

@@ -1,6 +1,6 @@
 ---
 name: prisma
-description: "Prisma schema conventions and migration workflow"
+description: 'Prisma schema conventions and migration workflow'
 ---
 
 Source Cursor rule: `.cursor/rules/prisma.mdc`.

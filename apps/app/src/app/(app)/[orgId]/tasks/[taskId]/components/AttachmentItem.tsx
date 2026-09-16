@@ -1,3 +1,4 @@
+import type { Attachment, AttachmentType } from '@db';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,7 +12,6 @@ import {
 } from '@gideon-defender/ui/alert-dialog';
 import { Button } from '@gideon-defender/ui/button';
 import { cn } from '@gideon-defender/ui/cn';
-import type { Attachment, AttachmentType } from '@db';
 import { Loader2, Trash2 } from 'lucide-react';
 import React from 'react';
 import { getAttachmentIconAndColor } from '../utils/attachmentUtils';

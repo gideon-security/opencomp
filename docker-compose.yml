@@ -113,7 +113,11 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ['CMD-SHELL', 'wget --no-verbose --tries=1 --spider http://localhost:3333/v1/health || exit 1']
+      test:
+        [
+          'CMD-SHELL',
+          'wget --no-verbose --tries=1 --spider http://localhost:3333/v1/health || exit 1',
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -131,7 +135,11 @@ services:
       - redis_data:/data
     healthcheck:
       # requirepass locks the DEFAULT user, so the probe must authenticate.
-      test: ['CMD-SHELL', 'redis-cli --no-auth-warning -a comp_master_local_dev_password ping | grep PONG']
+      test:
+        [
+          'CMD-SHELL',
+          'redis-cli --no-auth-warning -a comp_master_local_dev_password ping | grep PONG',
+        ]
       interval: 5s
       timeout: 5s
       retries: 12
@@ -226,7 +234,11 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ['CMD-SHELL', 'node -e "fetch(\"http://localhost:3000/api/health\").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"']
+      test:
+        [
+          'CMD-SHELL',
+          'node -e "fetch(\"http://localhost:3000/api/health\").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -254,7 +266,11 @@ services:
       - redis
     restart: unless-stopped
     healthcheck:
-      test: ['CMD-SHELL', 'node -e "fetch(\"http://localhost:3000/\").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"']
+      test:
+        [
+          'CMD-SHELL',
+          'node -e "fetch(\"http://localhost:3000/\").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
       interval: 30s
       timeout: 10s
       retries: 5

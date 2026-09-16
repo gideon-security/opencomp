@@ -36,7 +36,6 @@ export const TaskAssigneeChangedEmail = ({
   organizationName,
   taskUrl,
 }: Props) => {
-
   return (
     <Html>
       <Tailwind>
@@ -73,8 +72,10 @@ export const TaskAssigneeChangedEmail = ({
             </Text>
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
-              <strong>{changedByName}</strong> reassigned task <strong>"{taskTitle}"</strong> from{' '}
-              <strong>{oldAssigneeName}</strong> to <strong>{newAssigneeName}</strong> in{' '}
+              <strong>{changedByName}</strong> reassigned task{' '}
+              <strong>"{taskTitle}"</strong> from{' '}
+              <strong>{oldAssigneeName}</strong> to{' '}
+              <strong>{newAssigneeName}</strong> in{' '}
               <strong>{organizationName}</strong>.
             </Text>
 
@@ -94,7 +95,10 @@ export const TaskAssigneeChangedEmail = ({
               </a>
             </Text>
 
-            <UnsubscribeFooter email={toEmail} message="Don't want to receive task assignment notifications?" />
+            <UnsubscribeFooter
+              email={toEmail}
+              message="Don't want to receive task assignment notifications?"
+            />
 
             <br />
 

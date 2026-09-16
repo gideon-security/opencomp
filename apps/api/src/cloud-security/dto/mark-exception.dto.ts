@@ -1,10 +1,18 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsOptional, IsString, Matches, MinLength } from 'class-validator';
+import {
+  IsDateString,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
 
 export class MarkExceptionDto {
   @ApiProperty({
-    description: 'Documentation for why this finding does not apply or is being accepted. Minimum 20 non-whitespace characters.',
-    example: 'Bucket hosts intentionally public marketing assets; writes restricted to the marketing IAM role.',
+    description:
+      'Documentation for why this finding does not apply or is being accepted. Minimum 20 non-whitespace characters.',
+    example:
+      'Bucket hosts intentionally public marketing assets; writes restricted to the marketing IAM role.',
   })
   @IsString()
   @MinLength(20, { message: 'Reason must be at least 20 characters.' })
@@ -24,7 +32,8 @@ export class MarkExceptionDto {
   reviewedBy?: string;
 
   @ApiPropertyOptional({
-    description: 'ISO date when this exception should auto-expire. Null/missing = never.',
+    description:
+      'ISO date when this exception should auto-expire. Null/missing = never.',
     example: '2026-08-13',
   })
   @IsOptional()

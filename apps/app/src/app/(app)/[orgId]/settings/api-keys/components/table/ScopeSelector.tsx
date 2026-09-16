@@ -2,11 +2,6 @@
 
 import { useAvailableScopes } from '@/hooks/use-api-keys';
 import {
-  type ScopePreset,
-  groupScopesByResource,
-  getReadOnlyScopes,
-} from '../../lib/scope-presets';
-import {
   Badge,
   Button,
   Checkbox,
@@ -18,6 +13,11 @@ import {
 } from '@trycompai/design-system';
 import { ChevronRight } from '@trycompai/design-system/icons';
 import { useCallback, useEffect, useMemo } from 'react';
+import {
+  type ScopePreset,
+  getReadOnlyScopes,
+  groupScopesByResource,
+} from '../../lib/scope-presets';
 
 interface ScopeSelectorProps {
   preset: ScopePreset;
@@ -34,10 +34,7 @@ export function ScopeSelector({
 }: ScopeSelectorProps) {
   const { availableScopes } = useAvailableScopes();
 
-  const scopeGroups = useMemo(
-    () => groupScopesByResource(availableScopes),
-    [availableScopes],
-  );
+  const scopeGroups = useMemo(() => groupScopesByResource(availableScopes), [availableScopes]);
 
   // Sync scopes when preset changes
   useEffect(() => {
@@ -69,13 +66,9 @@ export function ScopeSelector({
   const toggleResourceGroup = useCallback(
     (resourceScopes: string[]) => {
       onPresetChange('custom');
-      const allSelected = resourceScopes.every((s) =>
-        selectedScopes.includes(s),
-      );
+      const allSelected = resourceScopes.every((s) => selectedScopes.includes(s));
       if (allSelected) {
-        onScopesChange(
-          selectedScopes.filter((s) => !resourceScopes.includes(s)),
-        );
+        onScopesChange(selectedScopes.filter((s) => !resourceScopes.includes(s)));
       } else {
         const merged = new Set([...selectedScopes, ...resourceScopes]);
         onScopesChange(Array.from(merged));
@@ -125,12 +118,9 @@ export function ScopeSelector({
         <div className="max-h-[300px] space-y-1 overflow-y-auto rounded-md border p-2">
           {scopeGroups.map((group) => {
             const groupScopeValues = group.scopes.map((s) => s.scope);
-            const allChecked = groupScopeValues.every((s) =>
-              selectedScopes.includes(s),
-            );
+            const allChecked = groupScopeValues.every((s) => selectedScopes.includes(s));
             const someChecked =
-              !allChecked &&
-              groupScopeValues.some((s) => selectedScopes.includes(s));
+              !allChecked && groupScopeValues.some((s) => selectedScopes.includes(s));
 
             return (
               <Collapsible key={group.resource}>
@@ -138,30 +128,21 @@ export function ScopeSelector({
                   <Checkbox
                     checked={allChecked}
                     indeterminate={someChecked}
-                    onCheckedChange={() =>
-                      toggleResourceGroup(groupScopeValues)
-                    }
+                    onCheckedChange={() => toggleResourceGroup(groupScopeValues)}
                   />
                   <CollapsibleTrigger className="flex flex-1 items-center gap-1 text-sm font-medium [&>svg]:transition-transform data-[panel-open]:[&>svg]:rotate-90">
                     <ChevronRight size={14} />
                     {group.label}
                     <Badge variant="secondary">
-                      {
-                        groupScopeValues.filter((s) =>
-                          selectedScopes.includes(s),
-                        ).length
-                      }
-                      /{groupScopeValues.length}
+                      {groupScopeValues.filter((s) => selectedScopes.includes(s)).length}/
+                      {groupScopeValues.length}
                     </Badge>
                   </CollapsibleTrigger>
                 </div>
                 <CollapsibleContent>
                   <div className="ml-6 space-y-1 pb-1">
                     {group.scopes.map((s) => (
-                      <label
-                        key={s.scope}
-                        className="flex items-center gap-2 text-sm"
-                      >
+                      <label key={s.scope} className="flex items-center gap-2 text-sm">
                         <Checkbox
                           checked={selectedScopes.includes(s.scope)}
                           onCheckedChange={() => toggleScope(s.scope)}

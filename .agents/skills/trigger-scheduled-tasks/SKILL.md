@@ -1,6 +1,6 @@
 ---
 name: trigger-scheduled-tasks
-description: "How to write and use scheduled Trigger.dev tasks"
+description: 'How to write and use scheduled Trigger.dev tasks'
 ---
 
 Source Cursor rule: `.cursor/rules/trigger.scheduled-tasks.mdc`.
@@ -14,10 +14,10 @@ Recurring tasks using cron. For one-off future runs, use the **delay** option.
 ## Define a scheduled task
 
 ```ts
-import { schedules } from "@trigger.dev/sdk";
+import { schedules } from '@trigger.dev/sdk';
 
 export const task = schedules.task({
-  id: "first-scheduled-task",
+  id: 'first-scheduled-task',
   run: async (payload) => {
     payload.timestamp; // Date (scheduled time, UTC)
     payload.lastTimestamp; // Date | undefined
@@ -26,7 +26,7 @@ export const task = schedules.task({
     payload.externalId; // string | undefined
     payload.upcoming; // Date[]
 
-    payload.timestamp.toLocaleString("en-US", { timeZone: payload.timezone });
+    payload.timestamp.toLocaleString('en-US', { timeZone: payload.timezone });
   },
 });
 ```
@@ -39,14 +39,14 @@ export const task = schedules.task({
 
 ```ts
 schedules.task({
-  id: "every-2h",
-  cron: "0 */2 * * *", // UTC
+  id: 'every-2h',
+  cron: '0 */2 * * *', // UTC
   run: async () => {},
 });
 
 schedules.task({
-  id: "tokyo-5am",
-  cron: { pattern: "0 5 * * *", timezone: "Asia/Tokyo", environments: ["PRODUCTION", "STAGING"] },
+  id: 'tokyo-5am',
+  cron: { pattern: '0 5 * * *', timezone: 'Asia/Tokyo', environments: ['PRODUCTION', 'STAGING'] },
   run: async () => {},
 });
 ```
@@ -56,10 +56,10 @@ schedules.task({
 ```ts
 await schedules.create({
   task: task.id,
-  cron: "0 0 * * *",
-  timezone: "America/New_York", // DST-aware
-  externalId: "user_123",
-  deduplicationKey: "user_123-daily", // updates if reused
+  cron: '0 0 * * *',
+  timezone: 'America/New_York', // DST-aware
+  externalId: 'user_123',
+  deduplicationKey: 'user_123-daily', // updates if reused
 });
 ```
 
@@ -68,9 +68,9 @@ await schedules.create({
 ```ts
 // /trigger/reminder.ts
 export const reminderTask = schedules.task({
-  id: "todo-reminder",
+  id: 'todo-reminder',
   run: async (p) => {
-    if (!p.externalId) throw new Error("externalId is required");
+    if (!p.externalId) throw new Error('externalId is required');
     const user = await db.getUser(p.externalId);
     await sendReminderEmail(user);
   },
@@ -84,11 +84,11 @@ export async function POST(req: Request) {
   return Response.json(
     await schedules.create({
       task: reminderTask.id,
-      cron: "0 8 * * *",
+      cron: '0 8 * * *',
       timezone: data.timezone,
       externalId: data.userId,
       deduplicationKey: `${data.userId}-reminder`,
-    })
+    }),
   );
 }
 ```
@@ -114,7 +114,7 @@ export async function POST(req: Request) {
 ```ts
 await schedules.retrieve(id);
 await schedules.list();
-await schedules.update(id, { cron: "0 0 1 * *", externalId: "ext", deduplicationKey: "key" });
+await schedules.update(id, { cron: '0 0 1 * *', externalId: 'ext', deduplicationKey: 'key' });
 await schedules.deactivate(id);
 await schedules.activate(id);
 await schedules.del(id);

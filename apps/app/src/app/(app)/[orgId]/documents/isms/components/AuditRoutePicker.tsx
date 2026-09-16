@@ -91,8 +91,7 @@ export function AuditRoutePicker({
 
   const conflictMember =
     route === 'in_house' && selectedMemberId && spoMemberIds.includes(selectedMemberId)
-      ? (memberOptions.find((option) => option.id === selectedMemberId)?.name ??
-        'This member')
+      ? (memberOptions.find((option) => option.id === selectedMemberId)?.name ?? 'This member')
       : null;
 
   const handleSave = handleSubmit(async (values) => {
@@ -101,23 +100,14 @@ export function AuditRoutePicker({
     try {
       await onSave({
         auditRoute: values.auditRoute || null,
-        auditRouteMemberId: inHouseOrTraining
-          ? emptyToNull(values.auditRouteMemberId)
-          : null,
-        auditFirmName:
-          values.auditRoute === 'external' ? emptyToNull(values.auditFirmName) : null,
+        auditRouteMemberId: inHouseOrTraining ? emptyToNull(values.auditRouteMemberId) : null,
+        auditFirmName: values.auditRoute === 'external' ? emptyToNull(values.auditFirmName) : null,
         auditEvidenceRef:
-          values.auditRoute === 'external'
-            ? emptyToNull(values.auditEvidenceRef)
-            : null,
+          values.auditRoute === 'external' ? emptyToNull(values.auditEvidenceRef) : null,
         auditCourse:
-          values.auditRoute === 'training_planned'
-            ? emptyToNull(values.auditCourse)
-            : null,
+          values.auditRoute === 'training_planned' ? emptyToNull(values.auditCourse) : null,
         auditDueDate:
-          values.auditRoute === 'training_planned'
-            ? emptyToNull(values.auditDueDate)
-            : null,
+          values.auditRoute === 'training_planned' ? emptyToNull(values.auditDueDate) : null,
       });
     } catch {
       // The caller surfaces the failure via toast and re-throws; swallow here so a
@@ -170,9 +160,7 @@ export function AuditRoutePicker({
               >
                 <SelectTrigger aria-label="In-house auditor">
                   <SelectValue
-                    placeholder={
-                      hasMemberOptions ? 'Select a member' : 'No members available'
-                    }
+                    placeholder={hasMemberOptions ? 'Select a member' : 'No members available'}
                   />
                 </SelectTrigger>
                 <SelectContent>
@@ -239,9 +227,7 @@ export function AuditRoutePicker({
                 >
                   <SelectTrigger aria-label="Member in training">
                     <SelectValue
-                      placeholder={
-                        hasMemberOptions ? 'Select a member' : 'No members available'
-                      }
+                      placeholder={hasMemberOptions ? 'Select a member' : 'No members available'}
                     />
                   </SelectTrigger>
                   <SelectContent>
@@ -277,7 +263,12 @@ export function AuditRoutePicker({
                 control={control}
                 name="auditDueDate"
                 render={({ field: { ref: _ref, ...field } }) => (
-                  <Input {...field} type="date" disabled={!canEdit} aria-label="Training due date" />
+                  <Input
+                    {...field}
+                    type="date"
+                    disabled={!canEdit}
+                    aria-label="Training due date"
+                  />
                 )}
               />
             </Field>
@@ -290,11 +281,11 @@ export function AuditRoutePicker({
           <AlertTitle>Independence conflict</AlertTitle>
           <AlertDescription>
             {conflictMember} is also assigned as the Security &amp; Privacy Owner. ISO 27001
-            requires the internal auditor to be objective and impartial — a person auditing an
-            ISMS they also run creates a conflict. For teams of your size, outsourcing the
-            internal audit to an external auditor is the standard route and usually the most
-            cost-effective way to satisfy the independence requirement. If you keep this as-is, be
-            prepared to justify the arrangement at Stage 2.
+            requires the internal auditor to be objective and impartial — a person auditing an ISMS
+            they also run creates a conflict. For teams of your size, outsourcing the internal audit
+            to an external auditor is the standard route and usually the most cost-effective way to
+            satisfy the independence requirement. If you keep this as-is, be prepared to justify the
+            arrangement at Stage 2.
           </AlertDescription>
         </Alert>
       ) : null}

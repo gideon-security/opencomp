@@ -152,10 +152,7 @@ export function AdminFindingRow({
                 <Edit size={16} className="mr-2" />
                 <span>Edit</span>
               </DropdownMenuItem>
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => onDelete(finding)}
-              >
+              <DropdownMenuItem variant="destructive" onClick={() => onDelete(finding)}>
                 <TrashCan size={16} className="mr-2" />
                 <span>Delete</span>
               </DropdownMenuItem>

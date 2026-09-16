@@ -94,9 +94,7 @@ export class FrameworkFamilyService {
       where: { id: { in: frameworkIds } },
       data: { familyId },
     });
-    this.logger.log(
-      `Moved ${count} framework(s) to ${familyId ?? 'root'}`,
-    );
+    this.logger.log(`Moved ${count} framework(s) to ${familyId ?? 'root'}`);
     return { count };
   }
 

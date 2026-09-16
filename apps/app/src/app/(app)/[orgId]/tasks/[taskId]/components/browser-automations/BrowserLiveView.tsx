@@ -98,9 +98,7 @@ export function BrowserLiveView({
             />
             {/* Show once the browser has rendered so it fades in with the page.
                 AI glow while it runs; amber "Your turn" pill on manual auth. */}
-            {loaded && (
-              <LiveActivityBorder state={variant === 'execution' ? 'ai' : 'you'} />
-            )}
+            {loaded && <LiveActivityBorder state={variant === 'execution' ? 'ai' : 'you'} />}
             {/* Cover the live view while a session is being torn down, so the
                 Browserbase "disconnected" flash never reaches the user. */}
             {isTransitioning && (

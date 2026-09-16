@@ -37,7 +37,12 @@ const statusConfig = {
   not_relevant: { icon: Circle, label: 'Not Relevant', color: 'text-slate-500' },
 } as const;
 
-export function ModernTaskList({ tasks, members, statusFilter, evidenceApprovalEnabled = false }: ModernTaskListProps) {
+export function ModernTaskList({
+  tasks,
+  members,
+  statusFilter,
+  evidenceApprovalEnabled = false,
+}: ModernTaskListProps) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -98,7 +103,14 @@ export function ModernTaskList({ tasks, members, statusFilter, evidenceApprovalE
         const config = statusConfig[status];
 
         return (
-          <ModernSingleStatusTaskList key={status} config={config} tasks={statusTasks} members={members} handleTaskClick={handleTaskClick} evidenceApprovalEnabled={evidenceApprovalEnabled} />
+          <ModernSingleStatusTaskList
+            key={status}
+            config={config}
+            tasks={statusTasks}
+            members={members}
+            handleTaskClick={handleTaskClick}
+            evidenceApprovalEnabled={evidenceApprovalEnabled}
+          />
         );
       })}
     </div>

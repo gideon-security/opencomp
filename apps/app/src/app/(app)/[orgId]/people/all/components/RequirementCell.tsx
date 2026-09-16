@@ -27,10 +27,7 @@ export function RequirementCount({
   const isComplete = total > 0 && completed >= total;
   return (
     <div data-testid={`requirement-${label}`}>
-      <Text
-        size="xs"
-        variant={isComplete ? 'primary' : completed > 0 ? 'warning' : 'muted'}
-      >
+      <Text size="xs" variant={isComplete ? 'primary' : completed > 0 ? 'warning' : 'muted'}>
         {completed}/{total}
       </Text>
     </div>

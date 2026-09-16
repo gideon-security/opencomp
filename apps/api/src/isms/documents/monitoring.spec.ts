@@ -40,7 +40,9 @@ describe('metricValidationMessages (clause 9.1 submit gate)', () => {
 });
 
 describe('seedMetricsIfMissing', () => {
-  const makeTx = (existing: Array<{ metricKey: string | null; position: number }>) => {
+  const makeTx = (
+    existing: Array<{ metricKey: string | null; position: number }>,
+  ) => {
     const tx = {
       ismsMetric: {
         findMany: jest.fn().mockResolvedValue(existing),
@@ -54,9 +56,8 @@ describe('seedMetricsIfMissing', () => {
     const tx = makeTx([]);
     await seedMetricsIfMissing({ tx, documentId: 'doc_1' });
 
-    const { data, skipDuplicates } = (
-      tx.ismsMetric.createMany as jest.Mock
-    ).mock.calls[0][0];
+    const { data, skipDuplicates } = (tx.ismsMetric.createMany as jest.Mock)
+      .mock.calls[0][0];
     expect(skipDuplicates).toBe(true);
     expect(data).toHaveLength(9);
     expect(data.map((row: { metricKey: string }) => row.metricKey)).toEqual(

@@ -1,10 +1,7 @@
 'use client';
 
 import { Grid } from '@trycompai/design-system';
-import {
-  type PoliciesOverview,
-  usePoliciesOverview,
-} from '../hooks/usePoliciesOverview';
+import { type PoliciesOverview, usePoliciesOverview } from '../hooks/usePoliciesOverview';
 import { PolicyAssigneeChart } from './policy-assignee-chart';
 import { PolicyStatusChart } from './policy-status-chart';
 
@@ -13,10 +10,7 @@ interface PolicyChartsClientProps {
   initialData: PoliciesOverview | null;
 }
 
-export function PolicyChartsClient({
-  organizationId,
-  initialData,
-}: PolicyChartsClientProps) {
+export function PolicyChartsClient({ organizationId, initialData }: PolicyChartsClientProps) {
   const { overview } = usePoliciesOverview({
     organizationId,
     initialData,

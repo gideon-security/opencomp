@@ -47,7 +47,11 @@ class ScopedTenantRedis implements TenantRedis {
     return this.delegate.get<T>(this.key(key));
   }
 
-  async set<T>(key: string, value: T, options?: { ex?: number }): Promise<'OK'> {
+  async set<T>(
+    key: string,
+    value: T,
+    options?: { ex?: number },
+  ): Promise<'OK'> {
     return this.delegate.set(this.key(key), value, options);
   }
 

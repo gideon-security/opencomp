@@ -4,13 +4,7 @@ import { postCloudSecurityApi } from './api-response';
 import { classifyExecuteResult } from './execute-result';
 
 export type FindingStatus =
-  | 'pending'
-  | 'fixing'
-  | 'fixed'
-  | 'skipped'
-  | 'failed'
-  | 'cancelled'
-  | 'needs_permissions';
+  'pending' | 'fixing' | 'fixed' | 'skipped' | 'failed' | 'cancelled' | 'needs_permissions';
 
 export interface FindingProgress {
   id: string;

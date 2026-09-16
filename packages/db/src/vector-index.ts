@@ -295,11 +295,7 @@ export const vectorIndex: VectorIndex | null = process.env.DATABASE_URL
         return { id };
       },
 
-      async fetch(
-        ids,
-        organizationId,
-        options = {},
-      ): Promise<VectorFetchResult[]> {
+      async fetch(ids, organizationId, options = {}): Promise<VectorFetchResult[]> {
         if (ids.length === 0) return [];
         return withTenant(organizationId, async (tx) => {
           const rows = await tx.$queryRaw<VectorRow[]>(Prisma.sql`

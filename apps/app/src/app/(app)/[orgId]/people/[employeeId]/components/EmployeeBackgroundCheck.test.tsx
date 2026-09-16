@@ -1,7 +1,7 @@
 import { apiClient } from '@/lib/api-client';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import type { Member, User } from '@db';
 import { render, screen, waitFor } from '@testing-library/react';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import userEvent from '@testing-library/user-event';
 import { SWRConfig } from 'swr';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -111,10 +111,9 @@ describe('EmployeeBackgroundCheck — V1 two-paths', () => {
     expect(screen.getByText('backgroundCheck.strip.notStarted.label')).toBeInTheDocument();
     expect(screen.getByText(/backgroundCheck\.strip\.creditsRemaining/)).toBeInTheDocument();
     expect(screen.getByText('2 / 3')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /backgroundCheck\.strip\.choosePlan/ })).toHaveAttribute(
-      'href',
-      '/org_1/settings/billing/add-ons/background-checks',
-    );
+    expect(
+      screen.getByRole('link', { name: /backgroundCheck\.strip\.choosePlan/ }),
+    ).toHaveAttribute('href', '/org_1/settings/billing/add-ons/background-checks');
   });
 
   it('switches to the Attach form when the Attach path is selected', async () => {
@@ -162,7 +161,9 @@ describe('EmployeeBackgroundCheck — V1 two-paths', () => {
     await user.type(screen.getByLabelText(/Personal email/), 'not-an-email');
     await user.click(screen.getByRole('button', { name: /Send invite/i }));
 
-    expect(await screen.findByText('backgroundCheck.main.invalidPersonalEmail')).toBeInTheDocument();
+    expect(
+      await screen.findByText('backgroundCheck.main.invalidPersonalEmail'),
+    ).toBeInTheDocument();
     expect(apiClient.post).not.toHaveBeenCalled();
   });
 

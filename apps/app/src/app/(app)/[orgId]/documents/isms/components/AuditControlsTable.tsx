@@ -23,10 +23,7 @@ import { useTranslations } from 'next-intl';
 import { Controller, useForm } from 'react-hook-form';
 import type { IsmsAudit, IsmsAuditControl } from '../isms-types';
 import { AuditControlRow, type RaisedResult } from './AuditControlRow';
-import {
-  auditControlSchema,
-  type AuditControlFormValues,
-} from './audit-schema';
+import { auditControlSchema, type AuditControlFormValues } from './audit-schema';
 import { IsmsAddCard, IsmsFieldLabel } from './shared';
 
 interface AuditControlsTableProps {
@@ -106,7 +103,10 @@ export function AuditControlsTable({
       )}
 
       {canEdit ? (
-        <IsmsAddCard addLabel={t('auditControls.addRow')} formTitle={t('auditControls.newFormTitle')}>
+        <IsmsAddCard
+          addLabel={t('auditControls.addRow')}
+          formTitle={t('auditControls.newFormTitle')}
+        >
           {({ close }) => <AddControlForm onAdd={onCreateControl} onClose={close} />}
         </IsmsAddCard>
       ) : null}

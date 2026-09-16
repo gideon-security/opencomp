@@ -43,10 +43,7 @@
       ]
     }
   },
-  "capabilities": [
-    "checks",
-    "sync"
-  ],
+  "capabilities": ["checks", "sync"],
   "supportsMultipleConnections": false,
   "syncSupported": true,
   "checks": [

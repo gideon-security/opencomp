@@ -105,12 +105,16 @@ export function PendingInvitationRow({
 
         {/* ONBOARDED */}
         <TableCell>
-          <Text size="sm" variant="muted">—</Text>
+          <Text size="sm" variant="muted">
+            —
+          </Text>
         </TableCell>
 
         {/* OFFBOARDED */}
         <TableCell>
-          <Text size="sm" variant="muted">—</Text>
+          <Text size="sm" variant="muted">
+            —
+          </Text>
         </TableCell>
 
         {/* Requirement columns — never applicable before the invite is accepted */}

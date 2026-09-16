@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { DeviceSyncProviderSelector } from './DeviceSyncProviderSelector';
 import type { DeviceSyncProviderInfo } from '../hooks/useDeviceSync';
+import { DeviceSyncProviderSelector } from './DeviceSyncProviderSelector';
 
 const { mockHasPermission, mockUseDeviceSync } = vi.hoisted(() => ({
   mockHasPermission: vi.fn(),
@@ -18,8 +18,7 @@ vi.mock('@/hooks/use-permissions', () => ({
 }));
 
 vi.mock('../hooks/useDeviceSync', () => ({
-  useDeviceSync: (opts: { organizationId: string; enabled?: boolean }) =>
-    mockUseDeviceSync(opts),
+  useDeviceSync: (opts: { organizationId: string; enabled?: boolean }) => mockUseDeviceSync(opts),
 }));
 
 const provider: DeviceSyncProviderInfo = {
@@ -33,9 +32,7 @@ const provider: DeviceSyncProviderInfo = {
   nextSyncAt: null,
 };
 
-function mockHook(
-  overrides: Partial<ReturnType<typeof buildHookReturn>> = {},
-) {
+function mockHook(overrides: Partial<ReturnType<typeof buildHookReturn>> = {}) {
   mockUseDeviceSync.mockReturnValue({ ...buildHookReturn(), ...overrides });
 }
 
@@ -61,38 +58,28 @@ beforeEach(() => {
 describe('DeviceSyncProviderSelector — RBAC gating', () => {
   it('renders the sync controls for a user with integration:update', () => {
     mockHasPermission.mockImplementation(
-      (resource: string, action: string) =>
-        resource === 'integration' && action === 'update',
+      (resource: string, action: string) => resource === 'integration' && action === 'update',
     );
 
     render(<DeviceSyncProviderSelector />);
 
-    expect(
-      screen.getByRole('combobox', { name: /Sync devices from/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /Sync now/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /Sync devices from/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Sync now/i })).toBeInTheDocument();
     // Trigger (and the inline option list) show the selected provider name.
     expect(screen.getAllByText('Jamf').length).toBeGreaterThan(0);
     // Hook is enabled (and therefore allowed to hit the device-sync APIs).
-    expect(mockUseDeviceSync).toHaveBeenCalledWith(
-      expect.objectContaining({ enabled: true }),
-    );
+    expect(mockUseDeviceSync).toHaveBeenCalledWith(expect.objectContaining({ enabled: true }));
   });
 
   it('marks the saved provider as selected in the open dropdown (controlled select)', async () => {
     const user = userEvent.setup();
     mockHasPermission.mockImplementation(
-      (resource: string, action: string) =>
-        resource === 'integration' && action === 'update',
+      (resource: string, action: string) => resource === 'integration' && action === 'update',
     );
 
     render(<DeviceSyncProviderSelector />);
 
-    await user.click(
-      screen.getByRole('combobox', { name: /Sync devices from/i }),
-    );
+    await user.click(screen.getByRole('combobox', { name: /Sync devices from/i }));
     const jamfOption = await screen.findByRole('option', { name: /Jamf/i });
     expect(jamfOption).toHaveAttribute('aria-selected', 'true');
   });
@@ -103,20 +90,15 @@ describe('DeviceSyncProviderSelector — RBAC gating', () => {
     const { container } = render(<DeviceSyncProviderSelector />);
 
     expect(container).toBeEmptyDOMElement();
-    expect(
-      screen.queryByRole('button', { name: /Sync now/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Sync now/i })).not.toBeInTheDocument();
     // The hook must be disabled so no device-sync API is called without permission.
-    expect(mockUseDeviceSync).toHaveBeenCalledWith(
-      expect.objectContaining({ enabled: false }),
-    );
+    expect(mockUseDeviceSync).toHaveBeenCalledWith(expect.objectContaining({ enabled: false }));
   });
 
   it('shows the provider picker when the saved provider is no longer connected', async () => {
     const user = userEvent.setup();
     mockHasPermission.mockImplementation(
-      (resource: string, action: string) =>
-        resource === 'integration' && action === 'update',
+      (resource: string, action: string) => resource === 'integration' && action === 'update',
     );
     mockHook({
       selectedProvider: 'jamf', // saved, but no longer in the connected list
@@ -129,23 +111,18 @@ describe('DeviceSyncProviderSelector — RBAC gating', () => {
     const trigger = screen.getByRole('combobox', { name: /Sync devices from/i });
     expect(screen.getByText('Not syncing')).toBeInTheDocument();
     await user.click(trigger);
-    expect(
-      await screen.findByRole('option', { name: /Kandji/i }),
-    ).toBeInTheDocument();
+    expect(await screen.findByRole('option', { name: /Kandji/i })).toBeInTheDocument();
     // The saved provider is still the user's choice — "Don't auto-sync" must
     // NOT be marked Active just because the choice can't be resolved to a
     // connected provider.
     expect(screen.queryByText('Active')).not.toBeInTheDocument();
     // No Sync now button without a connected selected provider.
-    expect(
-      screen.queryByRole('button', { name: /Sync now/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Sync now/i })).not.toBeInTheDocument();
   });
 
   it('does not render for read-only integration access (integration:read only)', () => {
     mockHasPermission.mockImplementation(
-      (resource: string, action: string) =>
-        resource === 'integration' && action === 'read',
+      (resource: string, action: string) => resource === 'integration' && action === 'read',
     );
 
     const { container } = render(<DeviceSyncProviderSelector />);
@@ -157,8 +134,7 @@ describe('DeviceSyncProviderSelector — RBAC gating', () => {
 describe('DeviceSyncProviderSelector — last synced text', () => {
   beforeEach(() => {
     mockHasPermission.mockImplementation(
-      (resource: string, action: string) =>
-        resource === 'integration' && action === 'update',
+      (resource: string, action: string) => resource === 'integration' && action === 'update',
     );
   });
 
@@ -177,8 +153,7 @@ describe('DeviceSyncProviderSelector — last synced text', () => {
 describe('DeviceSyncProviderSelector — connection states', () => {
   beforeEach(() => {
     mockHasPermission.mockImplementation(
-      (resource: string, action: string) =>
-        resource === 'integration' && action === 'update',
+      (resource: string, action: string) => resource === 'integration' && action === 'update',
     );
   });
 
@@ -194,9 +169,10 @@ describe('DeviceSyncProviderSelector — connection states', () => {
     render(<DeviceSyncProviderSelector />);
 
     expect(screen.getByText('Device sync')).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: /Connect an integration/i }),
-    ).toHaveAttribute('href', '/org_1/integrations');
+    expect(screen.getByRole('link', { name: /Connect an integration/i })).toHaveAttribute(
+      'href',
+      '/org_1/integrations',
+    );
     expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
   });
 
@@ -228,9 +204,7 @@ describe('DeviceSyncProviderSelector — connection states', () => {
     expect(intuneOption).toHaveAttribute('aria-disabled', 'true');
     expect(screen.getByText('Reconnect')).toBeInTheDocument();
     // Not selectable as a sync source, so no Sync now button either.
-    expect(
-      screen.queryByRole('button', { name: /Sync now/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Sync now/i })).not.toBeInTheDocument();
   });
 
   it('shows Needs reconnection when the SAVED provider is errored even if another provider is connected', () => {
@@ -271,9 +245,7 @@ describe('DeviceSyncProviderSelector — connection states', () => {
 
     render(<DeviceSyncProviderSelector />);
 
-    expect(
-      screen.getByRole('link', { name: /Connect an integration/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Connect an integration/i })).toBeInTheDocument();
     expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
   });
 });

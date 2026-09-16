@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -42,22 +42,12 @@ vi.mock('sonner', () => ({
 
 // Mock design-system
 vi.mock('@trycompai/design-system', () => ({
-  Accordion: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  AccordionContent: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  AccordionItem: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  AccordionTrigger: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
+  Accordion: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  AccordionContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  AccordionItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  AccordionTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Input: (props: any) => <input {...props} />,
-  Stack: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
+  Stack: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Textarea: (props: any) => <textarea {...props} />,
 }));
 

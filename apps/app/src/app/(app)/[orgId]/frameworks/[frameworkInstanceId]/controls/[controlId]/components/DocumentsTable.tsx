@@ -56,11 +56,7 @@ export function DocumentsTable({
       toast.success(t('controls.documentUnlinked'));
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t('controls.failedToUnlinkDocument'),
-      );
+      toast.error(error instanceof Error ? error.message : t('controls.failedToUnlinkDocument'));
     } finally {
       setPending(null);
     }

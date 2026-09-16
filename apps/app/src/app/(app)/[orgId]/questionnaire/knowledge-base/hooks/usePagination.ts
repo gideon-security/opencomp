@@ -36,4 +36,3 @@ export function usePagination<T>({ items, itemsPerPage = 10 }: UsePaginationProp
     handlePageChange,
   };
 }
-

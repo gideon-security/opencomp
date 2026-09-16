@@ -1,26 +1,18 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
+import { useState } from 'react';
 import type { OrgChartMember } from '../types';
 
 interface PeopleSidebarProps {
   members: OrgChartMember[];
-  onAddMember: (person: {
-    name: string;
-    title: string;
-    memberId?: string;
-  }) => void;
+  onAddMember: (person: { name: string; title: string; memberId?: string }) => void;
   /** Set of member IDs already placed on the chart */
   placedMemberIds: Set<string>;
 }
 
-export function PeopleSidebar({
-  members,
-  onAddMember,
-  placedMemberIds,
-}: PeopleSidebarProps) {
+export function PeopleSidebar({ members, onAddMember, placedMemberIds }: PeopleSidebarProps) {
   const [search, setSearch] = useState('');
   const [showCustomForm, setShowCustomForm] = useState(false);
   const [customName, setCustomName] = useState('');
@@ -67,9 +59,7 @@ export function PeopleSidebar({
       {/* Member list */}
       <div className="flex-1 overflow-y-auto px-1 py-1">
         {filteredMembers.length === 0 ? (
-          <p className="px-2 py-4 text-center text-xs text-muted-foreground">
-            No members found
-          </p>
+          <p className="px-2 py-4 text-center text-xs text-muted-foreground">No members found</p>
         ) : (
           filteredMembers.map((member) => {
             const isPlaced = placedMemberIds.has(member.id);
@@ -80,9 +70,7 @@ export function PeopleSidebar({
                 onClick={() => !isPlaced && handleAddMember(member)}
                 disabled={isPlaced}
                 className={`flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left transition-colors ${
-                  isPlaced
-                    ? 'cursor-default opacity-40'
-                    : 'hover:bg-muted cursor-pointer'
+                  isPlaced ? 'cursor-default opacity-40' : 'hover:bg-muted cursor-pointer'
                 }`}
               >
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
@@ -102,9 +90,7 @@ export function PeopleSidebar({
                   </span>
                 </div>
                 {isPlaced && (
-                  <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">
-                    Added
-                  </span>
+                  <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">Added</span>
                 )}
               </button>
             );
@@ -131,11 +117,7 @@ export function PeopleSidebar({
               className="w-full rounded-md border border-border bg-background px-2.5 py-1.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
             />
             <div className="flex gap-2">
-              <Button
-                size="sm"
-                onClick={handleAddCustom}
-                disabled={!customName.trim()}
-              >
+              <Button size="sm" onClick={handleAddCustom} disabled={!customName.trim()}>
                 Add
               </Button>
               <Button

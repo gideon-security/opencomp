@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { apiClient } from '@/lib/api-client';
 import { Card, CardContent } from '@gideon-defender/ui/card';
 import { Stack, Text } from '@trycompai/design-system';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { apiClient } from '@/lib/api-client';
 import { PermissionMatrix } from '../../components/PermissionMatrix';
 
 interface SystemRoleDetailProps {
@@ -16,7 +16,13 @@ interface SystemRoleDetailProps {
   obligationsEditable?: boolean;
 }
 
-export function SystemRoleDetail({ roleName, permissions, obligations, description, obligationsEditable = false }: SystemRoleDetailProps) {
+export function SystemRoleDetail({
+  roleName,
+  permissions,
+  obligations,
+  description,
+  obligationsEditable = false,
+}: SystemRoleDetailProps) {
   const [currentObligations, setCurrentObligations] =
     useState<Record<string, boolean>>(obligations);
   const [isSaving, setIsSaving] = useState(false);

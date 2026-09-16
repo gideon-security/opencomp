@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -62,9 +62,7 @@ vi.mock('@gideon-defender/ui/form', () => ({
 // Mock design system components
 vi.mock('@trycompai/design-system', () => ({
   Select: ({ children }: any) => <div>{children}</div>,
-  SelectItem: ({ children, value }: any) => (
-    <option value={value}>{children}</option>
-  ),
+  SelectItem: ({ children, value }: any) => <option value={value}>{children}</option>,
   Stack: ({ children }: any) => <div>{children}</div>,
 }));
 

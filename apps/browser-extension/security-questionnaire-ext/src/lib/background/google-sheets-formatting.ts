@@ -130,15 +130,10 @@ function groupTargetsByColumn(targets: SheetApiTarget[]): Map<number, SheetApiTa
 function calculateAnswerColumnWidth(targets: SheetApiTarget[]): number {
   const longestLine = Math.max(
     0,
-    ...targets.flatMap((target) =>
-      target.answer.split(/\r?\n/).map((line) => line.trim().length),
-    ),
+    ...targets.flatMap((target) => target.answer.split(/\r?\n/).map((line) => line.trim().length)),
   );
   const width = Math.ceil(longestLine * PX_PER_CHARACTER + COLUMN_PADDING_PX);
-  return Math.min(
-    MAX_ANSWER_COLUMN_WIDTH_PX,
-    Math.max(MIN_ANSWER_COLUMN_WIDTH_PX, width),
-  );
+  return Math.min(MAX_ANSWER_COLUMN_WIDTH_PX, Math.max(MIN_ANSWER_COLUMN_WIDTH_PX, width));
 }
 
 function compactIndexes(indexes: number[]): { start: number; end: number }[] {

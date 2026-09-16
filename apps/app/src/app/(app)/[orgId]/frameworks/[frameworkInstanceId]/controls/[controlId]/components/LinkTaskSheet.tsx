@@ -1,7 +1,7 @@
 'use client';
 
-import { apiClient } from '@/lib/api-client';
 import { usePermissions } from '@/hooks/use-permissions';
+import { apiClient } from '@/lib/api-client';
 import {
   Button,
   Checkbox,
@@ -36,14 +36,8 @@ export function LinkTaskSheet({
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const { tasks, isLoading } = useControlOptions(isOpen);
-  const linked = useMemo(
-    () => new Set(alreadyLinkedTaskIds),
-    [alreadyLinkedTaskIds],
-  );
-  const options = useMemo(
-    () => tasks.filter((t) => !linked.has(t.id)),
-    [tasks, linked],
-  );
+  const linked = useMemo(() => new Set(alreadyLinkedTaskIds), [alreadyLinkedTaskIds]);
+  const options = useMemo(() => tasks.filter((t) => !linked.has(t.id)), [tasks, linked]);
 
   useEffect(() => {
     if (!isOpen) setSelected(new Set());
@@ -73,9 +67,7 @@ export function LinkTaskSheet({
       setIsOpen(false);
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('controls.failedToLinkTasks'),
-      );
+      toast.error(error instanceof Error ? error.message : t('controls.failedToLinkTasks'));
     } finally {
       setIsSubmitting(false);
     }
@@ -83,11 +75,7 @@ export function LinkTaskSheet({
 
   return (
     <>
-      <Button
-        size="sm"
-        iconLeft={<LinkIcon size={16} />}
-        onClick={() => setIsOpen(true)}
-      >
+      <Button size="sm" iconLeft={<LinkIcon size={16} />} onClick={() => setIsOpen(true)}>
         {t('controls.linkTask')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -121,10 +109,7 @@ export function LinkTaskSheet({
                   </label>
                 ))}
                 <div className="flex justify-end pt-2">
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={selected.size === 0 || isSubmitting}
-                  >
+                  <Button onClick={handleSubmit} disabled={selected.size === 0 || isSubmitting}>
                     {t('controls.linkTaskCount', {
                       count: selected.size,
                     })}

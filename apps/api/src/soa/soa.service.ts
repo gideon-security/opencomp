@@ -555,7 +555,9 @@ export class SOAService {
           closure,
           title: question.columnMapping?.title ?? null,
           control_objective: question.columnMapping?.control_objective ?? null,
-          isApplicable: useRemoteDefault ? false : (answer?.isApplicable ?? null),
+          isApplicable: useRemoteDefault
+            ? false
+            : (answer?.isApplicable ?? null),
           justification,
         },
         answer: justification,

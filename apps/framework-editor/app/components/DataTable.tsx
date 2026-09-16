@@ -1,5 +1,15 @@
 'use client';
 
+import { Button } from '@gideon-defender/ui/button';
+import { Input } from '@gideon-defender/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@gideon-defender/ui/table';
 import {
   flexRender,
   getCoreRowModel,
@@ -9,9 +19,6 @@ import {
   type ColumnDef,
   type SortingState,
 } from '@tanstack/react-table';
-import { Button } from '@gideon-defender/ui/button';
-import { Input } from '@gideon-defender/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@gideon-defender/ui/table';
 import { PlusCircle, Search, TableIcon } from 'lucide-react';
 import { useMemo, useState, type ElementType, type ReactNode } from 'react';
 
@@ -167,7 +174,10 @@ export function DataTable<TData, TValue>({
       ) : searchTerm && !hasFilteredResults && data.length > 0 ? (
         <p className="py-4 text-center">No results found for "{searchTerm}".</p>
       ) : (
-        !searchTerm && data.length === 0 && <p className="py-4 text-center">{emptyMessage ?? 'No data available.'}</p>
+        !searchTerm &&
+        data.length === 0 && (
+          <p className="py-4 text-center">{emptyMessage ?? 'No data available.'}</p>
+        )
       )}
     </div>
   );

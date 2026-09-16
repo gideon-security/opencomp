@@ -13,10 +13,7 @@ import {
 } from '@trycompai/design-system';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import {
-  type McpOrganizationData,
-  useMcpOrganization,
-} from '../hooks/useMcpOrganization';
+import { type McpOrganizationData, useMcpOrganization } from '../hooks/useMcpOrganization';
 
 interface Props {
   initialData: McpOrganizationData;
@@ -69,17 +66,13 @@ export function McpOrganizationSelector({ initialData }: Props) {
         {!savedOrgId ? (
           <Alert variant="warning">
             <AlertDescription>
-              Pick an organization to start using your AI assistant. Until you
-              choose one, AI / MCP requests can&apos;t act on your data.
+              Pick an organization to start using your AI assistant. Until you choose one, AI / MCP
+              requests can&apos;t act on your data.
             </AlertDescription>
           </Alert>
         ) : null}
         <div className="max-w-sm">
-          <Select
-            value={selectedOrgId ?? ''}
-            onValueChange={setSelectedOrgId}
-            disabled={saving}
-          >
+          <Select value={selectedOrgId ?? ''} onValueChange={setSelectedOrgId} disabled={saving}>
             <SelectTrigger id="mcp-org-select">
               <SelectValue placeholder="Select an organization" />
             </SelectTrigger>

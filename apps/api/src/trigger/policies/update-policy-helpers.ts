@@ -151,7 +151,10 @@ export async function updatePolicyInDatabase(
         await tx.$executeRaw`SELECT id FROM "Policy" WHERE id = ${policyId} FOR UPDATE`;
         const current = await tx.policy.findUniqueOrThrow({
           where: { id: policyId },
-          select: { pdfUrl: true, currentVersion: { select: { pdfUrl: true } } },
+          select: {
+            pdfUrl: true,
+            currentVersion: { select: { pdfUrl: true } },
+          },
         });
         if (policy.currentVersionId) {
           await tx.policyVersion.update({

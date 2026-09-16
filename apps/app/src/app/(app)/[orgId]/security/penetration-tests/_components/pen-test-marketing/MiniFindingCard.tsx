@@ -31,9 +31,7 @@ export function MiniFindingCard() {
       </div>
       <div className="px-3 py-3 sm:px-4 sm:py-3.5">
         <div className="mb-1 text-[14px] leading-[1.35]">{FINDING.title}</div>
-        <div className="mb-2.5 font-mono text-[11px] text-muted-foreground">
-          {FINDING.endpoint}
-        </div>
+        <div className="mb-2.5 font-mono text-[11px] text-muted-foreground">{FINDING.endpoint}</div>
         <p className="mb-3 text-[12px] leading-[1.55] text-muted-foreground">{FINDING.summary}</p>
         <pre className="overflow-x-auto rounded-sm bg-[#0b0b0b] px-3 py-2.5 font-mono text-[11px] leading-[1.5] text-[#d4d4d4]">
           {AGENT_LOG}

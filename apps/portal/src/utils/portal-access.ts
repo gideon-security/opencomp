@@ -1,10 +1,10 @@
+import { db } from '@db/server';
 import {
   BUILT_IN_ROLE_OBLIGATIONS,
   BUILT_IN_ROLE_PERMISSIONS,
   parseRoleObligations,
   parseRolePermissions,
 } from '@gideon-defender/auth';
-import { db } from '@db/server';
 
 export async function hasPortalAccess({
   roleString,
@@ -13,7 +13,10 @@ export async function hasPortalAccess({
   roleString: string;
   organizationId: string;
 }): Promise<boolean> {
-  const roles = roleString.split(',').map((r) => r.trim()).filter(Boolean);
+  const roles = roleString
+    .split(',')
+    .map((r) => r.trim())
+    .filter(Boolean);
   const permissions: Record<string, string[]> = {};
   let hasComplianceObligation = false;
 

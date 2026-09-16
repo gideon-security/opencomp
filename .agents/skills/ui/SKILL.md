@@ -1,6 +1,6 @@
 ---
 name: ui
-description: "Use when building or editing frontend UI components, layouts, styling, design system usage, colors, dark mode, or icons."
+description: 'Use when building or editing frontend UI components, layouts, styling, design system usage, colors, dark mode, or icons.'
 ---
 
 Source Cursor rule: `.cursor/rules/ui.mdc`.
@@ -77,11 +77,11 @@ When you need new styling:
 
 ```tsx
 // Adding a variant
-const badgeVariants = cva("...", {
+const badgeVariants = cva('...', {
   variants: {
     variant: {
       // existing...
-      counter: "bg-muted text-muted-foreground tabular-nums font-mono",
+      counter: 'bg-muted text-muted-foreground tabular-nums font-mono',
     },
   },
 });
@@ -119,11 +119,11 @@ Carbon icons from DS, not lucide:
 ```tsx
 // ✅ Design system icons with size prop
 import { Add, Close, ChevronDown } from '@trycompai/design-system/icons';
-<Add size={16} />
+<Add size={16} />;
 
 // ❌ Don't use lucide
 import { Plus, X } from 'lucide-react';
-<Plus className="h-4 w-4" />
+<Plus className="h-4 w-4" />;
 ```
 
 ## Anti-Patterns

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 /**
  * Tests for the sliceToMarkdown utility used by InlineEditBubble.
@@ -32,9 +32,7 @@ function sliceToMarkdown(
 
 describe('sliceToMarkdown logic', () => {
   it('converts a heading to markdown', () => {
-    const result = sliceToMarkdown([
-      { type: 'heading', text: 'Purpose', level: 2 },
-    ]);
+    const result = sliceToMarkdown([{ type: 'heading', text: 'Purpose', level: 2 }]);
     expect(result).toBe('## Purpose');
   });
 
@@ -44,16 +42,12 @@ describe('sliceToMarkdown logic', () => {
   });
 
   it('converts a plain paragraph', () => {
-    const result = sliceToMarkdown([
-      { type: 'paragraph', text: 'Some policy content.' },
-    ]);
+    const result = sliceToMarkdown([{ type: 'paragraph', text: 'Some policy content.' }]);
     expect(result).toBe('Some policy content.');
   });
 
   it('converts a list item paragraph with bullet prefix', () => {
-    const result = sliceToMarkdown([
-      { type: 'paragraph', text: 'First bullet', inList: true },
-    ]);
+    const result = sliceToMarkdown([{ type: 'paragraph', text: 'First bullet', inList: true }]);
     expect(result).toBe('- First bullet');
   });
 
@@ -71,9 +65,7 @@ describe('sliceToMarkdown logic', () => {
   });
 
   it('handles empty text', () => {
-    const result = sliceToMarkdown([
-      { type: 'paragraph', text: '' },
-    ]);
+    const result = sliceToMarkdown([{ type: 'paragraph', text: '' }]);
     expect(result).toBe('');
   });
 
@@ -102,9 +94,7 @@ describe('inline edit flow', () => {
       { type: 'paragraph', text: 'Lock server racks', inList: true },
       { type: 'paragraph', text: 'Maintain inventory', inList: true },
     ]);
-    expect(markdown).toBe(
-      '## Equipment Protection\n- Lock server racks\n- Maintain inventory',
-    );
+    expect(markdown).toBe('## Equipment Protection\n- Lock server racks\n- Maintain inventory');
   });
 
   it('paragraph-only selection has no markdown formatting', () => {

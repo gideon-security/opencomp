@@ -32,12 +32,8 @@ function normalizeExtensionKey(value: string | undefined): string | undefined {
   return /^[a-p]{32}$/.test(trimmed) ? undefined : trimmed;
 }
 
-const apiBaseUrl = trimTrailingSlash(
-  readEnv('WXT_PUBLIC_API_BASE_URL') ?? 'http://localhost:3333',
-);
-const appBaseUrl = trimTrailingSlash(
-  readEnv('WXT_PUBLIC_APP_BASE_URL') ?? 'http://localhost:3000',
-);
+const apiBaseUrl = trimTrailingSlash(readEnv('WXT_PUBLIC_API_BASE_URL') ?? 'http://localhost:3333');
+const appBaseUrl = trimTrailingSlash(readEnv('WXT_PUBLIC_APP_BASE_URL') ?? 'http://localhost:3000');
 const extensionKey = normalizeExtensionKey(readEnv('WXT_EXTENSION_KEY'));
 const googleOAuthClientId = readEnv('WXT_GOOGLE_OAUTH_CLIENT_ID');
 const googleSheetsScope = 'https://www.googleapis.com/auth/spreadsheets';
@@ -53,8 +49,7 @@ export default defineConfig({
   },
   manifest: {
     name: 'OpenComp Security Questionnaire',
-    description:
-      'Generate and insert security questionnaire answers from OpenComp.',
+    description: 'Generate and insert security questionnaire answers from OpenComp.',
     // No activeTab: the <all_urls> host permission already covers every page
     // the extension touches, and the store rejects redundant permissions.
     permissions: [

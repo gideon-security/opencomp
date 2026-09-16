@@ -19,7 +19,13 @@ describe('parseOptionalDate', () => {
   });
 
   it('rejects non-ISO / ambiguous formats', () => {
-    for (const bad of ['26-05-2026', '05/26/2026', '2026-5-6', '2026', 'garbage']) {
+    for (const bad of [
+      '26-05-2026',
+      '05/26/2026',
+      '2026-5-6',
+      '2026',
+      'garbage',
+    ]) {
       expect(() => parseOptionalDate(bad)).toThrow(BadRequestException);
     }
   });

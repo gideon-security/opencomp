@@ -91,8 +91,7 @@ export function RiskMatrix5x5({
   // a single celebratory marker instead of two stacked dots that hide each
   // other. Accept (target === inherent) is excluded so an Accept-from-day-
   // one risk doesn't claim a "completed" reduction.
-  const isAtTarget =
-    c >= 1 && (inherentL !== residualL || inherentI !== residualI);
+  const isAtTarget = c >= 1 && (inherentL !== residualL || inherentI !== residualI);
   // Pixel offset within the grid (top-left = (0,0)). Rows render top-to-
   // bottom in descending likelihood order, so the y-axis is flipped (4 - L).
   const stepPx = CELL_SIZE + GAP;
@@ -127,7 +126,7 @@ export function RiskMatrix5x5({
               }}
             />
           )}
-        </div>
+        </div>,
       );
     }
   }
@@ -162,10 +161,7 @@ export function RiskMatrix5x5({
         </div>
       </div>
       <div className="flex justify-center">
-        <div
-          className="grid items-stretch gap-1.5"
-          style={{ gridTemplateColumns: 'auto auto' }}
-        >
+        <div className="grid items-stretch gap-1.5" style={{ gridTemplateColumns: 'auto auto' }}>
           <div
             className="text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground flex items-center justify-center"
             style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}

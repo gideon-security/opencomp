@@ -12,8 +12,6 @@ interface PenetrationTestsPageClientProps {
  * list navigates to `[reportId]` which re-renders the same shell with that
  * run selected.
  */
-export function PenetrationTestsPageClient({
-  orgId,
-}: PenetrationTestsPageClientProps) {
+export function PenetrationTestsPageClient({ orgId }: PenetrationTestsPageClientProps) {
   return <SplitView orgId={orgId} selectedRunId={null} />;
 }

@@ -1,7 +1,4 @@
-import {
-  columnIndexToName,
-  columnNameToIndex,
-} from '../sheet-columns';
+import { columnIndexToName, columnNameToIndex } from '../sheet-columns';
 import type { QuestionQueueItem, SheetMapping, TabQuestionQueue } from '../types';
 
 export interface SheetAnswer {
@@ -28,12 +25,14 @@ export function parseSheetTargets(answers: SheetAnswer[]): SheetApiTarget[] {
   return answers.flatMap((answer) => {
     const match = answer.fieldId.match(/^sheet:([^:]+):(\d+):(\d+)$/);
     if (!match) return [];
-    return [{
-      ...answer,
-      gid: match[1],
-      row: Number(match[2]),
-      col: Number(match[3]),
-    }];
+    return [
+      {
+        ...answer,
+        gid: match[1],
+        row: Number(match[2]),
+        col: Number(match[3]),
+      },
+    ];
   });
 }
 
@@ -46,20 +45,25 @@ export async function resolveSheetTargets(params: {
   }): Promise<string[]>;
   targets: SheetApiTarget[];
 }): Promise<SheetApiTarget[]> {
-  const plans = params.targets.map((target) => buildTargetPlan({
-    queue: params.queue,
-    target,
-  }));
+  const plans = params.targets.map((target) =>
+    buildTargetPlan({
+      queue: params.queue,
+      target,
+    }),
+  );
   const values = new Map<string, string[]>();
 
   for (const plan of plans) {
     const key = columnRangeKey(plan);
     if (!values.has(key)) {
-      values.set(key, await params.readColumn({
-        column: plan.questionColumn,
-        endRow: plan.endRow,
-        startRow: plan.startRow,
-      }));
+      values.set(
+        key,
+        await params.readColumn({
+          column: plan.questionColumn,
+          endRow: plan.endRow,
+          startRow: plan.startRow,
+        }),
+      );
     }
   }
 
@@ -68,10 +72,7 @@ export async function resolveSheetTargets(params: {
   );
 }
 
-function buildTargetPlan(params: {
-  queue: TabQuestionQueue;
-  target: SheetApiTarget;
-}): TargetPlan {
+function buildTargetPlan(params: { queue: TabQuestionQueue; target: SheetApiTarget }): TargetPlan {
   const item = findQueueItem(params.queue, params.target.fieldId);
   const tag = parseSheetTag(item.tag);
   const mapping = getMatchingMapping({
@@ -91,10 +92,7 @@ function buildTargetPlan(params: {
   };
 }
 
-function resolveTarget(params: {
-  plan: TargetPlan;
-  values: string[];
-}): SheetApiTarget {
+function resolveTarget(params: { plan: TargetPlan; values: string[] }): SheetApiTarget {
   const expected = normalizeQuestion(params.plan.question);
   const currentIndex = params.plan.target.row - params.plan.startRow;
   if (normalizeQuestion(params.values[currentIndex] ?? '') === expected) {
@@ -111,10 +109,7 @@ function resolveTarget(params: {
   throw new Error(`Could not verify the target row for "${params.plan.question}".`);
 }
 
-function retarget(params: {
-  plan: TargetPlan;
-  row: number;
-}): SheetApiTarget {
+function retarget(params: { plan: TargetPlan; row: number }): SheetApiTarget {
   return {
     ...params.plan.target,
     col: params.plan.answerColumn,
@@ -141,12 +136,8 @@ function getAnswerColumn(params: {
   tag: ReturnType<typeof parseSheetTag>;
   target: SheetApiTarget;
 }): number {
-  const mapped = params.mapping
-    ? columnNameToIndex(params.mapping.answerColumn)
-    : null;
-  const tagged = params.tag
-    ? columnNameToIndex(params.tag.answerColumn)
-    : null;
+  const mapped = params.mapping ? columnNameToIndex(params.mapping.answerColumn) : null;
+  const tagged = params.tag ? columnNameToIndex(params.tag.answerColumn) : null;
   return (mapped ?? tagged ?? params.target.col - 1) + 1;
 }
 

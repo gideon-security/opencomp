@@ -9,7 +9,8 @@ import type {
 // Keep in sync if new frameworks are added there.
 function canonicalSlug(type: string): string {
   const normalized = type.toLowerCase().replace(/[^a-z0-9]/g, '');
-  if (normalized.includes('soc2') || normalized.includes('soc 2')) return 'soc2';
+  if (normalized.includes('soc2') || normalized.includes('soc 2'))
+    return 'soc2';
   if (normalized.includes('iso27001') || normalized.includes('27001'))
     return 'iso27001';
   if (normalized.includes('iso42001') || normalized.includes('42001'))

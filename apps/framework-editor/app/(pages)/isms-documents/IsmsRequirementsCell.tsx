@@ -121,8 +121,7 @@ export function IsmsRequirementsCell({
           <span className="text-muted-foreground text-sm italic">None</span>
         ) : (
           <span className="text-muted-foreground text-sm">
-            {requirements.length}{' '}
-            {requirements.length === 1 ? 'requirement' : 'requirements'}
+            {requirements.length} {requirements.length === 1 ? 'requirement' : 'requirements'}
           </span>
         )}
       </div>

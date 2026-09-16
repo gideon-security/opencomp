@@ -24,7 +24,9 @@ export function getAwsRoleAssumerEnvName(partition: AwsPartition): string {
     : 'SECURITY_HUB_ROLE_ASSUMER_ARN';
 }
 
-export function getAwsRoleAssumerArn(partition: AwsPartition): string | undefined {
+export function getAwsRoleAssumerArn(
+  partition: AwsPartition,
+): string | undefined {
   return process.env[getAwsRoleAssumerEnvName(partition)];
 }
 
@@ -34,8 +36,7 @@ export function getAwsBaseCredentials(
   if (partition !== 'aws-us-gov') return undefined;
 
   const accessKeyId = process.env.SECURITY_HUB_GOVCLOUD_ACCESS_KEY_ID;
-  const secretAccessKey =
-    process.env.SECURITY_HUB_GOVCLOUD_SECRET_ACCESS_KEY;
+  const secretAccessKey = process.env.SECURITY_HUB_GOVCLOUD_SECRET_ACCESS_KEY;
   if (!accessKeyId || !secretAccessKey) return undefined;
 
   return {

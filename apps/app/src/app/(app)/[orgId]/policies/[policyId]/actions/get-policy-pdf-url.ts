@@ -2,16 +2,18 @@
 
 import { authActionClient } from '@/actions/safe-action';
 import { BUCKET_NAME, s3Client } from '@/app/s3';
-import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@/lib/s3-presigner';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { db } from '@db/server';
 import { z } from 'zod';
 
 export const getPolicyPdfUrlAction = authActionClient
-  .inputSchema(z.object({ 
-    policyId: z.string(),
-    versionId: z.string().optional(), // If provided, get URL for this version's PDF
-  }))
+  .inputSchema(
+    z.object({
+      policyId: z.string(),
+      versionId: z.string().optional(), // If provided, get URL for this version's PDF
+    }),
+  )
   .metadata({
     name: 'get-policy-pdf-url',
     track: {

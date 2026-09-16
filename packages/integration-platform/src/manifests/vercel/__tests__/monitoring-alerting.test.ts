@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { monitoringAlertingCheck } from '../checks/monitoring-alerting';
 import type { CheckContext, CheckVariableValues } from '../../../types';
+import { monitoringAlertingCheck } from '../checks/monitoring-alerting';
 import type {
   VercelDeployment,
   VercelDeploymentsResponse,
@@ -53,7 +53,7 @@ async function runWithVariables(
     fail: (result) => {
       failed.push(result.resourceId);
     },
-    fetch: (async <T,>(path: string): Promise<T> => {
+    fetch: (async <T>(path: string): Promise<T> => {
       if (path.startsWith('/v9/projects')) {
         return { projects } satisfies VercelProjectsResponse as unknown as T;
       }

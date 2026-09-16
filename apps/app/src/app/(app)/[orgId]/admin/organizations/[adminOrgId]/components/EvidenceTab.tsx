@@ -167,9 +167,7 @@ function FormSubmissions({
 
   if (!detail) {
     return (
-      <div className="py-8 text-center text-muted-foreground">
-        Failed to load form details.
-      </div>
+      <div className="py-8 text-center text-muted-foreground">Failed to load form details.</div>
     );
   }
 
@@ -178,12 +176,7 @@ function FormSubmissions({
   return (
     <Stack gap="lg">
       <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="sm"
-          iconLeft={<ArrowLeft size={16} />}
-          onClick={onBack}
-        >
+        <Button variant="ghost" size="sm" iconLeft={<ArrowLeft size={16} />} onClick={onBack}>
           Back
         </Button>
       </div>

@@ -33,9 +33,7 @@ export default async function PoliciesPage({ params }: PoliciesPageProps) {
     } | null>('/v1/organization/onboarding'),
   ]);
 
-  const policies = Array.isArray(policiesRes.data?.data)
-    ? policiesRes.data.data
-    : [];
+  const policies = Array.isArray(policiesRes.data?.data) ? policiesRes.data.data : [];
 
   // Compute overview from policies (same logic used client-side)
   const initialOverview = computePoliciesOverview(

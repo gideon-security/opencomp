@@ -11,12 +11,7 @@ interface GrantDataTableProps {
   onResendAccess: (row: AccessGrant) => void;
 }
 
-export function GrantDataTable({
-  data,
-  isLoading,
-  onRevoke,
-  onResendAccess,
-}: GrantDataTableProps) {
+export function GrantDataTable({ data, isLoading, onRevoke, onResendAccess }: GrantDataTableProps) {
   const columns = buildGrantColumns({ onRevoke, onResendAccess });
 
   return (

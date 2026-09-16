@@ -25,10 +25,7 @@ export async function countEmbeddings(
   }
 
   try {
-    const result = await countVectorsByOrganization(
-      organizationId,
-      sourceType,
-    );
+    const result = await countVectorsByOrganization(organizationId, sourceType);
 
     logger.info('Counted embeddings', {
       organizationId,

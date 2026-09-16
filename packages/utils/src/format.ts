@@ -122,9 +122,7 @@ export function formatDateTime(
  * Returns `null` for falsy/invalid input to match API export expectations.
  * App callers needing a string fallback can do `formatDateYmd(x) ?? fallback`.
  */
-export function formatDateYmd(
-  date: Date | string | number | null | undefined,
-): string | null {
+export function formatDateYmd(date: Date | string | number | null | undefined): string | null {
   const d = toDate(date);
   if (!d) return null;
   return d.toISOString().slice(0, 10);
@@ -134,9 +132,7 @@ export function formatDateYmd(
  * US numeric slash format `MM/dd/yyyy` — replaces `apps/app/src/lib/utils/format-date.ts:3`.
  * Returns '' for falsy/invalid input.
  */
-export function formatDateSlash(
-  date: Date | string | null | undefined,
-): string {
+export function formatDateSlash(date: Date | string | null | undefined): string {
   const d = toDate(date);
   if (!d) return '';
   const mm = String(d.getMonth() + 1).padStart(2, '0');
@@ -149,9 +145,7 @@ export function formatDateSlash(
  * US numeric short slash with 2-digit year via `Intl` (portal variant: MM/dd/yyyy).
  * Alias for `formatDateSlash` for portal `PortalSubmissionsClient` (2-digit month/day).
  */
-export function formatDateNumeric(
-  date: Date | string | number | null | undefined,
-): string {
+export function formatDateNumeric(date: Date | string | number | null | undefined): string {
   const d = toDate(date);
   if (!d) return '';
   try {

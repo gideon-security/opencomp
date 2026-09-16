@@ -2,8 +2,8 @@ import { AppOnboarding } from '@/components/app-onboarding';
 import { CreateRiskSheet } from '@/components/sheets/create-risk-sheet';
 import { serverApi } from '@/lib/api-server';
 import { PageHeader, PageLayout } from '@trycompai/design-system';
-import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { RisksTable } from './RisksTable';
 
 interface RisksApiResponse {
@@ -78,13 +78,12 @@ export default async function RiskRegisterPage(props: {
   // are portal-only. Custom roles can grant any combination of permissions,
   // so anyone with a non-built-in role is included — we can't resolve
   // permissions client-side and customers control their own role design.
-  const PORTAL_ONLY_OR_READ_ROLES = new Set([
-    'auditor',
-    'employee',
-    'contractor',
-  ]);
+  const PORTAL_ONLY_OR_READ_ROLES = new Set(['auditor', 'employee', 'contractor']);
   const canOwnRisks = (roleField: string): boolean => {
-    const roles = roleField.split(',').map((r) => r.trim()).filter(Boolean);
+    const roles = roleField
+      .split(',')
+      .map((r) => r.trim())
+      .filter(Boolean);
     if (roles.length === 0) return false;
     return roles.some((r) => {
       if (r === 'owner' || r === 'admin') return true;
@@ -114,7 +113,10 @@ export default async function RiskRegisterPage(props: {
   if (isEmpty && !isOnboardingActive) {
     return (
       <PageLayout padding="sm" container={false}>
-        <PageHeader title={t('list.title')} actions={<CreateRiskSheet assignees={assignees as any} />} />
+        <PageHeader
+          title={t('list.title')}
+          actions={<CreateRiskSheet assignees={assignees as any} />}
+        />
         <AppOnboarding
           title={t('list.onboardingTitle')}
           description={t('list.onboardingDescription')}
@@ -144,7 +146,10 @@ export default async function RiskRegisterPage(props: {
 
   return (
     <PageLayout>
-      <PageHeader title={t('list.title')} actions={<CreateRiskSheet assignees={assignees as any} />} />
+      <PageHeader
+        title={t('list.title')}
+        actions={<CreateRiskSheet assignees={assignees as any} />}
+      />
       <RisksTable
         risks={risks as any}
         pageCount={pageCount}

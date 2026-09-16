@@ -3,19 +3,13 @@
 import { Stack } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
-import type {
-  IsmsDocument as IsmsDocumentData,
-  IsmsReviewAttendee,
-} from '../isms-types';
+import type { IsmsDocument as IsmsDocumentData, IsmsReviewAttendee } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
 import { IsmsDocumentShell } from './IsmsDocumentShell';
 import { ProcedureCard } from './ProcedureCard';
 import type { ReviewHandlers } from './ReviewCard';
 import { ReviewsList } from './ReviewsList';
-import {
-  parseProcedure,
-  reviewValidationMessages,
-} from './management-review-constants';
+import { parseProcedure, reviewValidationMessages } from './management-review-constants';
 import {
   toActionPayload,
   toInputPayload,
@@ -70,9 +64,7 @@ export function ManagementReviewClient({
           procedure: parseProcedure(document.draftNarrative),
           reviews: Array.isArray(document.reviews) ? document.reviews : [],
         });
-        return messages.length > 0
-          ? t('submitBlocked', { messages: messages.join(' ') })
-          : null;
+        return messages.length > 0 ? t('submitBlocked', { messages: messages.join(' ') }) : null;
       }}
     >
       {({ document, canManage, hook }) => {

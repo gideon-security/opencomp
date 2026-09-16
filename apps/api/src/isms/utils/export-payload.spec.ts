@@ -8,7 +8,11 @@ jest.mock('@db', () => ({ db: {} }));
 const buildDocument = (
   over: Partial<LoadedExportDocument> = {},
 ): LoadedExportDocument =>
-  ({ status: 'draft', currentVersion: null, ...over }) as unknown as LoadedExportDocument;
+  ({
+    status: 'draft',
+    currentVersion: null,
+    ...over,
+  }) as unknown as LoadedExportDocument;
 
 describe('draftVersionNumber', () => {
   it('returns 1 before anything has been published', () => {
@@ -48,7 +52,11 @@ describe('parseExportSnapshot', () => {
   });
 
   it('returns the snapshot when type, input and metadata are present', () => {
-    const snapshot = { type: 'x', input: { rows: [] }, metadata: { version: 1 } };
+    const snapshot = {
+      type: 'x',
+      input: { rows: [] },
+      metadata: { version: 1 },
+    };
     expect(parseExportSnapshot(snapshot)).toBe(snapshot);
   });
 });

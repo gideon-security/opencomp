@@ -148,21 +148,19 @@ describe('CredentialVaultService Google OAuth refresh handling', () => {
     );
 
     jest.spyOn(service, 'getRefreshToken').mockResolvedValue('refresh-token');
-    const fetchSpy = jest
-      .spyOn(globalThis, 'fetch')
-      .mockResolvedValue(
-        new Response(
-          JSON.stringify({
-            error: 'invalid_grant',
-            error_description: 'reauth related error',
-            error_subtype: 'invalid_rapt',
-          }),
-          {
-            status: 400,
-            headers: { 'Content-Type': 'application/json' },
-          },
-        ),
-      );
+    const fetchSpy = jest.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          error: 'invalid_grant',
+          error_description: 'reauth related error',
+          error_subtype: 'invalid_rapt',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
+    );
 
     const token = await service.refreshOAuthTokens('conn_1', {
       tokenUrl: 'https://oauth2.googleapis.com/token',

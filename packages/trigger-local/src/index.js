@@ -66,18 +66,20 @@ function task(opts) {
 }
 
 function schemaTask(opts) {
-  const parsePayload = opts.schema && typeof opts.schema.safeParse === 'function'
-    ? (payload) => {
-        const parsed = opts.schema.safeParse(payload);
-        if (!parsed.success) {
-          const issues = parsed.error && parsed.error.issues
-            ? parsed.error.issues.map((i) => i.message).join('; ')
-            : 'invalid payload';
-          throw new Error(`[local-trigger] Schema validation failed: ${issues}`);
+  const parsePayload =
+    opts.schema && typeof opts.schema.safeParse === 'function'
+      ? (payload) => {
+          const parsed = opts.schema.safeParse(payload);
+          if (!parsed.success) {
+            const issues =
+              parsed.error && parsed.error.issues
+                ? parsed.error.issues.map((i) => i.message).join('; ')
+                : 'invalid payload';
+            throw new Error(`[local-trigger] Schema validation failed: ${issues}`);
+          }
+          return parsed.data;
         }
-        return parsed.data;
-      }
-    : null;
+      : null;
   const def = normalizeTaskOptions({ ...opts, kind: 'schemaTask', parsePayload });
   runtime.registerTask(def);
   return makeHandle(def);

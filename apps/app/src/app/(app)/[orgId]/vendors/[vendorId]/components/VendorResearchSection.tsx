@@ -28,11 +28,10 @@ function getCertificationIcon(cert: VendorRiskAssessmentCertification) {
     (typeLower.includes('type 1') || typeLower.includes('type i')) &&
     !typeLower.includes('type 2') &&
     !typeLower.includes('type ii')
-  ) return SOC2Type1;
-  if (
-    typeLower.includes('soc') &&
-    (typeLower.includes('type 2') || typeLower.includes('type ii'))
-  ) return SOC2Type2;
+  )
+    return SOC2Type1;
+  if (typeLower.includes('soc') && (typeLower.includes('type 2') || typeLower.includes('type ii')))
+    return SOC2Type2;
   if (typeLower === 'hipaa' || typeLower === 'hipa') return HIPAA;
 
   return null;
@@ -124,13 +123,7 @@ export function VendorResearchLinks({ riskAssessmentData }: VendorResearchProps)
           key={`${link.url}-${link.label}-${index}`}
           variant="link"
           size="sm"
-          render={
-            <Link
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            />
-          }
+          render={<Link href={link.url} target="_blank" rel="noopener noreferrer" />}
         >
           {link.label}
           <Launch className="size-3" />

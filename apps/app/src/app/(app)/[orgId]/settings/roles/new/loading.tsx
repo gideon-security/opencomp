@@ -36,7 +36,10 @@ export default function NewRoleLoading() {
                 <Skeleton className="h-4 w-12 mx-auto" />
               </div>
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="grid grid-cols-[1fr_100px_100px_100px] gap-4 border-b p-3 last:border-b-0">
+                <div
+                  key={i}
+                  className="grid grid-cols-[1fr_100px_100px_100px] gap-4 border-b p-3 last:border-b-0"
+                >
                   <Skeleton className="h-4 w-24" />
                   <Skeleton className="h-4 w-4 mx-auto rounded-full" />
                   <Skeleton className="h-4 w-4 mx-auto rounded-full" />

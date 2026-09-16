@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -64,18 +64,11 @@ vi.mock('@trycompai/design-system', () => ({
     </button>
   ),
   Input: (props: any) => <input {...props} />,
-  Label: ({
-    children,
-    ...props
-  }: { children: React.ReactNode; htmlFor?: string }) => (
+  Label: ({ children, ...props }: { children: React.ReactNode; htmlFor?: string }) => (
     <label {...props}>{children}</label>
   ),
-  Stack: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  Text: ({ children }: { children: React.ReactNode }) => (
-    <span>{children}</span>
-  ),
+  Stack: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Text: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
   Textarea: (props: any) => <textarea {...props} />,
 }));
 

@@ -4,11 +4,7 @@ import { redirect } from 'next/navigation';
 import { IsmsDocumentsClientPage } from '../../../isms-documents/IsmsDocumentsClientPage';
 import type { IsmsDocumentTemplate } from '../../../isms-documents/types';
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ frameworkId: string }>;
-}) {
+export default async function Page({ params }: { params: Promise<{ frameworkId: string }> }) {
   const isAllowed = await isAuthorized();
   if (!isAllowed) redirect('/auth');
 

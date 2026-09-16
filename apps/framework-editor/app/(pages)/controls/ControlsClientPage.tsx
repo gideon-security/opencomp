@@ -1,6 +1,7 @@
 'use client';
 
 import { apiClient } from '@/app/lib/api-client';
+import { Button } from '@gideon-defender/ui';
 import {
   createColumnHelper,
   flexRender,
@@ -9,7 +10,6 @@ import {
   useReactTable,
   type SortingState,
 } from '@tanstack/react-table';
-import { Button } from '@gideon-defender/ui';
 import { ArrowDown, ArrowUp, ArrowUpDown, Link, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import {
@@ -60,9 +60,7 @@ async function fetchAllRequirements(): Promise<RelationalItem[]> {
 
 // On a framework's Controls tab only this framework's requirements are
 // linkable — links to them are what makes a control show up on the tab.
-async function fetchRequirementsForFramework(
-  frameworkId: string,
-): Promise<RelationalItem[]> {
+async function fetchRequirementsForFramework(frameworkId: string): Promise<RelationalItem[]> {
   const framework = await apiClient<{
     name: string;
     requirements: Array<{ id: string; name: string; identifier: string }>;
@@ -74,9 +72,7 @@ async function fetchRequirementsForFramework(
 
 // Requirement options for the "Add Existing Control" picker, oldest-first so
 // the just-created requirement sits at the bottom of the list.
-async function fetchFrameworkRequirementOptions(
-  frameworkId: string,
-): Promise<RequirementOption[]> {
+async function fetchFrameworkRequirementOptions(frameworkId: string): Promise<RequirementOption[]> {
   const framework = await apiClient<{
     requirements: Array<{
       id: string;
@@ -101,7 +97,9 @@ async function linkControlRelation(
   frameworkId?: string,
 ): Promise<void> {
   const query = frameworkId ? `?frameworkId=${frameworkId}` : '';
-  await apiClient(`/control-template/${controlId}/${relation}/${itemId}${query}`, { method: 'POST' });
+  await apiClient(`/control-template/${controlId}/${relation}/${itemId}${query}`, {
+    method: 'POST',
+  });
 }
 
 async function unlinkControlRelation(
@@ -111,7 +109,9 @@ async function unlinkControlRelation(
   frameworkId?: string,
 ): Promise<void> {
   const query = frameworkId ? `?frameworkId=${frameworkId}` : '';
-  await apiClient(`/control-template/${controlId}/${relation}/${itemId}${query}`, { method: 'DELETE' });
+  await apiClient(`/control-template/${controlId}/${relation}/${itemId}${query}`, {
+    method: 'DELETE',
+  });
 }
 
 interface ControlsClientPageProps {
@@ -122,7 +122,11 @@ interface ControlsClientPageProps {
 
 const columnHelper = createColumnHelper<ControlsPageGridData>();
 
-export function ControlsClientPage({ initialControls, emptyMessage, frameworkId }: ControlsClientPageProps) {
+export function ControlsClientPage({
+  initialControls,
+  emptyMessage,
+  frameworkId,
+}: ControlsClientPageProps) {
   const mutations: ControlMutations = useMemo(
     () => ({
       createControl: (data: {
@@ -137,7 +141,12 @@ export function ControlsClientPage({ initialControls, emptyMessage, frameworkId 
         }),
       updateControl: (
         id: string,
-        data: { name: string; description: string; controlFamily: string | null; documentTypes: string[] },
+        data: {
+          name: string;
+          description: string;
+          controlFamily: string | null;
+          documentTypes: string[];
+        },
       ) =>
         apiClient(`/control-template/${id}`, {
           method: 'PATCH',
@@ -211,8 +220,7 @@ export function ControlsClientPage({ initialControls, emptyMessage, frameworkId 
   );
 
   const getRequirementItems = useCallback(
-    () =>
-      frameworkId ? fetchRequirementsForFramework(frameworkId) : fetchAllRequirements(),
+    () => (frameworkId ? fetchRequirementsForFramework(frameworkId) : fetchAllRequirements()),
     [frameworkId],
   );
 
@@ -378,7 +386,15 @@ export function ControlsClientPage({ initialControls, emptyMessage, frameworkId 
         ),
       }),
     ],
-    [updateCell, updateRelational, deleteRow, createdIds, handleDocumentTypesUpdate, frameworkId, getRequirementItems],
+    [
+      updateCell,
+      updateRelational,
+      deleteRow,
+      createdIds,
+      handleDocumentTypesUpdate,
+      frameworkId,
+      getRequirementItems,
+    ],
   );
 
   // Default to Name A–Z so the tab always opens in a predictable order
@@ -472,7 +488,6 @@ export function ControlsClientPage({ initialControls, emptyMessage, frameworkId 
           fetchRequirements={() => fetchFrameworkRequirementOptions(frameworkId)}
         />
       )}
-
 
       <div className="scrollbar-primary border-border min-h-0 flex-1 overflow-auto rounded-xs border">
         <table className="w-full border-collapse">

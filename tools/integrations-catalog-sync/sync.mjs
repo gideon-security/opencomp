@@ -1,29 +1,37 @@
 #!/usr/bin/env node
 
-import { mkdirSync, writeFileSync, existsSync, readdirSync, readFileSync, renameSync, unlinkSync } from "node:fs";
-import { createHash } from "node:crypto";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { createHash } from 'node:crypto';
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  unlinkSync,
+  writeFileSync,
+} from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = join(__dirname, "..", "..");
-const CATALOG_ROOT = join(REPO_ROOT, "integrations-catalog");
-const INTEGRATIONS_DIR = join(CATALOG_ROOT, "integrations");
-const INDEX_FILE = join(CATALOG_ROOT, "index.json");
+const REPO_ROOT = join(__dirname, '..', '..');
+const CATALOG_ROOT = join(REPO_ROOT, 'integrations-catalog');
+const INTEGRATIONS_DIR = join(CATALOG_ROOT, 'integrations');
+const INDEX_FILE = join(CATALOG_ROOT, 'index.json');
 
 const API_BASE = process.env.COMPAI_INTERNAL_API_BASE;
 const TOKEN = process.env.COMPAI_INTERNAL_TOKEN;
 
 if (!API_BASE) {
-  console.error("COMPAI_INTERNAL_API_BASE env var is required");
+  console.error('COMPAI_INTERNAL_API_BASE env var is required');
   process.exit(1);
 }
 if (!TOKEN) {
-  console.error("COMPAI_INTERNAL_TOKEN env var is required");
+  console.error('COMPAI_INTERNAL_TOKEN env var is required');
   process.exit(1);
 }
 
-const HEADERS = { "X-Internal-Token": TOKEN, "Accept": "application/json" };
+const HEADERS = { 'X-Internal-Token': TOKEN, Accept: 'application/json' };
 
 const SECRET_PATTERNS = [
   /\b(pk|sk)_(live|test)_[a-zA-Z0-9]{20,}/,
@@ -34,20 +42,21 @@ const SECRET_PATTERNS = [
   /\bjina_[a-zA-Z0-9]{20,}/,
   /\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/,
   /Bearer\s+[A-Za-z0-9._~+\/=-]{20,}/,
-  /token=pk_[A-Za-z0-9]{15,}/
+  /token=pk_[A-Za-z0-9]{15,}/,
 ];
 
-function scanSecrets(value, path = "") {
+function scanSecrets(value, path = '') {
   const hits = [];
   if (value == null) return hits;
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     for (const re of SECRET_PATTERNS) {
       if (re.test(value)) hits.push(path);
     }
   } else if (Array.isArray(value)) {
     value.forEach((v, i) => hits.push(...scanSecrets(v, `${path}[${i}]`)));
-  } else if (typeof value === "object") {
-    for (const k of Object.keys(value)) hits.push(...scanSecrets(value[k], path ? `${path}.${k}` : k));
+  } else if (typeof value === 'object') {
+    for (const k of Object.keys(value))
+      hits.push(...scanSecrets(value[k], path ? `${path}.${k}` : k));
   }
   return hits;
 }
@@ -56,7 +65,7 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const MIN_REQUEST_INTERVAL_MS = parseInt(process.env.SYNC_MIN_INTERVAL_MS || "100", 10);
+const MIN_REQUEST_INTERVAL_MS = parseInt(process.env.SYNC_MIN_INTERVAL_MS || '100', 10);
 let nextAllowedAt = 0;
 
 async function pace() {
@@ -73,10 +82,13 @@ async function fetchJson(path, maxRetries = 5) {
     if (res.ok) return res.json();
     const text = await res.text();
     if ((res.status === 429 || res.status >= 500) && attempt < maxRetries - 1) {
-      const retryAfter = parseInt(res.headers.get("retry-after") || "0", 10);
-      const delay = retryAfter > 0 ? retryAfter * 1000 : Math.min(1000 * Math.pow(2, attempt), 15000);
+      const retryAfter = parseInt(res.headers.get('retry-after') || '0', 10);
+      const delay =
+        retryAfter > 0 ? retryAfter * 1000 : Math.min(1000 * Math.pow(2, attempt), 15000);
       lastError = new Error(`${path} HTTP ${res.status}: ${text.slice(0, 200)}`);
-      console.warn(`  ${path} → ${res.status}, backing off ${delay}ms (attempt ${attempt + 1}/${maxRetries})`);
+      console.warn(
+        `  ${path} → ${res.status}, backing off ${delay}ms (attempt ${attempt + 1}/${maxRetries})`,
+      );
       await sleep(delay);
       continue;
     }
@@ -90,12 +102,12 @@ function sanitizeCredentialField(field) {
     label: field.label,
     type: field.type,
     required: field.required ?? false,
-    helpText: field.helpText
+    helpText: field.helpText,
   };
 }
 
 function sanitizeAuthConfig(authConfig) {
-  if (!authConfig || typeof authConfig !== "object") return null;
+  if (!authConfig || typeof authConfig !== 'object') return null;
   const { type, config = {} } = authConfig;
   const {
     setupInstructions,
@@ -106,7 +118,7 @@ function sanitizeAuthConfig(authConfig) {
     passwordField,
     scopes,
     clientAuthMethod,
-    supportsRefreshToken
+    supportsRefreshToken,
   } = config;
 
   const publicConfig = {};
@@ -120,7 +132,8 @@ function sanitizeAuthConfig(authConfig) {
   if (passwordField) publicConfig.passwordField = passwordField;
   if (Array.isArray(scopes)) publicConfig.scopes = scopes;
   if (clientAuthMethod) publicConfig.clientAuthMethod = clientAuthMethod;
-  if (typeof supportsRefreshToken === "boolean") publicConfig.supportsRefreshToken = supportsRefreshToken;
+  if (typeof supportsRefreshToken === 'boolean')
+    publicConfig.supportsRefreshToken = supportsRefreshToken;
 
   return { type, config: publicConfig };
 }
@@ -131,7 +144,7 @@ function sanitizeCheck(check) {
     name: check.name,
     description: check.description,
     defaultSeverity: check.defaultSeverity,
-    enabled: check.isEnabled ?? true
+    enabled: check.isEnabled ?? true,
   };
 }
 
@@ -149,12 +162,14 @@ function sanitize(integration) {
     syncSupported: integration.syncDefinition != null,
     checks: Array.isArray(integration.checks) ? integration.checks.map(sanitizeCheck) : [],
     checkCount: Array.isArray(integration.checks) ? integration.checks.length : 0,
-    isActive: integration.isActive ?? true
+    isActive: integration.isActive ?? true,
   };
 }
 
 function normalizeSlug(slug) {
-  return String(slug || "").replace(/[^a-z0-9-]/gi, "-").toLowerCase();
+  return String(slug || '')
+    .replace(/[^a-z0-9-]/gi, '-')
+    .toLowerCase();
 }
 
 function slugToFilename(slug) {
@@ -162,7 +177,7 @@ function slugToFilename(slug) {
 }
 
 function sha256(content) {
-  return createHash("sha256").update(content).digest("hex");
+  return createHash('sha256').update(content).digest('hex');
 }
 
 function atomicWrite(targetPath, content) {
@@ -175,7 +190,7 @@ async function main() {
   mkdirSync(INTEGRATIONS_DIR, { recursive: true });
 
   console.log(`Fetching integration list from ${API_BASE}...`);
-  const list = await fetchJson("/dynamic-integrations");
+  const list = await fetchJson('/dynamic-integrations');
   console.log(`Found ${list.length} integrations from API.`);
 
   const seenSlugs = new Map();
@@ -188,7 +203,9 @@ async function main() {
       continue;
     }
     if (seenSlugs.has(slug)) {
-      console.warn(`  duplicate slug="${slug}" (ids=${seenSlugs.get(slug)}, ${item.id}) — keeping first`);
+      console.warn(
+        `  duplicate slug="${slug}" (ids=${seenSlugs.get(slug)}, ${item.id}) — keeping first`,
+      );
       continue;
     }
     seenSlugs.set(slug, item.id);
@@ -199,7 +216,7 @@ async function main() {
     console.log(`After dedup: ${deduped.length} unique slugs.`);
   }
 
-  const CONCURRENCY = parseInt(process.env.SYNC_CONCURRENCY || "2", 10);
+  const CONCURRENCY = parseInt(process.env.SYNC_CONCURRENCY || '2', 10);
   const queue = [...deduped];
   const results = { written: 0, unchanged: 0, failed: 0, secretsBlocked: 0 };
   const fetchedSlugs = new Set();
@@ -219,17 +236,17 @@ async function main() {
         const hits = scanSecrets(sanitized);
         if (hits.length > 0) {
           results.secretsBlocked++;
-          console.error(`  [${slug}] BLOCKED: secret pattern at ${hits.join(", ")}`);
+          console.error(`  [${slug}] BLOCKED: secret pattern at ${hits.join(', ')}`);
           continue;
         }
 
         const filename = slugToFilename(sanitized.slug);
         const filepath = join(INTEGRATIONS_DIR, filename);
-        const content = JSON.stringify(sanitized, null, 2) + "\n";
+        const content = JSON.stringify(sanitized, null, 2) + '\n';
         const newHash = sha256(content);
         let unchanged = false;
         if (existsSync(filepath)) {
-          const existing = readFileSync(filepath, "utf8");
+          const existing = readFileSync(filepath, 'utf8');
           if (sha256(existing) === newHash) unchanged = true;
         }
         if (!unchanged) {
@@ -246,7 +263,7 @@ async function main() {
           authType: sanitized.authConfig?.type,
           checkCount: sanitized.checkCount,
           syncSupported: sanitized.syncSupported,
-          file: `integrations/${filename}`
+          file: `integrations/${filename}`,
         });
         completed++;
         if (completed % 50 === 0) console.log(`  ${completed}/${deduped.length}`);
@@ -260,9 +277,9 @@ async function main() {
   await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
 
   const staleFiles = readdirSync(INTEGRATIONS_DIR)
-    .filter((f) => f.endsWith(".json"))
+    .filter((f) => f.endsWith('.json'))
     .filter((f) => {
-      const slug = f.replace(/\.json$/, "");
+      const slug = f.replace(/\.json$/, '');
       return !expectedSlugs.has(slug);
     });
 
@@ -278,7 +295,7 @@ async function main() {
       const filename = slugToFilename(slug);
       const filepath = join(INTEGRATIONS_DIR, filename);
       if (existsSync(filepath)) {
-        const existing = JSON.parse(readFileSync(filepath, "utf8"));
+        const existing = JSON.parse(readFileSync(filepath, 'utf8'));
         index.push({
           slug,
           name: existing.name,
@@ -287,7 +304,7 @@ async function main() {
           checkCount: existing.checkCount,
           syncSupported: existing.syncSupported,
           file: `integrations/${filename}`,
-          stale: true
+          stale: true,
         });
       }
     }
@@ -300,13 +317,13 @@ async function main() {
     sourceCount: list.length,
     uniqueSlugs: expectedSlugs.size,
     byCategory: index.reduce((acc, i) => {
-      const c = i.category || "Uncategorized";
+      const c = i.category || 'Uncategorized';
       acc[c] = (acc[c] || 0) + 1;
       return acc;
     }, {}),
-    integrations: index
+    integrations: index,
   };
-  atomicWrite(INDEX_FILE, JSON.stringify(summary, null, 2) + "\n");
+  atomicWrite(INDEX_FILE, JSON.stringify(summary, null, 2) + '\n');
 
   console.log(`\nDone.`);
   console.log(`  written: ${results.written}`);

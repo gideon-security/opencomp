@@ -22,10 +22,7 @@ import {
 import { Edit, Locked, TrashCan } from '@trycompai/design-system/icons';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type {
-  IsmsManagementReview,
-  IsmsReviewAttendee,
-} from '../isms-types';
+import type { IsmsManagementReview, IsmsReviewAttendee } from '../isms-types';
 import { AttendeesField } from './AttendeesField';
 import { CarriedForwardActions } from './CarriedForwardActions';
 import type { ApproverOption } from './IsmsApprovalSection';
@@ -35,9 +32,9 @@ import { ReviewInputsTable } from './ReviewInputsTable';
 import { ReviewOutputsSection } from './ReviewOutputsSection';
 import { ReviewSignoffCard } from './ReviewSignoffCard';
 import {
-  REVIEW_STATUS_LABELS,
   carriedForwardActions,
   isReviewSigned,
+  REVIEW_STATUS_LABELS,
   reviewConclusionSentence,
 } from './management-review-constants';
 import {
@@ -227,8 +224,8 @@ export function ReviewCard({
           {locked ? (
             <Alert variant="default" icon={<Locked />}>
               <Text size="sm">
-                This review is signed by the chair and locked. Actions still track to closure;
-                clear the sign-off below to edit anything else.
+                This review is signed by the chair and locked. Actions still track to closure; clear
+                the sign-off below to edit anything else.
               </Text>
             </Alert>
           ) : null}
@@ -301,8 +298,8 @@ export function ReviewCard({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete review {review.reference}?</AlertDialogTitle>
             <AlertDialogDescription>
-              This permanently removes the review, its inputs, and its actions arising. This
-              cannot be undone.
+              This permanently removes the review, its inputs, and its actions arising. This cannot
+              be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

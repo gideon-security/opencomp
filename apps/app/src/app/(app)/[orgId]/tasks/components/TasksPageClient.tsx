@@ -1,9 +1,10 @@
 'use client';
 
 import { UpdateOrganizationEvidenceApproval } from '@/components/forms/organization/update-organization-evidence-approval';
+import { usePermissions } from '@/hooks/use-permissions';
 import { triggerBulkEvidenceExport } from '@/lib/evidence-download';
-import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import type { Member, Task, User } from '@db';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import {
   Button,
   PageHeader,
@@ -24,7 +25,6 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useTasks } from '../hooks/useTasks';
-import { usePermissions } from '@/hooks/use-permissions';
 import type { FrameworkInstanceForTasks } from '../types';
 import { CreateTaskSheet } from './CreateTaskSheet';
 import { TaskList } from './TaskList';
@@ -95,8 +95,7 @@ export function TasksPageClient({
         return;
       }
       const downloadUrl =
-        run.output?.downloadUrl ??
-        (run.metadata?.downloadUrl as string | undefined);
+        run.output?.downloadUrl ?? (run.metadata?.downloadUrl as string | undefined);
       if (downloadUrl) {
         const link = document.createElement('a');
         link.href = downloadUrl;
@@ -156,9 +155,7 @@ export function TasksPageClient({
                     <PopoverContent align="end" side="bottom" sideOffset={8}>
                       <PopoverHeader>
                         <PopoverTitle>{t('page.exportOptions')}</PopoverTitle>
-                        <PopoverDescription>
-                          {t('page.exportDescription')}
-                        </PopoverDescription>
+                        <PopoverDescription>{t('page.exportDescription')}</PopoverDescription>
                       </PopoverHeader>
                       <div className="flex items-center justify-between gap-3 py-1">
                         <span className="text-sm">{t('page.includeRawJson')}</span>

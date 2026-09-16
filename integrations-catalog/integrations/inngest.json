@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to your Inngest Cloud dashboard\n2. Go to Profile menu (bottom left) > API Keys\n3. Create a new API key (or use your environment signing key)\n4. Enter it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

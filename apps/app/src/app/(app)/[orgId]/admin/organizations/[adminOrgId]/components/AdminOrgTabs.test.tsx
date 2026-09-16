@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -8,9 +8,7 @@ vi.mock('@/lib/api-client', () => {
   const api = {
     // TasksTab reads `res.data.data`, FindingsTab reads `res.data` directly.
     get: vi.fn((url: string) =>
-      Promise.resolve(
-        url.includes('/tasks') ? { data: { data: [] } } : { data: [] },
-      ),
+      Promise.resolve(url.includes('/tasks') ? { data: { data: [] } } : { data: [] }),
     ),
     post: vi.fn().mockResolvedValue({ data: {} }),
     patch: vi.fn().mockResolvedValue({ data: {} }),

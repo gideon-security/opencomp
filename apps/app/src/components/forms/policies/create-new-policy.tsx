@@ -1,8 +1,8 @@
 'use client';
 
+import { createPolicySchema, type CreatePolicySchema } from '@/actions/schema';
 import { usePermissions } from '@/hooks/use-permissions';
 import { usePolicyMutations } from '@/hooks/use-policy-mutations';
-import { createPolicySchema, type CreatePolicySchema } from '@/actions/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Input, Label, Stack, Text, Textarea } from '@trycompai/design-system';
 import { ArrowRight } from '@trycompai/design-system/icons';
@@ -89,7 +89,12 @@ export function CreateNewPolicyForm() {
           )}
         </Stack>
 
-        <Button iconRight={<ArrowRight />} loading={isLoading} disabled={!hasPermission('policy', 'create')} onClick={handleSubmit(onSubmit)}>
+        <Button
+          iconRight={<ArrowRight />}
+          loading={isLoading}
+          disabled={!hasPermission('policy', 'create')}
+          onClick={handleSubmit(onSubmit)}
+        >
           Create
         </Button>
       </Stack>

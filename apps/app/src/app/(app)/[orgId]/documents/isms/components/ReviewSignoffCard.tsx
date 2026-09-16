@@ -1,24 +1,12 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Badge,
-  Button,
-  Grid,
-  Heading,
-  HStack,
-  Input,
-  Stack,
-  Text,
-} from '@trycompai/design-system';
+import { Badge, Button, Grid, Heading, HStack, Input, Stack, Text } from '@trycompai/design-system';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import type { IsmsManagementReview } from '../isms-types';
 import { isReviewSigned } from './management-review-constants';
-import {
-  reviewSignoffSchema,
-  type ReviewSignoffFormValues,
-} from './management-review-schema';
+import { reviewSignoffSchema, type ReviewSignoffFormValues } from './management-review-schema';
 import { IsmsFieldLabel } from './shared';
 
 interface ReviewSignoffCardProps {
@@ -114,12 +102,7 @@ export function ReviewSignoffCard({ review, canEdit, onSave }: ReviewSignoffCard
             control={control}
             name="signoffChairDate"
             render={({ field: { ref: _ref, ...field } }) => (
-              <Input
-                {...field}
-                type="date"
-                aria-label="Chair sign-off date"
-                disabled={!canEdit}
-              />
+              <Input {...field} type="date" aria-label="Chair sign-off date" disabled={!canEdit} />
             )}
           />
         </IsmsFieldLabel>

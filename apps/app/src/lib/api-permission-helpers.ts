@@ -14,11 +14,7 @@ import { requireApiPermission } from './permissions.server';
  * Or use `withApiPermission` for full wrapping.
  */
 
-export async function getApiPermissionContext(
-  req: Request,
-  resource: string,
-  action: string,
-) {
+export async function getApiPermissionContext(req: Request, resource: string, action: string) {
   const result = await requireApiPermission(req, resource, action);
   if (result instanceof NextResponse) {
     return { response: result as NextResponse, context: null as never };
@@ -37,7 +33,10 @@ export async function getApiPermissionContext(
 export function withApiPermission(
   resource: string,
   action: string,
-  handler: (req: Request, ctx: { organizationId: string; userId: string; permissions: Record<string, string[]> }) => Promise<Response>,
+  handler: (
+    req: Request,
+    ctx: { organizationId: string; userId: string; permissions: Record<string, string[]> },
+  ) => Promise<Response>,
 ) {
   return async (req: Request, routeContext?: unknown): Promise<Response> => {
     const result = await requireApiPermission(req, resource, action);

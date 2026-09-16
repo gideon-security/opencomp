@@ -121,9 +121,7 @@ describe('AutoLinkSuggestions', () => {
         status: 'COMPLETED',
         output: {
           suggestions: {
-            tasks: [
-              { id: 'tsk_a', title: 'Suggested A', status: 'todo', score: 0.9 },
-            ],
+            tasks: [{ id: 'tsk_a', title: 'Suggested A', status: 'todo', score: 0.9 }],
             controls: [],
           },
         },

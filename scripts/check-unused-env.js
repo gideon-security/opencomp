@@ -127,8 +127,7 @@ visitDeclared(repoRoot);
 let corpus = '';
 const codeCorpus = [];
 
-const isCodeFile = (file) =>
-  /\.(ts|tsx|js|jsx|mjs|cjs|mts|cts)$/.test(file);
+const isCodeFile = (file) => /\.(ts|tsx|js|jsx|mjs|cjs|mts|cts)$/.test(file);
 
 walk(repoRoot, (fullPath, stats) => {
   if (BINARY_EXTENSIONS.has(path.extname(fullPath))) return;
@@ -155,7 +154,10 @@ for (const [key, declaredIn] of [...declaredVars].sort(([a], [b]) => a.localeCom
 
 // ── Undeclared: read in code but absent from every .env.example ──────────────
 const referencedInCode = new Set();
-const envPatterns = [/process\.env\.([A-Za-z_][A-Za-z0-9_]*)/g, /import\.meta\.env\.([A-Za-z_][A-Za-z0-9_]*)/g];
+const envPatterns = [
+  /process\.env\.([A-Za-z_][A-Za-z0-9_]*)/g,
+  /import\.meta\.env\.([A-Za-z_][A-Za-z0-9_]*)/g,
+];
 for (const pattern of envPatterns) {
   for (const match of codeText.matchAll(pattern)) {
     referencedInCode.add(match[1]);
@@ -175,9 +177,7 @@ if (unused.length > 0) {
 }
 
 if (undeclared.length > 0) {
-  console.warn(
-    `Referenced in code but missing from every .env.example (${undeclared.length}):`,
-  );
+  console.warn(`Referenced in code but missing from every .env.example (${undeclared.length}):`);
   console.warn(`  ${undeclared.join(', ')}`);
 }
 

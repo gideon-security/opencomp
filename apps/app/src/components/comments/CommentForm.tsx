@@ -2,6 +2,7 @@
 
 import { useComments, useCommentWithAttachments } from '@/hooks/use-comments-api';
 import { useMentionableMembers } from '@/hooks/use-mentionable-members';
+import type { CommentEntityType } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import {
   Dialog,
@@ -11,7 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import type { CommentEntityType } from '@db';
 import type { JSONContent } from '@tiptap/react';
 import { Camera, FileIcon, Loader2, Paperclip, X } from 'lucide-react';
 import { useParams, usePathname } from 'next/navigation';
@@ -29,7 +29,12 @@ interface CommentFormProps {
   organizationId?: string;
 }
 
-export function CommentForm({ entityId, entityType, mentionResource, organizationId }: CommentFormProps) {
+export function CommentForm({
+  entityId,
+  entityType,
+  mentionResource,
+  organizationId,
+}: CommentFormProps) {
   const [newComment, setNewComment] = useState<JSONContent | null>(null);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);

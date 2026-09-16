@@ -11,8 +11,7 @@ describe('ai-description.prompt', () => {
         title: 'IAM password policy enforces 14+ character minimum',
         description:
           'Verifies that the AWS account password policy requires user passwords to be at least 14 characters long.',
-        passCriteria:
-          'Password policy exists AND MinimumPasswordLength >= 14',
+        passCriteria: 'Password policy exists AND MinimumPasswordLength >= 14',
         failCriteria:
           'No password policy is configured OR MinimumPasswordLength < 14',
         whyItMatters:
@@ -38,8 +37,7 @@ describe('ai-description.prompt', () => {
       title: 'IAM password policy enforces 14+ character minimum',
       description:
         'Verifies that the AWS account password policy requires user passwords to be at least 14 characters long.',
-      passCriteria:
-        'Password policy exists AND MinimumPasswordLength >= 14',
+      passCriteria: 'Password policy exists AND MinimumPasswordLength >= 14',
       failCriteria:
         'No password policy is configured OR MinimumPasswordLength < 14',
       whyItMatters:
@@ -152,7 +150,6 @@ describe('ai-description.prompt', () => {
       ).toMatchObject({ field: 'whyItMatters' });
     });
   });
-
 
   describe('buildCheckDescriptionPrompt', () => {
     it('includes provider, severity, title and description', () => {

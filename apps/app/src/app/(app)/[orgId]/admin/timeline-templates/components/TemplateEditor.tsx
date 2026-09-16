@@ -1,12 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { api } from '@/lib/api-client';
 import type { AdminTimelineTemplate } from '@/hooks/use-admin-timelines';
+import { api } from '@/lib/api-client';
+import { Input } from '@gideon-defender/ui/input';
+import { Label } from '@gideon-defender/ui/label';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Button,
   Sheet,
@@ -18,14 +16,12 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Add, TrashCan } from '@trycompai/design-system/icons';
-import { Input } from '@gideon-defender/ui/input';
-import { Label } from '@gideon-defender/ui/label';
+import { useEffect, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 import { PhaseRow } from './PhaseRow';
-import {
-  getDefaults,
-  createNewTemplate,
-  saveExistingTemplate,
-} from './template-actions';
+import { createNewTemplate, getDefaults, saveExistingTemplate } from './template-actions';
 
 const phaseSchema = z.object({
   id: z.string().optional(),
@@ -59,12 +55,7 @@ interface TemplateEditorProps {
   onMutate: () => void;
 }
 
-export function TemplateEditor({
-  open,
-  onClose,
-  template,
-  onMutate,
-}: TemplateEditorProps) {
+export function TemplateEditor({ open, onClose, template, onMutate }: TemplateEditorProps) {
   const isEditing = !!template;
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -109,9 +100,7 @@ export function TemplateEditor({
   const handleDelete = async () => {
     if (!template) return;
     setDeleting(true);
-    const res = await api.delete(
-      `/v1/admin/timeline-templates/${template.id}`,
-    );
+    const res = await api.delete(`/v1/admin/timeline-templates/${template.id}`);
     setDeleting(false);
     if (res.error) {
       toast.error(res.error);
@@ -136,20 +125,14 @@ export function TemplateEditor({
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>
-            {isEditing ? 'Edit Template' : 'New Template'}
-          </SheetTitle>
+          <SheetTitle>{isEditing ? 'Edit Template' : 'New Template'}</SheetTitle>
         </SheetHeader>
         <SheetBody>
           <form onSubmit={handleSubmit(handleSave)}>
             <Stack gap="md">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="name">Template Name</Label>
-                <Input
-                  id="name"
-                  {...register('name')}
-                  placeholder="e.g. SOC 2 Initial Audit"
-                />
+                <Input id="name" {...register('name')} placeholder="e.g. SOC 2 Initial Audit" />
                 {errors.name && (
                   <Text size="xs" variant="destructive">
                     {errors.name.message}

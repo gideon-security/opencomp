@@ -57,8 +57,7 @@ export const createOrganization = authActionClientWithoutOrg
           name: parsedInput.organizationName,
           website: parsedInput.website,
           // Auto-enable for verified internal accounts or local development
-          ...((process.env.NEXT_PUBLIC_APP_ENV !== 'production' ||
-            isVerifiedTryCompEmail) && {
+          ...((process.env.NEXT_PUBLIC_APP_ENV !== 'production' || isVerifiedTryCompEmail) && {
             hasAccess: true,
           }),
           members: {

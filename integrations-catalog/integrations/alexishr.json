@@ -9,10 +9,7 @@
     "type": "api_key",
     "config": {}
   },
-  "capabilities": [
-    "checks",
-    "sync"
-  ],
+  "capabilities": ["checks", "sync"],
   "supportsMultipleConnections": false,
   "syncSupported": true,
   "checks": [

@@ -47,11 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function AuditorPage({
-  params,
-}: {
-  params: Promise<{ orgId: string }>;
-}) {
+export default async function AuditorPage({ params }: { params: Promise<{ orgId: string }> }) {
   await params;
 
   const [membersRes, orgRes, contextRes] = await Promise.all([
@@ -65,9 +61,7 @@ export default async function AuditorPage({
   }
 
   const currentUserId = membersRes.data.authenticatedUser?.id;
-  const currentMember = (membersRes.data.data ?? []).find(
-    (m) => m.userId === currentUserId,
-  );
+  const currentMember = (membersRes.data.data ?? []).find((m) => m.userId === currentUserId);
 
   if (!currentMember) {
     redirect('/auth/unauthorized');
@@ -82,9 +76,7 @@ export default async function AuditorPage({
   const logoUrl = orgRes.data?.logoUrl ?? null;
 
   // Filter context entries to the questions we need
-  const allContext = Array.isArray(contextRes.data?.data)
-    ? contextRes.data.data
-    : [];
+  const allContext = Array.isArray(contextRes.data?.data) ? contextRes.data.data : [];
   const initialContent: Record<string, string> = {};
   for (const item of allContext) {
     if (CONTEXT_QUESTIONS.includes(item.question)) {
@@ -110,8 +102,7 @@ export default async function AuditorPage({
   }
 
   try {
-    const signatoryRaw =
-      initialContent['Who will sign off on the final report?'];
+    const signatoryRaw = initialContent['Who will sign off on the final report?'];
     if (signatoryRaw) {
       signatoryData = JSON.parse(signatoryRaw);
     }

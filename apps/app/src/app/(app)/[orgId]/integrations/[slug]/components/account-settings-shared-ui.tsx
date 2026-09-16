@@ -58,9 +58,7 @@ export function AccountSettingsInfoRow({
           : 'flex justify-between items-center'
       }
     >
-      <span
-        className={`text-[11px] text-muted-foreground ${valueTruncate ? 'shrink-0' : ''}`}
-      >
+      <span className={`text-[11px] text-muted-foreground ${valueTruncate ? 'shrink-0' : ''}`}>
         {label}
       </span>
       {badge ?? (

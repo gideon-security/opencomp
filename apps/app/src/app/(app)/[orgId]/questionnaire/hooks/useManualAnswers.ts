@@ -1,7 +1,7 @@
 'use client';
 
-import useSWR from 'swr';
 import { api } from '@/lib/api-client';
+import useSWR from 'swr';
 import type { ManualAnswer } from '../components/types';
 
 const MANUAL_ANSWERS_KEY = '/v1/knowledge-base/manual-answers';

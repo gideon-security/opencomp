@@ -1,7 +1,7 @@
 'use server';
 
-import { auth as triggerAuth, tasks } from '@gideon-defender/trigger-local';
 import { auth } from '@/utils/auth';
+import { tasks, auth as triggerAuth } from '@gideon-defender/trigger-local';
 import { headers } from 'next/headers';
 
 interface PreviewInput {

@@ -317,9 +317,7 @@
     "description": "Audits the execution of privileged program",
     "createdAt": "2025-06-11 17:19:15.284",
     "updatedAt": "2026-04-20 15:33:55.351",
-    "documentTypes": [
-      "infrastructure_inventory"
-    ]
+    "documentTypes": ["infrastructure_inventory"]
   },
   {
     "id": "frk_ct_691e53f4024ab9cc096bbc70",
@@ -335,9 +333,7 @@
     "description": "Keep fridge between 2and 5degrees",
     "createdAt": "2026-03-21 16:57:10.184",
     "updatedAt": "2026-03-21 17:05:13.971",
-    "documentTypes": [
-      "board_meeting"
-    ]
+    "documentTypes": ["board_meeting"]
   },
   {
     "id": "frk_ct_69bed10053f2dfa2421b5e4e",
@@ -369,9 +365,7 @@
     "description": "Manage User Access Rights Lifecycle",
     "createdAt": "2025-06-03 19:17:20.504",
     "updatedAt": "2026-04-13 22:30:52.353",
-    "documentTypes": [
-      "access_request"
-    ]
+    "documentTypes": ["access_request"]
   },
   {
     "id": "frk_ct_684070f0b4f6c2036306e23c",
@@ -379,9 +373,7 @@
     "description": "Enforce segmentation and firewalls",
     "createdAt": "2025-06-04 16:14:40.321",
     "updatedAt": "2026-04-20 15:33:55.130",
-    "documentTypes": [
-      "network_diagram"
-    ]
+    "documentTypes": ["network_diagram"]
   },
   {
     "id": "frk_ct_683f42c71eea99f22f9df060",
@@ -389,9 +381,7 @@
     "description": "Maintain an Inventory of Information Assets",
     "createdAt": "2025-06-03 18:45:27.396",
     "updatedAt": "2026-04-20 15:33:55.801",
-    "documentTypes": [
-      "infrastructure_inventory"
-    ]
+    "documentTypes": ["infrastructure_inventory"]
   },
   {
     "id": "frk_ct_683f4dd564057a97ae323c9f",
@@ -399,10 +389,7 @@
     "description": "Test DR; meet RTO/RPO",
     "createdAt": "2025-06-03 19:32:37.325",
     "updatedAt": "2026-04-20 17:55:13.005",
-    "documentTypes": [
-      "board_meeting",
-      "tabletop_exercise"
-    ]
+    "documentTypes": ["board_meeting", "tabletop_exercise"]
   },
   {
     "id": "frk_ct_683f41e775f4ca03d8f6bae2",
@@ -410,9 +397,7 @@
     "description": "Ensure Management Addresses Security Responsibilities",
     "createdAt": "2025-06-03 18:41:43.467",
     "updatedAt": "2026-04-27 17:12:09.307",
-    "documentTypes": [
-      "rbac_matrix"
-    ]
+    "documentTypes": ["rbac_matrix"]
   },
   {
     "id": "frk_ct_683f3ecd42e62fde624c59c1",
@@ -420,9 +405,7 @@
     "description": "Ensure Compliance with Security Policies and Standards",
     "createdAt": "2025-06-03 18:28:29.154",
     "updatedAt": "2026-04-27 17:12:14.631",
-    "documentTypes": [
-      "rbac_matrix"
-    ]
+    "documentTypes": ["rbac_matrix"]
   },
   {
     "id": "frk_ct_683f484fc7b5506ab97c26af",
@@ -430,9 +413,7 @@
     "description": "Maintain a Risk Management Program",
     "createdAt": "2025-06-03 19:09:02.849",
     "updatedAt": "2026-04-27 17:12:22.641",
-    "documentTypes": [
-      "rbac_matrix"
-    ]
+    "documentTypes": ["rbac_matrix"]
   },
   {
     "id": "frk_ct_69dd33a73264cb77236367ba",
@@ -456,9 +437,7 @@
     "description": "Runs the PCI external scanning channel (ASV), tracks passing scans and disputes, and interfaces with assessors (e.g. QSA) separately from day-to-day internal vulnerability scanning.",
     "createdAt": "2026-04-13 18:19:18.620",
     "updatedAt": "2026-04-13 22:28:31.756",
-    "documentTypes": [
-      "penetration_test"
-    ]
+    "documentTypes": ["penetration_test"]
   },
   {
     "id": "frk_ct_69e639b8c95150ea34dc07bf",
@@ -490,10 +469,7 @@
     "description": "Maintains an obligations register for applicable laws, regulations, contracts, and IP; tracks assurance for PII handling.",
     "createdAt": "2026-04-20 14:35:37.106",
     "updatedAt": "2026-04-20 15:31:42.642",
-    "documentTypes": [
-      "board_meeting",
-      "meeting"
-    ]
+    "documentTypes": ["board_meeting", "meeting"]
   },
   {
     "id": "frk_ct_69e639b90a3bf8c1443cbf5b",
@@ -501,9 +477,7 @@
     "description": "Formal risk identification, assessment, treatment, and monitoring process, including risk register and treatment plans.",
     "createdAt": "2026-04-20 14:35:36.757",
     "updatedAt": "2026-04-20 15:33:55.473",
-    "documentTypes": [
-      "tabletop_exercise"
-    ]
+    "documentTypes": ["tabletop_exercise"]
   },
   {
     "id": "frk_ct_69e639b96ad6c5e729676acb",
@@ -524,9 +498,7 @@
     "description": "Manage both software and code vulnerabilities",
     "createdAt": "2025-06-03 19:30:59.173",
     "updatedAt": "2026-04-20 15:33:55.918",
-    "documentTypes": [
-      "penetration_test"
-    ]
+    "documentTypes": ["penetration_test"]
   },
   {
     "id": "frk_ct_69e65ef9c20933590d85cc31",
@@ -654,9 +626,7 @@
     "description": "Owns pre-employment screening, confidentiality agreements, awareness training curriculum, and disciplinary handling for security violations.",
     "createdAt": "2026-04-20 14:35:36.677",
     "updatedAt": "2026-04-30 21:36:55.261",
-    "documentTypes": [
-      "employee_performance_evaluation"
-    ]
+    "documentTypes": ["employee_performance_evaluation"]
   },
   {
     "id": "frk_ct_69e918e8cc289b978f31a12a",
@@ -1192,10 +1162,7 @@
     "description": "Maintain a documented DPIA methodology with criteria for when an assessment is required (e.g., high-risk processing, new technologies, systematic monitoring). Retain DPIA records and consult the supervisory authority when residual risk remains high.",
     "createdAt": "2026-04-22 18:52:24.847",
     "updatedAt": "2026-04-23 23:20:37.875",
-    "documentTypes": [
-      "risk_committee_meeting",
-      "tabletop_exercise"
-    ]
+    "documentTypes": ["risk_committee_meeting", "tabletop_exercise"]
   },
   {
     "id": "frk_ct_69e918e6d72a45b4f933a112",
@@ -1203,10 +1170,7 @@
     "description": "Maintain a documented inventory of personal data processed by the organization, including data categories, sources, purposes, legal basis, recipients, retention periods, and who has access to each data set. Review at least annually and on material changes to processing activities.",
     "createdAt": "2026-04-22 18:52:22.361",
     "updatedAt": "2026-04-23 23:22:07.864",
-    "documentTypes": [
-      "access_request",
-      "rbac_matrix"
-    ]
+    "documentTypes": ["access_request", "rbac_matrix"]
   },
   {
     "id": "frk_ct_69eb876ea13506b36fd63a3e",
@@ -1270,9 +1234,7 @@
     "description": "Establish and test procedures for responding to emergencies or failures that damage systems containing ePHI, including emergency mode operation, testing, and criticality analysis.",
     "createdAt": "2026-04-24 15:08:31.504",
     "updatedAt": "2026-04-24 15:18:01.227",
-    "documentTypes": [
-      "tabletop_exercise"
-    ]
+    "documentTypes": ["tabletop_exercise"]
   },
   {
     "id": "frk_ct_69efd5a32e52c113f97254db",
@@ -1400,9 +1362,7 @@
     "description": "Maintain a documented breach response and notification process that meets California's data breach notification requirements (Cal. Civ. Code § 1798.82) for unauthorized acquisition of personal information, including timely consumer notification and any required Attorney General notification.",
     "createdAt": "2026-04-27 21:32:24.934",
     "updatedAt": "2026-04-27 21:49:53.331",
-    "documentTypes": [
-      "tabletop_exercise"
-    ]
+    "documentTypes": ["tabletop_exercise"]
   },
   {
     "id": "frk_ct_69efd5d2b0758b1e1c1b6d87",
@@ -1410,10 +1370,7 @@
     "description": "Conduct documented audits of CCPA/CPRA compliance at least annually, covering disclosures, request handling, training, vendor contracts, and security controls. Track regulatory changes and update compliance measures accordingly.",
     "createdAt": "2026-04-27 21:32:02.371",
     "updatedAt": "2026-04-27 21:49:57.931",
-    "documentTypes": [
-      "risk_committee_meeting",
-      "meeting"
-    ]
+    "documentTypes": ["risk_committee_meeting", "meeting"]
   },
   {
     "id": "frk_ct_69efd5c9acbf83b0a500050e",
@@ -1421,10 +1378,7 @@
     "description": "Implement and maintain reasonable technical and organizational security safeguards (e.g., access controls, encryption in transit and at rest, logging, vulnerability management) appropriate to the nature of the personal information processed, in order to protect against unauthorized access, destruction, use, modification, or disclosure.",
     "createdAt": "2026-04-27 21:31:53.365",
     "updatedAt": "2026-04-27 21:49:55.673",
-    "documentTypes": [
-      "penetration_test",
-      "rbac_matrix"
-    ]
+    "documentTypes": ["penetration_test", "rbac_matrix"]
   },
   {
     "id": "frk_ct_69efd5c63e9c6fc1f8bec055",
@@ -1440,9 +1394,7 @@
     "description": "Maintain an up-to-date inventory of all categories of personal information the business collects, stores, processes, sells, or shares. Classify data by sensitivity, identify sources and recipients, and map data flows across systems and third parties.",
     "createdAt": "2026-04-27 21:31:13.217",
     "updatedAt": "2026-04-27 21:49:59.459",
-    "documentTypes": [
-      "infrastructure_inventory"
-    ]
+    "documentTypes": ["infrastructure_inventory"]
   },
   {
     "id": "frk_ct_69f3d976c53fd192b48e6236",
@@ -1482,9 +1434,7 @@
     "description": "Maintain a written record of every purpose for which personal information is collected, including the specific data elements involved and the legal/business basis. Update the record whenever purposes change or are added.",
     "createdAt": "2026-04-30 22:36:42.181",
     "updatedAt": "2026-04-30 23:49:15.788",
-    "documentTypes": [
-      "infrastructure_inventory"
-    ]
+    "documentTypes": ["infrastructure_inventory"]
   },
   {
     "id": "frk_ct_69f3d97b66301a97f6b8e4a3",
@@ -1652,10 +1602,7 @@
     "description": "Maintain a documented privacy management framework that addresses each of the 10 Fair Information Principles, defines roles for privacy governance, and is reviewed and updated on a regular cadence.",
     "createdAt": "2026-04-30 22:36:39.241",
     "updatedAt": "2026-04-30 23:49:15.194",
-    "documentTypes": [
-      "risk_committee_meeting",
-      "meeting"
-    ]
+    "documentTypes": ["risk_committee_meeting", "meeting"]
   },
   {
     "id": "frk_ct_69f3d988421e37ecdc514fc0",
@@ -1676,9 +1623,7 @@
     "description": "Maintain a breach response procedure covering detection, containment, root-cause investigation, individual notification (where required), reporting to the Office of the Privacy Commissioner of Canada, and post-incident remediation.",
     "createdAt": "2026-04-30 22:36:57.260",
     "updatedAt": "2026-04-30 23:49:20.790",
-    "documentTypes": [
-      "tabletop_exercise"
-    ]
+    "documentTypes": ["tabletop_exercise"]
   },
   {
     "id": "frk_ct_69f897d2abcbb2cff15807ac",
@@ -1694,20 +1639,14 @@
     "description": "Apply administrative safeguards including need-to-know access authorization, security clearances proportionate to sensitivity, confidentiality agreements, ongoing employee awareness, monitoring and audits, and formal procedures for telework and working outside the office.",
     "createdAt": "2026-04-30 22:36:56.336",
     "updatedAt": "2026-04-30 23:49:20.160",
-    "documentTypes": [
-      "employee_performance_evaluation",
-      "rbac_matrix"
-    ]
+    "documentTypes": ["employee_performance_evaluation", "rbac_matrix"]
   },
   {
     "id": "frk_ct_e13915d6401696e46defc209",
     "name": "Security Policy & Governance",
     "description": "Defines and governs the overarching network and information security policy, assigns security roles and responsibilities, and obliges personnel and third parties to comply.",
     "controlFamily": "Policies on risk analysis & IS security",
-    "documentTypes": [
-      "meeting",
-      "board_meeting"
-    ],
+    "documentTypes": ["meeting", "board_meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1716,9 +1655,7 @@
     "name": "Cybersecurity Risk Management",
     "description": "Establishes and operates a cybersecurity risk-management framework covering identification, assessment, treatment, and periodic re-assessment of risks.",
     "controlFamily": "Policies on risk analysis & IS security",
-    "documentTypes": [
-      "risk_committee_meeting"
-    ],
+    "documentTypes": ["risk_committee_meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1727,9 +1664,7 @@
     "name": "Compliance Reviews & Reporting",
     "description": "Schedules and operates internal compliance reviews, monitors adherence to policy, and conducts independent reviews of the security programme with board reporting.",
     "controlFamily": "Policies on risk analysis & IS security",
-    "documentTypes": [
-      "board_meeting"
-    ],
+    "documentTypes": ["board_meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1738,9 +1673,7 @@
     "name": "Incident Response Policy & Plans",
     "description": "Adopts an incident-handling policy defining objectives, roles, and escalation paths for the detection, response, and recovery of security incidents.",
     "controlFamily": "Incident handling",
-    "documentTypes": [
-      "tabletop_exercise"
-    ],
+    "documentTypes": ["tabletop_exercise"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1758,9 +1691,7 @@
     "name": "Incident Reporting & Notification",
     "description": "Provides a mechanism for staff, customers, and suppliers to report incidents, and notifies competent authorities and affected parties per statutory obligations.",
     "controlFamily": "Incident handling",
-    "documentTypes": [
-      "whistleblower_report"
-    ],
+    "documentTypes": ["whistleblower_report"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1778,9 +1709,7 @@
     "name": "Incident Response & Recovery",
     "description": "Responds to incidents, contains and eradicates the cause, and restores affected systems and services to normal operation.",
     "controlFamily": "Incident handling",
-    "documentTypes": [
-      "tabletop_exercise"
-    ],
+    "documentTypes": ["tabletop_exercise"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1789,9 +1718,7 @@
     "name": "Post-Incident Review & Lessons Learned",
     "description": "Reviews incidents after resolution, captures lessons learned, and feeds findings back into the security programme.",
     "controlFamily": "Incident handling",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1800,9 +1727,7 @@
     "name": "Business Continuity Management",
     "description": "Identifies critical operations, performs business-impact analyses, and maintains business-continuity plans and recovery procedures.",
     "controlFamily": "Business continuity & crisis management",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1820,9 +1745,7 @@
     "name": "Crisis Management",
     "description": "Prepares for major disruptions through crisis-management plans, defined crisis teams, and regular testing and communication procedures.",
     "controlFamily": "Business continuity & crisis management",
-    "documentTypes": [
-      "board_meeting"
-    ],
+    "documentTypes": ["board_meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1840,9 +1763,7 @@
     "name": "Physical & Logical Access Control",
     "description": "Controls entry to premises and sensitive areas and aligns physical access with logical access rights for personnel and third parties.",
     "controlFamily": "Business continuity & crisis management",
-    "documentTypes": [
-      "access_request"
-    ],
+    "documentTypes": ["access_request"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1878,9 +1799,7 @@
     "name": "Configuration & Change Management",
     "description": "Governs configuration baselines and change management for systems so changes are planned, reviewed, and traceable.",
     "controlFamily": "Secure acquisition / development / maintenance",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1889,9 +1808,7 @@
     "name": "Security Testing",
     "description": "Tests systems and products before deployment and on an ongoing basis using methods appropriate to the risk they present.",
     "controlFamily": "Secure acquisition / development / maintenance",
-    "documentTypes": [
-      "penetration_test"
-    ],
+    "documentTypes": ["penetration_test"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1909,9 +1826,7 @@
     "name": "Network Security & Segmentation",
     "description": "Protects network infrastructure, segments networks and services to limit propagation, and restricts insecure protocols.",
     "controlFamily": "Secure acquisition / development / maintenance",
-    "documentTypes": [
-      "network_diagram"
-    ],
+    "documentTypes": ["network_diagram"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1929,9 +1844,7 @@
     "name": "Effectiveness Assessment",
     "description": "Assesses the effectiveness of the security programme and specific controls at planned intervals, including independent review.",
     "controlFamily": "Effectiveness assessment",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1940,9 +1853,7 @@
     "name": "Cyber Hygiene & Training",
     "description": "Embeds basic cyber-hygiene practices and delivers security awareness training so personnel recognise and reduce security risks.",
     "controlFamily": "Basic cyber-hygiene & training",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1960,9 +1871,7 @@
     "name": "HR Security & Personnel",
     "description": "Applies security to personnel through screening, role-based responsibilities, on/off-boarding procedures, and a disciplinary process.",
     "controlFamily": "HR security, access control & asset management",
-    "documentTypes": [
-      "employee_performance_evaluation"
-    ],
+    "documentTypes": ["employee_performance_evaluation"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1971,10 +1880,7 @@
     "name": "Access Control & Provisioning",
     "description": "Grants and revokes logical access to systems and data based on least privilege, and reviews access rights on a defined cycle.",
     "controlFamily": "HR security, access control & asset management",
-    "documentTypes": [
-      "access_request",
-      "rbac_matrix"
-    ],
+    "documentTypes": ["access_request", "rbac_matrix"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1983,9 +1889,7 @@
     "name": "Privileged & Administrative Access",
     "description": "Restricts and monitors privileged and administrative access to production and administrative systems.",
     "controlFamily": "HR security, access control & asset management",
-    "documentTypes": [
-      "account_types"
-    ],
+    "documentTypes": ["account_types"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -1994,9 +1898,7 @@
     "name": "Identity & Authentication",
     "description": "Manages identities and authentication for users and devices, including secure authentication procedures and unique identifiers.",
     "controlFamily": "HR security, access control & asset management",
-    "documentTypes": [
-      "access_request"
-    ],
+    "documentTypes": ["access_request"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2005,9 +1907,7 @@
     "name": "Asset Management",
     "description": "Classifies, inventories, and handles assets across their lifecycle, including storage, media, transfers, and secure disposal or return.",
     "controlFamily": "HR security, access control & asset management",
-    "documentTypes": [
-      "infrastructure_inventory"
-    ],
+    "documentTypes": ["infrastructure_inventory"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2025,9 +1925,7 @@
     "name": "ICT Governance & Risk Framework",
     "description": "Establishes the internal governance and control framework for ICT risk, assigning the management body ultimate responsibility, clear roles and an independent control function, and ensures the ICT risk management framework is sound, documented and periodically reviewed.",
     "controlFamily": "Governance and organisation",
-    "documentTypes": [
-      "board_meeting"
-    ],
+    "documentTypes": ["board_meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2036,9 +1934,7 @@
     "name": "Independent Assurance & Audit",
     "description": "Subjects the ICT risk management framework to regular independent internal audit, ensures segregation of ICT risk management, control and audit functions, and establishes a formal follow-up process to verify and remediate critical audit findings.",
     "controlFamily": "Governance and organisation",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2047,9 +1943,7 @@
     "name": "Digital Operational Resilience Strategy",
     "description": "Defines and monitors a digital operational resilience strategy setting out the ICT risk tolerance level, information security objectives, ICT reference architecture and detection and prevention mechanisms, including a multi-vendor strategy for ICT third-party dependencies.",
     "controlFamily": "Governance and organisation",
-    "documentTypes": [
-      "board_meeting"
-    ],
+    "documentTypes": ["board_meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2067,9 +1961,7 @@
     "name": "Identification & Asset Inventory",
     "description": "Identifies, classifies and documents ICT-supported business functions and information and ICT assets, maps critical assets and their interdependencies, and maintains up-to-date inventories.",
     "controlFamily": "Identification",
-    "documentTypes": [
-      "infrastructure_inventory"
-    ],
+    "documentTypes": ["infrastructure_inventory"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2078,9 +1970,7 @@
     "name": "ICT Risk & Threat Assessment",
     "description": "Continuously identifies sources of ICT risk, cyber threats and vulnerabilities, performs risk assessments on major changes and legacy systems, and reviews risk scenarios at least yearly.",
     "controlFamily": "Identification",
-    "documentTypes": [
-      "risk_committee_meeting"
-    ],
+    "documentTypes": ["risk_committee_meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2107,9 +1997,7 @@
     "name": "Network Security & Segmentation",
     "description": "Monitors and controls the security and functioning of ICT systems, establishes a sound network and infrastructure management structure, and uses isolation and segmentation mechanisms to prevent contagion of cyber-attacks.",
     "controlFamily": "Protection and prevention",
-    "documentTypes": [
-      "network_diagram"
-    ],
+    "documentTypes": ["network_diagram"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2118,10 +2006,7 @@
     "name": "Access Control & Strong Authentication",
     "description": "Limits physical and logical access to information and ICT assets on a least-privilege basis and implements strong authentication mechanisms and cryptographic protections based on approved data classification.",
     "controlFamily": "Protection and prevention",
-    "documentTypes": [
-      "access_request",
-      "rbac_matrix"
-    ],
+    "documentTypes": ["access_request", "rbac_matrix"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2130,9 +2015,7 @@
     "name": "Change Management & Patching",
     "description": "Governs ICT change management through documented, risk-based policies that ensure changes are recorded, tested, approved and verified in a controlled manner, and maintains comprehensive patch and update policies.",
     "controlFamily": "Protection and prevention",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2150,9 +2033,7 @@
     "name": "Business Continuity & Impact Analysis",
     "description": "Maintains a comprehensive ICT business continuity policy and conducts business impact analyses, ensuring redundancy of critical components and continuity of critical or important functions.",
     "controlFamily": "Response and recovery",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2161,9 +2042,7 @@
     "name": "ICT Response & Recovery Plans",
     "description": "Implements ICT response and recovery plans with periodic testing including cyber-attack scenarios and switchovers, a crisis management function, and readily accessible records of activities during disruptions.",
     "controlFamily": "Response and recovery",
-    "documentTypes": [
-      "tabletop_exercise"
-    ],
+    "documentTypes": ["tabletop_exercise"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2172,9 +2051,7 @@
     "name": "Backup & Restoration",
     "description": "Develops documented backup policies and restoration procedures, maintains segregated and redundant backup systems, and periodically tests backup and restoration.",
     "controlFamily": "Backup policies and restoration",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2183,9 +2060,7 @@
     "name": "Continuous Learning & Improvement",
     "description": "Gathers and analyses threat intelligence, conducts post-incident reviews, and incorporates lessons learned and the evolution of ICT risk into the ICT risk assessment process, with senior ICT staff reporting to the management body.",
     "controlFamily": "Learning and evolving",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2212,9 +2087,7 @@
     "name": "Incident Management Process",
     "description": "Defines and implements an ICT-related incident management process to detect, manage and notify incidents, with early warning indicators, classification, roles and responsibilities, escalation and client notification plans, and response procedures.",
     "controlFamily": "ICT-related incident management",
-    "documentTypes": [
-      "tabletop_exercise"
-    ],
+    "documentTypes": ["tabletop_exercise"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2232,9 +2105,7 @@
     "name": "Major Incident Reporting & Notification",
     "description": "Reports major ICT-related incidents to the relevant competent authority using the prescribed templates and timelines, and informs clients without undue delay about major incidents impacting their financial interests.",
     "controlFamily": "ICT-related incident management",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2243,9 +2114,7 @@
     "name": "Digital Operational Resilience Testing",
     "description": "Establishes a risk-based digital operational resilience testing programme as part of the ICT risk management framework, with independent testing, prioritised remediation of findings, and at least yearly testing of critical systems.",
     "controlFamily": "Digital operational resilience testing",
-    "documentTypes": [
-      "penetration_test"
-    ],
+    "documentTypes": ["penetration_test"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2254,9 +2123,7 @@
     "name": "ICT Tools & Systems Testing",
     "description": "Executes appropriate tests on ICT tools and systems, including vulnerability assessments and scans, network security assessments, source code reviews, scenario-based, compatibility, performance, end-to-end and penetration testing.",
     "controlFamily": "Digital operational resilience testing",
-    "documentTypes": [
-      "penetration_test"
-    ],
+    "documentTypes": ["penetration_test"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2265,9 +2132,7 @@
     "name": "Threat-Led Penetration Testing",
     "description": "Carries out threat-led penetration testing at least every 3 years on live production systems supporting critical or important functions, with validated scope, third-party participation, risk management controls and reporting to authorities.",
     "controlFamily": "Digital operational resilience testing",
-    "documentTypes": [
-      "penetration_test"
-    ],
+    "documentTypes": ["penetration_test"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2285,9 +2150,7 @@
     "name": "ICT Third-Party Risk Management",
     "description": "Manages ICT third-party risk as an integral part of the ICT risk management framework, with a third-party risk strategy, pre-contract due diligence and risk assessment, information security standards for providers, audit and inspection rights, termination rights and exit strategies.",
     "controlFamily": "Managing ICT third-party risk",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2296,9 +2159,7 @@
     "name": "Third-Party Register & Reporting",
     "description": "Maintains a register of information on all ICT contractual arrangements distinguishing critical or important functions, reports to competent authorities on new arrangements, and ensures appropriate documentation of arrangements.",
     "controlFamily": "Managing ICT third-party risk",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2307,9 +2168,7 @@
     "name": "Concentration & Subcontracting Risk",
     "description": "Assesses ICT concentration risk and the substitutability of providers, and weighs the risks of subcontracting including insolvency, urgent data recovery, third-country data protection and complex subcontracting chains.",
     "controlFamily": "Managing ICT third-party risk",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2336,9 +2195,7 @@
     "name": "Information Security Management Program",
     "description": "Governs information security through a formal, management-approved program aligned to organizational risk, covering the design, implementation, monitoring and continuous improvement of security controls.",
     "controlFamily": "Information Security Management Program",
-    "documentTypes": [
-      "board_meeting"
-    ],
+    "documentTypes": ["board_meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2347,9 +2204,7 @@
     "name": "Business Requirement for Access Control",
     "description": "Defines the business requirements for controlling access to information and processing facilities through a documented and reviewed access control policy.",
     "controlFamily": "Access Control",
-    "documentTypes": [
-      "access_request"
-    ],
+    "documentTypes": ["access_request"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2358,10 +2213,7 @@
     "name": "User Access Management",
     "description": "Manages the full lifecycle of user access, including registration, de-registration, privileged access allocation, password management and regular review of access rights.",
     "controlFamily": "Access Control",
-    "documentTypes": [
-      "access_request",
-      "rbac_matrix"
-    ],
+    "documentTypes": ["access_request", "rbac_matrix"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2379,9 +2231,7 @@
     "name": "Network Access Control",
     "description": "Controls access to network services, including authentication of external connections, equipment identification, protection of remote ports and logical segregation of networks.",
     "controlFamily": "Access Control",
-    "documentTypes": [
-      "network_diagram"
-    ],
+    "documentTypes": ["network_diagram"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2390,10 +2240,7 @@
     "name": "Operating System Access Control",
     "description": "Secures operating system access through controlled log-on procedures, user authentication, password management, restricted use of system utilities, session time-outs and connection limits.",
     "controlFamily": "Access Control",
-    "documentTypes": [
-      "access_request",
-      "rbac_matrix"
-    ],
+    "documentTypes": ["access_request", "rbac_matrix"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2402,9 +2249,7 @@
     "name": "Application and Information Access Control",
     "description": "Restricts access to application and system information, in particular sensitive data, and isolates sensitive systems from less trusted environments.",
     "controlFamily": "Access Control",
-    "documentTypes": [
-      "rbac_matrix"
-    ],
+    "documentTypes": ["rbac_matrix"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2458,9 +2303,7 @@
     "name": "Risk Management Program",
     "description": "Establishes and operates a structured risk management program covering the identification, analysis, evaluation, mitigation and ongoing evaluation of information security risk.",
     "controlFamily": "Risk Management",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2469,9 +2312,7 @@
     "name": "Information Security Policy",
     "description": "Documents, communicates and periodically reviews the information security policy expressing management direction for protecting information assets.",
     "controlFamily": "Security Policy",
-    "documentTypes": [
-      "board_meeting"
-    ],
+    "documentTypes": ["board_meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2480,9 +2321,7 @@
     "name": "Internal Organization",
     "description": "Establishes management commitment, coordination, allocation of responsibilities and independent review of information security, together with confidentiality agreements and contacts with authorities and security groups.",
     "controlFamily": "Organization of Information Security",
-    "documentTypes": [
-      "board_meeting"
-    ],
+    "documentTypes": ["board_meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2500,9 +2339,7 @@
     "name": "Compliance with Legal Requirements",
     "description": "Identifies applicable legislation and maintains compliance, including intellectual property rights, protection of organizational records and covered data, prevention of misuse and regulation of cryptography.",
     "controlFamily": "Compliance",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2511,9 +2348,7 @@
     "name": "Compliance with Security Policies and Standards",
     "description": "Ensures compliance with security policies, standards and technical requirements, including management enforcement and regular technical compliance checking.",
     "controlFamily": "Compliance",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2531,9 +2366,7 @@
     "name": "Responsibility for Assets",
     "description": "Maintains an inventory of assets with assigned owners and documents rules for the acceptable use of information assets and facilities.",
     "controlFamily": "Asset Management",
-    "documentTypes": [
-      "infrastructure_inventory"
-    ],
+    "documentTypes": ["infrastructure_inventory"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2569,9 +2402,7 @@
     "name": "Documented Operating Procedures",
     "description": "Documents operating procedures and controls changes, segregates duties and separates development, test and operational environments.",
     "controlFamily": "Communications and Operations Management",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2580,9 +2411,7 @@
     "name": "Control of Third Party Service Delivery",
     "description": "Ensures third-party services are delivered and monitored in line with agreed security controls, service definitions and delivery levels, and that changes to services are managed.",
     "controlFamily": "Communications and Operations Management",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2609,9 +2438,7 @@
     "name": "Information Back-Up",
     "description": "Takes regular backup copies of information, software and system images in line with documented policies and tests the ability to restore them.",
     "controlFamily": "Communications and Operations Management",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2620,9 +2447,7 @@
     "name": "Network Security Management",
     "description": "Manages and controls networks and network services, including traffic, segmentation, connectivity and agreed security features and service levels.",
     "controlFamily": "Communications and Operations Management",
-    "documentTypes": [
-      "network_diagram"
-    ],
+    "documentTypes": ["network_diagram"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2658,9 +2483,7 @@
     "name": "Monitoring",
     "description": "Logs and monitors system and administrator activity, protects log information, logs faults and synchronizes clocks to support accurate correlation of audit records.",
     "controlFamily": "Communications and Operations Management",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2723,9 +2546,7 @@
     "name": "Reporting Information Security Incidents and Weaknesses",
     "description": "Enables the reporting of information security events and observed weaknesses through defined channels as quickly as possible.",
     "controlFamily": "Information Security Incident Management",
-    "documentTypes": [
-      "tabletop_exercise"
-    ],
+    "documentTypes": ["tabletop_exercise"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2734,9 +2555,7 @@
     "name": "Management of Information Security Incidents and Improvements",
     "description": "Defines responsibilities and procedures for responding to incidents, learns from incidents to prevent recurrence and collects and preserves evidence.",
     "controlFamily": "Information Security Incident Management",
-    "documentTypes": [
-      "tabletop_exercise"
-    ],
+    "documentTypes": ["tabletop_exercise"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2745,9 +2564,7 @@
     "name": "Information Security Aspects of Business Continuity Management",
     "description": "Integrates information security into business continuity management, including risk assessment, continuity planning, a planning framework and periodic testing and re-assessment.",
     "controlFamily": "Business Continuity Management",
-    "documentTypes": [
-      "tabletop_exercise"
-    ],
+    "documentTypes": ["tabletop_exercise"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   },
@@ -2810,9 +2627,7 @@
     "name": "Accountability & Auditing",
     "description": "Governs privacy through assigned responsibility, impact and risk assessment, third-party requirements, monitoring and auditing, awareness and training, and reporting.",
     "controlFamily": "Privacy Practices",
-    "documentTypes": [
-      "meeting"
-    ],
+    "documentTypes": ["meeting"],
     "createdAt": "2026-08-11 00:00:00.000",
     "updatedAt": "2026-08-11 00:00:00.000"
   }

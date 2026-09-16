@@ -201,7 +201,7 @@ export class SecurityPenetrationTestsController {
   @ApiOperation({
     summary: 'Receive penetration test webhook events',
     description:
-      'Receives signed JSON events from Maced. Signature is verified against MACED_WEBHOOK_SIGNING_SECRET using the SDK\'s verifyMacedWebhook helper.',
+      "Receives signed JSON events from Maced. Signature is verified against MACED_WEBHOOK_SIGNING_SECRET using the SDK's verifyMacedWebhook helper.",
   })
   @ApiHeader({
     name: 'X-Maced-Signature',

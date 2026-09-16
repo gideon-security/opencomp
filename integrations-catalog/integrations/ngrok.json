@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to the ngrok Dashboard at https://dashboard.ngrok.com\n2. Navigate to API section at https://dashboard.ngrok.com/api\n3. Click \"Add API Key\" to generate a new API key\n4. Copy the key and paste it below\n\nNote: The API key is shown only once at creation. Store it securely."
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

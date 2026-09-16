@@ -96,7 +96,10 @@ describe('TasksService approval gating', () => {
       ],
     }).compile();
     service = moduleRef.get(TasksService);
-    memberFindFirst.mockResolvedValue({ id: 'mem_actor', user: { role: 'owner' } });
+    memberFindFirst.mockResolvedValue({
+      id: 'mem_actor',
+      user: { role: 'owner' },
+    });
     taskUpdate.mockResolvedValue({ id: TASK_ID });
     auditLogCreate.mockResolvedValue({});
   });
@@ -105,9 +108,16 @@ describe('TasksService approval gating', () => {
 
   describe('updateTask', () => {
     it('REGRESSION: approval OFF + stale approver allows todo→done and clears the approver', async () => {
-      taskFindFirst.mockResolvedValue(existing(false, { approverId: 'mem_appr' }));
+      taskFindFirst.mockResolvedValue(
+        existing(false, { approverId: 'mem_appr' }),
+      );
 
-      await service.updateTask(ORG_ID, TASK_ID, { status: TaskStatus.done }, USER_ID);
+      await service.updateTask(
+        ORG_ID,
+        TASK_ID,
+        { status: TaskStatus.done },
+        USER_ID,
+      );
 
       expect(taskUpdate).toHaveBeenCalledTimes(1);
       expect(lastUpdateData().status).toBe(TaskStatus.done);
@@ -115,10 +125,17 @@ describe('TasksService approval gating', () => {
     });
 
     it('PRESERVE: approval ON + approver assigned blocks a direct todo→done', async () => {
-      taskFindFirst.mockResolvedValue(existing(true, { approverId: 'mem_appr' }));
+      taskFindFirst.mockResolvedValue(
+        existing(true, { approverId: 'mem_appr' }),
+      );
 
       await expect(
-        service.updateTask(ORG_ID, TASK_ID, { status: TaskStatus.done }, USER_ID),
+        service.updateTask(
+          ORG_ID,
+          TASK_ID,
+          { status: TaskStatus.done },
+          USER_ID,
+        ),
       ).rejects.toThrow(
         'Cannot mark task as done directly when an approver is assigned. Submit for review instead.',
       );
@@ -128,7 +145,12 @@ describe('TasksService approval gating', () => {
     it('ALLOWED: approval ON + no approver allows todo→done', async () => {
       taskFindFirst.mockResolvedValue(existing(true, { approverId: null }));
 
-      await service.updateTask(ORG_ID, TASK_ID, { status: TaskStatus.done }, USER_ID);
+      await service.updateTask(
+        ORG_ID,
+        TASK_ID,
+        { status: TaskStatus.done },
+        USER_ID,
+      );
 
       expect(taskUpdate).toHaveBeenCalledTimes(1);
       expect(lastUpdateData().status).toBe(TaskStatus.done);
@@ -136,28 +158,52 @@ describe('TasksService approval gating', () => {
 
     it('SYMMETRIC: approval OFF lets an in_review task move to done and clears the approver', async () => {
       taskFindFirst.mockResolvedValue(
-        existing(false, { status: TaskStatus.in_review, approverId: 'mem_appr' }),
+        existing(false, {
+          status: TaskStatus.in_review,
+          approverId: 'mem_appr',
+        }),
       );
 
-      await service.updateTask(ORG_ID, TASK_ID, { status: TaskStatus.done }, USER_ID);
+      await service.updateTask(
+        ORG_ID,
+        TASK_ID,
+        { status: TaskStatus.done },
+        USER_ID,
+      );
 
       expect(lastUpdateData().status).toBe(TaskStatus.done);
       expect(lastUpdateData().approverId).toBeNull();
     });
 
     it('IN_REVIEW LOCK: approval ON blocks moving an in_review task directly', async () => {
-      taskFindFirst.mockResolvedValue(existing(true, { status: TaskStatus.in_review }));
+      taskFindFirst.mockResolvedValue(
+        existing(true, { status: TaskStatus.in_review }),
+      );
 
       await expect(
-        service.updateTask(ORG_ID, TASK_ID, { status: TaskStatus.todo }, USER_ID),
-      ).rejects.toThrow('Cannot change status directly while task is in review');
+        service.updateTask(
+          ORG_ID,
+          TASK_ID,
+          { status: TaskStatus.todo },
+          USER_ID,
+        ),
+      ).rejects.toThrow(
+        'Cannot change status directly while task is in review',
+      );
       expect(taskUpdate).not.toHaveBeenCalled();
     });
 
     it('SELF-HEAL GUARD: an explicit approverId from the caller is not force-cleared', async () => {
-      taskFindFirst.mockResolvedValue(existing(false, { approverId: 'mem_old' }));
+      taskFindFirst.mockResolvedValue(
+        existing(false, { approverId: 'mem_old' }),
+      );
 
-      await service.updateTask(ORG_ID, TASK_ID, { approverId: 'mem_new' }, USER_ID);
+      await service.updateTask(
+        ORG_ID,
+        TASK_ID,
+        { approverId: 'mem_new' },
+        USER_ID,
+      );
 
       expect(lastUpdateData().approverId).toBe('mem_new');
     });
@@ -165,16 +211,28 @@ describe('TasksService approval gating', () => {
     it('NO-OP: approval OFF + no approver leaves approverId untouched on todo→done', async () => {
       taskFindFirst.mockResolvedValue(existing(false, { approverId: null }));
 
-      await service.updateTask(ORG_ID, TASK_ID, { status: TaskStatus.done }, USER_ID);
+      await service.updateTask(
+        ORG_ID,
+        TASK_ID,
+        { status: TaskStatus.done },
+        USER_ID,
+      );
 
       expect(lastUpdateData().status).toBe(TaskStatus.done);
       expect(lastUpdateData().approverId).toBeUndefined();
     });
 
     it('DEFENSIVE: a missing organization row is treated as approval disabled', async () => {
-      taskFindFirst.mockResolvedValue(existing(null, { approverId: 'mem_appr' }));
+      taskFindFirst.mockResolvedValue(
+        existing(null, { approverId: 'mem_appr' }),
+      );
 
-      await service.updateTask(ORG_ID, TASK_ID, { status: TaskStatus.done }, USER_ID);
+      await service.updateTask(
+        ORG_ID,
+        TASK_ID,
+        { status: TaskStatus.done },
+        USER_ID,
+      );
 
       expect(lastUpdateData().status).toBe(TaskStatus.done);
       expect(lastUpdateData().approverId).toBeNull();
@@ -225,7 +283,12 @@ describe('TasksService approval gating', () => {
       memberFindFirst.mockResolvedValueOnce(null);
 
       await expect(
-        service.updateTasksAssignee(ORG_ID, [TASK_ID], 'mem_other_org', USER_ID),
+        service.updateTasksAssignee(
+          ORG_ID,
+          [TASK_ID],
+          'mem_other_org',
+          USER_ID,
+        ),
       ).rejects.toThrow('Assignee is not a member of this organization');
       expect(taskUpdateMany).not.toHaveBeenCalled();
     });

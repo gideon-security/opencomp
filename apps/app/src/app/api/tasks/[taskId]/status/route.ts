@@ -2,10 +2,7 @@ import { auth } from '@/utils/auth';
 import { runs } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ taskId: string }> },
-) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ taskId: string }> }) {
   try {
     const session = await auth.api.getSession({
       headers: req.headers,
@@ -42,7 +39,7 @@ export async function GET(
     });
   } catch (error) {
     console.error('Error retrieving run status:', error);
-    
+
     // Handle specific error cases
     if (error instanceof Error) {
       // Check if it's a 404 error from Local trigger
@@ -57,4 +54,3 @@ export async function GET(
     );
   }
 }
-

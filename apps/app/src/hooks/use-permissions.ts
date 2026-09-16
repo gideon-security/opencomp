@@ -1,18 +1,18 @@
 'use client';
 
-import useSWR from 'swr';
-import { BUILT_IN_ROLE_OBLIGATIONS } from '@gideon-defender/auth';
-import { useActiveMember } from '@/utils/auth-client';
 import { apiClient } from '@/lib/api-client';
 import {
-  resolveBuiltInPermissions,
-  mergePermissions,
-  hasPermission,
-  parseRolesString,
-  isBuiltInRole,
   canAccessAuditorView,
+  hasPermission,
+  isBuiltInRole,
+  mergePermissions,
+  parseRolesString,
+  resolveBuiltInPermissions,
   type UserPermissions,
 } from '@/lib/permissions';
+import { useActiveMember } from '@/utils/auth-client';
+import { BUILT_IN_ROLE_OBLIGATIONS } from '@gideon-defender/auth';
+import useSWR from 'swr';
 
 interface CustomRolePermissionsResponse {
   permissions: Record<string, string[]>;
@@ -73,9 +73,7 @@ export function usePermissions() {
   // synchronous built-in defaults so initial render is correct for the common
   // case (no overrides).
   const obligations: Record<string, boolean> = customData?.obligations
-    ? Object.fromEntries(
-        Object.entries(customData.obligations).filter(([, val]) => val),
-      )
+    ? Object.fromEntries(Object.entries(customData.obligations).filter(([, val]) => val))
     : { ...builtInObligations };
 
   // CS-189: separate "did a custom role grant this permission" from the

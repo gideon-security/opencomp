@@ -1,4 +1,3 @@
-import { TaskItemItem } from './TaskItemItem';
 import type {
   TaskItem,
   TaskItemEntityType,
@@ -7,6 +6,7 @@ import type {
   TaskItemSortOrder,
 } from '@/hooks/use-task-items';
 import { Text } from '@trycompai/design-system';
+import { TaskItemItem } from './TaskItemItem';
 
 interface TaskItemListProps {
   taskItems: TaskItem[];
@@ -36,7 +36,9 @@ export function TaskItemList({
   if (taskItems.length === 0) {
     return (
       <div className="py-8 text-center">
-        <Text size="sm" variant="muted">No tasks yet.</Text>
+        <Text size="sm" variant="muted">
+          No tasks yet.
+        </Text>
       </div>
     );
   }

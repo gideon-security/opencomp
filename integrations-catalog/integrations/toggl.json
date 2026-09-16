@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Toggl Track\n2. Go to Profile Settings → API Token\n3. Copy your API token\n4. Use the token as username and 'api_token' as password"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

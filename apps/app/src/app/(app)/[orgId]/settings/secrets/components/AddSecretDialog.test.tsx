@@ -1,14 +1,14 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
 
 vi.mock('@/hooks/use-permissions', () => ({
@@ -45,7 +45,8 @@ vi.mock('@gideon-defender/ui/button', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/dialog', () => ({
-  Dialog: ({ children, open }: any) => (open ? <div data-testid="dialog">{children}</div> : <div>{children}</div>),
+  Dialog: ({ children, open }: any) =>
+    open ? <div data-testid="dialog">{children}</div> : <div>{children}</div>,
   DialogContent: ({ children }: any) => <div data-testid="dialog-content">{children}</div>,
   DialogDescription: ({ children }: any) => <p>{children}</p>,
   DialogFooter: ({ children }: any) => <div>{children}</div>,

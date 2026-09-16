@@ -1,5 +1,7 @@
 'use client';
 
+import { usePermissions } from '@/hooks/use-permissions';
+import { api } from '@/lib/api-client';
 import {
   Alert,
   AlertDescription,
@@ -23,8 +25,12 @@ import {
 import Link from 'next/link';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { usePermissions } from '@/hooks/use-permissions';
-import { api } from '@/lib/api-client';
+import {
+  IsmsDocumentCard,
+  IsmsEmptyState,
+  IsmsSummaryRow,
+  type IsmsSummaryStat,
+} from '../../isms/components/shared';
 import { useIso27001FrameworkId } from '../../isms/hooks/useIso27001FrameworkId';
 import {
   ISMS_TYPE_META,
@@ -32,12 +38,6 @@ import {
   type IsmsDriftResult,
   type IsmsEnsureSetupResponse,
 } from '../../isms/isms-types';
-import {
-  IsmsDocumentCard,
-  IsmsEmptyState,
-  IsmsSummaryRow,
-  type IsmsSummaryStat,
-} from '../../isms/components/shared';
 
 export function IsmsOverview({ organizationId }: { organizationId: string }) {
   const iso27001FrameworkId = useIso27001FrameworkId(organizationId);

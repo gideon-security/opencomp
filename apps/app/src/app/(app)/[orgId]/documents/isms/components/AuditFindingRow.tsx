@@ -25,10 +25,7 @@ import type { IsmsAudit, IsmsAuditFinding } from '../isms-types';
 import { AuditFindingFields } from './AuditFindingFields';
 import type { ApproverOption } from './IsmsApprovalSection';
 import { findingSchema, type FindingFormValues } from './audit-schema';
-import {
-  findingStatusLabel,
-  findingTypeLabel,
-} from './internal-audit-labels';
+import { findingStatusLabel, findingTypeLabel } from './internal-audit-labels';
 import { IsmsRegisterCard, IsmsRegisterField } from './shared';
 
 interface AuditFindingRowProps {
@@ -109,8 +106,7 @@ export function AuditFindingRow({
     ? audit.controls.find((row) => row.id === finding.controlId)
     : null;
   const ownerName = finding.ownerMemberId
-    ? (memberOptions.find((option) => option.id === finding.ownerMemberId)?.name ??
-      'Former member')
+    ? (memberOptions.find((option) => option.id === finding.ownerMemberId)?.name ?? 'Former member')
     : null;
 
   const headerActions = canEdit ? (

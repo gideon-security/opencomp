@@ -1,25 +1,13 @@
 import { generateAnswer } from '../api';
 import { runConcurrent } from '../async-pool';
-import {
-  applyGeneratedAnswer,
-  updateQueueItemStatus,
-} from '../queue';
-import type {
-  GeneratedAnswer,
-  QuestionQueueItem,
-  QueueStatus,
-  TabQuestionQueue,
-} from '../types';
+import { applyGeneratedAnswer, updateQueueItemStatus } from '../queue';
+import type { GeneratedAnswer, QuestionQueueItem, QueueStatus, TabQuestionQueue } from '../types';
 
 const DEFAULT_GENERATE_CONCURRENCY = 4;
 
 // Generate-all must not overwrite work the user already curated: approved
 // answers and manual edits are only replaced by an explicit single regenerate.
-const SKIPPED_BATCH_STATUSES = new Set<QueueStatus>([
-  'inserted',
-  'generating',
-  'approved',
-]);
+const SKIPPED_BATCH_STATUSES = new Set<QueueStatus>(['inserted', 'generating', 'approved']);
 
 function isBatchCandidate(item: QuestionQueueItem): boolean {
   if (SKIPPED_BATCH_STATUSES.has(item.status)) return false;
@@ -48,9 +36,7 @@ export async function generateQueueItemsInBatches(params: {
   // Each result is applied to the freshly stored queue inside a serialized
   // section, so a long-running request cannot write back a stale snapshot.
   let writeQueue: Promise<void> = Promise.resolve();
-  const commit = (
-    apply: (current: TabQuestionQueue) => TabQuestionQueue,
-  ): Promise<void> => {
+  const commit = (apply: (current: TabQuestionQueue) => TabQuestionQueue): Promise<void> => {
     const result = writeQueue.then(async () => {
       const current = params.loadQueue ? await params.loadQueue() : queue;
       queue = apply(current);
@@ -109,9 +95,7 @@ export async function generateQueueItemsInBatches(params: {
   // Everything that could be saved has been. Surface the rest instead of
   // reporting a clean run that quietly lost answers.
   if (failedWrites.length > 0) {
-    throw new Error(
-      `Generated answers could not be saved for ${failedWrites.length} question(s).`,
-    );
+    throw new Error(`Generated answers could not be saved for ${failedWrites.length} question(s).`);
   }
   return queue;
 }
@@ -121,11 +105,12 @@ function markCandidatesGenerating(params: {
   queue: TabQuestionQueue;
 }): TabQuestionQueue {
   return params.candidates.reduce(
-    (queue, item) => updateQueueItemStatus({
-      queue,
-      itemId: item.id,
-      status: 'generating',
-    }),
+    (queue, item) =>
+      updateQueueItemStatus({
+        queue,
+        itemId: item.id,
+        status: 'generating',
+      }),
     params.queue,
   );
 }

@@ -18,25 +18,18 @@ import { useForm } from 'react-hook-form';
 import type { IsmsMetric } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
 import { MeasurementHistory } from './MeasurementHistory';
+import { metricSchema, toMetricPayload, type MetricFormValues } from './metric-schema';
 import { MetricFields } from './MetricFields';
 import { MetricsDueCard, type DueMeasurementRow } from './MetricsDueCard';
+import { computeDueEntries, METRIC_CADENCE_LABELS, metricIsOverdue } from './monitoring-constants';
 import { MonitoringRowActions } from './MonitoringRowActions';
-import { metricSchema, toMetricPayload, type MetricFormValues } from './metric-schema';
-import {
-  computeDueEntries,
-  METRIC_CADENCE_LABELS,
-  metricIsOverdue,
-} from './monitoring-constants';
 import type { RecordMeasurementValues } from './RecordMeasurementForm';
 import { IsmsRegisterCard, IsmsRegisterField, IsmsSourceBadge } from './shared';
 
 export interface MonitoringRowHandlers {
   onUpdateMetric: (metricId: string, payload: Record<string, unknown>) => Promise<void>;
   onDeleteMetric: (metricId: string) => Promise<void>;
-  onRecordMeasurement: (
-    metricId: string,
-    values: RecordMeasurementValues,
-  ) => Promise<void>;
+  onRecordMeasurement: (metricId: string, values: RecordMeasurementValues) => Promise<void>;
   onBulkSaveMeasurements: (rows: DueMeasurementRow[]) => Promise<void>;
   onDeleteMeasurement: (measurementId: string) => Promise<void>;
 }
@@ -126,9 +119,7 @@ export function MonitoringRow({
   };
 
   const personDisplay = (memberId: string | null): string =>
-    memberId
-      ? (memberNames[memberId] ?? 'Former member')
-      : 'Security & Privacy Owner (default)';
+    memberId ? (memberNames[memberId] ?? 'Former member') : 'Security & Privacy Owner (default)';
 
   const latest = metric.measurements[0];
 
@@ -188,9 +179,7 @@ export function MonitoringRow({
             </IsmsRegisterField>
             <IsmsRegisterField label="Target">
               {metric.target ||
-                (metric.objective
-                  ? (metric.objective.target ?? metric.objective.objective)
-                  : '—')}
+                (metric.objective ? (metric.objective.target ?? metric.objective.objective) : '—')}
             </IsmsRegisterField>
             <IsmsRegisterField label="Source">
               {metric.dataSource === 'manual' ? 'Manual entry' : metric.dataSource}
@@ -215,8 +204,7 @@ export function MonitoringRow({
                 {canEdit && backfillEntries.length > 0 ? (
                   <Stack gap="2">
                     <Text size="sm" variant="muted">
-                      Backfill missing periods — values save with today&apos;s
-                      recorded-on date.
+                      Backfill missing periods — values save with today&apos;s recorded-on date.
                     </Text>
                     <MetricsDueCard
                       key={backfillEntries.map((entry) => entry.periodKey).join('|')}

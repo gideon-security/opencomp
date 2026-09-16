@@ -65,7 +65,9 @@ describe('computeWizardDefaults', () => {
     const result = await computeWizardDefaults(args);
     expect(result.intendedOutcomes).toEqual(DEFAULT_INTENDED_OUTCOMES);
     expect(result.cloudScopeSplit).toEqual(DEFAULT_CLOUD_SCOPE_SPLIT);
-    expect(result.sectorRegulatorOptions).toEqual([...SECTOR_REGULATOR_OPTIONS]);
+    expect(result.sectorRegulatorOptions).toEqual([
+      ...SECTOR_REGULATOR_OPTIONS,
+    ]);
   });
 
   it('splits the Types of Services context answer into capabilities', async () => {
@@ -101,7 +103,8 @@ describe('computeWizardDefaults', () => {
 
   it('does not shred decimals or single-clause prose into fragments', async () => {
     (mockDb.context.findFirst as jest.Mock).mockResolvedValue({
-      answer: 'A single hosted platform with 99.9% uptime for enterprise teams.',
+      answer:
+        'A single hosted platform with 99.9% uptime for enterprise teams.',
     });
     const result = await computeWizardDefaults(args);
     expect(result.capabilitiesInProduction).toEqual([

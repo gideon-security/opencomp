@@ -293,8 +293,7 @@ describe('OpenAPI document', () => {
     ): { name: string; schema: SchemaLike } | undefined => {
       const operation = (
         document.paths[routePath] as
-          | { post?: { requestBody?: unknown } }
-          | undefined
+          { post?: { requestBody?: unknown } } | undefined
       )?.post;
       const bodySchema = (
         operation?.requestBody as

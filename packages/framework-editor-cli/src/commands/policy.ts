@@ -1,10 +1,10 @@
 import { Command } from 'commander';
 import { readFileSync } from 'node:fs';
 import { apiRequest } from '../lib/api-client.js';
-import { handleError, CliError } from '../lib/errors.js';
+import { CliError, handleError } from '../lib/errors.js';
 import { outputResult, outputSuccess } from '../lib/output.js';
 import type { PolicyTemplate } from '../types.js';
-import { FREQUENCY_VALUES, DEPARTMENT_VALUES } from '../types.js';
+import { DEPARTMENT_VALUES, FREQUENCY_VALUES } from '../types.js';
 
 export function registerPolicyCommands(parent: Command): void {
   const pol = parent
@@ -103,10 +103,7 @@ export function registerPolicyCommands(parent: Command): void {
     .description('Update a policy template. Only provided fields are changed.')
     .option('--name <name>', 'New policy name')
     .option('--description <text>', 'New description')
-    .option(
-      '--frequency <value>',
-      `Review frequency (choices: ${FREQUENCY_VALUES.join(', ')})`,
-    )
+    .option('--frequency <value>', `Review frequency (choices: ${FREQUENCY_VALUES.join(', ')})`)
     .option(
       '--department <value>',
       `Responsible department (choices: ${DEPARTMENT_VALUES.join(', ')})`,
@@ -189,8 +186,6 @@ export function registerPolicyCommands(parent: Command): void {
 
 function validateEnum(field: string, value: string, allowed: readonly string[]): void {
   if (!allowed.includes(value)) {
-    throw new CliError(
-      `Invalid ${field}: "${value}". Must be one of: ${allowed.join(', ')}`,
-    );
+    throw new CliError(`Invalid ${field}: "${value}". Must be one of: ${allowed.join(', ')}`);
   }
 }

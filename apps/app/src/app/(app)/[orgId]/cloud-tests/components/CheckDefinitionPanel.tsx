@@ -48,9 +48,7 @@ export function CheckDefinitionPanel({ findingId }: CheckDefinitionPanelProps) {
       <div className="flex items-center justify-between border-b px-3 py-2">
         <h4 className="text-xs font-medium">About this check</h4>
         {definition.source === 'provider' && (
-          <span className="text-[10px] text-muted-foreground">
-            From provider catalog
-          </span>
+          <span className="text-[10px] text-muted-foreground">From provider catalog</span>
         )}
       </div>
       <dl className="space-y-2.5 px-3 py-3 text-xs">

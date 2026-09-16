@@ -1,7 +1,7 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -97,13 +97,7 @@ describe('OffboardingChecklist', () => {
   });
 
   it('renders the localized heading, description, and toggle label', () => {
-    render(
-      <OffboardingChecklist
-        memberId="mem_1"
-        canEdit={true}
-        offboardDate=""
-      />,
-    );
+    render(<OffboardingChecklist memberId="mem_1" canEdit={true} offboardDate="" />);
 
     expect(screen.getByText('offboardingChecklist.title')).toBeInTheDocument();
     expect(screen.getByText('offboardingChecklist.description')).toBeInTheDocument();
@@ -113,26 +107,14 @@ describe('OffboardingChecklist', () => {
   });
 
   it('renders the summary card when an offboard date is set', () => {
-    render(
-      <OffboardingChecklist
-        memberId="mem_1"
-        canEdit={true}
-        offboardDate="2026-09-01"
-      />,
-    );
+    render(<OffboardingChecklist memberId="mem_1" canEdit={true} offboardDate="2026-09-01" />);
 
     expect(screen.getByTestId('summary-card')).toBeInTheDocument();
   });
 
   it('toasts success when an item is completed', async () => {
     const user = userEvent.setup();
-    render(
-      <OffboardingChecklist
-        memberId="mem_1"
-        canEdit={true}
-        offboardDate=""
-      />,
-    );
+    render(<OffboardingChecklist memberId="mem_1" canEdit={true} offboardDate="" />);
 
     await user.click(screen.getByText('complete-tpl_2'));
 
@@ -144,13 +126,7 @@ describe('OffboardingChecklist', () => {
   it('toasts the failure message when completing rejects', async () => {
     const user = userEvent.setup();
     h.completeItem.mockRejectedValueOnce(new Error('boom'));
-    render(
-      <OffboardingChecklist
-        memberId="mem_1"
-        canEdit={true}
-        offboardDate=""
-      />,
-    );
+    render(<OffboardingChecklist memberId="mem_1" canEdit={true} offboardDate="" />);
 
     await user.click(screen.getByText('complete-tpl_2'));
 
@@ -161,13 +137,7 @@ describe('OffboardingChecklist', () => {
 
   it('toasts success when an item is uncompleted', async () => {
     const user = userEvent.setup();
-    render(
-      <OffboardingChecklist
-        memberId="mem_1"
-        canEdit={true}
-        offboardDate=""
-      />,
-    );
+    render(<OffboardingChecklist memberId="mem_1" canEdit={true} offboardDate="" />);
 
     await user.click(screen.getByText('uncomplete-tpl_1'));
 
@@ -179,13 +149,7 @@ describe('OffboardingChecklist', () => {
   it('toasts the download-failure message when opening an attachment fails', async () => {
     const user = userEvent.setup();
     h.getDownloadUrl.mockRejectedValueOnce(new Error('boom'));
-    render(
-      <OffboardingChecklist
-        memberId="mem_1"
-        canEdit={true}
-        offboardDate=""
-      />,
-    );
+    render(<OffboardingChecklist memberId="mem_1" canEdit={true} offboardDate="" />);
 
     await user.click(screen.getByText('download-tpl_1'));
 
@@ -200,13 +164,7 @@ describe('OffboardingChecklist', () => {
       { templateItemId: 'tpl_1', completed: true, evidence: [] },
       { templateItemId: 'tpl_2', completed: true, evidence: [] },
     ]);
-    render(
-      <OffboardingChecklist
-        memberId="mem_1"
-        canEdit={true}
-        offboardDate=""
-      />,
-    );
+    render(<OffboardingChecklist memberId="mem_1" canEdit={true} offboardDate="" />);
 
     await user.click(screen.getByRole('switch'));
 
@@ -216,13 +174,7 @@ describe('OffboardingChecklist', () => {
 
   it('shows the empty state when no checklist items are configured', () => {
     setChecklist([]);
-    render(
-      <OffboardingChecklist
-        memberId="mem_1"
-        canEdit={true}
-        offboardDate=""
-      />,
-    );
+    render(<OffboardingChecklist memberId="mem_1" canEdit={true} offboardDate="" />);
 
     expect(screen.getByText('offboardingChecklist.empty')).toBeInTheDocument();
   });

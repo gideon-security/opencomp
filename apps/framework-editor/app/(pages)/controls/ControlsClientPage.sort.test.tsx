@@ -39,7 +39,11 @@ function gridRow(id: string, name: string) {
 vi.mock('./hooks/useChangeTracking', () => ({
   simpleUUID: () => 'temp-id',
   useChangeTracking: () => ({
-    data: [gridRow('c1', 'Zebra control'), gridRow('c2', 'Apple control'), gridRow('c3', 'Mango control')],
+    data: [
+      gridRow('c1', 'Zebra control'),
+      gridRow('c2', 'Apple control'),
+      gridRow('c3', 'Mango control'),
+    ],
     updateCell: vi.fn(),
     batchUpdateCells: vi.fn(),
     updateRelational: vi.fn(),

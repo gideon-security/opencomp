@@ -1,17 +1,17 @@
 import { Command } from 'commander';
-import { createServer, type Server } from 'node:http';
 import { randomBytes } from 'node:crypto';
+import { createServer, type Server } from 'node:http';
 import open from 'open';
+import { rawApiRequest } from '../lib/api-client.js';
 import {
+  clearCredentials,
   getApiUrl,
   getPortalUrl,
-  saveCredentials,
-  clearCredentials,
-  getStoredCredentials,
   getSessionToken,
+  getStoredCredentials,
+  saveCredentials,
 } from '../lib/config.js';
-import { rawApiRequest } from '../lib/api-client.js';
-import { handleError, CliError } from '../lib/errors.js';
+import { CliError, handleError } from '../lib/errors.js';
 import { outputResult, outputSuccess } from '../lib/output.js';
 
 const LOGIN_TIMEOUT_MS = 5 * 60 * 1000;
@@ -185,9 +185,7 @@ function startCallbackServer(
       }
 
       res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.end(
-        htmlPage('Sign-in complete!', 'You can close this tab and return to the terminal.'),
-      );
+      res.end(htmlPage('Sign-in complete!', 'You can close this tab and return to the terminal.'));
       resolveCode(code);
     });
 

@@ -2,8 +2,8 @@ import { serverApi } from '@/lib/api-server';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { BillingAddOnPlansClient } from '../../BillingAddOnPlansClient';
-import { emptyBillingStatus } from '../../emptyBillingStatus';
 import { getBillingAddOn } from '../../billingAddOns';
+import { emptyBillingStatus } from '../../emptyBillingStatus';
 import type { BackgroundCheckBillingStatus } from '../../types';
 
 export default async function BillingAddOnPage({

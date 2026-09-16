@@ -15,20 +15,14 @@ interface VendorReviewClientProps {
  * Client component for vendor risk assessment review
  * Uses SWR with polling to auto-refresh when risk assessment completes
  */
-export function VendorReviewClient({
-  vendorId,
-  initialVendor,
-}: VendorReviewClientProps) {
+export function VendorReviewClient({ vendorId, initialVendor }: VendorReviewClientProps) {
   const t = useTranslations('vendor');
   // Use SWR for real-time updates with polling (5s default)
   const { vendor: swrVendor } = useVendor(vendorId, {
     initialData: initialVendor,
   });
 
-  const {
-    data: taskItemsResponse,
-    mutate: refreshTaskItems,
-  } = useTaskItems(
+  const { data: taskItemsResponse, mutate: refreshTaskItems } = useTaskItems(
     vendorId,
     'vendor',
     1,
@@ -111,9 +105,7 @@ export function VendorReviewClient({
   return (
     <div className="rounded-lg border border-border bg-card p-8">
       <div className="flex flex-col items-center gap-3 text-center">
-        <p className="text-sm text-muted-foreground">
-          {t('detail.noRiskAssessmentAvailable')}
-        </p>
+        <p className="text-sm text-muted-foreground">{t('detail.noRiskAssessmentAvailable')}</p>
       </div>
     </div>
   );

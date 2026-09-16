@@ -1,7 +1,7 @@
 'use server';
 
-import type { Role } from '@db';
 import { inviteSingleMemberViaApi } from '@/lib/people-api';
+import type { Role } from '@db';
 
 export const addEmployeeWithoutInvite = async ({
   email,

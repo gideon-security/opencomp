@@ -1,4 +1,5 @@
-process.env.SECRET_KEY = process.env.SECRET_KEY || 'test-secret-key-16-chars-min';
+process.env.SECRET_KEY =
+  process.env.SECRET_KEY || 'test-secret-key-16-chars-min';
 
 import { Test } from '@nestjs/testing';
 import { Reflector } from '@nestjs/core';
@@ -23,7 +24,12 @@ describe('GideonDevicesProxyController', () => {
       setHeader: jest.fn().mockReturnThis(),
       send: jest.fn().mockReturnThis(),
     };
-    return res as unknown as { status: jest.Mock; json: jest.Mock; setHeader: jest.Mock; send: jest.Mock };
+    return res as unknown as {
+      status: jest.Mock;
+      json: jest.Mock;
+      setHeader: jest.Mock;
+      send: jest.Mock;
+    };
   };
 
   const mockReq = (overrides: Record<string, unknown> = {}) =>
@@ -31,7 +37,9 @@ describe('GideonDevicesProxyController', () => {
       headers: {},
       query: {},
       ...overrides,
-    }) as unknown as Parameters<GideonDevicesProxyController['proxyListDevices']>[0];
+    }) as unknown as Parameters<
+      GideonDevicesProxyController['proxyListDevices']
+    >[0];
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -65,7 +73,10 @@ describe('GideonDevicesProxyController', () => {
     await controller.proxyListDevices(req, res as never, undefined, undefined);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith(
-      expect.objectContaining({ shadow: true, message: expect.stringContaining('GIDEON_DEVICES_PROXY_ENABLED') }),
+      expect.objectContaining({
+        shadow: true,
+        message: expect.stringContaining('GIDEON_DEVICES_PROXY_ENABLED'),
+      }),
     );
   });
 
@@ -82,7 +93,10 @@ describe('GideonDevicesProxyController', () => {
     const res = mockRes();
     await controller.proxyListDevices(req, res as never, '10', '0');
 
-    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('http://localhost:8080/v1/admin/devices'), expect.any(Object));
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('http://localhost:8080/v1/admin/devices'),
+      expect.any(Object),
+    );
     expect(res.setHeader).toHaveBeenCalledWith('x-gideon-shadow', '1');
   });
 
@@ -97,7 +111,11 @@ describe('GideonDevicesProxyController', () => {
     global.fetch = fetchMock as unknown as typeof fetch;
 
     const req = mockReq({
-      headers: { authorization: 'Bearer jwt', cookie: 'a=b', 'x-gideon-tenant-id': 'tid_1' },
+      headers: {
+        authorization: 'Bearer jwt',
+        cookie: 'a=b',
+        'x-gideon-tenant-id': 'tid_1',
+      },
       query: { limit: '5', foo: 'bar' },
     });
     const res = mockRes();
@@ -117,21 +135,29 @@ describe('GideonDevicesProxyController', () => {
 
   it('returns 502 on upstream failure', async () => {
     process.env.GIDEON_DEVICES_PROXY_ENABLED = 'true';
-    global.fetch = jest.fn().mockRejectedValue(new Error('upstream down')) as unknown as typeof fetch;
+    global.fetch = jest
+      .fn()
+      .mockRejectedValue(new Error('upstream down')) as unknown as typeof fetch;
 
     const req = mockReq({ headers: { authorization: 'Bearer tok' } });
     const res = mockRes();
     await controller.proxyListDevices(req, res as never, undefined, undefined);
 
     expect(res.status).toHaveBeenCalledWith(502);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ message: expect.stringContaining('Agent Communications') }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: expect.stringContaining('Agent Communications'),
+      }),
+    );
   });
 
   it('preserves upstream status and content-type', async () => {
     process.env.GIDEON_DEVICES_PROXY_ENABLED = 'true';
     global.fetch = jest.fn().mockResolvedValue({
       status: 201,
-      headers: { get: (k: string) => (k === 'content-type' ? 'application/json' : null) },
+      headers: {
+        get: (k: string) => (k === 'content-type' ? 'application/json' : null),
+      },
       text: async () => JSON.stringify({ ok: true }),
     } as never) as unknown as typeof fetch;
 
@@ -140,6 +166,9 @@ describe('GideonDevicesProxyController', () => {
     await controller.proxyListDevices(req, res as never, undefined, undefined);
 
     expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.setHeader).toHaveBeenCalledWith('content-type', 'application/json');
+    expect(res.setHeader).toHaveBeenCalledWith(
+      'content-type',
+      'application/json',
+    );
   });
 });

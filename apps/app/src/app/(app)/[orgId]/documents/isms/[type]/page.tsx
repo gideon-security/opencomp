@@ -1,11 +1,11 @@
-import { Breadcrumb, PageLayout, Text } from '@trycompai/design-system';
-import { headers } from 'next/headers';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import { serverApi } from '@/lib/api-server';
 import { hasPermission } from '@/lib/permissions';
 import { resolveUserPermissions } from '@/lib/permissions.server';
 import { auth } from '@/utils/auth';
+import { Breadcrumb, PageLayout, Text } from '@trycompai/design-system';
+import { headers } from 'next/headers';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { ContextOfOrganizationClient } from '../components/ContextOfOrganizationClient';
 import { InterestedPartiesClient } from '../components/InterestedPartiesClient';
 import { InternalAuditClient } from '../components/InternalAuditClient';
@@ -143,9 +143,7 @@ export default async function IsmsDocumentPage({
     );
   }
 
-  const documentResult = await serverApi.get<IsmsDocumentData>(
-    `/v1/isms/documents/${setupDoc.id}`,
-  );
+  const documentResult = await serverApi.get<IsmsDocumentData>(`/v1/isms/documents/${setupDoc.id}`);
   const fallbackData = documentResult.data ?? null;
 
   // If /v1/people is unavailable to this user (e.g. no member:read), approval
@@ -199,11 +197,7 @@ export default async function IsmsDocumentPage({
         : undefined;
       const firm = auditorRole?.auditFirmName?.trim();
       auditorOptions = [
-        ...new Set(
-          [...holders, routeHolder, firm].filter(
-            (name): name is string => !!name,
-          ),
-        ),
+        ...new Set([...holders, routeHolder, firm].filter((name): name is string => !!name)),
       ];
     }
   }

@@ -9,12 +9,12 @@ description: MANDATORY for any UI work in apps/app, apps/portal, or packages/des
 
 **Every UI change ships working at all four device classes. Nobody has to ask.**
 
-| Device | Test width | Tailwind context |
-|---|---|---|
-| Mobile | 375px | base (no prefix) |
-| Tablet | 768px | `md:` |
-| Desktop | 1280px | `xl:` |
-| Large desktop | 1920px | beyond `2xl:` |
+| Device        | Test width | Tailwind context |
+| ------------- | ---------- | ---------------- |
+| Mobile        | 375px      | base (no prefix) |
+| Tablet        | 768px      | `md:`            |
+| Desktop       | 1280px     | `xl:`            |
+| Large desktop | 1920px     | beyond `2xl:`    |
 
 Tailwind is **mobile-first**: unprefixed classes are the mobile layout; prefixes add
 behavior at wider screens (`sm:` 640, `md:` 768, `lg:` 1024, `xl:` 1280, `2xl:` 1536).

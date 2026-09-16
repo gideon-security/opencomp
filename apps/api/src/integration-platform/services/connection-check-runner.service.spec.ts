@@ -13,7 +13,10 @@ jest.mock('@gideon-defender/integration-platform', () => ({
   runAllChecks: jest.fn(),
 }));
 
-import { getManifest, runAllChecks } from '@gideon-defender/integration-platform';
+import {
+  getManifest,
+  runAllChecks,
+} from '@gideon-defender/integration-platform';
 
 const mockedGetManifest = getManifest as jest.Mock;
 const mockedRunAllChecks = runAllChecks as jest.Mock;

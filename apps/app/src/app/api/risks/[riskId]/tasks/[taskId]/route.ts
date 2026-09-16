@@ -1,7 +1,7 @@
-import { generateRiskMitigation } from '@/trigger/tasks/onboarding/generate-risk-mitigation';
-import type { PolicyContext } from '@/trigger/tasks/onboarding/onboard-organization-helpers';
 import { serverApi } from '@/lib/api-server';
 import { requireApiPermission } from '@/lib/permissions.server';
+import { generateRiskMitigation } from '@/trigger/tasks/onboarding/generate-risk-mitigation';
+import type { PolicyContext } from '@/trigger/tasks/onboarding/onboard-organization-helpers';
 import { db } from '@db/server';
 import { tasks as triggerTasks } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
@@ -61,10 +61,7 @@ export async function DELETE(
 
     const { riskId, taskId } = await params;
     if (!riskId || !taskId) {
-      return NextResponse.json(
-        { error: 'Risk ID and Task ID are required' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Risk ID and Task ID are required' }, { status: 400 });
     }
 
     // Verify the risk + the link in one query, scoped to the active org.
@@ -83,10 +80,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
     if (risk.tasks.length === 0) {
-      return NextResponse.json(
-        { error: 'Task is not linked to this risk' },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: 'Task is not linked to this risk' }, { status: 404 });
     }
 
     await db.risk.update({

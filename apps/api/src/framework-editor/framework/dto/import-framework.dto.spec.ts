@@ -30,12 +30,19 @@ function basePayload(
 ) {
   return {
     version: '1',
-    framework: { name: 'NIST SP800-53', version: '5', description: 'Low impact', visible: false },
+    framework: {
+      name: 'NIST SP800-53',
+      version: '5',
+      description: 'Low impact',
+      visible: false,
+    },
     requirements: [
       {
         name: 'System Security and Privacy Plans',
         identifier: 'PL-2',
-        description: overrides.requirementDescription ?? 'Develop security and privacy plans.',
+        description:
+          overrides.requirementDescription ??
+          'Develop security and privacy plans.',
         requirementFamily: 'PL - Planning',
       },
     ],
@@ -46,7 +53,9 @@ function basePayload(
         frequency: FREQUENCY,
         department: DEPARTMENT,
         content:
-          'policyContent' in overrides ? overrides.policyContent : { type: 'doc', content: [] },
+          'policyContent' in overrides
+            ? overrides.policyContent
+            : { type: 'doc', content: [] },
       },
     ],
     controlTemplates: [],
@@ -55,7 +64,9 @@ function basePayload(
 }
 
 async function validatePayload(plain: Record<string, unknown>) {
-  const dto = plainToInstance(ImportFrameworkDto, plain, { enableImplicitConversion: true });
+  const dto = plainToInstance(ImportFrameworkDto, plain, {
+    enableImplicitConversion: true,
+  });
   return collectMessages(await validate(dto, { whitelist: true }));
 }
 
@@ -69,7 +80,9 @@ describe('ImportFrameworkDto', () => {
   // > 6000, HITRUST CSF requirements exceed 70,000).
   it('accepts a 100,000-char requirement description', async () => {
     expect(
-      await validatePayload(basePayload({ requirementDescription: 'x'.repeat(100_000) })),
+      await validatePayload(
+        basePayload({ requirementDescription: 'x'.repeat(100_000) }),
+      ),
     ).toHaveLength(0);
   });
 
@@ -97,7 +110,14 @@ describe('ImportFrameworkDto', () => {
           content: { type: 'doc', content: [] },
         },
       ],
-      taskTemplates: [{ name: 'T', description: long, frequency: FREQUENCY, department: DEPARTMENT }],
+      taskTemplates: [
+        {
+          name: 'T',
+          description: long,
+          frequency: FREQUENCY,
+          department: DEPARTMENT,
+        },
+      ],
     };
     expect(await validatePayload(payload)).toHaveLength(0);
   });
@@ -105,26 +125,38 @@ describe('ImportFrameworkDto', () => {
   // Bug B — policy content may be a doc object OR a bare node array.
   it('accepts policy content as a bare node array', async () => {
     expect(
-      await validatePayload(basePayload({ policyContent: [{ type: 'paragraph', content: [] }] })),
+      await validatePayload(
+        basePayload({ policyContent: [{ type: 'paragraph', content: [] }] }),
+      ),
     ).toHaveLength(0);
   });
 
   it('accepts policy content as a doc object', async () => {
     expect(
       await validatePayload(
-        basePayload({ policyContent: { type: 'doc', content: [{ type: 'paragraph' }] } }),
+        basePayload({
+          policyContent: { type: 'doc', content: [{ type: 'paragraph' }] },
+        }),
       ),
     ).toHaveLength(0);
   });
 
   it('rejects policy content that is a primitive', async () => {
-    const messages = await validatePayload(basePayload({ policyContent: 'not-json' }));
-    expect(messages.some((m) => m.toLowerCase().includes('object or an array'))).toBe(true);
+    const messages = await validatePayload(
+      basePayload({ policyContent: 'not-json' }),
+    );
+    expect(
+      messages.some((m) => m.toLowerCase().includes('object or an array')),
+    ).toBe(true);
   });
 
   it('still rejects oversized policy content (size guard kept)', async () => {
     const huge = [{ type: 'text', text: 'x'.repeat(520_000) }];
-    const messages = await validatePayload(basePayload({ policyContent: huge }));
-    expect(messages.some((m) => m.toLowerCase().includes('maximum allowed size'))).toBe(true);
+    const messages = await validatePayload(
+      basePayload({ policyContent: huge }),
+    );
+    expect(
+      messages.some((m) => m.toLowerCase().includes('maximum allowed size')),
+    ).toBe(true);
   });
 });

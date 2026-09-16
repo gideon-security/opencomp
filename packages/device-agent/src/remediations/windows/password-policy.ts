@@ -59,7 +59,8 @@ export class WindowsPasswordPolicyRemediation implements ComplianceRemediation {
           return {
             checkType: this.checkType,
             success: false,
-            message: 'Admin elevation was cancelled. Please accept the admin prompt to set the password policy.',
+            message:
+              'Admin elevation was cancelled. Please accept the admin prompt to set the password policy.',
           };
         }
 

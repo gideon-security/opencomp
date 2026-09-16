@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { filteredProjectsVariable, parseVercelProjectFilter } from '../variables';
 import type { VariableFetchContext } from '../../../types';
+import { filteredProjectsVariable, parseVercelProjectFilter } from '../variables';
 
 describe('parseVercelProjectFilter', () => {
   it('returns mode="all" and empty set when no variables are stored', () => {
@@ -60,20 +60,16 @@ describe('filteredProjectsVariable.fetchOptions', () => {
       accessToken: 'tok',
       graphql: (async () => ({})) as VariableFetchContext['graphql'],
       fetchAllPages: (async () => []) as VariableFetchContext['fetchAllPages'],
-      fetch: (async <T,>(path: string): Promise<T> => {
+      fetch: (async <T>(path: string): Promise<T> => {
         requestedUrls.push(path);
         if (path.includes('until=100')) {
           return {
-            projects: [
-              { id: 'prj_2', name: 'bbb', accountId: 'a', createdAt: 0, updatedAt: 0 },
-            ],
+            projects: [{ id: 'prj_2', name: 'bbb', accountId: 'a', createdAt: 0, updatedAt: 0 }],
             pagination: { count: 1, next: null, prev: null },
           } as unknown as T;
         }
         return {
-          projects: [
-            { id: 'prj_1', name: 'aaa', accountId: 'a', createdAt: 0, updatedAt: 0 },
-          ],
+          projects: [{ id: 'prj_1', name: 'aaa', accountId: 'a', createdAt: 0, updatedAt: 0 }],
           pagination: { count: 1, next: 100, prev: null },
         } as unknown as T;
       }) as VariableFetchContext['fetch'],
@@ -90,11 +86,9 @@ describe('filteredProjectsVariable.fetchOptions', () => {
       accessToken: 'tok',
       graphql: (async () => ({})) as VariableFetchContext['graphql'],
       fetchAllPages: (async () => []) as VariableFetchContext['fetchAllPages'],
-      fetch: (async <T,>(_path: string): Promise<T> =>
+      fetch: (async <T>(_path: string): Promise<T> =>
         ({
-          projects: [
-            { id: 'prj_1', name: 'a', accountId: 'x', createdAt: 0, updatedAt: 0 },
-          ],
+          projects: [{ id: 'prj_1', name: 'a', accountId: 'x', createdAt: 0, updatedAt: 0 }],
         }) as unknown as T) as VariableFetchContext['fetch'],
     };
     const options = await filteredProjectsVariable.fetchOptions!(ctx);

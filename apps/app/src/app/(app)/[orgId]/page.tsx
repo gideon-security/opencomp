@@ -6,9 +6,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ orgI
   const { orgId: organizationId } = await params;
 
   const permissions = await resolveCurrentUserPermissions(organizationId);
-  const defaultRoute = permissions
-    ? getDefaultRoute(permissions, organizationId)
-    : null;
+  const defaultRoute = permissions ? getDefaultRoute(permissions, organizationId) : null;
 
   return redirect(defaultRoute ?? '/no-access');
 }

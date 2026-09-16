@@ -6,16 +6,12 @@ import {
   ConversationEmptyState,
   ConversationScrollButton,
 } from '@/components/ai-elements/conversation';
-import {
-  Message,
-  MessageContent,
-  MessageResponse,
-} from '@/components/ai-elements/message';
+import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message';
 import {
   PromptInput,
-  PromptInputTextarea,
   PromptInputFooter,
   PromptInputSubmit,
+  PromptInputTextarea,
 } from '@/components/ai-elements/prompt-input';
 import { Button } from '@trycompai/design-system';
 import { Close, MagicWand, Renew } from '@trycompai/design-system/icons';
@@ -65,7 +61,9 @@ export function PolicyAiAssistant({
               </div>
               <div className="space-y-1">
                 <h3 className="text-sm font-medium">Policy AI Assistant</h3>
-                <p className="text-xs text-muted-foreground">I can help you edit, adapt, or check this policy for compliance.</p>
+                <p className="text-xs text-muted-foreground">
+                  I can help you edit, adapt, or check this policy for compliance.
+                </p>
               </div>
               <div className="space-y-0.5 text-center text-xs italic text-muted-foreground/70">
                 <p>&quot;Add a section covering third-party vendor access controls.&quot;</p>
@@ -82,67 +80,65 @@ export function PolicyAiAssistant({
                 const isMessageStopped = isLastMessage ? !isBusy : true;
 
                 return (
-                <Message from={message.role} key={message.id}>
-                  <MessageContent>
-                    {message.parts.map((part, index) => {
-                      if (part.type === 'text') {
-                        if (message.role === 'user') {
-                          return (
-                            <div key={`${message.id}-${index}`} className="flex justify-end">
-                              <div className="rounded-2xl rounded-br-sm bg-primary px-3.5 py-2 text-sm text-primary-foreground">
-                                {part.text}
+                  <Message from={message.role} key={message.id}>
+                    <MessageContent>
+                      {message.parts.map((part, index) => {
+                        if (part.type === 'text') {
+                          if (message.role === 'user') {
+                            return (
+                              <div key={`${message.id}-${index}`} className="flex justify-end">
+                                <div className="rounded-2xl rounded-br-sm bg-primary px-3.5 py-2 text-sm text-primary-foreground">
+                                  {part.text}
+                                </div>
                               </div>
-                            </div>
+                            );
+                          }
+                          return (
+                            <MessageResponse key={`${message.id}-${index}`}>
+                              {part.text}
+                            </MessageResponse>
                           );
                         }
-                        return (
-                          <MessageResponse key={`${message.id}-${index}`}>
-                            {part.text}
-                          </MessageResponse>
-                        );
-                      }
 
-                      if (part.type === 'tool-proposePolicy') {
-                        // The proposed markdown lives in the tool INPUT. A
-                        // truncated run can complete with empty content while
-                        // the prose claims success (CS-256) — detect that here.
-                        const proposed =
-                          typeof part.input?.content === 'string'
-                            ? part.input.content
-                            : '';
-                        const hasContent = proposed.trim().length > 0;
-                        return (
-                          <PolicyToolCard
-                            key={`${message.id}-${index}`}
-                            state={part.state}
-                            stopped={isMessageStopped}
-                            hasContent={hasContent}
-                            onRetry={isLastMessage ? retry : undefined}
-                          />
-                        );
-                      }
+                        if (part.type === 'tool-proposePolicy') {
+                          // The proposed markdown lives in the tool INPUT. A
+                          // truncated run can complete with empty content while
+                          // the prose claims success (CS-256) — detect that here.
+                          const proposed =
+                            typeof part.input?.content === 'string' ? part.input.content : '';
+                          const hasContent = proposed.trim().length > 0;
+                          return (
+                            <PolicyToolCard
+                              key={`${message.id}-${index}`}
+                              state={part.state}
+                              stopped={isMessageStopped}
+                              hasContent={hasContent}
+                              onRetry={isLastMessage ? retry : undefined}
+                            />
+                          );
+                        }
 
-                      if (
-                        part.type === 'tool-listVendors' ||
-                        part.type === 'tool-getVendor' ||
-                        part.type === 'tool-listPolicies' ||
-                        part.type === 'tool-getPolicy' ||
-                        part.type === 'tool-listEvidence'
-                      ) {
-                        return (
-                          <DataToolCard
-                            key={`${message.id}-${index}`}
-                            toolName={part.type}
-                            state={part.state}
-                            stopped={isMessageStopped}
-                          />
-                        );
-                      }
+                        if (
+                          part.type === 'tool-listVendors' ||
+                          part.type === 'tool-getVendor' ||
+                          part.type === 'tool-listPolicies' ||
+                          part.type === 'tool-getPolicy' ||
+                          part.type === 'tool-listEvidence'
+                        ) {
+                          return (
+                            <DataToolCard
+                              key={`${message.id}-${index}`}
+                              toolName={part.type}
+                              state={part.state}
+                              stopped={isMessageStopped}
+                            />
+                          );
+                        }
 
-                      return null;
-                    })}
-                  </MessageContent>
-                </Message>
+                        return null;
+                      })}
+                    </MessageContent>
+                  </Message>
                 );
               })}
               <ThinkingIndicator status={status} messages={messages} />
@@ -165,15 +161,15 @@ export function PolicyAiAssistant({
             sendMessage({ text });
           }}
         >
-          <PromptInputTextarea placeholder="Let me know what to edit..." disabled={isBusy} className="min-h-[2rem] max-h-[4rem]" />
+          <PromptInputTextarea
+            placeholder="Let me know what to edit..."
+            disabled={isBusy}
+            className="min-h-[2rem] max-h-[4rem]"
+          />
           <PromptInputFooter>
             <div />
             {isBusy && stop ? (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={stop}
-              >
+              <Button variant="outline" size="sm" onClick={stop}>
                 Stop
               </Button>
             ) : (
@@ -202,10 +198,7 @@ function PolicyToolCard({
   // Interrupted — streaming stopped while tool was in progress
   if (cardState === 'interrupted') {
     return (
-      <ToolFailureRow
-        message="The update was interrupted before it finished."
-        onRetry={onRetry}
-      />
+      <ToolFailureRow message="The update was interrupted before it finished." onRetry={onRetry} />
     );
   }
 
@@ -231,10 +224,7 @@ function PolicyToolCard({
   // Error state
   if (cardState === 'error') {
     return (
-      <ToolFailureRow
-        message="Something went wrong while generating updates."
-        onRetry={onRetry}
-      />
+      <ToolFailureRow message="Something went wrong while generating updates." onRetry={onRetry} />
     );
   }
 
@@ -253,7 +243,15 @@ function PolicyToolCard({
   // so just show a minimal checkmark — no redundant alert banner.
   return (
     <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
-      <svg className="h-3 w-3 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        className="h-3 w-3 text-primary/60"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M20 6L9 17l-5-5" />
       </svg>
       <span>Policy updated</span>
@@ -266,13 +264,7 @@ function PolicyToolCard({
  * truncated-with-no-content. Offers a Retry affordance so a dead run isn't a
  * permanent dead-end (the previous UI showed a static "Interrupted" forever).
  */
-function ToolFailureRow({
-  message,
-  onRetry,
-}: {
-  message: string;
-  onRetry?: () => void;
-}) {
+function ToolFailureRow({ message, onRetry }: { message: string; onRetry?: () => void }) {
   return (
     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
       <span>{message}</span>
@@ -309,7 +301,15 @@ function DataToolCard({
   if (isComplete) {
     return (
       <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
-        <svg className="h-3 w-3 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          className="h-3 w-3 text-primary/60"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M20 6L9 17l-5-5" />
         </svg>
         <span>{labels.done}</span>

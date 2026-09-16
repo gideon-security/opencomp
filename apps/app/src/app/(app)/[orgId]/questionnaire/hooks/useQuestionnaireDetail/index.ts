@@ -1,3 +1,2 @@
+export type { QuestionnaireResult, UseQuestionnaireDetailProps } from './types';
 export { useQuestionnaireDetail } from './useQuestionnaireDetail';
-export type { UseQuestionnaireDetailProps, QuestionnaireResult } from './types';
-

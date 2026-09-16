@@ -25,9 +25,7 @@ export async function POST() {
   const { members } = response.data;
   if (members.length > 0) {
     try {
-      await sendPublishAllPoliciesEmail.batchTrigger(
-        members.map((m) => ({ payload: m })),
-      );
+      await sendPublishAllPoliciesEmail.batchTrigger(members.map((m) => ({ payload: m })));
     } catch (emailError) {
       console.error('[publish-all] Failed to trigger bulk emails:', emailError);
       // Don't fail — policies are already published

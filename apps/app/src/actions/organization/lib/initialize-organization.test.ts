@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockTx = {
   frameworkInstance: {
@@ -36,8 +36,8 @@ vi.mock('./load-framework-sources', () => ({
 }));
 
 import { _upsertOrgFrameworkStructureCore } from './initialize-organization';
-import { loadFrameworkSources } from './load-framework-sources';
 import type { LoadedFrameworkSources } from './load-framework-sources';
+import { loadFrameworkSources } from './load-framework-sources';
 
 const mockedLoadSources = vi.mocked(loadFrameworkSources);
 
@@ -57,10 +57,24 @@ function buildSources({
       { id: controlTemplateId, name: 'C1', description: 'd', documentTypes: ['access-request'] },
     ],
     policyTemplates: [
-      { id: policyTemplateId, name: 'P1', description: 'd', content: [], frequency: 'yearly', department: 'none' },
+      {
+        id: policyTemplateId,
+        name: 'P1',
+        description: 'd',
+        content: [],
+        frequency: 'yearly',
+        department: 'none',
+      },
     ],
     taskTemplates: [
-      { id: taskTemplateId, name: 'T1', description: 'd', frequency: null, department: null, automationStatus: 'AUTOMATED' },
+      {
+        id: taskTemplateId,
+        name: 'T1',
+        description: 'd',
+        frequency: null,
+        department: null,
+        automationStatus: 'AUTOMATED',
+      },
     ],
     groupedRelations: [
       {
@@ -190,9 +204,7 @@ describe('_upsertOrgFrameworkStructureCore', () => {
   });
 
   it('skips framework-scoped links when frameworkInstanceId cannot be resolved', async () => {
-    mockedLoadSources.mockResolvedValue(
-      buildSources({ frameworkId: 'fw_unknown' }),
-    );
+    mockedLoadSources.mockResolvedValue(buildSources({ frameworkId: 'fw_unknown' }));
 
     await callUpsert();
 

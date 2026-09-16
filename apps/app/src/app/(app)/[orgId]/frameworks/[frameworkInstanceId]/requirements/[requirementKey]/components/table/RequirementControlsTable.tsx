@@ -54,7 +54,9 @@ export function RequirementControlsTable({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const getStatusBadge = (status: string): {
+  const getStatusBadge = (
+    status: string,
+  ): {
     label: string;
     variant: 'default' | 'secondary' | 'destructive';
   } => {

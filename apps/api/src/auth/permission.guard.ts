@@ -139,8 +139,9 @@ export class PermissionGuard implements CanActivate {
         request.organizationId,
         request.userRoles ?? [],
       );
-      const granted = Object.entries(permissionBody).every(([resource, actions]) =>
-        actions.every((action) => permissionsGrant(perms, resource, action)),
+      const granted = Object.entries(permissionBody).every(
+        ([resource, actions]) =>
+          actions.every((action) => permissionsGrant(perms, resource, action)),
       );
       if (!granted) {
         this.logger.warn(

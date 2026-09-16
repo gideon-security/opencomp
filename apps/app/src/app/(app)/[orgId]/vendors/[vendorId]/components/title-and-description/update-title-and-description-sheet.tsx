@@ -1,7 +1,7 @@
 'use client';
 
-import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import type { Vendor } from '@db';
+import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import {
   Drawer,
   DrawerContent,

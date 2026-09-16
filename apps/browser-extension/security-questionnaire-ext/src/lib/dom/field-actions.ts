@@ -1,9 +1,6 @@
 import type { WritableField } from './field-detection';
 
-export function insertAnswerIntoField(params: {
-  field: WritableField;
-  answer: string;
-}): void {
+export function insertAnswerIntoField(params: { field: WritableField; answer: string }): void {
   if (params.field instanceof HTMLInputElement) {
     setNativeValue(params.field, params.answer);
     dispatchEditEvents(params.field);
@@ -20,13 +17,8 @@ export function insertAnswerIntoField(params: {
   dispatchEditEvents(params.field);
 }
 
-function setNativeValue(
-  element: HTMLInputElement | HTMLTextAreaElement,
-  value: string,
-): void {
-  const prototype = Object.getPrototypeOf(element) as
-    | HTMLInputElement
-    | HTMLTextAreaElement;
+function setNativeValue(element: HTMLInputElement | HTMLTextAreaElement, value: string): void {
+  const prototype = Object.getPrototypeOf(element) as HTMLInputElement | HTMLTextAreaElement;
   const descriptor = Object.getOwnPropertyDescriptor(prototype, 'value');
   if (descriptor?.set) {
     descriptor.set.call(element, value);

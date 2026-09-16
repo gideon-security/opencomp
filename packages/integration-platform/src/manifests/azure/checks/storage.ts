@@ -37,45 +37,45 @@ async function listStorageAccounts(
 
 /** HTTPS-only + minimum TLS 1.2 on storage accounts → TLS / HTTPS. */
 async function runStorageHttpsTlsForSubscription(ctx: CheckContext, sub: string): Promise<void> {
-    const accounts = await listStorageAccounts(ctx, sub);
-    if (!accounts) return;
-    if (accounts.length === 0) return;
-    for (const a of accounts) {
-      const p = a.properties ?? {};
-      const issues: string[] = [];
-      if (p.supportsHttpsTrafficOnly === false) issues.push('HTTPS not enforced');
-      if (!p.minimumTlsVersion || p.minimumTlsVersion < 'TLS1_2') {
-        issues.push(`minimum TLS ${p.minimumTlsVersion ?? 'unset'}`);
-      }
-      if (issues.length > 0) {
-        ctx.fail({
-          title: `Weak transit encryption: ${a.name}`,
-          description: `Storage account "${a.name}": ${issues.join('; ')}.`,
-          resourceType: 'azure-storage-account',
-          resourceId: a.id,
-          severity: p.supportsHttpsTrafficOnly === false ? 'high' : 'medium',
-          remediation:
-            'Enable "Secure transfer required" (HTTPS-only) and set minimum TLS version to 1.2.',
-          evidence: {
-            account: a.name,
-            supportsHttpsTrafficOnly: p.supportsHttpsTrafficOnly,
-            minimumTlsVersion: p.minimumTlsVersion ?? null,
-          },
-        });
-      } else {
-        ctx.pass({
-          title: `HTTPS + TLS 1.2 enforced: ${a.name}`,
-          description: `Storage account "${a.name}" enforces HTTPS-only and TLS >= 1.2.`,
-          resourceType: 'azure-storage-account',
-          resourceId: a.id,
-          evidence: {
-            account: a.name,
-            supportsHttpsTrafficOnly: p.supportsHttpsTrafficOnly,
-            minimumTlsVersion: p.minimumTlsVersion,
-          },
-        });
-      }
+  const accounts = await listStorageAccounts(ctx, sub);
+  if (!accounts) return;
+  if (accounts.length === 0) return;
+  for (const a of accounts) {
+    const p = a.properties ?? {};
+    const issues: string[] = [];
+    if (p.supportsHttpsTrafficOnly === false) issues.push('HTTPS not enforced');
+    if (!p.minimumTlsVersion || p.minimumTlsVersion < 'TLS1_2') {
+      issues.push(`minimum TLS ${p.minimumTlsVersion ?? 'unset'}`);
     }
+    if (issues.length > 0) {
+      ctx.fail({
+        title: `Weak transit encryption: ${a.name}`,
+        description: `Storage account "${a.name}": ${issues.join('; ')}.`,
+        resourceType: 'azure-storage-account',
+        resourceId: a.id,
+        severity: p.supportsHttpsTrafficOnly === false ? 'high' : 'medium',
+        remediation:
+          'Enable "Secure transfer required" (HTTPS-only) and set minimum TLS version to 1.2.',
+        evidence: {
+          account: a.name,
+          supportsHttpsTrafficOnly: p.supportsHttpsTrafficOnly,
+          minimumTlsVersion: p.minimumTlsVersion ?? null,
+        },
+      });
+    } else {
+      ctx.pass({
+        title: `HTTPS + TLS 1.2 enforced: ${a.name}`,
+        description: `Storage account "${a.name}" enforces HTTPS-only and TLS >= 1.2.`,
+        resourceType: 'azure-storage-account',
+        resourceId: a.id,
+        evidence: {
+          account: a.name,
+          supportsHttpsTrafficOnly: p.supportsHttpsTrafficOnly,
+          minimumTlsVersion: p.minimumTlsVersion,
+        },
+      });
+    }
+  }
 }
 
 export const storageHttpsTlsCheck: IntegrationCheck = {
@@ -94,61 +94,62 @@ export const storageHttpsTlsCheck: IntegrationCheck = {
 };
 
 /** No public blob/network access on storage accounts → Production Firewall / no public access. */
-async function runStoragePublicAccessForSubscription(ctx: CheckContext, sub: string): Promise<void> {
-    const accounts = await listStorageAccounts(ctx, sub);
-    if (!accounts) return;
-    if (accounts.length === 0) return;
-    for (const a of accounts) {
-      const p = a.properties ?? {};
-      const publicBlob = p.allowBlobPublicAccess === true;
-      // publicNetworkAccess 'Disabled' or 'SecuredByPerimeter' (network security
-      // perimeter) takes the endpoint off the public internet entirely. When it
-      // is 'Enabled', networkAcls.defaultAction === 'Deny' still restricts
-      // traffic to the explicit IP/VNet allowlist (Azure's "Selected networks"
-      // mode) and is not public.
-      const networkDisabled =
-        p.publicNetworkAccess === 'Disabled' ||
-        p.publicNetworkAccess === 'SecuredByPerimeter';
-      const firewallEnforced = p.networkAcls?.defaultAction === 'Deny';
-      const publicNetwork = !networkDisabled && !firewallEnforced;
-      if (publicBlob || publicNetwork) {
-        ctx.fail({
-          title: `Public access enabled: ${a.name}`,
-          description: `Storage account "${a.name}"${publicBlob ? ' allows anonymous blob access' : ''}${publicBlob && publicNetwork ? ' and' : ''}${publicNetwork ? ' allows access from all networks' : ''}.`,
-          resourceType: 'azure-storage-account',
-          resourceId: a.id,
-          severity: publicBlob ? 'high' : 'medium',
-          remediation:
-            'Disable "Allow Blob public access" and restrict network access to specific VNets/IPs or private endpoints (set networkAcls.defaultAction to "Deny").',
-          evidence: {
-            account: a.name,
-            allowBlobPublicAccess: p.allowBlobPublicAccess,
-            publicNetworkAccess: p.publicNetworkAccess ?? null,
-            networkDefaultAction: p.networkAcls?.defaultAction ?? null,
-          },
-        });
-      } else {
-        ctx.pass({
-          title: `No public access: ${a.name}`,
-          description: `Storage account "${a.name}" blocks anonymous blob and public network access.`,
-          resourceType: 'azure-storage-account',
-          resourceId: a.id,
-          evidence: {
-            account: a.name,
-            allowBlobPublicAccess: p.allowBlobPublicAccess,
-            publicNetworkAccess: p.publicNetworkAccess ?? null,
-            networkDefaultAction: p.networkAcls?.defaultAction ?? null,
-          },
-        });
-      }
+async function runStoragePublicAccessForSubscription(
+  ctx: CheckContext,
+  sub: string,
+): Promise<void> {
+  const accounts = await listStorageAccounts(ctx, sub);
+  if (!accounts) return;
+  if (accounts.length === 0) return;
+  for (const a of accounts) {
+    const p = a.properties ?? {};
+    const publicBlob = p.allowBlobPublicAccess === true;
+    // publicNetworkAccess 'Disabled' or 'SecuredByPerimeter' (network security
+    // perimeter) takes the endpoint off the public internet entirely. When it
+    // is 'Enabled', networkAcls.defaultAction === 'Deny' still restricts
+    // traffic to the explicit IP/VNet allowlist (Azure's "Selected networks"
+    // mode) and is not public.
+    const networkDisabled =
+      p.publicNetworkAccess === 'Disabled' || p.publicNetworkAccess === 'SecuredByPerimeter';
+    const firewallEnforced = p.networkAcls?.defaultAction === 'Deny';
+    const publicNetwork = !networkDisabled && !firewallEnforced;
+    if (publicBlob || publicNetwork) {
+      ctx.fail({
+        title: `Public access enabled: ${a.name}`,
+        description: `Storage account "${a.name}"${publicBlob ? ' allows anonymous blob access' : ''}${publicBlob && publicNetwork ? ' and' : ''}${publicNetwork ? ' allows access from all networks' : ''}.`,
+        resourceType: 'azure-storage-account',
+        resourceId: a.id,
+        severity: publicBlob ? 'high' : 'medium',
+        remediation:
+          'Disable "Allow Blob public access" and restrict network access to specific VNets/IPs or private endpoints (set networkAcls.defaultAction to "Deny").',
+        evidence: {
+          account: a.name,
+          allowBlobPublicAccess: p.allowBlobPublicAccess,
+          publicNetworkAccess: p.publicNetworkAccess ?? null,
+          networkDefaultAction: p.networkAcls?.defaultAction ?? null,
+        },
+      });
+    } else {
+      ctx.pass({
+        title: `No public access: ${a.name}`,
+        description: `Storage account "${a.name}" blocks anonymous blob and public network access.`,
+        resourceType: 'azure-storage-account',
+        resourceId: a.id,
+        evidence: {
+          account: a.name,
+          allowBlobPublicAccess: p.allowBlobPublicAccess,
+          publicNetworkAccess: p.publicNetworkAccess ?? null,
+          networkDefaultAction: p.networkAcls?.defaultAction ?? null,
+        },
+      });
     }
+  }
 }
 
 export const storagePublicAccessCheck: IntegrationCheck = {
   id: 'azure-storage-no-public-access',
   name: 'Storage — no public access',
-  description:
-    'Verify storage accounts disable anonymous blob access and public network access.',
+  description: 'Verify storage accounts disable anonymous blob access and public network access.',
   service: 'storage-account',
   taskMapping: TASK_TEMPLATES.productionFirewallNopublicaccessControls,
   run: async (ctx: CheckContext) => {
@@ -161,40 +162,39 @@ export const storagePublicAccessCheck: IntegrationCheck = {
 
 /** Service-side encryption enabled on storage accounts → Encryption at Rest. */
 async function runStorageEncryptionForSubscription(ctx: CheckContext, sub: string): Promise<void> {
-    const accounts = await listStorageAccounts(ctx, sub);
-    if (!accounts) return;
-    if (accounts.length === 0) return;
-    for (const a of accounts) {
-      const enc = a.properties?.encryption?.services;
-      const blobOk = enc?.blob?.enabled !== false;
-      const fileOk = enc?.file?.enabled !== false;
-      if (blobOk && fileOk) {
-        ctx.pass({
-          title: `Encryption at rest enabled: ${a.name}`,
-          description: `Storage account "${a.name}" has blob and file encryption enabled.`,
-          resourceType: 'azure-storage-account',
-          resourceId: a.id,
-          evidence: { account: a.name, blobEnabled: blobOk, fileEnabled: fileOk },
-        });
-      } else {
-        ctx.fail({
-          title: `Encryption not fully enabled: ${a.name}`,
-          description: `Storage account "${a.name}" does not have encryption enabled for all services.`,
-          resourceType: 'azure-storage-account',
-          resourceId: a.id,
-          severity: 'high',
-          remediation: 'Enable encryption for blob and file services.',
-          evidence: { account: a.name, blobEnabled: blobOk, fileEnabled: fileOk },
-        });
-      }
+  const accounts = await listStorageAccounts(ctx, sub);
+  if (!accounts) return;
+  if (accounts.length === 0) return;
+  for (const a of accounts) {
+    const enc = a.properties?.encryption?.services;
+    const blobOk = enc?.blob?.enabled !== false;
+    const fileOk = enc?.file?.enabled !== false;
+    if (blobOk && fileOk) {
+      ctx.pass({
+        title: `Encryption at rest enabled: ${a.name}`,
+        description: `Storage account "${a.name}" has blob and file encryption enabled.`,
+        resourceType: 'azure-storage-account',
+        resourceId: a.id,
+        evidence: { account: a.name, blobEnabled: blobOk, fileEnabled: fileOk },
+      });
+    } else {
+      ctx.fail({
+        title: `Encryption not fully enabled: ${a.name}`,
+        description: `Storage account "${a.name}" does not have encryption enabled for all services.`,
+        resourceType: 'azure-storage-account',
+        resourceId: a.id,
+        severity: 'high',
+        remediation: 'Enable encryption for blob and file services.',
+        evidence: { account: a.name, blobEnabled: blobOk, fileEnabled: fileOk },
+      });
     }
+  }
 }
 
 export const storageEncryptionCheck: IntegrationCheck = {
   id: 'azure-storage-encryption-at-rest',
   name: 'Storage — encryption at rest enabled',
-  description:
-    'Verify storage accounts have blob and file service encryption enabled.',
+  description: 'Verify storage accounts have blob and file service encryption enabled.',
   service: 'storage-account',
   taskMapping: TASK_TEMPLATES.encryptionAtRest,
   run: async (ctx: CheckContext) => {

@@ -3,11 +3,7 @@
  * Extracted for testability
  */
 
-import type {
-  EvidenceAutomationEvaluationStatus,
-  IntegrationRunStatus,
-  TaskStatus,
-} from '@db';
+import type { EvidenceAutomationEvaluationStatus, IntegrationRunStatus, TaskStatus } from '@db';
 
 export type TargetStatus = Extract<TaskStatus, 'done' | 'todo' | 'failed'>;
 

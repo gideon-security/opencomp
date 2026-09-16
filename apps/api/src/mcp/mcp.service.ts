@@ -13,7 +13,10 @@ export class McpService {
   async getOrganizationSelection(userId: string) {
     const memberships = await db.member.findMany({
       where: { userId, deactivated: false },
-      select: { role: true, organization: { select: { id: true, name: true } } },
+      select: {
+        role: true,
+        organization: { select: { id: true, name: true } },
+      },
     });
 
     // Resolve app-access for every membership concurrently (avoid serial N+1).
@@ -23,7 +26,10 @@ export class McpService {
           id: membership.organization.id,
           name: membership.organization.name,
         },
-        allowed: await hasAppAccess(membership.organization.id, membership.role),
+        allowed: await hasAppAccess(
+          membership.organization.id,
+          membership.role,
+        ),
       })),
     );
     const organizations = checks.filter((c) => c.allowed).map((c) => c.org);

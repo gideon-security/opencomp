@@ -20,8 +20,7 @@ async function call<T = unknown>(
   options: CallOptions = {},
 ): Promise<ApiResponse<T>> {
   const { method = 'GET', body, headers: customHeaders } = options;
-  const baseUrl =
-    env.BACKEND_API_URL || env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
+  const baseUrl = env.BACKEND_API_URL || env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
 
   const requestHeaders: Record<string, string> = {
     'Content-Type': 'application/json',

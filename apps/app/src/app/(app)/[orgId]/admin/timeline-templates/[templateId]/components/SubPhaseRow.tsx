@@ -1,12 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { api } from '@/lib/api-client';
 import type { AdminTimelinePhaseTemplate } from '@/hooks/use-admin-timelines';
+import { api } from '@/lib/api-client';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,12 +20,11 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@trycompai/design-system';
-import {
-  ArrowDown,
-  ArrowUp,
-  Save,
-  TrashCan,
-} from '@trycompai/design-system/icons';
+import { ArrowDown, ArrowUp, Save, TrashCan } from '@trycompai/design-system/icons';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 const COMPLETION_OPTIONS = [
   { value: 'MANUAL', label: 'Manual' },
@@ -90,15 +85,12 @@ export function SubPhaseRow({
 
   const handleSave = async (values: SubPhaseFormValues) => {
     setSaving(true);
-    const res = await api.patch(
-      `/v1/admin/timeline-templates/${templateId}/phases/${phase.id}`,
-      {
-        name: values.name,
-        defaultDurationWeeks: values.defaultDurationWeeks,
-        completionType: values.completionType,
-        locksTimelineOnComplete: values.locksTimelineOnComplete ?? false,
-      },
-    );
+    const res = await api.patch(`/v1/admin/timeline-templates/${templateId}/phases/${phase.id}`, {
+      name: values.name,
+      defaultDurationWeeks: values.defaultDurationWeeks,
+      completionType: values.completionType,
+      locksTimelineOnComplete: values.locksTimelineOnComplete ?? false,
+    });
     setSaving(false);
     if (res.error) {
       toast.error(res.error);
@@ -110,9 +102,7 @@ export function SubPhaseRow({
 
   const handleDelete = async () => {
     setDeleting(true);
-    const res = await api.delete(
-      `/v1/admin/timeline-templates/${templateId}/phases/${phase.id}`,
-    );
+    const res = await api.delete(`/v1/admin/timeline-templates/${templateId}/phases/${phase.id}`);
     setDeleting(false);
     if (res.error) {
       toast.error(res.error);
@@ -147,10 +137,7 @@ export function SubPhaseRow({
       </div>
 
       <div className="min-w-0 flex-1">
-        <Input
-          {...register('name')}
-          placeholder="Sub-phase name"
-        />
+        <Input {...register('name')} placeholder="Sub-phase name" />
       </div>
 
       <div className="w-24 shrink-0">
@@ -170,8 +157,7 @@ export function SubPhaseRow({
         >
           <SelectTrigger size="sm">
             <span className="text-sm">
-              {COMPLETION_OPTIONS.find((o) => o.value === completionType)
-                ?.label ?? completionType}
+              {COMPLETION_OPTIONS.find((o) => o.value === completionType)?.label ?? completionType}
             </span>
           </SelectTrigger>
           <SelectContent alignItemWithTrigger={false}>

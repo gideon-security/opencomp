@@ -40,7 +40,10 @@ describe('deriveManagementReviewNarrative', () => {
 describe('reviewConclusionSentence', () => {
   it('renders the chosen verdict and the meeting date', () => {
     expect(
-      reviewConclusionSentence({ verdict: 'effective', meetingDate: '2026-05-01' }),
+      reviewConclusionSentence({
+        verdict: 'effective',
+        meetingDate: '2026-05-01',
+      }),
     ).toBe(
       'The information security management system was reviewed on 2026-05-01. Overall, the ISMS was found to be effective and no changes are required except those recorded in the outputs section below.',
     );
@@ -55,9 +58,9 @@ describe('reviewConclusionSentence', () => {
 
 describe('parseReviewAttendees / isReviewSigned', () => {
   it('parses a stored attendees array and rejects malformed values', () => {
-    expect(
-      parseReviewAttendees([{ memberId: 'mem_1', name: 'Jane' }]),
-    ).toEqual([{ memberId: 'mem_1', name: 'Jane' }]);
+    expect(parseReviewAttendees([{ memberId: 'mem_1', name: 'Jane' }])).toEqual(
+      [{ memberId: 'mem_1', name: 'Jane' }],
+    );
     expect(parseReviewAttendees(null)).toEqual([]);
     expect(parseReviewAttendees('not-an-array')).toEqual([]);
     expect(parseReviewAttendees([{ memberId: 'mem_1' }])).toEqual([]);
@@ -85,10 +88,16 @@ describe('parseReviewAttendees / isReviewSigned', () => {
 
   it('treats a review as signed only when both name and date are set', () => {
     expect(
-      isReviewSigned({ signoffChairName: 'Jane', signoffChairDate: '2026-05-01' }),
+      isReviewSigned({
+        signoffChairName: 'Jane',
+        signoffChairDate: '2026-05-01',
+      }),
     ).toBe(true);
     expect(
-      isReviewSigned({ signoffChairName: '  ', signoffChairDate: '2026-05-01' }),
+      isReviewSigned({
+        signoffChairName: '  ',
+        signoffChairDate: '2026-05-01',
+      }),
     ).toBe(false);
     expect(
       isReviewSigned({ signoffChairName: 'Jane', signoffChairDate: null }),
@@ -166,7 +175,9 @@ describe('reviewValidationMessages', () => {
 });
 
 describe('seedReviewInputsIfMissing', () => {
-  const makeTx = (existing: Array<{ inputKey: string | null; position: number }>) => {
+  const makeTx = (
+    existing: Array<{ inputKey: string | null; position: number }>,
+  ) => {
     const tx = {
       ismsReviewInput: {
         findMany: jest.fn().mockResolvedValue(existing),
@@ -217,7 +228,9 @@ describe('seedReviewInputsIfMissing', () => {
     const { data } = tx.ismsReviewInput.createMany.mock.calls[0][0];
     expect(data).toHaveLength(SEED_REVIEW_INPUT_DEFINITIONS.length - 1);
     expect(
-      data.some((row: { inputKey: string }) => row.inputKey === 'a_prior_actions'),
+      data.some(
+        (row: { inputKey: string }) => row.inputKey === 'a_prior_actions',
+      ),
     ).toBe(false);
     expect(data[0].position).toBe(6);
   });

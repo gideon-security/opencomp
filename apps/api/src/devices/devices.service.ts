@@ -201,7 +201,9 @@ export class DevicesService {
     }
 
     if (!userId) {
-      throw new ForbiddenException('Only organization owners can remove devices');
+      throw new ForbiddenException(
+        'Only organization owners can remove devices',
+      );
     }
 
     const member = await db.member.findFirst({
@@ -223,7 +225,9 @@ export class DevicesService {
     const isOwner = memberRoles.includes('owner');
 
     if (!isOwner) {
-      throw new ForbiddenException('Only organization owners can remove devices');
+      throw new ForbiddenException(
+        'Only organization owners can remove devices',
+      );
     }
 
     const deleteResult = await db.device.deleteMany({

@@ -30,7 +30,10 @@ describe('resolveMicrosoftEmail', () => {
 
   it('treats empty / whitespace-only claims as missing and falls back', () => {
     expect(
-      resolveMicrosoftEmail({ email: '   ', preferred_username: 'login@corp.com' }),
+      resolveMicrosoftEmail({
+        email: '   ',
+        preferred_username: 'login@corp.com',
+      }),
     ).toBe('login@corp.com');
   });
 
@@ -58,7 +61,10 @@ describe('resolveMicrosoftEmail', () => {
 
   it('prefers preferred_username over upn when both are present (and email absent)', () => {
     expect(
-      resolveMicrosoftEmail({ preferred_username: 'pref@corp.com', upn: 'upn@corp.com' }),
+      resolveMicrosoftEmail({
+        preferred_username: 'pref@corp.com',
+        upn: 'upn@corp.com',
+      }),
     ).toBe('pref@corp.com');
   });
 

@@ -28,10 +28,7 @@ import { Controller, useForm } from 'react-hook-form';
 import type { IsmsManagementReview } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
 import { ReviewActionRow } from './ReviewActionRow';
-import {
-  reviewActionSchema,
-  type ReviewActionFormValues,
-} from './management-review-schema';
+import { reviewActionSchema, type ReviewActionFormValues } from './management-review-schema';
 import { IsmsAddCard, IsmsFieldLabel } from './shared';
 
 const NO_OWNER = 'no-owner';
@@ -78,8 +75,8 @@ export function ReviewActionsSection({
         <Badge variant="secondary">{String(actions.length)}</Badge>
       </HStack>
       <Text size="sm" variant="muted">
-        Follow-ups agreed at this review, tracked to closure. Open actions carry forward to the
-        next review&apos;s input (a) automatically — no actions is fine.
+        Follow-ups agreed at this review, tracked to closure. Open actions carry forward to the next
+        review&apos;s input (a) automatically — no actions is fine.
       </Text>
 
       {actions.length > 0 ? (
@@ -116,11 +113,7 @@ export function ReviewActionsSection({
       {canEdit && !locked ? (
         <IsmsAddCard addLabel="Add action" formTitle="New action">
           {({ close }) => (
-            <AddActionForm
-              memberOptions={memberOptions}
-              onAdd={onCreateAction}
-              onClose={close}
-            />
+            <AddActionForm memberOptions={memberOptions} onAdd={onCreateAction} onClose={close} />
           )}
         </IsmsAddCard>
       ) : null}

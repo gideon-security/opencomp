@@ -371,11 +371,7 @@ export class SyncController {
       details: [] as Array<{
         email: string;
         status:
-          | 'imported'
-          | 'skipped'
-          | 'deactivated'
-          | 'reactivated'
-          | 'error';
+          'imported' | 'skipped' | 'deactivated' | 'reactivated' | 'error';
         reason?: string;
         providerStatus?: string;
       }>,
@@ -450,8 +446,11 @@ export class SyncController {
         }
 
         // Create member - always as employee, admins can be promoted manually
-        const gwParsed = gwUser.creationTime ? new Date(gwUser.creationTime) : null;
-        const gwOnboardDate = gwParsed && !isNaN(gwParsed.getTime()) ? gwParsed : undefined;
+        const gwParsed = gwUser.creationTime
+          ? new Date(gwUser.creationTime)
+          : null;
+        const gwOnboardDate =
+          gwParsed && !isNaN(gwParsed.getTime()) ? gwParsed : undefined;
         await db.member.create({
           data: {
             organizationId,
@@ -863,11 +862,7 @@ export class SyncController {
       details: [] as Array<{
         email: string;
         status:
-          | 'imported'
-          | 'skipped'
-          | 'deactivated'
-          | 'reactivated'
-          | 'error';
+          'imported' | 'skipped' | 'deactivated' | 'reactivated' | 'error';
         reason?: string;
         providerStatus?: string;
       }>,
@@ -941,15 +936,22 @@ export class SyncController {
             });
           }
         } else {
-          const ripplingParsed = worker.start_date ? new Date(worker.start_date) : null;
-          const ripplingOnboardDate = ripplingParsed && !isNaN(ripplingParsed.getTime()) ? ripplingParsed : undefined;
+          const ripplingParsed = worker.start_date
+            ? new Date(worker.start_date)
+            : null;
+          const ripplingOnboardDate =
+            ripplingParsed && !isNaN(ripplingParsed.getTime())
+              ? ripplingParsed
+              : undefined;
           await db.member.create({
             data: {
               organizationId,
               userId,
               role: 'employee',
               isActive: true,
-              ...(ripplingOnboardDate ? { onboardDate: ripplingOnboardDate } : {}),
+              ...(ripplingOnboardDate
+                ? { onboardDate: ripplingOnboardDate }
+                : {}),
             },
           });
           results.imported++;
@@ -1352,11 +1354,7 @@ export class SyncController {
       details: [] as Array<{
         email: string;
         status:
-          | 'imported'
-          | 'skipped'
-          | 'deactivated'
-          | 'reactivated'
-          | 'error';
+          'imported' | 'skipped' | 'deactivated' | 'reactivated' | 'error';
         reason?: string;
         devices?: Array<{
           id: string;
@@ -1454,7 +1452,8 @@ export class SyncController {
 
         // Create member - always as employee, admins can be promoted manually
         const jcParsed = jcUser.created ? new Date(jcUser.created) : null;
-        const jcOnboardDate = jcParsed && !isNaN(jcParsed.getTime()) ? jcParsed : undefined;
+        const jcOnboardDate =
+          jcParsed && !isNaN(jcParsed.getTime()) ? jcParsed : undefined;
         await db.member.create({
           data: {
             organizationId,
@@ -1592,7 +1591,9 @@ export class SyncController {
    * Get the current employee sync provider for an organization
    */
   @Get('employee-sync-provider')
-  @ApiOperation({ summary: 'Get the currently configured employee sync provider' })
+  @ApiOperation({
+    summary: 'Get the currently configured employee sync provider',
+  })
   @RequirePermission('integration', 'read')
   async getEmployeeSyncProvider(@OrganizationId() organizationId: string) {
     const org = await db.organization.findUnique({
@@ -1677,7 +1678,9 @@ export class SyncController {
    * Get the current device sync provider for an organization
    */
   @Get('device-sync-provider')
-  @ApiOperation({ summary: 'Get the currently configured device sync provider' })
+  @ApiOperation({
+    summary: 'Get the currently configured device sync provider',
+  })
   @RequirePermission('integration', 'read')
   async getDeviceSyncProvider(@OrganizationId() organizationId: string) {
     const org = await db.organization.findUnique({

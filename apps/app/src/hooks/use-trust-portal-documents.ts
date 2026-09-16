@@ -41,10 +41,9 @@ export function useTrustPortalDocuments({
   const [documents, setDocuments] = useState<TrustPortalDocument[]>(initialData);
 
   const refreshDocuments = useCallback(async () => {
-    const response = await api.post<TrustPortalDocument[]>(
-      '/v1/trust-portal/documents/list',
-      { organizationId },
-    );
+    const response = await api.post<TrustPortalDocument[]>('/v1/trust-portal/documents/list', {
+      organizationId,
+    });
     if (response.data && Array.isArray(response.data)) {
       setDocuments(response.data);
     }
@@ -52,10 +51,12 @@ export function useTrustPortalDocuments({
 
   const uploadDocument = useCallback(
     async (fileName: string, fileType: string, fileData: string) => {
-      const response = await api.post<UploadDocumentResponse>(
-        '/v1/trust-portal/documents/upload',
-        { organizationId, fileName, fileType, fileData },
-      );
+      const response = await api.post<UploadDocumentResponse>('/v1/trust-portal/documents/upload', {
+        organizationId,
+        fileName,
+        fileType,
+        fileData,
+      });
       if (response.error) throw new Error(response.error);
       if (!response.data?.id) throw new Error('Invalid upload response');
       await refreshDocuments();

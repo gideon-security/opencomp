@@ -1,6 +1,13 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Text } from '@trycompai/design-system';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Text,
+} from '@trycompai/design-system';
 import { Chat } from '@trycompai/design-system/icons';
 
 export function ChatPlaceholder() {

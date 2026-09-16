@@ -305,7 +305,9 @@ export class PoliciesService {
             'Assignee is not a member of this organization',
           );
         }
-        if (!(await isMemberOrgParticipant(assignee.user.role, organizationId))) {
+        if (
+          !(await isMemberOrgParticipant(assignee.user.role, organizationId))
+        ) {
           throw new BadRequestException(
             'Cannot assign a platform admin as assignee',
           );

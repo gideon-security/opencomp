@@ -58,7 +58,11 @@ interface UserFixture {
   email: string;
 }
 
-function makeUser(id: string, email: string, name: string | null = null): UserFixture {
+function makeUser(
+  id: string,
+  email: string,
+  name: string | null = null,
+): UserFixture {
   return { id, name, email };
 }
 
@@ -79,7 +83,11 @@ describe('TaskNotifierService', () => {
   describe('notifyStatusChange', () => {
     it('sends email only to the task assignee when the task has an assignee', async () => {
       const actor = makeUser('usr_actor', 'actor@acme.com', 'Actor');
-      const assignee = makeUser('usr_assignee', 'assignee@acme.com', 'Assignee');
+      const assignee = makeUser(
+        'usr_assignee',
+        'assignee@acme.com',
+        'Assignee',
+      );
 
       mockDb.organization.findUnique.mockResolvedValue({ name: 'Acme' });
       mockDb.user.findUnique.mockResolvedValue({
@@ -191,7 +199,11 @@ describe('TaskNotifierService', () => {
 
     it('honors isUserUnsubscribed for the assignee', async () => {
       const actor = makeUser('usr_actor', 'actor@acme.com', 'Actor');
-      const assignee = makeUser('usr_assignee', 'assignee@acme.com', 'Assignee');
+      const assignee = makeUser(
+        'usr_assignee',
+        'assignee@acme.com',
+        'Assignee',
+      );
 
       mockDb.organization.findUnique.mockResolvedValue({ name: 'Acme' });
       mockDb.user.findUnique.mockResolvedValue({

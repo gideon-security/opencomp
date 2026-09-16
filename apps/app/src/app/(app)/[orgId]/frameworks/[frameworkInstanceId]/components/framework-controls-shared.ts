@@ -88,19 +88,21 @@ export function groupByFamily(items: ControlItem[]): FamilyGroup[] {
     }
   }
 
-  const sortedFamilies = Array.from(familyMap.entries()).sort(([a], [b]) =>
-    a.localeCompare(b),
-  );
+  const sortedFamilies = Array.from(familyMap.entries()).sort(([a], [b]) => a.localeCompare(b));
 
   const groups: FamilyGroup[] = sortedFamilies.map(([family, items]) => ({
     family,
-    items: items.sort((a, b) => a.control.name.localeCompare(b.control.name, undefined, { numeric: true })),
+    items: items.sort((a, b) =>
+      a.control.name.localeCompare(b.control.name, undefined, { numeric: true }),
+    ),
   }));
 
   if (otherItems.length > 0) {
     groups.push({
       family: UNCATEGORIZED_FAMILY,
-      items: otherItems.sort((a, b) => a.control.name.localeCompare(b.control.name, undefined, { numeric: true })),
+      items: otherItems.sort((a, b) =>
+        a.control.name.localeCompare(b.control.name, undefined, { numeric: true }),
+      ),
     });
   }
 
@@ -217,8 +219,7 @@ export function buildRequirementItems(
 ): RequirementItem[] {
   return requirementDefinitions.map((def) => {
     const mappedControls = controls.filter(
-      (control) =>
-        control.requirementsMapped?.some((rm) => rm.requirementId === def.id) ?? false,
+      (control) => control.requirementsMapped?.some((rm) => rm.requirementId === def.id) ?? false,
     );
 
     const controlStatuses = mappedControls.map((c) =>
@@ -227,7 +228,13 @@ export function buildRequirementItems(
     const satisfiedControlsCount = controlStatuses.filter((s) => s === 'completed').length;
 
     const progressPercents = mappedControls.map((c) =>
-      getControlProgressPercent(c.policies, tasks, c.id, c.controlDocumentTypes, evidenceSubmissions),
+      getControlProgressPercent(
+        c.policies,
+        tasks,
+        c.id,
+        c.controlDocumentTypes,
+        evidenceSubmissions,
+      ),
     );
 
     return {

@@ -5,8 +5,6 @@ import { SelectAssignee } from '@/components/SelectAssignee';
 import { useOrganizationMembers } from '@/hooks/use-organization-members';
 import { usePermissions } from '@/hooks/use-permissions';
 import type { Task, TaskFrequency, TaskStatus } from '@db';
-import { format } from 'date-fns';
-import { useParams } from 'next/navigation';
 import {
   Grid,
   InputGroup,
@@ -20,15 +18,19 @@ import {
   SelectTrigger,
   Stack,
 } from '@trycompai/design-system';
+import { format } from 'date-fns';
 import { Calendar } from 'lucide-react';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { NotRelevantJustificationDialog } from '../../components/NotRelevantJustificationDialog';
 import { useTask } from '../hooks/use-task';
-import { taskStatuses, taskFrequencies } from './constants';
+import { taskFrequencies, taskStatuses } from './constants';
 
 interface TaskPropertiesSidebarProps {
   handleUpdateTask: (
-    data: Partial<Pick<Task, 'status' | 'assigneeId' | 'approverId' | 'frequency' | 'reviewDate'>> & {
+    data: Partial<
+      Pick<Task, 'status' | 'assigneeId' | 'approverId' | 'frequency' | 'reviewDate'>
+    > & {
       department?: string | null;
       notRelevantJustification?: string;
     },
@@ -76,114 +78,122 @@ export function TaskPropertiesSidebar({
   };
 
   return (
-  <>
-    <Section title="Evidence Settings">
-      <Stack gap="md">
-        <Grid cols={{ base: '1', md: '2' }} gap="4">
-          {/* Status */}
-          <Stack gap="sm">
-            <Label>Status</Label>
-            <Select
-              value={task.status}
-              onValueChange={handleStatusChange}
-              disabled={!canUpdate || isStatusLocked}
-            >
-              <SelectTrigger>
-                <span className="capitalize">{task.status.replace('_', ' ')}</span>
-              </SelectTrigger>
-              <SelectContent>
-                {taskStatuses.filter((s) => s !== 'in_review').map((status) => (
-                  <SelectItem key={status} value={status}>
-                    <span className="capitalize">{status.replace('_', ' ')}</span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Stack>
-
-          {/* Assignee */}
-          <Stack gap="sm">
-            <Label>Assignee</Label>
-            <SelectAssignee
-              assignees={members ?? []}
-              assigneeId={task.assigneeId ?? ''}
-              onAssigneeChange={(id) => handleUpdateTask({ assigneeId: id || null })}
-              withTitle={false}
-            />
-          </Stack>
-
-          {/* Frequency */}
-          <Stack gap="sm">
-            <Label>Frequency</Label>
-            <Select
-              value={task.frequency || 'none'}
-              onValueChange={(value) => handleUpdateTask({ frequency: (value === 'none' ? null : value) as TaskFrequency | null })}
-              disabled={!canUpdate}
-            >
-              <SelectTrigger>
-                <span className="capitalize">{task.frequency ? task.frequency.replace('_', ' ') : 'None'}</span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">None</SelectItem>
-                {taskFrequencies.map((freq) => (
-                  <SelectItem key={freq} value={freq}>
-                    <span className="capitalize">{freq.replace('_', ' ')}</span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Stack>
-
-          {/* Department */}
-          <Stack gap="sm">
-            <Label>Department</Label>
-            <DepartmentSelect
-              value={task.department || 'none'}
-              onChange={(value) =>
-                handleUpdateTask({ department: value === 'none' ? null : value })
-              }
-              disabled={!canUpdate}
-            />
-          </Stack>
-
-          {/* Review Date */}
-          <Stack gap="sm">
-            <Label>Review Date</Label>
-            <InputGroup>
-              <InputGroupInput
-                type="text"
-                value={task.reviewDate ? format(new Date(task.reviewDate), 'M/d/yyyy') : ''}
-                placeholder="Not set"
-                disabled
-                readOnly
-              />
-              <InputGroupAddon align="inline-end">
-                <Calendar size={16} />
-              </InputGroupAddon>
-            </InputGroup>
-          </Stack>
-
-          {/* Approver */}
-          {evidenceApprovalEnabled && (
+    <>
+      <Section title="Evidence Settings">
+        <Stack gap="md">
+          <Grid cols={{ base: '1', md: '2' }} gap="4">
+            {/* Status */}
             <Stack gap="sm">
-              <Label>Approver</Label>
+              <Label>Status</Label>
+              <Select
+                value={task.status}
+                onValueChange={handleStatusChange}
+                disabled={!canUpdate || isStatusLocked}
+              >
+                <SelectTrigger>
+                  <span className="capitalize">{task.status.replace('_', ' ')}</span>
+                </SelectTrigger>
+                <SelectContent>
+                  {taskStatuses
+                    .filter((s) => s !== 'in_review')
+                    .map((status) => (
+                      <SelectItem key={status} value={status}>
+                        <span className="capitalize">{status.replace('_', ' ')}</span>
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </Stack>
+
+            {/* Assignee */}
+            <Stack gap="sm">
+              <Label>Assignee</Label>
               <SelectAssignee
                 assignees={members ?? []}
-                assigneeId={task.approverId ?? ''}
-                onAssigneeChange={(id) => handleUpdateTask({ approverId: id || null })}
+                assigneeId={task.assigneeId ?? ''}
+                onAssigneeChange={(id) => handleUpdateTask({ assigneeId: id || null })}
                 withTitle={false}
               />
             </Stack>
-          )}
-        </Grid>
-      </Stack>
-    </Section>
 
-    <NotRelevantJustificationDialog
-      open={justificationDialogOpen}
-      onOpenChange={setJustificationDialogOpen}
-      onConfirm={handleNotRelevantConfirm}
-    />
-  </>
+            {/* Frequency */}
+            <Stack gap="sm">
+              <Label>Frequency</Label>
+              <Select
+                value={task.frequency || 'none'}
+                onValueChange={(value) =>
+                  handleUpdateTask({
+                    frequency: (value === 'none' ? null : value) as TaskFrequency | null,
+                  })
+                }
+                disabled={!canUpdate}
+              >
+                <SelectTrigger>
+                  <span className="capitalize">
+                    {task.frequency ? task.frequency.replace('_', ' ') : 'None'}
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  {taskFrequencies.map((freq) => (
+                    <SelectItem key={freq} value={freq}>
+                      <span className="capitalize">{freq.replace('_', ' ')}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Stack>
+
+            {/* Department */}
+            <Stack gap="sm">
+              <Label>Department</Label>
+              <DepartmentSelect
+                value={task.department || 'none'}
+                onChange={(value) =>
+                  handleUpdateTask({ department: value === 'none' ? null : value })
+                }
+                disabled={!canUpdate}
+              />
+            </Stack>
+
+            {/* Review Date */}
+            <Stack gap="sm">
+              <Label>Review Date</Label>
+              <InputGroup>
+                <InputGroupInput
+                  type="text"
+                  value={task.reviewDate ? format(new Date(task.reviewDate), 'M/d/yyyy') : ''}
+                  placeholder="Not set"
+                  disabled
+                  readOnly
+                />
+                <InputGroupAddon align="inline-end">
+                  <Calendar size={16} />
+                </InputGroupAddon>
+              </InputGroup>
+            </Stack>
+
+            {/* Approver */}
+            {evidenceApprovalEnabled && (
+              <Stack gap="sm">
+                <Label>Approver</Label>
+                <SelectAssignee
+                  assignees={members ?? []}
+                  assigneeId={task.approverId ?? ''}
+                  onAssigneeChange={(id) => handleUpdateTask({ approverId: id || null })}
+                  withTitle={false}
+                />
+              </Stack>
+            )}
+          </Grid>
+        </Stack>
+      </Section>
+
+      <NotRelevantJustificationDialog
+        open={justificationDialogOpen}
+        onOpenChange={setJustificationDialogOpen}
+        onConfirm={handleNotRelevantConfirm}
+      />
+    </>
   );
 }

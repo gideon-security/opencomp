@@ -52,9 +52,7 @@ export function GroupedControlRow({
   };
 
   const reqLabel =
-    requirements.length > 0
-      ? requirements.map((r) => r.identifier || r.name).join(', ')
-      : null;
+    requirements.length > 0 ? requirements.map((r) => r.identifier || r.name).join(', ') : null;
 
   return (
     <TableRow onClick={handleRowClick} style={{ cursor: 'pointer' }}>

@@ -86,10 +86,7 @@ describe('metricIsOverdue', () => {
 
   it('clears when the current period is entered even with older gaps', () => {
     const metric = makeMetric({
-      measurements: [
-        measurement(CURRENT),
-        measurement(addPeriods('monthly', CURRENT, -4)),
-      ],
+      measurements: [measurement(CURRENT), measurement(addPeriods('monthly', CURRENT, -4))],
     });
     expect(metricIsOverdue(metric, NOW)).toBe(false);
   });

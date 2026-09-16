@@ -10,7 +10,10 @@ jest.mock('@gideon-defender/integration-platform', () => {
   };
 });
 
-import { registry, TASK_TEMPLATES } from '@gideon-defender/integration-platform';
+import {
+  registry,
+  TASK_TEMPLATES,
+} from '@gideon-defender/integration-platform';
 import { CheckResultsService } from './check-results.service';
 
 const mockGetActiveManifests = (
@@ -36,7 +39,9 @@ function boundManifest(id: string, name = id, category = 'Identity & Access') {
     name,
     logoUrl: null,
     category,
-    checks: [{ id: 'two-factor-auth', taskMapping: TASK_TEMPLATES.twoFactorAuth }],
+    checks: [
+      { id: 'two-factor-auth', taskMapping: TASK_TEMPLATES.twoFactorAuth },
+    ],
   };
 }
 function unboundManifest(id: string) {
@@ -58,7 +63,11 @@ beforeEach(() => {
 describe('CheckResultsService.listSourcesBoundToTask', () => {
   it('returns only manifests bound to the task, with connection state + checkId', async () => {
     mockGetActiveManifests.mockReturnValue([
-      boundManifest('google-workspace', 'Google Workspace', 'Identity & Access'),
+      boundManifest(
+        'google-workspace',
+        'Google Workspace',
+        'Identity & Access',
+      ),
       unboundManifest('slack'),
       boundManifest('github', 'GitHub', 'Development'),
     ]);

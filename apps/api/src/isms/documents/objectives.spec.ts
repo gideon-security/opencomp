@@ -80,7 +80,10 @@ describe('deriveObjectives', () => {
   });
 
   it('respects an explicitly-saved empty objectives array (CS-438)', () => {
-    const rows = deriveObjectives({ ...data, wizardAnswers: { objectives: [] } });
+    const rows = deriveObjectives({
+      ...data,
+      wizardAnswers: { objectives: [] },
+    });
     expect(rows).toEqual([]);
   });
 

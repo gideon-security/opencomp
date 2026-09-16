@@ -92,8 +92,13 @@ describe('GideonJwtService', () => {
     it('fail-closed when isConfigured and issuer missing', async () => {
       process.env.GIDEON_IDENTITY_URL = 'https://auth.example.com';
       // No issuer set — should fail closed before any decode/verify
-      mockDecodeJwt.mockReturnValue({ iss: 'https://auth.example.com' } as never);
-      mockDecodeProtectedHeader.mockReturnValue({ kid: 'k1', alg: 'ES256' } as never);
+      mockDecodeJwt.mockReturnValue({
+        iss: 'https://auth.example.com',
+      } as never);
+      mockDecodeProtectedHeader.mockReturnValue({
+        kid: 'k1',
+        alg: 'ES256',
+      } as never);
 
       const result = await service.verify('header.payload.sig');
       expect(result).toBeNull();
@@ -106,8 +111,13 @@ describe('GideonJwtService', () => {
       process.env.GIDEON_IDENTITY_URL = 'https://auth.example.com';
       process.env.GIDEON_JWT_ISSUER = 'https://auth.example.com';
       // No audience set — should fail closed before any decode/verify
-      mockDecodeJwt.mockReturnValue({ iss: 'https://auth.example.com' } as never);
-      mockDecodeProtectedHeader.mockReturnValue({ kid: 'k1', alg: 'ES256' } as never);
+      mockDecodeJwt.mockReturnValue({
+        iss: 'https://auth.example.com',
+      } as never);
+      mockDecodeProtectedHeader.mockReturnValue({
+        kid: 'k1',
+        alg: 'ES256',
+      } as never);
 
       const result = await service.verify('header.payload.sig');
       expect(result).toBeNull();
@@ -120,7 +130,9 @@ describe('GideonJwtService', () => {
       process.env.GIDEON_IDENTITY_URL = 'https://auth.example.com';
       process.env.GIDEON_JWT_ISSUER = 'https://auth.example.com';
       process.env.GIDEON_JWT_AUDIENCE = 'https://api.example.com';
-      mockDecodeJwt.mockReturnValue({ iss: 'https://other.example.com' } as never);
+      mockDecodeJwt.mockReturnValue({
+        iss: 'https://other.example.com',
+      } as never);
 
       const result = await service.verify('header.payload.sig');
       expect(result).toBeNull();
@@ -132,7 +144,9 @@ describe('GideonJwtService', () => {
       process.env.GIDEON_IDENTITY_URL = 'https://auth.example.com';
       process.env.GIDEON_JWT_ISSUER = 'https://auth.example.com';
       process.env.GIDEON_JWT_AUDIENCE = 'https://api.example.com';
-      mockDecodeJwt.mockReturnValue({ iss: 'https://auth.example.com' } as never);
+      mockDecodeJwt.mockReturnValue({
+        iss: 'https://auth.example.com',
+      } as never);
       mockDecodeProtectedHeader.mockImplementation(() => {
         throw new Error('Invalid token');
       });
@@ -146,7 +160,9 @@ describe('GideonJwtService', () => {
       process.env.GIDEON_IDENTITY_URL = 'https://auth.example.com';
       process.env.GIDEON_JWT_ISSUER = 'https://auth.example.com';
       process.env.GIDEON_JWT_AUDIENCE = 'https://api.example.com';
-      mockDecodeJwt.mockReturnValue({ iss: 'https://auth.example.com' } as never);
+      mockDecodeJwt.mockReturnValue({
+        iss: 'https://auth.example.com',
+      } as never);
       mockDecodeProtectedHeader.mockReturnValue({ alg: 'ES256' } as never);
 
       const result = await service.verify('header.payload.sig');
@@ -171,8 +187,13 @@ describe('GideonJwtService', () => {
       process.env.GIDEON_IDENTITY_URL = 'https://auth.example.com';
       process.env.GIDEON_JWT_ISSUER = 'https://auth.example.com';
       process.env.GIDEON_JWT_AUDIENCE = 'https://api.example.com';
-      mockDecodeJwt.mockReturnValue({ iss: 'https://auth.example.com' } as never);
-      mockDecodeProtectedHeader.mockReturnValue({ kid: 'kid1', alg: 'ES256' } as never);
+      mockDecodeJwt.mockReturnValue({
+        iss: 'https://auth.example.com',
+      } as never);
+      mockDecodeProtectedHeader.mockReturnValue({
+        kid: 'kid1',
+        alg: 'ES256',
+      } as never);
       mockJwtVerify.mockResolvedValue({
         payload: { sub: 'usr_1', tid: 'org_1', aal: 2 } as never,
         protectedHeader: { kid: 'kid1' } as never,
@@ -183,7 +204,10 @@ describe('GideonJwtService', () => {
       expect(mockJwtVerify).toHaveBeenCalledWith(
         'valid.jwt.token',
         'mock-jwks',
-        { issuer: 'https://auth.example.com', audience: 'https://api.example.com' },
+        {
+          issuer: 'https://auth.example.com',
+          audience: 'https://api.example.com',
+        },
       );
       expect(result?.payload.sub).toBe('usr_1');
     });
@@ -192,7 +216,9 @@ describe('GideonJwtService', () => {
       process.env.GIDEON_IDENTITY_URL = 'https://auth.example.com';
       process.env.GIDEON_JWT_ISSUER = 'https://auth.example.com';
       process.env.GIDEON_JWT_AUDIENCE = 'https://api.example.com';
-      mockDecodeJwt.mockReturnValue({ iss: 'https://auth.example.com' } as never);
+      mockDecodeJwt.mockReturnValue({
+        iss: 'https://auth.example.com',
+      } as never);
       mockDecodeProtectedHeader.mockReturnValue({ kid: 'k1' } as never);
       mockJwtVerify.mockResolvedValue({
         payload: { sub: 'usr_1', tid: 'org_1', aal: 1 } as never,
@@ -206,10 +232,18 @@ describe('GideonJwtService', () => {
 
   describe('resolveTenantId / resolveUserId', () => {
     it('prefers tid over tenant_id over organizationId', () => {
-      expect(service.resolveTenantId({ sub: 'u', tid: 'tid1' } as never)).toBe('tid1');
-      expect(service.resolveTenantId({ sub: 'u', tenant_id: 't2' } as never)).toBe('t2');
-      expect(service.resolveTenantId({ sub: 'u', organizationId: 'o3' } as never)).toBe('o3');
-      expect(service.resolveTenantId({ sub: 'u', tenantId: 't4' } as never)).toBe('t4');
+      expect(service.resolveTenantId({ sub: 'u', tid: 'tid1' } as never)).toBe(
+        'tid1',
+      );
+      expect(
+        service.resolveTenantId({ sub: 'u', tenant_id: 't2' } as never),
+      ).toBe('t2');
+      expect(
+        service.resolveTenantId({ sub: 'u', organizationId: 'o3' } as never),
+      ).toBe('o3');
+      expect(
+        service.resolveTenantId({ sub: 'u', tenantId: 't4' } as never),
+      ).toBe('t4');
       expect(service.resolveTenantId({ sub: 'u' } as never)).toBeNull();
     });
 

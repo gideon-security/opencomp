@@ -21,9 +21,7 @@ describe('ResumeConnectStrip', () => {
   it('names the vendor and offers resume + discard', () => {
     const onResume = vi.fn();
     const onDiscard = vi.fn();
-    render(
-      <ResumeConnectStrip host="github.com" onResume={onResume} onDiscard={onDiscard} />,
-    );
+    render(<ResumeConnectStrip host="github.com" onResume={onResume} onDiscard={onDiscard} />);
 
     expect(screen.getByText(/Finish connecting to github\.com/i)).toBeInTheDocument();
 

@@ -1,9 +1,9 @@
-import { PrismaClient, Prisma } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { resolveSslConfig } from './ssl-config';
 
-export type { SslConfig } from './ssl-config';
 export { resolveSslConfig } from './ssl-config';
+export type { SslConfig } from './ssl-config';
 
 /**
  * RLS (Row-Level Security) client roles.
@@ -85,10 +85,7 @@ export const serviceDb = lazyClient('DATABASE_URL_SERVICE');
 
 const TENANT_GUC = 'app.tenant_id';
 
-async function setTenantGuc(
-  tx: Prisma.TransactionClient,
-  tenantId: string,
-): Promise<void> {
+async function setTenantGuc(tx: Prisma.TransactionClient, tenantId: string): Promise<void> {
   await tx.$executeRaw`SELECT set_config(${TENANT_GUC}, ${tenantId}, true)`;
 }
 
@@ -113,9 +110,7 @@ export async function withTenant<T>(
  * Run `fn` as the service role (BYPASSRLS) inside a single transaction.
  * Clears any stale tenant GUC so system reads never inherit a leftover tenant.
  */
-export async function withService<T>(
-  fn: (tx: Prisma.TransactionClient) => Promise<T>,
-): Promise<T> {
+export async function withService<T>(fn: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
   return serviceDb.$transaction(async (tx) => {
     await setTenantGuc(tx, '');
     return fn(tx);

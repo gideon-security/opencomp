@@ -4,7 +4,11 @@ import { IsmsRequirementService } from './isms-requirement.service';
 
 jest.mock('@db', () => {
   const db = {
-    ismsDocument: { findFirst: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
+    ismsDocument: {
+      findFirst: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
     ismsInterestedParty: { findFirst: jest.fn() },
     ismsInterestedPartyRequirement: {
       findFirst: jest.fn(),
@@ -69,7 +73,9 @@ describe('IsmsRequirementService', () => {
       (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue({
         id: 'doc_1',
       });
-      (mockDb.ismsInterestedParty.findFirst as jest.Mock).mockResolvedValue(null);
+      (mockDb.ismsInterestedParty.findFirst as jest.Mock).mockResolvedValue(
+        null,
+      );
 
       await expect(
         service.create({
@@ -114,11 +120,11 @@ describe('IsmsRequirementService', () => {
         where: { id: 'ip_1', documentId: 'doc_1' },
         select: { id: true },
       });
-      expect(
-        mockDb.ismsInterestedPartyRequirement.create,
-      ).toHaveBeenCalledWith({
-        data: expect.objectContaining({ interestedPartyId: 'ip_1' }),
-      });
+      expect(mockDb.ismsInterestedPartyRequirement.create).toHaveBeenCalledWith(
+        {
+          data: expect.objectContaining({ interestedPartyId: 'ip_1' }),
+        },
+      );
     });
   });
 
@@ -161,7 +167,9 @@ describe('IsmsRequirementService', () => {
       (
         mockDb.ismsInterestedPartyRequirement.findFirst as jest.Mock
       ).mockResolvedValue({ id: 'ipr_1', documentId: 'doc_1' });
-      (mockDb.ismsInterestedParty.findFirst as jest.Mock).mockResolvedValue(null);
+      (mockDb.ismsInterestedParty.findFirst as jest.Mock).mockResolvedValue(
+        null,
+      );
 
       await expect(
         service.update({

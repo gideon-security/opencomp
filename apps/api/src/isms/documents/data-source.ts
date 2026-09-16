@@ -248,7 +248,8 @@ function fingerprintRiskTreatment({
 }): string {
   const ownerDisplay = (
     assignee: { user: { name: string | null; email: string } } | null,
-  ): string => (assignee ? assignee.user.name?.trim() || assignee.user.email : '');
+  ): string =>
+    assignee ? assignee.user.name?.trim() || assignee.user.email : '';
   const renderedRisks = risks.filter((risk) => risk.status !== 'archived');
   const renderedSubjectIds = new Set([
     ...renderedRisks.map((risk) => risk.id),

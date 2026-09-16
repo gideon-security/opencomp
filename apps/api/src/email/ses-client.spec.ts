@@ -94,15 +94,19 @@ describe('sendEmailViaSes', () => {
       subject: 't',
       html: '<p>x</p>',
       attachments: [
-        { filename: 'doc.pdf', contentType: 'application/pdf', content: pdfBytes },
+        {
+          filename: 'doc.pdf',
+          contentType: 'application/pdf',
+          content: pdfBytes,
+        },
       ],
     });
 
     const raw = Buffer.from(commandInput().RawMessage.Data).toString('utf8');
+    expect(raw).toContain('Content-Type: application/pdf; name="doc.pdf"');
     expect(raw).toContain(
-      'Content-Type: application/pdf; name="doc.pdf"',
+      'Content-Disposition: attachment; filename="doc.pdf"',
     );
-    expect(raw).toContain('Content-Disposition: attachment; filename="doc.pdf"');
     expect(raw).toContain(pdfBytes);
   });
 

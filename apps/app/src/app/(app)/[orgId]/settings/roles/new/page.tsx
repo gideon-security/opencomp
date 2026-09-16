@@ -3,11 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { NewRoleForm } from './components/NewRoleForm';
 
-export default async function NewRolePage({
-  params,
-}: {
-  params: Promise<{ orgId: string }>;
-}) {
+export default async function NewRolePage({ params }: { params: Promise<{ orgId: string }> }) {
   const { orgId } = await params;
 
   return (

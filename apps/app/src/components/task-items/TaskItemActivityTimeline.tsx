@@ -1,20 +1,23 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
-import { CircleFilled } from '@trycompai/design-system/icons';
-import { Loader2 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
 import type { TaskItem } from '@/hooks/use-task-items';
-import { useTaskItemActivity } from './hooks/use-task-item-activity';
-import { useEffect, useState, useMemo } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
 import { Button } from '@gideon-defender/ui/button';
+import { CircleFilled } from '@trycompai/design-system/icons';
+import { formatDistanceToNow } from 'date-fns';
+import { Loader2 } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTaskItemActivity } from './hooks/use-task-item-activity';
 
 interface TaskItemActivityTimelineProps {
   taskItem: TaskItem;
   onActivityLoaded?: (mutate: () => void) => void;
 }
 
-export function TaskItemActivityTimeline({ taskItem, onActivityLoaded }: TaskItemActivityTimelineProps) {
+export function TaskItemActivityTimeline({
+  taskItem,
+  onActivityLoaded,
+}: TaskItemActivityTimelineProps) {
   const { activity, isLoading, mutate } = useTaskItemActivity(taskItem.id);
   const [showAll, setShowAll] = useState(false);
 
@@ -53,18 +56,14 @@ export function TaskItemActivityTimeline({ taskItem, onActivityLoaded }: TaskIte
   const renderActivityItem = (log: any) => (
     <div key={log.id} className="flex items-start gap-3 relative">
       <Avatar className="h-6 w-6 border border-border relative z-10 bg-background">
-        <AvatarImage
-          src={log.user.image || undefined}
-          alt={log.user.name || log.user.email}
-        />
+        <AvatarImage src={log.user.image || undefined} alt={log.user.name || log.user.email} />
         <AvatarFallback className="text-[10px] bg-muted">
           {(log.user.name || log.user.email)?.charAt(0).toUpperCase() ?? '?'}
         </AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
         <p className="text-sm">
-          <span className="font-medium">{log.user.name || log.user.email}</span>{' '}
-          {log.description}
+          <span className="font-medium">{log.user.name || log.user.email}</span> {log.description}
         </p>
         <p className="text-xs text-muted-foreground">
           {formatDistanceToNow(new Date(log.timestamp), { addSuffix: true })}
@@ -80,10 +79,8 @@ export function TaskItemActivityTimeline({ taskItem, onActivityLoaded }: TaskIte
       </div>
       <div className="relative">
         {/* Timeline line */}
-        {activity.length > 0 && (
-        <div className="absolute left-3 top-6 bottom-0 w-px bg-border" />
-        )}
-        
+        {activity.length > 0 && <div className="absolute left-3 top-6 bottom-0 w-px bg-border" />}
+
         <div className="space-y-4">
           {activity.length === 0 ? (
             <p className="text-sm text-muted-foreground">No activity yet</p>
@@ -94,18 +91,19 @@ export function TaskItemActivityTimeline({ taskItem, onActivityLoaded }: TaskIte
             // Show collapsed view
             <>
               {displayedActivity.firstItems.map(renderActivityItem)}
-              
+
               <div className="flex items-center gap-3 relative">
                 <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center relative z-10">
                   <CircleFilled className="h-2 w-2 text-muted-foreground" />
-              </div>
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowAll(true)}
                   className="h-auto py-1 px-2 text-xs text-muted-foreground hover:text-foreground"
                 >
-                  Show {displayedActivity.hiddenCount} more {displayedActivity.hiddenCount === 1 ? 'activity' : 'activities'}
+                  Show {displayedActivity.hiddenCount} more{' '}
+                  {displayedActivity.hiddenCount === 1 ? 'activity' : 'activities'}
                 </Button>
               </div>
 
@@ -117,4 +115,3 @@ export function TaskItemActivityTimeline({ taskItem, onActivityLoaded }: TaskIte
     </div>
   );
 }
-

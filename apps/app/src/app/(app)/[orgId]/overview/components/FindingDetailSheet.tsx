@@ -8,8 +8,8 @@ import {
 } from '@/hooks/use-findings-api';
 
 import { Comments } from '@/components/comments/Comments';
+import { useAuthMe } from '@/hooks/use-auth-me';
 import { usePermissions } from '@/hooks/use-permissions';
-import { useSession } from '@/utils/auth-client';
 import { FindingSeverity, FindingStatus } from '@db';
 import {
   AlertDialog,
@@ -67,10 +67,7 @@ function allowedStatusOptions({
   canCreateFindings: boolean;
   isPlatformAdmin: boolean;
 }): FindingStatus[] {
-  const options: FindingStatus[] = [
-    FindingStatus.open,
-    FindingStatus.ready_for_review,
-  ];
+  const options: FindingStatus[] = [FindingStatus.open, FindingStatus.ready_for_review];
   if (canCreateFindings || isPlatformAdmin) {
     options.push(FindingStatus.needs_revision, FindingStatus.closed);
   }
@@ -147,14 +144,10 @@ const LEGACY_SCOPE_KEYS: Record<string, LegacyScopeKey> = {
  * so owners/admins can see where the finding was originally filed — otherwise
  * legacy people-scope findings all look identical under `area='people'`.
  */
-function legacyScopeFromHistory(
-  history: FindingHistoryEntry[] | undefined,
-): string | null {
+function legacyScopeFromHistory(history: FindingHistoryEntry[] | undefined): string | null {
   if (!history || history.length === 0) return null;
   // History comes back newest-first; the creation entry is the oldest one.
-  const createdEntry = [...history]
-    .reverse()
-    .find((e) => e.data?.action === 'created');
+  const createdEntry = [...history].reverse().find((e) => e.data?.action === 'created');
   const scope = createdEntry?.data?.findingScope;
   if (!scope) return null;
   return scope;
@@ -170,11 +163,11 @@ export function FindingDetailSheet({
 }: FindingDetailSheetProps) {
   const t = useTranslations('overview');
   const { hasPermission } = usePermissions();
-  const { data: session } = useSession();
+  const { user } = useAuthMe();
   const canUpdate = hasPermission('finding', 'update');
   const canDelete = hasPermission('finding', 'delete');
   const canCreateFindings = hasPermission('finding', 'create');
-  const isPlatformAdmin = session?.user?.role === 'admin';
+  const isPlatformAdmin = user?.role === 'admin';
   const canEditContent = canUpdate && canCreateFindings;
   const { updateFinding, deleteFinding } = useFindingActions();
   const { data: historyData } = useFindingHistory(finding?.id ?? null);
@@ -215,8 +208,7 @@ export function FindingDetailSheet({
       return t('findings.documentTarget', {
         name: f.evidenceSubmission.formType,
       });
-    if (f.evidenceFormType)
-      return t('findings.documentTarget', { name: f.evidenceFormType });
+    if (f.evidenceFormType) return t('findings.documentTarget', { name: f.evidenceFormType });
     if (f.area === 'risks') return t('findings.areaRisks');
     if (f.area === 'vendors') return t('findings.areaVendors');
     if (f.area === 'policies') return t('findings.areaPolicies');
@@ -225,9 +217,7 @@ export function FindingDetailSheet({
   };
 
   const href = targetHref(finding, organizationId);
-  const history: FindingHistoryEntry[] = Array.isArray(historyData?.data)
-    ? historyData.data
-    : [];
+  const history: FindingHistoryEntry[] = Array.isArray(historyData?.data) ? historyData.data : [];
   const legacyScope = legacyScopeFromHistory(history);
   const legacyScopeLabel = legacyScope
     ? LEGACY_SCOPE_KEYS[legacyScope]
@@ -240,8 +230,7 @@ export function FindingDetailSheet({
     contentChanged ||
     status !== finding.status ||
     severity !== finding.severity ||
-    (status === FindingStatus.needs_revision &&
-      revisionNote !== (finding.revisionNote ?? ''));
+    (status === FindingStatus.needs_revision && revisionNote !== (finding.revisionNote ?? ''));
 
   const handleSave = async () => {
     setSaving(true);
@@ -250,18 +239,13 @@ export function FindingDetailSheet({
         content: contentChanged ? content : undefined,
         status: status !== finding.status ? status : undefined,
         severity: severity !== finding.severity ? severity : undefined,
-        revisionNote:
-          status === FindingStatus.needs_revision
-            ? revisionNote || null
-            : undefined,
+        revisionNote: status === FindingStatus.needs_revision ? revisionNote || null : undefined,
       });
       toast.success(t('findings.updatedSuccess'));
       onSaved?.();
       onOpenChange(false);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('findings.updateError'),
-      );
+      toast.error(error instanceof Error ? error.message : t('findings.updateError'));
     } finally {
       setSaving(false);
     }
@@ -276,9 +260,7 @@ export function FindingDetailSheet({
       onDeleted?.();
       onOpenChange(false);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('findings.deleteError'),
-      );
+      toast.error(error instanceof Error ? error.message : t('findings.deleteError'));
     } finally {
       setDeleting(false);
     }
@@ -306,12 +288,8 @@ export function FindingDetailSheet({
             <Stack gap="xs">
               <HStack justify="between" align="center">
                 <HStack gap="xs" align="center">
-                  <Badge variant="secondary">
-                    {t(SEVERITY_LABEL_KEYS[finding.severity])}
-                  </Badge>
-                  <Badge variant="outline">
-                    {t(STATUS_LABEL_KEYS[finding.status])}
-                  </Badge>
+                  <Badge variant="secondary">{t(SEVERITY_LABEL_KEYS[finding.severity])}</Badge>
+                  <Badge variant="outline">{t(STATUS_LABEL_KEYS[finding.status])}</Badge>
                 </HStack>
                 <Button
                   variant="ghost"
@@ -328,9 +306,7 @@ export function FindingDetailSheet({
               {legacyScopeLabel && (
                 <p className="text-xs text-muted-foreground">
                   {t('findings.originallyLoggedAgainst')}{' '}
-                  <span className="font-medium text-foreground">
-                    {legacyScopeLabel}
-                  </span>
+                  <span className="font-medium text-foreground">{legacyScopeLabel}</span>
                 </p>
               )}
               {href && (
@@ -344,15 +320,9 @@ export function FindingDetailSheet({
             </Stack>
 
             <Stack gap="xs">
-              <label className="text-sm font-medium">
-                {t('findings.content')}
-              </label>
+              <label className="text-sm font-medium">{t('findings.content')}</label>
               {canEditContent ? (
-                <Textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows={6}
-                />
+                <Textarea value={content} onChange={(e) => setContent(e.target.value)} rows={6} />
               ) : (
                 <p className="whitespace-pre-wrap rounded-md border border-border bg-muted/30 p-3 text-sm text-balance">
                   {finding.content}
@@ -361,57 +331,53 @@ export function FindingDetailSheet({
             </Stack>
 
             <HStack gap="sm">
-              <div className="flex-1"><Stack gap="xs">
-                <label className="text-sm font-medium">{t('findings.severity')}</label>
-                <Select
-                  value={severity}
-                  onValueChange={(v) =>
-                    v && setSeverity(v as FindingSeverity)
-                  }
-                  disabled={!canUpdate}
-                >
-                  <SelectTrigger>
-                    {t(SEVERITY_LABEL_KEYS[severity])}
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SEVERITY_OPTIONS.map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {t(SEVERITY_LABEL_KEYS[s])}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Stack></div>
-              <div className="flex-1"><Stack gap="xs">
-                <label className="text-sm font-medium">{t('common.status')}</label>
-                <Select
-                  value={status}
-                  onValueChange={(v) => v && setStatus(v as FindingStatus)}
-                  disabled={!canUpdate}
-                >
-                  <SelectTrigger>
-                    {t(STATUS_LABEL_KEYS[status])}
-                  </SelectTrigger>
-                  <SelectContent>
-                    {allowedStatusOptions({
-                      current: status,
-                      canCreateFindings,
-                      isPlatformAdmin,
-                    }).map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {t(STATUS_LABEL_KEYS[s])}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Stack></div>
+              <div className="flex-1">
+                <Stack gap="xs">
+                  <label className="text-sm font-medium">{t('findings.severity')}</label>
+                  <Select
+                    value={severity}
+                    onValueChange={(v) => v && setSeverity(v as FindingSeverity)}
+                    disabled={!canUpdate}
+                  >
+                    <SelectTrigger>{t(SEVERITY_LABEL_KEYS[severity])}</SelectTrigger>
+                    <SelectContent>
+                      {SEVERITY_OPTIONS.map((s) => (
+                        <SelectItem key={s} value={s}>
+                          {t(SEVERITY_LABEL_KEYS[s])}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Stack>
+              </div>
+              <div className="flex-1">
+                <Stack gap="xs">
+                  <label className="text-sm font-medium">{t('common.status')}</label>
+                  <Select
+                    value={status}
+                    onValueChange={(v) => v && setStatus(v as FindingStatus)}
+                    disabled={!canUpdate}
+                  >
+                    <SelectTrigger>{t(STATUS_LABEL_KEYS[status])}</SelectTrigger>
+                    <SelectContent>
+                      {allowedStatusOptions({
+                        current: status,
+                        canCreateFindings,
+                        isPlatformAdmin,
+                      }).map((s) => (
+                        <SelectItem key={s} value={s}>
+                          {t(STATUS_LABEL_KEYS[s])}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Stack>
+              </div>
             </HStack>
 
             {status === FindingStatus.needs_revision && (
               <Stack gap="xs">
-                <label className="text-sm font-medium">
-                  {t('findings.revisionNote')}
-                </label>
+                <label className="text-sm font-medium">{t('findings.revisionNote')}</label>
                 <Textarea
                   value={revisionNote}
                   onChange={(e) => setRevisionNote(e.target.value)}
@@ -436,11 +402,7 @@ export function FindingDetailSheet({
                 <span />
               )}
               <HStack gap="xs">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onOpenChange(false)}
-                >
+                <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
                   {t('common.cancel')}
                 </Button>
                 <Button
@@ -502,17 +464,11 @@ export function FindingDetailSheet({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('findings.deleteTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('findings.deleteDescription')}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t('findings.deleteDescription')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={deleting}>{t('common.cancel')}</AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={deleting}
-            >
+            <AlertDialogAction variant="destructive" onClick={handleDelete} disabled={deleting}>
               {deleting ? t('findings.deleting') : t('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>

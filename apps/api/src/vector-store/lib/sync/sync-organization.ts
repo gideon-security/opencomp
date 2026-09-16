@@ -194,9 +194,13 @@ async function verifyEmbeddingIsReady(
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       // First, fetch the embedding to get its vector
-      const fetchedEmbeddings = await vectorIndex.fetch([embeddingId], organizationId, {
-        includeVectors: true,
-      });
+      const fetchedEmbeddings = await vectorIndex.fetch(
+        [embeddingId],
+        organizationId,
+        {
+          includeVectors: true,
+        },
+      );
 
       const fetchedEmbedding = fetchedEmbeddings?.[0];
       if (!fetchedEmbedding || !fetchedEmbedding.vector) {

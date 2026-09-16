@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  extractJsonSegments,
-  findBalancedEnd,
-} from './extract-json-segments';
+import { extractJsonSegments, findBalancedEnd } from './extract-json-segments';
 
 describe('findBalancedEnd', () => {
   it('returns null when the position is not an opener', () => {
@@ -45,15 +42,11 @@ describe('findBalancedEnd', () => {
 describe('extractJsonSegments', () => {
   it('returns the original string as a single text segment when there is no JSON', () => {
     const result = extractJsonSegments('Open the AWS Console and create a trail.');
-    expect(result).toEqual([
-      { type: 'text', value: 'Open the AWS Console and create a trail.' },
-    ]);
+    expect(result).toEqual([{ type: 'text', value: 'Open the AWS Console and create a trail.' }]);
   });
 
   it('splits prose + flat JSON object into ordered segments', () => {
-    const result = extractJsonSegments(
-      'Apply this policy: {"Version":"2012-10-17"} and verify.',
-    );
+    const result = extractJsonSegments('Apply this policy: {"Version":"2012-10-17"} and verify.');
     expect(result).toEqual([
       { type: 'text', value: 'Apply this policy: ' },
       {
@@ -111,13 +104,7 @@ describe('extractJsonSegments', () => {
   it('extracts multiple JSON blocks in the same string', () => {
     const text = 'first: {"a":1} then: {"b":2} done';
     const result = extractJsonSegments(text);
-    expect(result.map((s) => s.type)).toEqual([
-      'text',
-      'json',
-      'text',
-      'json',
-      'text',
-    ]);
+    expect(result.map((s) => s.type)).toEqual(['text', 'json', 'text', 'json', 'text']);
   });
 
   it('extracts JSON arrays as well as objects', () => {
@@ -130,9 +117,7 @@ describe('extractJsonSegments', () => {
     // `{ not json }` has balanced braces but isn't parseable.
     const result = extractJsonSegments('here: { not json } ok');
     expect(result.every((s) => s.type === 'text')).toBe(true);
-    const joined = result
-      .map((s) => (s.type === 'text' ? s.value : ''))
-      .join('');
+    const joined = result.map((s) => (s.type === 'text' ? s.value : '')).join('');
     expect(joined).toBe('here: { not json } ok');
   });
 
@@ -143,8 +128,7 @@ describe('extractJsonSegments', () => {
 
   it('does NOT misclassify braces inside JSON string values', () => {
     // The `}` inside the description must not terminate the JSON early.
-    const text =
-      'Apply: {"description":"contains } and { in text","key":"v"}';
+    const text = 'Apply: {"description":"contains } and { in text","key":"v"}';
     const result = extractJsonSegments(text);
     const jsonSegments = result.filter((s) => s.type === 'json');
     expect(jsonSegments).toHaveLength(1);

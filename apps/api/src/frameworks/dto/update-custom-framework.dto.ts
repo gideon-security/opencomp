@@ -13,7 +13,10 @@ export class UpdateCustomFrameworkDto {
   // ValidateIf (rather than @IsOptional) only skips validation when the field is
   // omitted (undefined). An explicit `null` still runs @IsString and is rejected
   // with a 400, instead of slipping through to a non-null DB column.
-  @ApiPropertyOptional({ description: 'Framework name', example: 'Internal Controls' })
+  @ApiPropertyOptional({
+    description: 'Framework name',
+    example: 'Internal Controls',
+  })
   @ValidateIf((_, value) => value !== undefined)
   @Transform(trimIfString)
   @IsString()

@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  CLOUD_RECONNECT_CUTOFF_ISO_UTC,
-  requiresCloudReconnect,
-} from './cloud-reconnect-policy';
+import { CLOUD_RECONNECT_CUTOFF_ISO_UTC, requiresCloudReconnect } from './cloud-reconnect-policy';
 
 describe('requiresCloudReconnect', () => {
   it('returns true for cloud connections created before the cutoff date', () => {

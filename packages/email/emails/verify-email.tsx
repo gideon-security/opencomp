@@ -36,8 +36,7 @@ export const VerifyEmail = ({ email, url }: Props) => {
             </Heading>
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
-              Confirm your email address to finish setting up your OpenComp
-              account.
+              Confirm your email address to finish setting up your OpenComp account.
             </Text>
             <Section className="mt-[32px] mb-[42px] text-center">
               <Button

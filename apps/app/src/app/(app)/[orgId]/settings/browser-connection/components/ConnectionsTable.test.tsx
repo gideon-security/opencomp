@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -47,11 +47,7 @@ const base = {
 describe('ConnectionsTable — permanence states', () => {
   it('shows "Stays signed in" and no upgrade action when a key is stored', () => {
     render(
-      <ConnectionsTable
-        {...base}
-        connections={[connection()]}
-        totpStatuses={{ bap_1: true }}
-      />,
+      <ConnectionsTable {...base} connections={[connection()]} totpStatuses={{ bap_1: true }} />,
     );
     expect(screen.getByText('Stays signed in')).toBeInTheDocument();
     expect(screen.getByText(/Signs back in on its own/i)).toBeInTheDocument();
@@ -73,18 +69,14 @@ describe('ConnectionsTable — permanence states', () => {
     expect(screen.getByText(/Add your authenticator key/i)).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('connections.makePermanent'));
-    expect(onMakePermanent).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'bap_1' }),
-    );
+    expect(onMakePermanent).toHaveBeenCalledWith(expect.objectContaining({ id: 'bap_1' }));
   });
 
   it('treats an SSO connection as neutral with no upgrade path', () => {
     render(
       <ConnectionsTable
         {...base}
-        connections={[
-          connection({ vaultProvider: null, vaultExternalItemRef: null }),
-        ]}
+        connections={[connection({ vaultProvider: null, vaultExternalItemRef: null })]}
       />,
     );
     expect(screen.getByText('Signed in')).toBeInTheDocument();
@@ -104,19 +96,12 @@ describe('ConnectionsTable — permanence states', () => {
     );
     expect(screen.getByText('Reconnect needed')).toBeInTheDocument();
     fireEvent.click(screen.getByText('connections.reconnect'));
-    expect(onReconnect).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'bap_1' }),
-    );
+    expect(onReconnect).toHaveBeenCalledWith(expect.objectContaining({ id: 'bap_1' }));
   });
 
   it('shows a Checking… placeholder for a password row until status loads', () => {
     render(
-      <ConnectionsTable
-        {...base}
-        connections={[connection()]}
-        totpStatuses={{}}
-        statusesLoading
-      />,
+      <ConnectionsTable {...base} connections={[connection()]} totpStatuses={{}} statusesLoading />,
     );
     expect(screen.getByText('connections.checking')).toBeInTheDocument();
     // We don't know yet, so don't prompt to add a key.

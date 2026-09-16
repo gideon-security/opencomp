@@ -51,8 +51,7 @@ export function ReviewsList({
       {validationMessages.length > 0 ? (
         <Alert variant="warning" icon={<WarningAlt />}>
           <Text size="sm">
-            Before the Clause 9.3 document can be submitted:{' '}
-            {validationMessages.join(' ')}
+            Before the Clause 9.3 document can be submitted: {validationMessages.join(' ')}
           </Text>
         </Alert>
       ) : null}

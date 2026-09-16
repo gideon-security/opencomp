@@ -28,12 +28,18 @@ interface ConnectionsTableProps {
   onMakePermanent: (connection: Connection) => void;
 }
 
-function lastVerified(connection: Connection, t: ReturnType<typeof useTranslations<'settings'>>): string {
+function lastVerified(
+  connection: Connection,
+  t: ReturnType<typeof useTranslations<'settings'>>,
+): string {
   if (!connection.lastVerifiedAt) return t('connections.notVerifiedYet');
   try {
-    return `${t('connections.lastVerified')} ${formatDistanceToNow(new Date(connection.lastVerifiedAt), {
-      addSuffix: true,
-    })}`;
+    return `${t('connections.lastVerified')} ${formatDistanceToNow(
+      new Date(connection.lastVerifiedAt),
+      {
+        addSuffix: true,
+      },
+    )}`;
   } catch {
     return t('connections.notVerifiedYet');
   }
@@ -138,18 +144,22 @@ export function ConnectionsTable({
           : state === 'permanent'
             ? t('connections.passwordAndAuthenticator')
             : t('connections.password');
-        const line = [
-          connection.loginIdentity || null,
-          methodLabel,
-          lastVerified(connection, t),
-        ]
+        const line = [connection.loginIdentity || null, methodLabel, lastVerified(connection, t)]
           .filter(Boolean)
           .join(' · ');
 
         const badge = loading
-          ? { text: t('connections.checking'), color: 'var(--muted-foreground)', bg: 'var(--muted)' }
+          ? {
+              text: t('connections.checking'),
+              color: 'var(--muted-foreground)',
+              bg: 'var(--muted)',
+            }
           : unknown
-            ? { text: t('connections.statusUnavailable'), color: 'var(--muted-foreground)', bg: 'var(--muted)' }
+            ? {
+                text: t('connections.statusUnavailable'),
+                color: 'var(--muted-foreground)',
+                bg: 'var(--muted)',
+              }
             : { text: meta.badge, color: meta.color, bg: meta.bg };
         const hint = unknown
           ? t('connections.totpUnknownHint')
@@ -159,8 +169,7 @@ export function ConnectionsTable({
               blockedReason: connection.blockedReason,
             });
         const hintMuted = unknown || state === 'permanent' || state === 'sso';
-        const showMakePermanent =
-          canManage && !loading && !unknown && meta.action === 'key';
+        const showMakePermanent = canManage && !loading && !unknown && meta.action === 'key';
         const showReconnect = canManage && meta.action === 'reconnect';
 
         return (
@@ -228,25 +237,25 @@ export function ConnectionsTable({
             {filtered.length} {t('connections.connectionsLabel')}
           </span>
           <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={currentPage === 0}
-                onClick={() => setPage(currentPage - 1)}
-              >
-                {t('connections.previous')}
-              </Button>
-              <span className="whitespace-nowrap text-[12px] text-muted-foreground">
-                {t('connections.pageOf', { current: currentPage + 1, total: pageCount })}
-              </span>
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={currentPage >= pageCount - 1}
-                onClick={() => setPage(currentPage + 1)}
-              >
-                {t('connections.next')}
-              </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={currentPage === 0}
+              onClick={() => setPage(currentPage - 1)}
+            >
+              {t('connections.previous')}
+            </Button>
+            <span className="whitespace-nowrap text-[12px] text-muted-foreground">
+              {t('connections.pageOf', { current: currentPage + 1, total: pageCount })}
+            </span>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={currentPage >= pageCount - 1}
+              onClick={() => setPage(currentPage + 1)}
+            >
+              {t('connections.next')}
+            </Button>
           </div>
         </div>
       )}

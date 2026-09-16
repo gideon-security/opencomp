@@ -65,9 +65,7 @@ function ChairSelect({
   return (
     <Select
       value={value || NO_CHAIR}
-      onValueChange={(next) =>
-        onChange(!next || next === NO_CHAIR ? '' : next)
-      }
+      onValueChange={(next) => onChange(!next || next === NO_CHAIR ? '' : next)}
     >
       <SelectTrigger aria-label="Chair">
         <SelectValue placeholder="Select the chair" />
@@ -140,9 +138,7 @@ export function ReviewFields({ control, chairOptions }: ReviewFieldsProps) {
           render={({ field }) => (
             <Select
               value={field.value || NO_VERDICT}
-              onValueChange={(next) =>
-                field.onChange(next === NO_VERDICT ? '' : next)
-              }
+              onValueChange={(next) => field.onChange(next === NO_VERDICT ? '' : next)}
             >
               <SelectTrigger aria-label="Conclusion verdict">
                 <SelectValue placeholder="No verdict yet" />

@@ -1,9 +1,6 @@
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
-import {
-  remediationForReadFailure,
-  toHttpReadFailure,
-} from '../../http-read-failure';
+import { remediationForReadFailure, toHttpReadFailure } from '../../http-read-failure';
 import { gcpListItems, isGcpApiDisabled, resolveGcpProjectIds } from './shared';
 
 interface AlertPolicy {
@@ -54,10 +51,7 @@ function isDurableExportDestination(destination: string | undefined): boolean {
  * a notification channel, otherwise alerts fire into the void. Mirrors the
  * Azure Monitor check's "activity log alerts" half.
  */
-async function evaluateAlerting(
-  ctx: CheckContext,
-  projectId: string,
-): Promise<void> {
+async function evaluateAlerting(ctx: CheckContext, projectId: string): Promise<void> {
   let policies: AlertPolicy[];
   try {
     policies = await gcpListItems<AlertPolicy>(
@@ -107,9 +101,7 @@ async function evaluateAlerting(
         projectId,
         enabledPoliciesWithChannel: active.length,
         totalPolicies: policies.length,
-        samplePolicies: active
-          .slice(0, 5)
-          .map((p) => p.displayName ?? p.name),
+        samplePolicies: active.slice(0, 5).map((p) => p.displayName ?? p.name),
       },
     });
     return;
@@ -141,10 +133,7 @@ async function evaluateAlerting(
  * log export" half. GCP always captures logs short-term, so the meaningful
  * control is durable export/retention beyond the managed `_Default` sink.
  */
-async function evaluateLogExport(
-  ctx: CheckContext,
-  projectId: string,
-): Promise<void> {
+async function evaluateLogExport(ctx: CheckContext, projectId: string): Promise<void> {
   let sinks: LogSink[];
   try {
     sinks = await gcpListItems<LogSink>(
@@ -154,9 +143,7 @@ async function evaluateLogExport(
     );
   } catch (err) {
     if (isGcpApiDisabled(err)) {
-      ctx.log(
-        `GCP Cloud Logging: API not enabled in project "${projectId}" — skipping log export`,
-      );
+      ctx.log(`GCP Cloud Logging: API not enabled in project "${projectId}" — skipping log export`);
       return;
     }
     const failure = toHttpReadFailure(err);
@@ -191,9 +178,7 @@ async function evaluateLogExport(
       evidence: {
         projectId,
         exportSinks: exportSinks.length,
-        destinations: exportSinks
-          .slice(0, 5)
-          .map((s) => s.destination ?? s.name),
+        destinations: exportSinks.slice(0, 5).map((s) => s.destination ?? s.name),
       },
     });
     return;
@@ -227,8 +212,7 @@ async function evaluateLogExport(
 export const cloudMonitoringAlertingCheck: IntegrationCheck = {
   id: 'gcp-cloud-monitoring-alerting',
   name: 'Cloud Monitoring — alerting and log export',
-  description:
-    'Verify alert policies notify a channel and logs are exported to durable storage.',
+  description: 'Verify alert policies notify a channel and logs are exported to durable storage.',
   service: 'cloud-monitoring',
   taskMapping: TASK_TEMPLATES.monitoringAlerting,
 

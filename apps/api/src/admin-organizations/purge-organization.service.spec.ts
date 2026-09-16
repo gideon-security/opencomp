@@ -51,9 +51,10 @@ describe('PurgeOrganizationService', () => {
       build: jest.fn().mockResolvedValue(sampleSnapshot),
     } as unknown as jest.Mocked<PurgeOrganizationSnapshotService>;
     externalService = {
-      cleanupStripe: jest
-        .fn()
-        .mockResolvedValue({ customerDeleted: true, subscriptionCanceled: true }),
+      cleanupStripe: jest.fn().mockResolvedValue({
+        customerDeleted: true,
+        subscriptionCanceled: true,
+      }),
       cleanupVectorStore: jest.fn().mockResolvedValue({
         knowledgeBaseTasksTriggered: 1,
         manualAnswerOrchestratorTriggered: true,
@@ -73,8 +74,9 @@ describe('PurgeOrganizationService', () => {
       'vendor',
       'risk',
     ]) {
-      mockDb[model === 'member' ? 'member' : model].count =
-        jest.fn().mockResolvedValue(0);
+      mockDb[model === 'member' ? 'member' : model].count = jest
+        .fn()
+        .mockResolvedValue(0);
     }
     mockDb.member.count = jest.fn().mockResolvedValue(0);
     mockDb.member.findFirst = jest
@@ -131,13 +133,7 @@ describe('PurgeOrganizationService', () => {
       adminUserId: 'u1',
     });
 
-    expect(order).toEqual([
-      'stripe',
-      'vector',
-      's3',
-      'verify-s3',
-      'db-delete',
-    ]);
+    expect(order).toEqual(['stripe', 'vector', 's3', 'verify-s3', 'db-delete']);
     expect(result.success).toBe(true);
     expect(result.deletedCounts).toEqual({ policies: 5 });
     expect(result.externalCleanup.stripe.customerDeleted).toBe(true);

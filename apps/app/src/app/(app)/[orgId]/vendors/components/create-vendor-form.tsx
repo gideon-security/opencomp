@@ -2,12 +2,25 @@
 
 import { SelectAssignee } from '@/components/SelectAssignee';
 import { useVendorActions } from '@/hooks/use-vendors';
-import { Button } from '@gideon-defender/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
-import { Input } from '@gideon-defender/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
-import { Textarea } from '@gideon-defender/ui/textarea';
 import { type Member, type User, VendorCategory, VendorStatus } from '@db';
+import { Button } from '@gideon-defender/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
+import { Input } from '@gideon-defender/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
+import { Textarea } from '@gideon-defender/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -121,7 +134,11 @@ export function CreateVendorForm({
                 <FormItem>
                   <FormLabel>{t('create.website')}</FormLabel>
                   <FormControl>
-                    <Input {...field} className="mt-3" placeholder={t('create.websitePlaceholder')} />
+                    <Input
+                      {...field}
+                      className="mt-3"
+                      placeholder={t('create.websitePlaceholder')}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -1,5 +1,6 @@
 'use client';
 
+import { usePermissions } from '@/hooks/use-permissions';
 import { Button } from '@gideon-defender/ui/button';
 import {
   Dialog,
@@ -15,7 +16,6 @@ import { Stack } from '@trycompai/design-system';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { usePermissions } from '@/hooks/use-permissions';
 import { usePolicyVersions } from '../hooks/usePolicyVersions';
 
 interface PublishVersionDialogProps {
@@ -78,7 +78,8 @@ export function PublishVersionDialog({
             {currentVersionNumber
               ? `This will create a new version based on the published version (v${currentVersionNumber}). `
               : 'This will create a new version from the current policy content. '}
-            The new version will be saved as a draft and can be published through the approval workflow.
+            The new version will be saved as a draft and can be published through the approval
+            workflow.
           </DialogDescription>
         </DialogHeader>
 
@@ -101,7 +102,10 @@ export function PublishVersionDialog({
           <Button variant="outline" onClick={onClose} disabled={isCreating}>
             Cancel
           </Button>
-          <Button onClick={handleCreate} disabled={isCreating || !hasPermission('policy', 'update')}>
+          <Button
+            onClick={handleCreate}
+            disabled={isCreating || !hasPermission('policy', 'update')}
+          >
             {isCreating ? 'Creating...' : 'Create Version'}
           </Button>
         </DialogFooter>

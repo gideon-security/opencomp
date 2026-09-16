@@ -1,23 +1,23 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = join(__dirname, "..", "..");
-const CATALOG_ROOT = join(REPO_ROOT, "integrations-catalog");
-const INDEX_FILE = join(CATALOG_ROOT, "index.json");
-const README_FILE = join(CATALOG_ROOT, "README.md");
+const REPO_ROOT = join(__dirname, '..', '..');
+const CATALOG_ROOT = join(REPO_ROOT, 'integrations-catalog');
+const INDEX_FILE = join(CATALOG_ROOT, 'index.json');
+const README_FILE = join(CATALOG_ROOT, 'README.md');
 
-const index = JSON.parse(readFileSync(INDEX_FILE, "utf8"));
+const index = JSON.parse(readFileSync(INDEX_FILE, 'utf8'));
 const { total, byCategory, integrations, generatedAt } = index;
 
 const categoriesSorted = Object.entries(byCategory).sort((a, b) => b[1] - a[1]);
 
 const byCat = {};
 for (const i of integrations) {
-  const c = i.category || "Uncategorized";
+  const c = i.category || 'Uncategorized';
   (byCat[c] ||= []).push(i);
 }
 
@@ -26,11 +26,14 @@ const catSections = Object.keys(byCat)
   .map((cat) => {
     const rows = byCat[cat]
       .sort((a, b) => a.name.localeCompare(b.name))
-      .map((i) => `| [${i.name}](${i.file}) | \`${i.slug}\` | ${i.authType} | ${i.checkCount} | ${i.syncSupported ? "✓" : ""} |`)
-      .join("\n");
+      .map(
+        (i) =>
+          `| [${i.name}](${i.file}) | \`${i.slug}\` | ${i.authType} | ${i.checkCount} | ${i.syncSupported ? '✓' : ''} |`,
+      )
+      .join('\n');
     return `### ${cat} (${byCat[cat].length})\n\n| Integration | Slug | Auth | Checks | Sync |\n|-------------|------|------|--------|------|\n${rows}\n`;
   })
-  .join("\n");
+  .join('\n');
 
 const readme = `# CompAI Integrations Catalog
 
@@ -67,7 +70,7 @@ curl https://raw.githubusercontent.com/gideon-security/opencomp/main/integration
 
 ## Summary by category
 
-${categoriesSorted.map(([cat, n]) => `- **${cat}** — ${n} integrations`).join("\n")}
+${categoriesSorted.map(([cat, n]) => `- **${cat}** — ${n} integrations`).join('\n')}
 
 ## Full catalog
 
@@ -83,4 +86,6 @@ MIT — see repo root LICENSE file.
 `;
 
 writeFileSync(README_FILE, readme);
-console.log(`README.md written with ${total} integrations in ${Object.keys(byCategory).length} categories.`);
+console.log(
+  `README.md written with ${total} integrations in ${Object.keys(byCategory).length} categories.`,
+);

@@ -67,9 +67,7 @@ const analysisResultSchema = z.object({
         .describe('Brief explanation of what was found or what is missing (1-2 sentences)'),
     }),
   ),
-  overallPass: z
-    .boolean()
-    .describe('True only if ALL required topics are adequately covered'),
+  overallPass: z.boolean().describe('True only if ALL required topics are adequately covered'),
   summary: z.string().describe('One-line summary of the analysis result for the user'),
 });
 
@@ -123,10 +121,7 @@ export async function POST(req: Request) {
 
   const parsed = requestSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: 'Invalid request body.' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
   let requirements: string[];

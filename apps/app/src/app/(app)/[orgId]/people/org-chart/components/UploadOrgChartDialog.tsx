@@ -1,10 +1,10 @@
 'use client';
 
+import { useApi } from '@/hooks/use-api';
+import { Button } from '@trycompai/design-system';
+import { Close, Upload } from '@trycompai/design-system/icons';
 import { useCallback, useState } from 'react';
 import Dropzone, { type FileRejection } from 'react-dropzone';
-import { Button } from '@trycompai/design-system';
-import { Upload, Close } from '@trycompai/design-system/icons';
-import { useApi } from '@/hooks/use-api';
 import { toast } from 'sonner';
 
 interface UploadOrgChartDialogProps {
@@ -12,26 +12,20 @@ interface UploadOrgChartDialogProps {
   onUploaded: () => void | Promise<unknown>;
 }
 
-export function UploadOrgChartDialog({
-  onClose,
-  onUploaded,
-}: UploadOrgChartDialogProps) {
+export function UploadOrgChartDialog({ onClose, onUploaded }: UploadOrgChartDialogProps) {
   const api = useApi();
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-      if (rejectedFiles.length > 0) {
-        toast.error('Invalid file type. Please upload a PNG, JPG, or PDF.');
-        return;
-      }
-      if (acceptedFiles.length > 0) {
-        setSelectedFile(acceptedFiles[0]);
-      }
-    },
-    [],
-  );
+  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+    if (rejectedFiles.length > 0) {
+      toast.error('Invalid file type. Please upload a PNG, JPG, or PDF.');
+      return;
+    }
+    if (acceptedFiles.length > 0) {
+      setSelectedFile(acceptedFiles[0]);
+    }
+  }, []);
 
   const handleUpload = async () => {
     if (!selectedFile) return;
@@ -79,9 +73,7 @@ export function UploadOrgChartDialog({
   return (
     <div className="rounded-lg border border-border bg-background p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-foreground">
-          Upload Org Chart
-        </h3>
+        <h3 className="text-lg font-semibold text-foreground">Upload Org Chart</h3>
         <button
           type="button"
           onClick={onClose}
@@ -106,9 +98,7 @@ export function UploadOrgChartDialog({
           <div
             {...(getRootProps() as React.HTMLProps<HTMLDivElement>)}
             className={`grid h-48 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed transition ${
-              isDragActive
-                ? 'border-primary/50 bg-primary/5'
-                : 'border-border hover:bg-muted/25'
+              isDragActive ? 'border-primary/50 bg-primary/5' : 'border-border hover:bg-muted/25'
             }`}
           >
             <input {...getInputProps()} />
@@ -118,12 +108,9 @@ export function UploadOrgChartDialog({
               </div>
               {selectedFile ? (
                 <div className="flex flex-col gap-1">
-                  <p className="text-sm font-medium text-foreground">
-                    {selectedFile.name}
-                  </p>
+                  <p className="text-sm font-medium text-foreground">{selectedFile.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {(selectedFile.size / 1024).toFixed(1)} KB - Click or drop to
-                    replace
+                    {(selectedFile.size / 1024).toFixed(1)} KB - Click or drop to replace
                   </p>
                 </div>
               ) : (
@@ -145,12 +132,7 @@ export function UploadOrgChartDialog({
         <Button variant="outline" size="sm" onClick={onClose}>
           Cancel
         </Button>
-        <Button
-          size="sm"
-          onClick={handleUpload}
-          disabled={!selectedFile}
-          loading={isUploading}
-        >
+        <Button size="sm" onClick={handleUpload} disabled={!selectedFile} loading={isUploading}>
           Upload
         </Button>
       </div>

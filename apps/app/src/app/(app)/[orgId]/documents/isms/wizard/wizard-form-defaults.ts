@@ -4,11 +4,7 @@
  * so the form is confirm-or-edit, never a blank page.
  */
 
-import type {
-  PartialWizardAnswers,
-  WizardDefaults,
-  WizardFormValues,
-} from './wizard-types';
+import type { PartialWizardAnswers, WizardDefaults, WizardFormValues } from './wizard-types';
 
 function toStringArray(value: unknown, fallback: string[]): string[] {
   if (!Array.isArray(value)) return fallback;
@@ -67,7 +63,8 @@ export function buildWizardDefaults({
       name: saved.euRep?.name ?? '',
     },
     certificateScopeSentence:
-      typeof saved.certificateScopeSentence === 'string' && saved.certificateScopeSentence.length > 0
+      typeof saved.certificateScopeSentence === 'string' &&
+      saved.certificateScopeSentence.length > 0
         ? saved.certificateScopeSentence
         : defaults.certificateScopeSentence,
     objectives,

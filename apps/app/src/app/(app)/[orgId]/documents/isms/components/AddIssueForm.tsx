@@ -32,11 +32,7 @@ export function AddIssueForm({ kind, onAdd }: AddIssueFormProps) {
   );
 }
 
-function AddIssueFields({
-  kind,
-  onAdd,
-  onClose,
-}: AddIssueFormProps & { onClose: () => void }) {
+function AddIssueFields({ kind, onAdd, onClose }: AddIssueFormProps & { onClose: () => void }) {
   const categories = categoriesForKind(kind);
   const {
     control,

@@ -106,8 +106,12 @@ describe('AuditLogInterceptor', () => {
           // API-key requests never carry a session userId/memberId — the guard
           // doesn't set them, so the interceptor must resolve the actor. Only
           // default to the session user for non-API-key requests.
-          userId: overrides.isApiKey ? overrides.userId : overrides.userId ?? 'user_123',
-          memberId: overrides.isApiKey ? overrides.memberId : overrides.memberId ?? 'mem_123',
+          userId: overrides.isApiKey
+            ? overrides.userId
+            : (overrides.userId ?? 'user_123'),
+          memberId: overrides.isApiKey
+            ? overrides.memberId
+            : (overrides.memberId ?? 'mem_123'),
           isApiKey: overrides.isApiKey ?? false,
           apiKeyCreatedByMemberId: overrides.apiKeyCreatedByMemberId,
           params: overrides.params ?? { id: 'pol_123' },
@@ -151,7 +155,10 @@ describe('AuditLogInterceptor', () => {
     // Default: resolver returns no attributable user. resolve() must always
     // return a promise (the interceptor calls .then on it), so a bare jest.fn()
     // returning undefined would throw. Tests needing a real actor override this.
-    mockResolve.mockResolvedValue({ userId: null, source: 'org-owner-fallback' });
+    mockResolve.mockResolvedValue({
+      userId: null,
+      source: 'org-owner-fallback',
+    });
   });
 
   it('should skip GET requests', (done) => {
@@ -241,7 +248,10 @@ describe('AuditLogInterceptor', () => {
       next: () => {
         setTimeout(() => {
           expect(mockResolve).toHaveBeenCalledWith(
-            expect.objectContaining({ isApiKey: true, organizationId: 'org_123' }),
+            expect.objectContaining({
+              isApiKey: true,
+              organizationId: 'org_123',
+            }),
             'org_123',
           );
           expect(mockCreate).toHaveBeenCalledWith({
@@ -253,7 +263,9 @@ describe('AuditLogInterceptor', () => {
               entityId: 'vnd_new',
               // Provenance marker recorded so the owner/creator attribution
               // isn't read as a session action.
-              description: expect.stringContaining('[via API key "CI Pipeline"]'),
+              description: expect.stringContaining(
+                '[via API key "CI Pipeline"]',
+              ),
             }),
           });
           // ...and captured structurally in the data JSON.

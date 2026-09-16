@@ -130,9 +130,7 @@ export function TaskBody({
           // Check file extension
           const fileExt = file.name.split('.').pop()?.toLowerCase();
           if (fileExt && BLOCKED_EXTENSIONS.includes(fileExt)) {
-            toast.error(
-              t('body.blockedExtensionToast', { name: file.name, ext: fileExt }),
-            );
+            toast.error(t('body.blockedExtensionToast', { name: file.name, ext: fileExt }));
             return resolve(null);
           }
 
@@ -298,9 +296,7 @@ export function TaskBody({
         </div>
 
         {/* Show error state if attachments failed to load */}
-        {attachmentsError && (
-          <p className="text-destructive text-sm">{t('body.loadFailed')}</p>
-        )}
+        {attachmentsError && <p className="text-destructive text-sm">{t('body.loadFailed')}</p>}
 
         <div className="space-y-3">
           {/* Loading skeleton for attachments */}
@@ -442,13 +438,9 @@ export function TaskBody({
               </div>
               <DialogTitle>{t('body.reminderTitle')}</DialogTitle>
             </div>
-            <DialogDescription className="pt-2">
-              {t('body.reminderDescription')}
-            </DialogDescription>
+            <DialogDescription className="pt-2">{t('body.reminderDescription')}</DialogDescription>
           </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            {t('body.reminderExplanation')}
-          </p>
+          <p className="text-sm text-muted-foreground">{t('body.reminderExplanation')}</p>
           <DialogFooter>
             <Button variant="outline" onClick={handleReminderClose}>
               {t('body.cancel')}

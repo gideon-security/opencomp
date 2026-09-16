@@ -1,8 +1,8 @@
-import { generateRiskMitigation } from '@/trigger/tasks/onboarding/generate-risk-mitigation';
-import type { PolicyContext } from '@/trigger/tasks/onboarding/onboard-organization-helpers';
 import { serverApi } from '@/lib/api-server';
 import { requireApiPermission } from '@/lib/permissions.server';
-import { auth as triggerAuth, tasks } from '@gideon-defender/trigger-local';
+import { generateRiskMitigation } from '@/trigger/tasks/onboarding/generate-risk-mitigation';
+import type { PolicyContext } from '@/trigger/tasks/onboarding/onboard-organization-helpers';
+import { tasks, auth as triggerAuth } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 interface PeopleApiResponse {
@@ -22,10 +22,7 @@ interface PoliciesApiResponse {
   }>;
 }
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: Promise<{ riskId: string }> },
-) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ riskId: string }> }) {
   try {
     const ctx = await requireApiPermission(req, 'risk', 'update');
     if (ctx instanceof NextResponse) return ctx;
@@ -33,10 +30,7 @@ export async function POST(
 
     const { riskId } = await params;
     if (!riskId) {
-      return NextResponse.json(
-        { error: 'Risk ID is required' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Risk ID is required' }, { status: 400 });
     }
 
     const [peopleResult, policiesResult] = await Promise.all([
@@ -47,9 +41,7 @@ export async function POST(
     // Find first owner or admin as comment author
     const people = peopleResult.data?.data ?? [];
     const author = people.find(
-      (p) =>
-        !p.deactivated &&
-        (p.role.includes('owner') || p.role.includes('admin')),
+      (p) => !p.deactivated && (p.role.includes('owner') || p.role.includes('admin')),
     );
 
     if (!author) {
@@ -65,15 +57,12 @@ export async function POST(
       description: policy.description,
     }));
 
-    const handle = await tasks.trigger<typeof generateRiskMitigation>(
-      'generate-risk-mitigation',
-      {
-        organizationId,
-        riskId,
-        authorId: author.id,
-        policies,
-      },
-    );
+    const handle = await tasks.trigger<typeof generateRiskMitigation>('generate-risk-mitigation', {
+      organizationId,
+      riskId,
+      authorId: author.id,
+      policies,
+    });
 
     // The run is now in flight server-side. Mint a 15-min public token so
     // the UI can subscribe via useRealtimeRun. If the mint fails, do NOT

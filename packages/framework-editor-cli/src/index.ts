@@ -1,9 +1,9 @@
 import { Command } from 'commander';
 import { registerAuthCommands } from './commands/auth.js';
-import { registerFrameworkCommands } from './commands/framework.js';
-import { registerRequirementCommands } from './commands/requirement.js';
 import { registerControlCommands } from './commands/control.js';
+import { registerFrameworkCommands } from './commands/framework.js';
 import { registerPolicyCommands } from './commands/policy.js';
+import { registerRequirementCommands } from './commands/requirement.js';
 import { registerTaskCommands } from './commands/task.js';
 
 const program = new Command();

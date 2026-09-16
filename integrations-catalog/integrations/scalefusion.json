@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Scalefusion Dashboard at https://app.scalefusion.com\n2. Go to Settings > API Integration\n3. Generate an API token\n4. Copy the API token and paste it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

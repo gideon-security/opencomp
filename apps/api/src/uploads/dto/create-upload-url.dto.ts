@@ -49,7 +49,8 @@ export class UploadUrlResponseDto {
   @ApiProperty({
     description:
       'Presigned S3 URL. Send the raw file bytes with a plain HTTP PUT to this URL — no Content-Type or auth headers are required (the signature is in the URL). Then call the feature endpoint with the s3Key below.',
-    example: 'https://bucket.s3.us-east-1.amazonaws.com/org_x/uploads/...?X-Amz-Signature=...',
+    example:
+      'https://bucket.s3.us-east-1.amazonaws.com/org_x/uploads/...?X-Amz-Signature=...',
   })
   uploadUrl!: string;
 

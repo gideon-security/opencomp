@@ -37,11 +37,7 @@ export function getFamilyStatusClassName(status: FrameworkEditorFrameworkFamilyS
   return STATUS_STYLES[status];
 }
 
-export function FamilyStatusBadge({
-  status,
-}: {
-  status: FrameworkEditorFrameworkFamilyStatus;
-}) {
+export function FamilyStatusBadge({ status }: { status: FrameworkEditorFrameworkFamilyStatus }) {
   return (
     <span
       className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${getFamilyStatusClassName(

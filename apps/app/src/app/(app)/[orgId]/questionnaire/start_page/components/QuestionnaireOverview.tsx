@@ -29,7 +29,9 @@ export function QuestionnaireOverview({ questionnaires }: QuestionnaireOverviewP
                 <FileText className="h-8 w-8 text-primary" />
               </div>
               <div className="text-center space-y-1">
-                <h3 className="text-lg font-semibold text-foreground">{t('overview.answerNewQuestionnaire')}</h3>
+                <h3 className="text-lg font-semibold text-foreground">
+                  {t('overview.answerNewQuestionnaire')}
+                </h3>
                 <p className="text-sm text-muted-foreground">
                   {t('overview.answerNewDescription')}
                 </p>
@@ -49,9 +51,7 @@ export function QuestionnaireOverview({ questionnaires }: QuestionnaireOverviewP
       <div className="flex flex-col gap-4">
         <div>
           <h2 className="text-lg font-semibold text-foreground">{t('overview.history')}</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            {t('overview.historyDescription')}
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">{t('overview.historyDescription')}</p>
         </div>
         <QuestionnaireHistory questionnaires={questionnaires} orgId={orgId} />
       </div>

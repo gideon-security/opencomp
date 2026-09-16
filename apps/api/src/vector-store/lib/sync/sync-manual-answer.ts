@@ -14,14 +14,11 @@ export async function syncManualAnswerToVector(
 ): Promise<{ success: boolean; error?: string; embeddingId?: string }> {
   // Check if vectorIndex is configured
   if (!vectorIndex) {
-    logger.error(
-      '❌ Vector store not configured - check DATABASE_URL is set',
-      {
-        manualAnswerId,
-        organizationId,
-        hasDatabaseUrl: !!process.env.DATABASE_URL,
-      },
-    );
+    logger.error('❌ Vector store not configured - check DATABASE_URL is set', {
+      manualAnswerId,
+      organizationId,
+      hasDatabaseUrl: !!process.env.DATABASE_URL,
+    });
     return { success: false, error: 'Vector DB not configured' };
   }
 
@@ -77,7 +74,10 @@ export async function syncManualAnswerToVector(
 
     for (let attempt = 0; attempt < maxRetries; attempt++) {
       try {
-        const fetchedEmbeddings = await vectorIndex.fetch([embeddingId], organizationId);
+        const fetchedEmbeddings = await vectorIndex.fetch(
+          [embeddingId],
+          organizationId,
+        );
         wasFound =
           fetchedEmbeddings &&
           fetchedEmbeddings.length > 0 &&

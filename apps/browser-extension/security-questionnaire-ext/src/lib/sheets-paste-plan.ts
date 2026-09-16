@@ -21,9 +21,7 @@ export interface SheetPastePayload extends SheetPastePlan {
   itemIds: string[];
 }
 
-export function buildSheetPastePlan(
-  answers: SheetAnswer[],
-): SheetPastePlan | null {
+export function buildSheetPastePlan(answers: SheetAnswer[]): SheetPastePlan | null {
   const targets = answers.flatMap(parseSheetTarget);
   if (targets.length === 0) return null;
 

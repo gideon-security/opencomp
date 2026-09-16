@@ -253,7 +253,12 @@ export class GcpRemediationService {
     });
 
     let previousState: Record<string, unknown> = {};
-    let fixResult: { results: Array<{ step: GcpApiStep; output: unknown }>; error?: { stepIndex: number; step: GcpApiStep; message: string } } | undefined;
+    let fixResult:
+      | {
+          results: Array<{ step: GcpApiStep; output: unknown }>;
+          error?: { stepIndex: number; step: GcpApiStep; message: string };
+        }
+      | undefined;
 
     try {
       // Phase 1: Execute read steps to get real state
@@ -336,7 +341,9 @@ export class GcpRemediationService {
         refinedPlan = retryPlan;
         fixErrors = validateGcpPlanSteps(refinedPlan.fixSteps);
         if (fixErrors.length > 0) {
-          throw new Error(`Invalid fix steps after retry: ${fixErrors.join('; ')}`);
+          throw new Error(
+            `Invalid fix steps after retry: ${fixErrors.join('; ')}`,
+          );
         }
       }
 
@@ -444,9 +451,7 @@ export class GcpRemediationService {
           if (!obj || typeof obj !== 'object') return obj;
           if (Array.isArray(obj)) return obj.map(stripVolatile);
           const cleaned: Record<string, unknown> = {};
-          for (const [k, v] of Object.entries(
-            obj as Record<string, unknown>,
-          )) {
+          for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
             if (k === 'etag' || k === 'updateTime' || k === 'createTime')
               continue;
             cleaned[k] = stripVolatile(v);
@@ -508,8 +513,7 @@ export class GcpRemediationService {
       const permInfo = parseGcpPermissionError(errorMessage, projectId);
 
       let permissionError:
-        | { missingActions: string[]; fixScript?: string }
-        | undefined;
+        { missingActions: string[]; fixScript?: string } | undefined;
       if (permInfo.isPermissionError) {
         permissionError = {
           missingActions: permInfo.missingPermissions,
@@ -689,7 +693,8 @@ export class GcpRemediationService {
     organizationId: string,
   ): Promise<string> {
     const manifest = getManifest('gcp');
-    const oauthConfig = manifest?.auth?.type === 'oauth2' ? manifest.auth.config : null;
+    const oauthConfig =
+      manifest?.auth?.type === 'oauth2' ? manifest.auth.config : null;
 
     if (oauthConfig) {
       const oauthCreds = await this.oauthCredentialsService.getCredentials(

@@ -14,15 +14,12 @@ import {
   Text,
   Textarea,
 } from '@trycompai/design-system';
-import { Controller, useWatch, type Control } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
+import { Controller, useWatch, type Control } from 'react-hook-form';
 import type { IsmsAuditControl } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
 import type { FindingFormValues } from './audit-schema';
-import {
-  FINDING_STATUSES,
-  FINDING_TYPES,
-} from './internal-audit-constants';
+import { FINDING_STATUSES, FINDING_TYPES } from './internal-audit-constants';
 import {
   findingDescriptionPlaceholder,
   findingStatusLabel,
@@ -92,9 +89,7 @@ export function AuditFindingFields({
                 onValueChange={(next) => {
                   const controlId = next === NONE ? '' : next;
                   field.onChange(controlId);
-                  onRelatedControlPicked?.(
-                    controlRows.find((row) => row.id === controlId) ?? null,
-                  );
+                  onRelatedControlPicked?.(controlRows.find((row) => row.id === controlId) ?? null);
                 }}
               >
                 <SelectTrigger aria-label="Related control">

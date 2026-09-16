@@ -154,7 +154,9 @@ export class IsmsMeasurementService {
       return tx.ismsMeasurement.update({
         where: { id: measurementId },
         data: {
-          periodStart: periodKey ? new Date(`${periodKey}T00:00:00.000Z`) : undefined,
+          periodStart: periodKey
+            ? new Date(`${periodKey}T00:00:00.000Z`)
+            : undefined,
           value: dto.value === undefined ? undefined : dto.value.trim(),
           note: dto.note === undefined ? undefined : dto.note,
         },

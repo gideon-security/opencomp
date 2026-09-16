@@ -1,6 +1,6 @@
 import type { TrustCustomFrameworkItem } from '@/hooks/use-trust-portal-settings';
-import { fireEvent, render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CustomFrameworksSection } from './CustomFrameworksSection';
 

@@ -115,8 +115,7 @@ Search the company's blog, newsroom, press releases, and reputable tech news sou
   }
 
   const data = agentResponse.data as
-    | { news?: Array<Record<string, unknown>> }
-    | undefined;
+    { news?: Array<Record<string, unknown>> } | undefined;
   const rawNews = data?.news;
   if (!Array.isArray(rawNews) || rawNews.length === 0) {
     logger.info('Firecrawl news research returned no news items', {

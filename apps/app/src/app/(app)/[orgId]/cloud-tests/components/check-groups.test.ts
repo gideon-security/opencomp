@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { buildCheckGroups, deriveCheckTitle } from './check-groups';
 import type { Finding } from '../types';
+import { buildCheckGroups, deriveCheckTitle } from './check-groups';
 
 function makeFinding(overrides: Partial<Finding>): Finding {
   return {
@@ -48,9 +48,7 @@ describe('deriveCheckTitle', () => {
       title: 'IAM password policy minimum length is below 14 characters',
       resourceId: 'account-level',
     });
-    expect(deriveCheckTitle(f)).toBe(
-      'IAM password policy minimum length is below 14 characters',
-    );
+    expect(deriveCheckTitle(f)).toBe('IAM password policy minimum length is below 14 characters');
   });
 
   it('returns the title unchanged when resourceId is not present in title', () => {
@@ -65,9 +63,7 @@ describe('deriveCheckTitle', () => {
     expect(deriveCheckTitle(makeFinding({ title: null, checkKey: 'iam-no-mfa' }))).toBe(
       'iam-no-mfa',
     );
-    expect(deriveCheckTitle(makeFinding({ title: null, checkKey: null }))).toBe(
-      'Untitled check',
-    );
+    expect(deriveCheckTitle(makeFinding({ title: null, checkKey: null }))).toBe('Untitled check');
   });
 });
 

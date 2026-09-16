@@ -13,8 +13,7 @@ type MockResponse = Partial<Response> & {
   varied: string[];
 };
 
-const extensionOrigin =
-  'chrome-extension://abcdefghijklmnopabcdefghijklmnop';
+const extensionOrigin = 'chrome-extension://abcdefghijklmnopabcdefghijklmnop';
 
 function createRequest(params: {
   method: string;
@@ -205,8 +204,9 @@ describe('corsOriginMiddleware', () => {
     runCors({ request, response, next });
     await flushPromises();
 
-    const allowed = (response.headers['Access-Control-Allow-Methods'] ?? '')
-      .split(',');
+    const allowed = (
+      response.headers['Access-Control-Allow-Methods'] ?? ''
+    ).split(',');
     for (const method of ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE']) {
       expect(allowed).toContain(method);
     }

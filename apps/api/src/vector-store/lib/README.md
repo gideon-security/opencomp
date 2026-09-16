@@ -30,6 +30,7 @@ lib/
 
 2. **Add Environment Variables**
    Add to your `.env` file:
+
    ```
    DATABASE_URL=postgres://user:password@host:5432/comp?sslmode=disable
    EMBEDDINGS_BASE_URL=http://localhost:11434   # Ollama API
@@ -49,7 +50,7 @@ lib/
 import { findSimilarContent } from '@/vector-store/lib';
 
 const results = await findSimilarContent(
-  "How do we handle encryption?",
+  'How do we handle encryption?',
   organizationId,
 );
 
@@ -73,17 +74,13 @@ const results = await findSimilarContent(
 ```typescript
 import { upsertEmbedding } from '@/vector-store/lib';
 
-await upsertEmbedding(
-  'policy_pol123_chunk0',
-  'Text content to embed...',
-  {
-    organizationId: 'org_123',
-    sourceType: 'policy',
-    sourceId: 'pol_123',
-    content: 'Text content...',
-    policyName: 'Security Policy',
-  }
-);
+await upsertEmbedding('policy_pol123_chunk0', 'Text content to embed...', {
+  organizationId: 'org_123',
+  sourceType: 'policy',
+  sourceId: 'pol_123',
+  content: 'Text content...',
+  policyName: 'Security Policy',
+});
 ```
 
 ### Utilities
@@ -101,22 +98,26 @@ const text = extractTextFromPolicy(policy);
 ## Files
 
 ### Core (`core/`)
+
 - `client.ts` - Shared pgvector client (from `@gideon-defender/db`)
 - `generate-embedding.ts` - Embedding generation (self-hosted bge-m3)
 - `find-similar.ts` - Semantic search function
 - `upsert-embedding.ts` - Embedding storage
 
 ### Sync (`sync/`)
+
 - `sync-policies.ts`, `sync-context.ts`, `sync-manual-answer.ts`, `sync-knowledge-base.ts`,
   `sync-organization.ts` - Keep the vector store in sync with source documents.
 
 ### Utils (`utils/`)
+
 - `chunk-text.ts` - Text chunking utility
 - `extract-policy-text.ts` - TipTap JSON to text conversion
 
 ## Next Steps
 
 After setting up vector search, you can:
+
 1. Use `findSimilarContent()` in your auto-answer functionality
 2. Create scheduled jobs to keep embeddings up-to-date
 3. Add document hub support for additional context sources

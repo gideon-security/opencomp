@@ -19,15 +19,12 @@ export function MinimalHeader({
   currentOrganization,
   variant = 'upgrade',
 }: MinimalHeaderProps) {
-
   return (
     <header className="sticky top-0 z-10 bg-background flex items-center justify-between h-[90px] w-full px-4 md:px-18">
       <Link href="/" className="flex items-center">
         <Logo />
       </Link>
-      {(variant === 'onboarding' || variant === 'setup') && (
-        <OnboardingUserMenu user={user} />
-      )}
+      {(variant === 'onboarding' || variant === 'setup') && <OnboardingUserMenu user={user} />}
     </header>
   );
 }

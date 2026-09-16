@@ -28,13 +28,24 @@ function makeProfiles() {
 
 /** A runner whose `executeEvidenceOnSession` streams a couple of stages, then returns `result`. */
 function makeRunner(
-  result: Partial<BrowserEvidenceRunResult> & { success: boolean; status: BrowserEvidenceRunResult['status'] },
+  result: Partial<BrowserEvidenceRunResult> & {
+    success: boolean;
+    status: BrowserEvidenceRunResult['status'];
+  },
 ) {
   return {
     executeEvidenceOnSession: jest.fn(
       async (input: BrowserEvidenceSessionInput) => {
-        input.onLog?.({ timestamp: 't1', stage: 'navigation', message: 'Opening the page' });
-        input.onLog?.({ timestamp: 't2', stage: 'action', message: 'Running instruction' });
+        input.onLog?.({
+          timestamp: 't1',
+          stage: 'navigation',
+          message: 'Opening the page',
+        });
+        input.onLog?.({
+          timestamp: 't2',
+          stage: 'action',
+          message: 'Running instruction',
+        });
         return { logs: [], ...result } as BrowserEvidenceRunResult;
       },
     ),
@@ -51,7 +62,10 @@ const baseInput = {
   sessionId: 'sess_1',
 };
 
-function build(runner: ReturnType<typeof makeRunner>, profiles = makeProfiles()) {
+function build(
+  runner: ReturnType<typeof makeRunner>,
+  profiles = makeProfiles(),
+) {
   const service = new BrowserInstructionTestService(
     {} as unknown as BrowserbaseSessionService,
     profiles as unknown as BrowserAuthProfileService,
@@ -62,7 +76,11 @@ function build(runner: ReturnType<typeof makeRunner>, profiles = makeProfiles())
 
 describe('BrowserInstructionTestService', () => {
   it('runs the ad-hoc instruction through the evidence runner with synthetic ids', async () => {
-    const runner = makeRunner({ success: true, status: 'completed', screenshotUrl: 'https://s3/x.png' });
+    const runner = makeRunner({
+      success: true,
+      status: 'completed',
+      screenshotUrl: 'https://s3/x.png',
+    });
     const { service, profiles } = build(runner);
 
     await service.testInstructionOnSession(baseInput);
@@ -82,13 +100,18 @@ describe('BrowserInstructionTestService', () => {
   });
 
   it('streams accumulating steps and marks the last one done on success', async () => {
-    const runner = makeRunner({ success: true, status: 'completed', screenshotUrl: 'https://s3/x.png' });
+    const runner = makeRunner({
+      success: true,
+      status: 'completed',
+      screenshotUrl: 'https://s3/x.png',
+    });
     const { service } = build(runner);
     const frames: { l: string; state: string }[][] = [];
 
     const result = await service.testInstructionOnSession({
       ...baseInput,
-      onSteps: (steps) => frames.push(steps.map((s) => ({ l: s.l, state: s.state }))),
+      onSteps: (steps) =>
+        frames.push(steps.map((s) => ({ l: s.l, state: s.state }))),
     });
 
     // First stage active, second stage flips the first to done and appends active.
@@ -99,7 +122,10 @@ describe('BrowserInstructionTestService', () => {
     ]);
     // Final frame: last step resolved to done.
     const last = frames[frames.length - 1];
-    expect(last[last.length - 1]).toEqual({ l: 'Running instruction', state: 'done' });
+    expect(last[last.length - 1]).toEqual({
+      l: 'Running instruction',
+      state: 'done',
+    });
     expect(result.success).toBe(true);
     expect(result.screenshotUrl).toBe('https://s3/x.png');
   });

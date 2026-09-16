@@ -50,9 +50,7 @@ describe('computePendingPolicies', () => {
   });
 
   it('does not treat the member user id as a signature (signedBy stores member ids, not user ids)', () => {
-    const policies: DigestPolicy[] = [
-      { ...allPolicy, signedBy: ['usr_alice'] },
-    ];
+    const policies: DigestPolicy[] = [{ ...allPolicy, signedBy: ['usr_alice'] }];
     expect(computePendingPolicies(alice, policies).map((p) => p.id)).toEqual(['pol_all']);
   });
 
@@ -88,7 +86,9 @@ describe('filterDigestMembersByCompliance', () => {
 
   it('keeps members whose built-in role has the compliance obligation', async () => {
     const member: DigestMember = {
-      id: 'm1', role: 'employee', department: 'it',
+      id: 'm1',
+      role: 'employee',
+      department: 'it',
       user: { id: 'u1', name: 'A', email: 'a@x', role: null },
     };
     const result = await filterDigestMembersByCompliance(mockDb, [member], 'org_1');
@@ -97,7 +97,9 @@ describe('filterDigestMembersByCompliance', () => {
 
   it('drops members whose only role lacks the compliance obligation', async () => {
     const member: DigestMember = {
-      id: 'm2', role: 'auditor', department: null,
+      id: 'm2',
+      role: 'auditor',
+      department: null,
       user: { id: 'u2', name: 'B', email: 'b@x', role: null },
     };
     const result = await filterDigestMembersByCompliance(mockDb, [member], 'org_1');
@@ -106,7 +108,9 @@ describe('filterDigestMembersByCompliance', () => {
 
   it('drops platform admins even when member role has the obligation', async () => {
     const member: DigestMember = {
-      id: 'm3', role: 'employee', department: 'it',
+      id: 'm3',
+      role: 'employee',
+      department: 'it',
       user: { id: 'u3', name: 'C', email: 'c@x', role: 'admin' },
     };
     const result = await filterDigestMembersByCompliance(mockDb, [member], 'org_1');
@@ -118,18 +122,18 @@ describe('filterDigestMembersByCompliance', () => {
       { name: 'contributor', obligations: { compliance: true } },
     ]);
     const keeper: DigestMember = {
-      id: 'm4', role: 'contributor', department: 'hr',
+      id: 'm4',
+      role: 'contributor',
+      department: 'hr',
       user: { id: 'u4', name: 'D', email: 'd@x', role: null },
     };
     const dropper: DigestMember = {
-      id: 'm5', role: 'observer', department: 'hr',
+      id: 'm5',
+      role: 'observer',
+      department: 'hr',
       user: { id: 'u5', name: 'E', email: 'e@x', role: null },
     };
-    const result = await filterDigestMembersByCompliance(
-      mockDb,
-      [keeper, dropper],
-      'org_1',
-    );
+    const result = await filterDigestMembersByCompliance(mockDb, [keeper, dropper], 'org_1');
     expect(result.map((m) => m.id)).toEqual(['m4']);
   });
 
@@ -140,7 +144,9 @@ describe('filterDigestMembersByCompliance', () => {
       { name: 'employee', obligations: { compliance: false } },
     ]);
     const member: DigestMember = {
-      id: 'm6', role: 'employee', department: 'it',
+      id: 'm6',
+      role: 'employee',
+      department: 'it',
       user: { id: 'u6', name: 'F', email: 'f@x', role: null },
     };
     const result = await filterDigestMembersByCompliance(mockDb, [member], 'org_1');
@@ -153,7 +159,9 @@ describe('filterDigestMembersByCompliance', () => {
       { name: 'admin', obligations: { compliance: true } },
     ]);
     const member: DigestMember = {
-      id: 'm7', role: 'admin', department: 'it',
+      id: 'm7',
+      role: 'admin',
+      department: 'it',
       user: { id: 'u7', name: 'G', email: 'g@x', role: null },
     };
     const result = await filterDigestMembersByCompliance(mockDb, [member], 'org_1');
@@ -162,11 +170,11 @@ describe('filterDigestMembersByCompliance', () => {
 
   it('falls back to built-in default when override row has no compliance key', async () => {
     // A row with `{}` should NOT silently disable the owner default.
-    mockDb.organizationRole.findMany.mockResolvedValueOnce([
-      { name: 'owner', obligations: {} },
-    ]);
+    mockDb.organizationRole.findMany.mockResolvedValueOnce([{ name: 'owner', obligations: {} }]);
     const member: DigestMember = {
-      id: 'm8', role: 'owner', department: 'it',
+      id: 'm8',
+      role: 'owner',
+      department: 'it',
       user: { id: 'u8', name: 'H', email: 'h@x', role: null },
     };
     const result = await filterDigestMembersByCompliance(mockDb, [member], 'org_1');

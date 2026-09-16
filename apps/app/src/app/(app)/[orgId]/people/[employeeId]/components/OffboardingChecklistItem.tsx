@@ -1,7 +1,7 @@
 'use client';
 
-import type { ChecklistItem } from '@/hooks/use-offboarding-checklist';
 import { useAccessRevocations } from '@/hooks/use-access-revocations';
+import type { ChecklistItem } from '@/hooks/use-offboarding-checklist';
 import {
   Badge,
   Button,
@@ -12,12 +12,7 @@ import {
   Stack,
   Text,
 } from '@trycompai/design-system';
-import {
-  Checkmark,
-  ChevronDown,
-  DocumentDownload,
-  Upload,
-} from '@trycompai/design-system/icons';
+import { Checkmark, ChevronDown, DocumentDownload, Upload } from '@trycompai/design-system/icons';
 import { useRef, useState } from 'react';
 import { AccessRevocationList } from './AccessRevocationList';
 
@@ -58,13 +53,7 @@ function StatusCircle({ done, total }: { done: number; total: number }) {
   );
 }
 
-function ChecklistStatusCircle({
-  item,
-  memberId,
-}: {
-  item: ChecklistItem;
-  memberId: string;
-}) {
+function ChecklistStatusCircle({ item, memberId }: { item: ChecklistItem; memberId: string }) {
   if (item.isAccessRevocation) {
     return <AccessRevocationStatusCircle memberId={memberId} />;
   }
@@ -75,19 +64,10 @@ function ChecklistStatusCircle({
 function AccessRevocationStatusCircle({ memberId }: { memberId: string }) {
   const { revocations } = useAccessRevocations(memberId);
   if (!revocations) return <StatusCircle done={0} total={0} />;
-  return (
-    <StatusCircle
-      done={revocations.revokedCount}
-      total={revocations.totalVendors}
-    />
-  );
+  return <StatusCircle done={revocations.revokedCount} total={revocations.totalVendors} />;
 }
 
-function ItemBadges({
-  item,
-}: {
-  item: ChecklistItem;
-}) {
+function ItemBadges({ item }: { item: ChecklistItem }) {
   return (
     <>
       {item.isAccessRevocation && (
@@ -104,13 +84,7 @@ function ItemBadges({
   );
 }
 
-function ItemProgress({
-  item,
-  memberId,
-}: {
-  item: ChecklistItem;
-  memberId: string;
-}) {
+function ItemProgress({ item, memberId }: { item: ChecklistItem; memberId: string }) {
   if (item.isAccessRevocation) {
     return <AccessRevocationProgress memberId={memberId} />;
   }
@@ -123,10 +97,7 @@ function ItemProgress({
         {done}/{total}
       </span>
       <div className="h-1 w-[60px] overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-full bg-primary transition-all"
-          style={{ width: `${pct * 100}%` }}
-        />
+        <div className="h-full bg-primary transition-all" style={{ width: `${pct * 100}%` }} />
       </div>
     </div>
   );
@@ -136,19 +107,14 @@ function AccessRevocationProgress({ memberId }: { memberId: string }) {
   const { revocations } = useAccessRevocations(memberId);
   if (!revocations) return null;
   const pct =
-    revocations.totalVendors > 0
-      ? revocations.revokedCount / revocations.totalVendors
-      : 0;
+    revocations.totalVendors > 0 ? revocations.revokedCount / revocations.totalVendors : 0;
   return (
     <div className="flex items-center gap-2">
       <span className="min-w-[56px] text-right font-mono text-xs tabular-nums text-muted-foreground">
         {revocations.revokedCount}/{revocations.totalVendors}
       </span>
       <div className="h-1 w-[60px] overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-full bg-primary transition-all"
-          style={{ width: `${pct * 100}%` }}
-        />
+        <div className="h-full bg-primary transition-all" style={{ width: `${pct * 100}%` }} />
       </div>
     </div>
   );
@@ -220,11 +186,13 @@ export function OffboardingChecklistItem({
     }
   };
 
-  const isExpandable =
-    item.isAccessRevocation || item.evidenceRequired || canEdit;
+  const isExpandable = item.isAccessRevocation || item.evidenceRequired || canEdit;
 
   return (
-    <Collapsible open={isExpandable ? isOpen : false} onOpenChange={isExpandable ? setIsOpen : undefined}>
+    <Collapsible
+      open={isExpandable ? isOpen : false}
+      onOpenChange={isExpandable ? setIsOpen : undefined}
+    >
       <div className="overflow-hidden rounded-lg border bg-background">
         <CollapsibleTrigger className="flex w-full items-center gap-2 px-3.5 py-3 text-left transition-colors hover:bg-muted/50">
           <ChecklistStatusCircle item={item} memberId={memberId} />
@@ -234,9 +202,7 @@ export function OffboardingChecklistItem({
               <ItemBadges item={item} />
             </div>
             {item.description && (
-              <span className="truncate text-xs text-muted-foreground">
-                {item.description}
-              </span>
+              <span className="truncate text-xs text-muted-foreground">{item.description}</span>
             )}
           </div>
           {isExpandable && (
@@ -315,12 +281,7 @@ function SimpleContent({
           Undo
         </Button>
       ) : (
-        <Button
-          size="sm"
-          onClick={onComplete}
-          disabled={isProcessing}
-          loading={isProcessing}
-        >
+        <Button size="sm" onClick={onComplete} disabled={isProcessing} loading={isProcessing}>
           Mark complete
         </Button>
       )}
@@ -357,11 +318,7 @@ function EvidenceContent({
                 {file.name}
               </Text>
               <div>
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  onClick={() => onDownload(file.id)}
-                >
+                <Button variant="ghost" size="icon-xs" onClick={() => onDownload(file.id)}>
                   <DocumentDownload size={14} />
                 </Button>
               </div>

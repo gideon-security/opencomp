@@ -5,9 +5,7 @@ function readFromEnv(name: string): string | undefined {
   return value || undefined;
 }
 
-export function resolveFromAddress(
-  channel?: EmailChannel,
-): string | undefined {
+export function resolveFromAddress(channel?: EmailChannel): string | undefined {
   const system = readFromEnv('EMAIL_FROM_SYSTEM');
   const marketing = readFromEnv('EMAIL_FROM_MARKETING');
   const trustPortal = readFromEnv('EMAIL_FROM_TRUST_PORTAL');

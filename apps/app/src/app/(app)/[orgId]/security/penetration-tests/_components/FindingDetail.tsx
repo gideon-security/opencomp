@@ -1,17 +1,11 @@
 'use client';
 
-import { Button } from '@trycompai/design-system';
+import type { PentestIssue } from '@/lib/security/penetration-tests-client';
+import { Button, Tabs, TabsContent, TabsList, TabsTrigger } from '@trycompai/design-system';
 import { cn } from '@trycompai/design-system/cn';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@trycompai/design-system';
 import { ArrowLeft, Copy } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
-import type { PentestIssue } from '@/lib/security/penetration-tests-client';
 import { FindingContextSection } from './FindingContextSection';
 import { SEVERITY_BAR_VAR, SEVERITY_FG_VAR } from './severity';
 
@@ -33,13 +27,7 @@ const TABS = [
   { value: 'evidence' },
 ] as const;
 
-export function FindingDetail({
-  orgId,
-  issue,
-  runId,
-  targetUrl,
-  onBack,
-}: FindingDetailProps) {
+export function FindingDetail({ orgId, issue, runId, targetUrl, onBack }: FindingDetailProps) {
   const t = useTranslations('security');
   const accentBar = SEVERITY_BAR_VAR[issue.severity];
   const eyebrowFg = SEVERITY_FG_VAR[issue.severity];
@@ -81,12 +69,7 @@ export function FindingDetail({
         <KVStrip issue={issue} t={t} />
 
         {/* Customer context shared with the agent on future scans */}
-        <FindingContextSection
-          orgId={orgId}
-          issue={issue}
-          runId={runId}
-          targetUrl={targetUrl}
-        />
+        <FindingContextSection orgId={orgId} issue={issue} runId={runId} targetUrl={targetUrl} />
 
         {/* Tabs */}
         <Tabs defaultValue="summary">
@@ -126,9 +109,7 @@ export function FindingDetail({
 
           <TabsContent value="remediation">
             <div className="mt-4">
-              <Prose
-                text={issue.remediation ?? t('penTest.findingDetail.noRemediation')}
-              />
+              <Prose text={issue.remediation ?? t('penTest.findingDetail.noRemediation')} />
             </div>
           </TabsContent>
 
@@ -170,8 +151,7 @@ function KVStrip({
     },
     {
       label: t('penTest.findingDetail.cvss'),
-      value:
-        typeof issue.cvssScore === 'number' ? issue.cvssScore.toFixed(1) : '—',
+      value: typeof issue.cvssScore === 'number' ? issue.cvssScore.toFixed(1) : '—',
     },
     { label: t('penTest.findingDetail.cwe'), value: issue.cweId ?? '—' },
   ];
@@ -197,9 +177,7 @@ function KVStrip({
 }
 
 function Prose({ text }: { text: string }) {
-  return (
-    <div className="whitespace-pre-wrap text-sm leading-relaxed">{text}</div>
-  );
+  return <div className="whitespace-pre-wrap text-sm leading-relaxed">{text}</div>;
 }
 
 function CopyableBlock({
@@ -220,9 +198,7 @@ function CopyableBlock({
     }
   };
   if (empty) {
-    return (
-      <p className="text-sm text-muted-foreground">{content}</p>
-    );
+    return <p className="text-sm text-muted-foreground">{content}</p>;
   }
   return (
     <div className="relative">

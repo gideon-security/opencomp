@@ -2,12 +2,7 @@
 
 import type { TaskItemStatus } from '@/hooks/use-task-items';
 import { cn } from '@/lib/utils';
-import {
-  Time,
-  CheckmarkOutline,
-  RadioButtonChecked,
-  Misuse,
-} from '@trycompai/design-system/icons';
+import { CheckmarkOutline, Misuse, RadioButtonChecked, Time } from '@trycompai/design-system/icons';
 
 interface StatusCircleProps {
   status: TaskItemStatus;
@@ -102,10 +97,7 @@ export function StatusCircle({ status, className }: StatusCircleProps) {
         className={cn('flex-shrink-0', className)}
       >
         {/* Filled portion - colored half */}
-        <path
-          d={getFillPath(config.fillPercent)}
-          className={config.fillColor}
-        />
+        <path d={getFillPath(config.fillPercent)} className={config.fillColor} />
         {/* Border */}
         <circle
           cx={center}
@@ -120,7 +112,10 @@ export function StatusCircle({ status, className }: StatusCircleProps) {
   // For filled circles with icons (done, in_review, canceled)
   if (config.fillPercent === 100 && IconComponent) {
     return (
-      <div className={cn('relative flex-shrink-0', className)} style={{ width: size, height: size }}>
+      <div
+        className={cn('relative flex-shrink-0', className)}
+        style={{ width: size, height: size }}
+      >
         <svg
           width={size}
           height={size}
@@ -128,12 +123,7 @@ export function StatusCircle({ status, className }: StatusCircleProps) {
           className="absolute inset-0"
         >
           {/* Filled circle background */}
-          <circle
-            cx={center}
-            cy={center}
-            r={radius}
-            className={config.bgColor}
-          />
+          <circle cx={center} cy={center} r={radius} className={config.bgColor} />
           {/* Circle border */}
           <circle
             cx={center}
@@ -161,12 +151,7 @@ export function StatusCircle({ status, className }: StatusCircleProps) {
   // For empty circles (todo)
   return (
     <div className={cn('relative flex-shrink-0', className)} style={{ width: size, height: size }}>
-      <svg
-        width={size}
-        height={size}
-        viewBox={`0 0 ${size} ${size}`}
-        className="absolute inset-0"
-      >
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute inset-0">
         {/* Circle border */}
         <circle
           cx={center}
@@ -192,4 +177,3 @@ export function StatusCircle({ status, className }: StatusCircleProps) {
     </div>
   );
 }
-

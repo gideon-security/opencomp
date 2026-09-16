@@ -10,7 +10,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
 import type { JSONContent } from '@tiptap/react';
 import {
   AlertDialog,
@@ -88,7 +93,12 @@ interface CommentItemProps {
   entityType: string;
 }
 
-export function CommentItem({ comment, refreshComments, readOnly = false, entityType }: CommentItemProps) {
+export function CommentItem({
+  comment,
+  refreshComments,
+  readOnly = false,
+  entityType,
+}: CommentItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState<JSONContent | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);

@@ -49,9 +49,7 @@ export class OffboardingChecklistController {
     description:
       'Lists members whose offboarding checklist is still incomplete, with their outstanding items, so you can track and finish departing-employee offboarding.',
   })
-  async getPendingOffboardings(
-    @OrganizationId() organizationId: string,
-  ) {
+  async getPendingOffboardings(@OrganizationId() organizationId: string) {
     return this.offboardingChecklistService.getPendingOffboardings(
       organizationId,
     );
@@ -126,7 +124,7 @@ export class OffboardingChecklistController {
   @ApiOperation({
     summary: "Get a member's offboarding checklist",
     description:
-      'Returns the offboarding checklist for a specific member, including each item and whether it has been completed, to track that person\'s offboarding progress.',
+      "Returns the offboarding checklist for a specific member, including each item and whether it has been completed, to track that person's offboarding progress.",
   })
   async getMemberChecklist(
     @OrganizationId() organizationId: string,
@@ -153,7 +151,9 @@ export class OffboardingChecklistController {
       where: { id: organizationId },
       select: { name: true },
     });
-    const safeOrgName = (org?.name ?? 'org').replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+    const safeOrgName = (org?.name ?? 'org')
+      .replace(/[^a-zA-Z0-9]/g, '-')
+      .toLowerCase();
     const date = new Date().toISOString().split('T')[0];
     res.set({
       'Content-Type': 'application/zip',
@@ -289,7 +289,7 @@ export class OffboardingChecklistController {
   @ApiOperation({
     summary: 'Confirm all vendor access as revoked',
     description:
-      "Marks every vendor access record for a departing member as revoked in one step, recording who confirmed it, to complete access removal during offboarding.",
+      'Marks every vendor access record for a departing member as revoked in one step, recording who confirmed it, to complete access removal during offboarding.',
   })
   @ApiParam({ name: 'memberId', description: 'Member ID' })
   async revokeAllVendorAccess(
@@ -318,16 +318,29 @@ export class OffboardingChecklistController {
     @Param('memberId') memberId: string,
     @Param('vendorId') vendorId: string,
     @AuthContext() authContext: AuthContextType,
-    @Body() body: { notes?: string; fileName?: string; fileType?: string; fileData?: string },
+    @Body()
+    body: {
+      notes?: string;
+      fileName?: string;
+      fileType?: string;
+      fileData?: string;
+    },
   ) {
     const evidenceFields = [body?.fileName, body?.fileType, body?.fileData];
     const providedCount = evidenceFields.filter(Boolean).length;
     if (providedCount > 0 && providedCount < 3) {
-      throw new BadRequestException('fileName, fileType, and fileData must all be provided together');
+      throw new BadRequestException(
+        'fileName, fileType, and fileData must all be provided together',
+      );
     }
-    const evidence = body?.fileName && body?.fileType && body?.fileData
-      ? { fileName: body.fileName, fileType: body.fileType, fileData: body.fileData }
-      : undefined;
+    const evidence =
+      body?.fileName && body?.fileType && body?.fileData
+        ? {
+            fileName: body.fileName,
+            fileType: body.fileType,
+            fileData: body.fileData,
+          }
+        : undefined;
     return this.offboardingChecklistService.revokeVendorAccess({
       organizationId,
       memberId,
@@ -358,5 +371,4 @@ export class OffboardingChecklistController {
       vendorId,
     });
   }
-
 }

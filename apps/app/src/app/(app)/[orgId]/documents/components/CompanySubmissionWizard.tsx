@@ -40,8 +40,8 @@ import {
   Text,
   Textarea,
 } from '@trycompai/design-system';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -93,7 +93,9 @@ function MatrixCellControl({
     return (
       <Select value={value} onValueChange={(next) => onChange(next ?? '')}>
         <SelectTrigger id={id}>
-          <SelectValue placeholder={column.placeholder ?? t('submissionWizard.selectPlaceholder')} />
+          <SelectValue
+            placeholder={column.placeholder ?? t('submissionWizard.selectPlaceholder')}
+          />
         </SelectTrigger>
         <SelectContent>
           {column.options.map((option) => (
@@ -252,15 +254,12 @@ export function CompanySubmissionWizard({
     try {
       const fileData = await fileToBase64(file);
       const submitFormType = isMeeting ? selectedMeetingType : formType;
-      const response = await api.post<EvidenceFormFile>(
-        '/v1/evidence-forms/uploads',
-        {
-          formType: submitFormType,
-          fileName: file.name,
-          fileType: file.type || 'application/octet-stream',
-          fileData,
-        },
-      );
+      const response = await api.post<EvidenceFormFile>('/v1/evidence-forms/uploads', {
+        formType: submitFormType,
+        fileName: file.name,
+        fileType: file.type || 'application/octet-stream',
+        fileData,
+      });
 
       if (response.error || !response.data) {
         throw new Error(response.error ?? t('submissionWizard.uploadFailed'));
@@ -487,10 +486,7 @@ export function CompanySubmissionWizard({
 
     const submitFormType = isMeeting ? selectedMeetingType : formType;
 
-    const response = await api.post(
-      `/v1/evidence-forms/${submitFormType}/submissions`,
-      payload,
-    );
+    const response = await api.post(`/v1/evidence-forms/${submitFormType}/submissions`, payload);
 
     if (response.error) {
       toast.error(response.error);
@@ -512,7 +508,9 @@ export function CompanySubmissionWizard({
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               {isMeeting && (
                 <Field>
-                  <FieldLabel htmlFor="meetingType">{t('submissionWizard.meetingTypeLabel')}</FieldLabel>
+                  <FieldLabel htmlFor="meetingType">
+                    {t('submissionWizard.meetingTypeLabel')}
+                  </FieldLabel>
                   <Text size="sm" variant="muted">
                     {t('submissionWizard.meetingTypeHelper')}
                   </Text>
@@ -542,7 +540,9 @@ export function CompanySubmissionWizard({
                   control={control}
                   render={({ field: controllerField, fieldState }) => (
                     <Field>
-                      <FieldLabel htmlFor="submissionDate">{t('submissionWizard.submissionDateLabel')}</FieldLabel>
+                      <FieldLabel htmlFor="submissionDate">
+                        {t('submissionWizard.submissionDateLabel')}
+                      </FieldLabel>
                       <Text size="sm" variant="muted">
                         {t('submissionWizard.submissionDateHelper')}
                       </Text>
@@ -631,9 +631,7 @@ export function CompanySubmissionWizard({
             {useFourSteps ? (
               <>
                 {textareaFields.length === 0 && (
-                  <Text variant="muted">
-                    {t('submissionWizard.noAdditionalFieldsStep')}
-                  </Text>
+                  <Text variant="muted">{t('submissionWizard.noAdditionalFieldsStep')}</Text>
                 )}
                 {textareaFields.some((f) => f.placeholder) && (
                   <Alert
@@ -686,9 +684,7 @@ export function CompanySubmissionWizard({
                 {step2OnlyFields.length === 0 &&
                   extendedFields.length === 0 &&
                   matrixFields.length === 0 && (
-                    <Text variant="muted">
-                      {t('submissionWizard.noAdditionalFieldsForm')}
-                    </Text>
+                    <Text variant="muted">{t('submissionWizard.noAdditionalFieldsForm')}</Text>
                   )}
                 {step2OnlyFields.map((field) => (
                   <Controller
@@ -956,8 +952,7 @@ export function CompanySubmissionWizard({
                                         [],
                                       ];
                                     }
-                                    if (trimmed === '.xls')
-                                      return ['application/vnd.ms-excel', []];
+                                    if (trimmed === '.xls') return ['application/vnd.ms-excel', []];
                                     return null;
                                   })
                                   .filter((entry): entry is [string, string[]] => entry !== null),

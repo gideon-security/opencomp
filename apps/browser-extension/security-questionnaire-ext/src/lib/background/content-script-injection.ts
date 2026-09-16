@@ -38,10 +38,7 @@ async function ensureActiveTabs(): Promise<void> {
   await Promise.all(tabs.map((tab) => ensureContentScript(tab.id, tab.url)));
 }
 
-async function ensureContentScript(
-  tabId: number | undefined,
-  url?: string,
-): Promise<void> {
+async function ensureContentScript(tabId: number | undefined, url?: string): Promise<void> {
   if (typeof tabId !== 'number' || pendingTabs.has(tabId)) return;
   pendingTabs.add(tabId);
   try {

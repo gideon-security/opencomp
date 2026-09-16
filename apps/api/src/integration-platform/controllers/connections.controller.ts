@@ -787,9 +787,7 @@ export class ConnectionsController {
     const roleAssumerArn = getAwsRoleAssumerArn(partition);
     if (!roleAssumerArn) {
       const envName = getAwsRoleAssumerEnvName(partition);
-      this.logger.error(
-        `Missing ${envName} environment variable`,
-      );
+      this.logger.error(`Missing ${envName} environment variable`);
       return {
         success: false,
         message: 'Server configuration error - contact support',
@@ -876,7 +874,10 @@ export class ConnectionsController {
       return {
         success: true,
         message,
-        details: { account: identity.Account ?? parsedRoleArn.accountId, regions },
+        details: {
+          account: identity.Account ?? parsedRoleArn.accountId,
+          regions,
+        },
       };
     } catch (err) {
       const errorMessage =

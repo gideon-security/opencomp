@@ -19,8 +19,8 @@ export function useQuestionnaireHistory({ questionnaires }: UseQuestionnaireHist
 
     // Filter by source
     if (sourceFilter !== 'all') {
-      filtered = filtered.filter((questionnaire: QuestionnaireListItem) =>
-        questionnaire.source === sourceFilter,
+      filtered = filtered.filter(
+        (questionnaire: QuestionnaireListItem) => questionnaire.source === sourceFilter,
       );
     }
 
@@ -75,4 +75,3 @@ export function useQuestionnaireHistory({ questionnaires }: UseQuestionnaireHist
     handleItemsPerPageChange,
   };
 }
-

@@ -67,9 +67,8 @@ export function getBackgroundChecksRemaining({
   // logic here — otherwise the wizard paywalls users whose admin-
   // granted credits would actually be consumed by the create call.
   const walletBalance =
-    (billingStatus.creditBalances ?? []).find(
-      (entry) => entry.productKey === 'background_check',
-    )?.balance ?? 0;
+    (billingStatus.creditBalances ?? []).find((entry) => entry.productKey === 'background_check')
+      ?.balance ?? 0;
   if (!subscription) {
     // Returning `null` keeps the existing "no allowance — go pick a
     // plan" wizard path. We only have a positive allowance if there

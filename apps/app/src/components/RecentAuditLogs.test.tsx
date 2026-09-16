@@ -78,15 +78,11 @@ const makeLogs = (n: number) => Array.from({ length: n }, (_, i) => makeLog(`aud
 describe('RecentAuditLogs', () => {
   it('shows an empty state when there are no logs', () => {
     render(<RecentAuditLogs logs={[]} />);
-    expect(
-      screen.getByText('Activity will appear here when changes are made'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Activity will appear here when changes are made')).toBeInTheDocument();
   });
 
   it('does not show the empty state while a batch is loading (server mode)', () => {
-    render(
-      <RecentAuditLogs logs={[]} total={100} hasMore onLoadMore={vi.fn()} isLoadingMore />,
-    );
+    render(<RecentAuditLogs logs={[]} total={100} hasMore onLoadMore={vi.fn()} isLoadingMore />);
     expect(
       screen.queryByText('Activity will appear here when changes are made'),
     ).not.toBeInTheDocument();
@@ -113,9 +109,7 @@ describe('RecentAuditLogs', () => {
   it('keeps the next arrow enabled from the server total, not the loaded count', () => {
     // Only 15 rows loaded, but the server says 100 exist. Legacy mode over 15
     // rows would render no pager (1 page); server mode must expose more pages.
-    render(
-      <RecentAuditLogs logs={makeLogs(15)} total={100} hasMore onLoadMore={vi.fn()} />,
-    );
+    render(<RecentAuditLogs logs={makeLogs(15)} total={100} hasMore onLoadMore={vi.fn()} />);
 
     expect(screen.getByText('of 100', { exact: false })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'next' })).toBeEnabled();
@@ -123,9 +117,7 @@ describe('RecentAuditLogs', () => {
 
   it('calls onLoadMore when paging past the loaded rows', () => {
     const onLoadMore = vi.fn();
-    render(
-      <RecentAuditLogs logs={makeLogs(15)} total={100} hasMore onLoadMore={onLoadMore} />,
-    );
+    render(<RecentAuditLogs logs={makeLogs(15)} total={100} hasMore onLoadMore={onLoadMore} />);
 
     // The first (full) page is already loaded — no fetch yet.
     expect(onLoadMore).not.toHaveBeenCalled();

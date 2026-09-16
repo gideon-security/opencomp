@@ -7,7 +7,10 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
 
-type Framework = Pick<FrameworkEditorFramework, 'id' | 'name' | 'description' | 'version' | 'visible'>;
+type Framework = Pick<
+  FrameworkEditorFramework,
+  'id' | 'name' | 'description' | 'version' | 'visible'
+>;
 
 interface FrameworkSelectionProps {
   value: string[];
@@ -26,19 +29,13 @@ export function FrameworkSelection({ value, onChange, onLoadingChange }: Framewo
     isLoading,
     error,
     mutate,
-  } = useSWR<Framework[]>(
-    '/v1/frameworks/available',
-    async (endpoint: string) => {
-      const response = await api.get<{ data: Framework[] }>(endpoint);
-      if (response.error || !response.data) {
-        throw new Error(
-          response.error ||
-            t('frameworkLoadError', { status: response.status }),
-        );
-      }
-      return Array.isArray(response.data.data) ? response.data.data : [];
-    },
-  );
+  } = useSWR<Framework[]>('/v1/frameworks/available', async (endpoint: string) => {
+    const response = await api.get<{ data: Framework[] }>(endpoint);
+    if (response.error || !response.data) {
+      throw new Error(response.error || t('frameworkLoadError', { status: response.status }));
+    }
+    return Array.isArray(response.data.data) ? response.data.data : [];
+  });
 
   // Keep refs up to date
   useEffect(() => {
@@ -66,8 +63,7 @@ export function FrameworkSelection({ value, onChange, onLoadingChange }: Framewo
   }
 
   if (error) {
-    const message =
-      error instanceof Error ? error.message : t('somethingWentWrong');
+    const message = error instanceof Error ? error.message : t('somethingWentWrong');
     return (
       <div className="flex flex-col items-start gap-2">
         <p className="text-sm text-destructive">

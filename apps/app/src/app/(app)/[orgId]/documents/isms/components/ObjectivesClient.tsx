@@ -3,11 +3,11 @@
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
-import { IsmsDocumentShell } from './IsmsDocumentShell';
 import type { ApproverOption } from './IsmsApprovalSection';
-import { ObjectivesTable } from './ObjectivesTable';
+import { IsmsDocumentShell } from './IsmsDocumentShell';
 import type { ObjectiveFormValues } from './ObjectivesForm';
 import type { ObjectiveRowUpdate } from './ObjectivesRow';
+import { ObjectivesTable } from './ObjectivesTable';
 
 interface ObjectivesClientProps {
   organizationId: string;

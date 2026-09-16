@@ -112,8 +112,9 @@ describe('input / action / outputs / sign-off payloads', () => {
       decisionsText: null,
       changesText: 'kept',
     });
-    expect(
-      toReviewSignoffPayload({ signoffChairName: '', signoffChairDate: '' }),
-    ).toEqual({ signoffChairName: null, signoffChairDate: null });
+    expect(toReviewSignoffPayload({ signoffChairName: '', signoffChairDate: '' })).toEqual({
+      signoffChairName: null,
+      signoffChairDate: null,
+    });
   });
 });

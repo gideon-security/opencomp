@@ -1,5 +1,5 @@
 import { apiClient } from '@/lib/api-client';
-import type { Risk, Impact, Likelihood } from '@db';
+import type { Impact, Likelihood, Risk } from '@db';
 import { useSWRConfig } from 'swr';
 
 interface UpdateRiskPayload {
@@ -34,14 +34,8 @@ export function useRiskMutations() {
     await globalMutate(isRiskCacheKey, undefined, { revalidate: true });
   };
 
-  const updateRisk = async (
-    riskId: string,
-    data: UpdateRiskPayload,
-  ): Promise<void> => {
-    const response = await apiClient.patch<Risk>(
-      `/v1/risks/${riskId}`,
-      data,
-    );
+  const updateRisk = async (riskId: string, data: UpdateRiskPayload): Promise<void> => {
+    const response = await apiClient.patch<Risk>(`/v1/risks/${riskId}`, data);
     if (response.error) throw new Error(response.error);
     await invalidateRiskCaches();
   };

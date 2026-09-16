@@ -1,10 +1,7 @@
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, FindingSeverity, IntegrationCheck } from '../../../types';
-import {
-  remediationForReadFailure,
-  toHttpReadFailure,
-} from '../../http-read-failure';
-import { gcpListItems, portsCover, resolveGcpProjectIds, isGcpApiDisabled } from './shared';
+import { remediationForReadFailure, toHttpReadFailure } from '../../http-read-failure';
+import { gcpListItems, isGcpApiDisabled, portsCover, resolveGcpProjectIds } from './shared';
 
 interface FirewallRule {
   name: string;
@@ -78,9 +75,7 @@ export const vpcOpenFirewallsCheck: IntegrationCheck = {
             continue;
           }
 
-          const tcpTuples = allowed.filter(
-            (a) => a.IPProtocol === 'tcp' || a.IPProtocol === '6',
-          );
+          const tcpTuples = allowed.filter((a) => a.IPProtocol === 'tcp' || a.IPProtocol === '6');
           for (const { port, label, severity } of SENSITIVE_PORTS) {
             if (tcpTuples.some((t) => portsCover(t.ports, port))) {
               violations++;
@@ -119,7 +114,9 @@ export const vpcOpenFirewallsCheck: IntegrationCheck = {
         // so skip it like a zero-resource project instead of emitting a
         // false "grant permission" finding.
         if (isGcpApiDisabled(err)) {
-          ctx.log(`GCP Compute: API not enabled in project "${projectId}" — no firewall rules to evaluate; skipping`);
+          ctx.log(
+            `GCP Compute: API not enabled in project "${projectId}" — no firewall rules to evaluate; skipping`,
+          );
           continue;
         }
         const failure = toHttpReadFailure(err);

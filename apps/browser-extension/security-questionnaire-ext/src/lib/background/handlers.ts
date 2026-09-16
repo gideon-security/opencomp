@@ -1,15 +1,9 @@
 import { browser } from 'wxt/browser';
-import {
-  createEmptyQueue,
-  setQueueOrganization,
-  syncDetectedQuestions,
-} from '../queue';
 import { detectSheetQuestionsWithDebug } from '../dom/sheets-debug';
+import type { BackgroundRequest, BackgroundResponse } from '../messaging';
+import { createEmptyQueue, setQueueOrganization, syncDetectedQuestions } from '../queue';
 import { parseSheetIdentity } from '../sheet-mapping';
-import {
-  getSavedSheetMapping,
-  saveSheetMapping,
-} from '../sheet-mapping-storage';
+import { getSavedSheetMapping, saveSheetMapping } from '../sheet-mapping-storage';
 import {
   getDetectionEnabled,
   getSelectedOrganizationId,
@@ -17,22 +11,9 @@ import {
   setDetectionEnabled,
 } from '../storage';
 import type { AuthState, TabQuestionQueue } from '../types';
-import type { BackgroundRequest, BackgroundResponse } from '../messaging';
-import {
-  getExtensionAuthState,
-  openSignIn,
-  switchActiveOrganization,
-} from './auth';
-import {
-  generateLegacyAnswer,
-  handleQueueAction,
-  saveQueueAndNotify,
-} from './queue-actions';
-import {
-  getQueueHost,
-  getQueueSurface,
-  shouldResetQueueForUrl,
-} from './queue-scope';
+import { getExtensionAuthState, openSignIn, switchActiveOrganization } from './auth';
+import { generateLegacyAnswer, handleQueueAction, saveQueueAndNotify } from './queue-actions';
+import { getQueueHost, getQueueSurface, shouldResetQueueForUrl } from './queue-scope';
 import { loadTabQueue, saveTabQueue } from './queue-store';
 
 export async function handleBackgroundRequest(params: {
@@ -125,9 +106,7 @@ async function syncQuestions(params: {
   const organizationId = await getSelectedOrganizationId();
   const current = await loadTabQueue(tabId);
   const queue = syncDetectedQuestions({
-    queue: shouldResetQueueForUrl({ queue: current, url: params.request.url })
-      ? null
-      : current,
+    queue: shouldResetQueueForUrl({ queue: current, url: params.request.url }) ? null : current,
     tabId,
     url: params.request.url,
     host: params.request.host,

@@ -105,24 +105,12 @@ export function ismsDesignSystemMock() {
     AlertDialogFooter: ({ children }: { children: ReactNode }) => <div>{children}</div>,
     AlertDialogHeader: ({ children }: { children: ReactNode }) => <div>{children}</div>,
     AlertDialogTitle: ({ children }: { children: ReactNode }) => <h2>{children}</h2>,
-    AlertDialogAction: ({
-      children,
-      onClick,
-    }: {
-      children: ReactNode;
-      onClick?: () => void;
-    }) => (
+    AlertDialogAction: ({ children, onClick }: { children: ReactNode; onClick?: () => void }) => (
       <button type="button" onClick={onClick}>
         {children}
       </button>
     ),
-    AlertDialogCancel: ({
-      children,
-      onClick,
-    }: {
-      children: ReactNode;
-      onClick?: () => void;
-    }) => (
+    AlertDialogCancel: ({ children, onClick }: { children: ReactNode; onClick?: () => void }) => (
       <button type="button" onClick={onClick}>
         {children}
       </button>
@@ -157,13 +145,7 @@ export function ismsIconsMock() {
 
 export function ismsSharedMock() {
   return {
-    IsmsEmptyState: ({
-      title,
-      description,
-    }: {
-      title: ReactNode;
-      description?: ReactNode;
-    }) => (
+    IsmsEmptyState: ({ title, description }: { title: ReactNode; description?: ReactNode }) => (
       <div>
         <p>{title}</p>
         {description ? <p>{description}</p> : null}

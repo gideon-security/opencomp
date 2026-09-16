@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@gideon-defender/ui';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@gideon-defender/ui';
 import { useRouter } from 'next/navigation';
 import type { FrameworkVersionListItem } from '../hooks/useFrameworkVersions';
 
@@ -22,17 +15,13 @@ export function VersionList({ frameworkId, versions, isLoading, error }: Version
   const router = useRouter();
   if (isLoading) {
     return (
-      <div className="py-8 text-center text-sm text-muted-foreground">
-        Loading versions...
-      </div>
+      <div className="py-8 text-center text-sm text-muted-foreground">Loading versions...</div>
     );
   }
 
   if (error) {
     return (
-      <div className="py-8 text-center text-sm text-destructive">
-        Failed to load versions.
-      </div>
+      <div className="py-8 text-center text-sm text-destructive">Failed to load versions.</div>
     );
   }
 

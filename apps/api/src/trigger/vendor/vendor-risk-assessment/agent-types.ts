@@ -1,8 +1,5 @@
 export type VendorRiskAssessmentCertificationStatus =
-  | 'verified'
-  | 'expired'
-  | 'not_certified'
-  | 'unknown';
+  'verified' | 'expired' | 'not_certified' | 'unknown';
 
 export type VendorRiskAssessmentCertification = {
   type: string;
@@ -18,9 +15,7 @@ export type VendorRiskAssessmentLink = {
 };
 
 export type VendorRiskAssessmentNewsSentiment =
-  | 'positive'
-  | 'negative'
-  | 'neutral';
+  'positive' | 'negative' | 'neutral';
 
 export type VendorRiskAssessmentNewsItem = {
   date: string;
@@ -37,21 +32,13 @@ export type VendorRiskAssessmentNewsItem = {
  * `@db` / `@prisma/client`.
  */
 export type VendorRiskAssessmentLikelihood =
-  | 'very_unlikely'
-  | 'unlikely'
-  | 'possible'
-  | 'likely'
-  | 'very_likely';
+  'very_unlikely' | 'unlikely' | 'possible' | 'likely' | 'very_likely';
 
 /**
  * Impact enum string values — mirrors the Prisma `Impact` enum.
  */
 export type VendorRiskAssessmentImpact =
-  | 'insignificant'
-  | 'minor'
-  | 'moderate'
-  | 'major'
-  | 'severe';
+  'insignificant' | 'minor' | 'moderate' | 'major' | 'severe';
 
 export type VendorRiskAssessmentDataV1 = {
   kind: 'vendorRiskAssessmentV1';

@@ -1,8 +1,8 @@
 import { serverApi } from '@/lib/api-server';
+import type { UpdatePreview } from '@/types/framework-versioning';
 import { PageLayout } from '@trycompai/design-system';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
-import type { UpdatePreview } from '@/types/framework-versioning';
 import { ReviewUpdateContent } from './components/ReviewUpdateContent';
 
 interface PageProps {
@@ -18,9 +18,7 @@ export default async function ReviewUpdatePage({ params }: PageProps) {
 
   const [frameworkRes, previewRes] = await Promise.all([
     serverApi.get<any>(`/v1/frameworks/${frameworkInstanceId}`),
-    serverApi.get<{ data: UpdatePreview }>(
-      `/v1/frameworks/${frameworkInstanceId}/update-preview`,
-    ),
+    serverApi.get<{ data: UpdatePreview }>(`/v1/frameworks/${frameworkInstanceId}/update-preview`),
   ]);
 
   // No update available (latest version matches current) → bounce back.

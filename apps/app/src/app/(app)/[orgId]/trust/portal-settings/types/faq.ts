@@ -10,4 +10,3 @@ export const faqItemSchema = z.object({
 export type FaqItem = z.infer<typeof faqItemSchema>;
 
 export const faqArraySchema = z.array(faqItemSchema).max(50, 'Maximum 50 FAQs allowed');
-

@@ -2,8 +2,8 @@
 
 import { toast } from 'sonner';
 import type { IsmsDocument as IsmsDocumentData, IsmsScopeNarrative } from '../isms-types';
-import { IsmsDocumentShell } from './IsmsDocumentShell';
 import type { ApproverOption } from './IsmsApprovalSection';
+import { IsmsDocumentShell } from './IsmsDocumentShell';
 import { ScopeForm, type ScopeNarrativeValues } from './ScopeForm';
 
 interface ScopeClientProps {

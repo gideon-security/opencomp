@@ -155,9 +155,9 @@ describe('DeviceAgentAuthService', () => {
       const helperError = new Error('session creation failed');
       mockCreateDeviceAgentSession.mockRejectedValueOnce(helperError);
 
-      await expect(
-        service.exchangeCode({ code: 'code-xyz' }),
-      ).rejects.toThrow(helperError);
+      await expect(service.exchangeCode({ code: 'code-xyz' })).rejects.toThrow(
+        helperError,
+      );
     });
   });
 
@@ -378,7 +378,9 @@ describe('DeviceAgentAuthService', () => {
         id: 'dev_1',
         agentSessionId: 'ses_stale',
       });
-      (mockDb.session.delete as jest.Mock).mockResolvedValue({ id: 'ses_stale' });
+      (mockDb.session.delete as jest.Mock).mockResolvedValue({
+        id: 'ses_stale',
+      });
       (mockDb.device.update as jest.Mock).mockResolvedValue({
         id: 'dev_1',
         agentSessionId: 'ses_new',
@@ -694,7 +696,9 @@ describe('DeviceAgentAuthService', () => {
         screenLockEnabled: false,
         checkDetails: {},
       });
-      (mockDb.session.delete as jest.Mock).mockResolvedValue({ id: 'ses_stale' });
+      (mockDb.session.delete as jest.Mock).mockResolvedValue({
+        id: 'ses_stale',
+      });
       (mockDb.device.update as jest.Mock).mockResolvedValue({ id: 'dev-1' });
       mockCreateDeviceAgentSession.mockResolvedValueOnce({
         sessionId: 'ses_new',
@@ -788,7 +792,9 @@ describe('DeviceAgentAuthService', () => {
       expect(mockDb.device.update).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 'dev-1' },
-          data: expect.not.objectContaining({ agentSessionId: expect.anything() }),
+          data: expect.not.objectContaining({
+            agentSessionId: expect.anything(),
+          }),
         }),
       );
     });
@@ -832,7 +838,10 @@ describe('DeviceAgentAuthService', () => {
       (mockDb.session.delete as jest.Mock).mockResolvedValue({ id: 'ses_new' });
 
       await expect(
-        service.revokeAgentAccess({ organizationId: 'org_1', deviceId: 'dev_1' }),
+        service.revokeAgentAccess({
+          organizationId: 'org_1',
+          deviceId: 'dev_1',
+        }),
       ).resolves.toBeUndefined();
 
       expect(mockDb.device.findFirst).toHaveBeenCalledWith({
@@ -851,7 +860,10 @@ describe('DeviceAgentAuthService', () => {
       });
 
       await expect(
-        service.revokeAgentAccess({ organizationId: 'org_1', deviceId: 'dev_1' }),
+        service.revokeAgentAccess({
+          organizationId: 'org_1',
+          deviceId: 'dev_1',
+        }),
       ).resolves.toBeUndefined();
 
       expect(mockDb.session.delete).not.toHaveBeenCalled();
@@ -861,10 +873,16 @@ describe('DeviceAgentAuthService', () => {
       (mockDb.device.findFirst as jest.Mock).mockResolvedValue(null);
 
       await expect(
-        service.revokeAgentAccess({ organizationId: 'org_1', deviceId: 'dev_missing' }),
+        service.revokeAgentAccess({
+          organizationId: 'org_1',
+          deviceId: 'dev_missing',
+        }),
       ).rejects.toThrow(NotFoundException);
       await expect(
-        service.revokeAgentAccess({ organizationId: 'org_1', deviceId: 'dev_missing' }),
+        service.revokeAgentAccess({
+          organizationId: 'org_1',
+          deviceId: 'dev_missing',
+        }),
       ).rejects.toThrow('Device not found');
     });
 
@@ -879,7 +897,10 @@ describe('DeviceAgentAuthService', () => {
       (mockDb.session.delete as jest.Mock).mockRejectedValue(p2025Error);
 
       await expect(
-        service.revokeAgentAccess({ organizationId: 'org_1', deviceId: 'dev_1' }),
+        service.revokeAgentAccess({
+          organizationId: 'org_1',
+          deviceId: 'dev_1',
+        }),
       ).resolves.toBeUndefined();
     });
   });

@@ -1,7 +1,7 @@
 import { serverApi } from '@/lib/api-server';
+import type { FrameworkUpdateStatus } from '@/types/framework-versioning';
 import { redirect } from 'next/navigation';
 import { FrameworkDetailContent } from './components/FrameworkDetailContent';
-import type { FrameworkUpdateStatus } from '@/types/framework-versioning';
 
 interface PageProps {
   params: Promise<{

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { MemberWithUser } from './TeamMembers';
 import { MemberRow } from './MemberRow';
+import type { MemberWithUser } from './TeamMembers';
 
 vi.mock('next/navigation', () => ({
   useParams: () => ({ orgId: 'org_123' }),
@@ -85,7 +85,9 @@ describe('MemberRow background check status', () => {
 
   it('does not show the verified tick for incomplete checks', () => {
     renderRow({ backgroundCheckStatus: 'invited' });
-    expect(screen.queryByLabelText('Employee has completed a background check')).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Employee has completed a background check'),
+    ).not.toBeInTheDocument();
   });
 
   it('does not show background check tracking for auditor-only members', () => {

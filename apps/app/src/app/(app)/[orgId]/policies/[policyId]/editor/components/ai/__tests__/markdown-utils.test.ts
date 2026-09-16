@@ -241,11 +241,7 @@ describe('markdownToTipTapJSON', () => {
     });
 
     it('heading flushes an active list', () => {
-      const md = [
-        '- Item A',
-        '- Item B',
-        '## Next Section',
-      ].join('\n');
+      const md = ['- Item A', '- Item B', '## Next Section'].join('\n');
 
       const result = markdownToTipTapJSON(md);
 
@@ -256,11 +252,7 @@ describe('markdownToTipTapJSON', () => {
     });
 
     it('paragraph between lists flushes and creates separate lists', () => {
-      const md = [
-        '- First list item',
-        'A paragraph in between.',
-        '- Second list item',
-      ].join('\n');
+      const md = ['- First list item', 'A paragraph in between.', '- Second list item'].join('\n');
 
       const result = markdownToTipTapJSON(md);
 

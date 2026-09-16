@@ -1,8 +1,8 @@
 'use client';
 
 import { usePermissions } from '@/hooks/use-permissions';
-import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import type { Member, User } from '@db';
+import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import {
   Button,
   Drawer,

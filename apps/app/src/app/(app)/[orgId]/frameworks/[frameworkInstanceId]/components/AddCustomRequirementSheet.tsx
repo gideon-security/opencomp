@@ -1,16 +1,7 @@
 'use client';
 
-import { apiClient } from '@/lib/api-client';
 import { usePermissions } from '@/hooks/use-permissions';
-import {
-  Button,
-  Sheet,
-  SheetBody,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@trycompai/design-system';
-import { Add } from '@trycompai/design-system/icons';
+import { apiClient } from '@/lib/api-client';
 import {
   Form,
   FormControl,
@@ -22,6 +13,15 @@ import {
 import { Input } from '@gideon-defender/ui/input';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Button,
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@trycompai/design-system';
+import { Add } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -77,9 +77,7 @@ export function AddCustomRequirementSheet({
       form.reset();
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('instance.addRequirementFailed'),
-      );
+      toast.error(error instanceof Error ? error.message : t('instance.addRequirementFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -87,11 +85,7 @@ export function AddCustomRequirementSheet({
 
   return (
     <>
-      <Button
-        size="sm"
-        iconLeft={<Add size={16} />}
-        onClick={() => setIsOpen(true)}
-      >
+      <Button size="sm" iconLeft={<Add size={16} />} onClick={() => setIsOpen(true)}>
         {t('instance.addRequirementButton')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -101,10 +95,7 @@ export function AddCustomRequirementSheet({
           </SheetHeader>
           <SheetBody>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="identifier"
@@ -112,10 +103,7 @@ export function AddCustomRequirementSheet({
                     <FormItem>
                       <FormLabel>{t('instance.identifier')}</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder={t('instance.identifierPlaceholder')}
-                        />
+                        <Input {...field} placeholder={t('instance.identifierPlaceholder')} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -128,10 +116,7 @@ export function AddCustomRequirementSheet({
                     <FormItem>
                       <FormLabel>{tCommon('common.name')}</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder={t('instance.namePlaceholder')}
-                        />
+                        <Input {...field} placeholder={t('instance.namePlaceholder')} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

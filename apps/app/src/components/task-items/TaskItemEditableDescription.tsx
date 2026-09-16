@@ -1,13 +1,13 @@
-import type { JSONContent } from '@tiptap/react';
 import type { MentionUser } from '@gideon-defender/ui/editor';
+import type { JSONContent } from '@tiptap/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import type { TaskItem } from '@/hooks/use-task-items';
 import { useOrganizationMembers } from '@/hooks/use-organization-members';
-import { TaskRichDescriptionField } from './TaskRichDescriptionField';
+import type { TaskItem } from '@/hooks/use-task-items';
 import { useTaskItemAttachmentUpload } from './hooks/use-task-item-attachment-upload';
 import { TaskItemScrollableDescription } from './TaskItemScrollableDescription';
+import { TaskRichDescriptionField } from './TaskRichDescriptionField';
 
 interface TaskItemEditableDescriptionProps {
   taskItem: TaskItem;
@@ -104,8 +104,13 @@ export function TaskItemEditableDescription({
   ): Promise<
     { id: string; name: string; size?: number; downloadUrl?: string; type?: string }[]
   > => {
-    const results: { id: string; name: string; size?: number; downloadUrl?: string; type?: string }[] =
-      [];
+    const results: {
+      id: string;
+      name: string;
+      size?: number;
+      downloadUrl?: string;
+      type?: string;
+    }[] = [];
 
     for (const file of files) {
       const result = await uploadAttachment(file);
@@ -356,5 +361,3 @@ export function TaskItemEditableDescription({
     </div>
   );
 }
-
-

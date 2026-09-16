@@ -1,7 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { toast } from 'sonner';
+import {
+  setAdminOrgFeatureFlag,
+  useAdminOrgFeatureFlags,
+  type AdminOrgFeatureFlag,
+} from '@/hooks/use-admin-feature-flags';
 import {
   Badge,
   Button,
@@ -16,11 +19,8 @@ import {
 } from '@trycompai/design-system';
 import { Renew, Search } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
-import {
-  setAdminOrgFeatureFlag,
-  useAdminOrgFeatureFlags,
-  type AdminOrgFeatureFlag,
-} from '@/hooks/use-admin-feature-flags';
+import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 interface FeatureFlagsTabProps {
   orgId: string;
@@ -37,9 +37,7 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
     const q = searchTerm.trim().toLowerCase();
     if (!q) return flags;
     return flags.filter(
-      (f) =>
-        f.key.toLowerCase().includes(q) ||
-        f.description?.toLowerCase().includes(q),
+      (f) => f.key.toLowerCase().includes(q) || f.description?.toLowerCase().includes(q),
     );
   }, [flags, searchTerm]);
 
@@ -50,11 +48,9 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
     const previous = flags;
 
     // Optimistic update — don't revalidate (PostHog has write-propagation lag).
-    mutate(
-      (prev) =>
-        (prev ?? []).map((f) => (f.key === flag.key ? { ...f, enabled } : f)),
-      { revalidate: false },
-    );
+    mutate((prev) => (prev ?? []).map((f) => (f.key === flag.key ? { ...f, enabled } : f)), {
+      revalidate: false,
+    });
 
     try {
       await setAdminOrgFeatureFlag({ orgId, flagKey: flag.key, enabled });
@@ -67,9 +63,7 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
       // behind groupIdentify and temporarily return the old value.
     } catch (err) {
       toast.error(
-        err instanceof Error
-          ? err.message
-          : t('organizations.featureFlagsTab.toastUpdateFailed'),
+        err instanceof Error ? err.message : t('organizations.featureFlagsTab.toastUpdateFailed'),
       );
       // Roll back to the snapshot.
       mutate(previous, { revalidate: false });
@@ -100,9 +94,7 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
       <Stack gap="xs">
         <Text weight="semibold">{t('organizations.featureFlagsTab.loadError')}</Text>
         <Text variant="muted">
-          {error instanceof Error
-            ? error.message
-            : t('organizations.featureFlagsTab.unknownError')}
+          {error instanceof Error ? error.message : t('organizations.featureFlagsTab.unknownError')}
         </Text>
       </Stack>
     );
@@ -113,10 +105,8 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
       <Stack gap="xs">
         <Text weight="semibold">{t('organizations.featureFlagsTab.emptyTitle')}</Text>
         <Text variant="muted">
-          {t('organizations.featureFlagsTab.emptyDescPrefix')}{' '}
-          <code>POSTHOG_PERSONAL_API_KEY</code>{' '}
-          {t('organizations.featureFlagsTab.emptyDescMiddle')}{' '}
-          <code>POSTHOG_PROJECT_ID</code>{' '}
+          {t('organizations.featureFlagsTab.emptyDescPrefix')} <code>POSTHOG_PERSONAL_API_KEY</code>{' '}
+          {t('organizations.featureFlagsTab.emptyDescMiddle')} <code>POSTHOG_PROJECT_ID</code>{' '}
           {t('organizations.featureFlagsTab.emptyDescSuffix')}
         </Text>
       </Stack>
@@ -138,12 +128,7 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
             />
           </InputGroup>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleRefresh}
-          loading={refreshing}
-        >
+        <Button variant="outline" size="sm" onClick={handleRefresh} loading={refreshing}>
           <Renew />
           {t('organizations.featureFlagsTab.refresh')}
         </Button>
@@ -159,9 +144,7 @@ export function FeatureFlagsTab({ orgId }: FeatureFlagsTabProps) {
               label={flag.key}
               description={
                 flag.description ||
-                (flag.active
-                  ? undefined
-                  : t('organizations.featureFlagsTab.inactiveInPosthog'))
+                (flag.active ? undefined : t('organizations.featureFlagsTab.inactiveInPosthog'))
               }
             >
               <div className="flex items-center gap-2">

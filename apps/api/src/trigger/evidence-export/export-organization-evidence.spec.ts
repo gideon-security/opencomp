@@ -13,18 +13,20 @@ jest.mock('@gideon-defender/trigger-local', () => ({
 const mockUploadDone = jest.fn();
 const mockUploadAbort = jest.fn().mockResolvedValue(undefined);
 jest.mock('@aws-sdk/lib-storage', () => ({
-  Upload: jest.fn().mockImplementation((opts: { params?: { Body?: unknown } }) => {
-    // A real Upload consumes the Body stream and surfaces its errors via done().
-    // Mimic that so a destroyed PassThrough doesn't become an unhandled error.
-    const body = opts?.params?.Body as
-      | { on?: (e: string, cb: () => void) => void; resume?: () => void }
-      | undefined;
-    if (body && typeof body.on === 'function') {
-      body.on('error', () => {});
-      if (typeof body.resume === 'function') body.resume();
-    }
-    return { done: mockUploadDone, abort: mockUploadAbort };
-  }),
+  Upload: jest
+    .fn()
+    .mockImplementation((opts: { params?: { Body?: unknown } }) => {
+      // A real Upload consumes the Body stream and surfaces its errors via done().
+      // Mimic that so a destroyed PassThrough doesn't become an unhandled error.
+      const body = opts?.params?.Body as
+        | { on?: (e: string, cb: () => void) => void; resume?: () => void }
+        | undefined;
+      if (body && typeof body.on === 'function') {
+        body.on('error', () => {});
+        if (typeof body.resume === 'function') body.resume();
+      }
+      return { done: mockUploadDone, abort: mockUploadAbort };
+    }),
 }));
 
 jest.mock('@aws-sdk/client-s3', () => ({

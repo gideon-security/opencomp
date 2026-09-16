@@ -78,7 +78,11 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({ content }: { co
   );
 
   return (
-    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, [rehypeSanitize, defaultSchema]]} components={components}>
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeRaw, [rehypeSanitize, defaultSchema]]}
+      components={components}
+    >
       {content}
     </ReactMarkdown>
   );

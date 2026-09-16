@@ -46,7 +46,7 @@ class SaveVariablesDto {
 
   @ApiProperty({
     description:
-      "Map of variable id → value to persist for this connection. Values can be string, number, boolean, or string[] (the shape is provider-defined — call get-connection-variables to see what each connection accepts). Pass only the variables you want to set; existing ones not included are left untouched.",
+      'Map of variable id → value to persist for this connection. Values can be string, number, boolean, or string[] (the shape is provider-defined — call get-connection-variables to see what each connection accepts). Pass only the variables you want to set; existing ones not included are left untouched.',
     type: 'object',
     additionalProperties: true,
     example: {

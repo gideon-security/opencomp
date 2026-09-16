@@ -18,7 +18,13 @@ const KEY_LEN = 32;
 
 /** Current scheme: PBKDF2-SHA256, stored as `pbkdf2$<iterations>$<hex>`. */
 export function hashApiKeyCurrent(apiKey: string, salt: string): string {
-  const derived = pbkdf2Sync(apiKey, salt, PBKDF2_ITERATIONS, KEY_LEN, 'sha256');
+  const derived = pbkdf2Sync(
+    apiKey,
+    salt,
+    PBKDF2_ITERATIONS,
+    KEY_LEN,
+    'sha256',
+  );
   return `${CURRENT_PREFIX}$${PBKDF2_ITERATIONS}$${derived.toString('hex')}`;
 }
 
@@ -46,7 +52,13 @@ export function matchesStoredKey(
     if (!Number.isInteger(iterations) || iterations <= 0 || !digest) {
       return false;
     }
-    const derived = pbkdf2Sync(presentedKey, salt ?? '', iterations, KEY_LEN, 'sha256');
+    const derived = pbkdf2Sync(
+      presentedKey,
+      salt ?? '',
+      iterations,
+      KEY_LEN,
+      'sha256',
+    );
     return safeEqualHex(derived.toString('hex'), digest);
   } catch {
     return false;

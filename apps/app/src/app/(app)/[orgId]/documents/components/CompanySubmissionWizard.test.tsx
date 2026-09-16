@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { fireEvent, render, screen } from '@testing-library/react';
 import type { ChangeEventHandler, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -83,9 +83,7 @@ vi.mock('@trycompai/design-system', () => ({
     value?: string;
     onChange?: ChangeEventHandler<HTMLInputElement>;
     placeholder?: string;
-  }) => (
-    <input id={id} type={type} value={value} onChange={onChange} placeholder={placeholder} />
-  ),
+  }) => <input id={id} type={type} value={value} onChange={onChange} placeholder={placeholder} />,
   Section: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
   Select: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
   SelectContent: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
@@ -126,10 +124,7 @@ const DOCS_URL = `/${ORG_ID}/documents/tabletop-exercise`;
 
 function renderWizard() {
   return render(
-    <CompanySubmissionWizard
-      organizationId={ORG_ID}
-      formType={'tabletop-exercise' as never}
-    />,
+    <CompanySubmissionWizard organizationId={ORG_ID} formType={'tabletop-exercise' as never} />,
   );
 }
 

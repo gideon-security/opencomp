@@ -76,8 +76,10 @@ export const TaskStatusChangedEmail = ({
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
               <strong>{changedByName}</strong> changed the status of task{' '}
-              <strong>"{taskTitle}"</strong> from <strong>{oldStatusText}</strong> to{' '}
-              <strong>{newStatusText}</strong> in <strong>{organizationName}</strong>.
+              <strong>"{taskTitle}"</strong> from{' '}
+              <strong>{oldStatusText}</strong> to{' '}
+              <strong>{newStatusText}</strong> in{' '}
+              <strong>{organizationName}</strong>.
             </Text>
 
             <Section className="mt-[32px] mb-[32px] text-center">
@@ -96,7 +98,10 @@ export const TaskStatusChangedEmail = ({
               </a>
             </Text>
 
-            <UnsubscribeFooter email={toEmail} message="Don't want to receive task assignment notifications?" />
+            <UnsubscribeFooter
+              email={toEmail}
+              message="Don't want to receive task assignment notifications?"
+            />
 
             <br />
 

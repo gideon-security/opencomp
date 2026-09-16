@@ -8,22 +8,13 @@ interface PageLocation {
 }
 
 export function getPageSurface(location: PageLocation): QuestionnaireSurface {
-  if (
-    location.hostname === 'docs.google.com' &&
-    location.pathname.startsWith('/document/')
-  ) {
+  if (location.hostname === 'docs.google.com' && location.pathname.startsWith('/document/')) {
     return 'docs';
   }
-  if (
-    location.hostname === 'docs.google.com' &&
-    location.pathname.startsWith('/spreadsheets/')
-  ) {
+  if (location.hostname === 'docs.google.com' && location.pathname.startsWith('/spreadsheets/')) {
     return 'sheets';
   }
-  if (
-    location.hostname === 'docs.google.com' &&
-    location.pathname.startsWith('/forms/')
-  ) {
+  if (location.hostname === 'docs.google.com' && location.pathname.startsWith('/forms/')) {
     return 'forms';
   }
   return 'generic';
@@ -60,7 +51,5 @@ function isAssistantHost(hostname: string): boolean {
     'poe.com',
   ];
 
-  return assistantHosts.some(
-    (host) => hostname === host || hostname.endsWith(`.${host}`),
-  );
+  return assistantHosts.some((host) => hostname === host || hostname.endsWith(`.${host}`));
 }

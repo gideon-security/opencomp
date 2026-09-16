@@ -37,7 +37,7 @@ class CreateConnectionDto {
 
 ### 2. Every DTO property carries BOTH decorator stacks
 
-The global `ValidationPipe` runs with `whitelist: true, forbidNonWhitelisted: true`. A class with `@ApiProperty` but no `class-validator` decorator has **zero "known" properties** — the pipe rejects every field with *"property X should not exist"*. The reverse (class-validator without `@ApiProperty`) generates an **empty MCP schema** and agents blind-guess the body.
+The global `ValidationPipe` runs with `whitelist: true, forbidNonWhitelisted: true`. A class with `@ApiProperty` but no `class-validator` decorator has **zero "known" properties** — the pipe rejects every field with _"property X should not exist"_. The reverse (class-validator without `@ApiProperty`) generates an **empty MCP schema** and agents blind-guess the body.
 
 ```ts
 class FooDto {
@@ -97,6 +97,7 @@ Tool name budget: **52 chars max**, kebab-case.
 ### 6. Agent-callable endpoints must NOT be behind `SessionOnlyGuard`
 
 If your endpoint uses `@UseGuards(HybridAuthGuard, SessionOnlyGuard, PermissionGuard)`, API-key callers get a 403 — meaning the MCP tool exists but fails for every customer call. Either:
+
 - Remove `SessionOnlyGuard` if the endpoint should be agent-callable, OR
 - Disable the MCP tool entirely in `apps/mcp-server/.speakeasy/mcp-uploads-overlay.yaml` with `x-speakeasy-mcp: { disabled: true }`.
 
@@ -115,7 +116,7 @@ async triggerAutoAnswer(@Param('id') id: string): Promise<TriggerResponseDto> {
 // Agent polls find-by-id until counts converge
 ```
 
-The `@ApiOperation.description` should tell the agent the poll target (e.g. *"Poll GET /v1/X/:id until answeredQuestions equals totalQuestions"*).
+The `@ApiOperation.description` should tell the agent the poll target (e.g. _"Poll GET /v1/X/:id until answeredQuestions equals totalQuestions"_).
 
 ### 8. File uploads from agents: presigned URL + s3Key — never inline base64
 
@@ -125,17 +126,19 @@ Base64-through-LLM is catastrophically slow and overflows the context window. Fo
 // Endpoint accepts both for the web UI (fileData) and agents (s3Key):
 class UploadAndParseDto {
   @ApiPropertyOptional({ description: 'Base64 — web UI only. AI clients use s3Key.' })
-  @IsOptional() @IsString()
+  @IsOptional()
+  @IsString()
   fileData?: string;
 
   @ApiPropertyOptional({ description: 'Key returned by /v1/uploads/presign.' })
-  @IsOptional() @IsString()
+  @IsOptional()
+  @IsString()
   s3Key?: string;
 }
 
 // Service resolves whichever was provided:
-const bytes = dto.fileData
-  ?? (dto.s3Key ? await uploadsService.readUploadAsBase64(orgId, dto.s3Key) : null);
+const bytes =
+  dto.fileData ?? (dto.s3Key ? await uploadsService.readUploadAsBase64(orgId, dto.s3Key) : null);
 ```
 
 The MCP overlay then strips `fileData` from the MCP tool input so agents are forced into the presigned path. Pattern is in `apps/mcp-server/.speakeasy/mcp-uploads-overlay.yaml`.
@@ -159,6 +162,7 @@ SSE streams (`@ApiProduces('text/event-stream')`) and binary file responses (`@R
 ### 11. Every endpoint MUST have a meaningful summary + description — it powers MCP discovery
 
 `@ApiOperation({ summary, description })` is **not optional**. `openapi-docs.spec.ts` (via `collectPublicOpenApiIssues` in `apps/api/src/openapi/public-docs-quality.ts`) **fails CI** if any non-excluded operation has:
+
 - an empty `summary` → `missingSummaries`
 - a missing `description` or SEO metadata → `missingMetadata`
 - SEO metadata outside 80–160 chars, or a title > 60 chars → `invalidSeo`
@@ -174,7 +178,7 @@ This matters more now that the hosted MCP (Gram) uses **dynamic toolsets**: with
 })
 ```
 
-Write the description for the agent deciding *whether to call this tool*: state what it does and when to use it. (Keep it ≤ 240 chars — see Rule 4.)
+Write the description for the agent deciding _whether to call this tool_: state what it does and when to use it. (Keep it ≤ 240 chars — see Rule 4.)
 
 ## Workflow checklist when adding a body endpoint
 
@@ -196,16 +200,16 @@ Write the description for the agent deciding *whether to call this tool*: state 
 
 Every bug below was a real customer-visible MCP failure caught during the May 2026 audit:
 
-| Bug | Root cause | Rule that prevents it |
-|---|---|---|
-| PDF upload crashed with `Cannot read properties of undefined (reading 'replace')` | Inline `@Body()` type → empty schema → agent guessed wrong body | Rule 1 + 3 |
-| Auto-answer "schema is just an empty object" | DTO had class-validator only, no `@ApiProperty` | Rule 2 |
-| `create-connection` "Provider undefined not found" | DTO was an `interface`, not a class | Rule 1 |
-| `create-connection` "property X should not exist" 400 | Class converted, but I forgot class-validator decorators | Rule 2 |
-| `create-upload-url` description cut at "...then." | Description was 330 chars; `seo-text.ts` truncates at 240 | Rule 4 |
-| Agent uploads stuck for 15+ min on base64 encoding | Tool accepted `fileData` as the only file input | Rule 8 |
-| Agent calls SSE auto-answer and hangs | Tool was generated from `@ApiProduces('text/event-stream')` | Rule 10 |
-| Agent tries to start OAuth and gets 403 | Endpoint was behind `SessionOnlyGuard` but generated as MCP tool | Rule 6 |
-| Agent can't find a tool that exists (dynamic toolsets) | Endpoint had a missing/weak description → invisible to semantic search | Rule 11 |
+| Bug                                                                               | Root cause                                                             | Rule that prevents it |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------- |
+| PDF upload crashed with `Cannot read properties of undefined (reading 'replace')` | Inline `@Body()` type → empty schema → agent guessed wrong body        | Rule 1 + 3            |
+| Auto-answer "schema is just an empty object"                                      | DTO had class-validator only, no `@ApiProperty`                        | Rule 2                |
+| `create-connection` "Provider undefined not found"                                | DTO was an `interface`, not a class                                    | Rule 1                |
+| `create-connection` "property X should not exist" 400                             | Class converted, but I forgot class-validator decorators               | Rule 2                |
+| `create-upload-url` description cut at "...then."                                 | Description was 330 chars; `seo-text.ts` truncates at 240              | Rule 4                |
+| Agent uploads stuck for 15+ min on base64 encoding                                | Tool accepted `fileData` as the only file input                        | Rule 8                |
+| Agent calls SSE auto-answer and hangs                                             | Tool was generated from `@ApiProduces('text/event-stream')`            | Rule 10               |
+| Agent tries to start OAuth and gets 403                                           | Endpoint was behind `SessionOnlyGuard` but generated as MCP tool       | Rule 6                |
+| Agent can't find a tool that exists (dynamic toolsets)                            | Endpoint had a missing/weak description → invisible to semantic search | Rule 11               |
 
 Follow the 10 rules and you avoid every one of these.

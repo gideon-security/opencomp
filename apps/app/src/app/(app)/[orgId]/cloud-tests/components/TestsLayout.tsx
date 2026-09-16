@@ -3,14 +3,14 @@
 import { useTranslations } from 'next-intl';
 
 import { ConnectIntegrationDialog } from '@/components/integrations/ConnectIntegrationDialog';
+import { ManageIntegrationDialog } from '@/components/integrations/ManageIntegrationDialog';
 import { useApi } from '@/hooks/use-api';
 import { useIntegrationMutations } from '@/hooks/use-integration-platform';
 import { usePermissions } from '@/hooks/use-permissions';
-import { ManageIntegrationDialog } from '@/components/integrations/ManageIntegrationDialog';
 import { CLOUD_RECONNECT_CUTOFF_LABEL, requiresCloudReconnect } from '@/lib/cloud-reconnect-policy';
 import { Button, PageHeader, PageHeaderDescription, PageLayout } from '@trycompai/design-system';
 import { Add, Settings } from '@trycompai/design-system/icons';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { mutate as globalMutate } from 'swr';
@@ -66,16 +66,19 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
   const [activeProviderTab, setActiveProviderTabState] = useState<string | null>(
     searchParams.get('provider'),
   );
-  const setActiveProviderTab = useCallback((tab: string | null) => {
-    setActiveProviderTabState(tab);
-    const params = new URLSearchParams(searchParams.toString());
-    if (tab) {
-      params.set('provider', tab);
-    } else {
-      params.delete('provider');
-    }
-    router.replace(`?${params.toString()}`, { scroll: false });
-  }, [searchParams, router]);
+  const setActiveProviderTab = useCallback(
+    (tab: string | null) => {
+      setActiveProviderTabState(tab);
+      const params = new URLSearchParams(searchParams.toString());
+      if (tab) {
+        params.set('provider', tab);
+      } else {
+        params.delete('provider');
+      }
+      router.replace(`?${params.toString()}`, { scroll: false });
+    },
+    [searchParams, router],
+  );
   const [activeConnectionTabs, setActiveConnectionTabs] = useState<Record<string, string>>({});
   const [addConnectionProvider, setAddConnectionProvider] = useState<string | null>(null);
   const [configureDialogOpen, setConfigureDialogOpen] = useState(false);
@@ -98,7 +101,10 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
   const providersResponse = api.useSWR<{ data: Provider[]; count: number }>(
     '/v1/cloud-security/providers',
     {
-      fallbackData: { data: { data: initialProviders, count: initialProviders.length }, status: 200 },
+      fallbackData: {
+        data: { data: initialProviders, count: initialProviders.length },
+        status: 200,
+      },
       revalidateOnFocus: true,
     },
   );
@@ -169,7 +175,11 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
 
     setIsScanning(true);
     const startTime = Date.now();
-    toast.message(t('cloudTests_startingSecurityScan', { name: targetProvider.displayName || targetProvider.name }));
+    toast.message(
+      t('cloudTests_startingSecurityScan', {
+        name: targetProvider.displayName || targetProvider.name,
+      }),
+    );
 
     try {
       if (targetProvider.isLegacy) {
@@ -184,15 +194,27 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
 
         if (!result.success) {
           console.error('Legacy scan error:', result.errors);
-          toast.error(t('cloudTests_scanFailedWithErrors', { errors: result.errors?.join(', ') || '' }));
+          toast.error(
+            t('cloudTests_scanFailedWithErrors', { errors: result.errors?.join(', ') || '' }),
+          );
           return null;
         }
       } else {
         // Use dedicated cloud security endpoint
         const response = await api.post(`/v1/cloud-security/scan/${targetProvider.id}`, {});
         if (response.error) {
-          console.error(`Error scanning ${targetProvider.name}:`, response.error, 'Status:', response.status);
-          toast.error(t('cloudTests_scanProviderFailed', { name: targetProvider.name, error: String(response.error ?? '') }));
+          console.error(
+            `Error scanning ${targetProvider.name}:`,
+            response.error,
+            'Status:',
+            response.status,
+          );
+          toast.error(
+            t('cloudTests_scanProviderFailed', {
+              name: targetProvider.name,
+              error: String(response.error ?? ''),
+            }),
+          );
           return null;
         }
       }
@@ -205,7 +227,11 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
       return 'completed';
     } catch (error) {
       console.error('Scan error:', error);
-      toast.error(error instanceof Error ? `${t('cloudTests_scanCompleteFailed')} ${error.message}` : t('cloudTests_scanCompleteFailedRetry'));
+      toast.error(
+        error instanceof Error
+          ? `${t('cloudTests_scanCompleteFailed')} ${error.message}`
+          : t('cloudTests_scanCompleteFailedRetry'),
+      );
       return null;
     } finally {
       setIsScanning(false);
@@ -324,10 +350,12 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
       {reconnectRequiredCount > 0 && (
         <div className="mb-4 rounded-lg border border-warning/30 bg-warning/10 px-4 py-3">
           <p className="text-sm font-medium text-foreground">
-            Reconnect required for {reconnectRequiredCount} cloud connection{reconnectRequiredCount === 1 ? '' : 's'}
+            Reconnect required for {reconnectRequiredCount} cloud connection
+            {reconnectRequiredCount === 1 ? '' : 's'}
           </p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Connections created before {CLOUD_RECONNECT_CUTOFF_LABEL} should be re-added to keep scans and remediation fully reliable.
+            Connections created before {CLOUD_RECONNECT_CUTOFF_LABEL} should be re-added to keep
+            scans and remediation fully reliable.
           </p>
         </div>
       )}
@@ -387,16 +415,15 @@ export function TestsLayout({ initialFindings, initialProviders, orgId }: TestsL
       <CloudSettingsModal
         open={showSettings}
         onOpenChange={setShowSettings}
-        connectedProviders={connectedProviders
-          .map((p) => ({
-            id: p.integrationId,
-            connectionId: p.id,
-            name: p.displayName || p.name,
-            status: p.status,
-            accountId: p.accountId,
-            regions: p.regions,
-            isLegacy: p.isLegacy,
-          }))}
+        connectedProviders={connectedProviders.map((p) => ({
+          id: p.integrationId,
+          connectionId: p.id,
+          name: p.displayName || p.name,
+          status: p.status,
+          accountId: p.accountId,
+          regions: p.regions,
+          isLegacy: p.isLegacy,
+        }))}
         onUpdate={handleProvidersUpdate}
       />
 

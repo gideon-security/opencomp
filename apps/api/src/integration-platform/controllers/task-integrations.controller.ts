@@ -477,7 +477,10 @@ export class TaskIntegrationsController {
         `Held ${heldCount} check(s) as inconclusive (pending) for task ${taskId} (manual run) — not failed, not done`,
       );
     }
-    const effectiveFailures = countEffectiveFailures(statusFailures, exceptions);
+    const effectiveFailures = countEffectiveFailures(
+      statusFailures,
+      exceptions,
+    );
     const newStatus = decideTaskStatus(
       effectiveFailures,
       totalPassing,

@@ -4,14 +4,6 @@ import { useFrameworks } from '@/hooks/use-frameworks';
 import { usePermissions } from '@/hooks/use-permissions';
 import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import {
-  Button,
-  Sheet,
-  SheetBody,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@trycompai/design-system';
-import {
   Form,
   FormControl,
   FormField,
@@ -22,6 +14,14 @@ import {
 import { Input } from '@gideon-defender/ui/input';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Button,
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -86,9 +86,7 @@ export function EditCustomFrameworkSheet({
       onUpdated?.();
       onClose();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('instance.updateFrameworkFailed'),
-      );
+      toast.error(error instanceof Error ? error.message : t('instance.updateFrameworkFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -102,10 +100,7 @@ export function EditCustomFrameworkSheet({
         </SheetHeader>
         <SheetBody>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -113,10 +108,7 @@ export function EditCustomFrameworkSheet({
                   <FormItem>
                     <FormLabel>{tCommon('common.name')}</FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        placeholder={t('instance.frameworkNamePlaceholder')}
-                      />
+                      <Input {...field} placeholder={t('instance.frameworkNamePlaceholder')} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

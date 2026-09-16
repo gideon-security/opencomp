@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -77,7 +77,9 @@ describe('ContextTab', () => {
     render(<ContextTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'organizations.contextTab.addContext' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'organizations.contextTab.addContext' }),
+      ).toBeInTheDocument();
     });
   });
 
@@ -96,9 +98,7 @@ describe('ContextTab', () => {
     render(<ContextTab orgId="org_test" />);
 
     await waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_test/context',
-      );
+      expect(mockGet).toHaveBeenCalledWith('/v1/admin/organizations/org_test/context');
     });
   });
 });

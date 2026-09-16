@@ -385,7 +385,11 @@ export class BrowserbaseController {
     @Param('draftId') draftId: string,
     @Body() dto: UpdateBrowserAutomationDraftDto,
   ) {
-    return this.browserbaseService.updateAutomationDraft(draftId, dto, organizationId);
+    return this.browserbaseService.updateAutomationDraft(
+      draftId,
+      dto,
+      organizationId,
+    );
   }
 
   @Delete('automation-drafts/:draftId')
@@ -396,7 +400,10 @@ export class BrowserbaseController {
     @OrganizationId() organizationId: string,
     @Param('draftId') draftId: string,
   ): Promise<{ success: boolean }> {
-    await this.browserbaseService.deleteAutomationDraft(draftId, organizationId);
+    await this.browserbaseService.deleteAutomationDraft(
+      draftId,
+      organizationId,
+    );
     return { success: true };
   }
 

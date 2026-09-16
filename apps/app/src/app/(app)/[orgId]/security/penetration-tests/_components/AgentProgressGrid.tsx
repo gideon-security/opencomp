@@ -16,11 +16,7 @@ interface AgentProgressGridProps {
  * cell pulses. Pending cells are muted. Matches the "hero" band from the
  * design handoff.
  */
-export function AgentProgressGrid({
-  total,
-  done,
-  className,
-}: AgentProgressGridProps) {
+export function AgentProgressGrid({ total, done, className }: AgentProgressGridProps) {
   const count = Math.max(total, 1);
   // Clamp `done` to the grid size — if Maced ever reports done > total
   // (rare, but possible when their progress payload is briefly out of
@@ -32,19 +28,14 @@ export function AgentProgressGrid({
 
   return (
     <div
-      className={cn(
-        'grid h-2 gap-[2px] rounded-[var(--radius-sm)] overflow-hidden',
-        className,
-      )}
+      className={cn('grid h-2 gap-[2px] rounded-[var(--radius-sm)] overflow-hidden', className)}
       style={{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}
       aria-label={`Agents: ${doneClamped} of ${count} complete`}
     >
       {Array.from({ length: doneClamped }).map((_, i) => (
         <span key={`done-${i}`} className="bg-primary" />
       ))}
-      {running > 0 ? (
-        <span key="running" className="pt-agent-cell--running" />
-      ) : null}
+      {running > 0 ? <span key="running" className="pt-agent-cell--running" /> : null}
       {Array.from({ length: pending }).map((_, i) => (
         <span key={`pending-${i}`} className="bg-muted" />
       ))}

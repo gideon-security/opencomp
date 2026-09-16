@@ -1,5 +1,6 @@
 'use client';
 
+import { formatDateNumeric } from '@gideon-defender/utils/format';
 import {
   Button,
   Empty,
@@ -17,7 +18,6 @@ import {
   Text,
 } from '@trycompai/design-system';
 import Link from 'next/link';
-import { formatDateNumeric } from '@gideon-defender/utils/format';
 
 type SubmissionRow = {
   id: string;

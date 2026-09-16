@@ -60,9 +60,7 @@ export function useDeviceSync({
 
   // Fetch current device sync provider
   const { data: providerData, mutate: mutateProvider } = useSWR<{ provider: string | null }>(
-    enabled
-      ? `/v1/integrations/sync/device-sync-provider?organizationId=${organizationId}`
-      : null,
+    enabled ? `/v1/integrations/sync/device-sync-provider?organizationId=${organizationId}` : null,
     async (url: string) => {
       const res = await apiClient.get<{ provider: string | null }>(url);
       if (res.error) throw new Error(res.error);
@@ -71,7 +69,11 @@ export function useDeviceSync({
   );
 
   // Fetch available device sync providers
-  const { data: availableData, isLoading, mutate: mutateAvailable } = useSWR<{ providers: DeviceSyncProviderInfo[] }>(
+  const {
+    data: availableData,
+    isLoading,
+    mutate: mutateAvailable,
+  } = useSWR<{ providers: DeviceSyncProviderInfo[] }>(
     enabled
       ? `/v1/integrations/sync/available-providers?organizationId=${organizationId}&syncType=device`
       : null,
@@ -83,9 +85,7 @@ export function useDeviceSync({
   );
 
   const selectedProvider = providerData?.provider ?? null;
-  const availableProviders = Array.isArray(availableData?.providers)
-    ? availableData.providers
-    : [];
+  const availableProviders = Array.isArray(availableData?.providers) ? availableData.providers : [];
 
   const getProviderName = (provider: string): string => {
     return availableProviders.find((p) => p.slug === provider)?.name ?? provider;
@@ -152,8 +152,7 @@ export function useDeviceSync({
         // The sync updated connection.lastSyncAt server-side; revalidate so the
         // selector's "Last synced" reflects it instead of staying stale.
         void mutateAvailable();
-        const { totalFound, imported, updated, removed, skipped, errors } =
-          response.data;
+        const { totalFound, imported, updated, removed, skipped, errors } = response.data;
         const parts: string[] = [];
         if (imported > 0) parts.push(`${imported} new`);
         if (updated > 0) parts.push(`${updated} updated`);

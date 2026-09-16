@@ -1,7 +1,4 @@
-import {
-  columnIndexToName,
-  columnNameToIndex,
-} from '../sheet-columns';
+import { columnIndexToName, columnNameToIndex } from '../sheet-columns';
 import type { DetectedQuestion, SheetMapping } from '../types';
 import {
   cellText,
@@ -32,9 +29,7 @@ export function tableToQuestions(params: {
   }
 
   const rows = readRows(params.table.rows);
-  const labels = readColumns(params.table.cols).map((column) =>
-    cellText({ v: column.label }),
-  );
+  const labels = readColumns(params.table.cols).map((column) => cellText({ v: column.label }));
   const labelHeader = labels.filter(Boolean);
   const firstRowHeader = readCells(rows[0]?.c).map(cellText);
   const labelsAreHeaders = hasQuestionnaireHeaders(labelHeader);
@@ -48,29 +43,30 @@ export function tableToQuestions(params: {
   const dataRows = hasHeaderRow ? rows.slice(1) : rows;
   const firstDataRowNumber = labelsAreHeaders || hasHeaderRow ? 2 : 1;
 
-  return dataRows.flatMap((row, index) => {
-    const cells = readCells(row.c);
-    const question = normalizeQuestionCell({
-      value: cellText(cells[questionColumn]),
-      permissive: Boolean(labelsAreHeaders || firstRowIsHeader),
-    });
-    if (!question) return [];
+  return dataRows
+    .flatMap((row, index) => {
+      const cells = readCells(row.c);
+      const question = normalizeQuestionCell({
+        value: cellText(cells[questionColumn]),
+        permissive: Boolean(labelsAreHeaders || firstRowIsHeader),
+      });
+      if (!question) return [];
 
-    return [buildQuestion({
-      answer: cellText(cells[answerColumn]),
-      answerColumn,
-      gid: params.gid,
-      question,
-      questionColumn,
-      rowNumber: firstDataRowNumber + index,
-    })];
-  }).slice(0, 100);
+      return [
+        buildQuestion({
+          answer: cellText(cells[answerColumn]),
+          answerColumn,
+          gid: params.gid,
+          question,
+          questionColumn,
+          rowNumber: firstDataRowNumber + index,
+        }),
+      ];
+    })
+    .slice(0, 100);
 }
 
-export function matrixToQuestions(params: {
-  rows: string[][];
-  gid: string;
-}): DetectedQuestion[] {
+export function matrixToQuestions(params: { rows: string[][]; gid: string }): DetectedQuestion[] {
   return tableToQuestions({
     gid: params.gid,
     table: matrixToTable(params.rows),
@@ -110,7 +106,9 @@ function tableToMappedQuestions(params: {
   return shouldUseColumnQuestions({
     boundedQuestions,
     columnQuestions,
-  }) ? columnQuestions : boundedQuestions;
+  })
+    ? columnQuestions
+    : boundedQuestions;
 }
 
 function buildMappedQuestions(params: {
@@ -121,26 +119,30 @@ function buildMappedQuestions(params: {
   startRow: number;
   endRow: number;
 }): DetectedQuestion[] {
-  return params.rows.flatMap((row, index) => {
-    const rowNumber = index + 1;
-    if (rowNumber < params.startRow || rowNumber > params.endRow) return [];
+  return params.rows
+    .flatMap((row, index) => {
+      const rowNumber = index + 1;
+      if (rowNumber < params.startRow || rowNumber > params.endRow) return [];
 
-    const cells = readCells(row.c);
-    const question = normalizeQuestionCell({
-      value: cellText(cells[params.questionColumn]),
-      permissive: true,
-    });
-    if (!question) return [];
+      const cells = readCells(row.c);
+      const question = normalizeQuestionCell({
+        value: cellText(cells[params.questionColumn]),
+        permissive: true,
+      });
+      if (!question) return [];
 
-    return [buildQuestion({
-      answer: cellText(cells[params.answerColumn]),
-      answerColumn: params.answerColumn,
-      gid: params.gid,
-      question,
-      questionColumn: params.questionColumn,
-      rowNumber,
-    })];
-  }).slice(0, 100);
+      return [
+        buildQuestion({
+          answer: cellText(cells[params.answerColumn]),
+          answerColumn: params.answerColumn,
+          gid: params.gid,
+          question,
+          questionColumn: params.questionColumn,
+          rowNumber,
+        }),
+      ];
+    })
+    .slice(0, 100);
 }
 
 function shouldUseColumnQuestions(params: {
@@ -167,10 +169,7 @@ function shouldUseColumnQuestions(params: {
   return firstColumnRow < boundedFirstRow;
 }
 
-function findQuestionColumn(params: {
-  header: string[];
-  rows: GvizRow[];
-}): number | null {
+function findQuestionColumn(params: { header: string[]; rows: GvizRow[] }): number | null {
   const headerIndex = params.header.findIndex(isQuestionHeader);
   if (headerIndex >= 0) return headerIndex;
 
@@ -192,20 +191,14 @@ function findQuestionColumn(params: {
   return bestIndex >= 0 && bestScore > 80 ? bestIndex : null;
 }
 
-function findAnswerColumn(params: {
-  header: string[];
-  questionColumn: number;
-}): number {
+function findAnswerColumn(params: { header: string[]; questionColumn: number }): number {
   const answerIndex = params.header.findIndex((value) =>
     /answer|response|reply|vendor response/i.test(value),
   );
   return answerIndex >= 0 ? answerIndex : params.questionColumn + 1;
 }
 
-function normalizeQuestionCell(params: {
-  value: string;
-  permissive: boolean;
-}): string {
+function normalizeQuestionCell(params: { value: string; permissive: boolean }): string {
   const text = params.value.replace(/\s+/g, ' ').trim();
   const minLength = params.permissive ? 3 : 8;
   if (text.length < minLength || isQuestionHeader(text) || isMetadataValue(text)) return '';
@@ -214,11 +207,12 @@ function normalizeQuestionCell(params: {
 
 function scoreQuestionCell(text: string): number {
   if (!text) return 0;
-  const semanticBoost = /[?]/.test(text) ||
+  const semanticBoost =
+    /[?]/.test(text) ||
     /^\s*(?:\d+(?:\.\d+)*|[A-Z]{1,6}[- ]?\d+(?:\.\d+)*)\b/.test(text) ||
     /^\s*(?:do|does|did|is|are|has|have|can|will|should|must)\b/i.test(text)
-    ? 80
-    : 0;
+      ? 80
+      : 0;
   return Math.min(text.length, 160) + semanticBoost;
 }
 
@@ -235,15 +229,15 @@ function isQuestionHeader(value: string | undefined): boolean {
 }
 
 function hasQuestionnaireHeaders(values: string[]): boolean {
-  return values.some(isQuestionHeader) || values.some((value) =>
-    /answer|response|reply|vendor response/i.test(value),
+  return (
+    values.some(isQuestionHeader) ||
+    values.some((value) => /answer|response|reply|vendor response/i.test(value))
   );
 }
 
 function isMetadataValue(value: string): boolean {
   return Boolean(
-    /^[#\d.,:/\-\s]+$/.test(value) ||
-      /^(?:yes|no|n\/a|na|none|owner|status|notes?)$/i.test(value),
+    /^[#\d.,:/\-\s]+$/.test(value) || /^(?:yes|no|n\/a|na|none|owner|status|notes?)$/i.test(value),
   );
 }
 
@@ -281,10 +275,6 @@ function getQuestionRow(question: DetectedQuestion | undefined): number | null {
   return Number(match[1]);
 }
 
-function getSheetFieldId(params: {
-  gid: string;
-  rowNumber: number;
-  answerColumn: number;
-}): string {
+function getSheetFieldId(params: { gid: string; rowNumber: number; answerColumn: number }): string {
   return `sheet:${params.gid}:${params.rowNumber}:${params.answerColumn + 1}`;
 }

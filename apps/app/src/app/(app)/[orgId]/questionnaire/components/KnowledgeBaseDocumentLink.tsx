@@ -45,17 +45,9 @@ export function KnowledgeBaseDocumentLink({
   };
 
   return (
-    <button
-      onClick={handleClick}
-      disabled={isLoading}
-      className={className}
-    >
+    <button onClick={handleClick} disabled={isLoading} className={className}>
       {sourceName}
-      {isLoading ? (
-        <Loader2 className="h-3 w-3 animate-spin" />
-      ) : (
-        <LinkIcon className="h-3 w-3" />
-      )}
+      {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <LinkIcon className="h-3 w-3" />}
     </button>
   );
 }

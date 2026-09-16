@@ -84,9 +84,7 @@ describe('Built-in role permissions — regression', () => {
     });
 
     it('should have finding read/update only', () => {
-      expect(perms.finding).toEqual(
-        expect.arrayContaining(['read', 'update']),
-      );
+      expect(perms.finding).toEqual(expect.arrayContaining(['read', 'update']));
       expect(perms.finding).not.toContain('create');
     });
 
@@ -172,9 +170,7 @@ describe('Built-in role permissions — regression', () => {
     });
 
     it('should have finding read/update only', () => {
-      expect(perms.finding).toEqual(
-        expect.arrayContaining(['read', 'update']),
-      );
+      expect(perms.finding).toEqual(expect.arrayContaining(['read', 'update']));
       expect(perms.finding).not.toContain('create');
     });
 
@@ -196,9 +192,7 @@ describe('Built-in role permissions — regression', () => {
     });
 
     it('should have portal read/update', () => {
-      expect(perms.portal).toEqual(
-        expect.arrayContaining(['read', 'update']),
-      );
+      expect(perms.portal).toEqual(expect.arrayContaining(['read', 'update']));
     });
 
     it('should have pentest create/read/delete', () => {

@@ -32,7 +32,11 @@ jest.mock('@db', () => {
     {},
     { get: (_target, prop) => (typeof prop === 'string' ? prop : undefined) },
   );
-  const known: Record<string, unknown> = { __esModule: true, db: {}, Prisma: {} };
+  const known: Record<string, unknown> = {
+    __esModule: true,
+    db: {},
+    Prisma: {},
+  };
   return new Proxy(known, {
     get: (target, prop) => {
       if (typeof prop !== 'string') return undefined;
@@ -275,7 +279,12 @@ describe('VendorsController', () => {
       });
 
       await expect(
-        controller.createVendor(dto as any, 'org_123', apiKeyAuthContext, apiKeyReq),
+        controller.createVendor(
+          dto as any,
+          'org_123',
+          apiKeyAuthContext,
+          apiKeyReq,
+        ),
       ).rejects.toThrow(BadRequestException);
       expect(vendorsService.create).not.toHaveBeenCalled();
     });

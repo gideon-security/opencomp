@@ -28,11 +28,7 @@ interface OnboardingApiResponse {
   triggerJobId: string | null;
 }
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ orgId: string }>;
-}) {
+export default async function Page({ params }: { params: Promise<{ orgId: string }> }) {
   const { orgId } = await params;
   const t = await getTranslations('vendor');
 

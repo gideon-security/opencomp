@@ -45,4 +45,3 @@ export type FrameworkWithLatestDocument = {
   configuration: Omit<SOAFrameworkConfiguration, 'framework'>;
   document: SOADocument | null;
 };
-

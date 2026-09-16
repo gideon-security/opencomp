@@ -1,6 +1,7 @@
 'use client';
 
 import type { linkRisksAndVendorsToWork } from '@/trigger/tasks/onboarding/link-risks-and-vendors-to-work';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,7 +16,6 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { MagicWandFilled } from '@trycompai/design-system/icons';
-import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -27,9 +27,7 @@ interface RelinkButtonProps {
   onAfterLink?: () => Promise<void>;
 }
 
-type RunState =
-  | { kind: 'idle' }
-  | { kind: 'running'; runId: string; publicAccessToken: string };
+type RunState = { kind: 'idle' } | { kind: 'running'; runId: string; publicAccessToken: string };
 
 // Duplicated from AutoLinkButton (~50 lines) — small enough to keep inline.
 const PHASE_LABEL: Record<string, string> = {
@@ -108,9 +106,9 @@ export function RelinkButton({ disabled, onRelink, onAfterLink }: RelinkButtonPr
         <AlertDialogHeader>
           <AlertDialogTitle>Re-assess linked tasks?</AlertDialogTitle>
           <AlertDialogDescription>
-            This removes every currently linked task and re-runs the matching to find
-            the most relevant tasks. Any manual unlinks you've made will be reverted.
-            The treatment plan will refresh after.
+            This removes every currently linked task and re-runs the matching to find the most
+            relevant tasks. Any manual unlinks you've made will be reverted. The treatment plan will
+            refresh after.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

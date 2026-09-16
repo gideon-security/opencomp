@@ -4,7 +4,14 @@ import type * as React from 'react';
 
 import { getCommonPinningStyles } from '@/lib/data-table';
 import { cn } from '@gideon-defender/ui/cn';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@gideon-defender/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@gideon-defender/ui/table';
 import { DataTablePagination } from './data-table-pagination';
 
 interface DataTableProps<TData> extends React.ComponentProps<'div'> {

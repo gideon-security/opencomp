@@ -9,12 +9,7 @@ import type {
   TabQuestionQueue,
 } from './types';
 
-const DRAFT_STATUSES = new Set<QueueStatus>([
-  'generating',
-  'generated',
-  'approved',
-  'flagged',
-]);
+const DRAFT_STATUSES = new Set<QueueStatus>(['generating', 'generated', 'approved', 'flagged']);
 
 export function createEmptyQueue(params: {
   tabId: number;
@@ -65,12 +60,11 @@ export function syncDetectedQuestions(params: {
   });
 
   const selectedItemId =
-    items.find((item) => item.id === params.queue?.selectedItemId)?.id ??
-    items[0]?.id ??
-    null;
-  const sheetMapping = params.surface === 'sheets'
-    ? params.sheetMapping ?? params.queue?.sheetMapping ?? null
-    : null;
+    items.find((item) => item.id === params.queue?.selectedItemId)?.id ?? items[0]?.id ?? null;
+  const sheetMapping =
+    params.surface === 'sheets'
+      ? (params.sheetMapping ?? params.queue?.sheetMapping ?? null)
+      : null;
 
   return {
     tabId: params.tabId,
@@ -178,9 +172,7 @@ export function markQueueItemsInserted(params: {
   return {
     ...params.queue,
     items: params.queue.items.map((item) =>
-      insertedIds.has(item.id)
-        ? { ...item, status: 'inserted', updatedAt: now }
-        : item,
+      insertedIds.has(item.id) ? { ...item, status: 'inserted', updatedAt: now } : item,
     ),
     updatedAt: now,
   };
@@ -201,9 +193,7 @@ export function getApprovedInsertRequests(queue: TabQuestionQueue): {
   itemIds: string[];
   answers: { fieldId: string; answer: string }[];
 } {
-  const approved = queue.items.filter(
-    (item) => item.status === 'approved' && Boolean(item.answer),
-  );
+  const approved = queue.items.filter((item) => item.status === 'approved' && Boolean(item.answer));
   return {
     itemIds: approved.map((item) => item.id),
     answers: approved.flatMap((item) =>
@@ -212,10 +202,7 @@ export function getApprovedInsertRequests(queue: TabQuestionQueue): {
   };
 }
 
-function createPendingItem(params: {
-  question: DetectedQuestion;
-  now: number;
-}): QuestionQueueItem {
+function createPendingItem(params: { question: DetectedQuestion; now: number }): QuestionQueueItem {
   return {
     id: params.question.id,
     fieldId: params.question.id,
@@ -233,10 +220,7 @@ function createPendingItem(params: {
   };
 }
 
-function resetDraftItem(params: {
-  item: QuestionQueueItem;
-  now: number;
-}): QuestionQueueItem {
+function resetDraftItem(params: { item: QuestionQueueItem; now: number }): QuestionQueueItem {
   return {
     ...params.item,
     status: 'pending',
@@ -257,9 +241,7 @@ function updateItem(
   const now = Date.now();
   return {
     ...queue,
-    items: queue.items.map((item) =>
-      item.id === itemId ? updater(item, now) : item,
-    ),
+    items: queue.items.map((item) => (item.id === itemId ? updater(item, now) : item)),
     selectedItemId: itemId,
     updatedAt: now,
   };

@@ -18,17 +18,12 @@ export function MarketingSteps({ steps }: MarketingStepsProps) {
   return (
     <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
       {steps.map((step) => (
-        <div
-          key={step.number}
-          className="rounded-md border border-border bg-background p-5"
-        >
+        <div key={step.number} className="rounded-md border border-border bg-background p-5">
           <div className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
             Step {step.number}
           </div>
           <div className="mb-1.5 text-[16px] tracking-[-0.005em]">{step.title}</div>
-          <div className="text-[12px] leading-[1.55] text-muted-foreground">
-            {step.description}
-          </div>
+          <div className="text-[12px] leading-[1.55] text-muted-foreground">{step.description}</div>
         </div>
       ))}
     </div>

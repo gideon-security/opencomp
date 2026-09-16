@@ -67,9 +67,7 @@ export function IsmsRegisterCard({ header, headerEnd, children }: IsmsRegisterCa
       {(header || headerEnd) && (
         <HStack align="start" justify="between" gap="3" wrap="wrap">
           {header}
-          {headerEnd && (
-            <div className="ml-auto flex shrink-0 items-center gap-2">{headerEnd}</div>
-          )}
+          {headerEnd && <div className="ml-auto flex shrink-0 items-center gap-2">{headerEnd}</div>}
         </HStack>
       )}
       {children}

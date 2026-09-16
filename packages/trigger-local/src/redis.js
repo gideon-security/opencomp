@@ -10,11 +10,7 @@ const { Redis } = require('ioredis');
 const GLOBAL_REDIS_KEY = Symbol.for('@gideon-defender/trigger-local/redis.v1');
 
 function redisUrl() {
-  return (
-    process.env.LOCAL_TRIGGER_REDIS_URL ||
-    process.env.REDIS_URL ||
-    'redis://localhost:6379'
-  );
+  return process.env.LOCAL_TRIGGER_REDIS_URL || process.env.REDIS_URL || 'redis://localhost:6379';
 }
 
 function isTestEnv() {

@@ -2,12 +2,8 @@
 
 import { useTranslations } from 'next-intl';
 
-import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import {
-  useAdminTimelineTemplates,
-  type AdminTimelineTemplate,
-} from '@/hooks/use-admin-timelines';
+import { TimelinePhaseBar } from '@/app/(app)/[orgId]/overview/components/TimelinePhaseBar';
+import { useAdminTimelineTemplates, type AdminTimelineTemplate } from '@/hooks/use-admin-timelines';
 import {
   Badge,
   Button,
@@ -23,7 +19,8 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Add, Edit } from '@trycompai/design-system/icons';
-import { TimelinePhaseBar } from '@/app/(app)/[orgId]/overview/components/TimelinePhaseBar';
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { NewTemplateDialog } from './NewTemplateDialog';
 
 interface TemplateTrackGroup {
@@ -35,9 +32,7 @@ interface TemplateTrackGroup {
   templates: AdminTimelineTemplate[];
 }
 
-function groupByTrack(
-  templates: AdminTimelineTemplate[],
-): TemplateTrackGroup[] {
+function groupByTrack(templates: AdminTimelineTemplate[]): TemplateTrackGroup[] {
   const groups = new Map<string, TemplateTrackGroup>();
 
   for (const template of templates) {
@@ -61,9 +56,7 @@ function groupByTrack(
   return Array.from(groups.values())
     .map((group) => ({
       ...group,
-      templates: [...group.templates].sort(
-        (a, b) => a.cycleNumber - b.cycleNumber,
-      ),
+      templates: [...group.templates].sort((a, b) => a.cycleNumber - b.cycleNumber),
     }))
     .sort((a, b) => {
       if (a.frameworkName !== b.frameworkName) {
@@ -79,9 +72,7 @@ export function TemplateList() {
   const { orgId } = useParams<{ orgId: string }>();
   const router = useRouter();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [visibilityFilter, setVisibilityFilter] = useState<
-    'all' | 'visible' | 'hidden'
-  >('visible');
+  const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'visible' | 'hidden'>('visible');
 
   const handleEdit = (template: AdminTimelineTemplate) => {
     router.push(`/${orgId}/admin/timeline-templates/${template.id}`);
@@ -135,11 +126,7 @@ export function TemplateList() {
         <PageHeader
           title="Timeline Templates"
           actions={
-            <Button
-              size="sm"
-              iconLeft={<Add size={16} />}
-              onClick={() => setDialogOpen(true)}
-            >
+            <Button size="sm" iconLeft={<Add size={16} />} onClick={() => setDialogOpen(true)}>
               New Template
             </Button>
           }
@@ -176,17 +163,15 @@ export function TemplateList() {
         <div className="mb-4">
           <Text size="sm" variant="muted">
             Showing {groupedFilteredTemplates.length} template track
-            {groupedFilteredTemplates.length === 1 ? '' : 's'} across{' '}
-            {filteredFrameworkCount} framework
+            {groupedFilteredTemplates.length === 1 ? '' : 's'} across {filteredFrameworkCount}{' '}
+            framework
             {filteredFrameworkCount === 1 ? '' : 's'}.
           </Text>
         </div>
 
         {groupedFilteredTemplates.length === 0 ? (
           <div className="rounded-lg border border-dashed py-8 text-center text-sm text-muted-foreground">
-            {groupedAllTemplates.length === 0
-              ? t('emptyAll')
-              : t('emptyFiltered')}
+            {groupedAllTemplates.length === 0 ? t('emptyAll') : t('emptyFiltered')}
           </div>
         ) : (
           <Table variant="bordered">
@@ -213,89 +198,74 @@ export function TemplateList() {
                 const maxDuration = Math.max(...durations);
 
                 return (
-                <TableRow key={group.key}>
-                  <TableCell>
-                    <Text size="sm" weight="medium">
-                      {group.displayName}
-                    </Text>
-                  </TableCell>
-                  <TableCell>
-                    <Text size="sm" variant="muted">
-                      {group.frameworkName}
-                    </Text>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        group.isVisible
-                          ? 'default'
-                          : 'outline'
-                      }
-                    >
-                      {group.isVisible
-                        ? 'Visible'
-                        : 'Hidden'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {group.templates.map((template) => (
-                        <Button
-                          key={template.id}
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEdit(template)}
-                        >
-                          Cycle {template.cycleNumber}
-                        </Button>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Text size="sm">
-                      {minPhases === maxPhases
-                        ? minPhases
-                        : `${minPhases}-${maxPhases}`}
-                    </Text>
-                  </TableCell>
-                  <TableCell>
-                    <Text size="sm">
-                      {minDuration === maxDuration
-                        ? `${minDuration} weeks`
-                        : `${minDuration}-${maxDuration} weeks`}
-                    </Text>
-                  </TableCell>
-                  <TableCell>
-                    <div className="w-48">
-                      <TimelinePhaseBar
-                        phases={phasesForBar(baseTemplate)}
-                        height={20}
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      iconLeft={<Edit size={16} />}
-                      onClick={() => handleEdit(baseTemplate)}
-                    >
-                      {group.templates.length > 1
-                        ? t('editCycle', { cycle: baseTemplate.cycleNumber })
-                        : t('edit')}
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              )})}
+                  <TableRow key={group.key}>
+                    <TableCell>
+                      <Text size="sm" weight="medium">
+                        {group.displayName}
+                      </Text>
+                    </TableCell>
+                    <TableCell>
+                      <Text size="sm" variant="muted">
+                        {group.frameworkName}
+                      </Text>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={group.isVisible ? 'default' : 'outline'}>
+                        {group.isVisible ? 'Visible' : 'Hidden'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {group.templates.map((template) => (
+                          <Button
+                            key={template.id}
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEdit(template)}
+                          >
+                            Cycle {template.cycleNumber}
+                          </Button>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Text size="sm">
+                        {minPhases === maxPhases ? minPhases : `${minPhases}-${maxPhases}`}
+                      </Text>
+                    </TableCell>
+                    <TableCell>
+                      <Text size="sm">
+                        {minDuration === maxDuration
+                          ? `${minDuration} weeks`
+                          : `${minDuration}-${maxDuration} weeks`}
+                      </Text>
+                    </TableCell>
+                    <TableCell>
+                      <div className="w-48">
+                        <TimelinePhaseBar phases={phasesForBar(baseTemplate)} height={20} />
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        iconLeft={<Edit size={16} />}
+                        onClick={() => handleEdit(baseTemplate)}
+                      >
+                        {group.templates.length > 1
+                          ? t('editCycle', { cycle: baseTemplate.cycleNumber })
+                          : t('edit')}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         )}
       </Section>
 
-      <NewTemplateDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-      />
+      <NewTemplateDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </PageLayout>
   );
 }

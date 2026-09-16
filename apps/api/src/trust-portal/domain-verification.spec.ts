@@ -1,4 +1,7 @@
-import { decideDomainVerification, deriveDnsVerified } from './domain-verification';
+import {
+  decideDomainVerification,
+  deriveDnsVerified,
+} from './domain-verification';
 
 describe('decideDomainVerification', () => {
   const baseInputs = {

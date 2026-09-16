@@ -5,24 +5,21 @@ import { Badge, Grid, Heading, HStack, Stack } from '@trycompai/design-system';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { IsmsObjective, IsmsObjectiveStatus } from '../isms-types';
-import { objectiveSchema, type ObjectiveFormValues } from './objective-schema';
 import type { ApproverOption } from './IsmsApprovalSection';
-import {
-  IsmsCardActions,
-  IsmsRegisterCard,
-  IsmsRegisterField,
-  IsmsSourceBadge,
-} from './shared';
+import { objectiveSchema, type ObjectiveFormValues } from './objective-schema';
 import { OBJECTIVE_STATUS_LABELS } from './objectives-status';
 import { ObjectivesRowEditor } from './ObjectivesRowEditor';
+import { IsmsCardActions, IsmsRegisterCard, IsmsRegisterField, IsmsSourceBadge } from './shared';
 
-const STATUS_VARIANT: Record<IsmsObjectiveStatus, 'outline' | 'secondary' | 'accent' | 'destructive'> =
-  {
-    not_started: 'outline',
-    on_track: 'secondary',
-    at_risk: 'destructive',
-    met: 'accent',
-  };
+const STATUS_VARIANT: Record<
+  IsmsObjectiveStatus,
+  'outline' | 'secondary' | 'accent' | 'destructive'
+> = {
+  not_started: 'outline',
+  on_track: 'secondary',
+  at_risk: 'destructive',
+  met: 'accent',
+};
 
 /**
  * The values the row emits on save. Shares the canonical objective schema with

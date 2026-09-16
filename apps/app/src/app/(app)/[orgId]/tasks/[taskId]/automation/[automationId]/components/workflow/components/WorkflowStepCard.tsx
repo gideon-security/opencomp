@@ -22,15 +22,7 @@ interface WorkflowStep {
   description: string;
   type: 'trigger' | 'action' | 'condition' | 'output';
   iconType:
-    | 'start'
-    | 'fetch'
-    | 'login'
-    | 'check'
-    | 'process'
-    | 'filter'
-    | 'notify'
-    | 'complete'
-    | 'error';
+    'start' | 'fetch' | 'login' | 'check' | 'process' | 'filter' | 'notify' | 'complete' | 'error';
 }
 
 interface Props {

@@ -1,9 +1,9 @@
 'use client';
 
 import { usePermissions } from '@/hooks/use-permissions';
-import { Button } from '@gideon-defender/ui/button';
 import { Card } from '@gideon-defender/ui';
-import { Plus, Loader2 } from 'lucide-react';
+import { Button } from '@gideon-defender/ui/button';
+import { Loader2, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -34,7 +34,9 @@ export function CreateSOADocument({
       router.push(`/${organizationId}/documents/statement-of-applicability/${result.id}`);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'An error occurred while creating the SOA document',
+        error instanceof Error
+          ? error.message
+          : 'An error occurred while creating the SOA document',
       );
     } finally {
       setIsCreating(false);
@@ -51,11 +53,7 @@ export function CreateSOADocument({
           </p>
         </div>
         {canCreateQuestionnaire && (
-          <Button
-            onClick={handleCreate}
-            disabled={isCreating}
-            className="shrink-0"
-          >
+          <Button onClick={handleCreate} disabled={isCreating} className="shrink-0">
             {isCreating ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

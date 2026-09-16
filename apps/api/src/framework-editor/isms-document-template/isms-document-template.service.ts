@@ -226,7 +226,9 @@ export class IsmsDocumentTemplateService {
     }
   }
 
-  private async ensureControlTemplate(controlTemplateId: string): Promise<void> {
+  private async ensureControlTemplate(
+    controlTemplateId: string,
+  ): Promise<void> {
     const control = await db.frameworkEditorControlTemplate.findUnique({
       where: { id: controlTemplateId },
       select: { id: true },

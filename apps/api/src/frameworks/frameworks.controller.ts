@@ -227,7 +227,9 @@ export class FrameworksController {
 
   @Get(':id/update-preview')
   @RequirePermission('framework', 'read')
-  @ApiOperation({ summary: 'Preview changes from updating a framework instance' })
+  @ApiOperation({
+    summary: 'Preview changes from updating a framework instance',
+  })
   async getUpdatePreview(
     @OrganizationId() organizationId: string,
     @Param('id') id: string,
@@ -248,7 +250,8 @@ export class FrameworksController {
     @Body() body: SyncFrameworkDto,
     @AuthContext() authContext: AuthContextType,
   ) {
-    if (!authContext.memberId) throw new BadRequestException('Member ID not available');
+    if (!authContext.memberId)
+      throw new BadRequestException('Member ID not available');
     const result = await this.syncService.sync({
       organizationId,
       frameworkInstanceId: id,
@@ -267,7 +270,8 @@ export class FrameworksController {
     @Body() body: RollbackFrameworkDto,
     @AuthContext() authContext: AuthContextType,
   ) {
-    if (!authContext.memberId) throw new BadRequestException('Member ID not available');
+    if (!authContext.memberId)
+      throw new BadRequestException('Member ID not available');
     const result = await this.rollbackService.rollback({
       organizationId,
       frameworkInstanceId: id,

@@ -1,15 +1,9 @@
 import { browser } from 'wxt/browser';
-import {
-  getApprovedInsertRequests,
-  markQueueItemsInserted,
-} from '../queue';
+import type { BackgroundResponse } from '../messaging';
+import { getApprovedInsertRequests, markQueueItemsInserted } from '../queue';
 import { buildSheetPastePlan } from '../sheets-paste-plan';
 import { isDomainConfirmed } from '../storage';
-import type {
-  DomainConfirmationRequest,
-  TabQuestionQueue,
-} from '../types';
-import type { BackgroundResponse } from '../messaging';
+import type { DomainConfirmationRequest, TabQuestionQueue } from '../types';
 import { ensureActiveOrganization } from './auth';
 import { insertAnswersWithGoogleSheetsApi } from './google-sheets-api';
 import { loadTabQueue, saveTabQueue } from './queue-store';
@@ -58,10 +52,7 @@ export async function insertSheetAnswersWithApi(
   return { ok: true, count: insertedItemIds.length, queue: updated };
 }
 
-function getSheetInsertRequests(params: {
-  queue: TabQuestionQueue;
-  itemId?: string;
-}): {
+function getSheetInsertRequests(params: { queue: TabQuestionQueue; itemId?: string }): {
   itemIds: string[];
   answers: { fieldId: string; answer: string }[];
 } {
@@ -91,9 +82,7 @@ async function getInsertConfirmation(
   });
   if (confirmed) return null;
 
-  const org = auth.organizations.find(
-    (entry) => entry.id === auth.selectedOrganizationId,
-  );
+  const org = auth.organizations.find((entry) => entry.id === auth.selectedOrganizationId);
   return {
     host: queue.host,
     organizationId: auth.selectedOrganizationId,

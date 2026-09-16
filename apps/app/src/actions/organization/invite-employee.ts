@@ -65,7 +65,8 @@ export const inviteEmployee = authActionClient
         invitedEmail: safeEmail,
         role: 'employee',
         durationMs: Date.now() - startTime,
-        resultKeys: inviteResult && typeof inviteResult === 'object' ? Object.keys(inviteResult) : [],
+        resultKeys:
+          inviteResult && typeof inviteResult === 'object' ? Object.keys(inviteResult) : [],
       });
 
       return {

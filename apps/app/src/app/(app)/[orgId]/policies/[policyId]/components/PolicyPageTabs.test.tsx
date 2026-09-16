@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -75,10 +75,7 @@ vi.mock('./PolicyAlerts', () => ({
     policy: unknown;
     isPendingApproval: boolean;
   }) => (
-    <div
-      data-testid="policy-alerts"
-      data-pending={String(isPendingApproval)}
-    >
+    <div data-testid="policy-alerts" data-pending={String(isPendingApproval)}>
       {policy ? 'alerts' : 'no-alerts'}
     </div>
   ),
@@ -237,15 +234,9 @@ describe('PolicyPageTabs', () => {
 
     it('does not render sheets/dialogs when policy is null', () => {
       render(<PolicyPageTabs {...defaultProps} policy={null} />);
-      expect(
-        screen.queryByTestId('policy-overview-sheet'),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId('policy-archive-sheet'),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByTestId('policy-delete-dialog'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId('policy-overview-sheet')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('policy-archive-sheet')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('policy-delete-dialog')).not.toBeInTheDocument();
     });
   });
 
@@ -260,17 +251,8 @@ describe('PolicyPageTabs', () => {
         approverId: 'mem-1',
         pendingVersionId: 'ver-1',
       };
-      render(
-        <PolicyPageTabs
-          {...defaultProps}
-          policy={policy}
-          isPendingApproval={true}
-        />,
-      );
-      expect(screen.getByTestId('policy-alerts')).toHaveAttribute(
-        'data-pending',
-        'true',
-      );
+      render(<PolicyPageTabs {...defaultProps} policy={policy} isPendingApproval={true} />);
+      expect(screen.getByTestId('policy-alerts')).toHaveAttribute('data-pending', 'true');
     });
 
     it('is false when approverId is set but pendingVersionId is null (inconsistent state)', () => {
@@ -279,17 +261,8 @@ describe('PolicyPageTabs', () => {
         approverId: 'mem-1',
         pendingVersionId: null,
       };
-      render(
-        <PolicyPageTabs
-          {...defaultProps}
-          policy={stalePolicy}
-          isPendingApproval={true}
-        />,
-      );
-      expect(screen.getByTestId('policy-alerts')).toHaveAttribute(
-        'data-pending',
-        'false',
-      );
+      render(<PolicyPageTabs {...defaultProps} policy={stalePolicy} isPendingApproval={true} />);
+      expect(screen.getByTestId('policy-alerts')).toHaveAttribute('data-pending', 'false');
     });
 
     it('is false when pendingVersionId is set but approverId is null', () => {
@@ -298,17 +271,8 @@ describe('PolicyPageTabs', () => {
         approverId: null,
         pendingVersionId: 'ver-1',
       };
-      render(
-        <PolicyPageTabs
-          {...defaultProps}
-          policy={policy}
-          isPendingApproval={false}
-        />,
-      );
-      expect(screen.getByTestId('policy-alerts')).toHaveAttribute(
-        'data-pending',
-        'false',
-      );
+      render(<PolicyPageTabs {...defaultProps} policy={policy} isPendingApproval={false} />);
+      expect(screen.getByTestId('policy-alerts')).toHaveAttribute('data-pending', 'false');
     });
   });
 });

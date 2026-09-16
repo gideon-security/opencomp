@@ -11,15 +11,9 @@ export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin({ exclude: ['electron-store'] })],
     define: {
-      __PORTAL_URL__: JSON.stringify(
-        process.env.PORTAL_URL || 'https://portal.gideondefender.com',
-      ),
-      __API_URL__: JSON.stringify(
-        process.env.API_URL || 'https://api.gideondefender.com',
-      ),
-      __AGENT_VERSION__: JSON.stringify(
-        process.env.AGENT_VERSION || pkg.version,
-      ),
+      __PORTAL_URL__: JSON.stringify(process.env.PORTAL_URL || 'https://portal.gideondefender.com'),
+      __API_URL__: JSON.stringify(process.env.API_URL || 'https://api.gideondefender.com'),
+      __AGENT_VERSION__: JSON.stringify(process.env.AGENT_VERSION || pkg.version),
     },
     build: {
       outDir: 'dist/main',

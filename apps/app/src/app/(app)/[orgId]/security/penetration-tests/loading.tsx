@@ -1,7 +1,4 @@
-import {
-  LoadingShell,
-  OverviewMainSkeleton,
-} from './_components/LoadingShell';
+import { LoadingShell, OverviewMainSkeleton } from './_components/LoadingShell';
 
 /**
  * List-route loading state. Mobile shows ONLY the sidebar skeleton (this

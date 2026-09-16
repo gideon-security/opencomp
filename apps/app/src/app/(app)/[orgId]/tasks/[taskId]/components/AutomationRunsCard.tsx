@@ -1,12 +1,12 @@
 'use client';
 
-import { Badge } from '@gideon-defender/ui/badge';
 import { EvidenceAutomationRun, EvidenceAutomationRunStatus } from '@db';
-import { Stack, Text, Button } from '@trycompai/design-system';
-import { formatDistanceToNow } from 'date-fns';
-import { toast } from 'sonner';
+import { Badge } from '@gideon-defender/ui/badge';
+import { Button, Stack, Text } from '@trycompai/design-system';
 import { CheckmarkFilled, ChevronDown, CopyToClipboard } from '@trycompai/design-system/icons';
+import { formatDistanceToNow } from 'date-fns';
 import { useCallback, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 type AutomationRunWithName = EvidenceAutomationRun & {
   evidenceAutomation: {
@@ -46,16 +46,17 @@ function CopyableCodeBlock({ label, content }: { label: string; content: unknown
 
   return (
     <div>
-      <Text size="xs" weight="medium" variant="muted">{label}</Text>
+      <Text size="xs" weight="medium" variant="muted">
+        {label}
+      </Text>
       <div className="relative mt-1">
         <div className="absolute top-1.5 left-1.5 z-10">
-          <Button
-            variant="outline"
-            size="icon-xs"
-            onClick={handleCopy}
-            title="Copy to clipboard"
-          >
-            {copied ? <CheckmarkFilled className="!size-3 text-primary" /> : <CopyToClipboard className="!size-3" />}
+          <Button variant="outline" size="icon-xs" onClick={handleCopy} title="Copy to clipboard">
+            {copied ? (
+              <CheckmarkFilled className="!size-3 text-primary" />
+            ) : (
+              <CopyToClipboard className="!size-3" />
+            )}
           </Button>
         </div>
         <pre className="text-xs bg-muted text-foreground p-2 pl-9 rounded overflow-x-auto max-h-40 overflow-y-auto font-mono select-text cursor-text">
@@ -88,28 +89,41 @@ export function AutomationRunsCard({ runs }: AutomationRunsCardProps) {
     return (
       <div className="py-8">
         <Stack gap="sm" align="center">
-          <Text size="sm" variant="muted">No runs yet</Text>
-          <Text size="xs" variant="muted">Runs will appear here once automations are executed</Text>
+          <Text size="sm" variant="muted">
+            No runs yet
+          </Text>
+          <Text size="xs" variant="muted">
+            Runs will appear here once automations are executed
+          </Text>
         </Stack>
       </div>
     );
   }
 
   const hasMore = runs.length > 5;
-  const displayedGroups = showAll ? groupedRuns : Object.fromEntries(Object.entries(groupedRuns).slice(0, 3));
+  const displayedGroups = showAll
+    ? groupedRuns
+    : Object.fromEntries(Object.entries(groupedRuns).slice(0, 3));
 
   return (
     <Stack gap="lg">
       {Object.entries(displayedGroups).map(([date, dateRuns]) => (
         <Stack key={date} gap="sm">
-          <Text size="xs" weight="medium" variant="muted">{date}</Text>
+          <Text size="xs" weight="medium" variant="muted">
+            {date}
+          </Text>
           <Stack gap="xs">
             {dateRuns.map((run) => {
               const timeAgo = formatDistanceToNow(new Date(run.createdAt), { addSuffix: true });
               const isFailed = run.status === 'failed' || run.evaluationStatus === 'fail';
               const styles = isFailed ? getStatusStyles('failed') : getStatusStyles(run.status);
               const isExpanded = expandedId === run.id;
-              const hasDetails = !!(run.logs || run.output || run.evaluationReason || (run.status === 'failed' && run.error));
+              const hasDetails = !!(
+                run.logs ||
+                run.output ||
+                run.evaluationReason ||
+                (run.status === 'failed' && run.error)
+              );
 
               return (
                 <div
@@ -126,11 +140,17 @@ export function AutomationRunsCard({ runs }: AutomationRunsCardProps) {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <Text size="sm" weight="medium" as="span">{run.evidenceAutomation.name}</Text>
+                        <Text size="sm" weight="medium" as="span">
+                          {run.evidenceAutomation.name}
+                        </Text>
                         {run.version ? (
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0">v{run.version}</Badge>
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                            v{run.version}
+                          </Badge>
                         ) : (
-                          <Badge variant="outline" className="text-[10px] px-1.5 py-0">draft</Badge>
+                          <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                            draft
+                          </Badge>
                         )}
                       </div>
                       <div className="flex items-center gap-1.5 mt-0.5">
@@ -149,18 +169,30 @@ export function AutomationRunsCard({ runs }: AutomationRunsCardProps) {
                           </>
                         )}
                         <span className="text-xs text-muted-foreground">·</span>
-                        <Text size="xs" variant="muted" as="span">{timeAgo}</Text>
+                        <Text size="xs" variant="muted" as="span">
+                          {timeAgo}
+                        </Text>
                         {run.triggeredBy && (
                           <>
                             <span className="text-xs text-muted-foreground">·</span>
-                            <Text size="xs" variant="muted" as="span" style={{ textTransform: 'capitalize' }}>{run.triggeredBy}</Text>
+                            <Text
+                              size="xs"
+                              variant="muted"
+                              as="span"
+                              style={{ textTransform: 'capitalize' }}
+                            >
+                              {run.triggeredBy}
+                            </Text>
                           </>
                         )}
                       </div>
                     </div>
 
                     {hasDetails && (
-                      <ChevronDown size={16} className={`text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                      <ChevronDown
+                        size={16}
+                        className={`text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                      />
                     )}
                   </div>
 
@@ -168,19 +200,21 @@ export function AutomationRunsCard({ runs }: AutomationRunsCardProps) {
                     <div className="px-4 pb-3 pt-2 border-t space-y-2 select-text">
                       {run.evaluationReason && (
                         <div>
-                          <Text size="xs" weight="medium" variant="muted">Evaluation</Text>
-                          <Text size="xs" as="p">{run.evaluationReason}</Text>
+                          <Text size="xs" weight="medium" variant="muted">
+                            Evaluation
+                          </Text>
+                          <Text size="xs" as="p">
+                            {run.evaluationReason}
+                          </Text>
                         </div>
                       )}
-                      {run.logs && (
-                        <CopyableCodeBlock label="Logs" content={run.logs} />
-                      )}
-                      {run.output && (
-                        <CopyableCodeBlock label="Output" content={run.output} />
-                      )}
+                      {run.logs && <CopyableCodeBlock label="Logs" content={run.logs} />}
+                      {run.output && <CopyableCodeBlock label="Output" content={run.output} />}
                       {run.status === 'failed' && run.error && (
                         <div className="px-2 py-1.5 rounded bg-destructive/10 border border-destructive/20">
-                          <Text size="xs" variant="destructive">{run.error}</Text>
+                          <Text size="xs" variant="destructive">
+                            {run.error}
+                          </Text>
                         </div>
                       )}
                     </div>

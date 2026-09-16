@@ -1,4 +1,5 @@
-process.env.SECRET_KEY = process.env.SECRET_KEY || 'test-secret-key-16-chars-min';
+process.env.SECRET_KEY =
+  process.env.SECRET_KEY || 'test-secret-key-16-chars-min';
 
 import { Test } from '@nestjs/testing';
 import { GideonOidcController } from './gideon-oidc.controller';

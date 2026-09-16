@@ -1,14 +1,29 @@
 import { AnimatedWrapper } from '@/components/animated-wrapper';
 import { SelectablePill } from '@/components/selectable-pill';
-import { useDebouncedCallback } from '@gideon-defender/ui/hooks/use-debounced-callback';
+import { useApi } from '@/hooks/use-api';
+import type { GlobalVendors } from '@db';
 import { Button } from '@gideon-defender/ui/button';
+import { useDebouncedCallback } from '@gideon-defender/ui/hooks/use-debounced-callback';
 import { Input } from '@gideon-defender/ui/input';
 import { Label } from '@gideon-defender/ui/label';
 import { Textarea } from '@gideon-defender/ui/textarea';
-import type { GlobalVendors } from '@db';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
-import { AlertCircle, Check, ChevronDown, ChevronUp, HelpCircle, Plus, Search, Trash2, X } from 'lucide-react';
-import { useApi } from '@/hooks/use-api';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
+import {
+  AlertCircle,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  HelpCircle,
+  Plus,
+  Search,
+  Trash2,
+  X,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { Controller, useFieldArray } from 'react-hook-form';
@@ -586,7 +601,8 @@ function SoftwareVendorInput({
   }, []);
 
   // Get custom vendors from form
-  const customVendorsForCallback = (form.watch('customVendors') as CustomVendor[] | undefined) || [];
+  const customVendorsForCallback =
+    (form.watch('customVendors') as CustomVendor[] | undefined) || [];
 
   // Notify parent about touched invalid URLs
   useEffect(() => {
@@ -748,9 +764,7 @@ function SoftwareVendorInput({
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (showSuggestions && filteredSearchResults.length > 0) {
-        setHighlightedIndex((prev) =>
-          prev < filteredSearchResults.length - 1 ? prev + 1 : prev
-        );
+        setHighlightedIndex((prev) => (prev < filteredSearchResults.length - 1 ? prev + 1 : prev));
       }
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
@@ -872,47 +886,49 @@ function SoftwareVendorInput({
           </div>
 
           {/* Autocomplete suggestions dropdown - show when we have results OR user typed something */}
-          {showSuggestions && !isSearching && (filteredSearchResults.length > 0 || customValue.trim().length > 0) && (
-            <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-md border border-border bg-background shadow-lg animate-in fade-in-0 slide-in-from-top-1 duration-150">
-              <div className="max-h-[280px] overflow-y-auto p-1">
-                {/* Suggestions section - appears first/on top */}
-                {filteredSearchResults.length > 0 && (
-                  <>
-                    <p className="text-muted-foreground px-2 py-1 text-xs font-medium">
-                      Suggestions
-                    </p>
-                    {filteredSearchResults.map((vendor, index) => (
-                      <div
-                        key={vendor.website}
-                        className={`cursor-pointer rounded-sm px-2 py-1.5 text-sm transition-colors duration-100 ${
-                          index === highlightedIndex ? 'bg-accent' : 'hover:bg-accent'
-                        }`}
-                        onMouseDown={() => handleSelectGlobalVendor(vendor)}
-                        onMouseEnter={() => setHighlightedIndex(index)}
-                      >
-                        {getVendorDisplayName(vendor)}
-                      </div>
-                    ))}
-                  </>
-                )}
+          {showSuggestions &&
+            !isSearching &&
+            (filteredSearchResults.length > 0 || customValue.trim().length > 0) && (
+              <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-md border border-border bg-background shadow-lg animate-in fade-in-0 slide-in-from-top-1 duration-150">
+                <div className="max-h-[280px] overflow-y-auto p-1">
+                  {/* Suggestions section - appears first/on top */}
+                  {filteredSearchResults.length > 0 && (
+                    <>
+                      <p className="text-muted-foreground px-2 py-1 text-xs font-medium">
+                        Suggestions
+                      </p>
+                      {filteredSearchResults.map((vendor, index) => (
+                        <div
+                          key={vendor.website}
+                          className={`cursor-pointer rounded-sm px-2 py-1.5 text-sm transition-colors duration-100 ${
+                            index === highlightedIndex ? 'bg-accent' : 'hover:bg-accent'
+                          }`}
+                          onMouseDown={() => handleSelectGlobalVendor(vendor)}
+                          onMouseEnter={() => setHighlightedIndex(index)}
+                        >
+                          {getVendorDisplayName(vendor)}
+                        </div>
+                      ))}
+                    </>
+                  )}
 
-                {/* Add as custom option - appears below suggestions */}
-                {customValue.trim().length > 0 && (
-                  <>
-                    {filteredSearchResults.length > 0 && (
-                      <div className="my-1 border-t border-border" />
-                    )}
-                    <div
-                      className="hover:bg-accent cursor-pointer rounded-sm px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-100"
-                      onMouseDown={() => handleAddCustomVendor()}
-                    >
-                      Add "{customValue.trim()}" as custom vendor
-                    </div>
-                  </>
-                )}
+                  {/* Add as custom option - appears below suggestions */}
+                  {customValue.trim().length > 0 && (
+                    <>
+                      {filteredSearchResults.length > 0 && (
+                        <div className="my-1 border-t border-border" />
+                      )}
+                      <div
+                        className="hover:bg-accent cursor-pointer rounded-sm px-2 py-1.5 text-sm text-muted-foreground transition-colors duration-100"
+                        onMouseDown={() => handleAddCustomVendor()}
+                      >
+                        Add "{customValue.trim()}" as custom vendor
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
 
         {/* Custom vendor URL inputs */}
@@ -935,9 +951,7 @@ function SoftwareVendorInput({
                 return (
                   <div key={vendor.name} className="flex flex-col gap-1.5">
                     <div className="flex items-center">
-                      <span className="text-sm font-medium text-foreground">
-                        {vendor.name}
-                      </span>
+                      <span className="text-sm font-medium text-foreground">{vendor.name}</span>
                     </div>
                     <div
                       className={`flex items-center rounded-md border bg-background overflow-hidden transition-colors duration-150 ${
@@ -956,11 +970,11 @@ function SoftwareVendorInput({
                           // Clean input: remove any protocol, www, and trim
                           let value = e.target.value
                             .replace(/^(https?:\/\/)+/gi, '') // Remove one or more https://
-                            .replace(/^(www\.)+/gi, '')       // Remove one or more www.
+                            .replace(/^(www\.)+/gi, '') // Remove one or more www.
                             .trim();
                           const fullUrl = value ? `https://${value}` : '';
                           handleCustomVendorWebsiteChange(vendor.name, fullUrl);
-                          
+
                           // Clear touched state when user starts typing again
                           if (touchedUrls.has(vendor.name)) {
                             setTouchedUrls((prev) => {
@@ -969,20 +983,23 @@ function SoftwareVendorInput({
                               return next;
                             });
                           }
-                          
+
                           // Clear existing timer for this field
                           const existingTimer = validationTimersRef.current.get(vendor.name);
                           if (existingTimer) {
                             clearTimeout(existingTimer);
                             validationTimersRef.current.delete(vendor.name);
                           }
-                          
+
                           // Set new timer for 3 seconds - validate if value is invalid
                           if (value.length > 0) {
                             const timer = setTimeout(() => {
                               // Get current value from form state
-                              const currentVendors = (form.watch('customVendors') as CustomVendor[] | undefined) || [];
-                              const currentVendor = currentVendors.find((v) => v.name === vendor.name);
+                              const currentVendors =
+                                (form.watch('customVendors') as CustomVendor[] | undefined) || [];
+                              const currentVendor = currentVendors.find(
+                                (v) => v.name === vendor.name,
+                              );
                               const currentValue = (currentVendor?.website || '')
                                 .replace(/^https?:\/\//, '')
                                 .replace(/^www\./, '');
@@ -1003,7 +1020,7 @@ function SoftwareVendorInput({
                             clearTimeout(existingTimer);
                             validationTimersRef.current.delete(vendor.name);
                           }
-                          
+
                           // Check validity immediately on blur
                           const isValid = isValidDomain(displayValue);
                           // Only mark as touched if invalid (to show error)
@@ -1027,12 +1044,18 @@ function SoftwareVendorInput({
                           <TooltipProvider delayDuration={0}>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <button type="button" className="text-muted-foreground/50 hover:text-muted-foreground transition-all duration-300 ease-in-out p-1 hover:scale-110">
+                                <button
+                                  type="button"
+                                  className="text-muted-foreground/50 hover:text-muted-foreground transition-all duration-300 ease-in-out p-1 hover:scale-110"
+                                >
                                   <HelpCircle className="h-3.5 w-3.5 transition-all duration-300 ease-in-out" />
                                 </button>
                               </TooltipTrigger>
                               <TooltipContent side="top" className="max-w-[220px]">
-                                <p>Without a URL, we can't perform automatic risk assessment for this vendor.</p>
+                                <p>
+                                  Without a URL, we can't perform automatic risk assessment for this
+                                  vendor.
+                                </p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>

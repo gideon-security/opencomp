@@ -42,7 +42,10 @@ import { AuditRead } from '../audit/skip-audit-log.decorator';
 import { AuthContext, OrganizationId } from '../auth/auth-context.decorator';
 import { HybridAuthGuard } from '../auth/hybrid-auth.guard';
 import { PermissionGuard } from '../auth/permission.guard';
-import { RequirePermission, RequirePermissions } from '../auth/require-permission.decorator';
+import {
+  RequirePermission,
+  RequirePermissions,
+} from '../auth/require-permission.decorator';
 import { ActingUserResolver } from '../auth/acting-user.service';
 import type {
   AuthContext as AuthContextType,
@@ -306,7 +309,10 @@ export class PoliciesController {
     { resource: 'policy', actions: ['read'] },
     { resource: 'task', actions: ['read'] },
   ])
-  @ApiOperation({ summary: 'Get tasks that serve as evidence for a policy, grouped by control' })
+  @ApiOperation({
+    summary:
+      'Get tasks that serve as evidence for a policy, grouped by control',
+  })
   @ApiParam(POLICY_PARAMS.policyId)
   async getPolicyEvidenceTasks(
     @Param('id') id: string,
@@ -536,7 +542,8 @@ export class PoliciesController {
             file: { type: 'string', format: 'binary' },
             versionId: {
               type: 'string',
-              description: 'Target version ID. If omitted, uploads to the latest draft version.',
+              description:
+                'Target version ID. If omitted, uploads to the latest draft version.',
             },
           },
           required: ['file'],
@@ -547,10 +554,14 @@ export class PoliciesController {
           properties: {
             fileName: { type: 'string' },
             fileType: { type: 'string' },
-            fileData: { type: 'string', description: 'Base64-encoded file content' },
+            fileData: {
+              type: 'string',
+              description: 'Base64-encoded file content',
+            },
             versionId: {
               type: 'string',
-              description: 'Target version ID. If omitted, uploads to the latest draft version.',
+              description:
+                'Target version ID. If omitted, uploads to the latest draft version.',
             },
           },
           required: ['fileName', 'fileType', 'fileData'],
@@ -585,11 +596,15 @@ export class PoliciesController {
     } else if (body.fileData && body.fileName && body.fileType) {
       const stripped = body.fileData.replace(/\s/g, '');
       if (!/^[A-Za-z0-9+/\-_]*={0,2}$/.test(stripped)) {
-        throw new BadRequestException('fileData must be valid base64-encoded content');
+        throw new BadRequestException(
+          'fileData must be valid base64-encoded content',
+        );
       }
       fileBuffer = Buffer.from(stripped, 'base64');
       if (fileBuffer.length === 0) {
-        throw new BadRequestException('fileData must be valid base64-encoded content');
+        throw new BadRequestException(
+          'fileData must be valid base64-encoded content',
+        );
       }
       sanitizedFileName = body.fileName.replace(/[^a-zA-Z0-9.-]/g, '_');
       fileType = body.fileType;
@@ -622,19 +637,21 @@ export class PoliciesController {
     let targetVersionId: string = body.versionId ?? '';
     if (!targetVersionId) {
       // Default to the latest draft version (not published, not pending approval)
-      const excludeIds = [policy.currentVersionId, policy.pendingVersionId].filter(
-        (v): v is string => v != null,
-      );
-      const draftVersion = excludeIds.length > 0
-        ? await db.policyVersion.findFirst({
-            where: { policyId: id, id: { notIn: excludeIds } },
-            orderBy: { version: 'desc' },
-            select: { id: true },
-          })
-        : null;
+      const excludeIds = [
+        policy.currentVersionId,
+        policy.pendingVersionId,
+      ].filter((v): v is string => v != null);
+      const draftVersion =
+        excludeIds.length > 0
+          ? await db.policyVersion.findFirst({
+              where: { policyId: id, id: { notIn: excludeIds } },
+              orderBy: { version: 'desc' },
+              select: { id: true },
+            })
+          : null;
       targetVersionId =
         draftVersion?.id ??
-        (policy.status === 'draft' ? policy.currentVersionId ?? '' : '');
+        (policy.status === 'draft' ? (policy.currentVersionId ?? '') : '');
       if (!targetVersionId) {
         throw new BadRequestException(
           'No draft version available. Create a new version before uploading a PDF.',
@@ -762,7 +779,8 @@ export class PoliciesController {
   @ApiQuery({
     name: 'versionId',
     required: false,
-    description: 'Target version ID. If omitted, targets the latest draft version.',
+    description:
+      'Target version ID. If omitted, targets the latest draft version.',
   })
   async deletePolicyPdf(
     @Param('id') id: string,
@@ -780,25 +798,35 @@ export class PoliciesController {
 
     const policy = await db.policy.findFirst({
       where: { id, organizationId, archivedAt: null },
-      select: { id: true, status: true, pdfUrl: true, currentVersionId: true, pendingVersionId: true },
+      select: {
+        id: true,
+        status: true,
+        pdfUrl: true,
+        currentVersionId: true,
+        pendingVersionId: true,
+      },
     });
     if (!policy) throw new NotFoundException('Policy not found');
 
     let targetVersionId = versionId;
     if (!targetVersionId) {
-      const excludeIds = [policy.currentVersionId, policy.pendingVersionId].filter(
-        (v): v is string => v != null,
-      );
-      const draftVersion = excludeIds.length > 0
-        ? await db.policyVersion.findFirst({
-            where: { policyId: id, id: { notIn: excludeIds } },
-            orderBy: { version: 'desc' },
-            select: { id: true },
-          })
-        : null;
+      const excludeIds = [
+        policy.currentVersionId,
+        policy.pendingVersionId,
+      ].filter((v): v is string => v != null);
+      const draftVersion =
+        excludeIds.length > 0
+          ? await db.policyVersion.findFirst({
+              where: { policyId: id, id: { notIn: excludeIds } },
+              orderBy: { version: 'desc' },
+              select: { id: true },
+            })
+          : null;
       targetVersionId =
         draftVersion?.id ??
-        (policy.status === 'draft' ? policy.currentVersionId ?? undefined : undefined);
+        (policy.status === 'draft'
+          ? (policy.currentVersionId ?? undefined)
+          : undefined);
       if (!targetVersionId) {
         throw new BadRequestException(
           'No draft version available to delete PDF from.',
@@ -1252,7 +1280,9 @@ export class PoliciesController {
   @ApiParam(VERSION_PARAMS.policyId)
   @ApiParam(VERSION_PARAMS.versionId)
   @ApiBody(VERSION_BODIES.submitForApproval)
-  @ApiExtension('x-speakeasy-mcp', { name: 'submit-policy-version-for-approval' })
+  @ApiExtension('x-speakeasy-mcp', {
+    name: 'submit-policy-version-for-approval',
+  })
   @ApiResponse(SUBMIT_VERSION_FOR_APPROVAL_RESPONSES[200])
   @ApiResponse(SUBMIT_VERSION_FOR_APPROVAL_RESPONSES[400])
   @ApiResponse(SUBMIT_VERSION_FOR_APPROVAL_RESPONSES[401])

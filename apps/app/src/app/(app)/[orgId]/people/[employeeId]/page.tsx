@@ -1,12 +1,12 @@
 import { auth } from '@/utils/auth';
 
+import { serverApi } from '@/lib/api-server';
 import { HIPAA_TRAINING_ID } from '@/lib/data/hipaa-training-content';
 import {
   type TrainingVideo,
   trainingVideos as trainingVideosData,
 } from '@/lib/data/training-videos';
 import { getFleetInstance } from '@/lib/fleet';
-import { serverApi } from '@/lib/api-server';
 import type { EmployeeTrainingVideoCompletion, Member, User } from '@db';
 import { db } from '@db/server';
 import { daysSinceCheckIn, getDeviceComplianceStatus } from '@gideon-defender/utils/devices';

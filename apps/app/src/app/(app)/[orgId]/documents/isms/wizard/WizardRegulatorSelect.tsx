@@ -3,10 +3,7 @@
 import { Badge, Button, Checkbox, Input, Label, Stack, Text } from '@trycompai/design-system';
 import { Add, TrashCan } from '@trycompai/design-system/icons';
 import { useState } from 'react';
-import {
-  CUSTOM_REGULATOR_PREFIX,
-  SECTOR_REGULATOR_LABELS,
-} from './wizard-types';
+import { CUSTOM_REGULATOR_PREFIX, SECTOR_REGULATOR_LABELS } from './wizard-types';
 
 interface WizardRegulatorSelectProps {
   options: string[];

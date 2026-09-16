@@ -174,11 +174,11 @@ describe('evidence-sanitizer', () => {
     });
 
     it('preserves arrays of primitives', () => {
-      expect(
-        sanitizeEvidence({ regions: ['us-east-1', 'eu-west-1'] }),
-      ).toEqual({
-        regions: ['us-east-1', 'eu-west-1'],
-      });
+      expect(sanitizeEvidence({ regions: ['us-east-1', 'eu-west-1'] })).toEqual(
+        {
+          regions: ['us-east-1', 'eu-west-1'],
+        },
+      );
     });
 
     it('redacts string elements of an array under a sensitive key', () => {

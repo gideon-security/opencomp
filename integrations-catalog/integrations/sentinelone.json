@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to your SentinelOne management console as an Admin.\n2. Navigate to Settings > Users, click your user name.\n3. In the API Token section, click Generate API Token.\n4. Copy the token.\n5. Enter your console URL (e.g. https://usea1.sentinelone.net) and the API token in CompAI."
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

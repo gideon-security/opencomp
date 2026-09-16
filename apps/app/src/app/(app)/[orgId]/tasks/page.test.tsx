@@ -70,9 +70,8 @@ describe('TasksPage member filtering', () => {
       return Promise.resolve({ data: undefined });
     });
 
-    mockFilterAppAccessMembers.mockImplementation(
-      async (members: Array<{ role: string }>) =>
-        members.filter((m) => m.role !== 'employee' && m.role !== 'contractor'),
+    mockFilterAppAccessMembers.mockImplementation(async (members: Array<{ role: string }>) =>
+      members.filter((m) => m.role !== 'employee' && m.role !== 'contractor'),
     );
   });
 

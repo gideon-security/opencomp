@@ -1,7 +1,7 @@
 import { requireApiPermission } from '@/lib/permissions.server';
 import type { linkRisksAndVendorsToWork } from '@/trigger/tasks/onboarding/link-risks-and-vendors-to-work';
 import { db } from '@db/server';
-import { auth as triggerAuth, tasks } from '@gideon-defender/trigger-local';
+import { tasks, auth as triggerAuth } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
@@ -25,10 +25,7 @@ export async function POST(
 
     const { vendorId } = await params;
     if (!vendorId) {
-      return NextResponse.json(
-        { error: 'Vendor ID is required' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Vendor ID is required' }, { status: 400 });
     }
 
     const vendor = await db.vendor.findUnique({

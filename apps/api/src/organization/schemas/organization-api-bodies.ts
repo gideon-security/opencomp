@@ -63,17 +63,20 @@ export const UPDATE_ORGANIZATION_BODY: ApiBodyOptions = {
       },
       evidenceApprovalEnabled: {
         type: 'boolean',
-        description: 'Whether evidence requires approval before it is accepted.',
+        description:
+          'Whether evidence requires approval before it is accepted.',
         example: false,
       },
       deviceAgentStepEnabled: {
         type: 'boolean',
-        description: 'Whether the device-agent step is enabled during member onboarding.',
+        description:
+          'Whether the device-agent step is enabled during member onboarding.',
         example: true,
       },
       securityTrainingStepEnabled: {
         type: 'boolean',
-        description: 'Whether the security-training step is enabled during member onboarding.',
+        description:
+          'Whether the security-training step is enabled during member onboarding.',
         example: true,
       },
       whistleblowerReportEnabled: {

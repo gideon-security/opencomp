@@ -4,8 +4,8 @@ import { authActionClient } from '@/actions/safe-action';
 import { env } from '@/env.mjs';
 import { db } from '@db/server';
 import { Vercel } from '@vercel/sdk';
-import * as dns from 'node:dns';
 import { revalidatePath, revalidateTag } from 'next/cache';
+import * as dns from 'node:dns';
 import { z } from 'zod';
 
 const dnsPromises = dns.promises;
@@ -88,9 +88,7 @@ export const checkDnsRecordAction = authActionClient
 
     if (cnameRecords.length > 0) {
       // First try strict pattern
-      isCnameVerified = cnameRecords.some((address) =>
-        VERCEL_DNS_CNAME_PATTERN.test(address),
-      );
+      isCnameVerified = cnameRecords.some((address) => VERCEL_DNS_CNAME_PATTERN.test(address));
 
       // If strict fails, try fallback pattern (catches new Vercel patterns we haven't seen)
       if (!isCnameVerified) {
@@ -110,17 +108,14 @@ export const checkDnsRecordAction = authActionClient
 
     // Node's resolve(host, 'TXT') returns string[][] - each inner array is one TXT record
     const txtRecordMatches = (records: string[][], expected: string | null) =>
-      expected != null &&
-      records.some((segments) => segments.some((s) => s === expected));
+      expected != null && records.some((segments) => segments.some((s) => s === expected));
 
     const isTxtVerified = txtRecordMatches(txtRecords, expectedTxtValue);
-    const isVercelTxtVerified = txtRecordMatches(
-      vercelTxtRecords,
-      expectedVercelTxtValue ?? null,
-    );
+    const isVercelTxtVerified = txtRecordMatches(vercelTxtRecords, expectedVercelTxtValue ?? null);
 
     const requiresVercelTxt = isVercelDomain?.isVercelDomain === true;
-    const isVerified = isCnameVerified && isTxtVerified && (!requiresVercelTxt || isVercelTxtVerified);
+    const isVerified =
+      isCnameVerified && isTxtVerified && (!requiresVercelTxt || isVercelTxtVerified);
 
     if (!isVerified) {
       return {

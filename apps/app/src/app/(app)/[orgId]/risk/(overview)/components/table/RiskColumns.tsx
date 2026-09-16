@@ -89,19 +89,12 @@ export const columns = (
       return (
         <div className="flex items-center gap-2">
           <Avatar className="h-8 w-8">
-            <AvatarImage
-              src={user.image || undefined}
-              alt={user.name || user.email || ''}
-            />
+            <AvatarImage src={user.image || undefined} alt={user.name || user.email || ''} />
             <AvatarFallback>
-              {user.name?.charAt(0) ||
-                user.email?.charAt(0).toUpperCase() ||
-                '?'}
+              {user.name?.charAt(0) || user.email?.charAt(0).toUpperCase() || '?'}
             </AvatarFallback>
           </Avatar>
-          <p className="text-sm font-medium">
-            {user.name || user.email}
-          </p>
+          <p className="text-sm font-medium">{user.name || user.email}</p>
         </div>
       );
     },

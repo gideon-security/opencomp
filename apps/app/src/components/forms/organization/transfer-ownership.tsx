@@ -79,7 +79,8 @@ export function TransferOwnership({ members, isOwner }: TransferOwnershipProps) 
 
       if (response.error || !response.data?.success) {
         // Check for error in response.error (non-200 responses) or response.data.message (200 with success: false)
-        const errorMessage = response.error || response.data?.message || 'Failed to transfer ownership';
+        const errorMessage =
+          response.error || response.data?.message || 'Failed to transfer ownership';
         toast.error(errorMessage);
         return;
       }
@@ -176,8 +177,8 @@ export function TransferOwnership({ members, isOwner }: TransferOwnershipProps) 
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This will transfer ownership of the organization to the selected member. You will
-              become an admin and will no longer have owner privileges. This action cannot be
-              undone without the new owner transferring ownership back to you.
+              become an admin and will no longer have owner privileges. This action cannot be undone
+              without the new owner transferring ownership back to you.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
@@ -207,4 +208,3 @@ export function TransferOwnership({ members, isOwner }: TransferOwnershipProps) 
     </>
   );
 }
-

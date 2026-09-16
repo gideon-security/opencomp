@@ -1,7 +1,7 @@
 'use client';
 
 import { Skeleton } from '@gideon-defender/ui/skeleton';
-import { Time, Locked } from '@trycompai/design-system/icons';
+import { Locked, Time } from '@trycompai/design-system/icons';
 
 /**
  * Disabled-looking row for the "Verify risk assessment" task while the
@@ -54,5 +54,3 @@ export function VerifyRiskAssessmentTaskItemSkeletonRow() {
     </div>
   );
 }
-
-

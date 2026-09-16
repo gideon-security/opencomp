@@ -1,7 +1,9 @@
 'use client';
 
 import { SelectAssignee } from '@/components/SelectAssignee';
+import { usePermissions } from '@/hooks/use-permissions';
 import { getInitials } from '@/lib/utils';
+import { PolicyStatus, type Member, type Policy, type PolicyVersion, type User } from '@db';
 import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
 import { Badge } from '@gideon-defender/ui/badge';
 import {
@@ -18,7 +20,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
-import { PolicyStatus, type Member, type Policy, type PolicyVersion, type User } from '@db';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,17 +35,16 @@ import {
   Stack,
   Text,
 } from '@trycompai/design-system';
+import { ChevronLeft, ChevronRight } from '@trycompai/design-system/icons';
 import { format } from 'date-fns';
 import { Edit, FileText, MoreVertical, Plus, Trash2, Upload } from 'lucide-react';
-import { ChevronLeft, ChevronRight } from '@trycompai/design-system/icons';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-
-const VERSIONS_PER_PAGE = 10;
 import { toast } from 'sonner';
-import { usePermissions } from '@/hooks/use-permissions';
 import { usePolicyVersions } from '../hooks/usePolicyVersions';
 import { PublishVersionDialog } from './PublishVersionDialog';
+
+const VERSIONS_PER_PAGE = 10;
 
 type PolicyVersionWithPublisher = PolicyVersion & {
   publishedBy: (Member & { user: User }) | null;
@@ -89,7 +89,8 @@ export function PolicyVersionsTab({
   const [versionToDelete, setVersionToDelete] = useState<PolicyVersionWithPublisher | null>(null);
   const [isDeletingVersion, setIsDeletingVersion] = useState(false);
   const [isSetActiveApprovalDialogOpen, setIsSetActiveApprovalDialogOpen] = useState(false);
-  const [pendingSetActiveVersion, setPendingSetActiveVersion] = useState<PolicyVersionWithPublisher | null>(null);
+  const [pendingSetActiveVersion, setPendingSetActiveVersion] =
+    useState<PolicyVersionWithPublisher | null>(null);
   const [versionApprovalApproverId, setVersionApprovalApproverId] = useState<string | null>(null);
   const [settingActive, setSettingActive] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -181,12 +182,11 @@ export function PolicyVersionsTab({
     <>
       <Stack gap="md">
         <HStack justify="between" align="center">
-          <Text weight="semibold" size="lg">Version History</Text>
+          <Text weight="semibold" size="lg">
+            Version History
+          </Text>
           {canUpdatePolicy && (
-            <Button
-              size="lg"
-              onClick={() => setIsPublishDialogOpen(true)}
-            >
+            <Button size="lg" onClick={() => setIsPublishDialogOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Create Version
             </Button>
@@ -205,7 +205,7 @@ export function PolicyVersionsTab({
             {paginatedVersions.map((version) => {
               const isCurrentVersion = version.id === policy.currentVersionId;
               const isPendingVersion = version.id === policy.pendingVersionId;
-              
+
               // Badge logic:
               // - Published: current version AND policy was ever published (has lastPublishedAt)
               //   This ensures the published version keeps its badge even during pending approval
@@ -213,13 +213,19 @@ export function PolicyVersionsTab({
               // - Draft: everything else (all versions that aren't published or pending)
               const isPublished = isCurrentVersion && !!policy.lastPublishedAt;
               const isDraft = !isPublished && !isPendingVersion;
-              
+
               const canDelete = canDeletePolicy && !isCurrentVersion && !isPendingVersion;
               const hasPendingVersion = Boolean(policy.pendingVersionId) && isPendingApproval;
               // Can publish other versions (not current, not pending)
-              const canPublishOther = canPublishPolicy && !isCurrentVersion && !isPendingVersion && !hasPendingVersion;
+              const canPublishOther =
+                canPublishPolicy && !isCurrentVersion && !isPendingVersion && !hasPendingVersion;
               // Can publish current version if it's in draft or needs_review status
-              const canPublishCurrent = canPublishPolicy && isCurrentVersion && (policy.status === PolicyStatus.draft || policy.status === PolicyStatus.needs_review) && !hasPendingVersion;
+              const canPublishCurrent =
+                canPublishPolicy &&
+                isCurrentVersion &&
+                (policy.status === PolicyStatus.draft ||
+                  policy.status === PolicyStatus.needs_review) &&
+                !hasPendingVersion;
               const canPublish = canPublishOther || canPublishCurrent;
               const publisher = version.publishedBy?.user;
 
@@ -237,10 +243,7 @@ export function PolicyVersionsTab({
                 >
                   <div className="flex items-center gap-4">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={publisher?.image || ''}
-                        alt={publisher?.name || 'User'}
-                      />
+                      <AvatarImage src={publisher?.image || ''} alt={publisher?.name || 'User'} />
                       <AvatarFallback className="text-xs">
                         {publisher?.name ? getInitials(publisher.name) : 'U'}
                       </AvatarFallback>
@@ -276,66 +279,64 @@ export function PolicyVersionsTab({
                         </Text>
                       )}
                       <Text size="xs" variant="muted">
-                        Last updated: {format(new Date(version.updatedAt), 'MMM d, yyyy \'at\' h:mm a')}
-                        {' by '}{publisher?.name || 'System'}
+                        Last updated:{' '}
+                        {format(new Date(version.updatedAt), "MMM d, yyyy 'at' h:mm a")}
+                        {' by '}
+                        {publisher?.name || 'System'}
                       </Text>
                     </div>
                   </div>
-                    {(canPublish || canDelete || canUpdatePolicy) ? (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          {canPublish && (
-                            <DropdownMenuItem onClick={() => handleRequestSetActive(version)}>
-                              <Upload className="h-4 w-4 mr-2" />
-                              Publish
-                            </DropdownMenuItem>
-                          )}
-                          <DropdownMenuItem onClick={() => handleEditVersion(version)}>
-                            {isPublished || !canUpdatePolicy ? (
-                              <>
-                                <FileText className="h-4 w-4 mr-2" />
-                                View
-                              </>
-                            ) : (
-                              <>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Edit
-                              </>
-                            )}
+                  {canPublish || canDelete || canUpdatePolicy ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        {canPublish && (
+                          <DropdownMenuItem onClick={() => handleRequestSetActive(version)}>
+                            <Upload className="h-4 w-4 mr-2" />
+                            Publish
                           </DropdownMenuItem>
-                          {canDelete && (
-                            <DropdownMenuItem
-                              onClick={() => {
-                                setVersionToDelete(version);
-                                setDeleteVersionDialogOpen(true);
-                              }}
-                              className="text-destructive focus:text-destructive"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem onClick={() => handleEditVersion(version)}>
+                          {isPublished || !canUpdatePolicy ? (
+                            <>
+                              <FileText className="h-4 w-4 mr-2" />
+                              View
+                            </>
+                          ) : (
+                            <>
+                              <Edit className="h-4 w-4 mr-2" />
+                              Edit
+                            </>
                           )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    ) : (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEditVersion(version)}
-                      >
-                        <FileText className="h-4 w-4 mr-2" />
-                        View
-                      </Button>
-                    )}
+                        </DropdownMenuItem>
+                        {canDelete && (
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setVersionToDelete(version);
+                              setDeleteVersionDialogOpen(true);
+                            }}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <Button variant="ghost" size="sm" onClick={() => handleEditVersion(version)}>
+                      <FileText className="h-4 w-4 mr-2" />
+                      View
+                    </Button>
+                  )}
                 </div>
               );
             })}
-            
+
             {/* Pagination Controls */}
             {totalPages > 1 && (
               <div className="pt-4 border-t border-border">
@@ -392,7 +393,8 @@ export function PolicyVersionsTab({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Version?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete version {versionToDelete?.version}? This action cannot be undone.
+              Are you sure you want to delete version {versionToDelete?.version}? This action cannot
+              be undone.
               {versionToDelete?.pdfUrl && ' The associated PDF file will also be deleted.'}
             </AlertDialogDescription>
           </AlertDialogHeader>

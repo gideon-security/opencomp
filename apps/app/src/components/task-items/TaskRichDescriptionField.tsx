@@ -1,25 +1,23 @@
 'use client';
 
-import type { JSONContent } from '@tiptap/react';
-import { useEditor, EditorContent } from '@tiptap/react';
-import { useMemo, useEffect, useRef, useCallback, useState } from 'react';
+import { useAttachments } from '@/hooks/use-attachments';
+import { Button } from '@gideon-defender/ui/button';
 import { createMentionExtension, type MentionUser } from '@gideon-defender/ui/editor';
-import { FileAttachment } from '@gideon-defender/ui/editor/extensions/file-attachment';
 import { defaultExtensions } from '@gideon-defender/ui/editor/extensions';
-import { toast } from 'sonner';
+import { FileAttachment } from '@gideon-defender/ui/editor/extensions/file-attachment';
+import type { JSONContent } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import { Attachment } from '@trycompai/design-system/icons';
 import { Loader2 } from 'lucide-react';
-import { Button } from '@gideon-defender/ui/button';
-import { useAttachments } from '@/hooks/use-attachments';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 interface TaskRichDescriptionFieldProps {
   value: JSONContent | null;
   onChange: (value: JSONContent | null) => void;
   onFileUpload: (
     files: File[],
-  ) => Promise<
-    { id: string; name: string; size?: number; downloadUrl?: string; type?: string }[]
-  >;
+  ) => Promise<{ id: string; name: string; size?: number; downloadUrl?: string; type?: string }[]>;
   members: MentionUser[];
   disabled?: boolean;
   placeholder?: string;
@@ -48,7 +46,7 @@ export function TaskRichDescriptionField({
   const { getDownloadUrl, deleteAttachment } = useAttachments();
   const [isUploading, setIsUploading] = useState(false);
   const isUploadingRef = useRef(false);
-  
+
   // Add pulse animation and skeleton styles
   useEffect(() => {
     const styleId = 'file-skeleton-styles';
@@ -104,7 +102,7 @@ export function TaskRichDescriptionField({
   // Search function - no debounce for empty query (show immediately)
   const searchMembers = (query: string): MentionUser[] => {
     if (!members || members.length === 0) return [];
-    
+
     // Show first 10 members immediately when query is empty
     if (!query || query.trim() === '') {
       return members.slice(0, 10);
@@ -183,11 +181,7 @@ export function TaskRichDescriptionField({
 
   // Memoize extensions array to prevent recreation
   const extensions = useMemo(
-    () => [
-      ...defaultExtensions({ placeholder }),
-      mentionExtension,
-      fileAttachmentExtension,
-    ],
+    () => [...defaultExtensions({ placeholder }), mentionExtension, fileAttachmentExtension],
     [placeholder, mentionExtension, fileAttachmentExtension],
   );
 
@@ -212,24 +206,89 @@ export function TaskRichDescriptionField({
             });
           } else {
             // Normal typing - can call synchronously
-          onChange(content);
+            onChange(content);
           }
         }
       },
       editorProps: {
         handleDrop: (view, event, _slice, moved) => {
-        if (!moved && event.dataTransfer && event.dataTransfer.files) {
-          const files = Array.from(event.dataTransfer.files);
+          if (!moved && event.dataTransfer && event.dataTransfer.files) {
+            const files = Array.from(event.dataTransfer.files);
+            if (files.length > 0) {
+              event.preventDefault();
+
+              // Get drop position - insert at drop location
+              const coordinates = view.posAtCoords({
+                left: event.clientX,
+                top: event.clientY,
+              });
+              const pos = coordinates?.pos ?? view.state.selection.anchor;
+
+              // Handle async upload without blocking
+              (async () => {
+                setIsUploading(true);
+                isUploadingRef.current = true;
+                try {
+                  const results = await onFileUpload(files);
+                  if (results && results.length > 0 && editor && !editor.isDestroyed) {
+                    const contentToInsert: Array<{
+                      type: string;
+                      attrs?: Record<string, unknown>;
+                    }> = [];
+                    results.forEach((result, index) => {
+                      const inferredType = result.type || files[index]?.type || '';
+                      contentToInsert.push({
+                        type: 'fileAttachment',
+                        attrs: {
+                          id: result.id,
+                          name: result.name,
+                          size: result.size || 0,
+                          downloadUrl: result.downloadUrl || '',
+                          uploadedAt: new Date().toISOString(),
+                          type: inferredType,
+                        },
+                      });
+                      if (index < results.length - 1) {
+                        contentToInsert.push({ type: 'paragraph' });
+                      }
+                    });
+                    contentToInsert.push({ type: 'paragraph' });
+                    editor
+                      .chain()
+                      .focus()
+                      .setTextSelection(pos)
+                      .insertContent(contentToInsert)
+                      .run();
+                    // Ensure onChange is called after drop insertion (defer to avoid flushSync during render)
+                    queueMicrotask(() => {
+                      if (!editor.isDestroyed) {
+                        onChange(editor.getJSON());
+                      }
+                    });
+                  }
+                } catch (error) {
+                  console.error('Failed to upload files:', error);
+                } finally {
+                  setIsUploading(false);
+                  isUploadingRef.current = false;
+                }
+              })();
+
+              return true;
+            }
+          }
+          return false;
+        },
+        handlePaste: (view, event, _slice) => {
+          const items = Array.from(event.clipboardData?.items || []);
+          const files = items
+            .filter((item) => item.kind === 'file')
+            .map((item) => item.getAsFile())
+            .filter((file): file is File => file !== null);
+
           if (files.length > 0) {
             event.preventDefault();
-            
-            // Get drop position - insert at drop location
-            const coordinates = view.posAtCoords({
-              left: event.clientX,
-              top: event.clientY,
-            });
-            const pos = coordinates?.pos ?? view.state.selection.anchor;
-            
+
             // Handle async upload without blocking
             (async () => {
               setIsUploading(true);
@@ -237,7 +296,8 @@ export function TaskRichDescriptionField({
               try {
                 const results = await onFileUpload(files);
                 if (results && results.length > 0 && editor && !editor.isDestroyed) {
-                  const contentToInsert: Array<{ type: string; attrs?: Record<string, unknown> }> = [];
+                  const contentToInsert: Array<{ type: string; attrs?: Record<string, unknown> }> =
+                    [];
                   results.forEach((result, index) => {
                     const inferredType = result.type || files[index]?.type || '';
                     contentToInsert.push({
@@ -256,11 +316,17 @@ export function TaskRichDescriptionField({
                     }
                   });
                   contentToInsert.push({ type: 'paragraph' });
-                  editor.chain().focus().setTextSelection(pos).insertContent(contentToInsert).run();
-                  // Ensure onChange is called after drop insertion (defer to avoid flushSync during render)
+                  const currentPos = editor.state.selection.from;
+                  editor
+                    .chain()
+                    .focus()
+                    .setTextSelection(currentPos)
+                    .insertContent(contentToInsert)
+                    .run();
+                  // Ensure onChange is called after paste insertion (defer to avoid flushSync during render)
                   queueMicrotask(() => {
                     if (!editor.isDestroyed) {
-                  onChange(editor.getJSON());
+                      onChange(editor.getJSON());
                     }
                   });
                 }
@@ -271,69 +337,11 @@ export function TaskRichDescriptionField({
                 isUploadingRef.current = false;
               }
             })();
-            
+
             return true;
           }
-        }
-        return false;
-      },
-        handlePaste: (view, event, _slice) => {
-        const items = Array.from(event.clipboardData?.items || []);
-        const files = items
-          .filter((item) => item.kind === 'file')
-          .map((item) => item.getAsFile())
-          .filter((file): file is File => file !== null);
-
-        if (files.length > 0) {
-          event.preventDefault();
-          
-          // Handle async upload without blocking
-          (async () => {
-            setIsUploading(true);
-            isUploadingRef.current = true;
-            try {
-              const results = await onFileUpload(files);
-              if (results && results.length > 0 && editor && !editor.isDestroyed) {
-                const contentToInsert: Array<{ type: string; attrs?: Record<string, unknown> }> = [];
-                results.forEach((result, index) => {
-                  const inferredType = result.type || files[index]?.type || '';
-                  contentToInsert.push({
-                    type: 'fileAttachment',
-                    attrs: {
-                      id: result.id,
-                      name: result.name,
-                      size: result.size || 0,
-                      downloadUrl: result.downloadUrl || '',
-                      uploadedAt: new Date().toISOString(),
-                      type: inferredType,
-                    },
-                  });
-                  if (index < results.length - 1) {
-                    contentToInsert.push({ type: 'paragraph' });
-                  }
-                });
-                contentToInsert.push({ type: 'paragraph' });
-                const currentPos = editor.state.selection.from;
-                editor.chain().focus().setTextSelection(currentPos).insertContent(contentToInsert).run();
-                // Ensure onChange is called after paste insertion (defer to avoid flushSync during render)
-                queueMicrotask(() => {
-                  if (!editor.isDestroyed) {
-                onChange(editor.getJSON());
-                  }
-                });
-              }
-            } catch (error) {
-              console.error('Failed to upload files:', error);
-            } finally {
-              setIsUploading(false);
-              isUploadingRef.current = false;
-            }
-          })();
-          
-          return true;
-        }
-        return false;
-      },
+          return false;
+        },
         attributes: {
           class:
             'prose prose-lg max-w-none focus:outline-none [&_p]:text-base [&_p]:leading-relaxed [&_li]:text-base [&_li]:leading-relaxed min-h-[150px] max-h-[300px] overflow-y-auto p-3 pb-20',
@@ -342,10 +350,7 @@ export function TaskRichDescriptionField({
           mousedown: (view, event) => {
             // Allow clicks on suggestion dropdowns to work
             const target = event.target as HTMLElement;
-            if (
-              target?.closest('.tippy-box') ||
-              target?.closest('[role="listbox"]')
-            ) {
+            if (target?.closest('.tippy-box') || target?.closest('[role="listbox"]')) {
               return true; // Let the event propagate to the dropdown
             }
             return false;
@@ -387,11 +392,11 @@ export function TaskRichDescriptionField({
       onFileSelectStart?.();
       setIsUploading(true);
       isUploadingRef.current = true;
-      
+
       // Get current selection position before upload
       editor.chain().focus().run();
       const startPos = editor.state.selection.from;
-      
+
       // Insert loading skeleton placeholders as simple paragraphs
       // We'll use CSS to style them to look like file attachment skeletons
       const skeletonPlaceholders: Array<{ type: string; attrs?: any }> = [];
@@ -403,23 +408,31 @@ export function TaskRichDescriptionField({
           },
         });
       });
-      
+
       // Insert skeletons at cursor position
       editor.chain().focus().setTextSelection(startPos).insertContent(skeletonPlaceholders).run();
-      
+
       // Store the position and count for replacement
       const skeletonCount = fileList.length;
-      
+
       try {
         const results = await onFileUpload(fileList);
-        
+
         if (!results || results.length === 0) {
           // Remove skeleton paragraphs if upload failed
           try {
             const doc = editor.state.doc;
             doc.nodesBetween(startPos, doc.content.size, (node, pos) => {
-              if (node.type.name === 'paragraph' && node.attrs?.class === 'file-upload-skeleton-placeholder') {
-                editor.chain().focus().setTextSelection({ from: pos, to: pos + node.nodeSize }).deleteSelection().run();
+              if (
+                node.type.name === 'paragraph' &&
+                node.attrs?.class === 'file-upload-skeleton-placeholder'
+              ) {
+                editor
+                  .chain()
+                  .focus()
+                  .setTextSelection({ from: pos, to: pos + node.nodeSize })
+                  .deleteSelection()
+                  .run();
               }
             });
           } catch (cleanupError) {
@@ -427,15 +440,15 @@ export function TaskRichDescriptionField({
           }
           return;
         }
-        
+
         if (editor.isDestroyed) {
           console.error('Editor is destroyed, cannot insert files');
           return;
         }
-        
+
         // Wait for editor state to stabilize
         await new Promise((resolve) => requestAnimationFrame(resolve));
-        
+
         // Build content array with all attachments
         const contentToInsert: Array<{ type: string; attrs?: any }> = [];
         results.forEach((result, index) => {
@@ -458,28 +471,33 @@ export function TaskRichDescriptionField({
         });
         // Add final paragraph after last attachment
         contentToInsert.push({ type: 'paragraph' });
-        
+
         // Find and replace skeleton paragraphs with actual file attachments
         const doc = editor.state.doc;
         let replacedCount = 0;
         const positionsToReplace: Array<{ pos: number; resultIndex: number }> = [];
-        
+
         // Find all skeleton paragraphs and their positions
         doc.nodesBetween(startPos, doc.content.size, (node, pos) => {
-          if (node.type.name === 'paragraph' && node.attrs?.class === 'file-upload-skeleton-placeholder' && replacedCount < results.length) {
+          if (
+            node.type.name === 'paragraph' &&
+            node.attrs?.class === 'file-upload-skeleton-placeholder' &&
+            replacedCount < results.length
+          ) {
             positionsToReplace.push({ pos, resultIndex: replacedCount });
             replacedCount++;
           }
         });
-        
+
         // Replace skeletons in reverse order to maintain positions
         positionsToReplace.reverse().forEach(({ pos, resultIndex }) => {
           const result = results[resultIndex];
           const inferredType = result.type || fileList[resultIndex]?.type || '';
           const node = doc.nodeAt(pos);
-          
+
           if (node) {
-            editor.chain()
+            editor
+              .chain()
               .focus()
               .setTextSelection({ from: pos, to: pos + node.nodeSize })
               .deleteSelection()
@@ -501,7 +519,7 @@ export function TaskRichDescriptionField({
               .run();
           }
         });
-        
+
         // If we didn't replace all (fallback), insert remaining at current position
         if (replacedCount < results.length) {
           const remainingFiles = results.slice(replacedCount);
@@ -524,19 +542,19 @@ export function TaskRichDescriptionField({
             }
           });
           remainingContent.push({ type: 'paragraph' });
-          
+
           const currentPos = editor.state.selection.from;
           editor.chain().focus().setTextSelection(currentPos).insertContent(remainingContent).run();
         }
-        
+
         // Manually trigger onChange to ensure parent state is synced
         // TipTap's onUpdate should fire, but we ensure it here for reliability
         // Defer to avoid flushSync during render cycle
         queueMicrotask(() => {
-        if (editor && !editor.isDestroyed) {
-          const content = editor.getJSON();
-          onChange(content);
-        }
+          if (editor && !editor.isDestroyed) {
+            const content = editor.getJSON();
+            onChange(content);
+          }
         });
       } catch (error) {
         console.error('Failed to upload files:', error);
@@ -545,8 +563,16 @@ export function TaskRichDescriptionField({
         try {
           const doc = editor.state.doc;
           doc.nodesBetween(startPos, doc.content.size, (node, pos) => {
-            if (node.type.name === 'paragraph' && node.attrs?.class === 'file-upload-skeleton-placeholder') {
-              editor.chain().focus().setTextSelection({ from: pos, to: pos + node.nodeSize }).deleteSelection().run();
+            if (
+              node.type.name === 'paragraph' &&
+              node.attrs?.class === 'file-upload-skeleton-placeholder'
+            ) {
+              editor
+                .chain()
+                .focus()
+                .setTextSelection({ from: pos, to: pos + node.nodeSize })
+                .deleteSelection()
+                .run();
             }
           });
         } catch (cleanupError) {
@@ -618,4 +644,3 @@ export function TaskRichDescriptionField({
     </div>
   );
 }
-

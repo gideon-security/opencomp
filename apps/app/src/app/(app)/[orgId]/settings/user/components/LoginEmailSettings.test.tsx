@@ -19,8 +19,14 @@ vi.mock('@trycompai/design-system', () => ({
     children,
     loading,
     ...props
-  }: HTMLAttributes<HTMLButtonElement> & { disabled?: boolean; loading?: boolean; type?: 'submit' | 'button' }) => (
-    <button disabled={loading || props.disabled} {...props}>{children}</button>
+  }: HTMLAttributes<HTMLButtonElement> & {
+    disabled?: boolean;
+    loading?: boolean;
+    type?: 'submit' | 'button';
+  }) => (
+    <button disabled={loading || props.disabled} {...props}>
+      {children}
+    </button>
   ),
   Input: (props: HTMLAttributes<HTMLInputElement>) => <input {...props} />,
   Label: ({ children, ...props }: LabelHTMLAttributes<HTMLLabelElement>) => (
@@ -64,9 +70,7 @@ describe('LoginEmailSettings', () => {
 
   it('shows the current login email', () => {
     render(<LoginEmailSettings currentEmail={CURRENT_EMAIL} />);
-    expect(
-      screen.getByText(`You currently sign in as ${CURRENT_EMAIL}.`),
-    ).toBeInTheDocument();
+    expect(screen.getByText(`You currently sign in as ${CURRENT_EMAIL}.`)).toBeInTheDocument();
   });
 
   it('requests the change and shows the pending notice on success', async () => {
@@ -81,9 +85,7 @@ describe('LoginEmailSettings', () => {
         callbackURL: `${window.location.origin}/`,
       });
     });
-    expect(toast.success).toHaveBeenCalledWith(
-      `Confirmation link sent to ${CURRENT_EMAIL}`,
-    );
+    expect(toast.success).toHaveBeenCalledWith(`Confirmation link sent to ${CURRENT_EMAIL}`);
     expect(
       screen.getByText(/We sent a confirmation link to admin@old-domain.com/),
     ).toBeInTheDocument();
@@ -94,9 +96,7 @@ describe('LoginEmailSettings', () => {
 
     await submitWithEmail(CURRENT_EMAIL.toUpperCase());
 
-    expect(
-      await screen.findByText('This is already your login email'),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('This is already your login email')).toBeInTheDocument();
     expect(mockChangeEmail).not.toHaveBeenCalled();
   });
 
@@ -105,29 +105,21 @@ describe('LoginEmailSettings', () => {
 
     await submitWithEmail('not-an-email');
 
-    expect(
-      await screen.findByText('Enter a valid email address'),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Enter a valid email address')).toBeInTheDocument();
     expect(mockChangeEmail).not.toHaveBeenCalled();
   });
 
   it('hides the pending notice once the login email actually changes', async () => {
     mockChangeEmail.mockResolvedValue({ data: { status: true }, error: null });
-    const { rerender } = render(
-      <LoginEmailSettings currentEmail={CURRENT_EMAIL} />,
-    );
+    const { rerender } = render(<LoginEmailSettings currentEmail={CURRENT_EMAIL} />);
 
     await submitWithEmail('admin@new-domain.com');
-    expect(
-      await screen.findByText(/We sent a confirmation link/),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/We sent a confirmation link/)).toBeInTheDocument();
 
     // Verification completed elsewhere; the server re-renders with the new email.
     rerender(<LoginEmailSettings currentEmail="admin@new-domain.com" />);
 
-    expect(
-      screen.queryByText(/We sent a confirmation link/),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/We sent a confirmation link/)).not.toBeInTheDocument();
   });
 
   it('surfaces API errors as a toast', async () => {
@@ -142,8 +134,6 @@ describe('LoginEmailSettings', () => {
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('Change email is disabled');
     });
-    expect(
-      screen.queryByText(/We sent a confirmation link/),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/We sent a confirmation link/)).not.toBeInTheDocument();
   });
 });

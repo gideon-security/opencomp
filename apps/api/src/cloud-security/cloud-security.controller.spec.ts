@@ -96,9 +96,15 @@ describe('CloudSecurityController — API-key mutation support', () => {
       .compile();
 
     controller = module.get(CloudSecurityController);
-    exceptionService = module.get(CloudExceptionService) as jest.Mocked<CloudExceptionService>;
-    scanModeService = module.get(CloudAwsScanModeService) as jest.Mocked<CloudAwsScanModeService>;
-    actingUser = module.get(ActingUserResolver) as jest.Mocked<ActingUserResolver>;
+    exceptionService = module.get(
+      CloudExceptionService,
+    ) as jest.Mocked<CloudExceptionService>;
+    scanModeService = module.get(
+      CloudAwsScanModeService,
+    ) as jest.Mocked<CloudAwsScanModeService>;
+    actingUser = module.get(
+      ActingUserResolver,
+    ) as jest.Mocked<ActingUserResolver>;
 
     jest.clearAllMocks();
   });
@@ -129,7 +135,8 @@ describe('CloudSecurityController — API-key mutation support', () => {
 
   describe('markFindingAsException', () => {
     const validBody = {
-      reason: 'Documented exception with twenty-plus non-whitespace characters here.',
+      reason:
+        'Documented exception with twenty-plus non-whitespace characters here.',
       reviewedBy: 'person@example.com',
     };
 
@@ -197,7 +204,9 @@ describe('CloudSecurityController — API-key mutation support', () => {
 
       expect(error).toBeInstanceOf(HttpException);
       expect((error as HttpException).getStatus()).toBe(HttpStatus.BAD_REQUEST);
-      expect((error as HttpException).message).toMatch(/at least one user with the "owner" role/);
+      expect((error as HttpException).message).toMatch(
+        /at least one user with the "owner" role/,
+      );
       expect(exceptionService.markAsException).not.toHaveBeenCalled();
     });
   });
@@ -212,9 +221,16 @@ describe('CloudSecurityController — API-key mutation support', () => {
         userId: 'usr_alice',
         source: 'session',
       });
-      scanModeService.updateMode.mockResolvedValueOnce({ mode: 'security_hub' });
+      scanModeService.updateMode.mockResolvedValueOnce({
+        mode: 'security_hub',
+      });
 
-      await controller.updateAwsScanMode('icn_aws', validBody, 'org_1', sessionReq());
+      await controller.updateAwsScanMode(
+        'icn_aws',
+        validBody,
+        'org_1',
+        sessionReq(),
+      );
 
       expect(scanModeService.updateMode).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -232,9 +248,16 @@ describe('CloudSecurityController — API-key mutation support', () => {
         source: 'org-owner-fallback',
         callerLabel: 'via API key "CI Pipeline"',
       });
-      scanModeService.updateMode.mockResolvedValueOnce({ mode: 'security_hub' });
+      scanModeService.updateMode.mockResolvedValueOnce({
+        mode: 'security_hub',
+      });
 
-      await controller.updateAwsScanMode('icn_aws', validBody, 'org_1', apiKeyReq());
+      await controller.updateAwsScanMode(
+        'icn_aws',
+        validBody,
+        'org_1',
+        apiKeyReq(),
+      );
 
       expect(scanModeService.updateMode).toHaveBeenCalledWith(
         expect.objectContaining({

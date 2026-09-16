@@ -1,7 +1,7 @@
 import { serverApi } from '@/lib/api-server';
 import { PageLayout } from '@trycompai/design-system';
-import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { RiskPageClient } from './components/RiskPageClient';
 
@@ -32,10 +32,7 @@ export default async function RiskPage({ searchParams, params }: PageProps) {
   }
 
   const assignees = (peopleResult.data?.data ?? [])
-    .filter(
-      (p: any) =>
-        !p.deactivated && !['employee', 'contractor'].includes(p.role),
-    )
+    .filter((p: any) => !p.deactivated && !['employee', 'contractor'].includes(p.role))
     .map((p: any) => ({
       id: p.id,
       role: p.role,

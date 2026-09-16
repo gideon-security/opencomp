@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { browser } from 'wxt/browser';
+import { z } from 'zod';
 import type { TabQuestionQueue } from '../types';
 
 const QUEUE_KEY_PREFIX = 'comp.securityQuestionnaire.queue.';
@@ -11,14 +11,7 @@ const QueueItemSchema = z.object({
   value: z.string(),
   isEmpty: z.boolean(),
   tag: z.string(),
-  status: z.enum([
-    'pending',
-    'generating',
-    'generated',
-    'approved',
-    'inserted',
-    'flagged',
-  ]),
+  status: z.enum(['pending', 'generating', 'generated', 'approved', 'inserted', 'flagged']),
   answer: z.string().nullable(),
   confidence: z.enum(['high', 'med', 'low']).nullable(),
   sources: z.array(z.unknown()),
@@ -53,9 +46,7 @@ const TabQuestionQueueSchema = z.object({
   updatedAt: z.number(),
 });
 
-export async function loadTabQueue(
-  tabId: number,
-): Promise<TabQuestionQueue | null> {
+export async function loadTabQueue(tabId: number): Promise<TabQuestionQueue | null> {
   const key = getQueueKey(tabId);
   const result = await browser.storage.session.get(key);
   const parsed = TabQuestionQueueSchema.safeParse(result[key]);

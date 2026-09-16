@@ -10,7 +10,9 @@ vi.mock('./policy-acknowledgment-digest-helpers', async (importOriginal) => {
   const mod = await importOriginal<typeof import('./policy-acknowledgment-digest-helpers')>();
   return {
     ...mod,
-    filterDigestMembersByCompliance: vi.fn().mockImplementation(async (_db: unknown, members: unknown[]) => members),
+    filterDigestMembersByCompliance: vi
+      .fn()
+      .mockImplementation(async (_db: unknown, members: unknown[]) => members),
   };
 });
 
@@ -34,10 +36,10 @@ vi.mock('@gideon-defender/trigger-local', () => ({
 }));
 
 import { db } from '@db/server';
-import { filterDigestMembersByCompliance } from './policy-acknowledgment-digest-helpers';
-import { sendBatchEmailViaApi } from '../../lib/send-email-via-api';
 import { getUnsubscribedEmails } from '@gideon-defender/email/lib/check-unsubscribe';
+import { sendBatchEmailViaApi } from '../../lib/send-email-via-api';
 import { policyAcknowledgmentDigest } from './policy-acknowledgment-digest';
+import { filterDigestMembersByCompliance } from './policy-acknowledgment-digest-helpers';
 
 const mockDb = db as unknown as {
   organization: { findMany: ReturnType<typeof vi.fn> };
@@ -328,9 +330,7 @@ describe('policyAcknowledgmentDigest', () => {
         ],
       },
     ]);
-    mockGetUnsubscribedEmails.mockResolvedValueOnce(
-      new Set(['alice@example.com']),
-    );
+    mockGetUnsubscribedEmails.mockResolvedValueOnce(new Set(['alice@example.com']));
 
     const result = await taskUnderTest.run({ timestamp: new Date() } as never);
 
@@ -412,9 +412,7 @@ describe('policyAcknowledgmentDigest', () => {
     };
     expect(call.emails).toHaveLength(1);
     expect(call.emails[0].to).toBe('alice@example.com');
-    expect(call.emails[0].subject).toBe(
-      'You have 3 policies to review across 2 organizations',
-    );
+    expect(call.emails[0].subject).toBe('You have 3 policies to review across 2 organizations');
     expect(call.organizationId).toBe('org_1');
     expect(result).toMatchObject({
       success: true,
@@ -492,9 +490,7 @@ describe('policyAcknowledgmentDigest', () => {
       emails: Array<{ to: string; subject: string }>;
       organizationId: string;
     };
-    expect(call.emails[0].subject).toBe(
-      'You have 2 policies to review across 2 organizations',
-    );
+    expect(call.emails[0].subject).toBe('You have 2 policies to review across 2 organizations');
     expect(call.organizationId).toBe('org_1');
     expect(result).toMatchObject({
       success: true,
@@ -558,11 +554,8 @@ describe('policyAcknowledgmentDigest', () => {
       },
     ]);
     // Alice is unsubscribed from policy notifications in org_1 only.
-    mockGetUnsubscribedEmails.mockImplementation(
-      async (_db, _emails, _pref, orgId) =>
-        orgId === 'org_1'
-          ? new Set<string>(['alice@example.com'])
-          : new Set<string>(),
+    mockGetUnsubscribedEmails.mockImplementation(async (_db, _emails, _pref, orgId) =>
+      orgId === 'org_1' ? new Set<string>(['alice@example.com']) : new Set<string>(),
     );
 
     const result = await taskUnderTest.run({ timestamp: new Date() } as never);
@@ -636,9 +629,7 @@ describe('policyAcknowledgmentDigest', () => {
         ],
       },
     ]);
-    mockGetUnsubscribedEmails.mockResolvedValue(
-      new Set<string>(['alice@example.com']),
-    );
+    mockGetUnsubscribedEmails.mockResolvedValue(new Set<string>(['alice@example.com']));
 
     const result = await taskUnderTest.run({ timestamp: new Date() } as never);
 
@@ -758,8 +749,6 @@ describe('policyAcknowledgmentDigest', () => {
     // DST transitions during the 90-day window.
     const expected = new Date();
     expected.setDate(expected.getDate() - 90);
-    expect(Math.abs((gte as Date).getTime() - expected.getTime())).toBeLessThan(
-      5_000,
-    );
+    expect(Math.abs((gte as Date).getTime() - expected.getTime())).toBeLessThan(5_000);
   });
 });

@@ -3,7 +3,10 @@ import { db, Prisma } from '@db';
 // safe in the API's Local trigger bundle — the auth package's dist isn't built in
 // that deploy, so esbuild can't resolve `@gideon-defender/auth/participation`. The
 // mirror is kept in sync with the auth package by org-participation-rule.spec.ts.
-import { PLATFORM_ADMIN_ROLE, isOrgParticipant } from './org-participation-rule';
+import {
+  PLATFORM_ADMIN_ROLE,
+  isOrgParticipant,
+} from './org-participation-rule';
 
 /**
  * Resolve whether an organization is platform-operated ("internal", e.g. Comp
@@ -54,7 +57,9 @@ export function orgParticipantMemberWhereForFlag(
   if (orgIsInternal) return {};
   return {
     AND: [
-      { user: { OR: [{ role: { not: PLATFORM_ADMIN_ROLE } }, { role: null }] } },
+      {
+        user: { OR: [{ role: { not: PLATFORM_ADMIN_ROLE } }, { role: null }] },
+      },
     ],
   };
 }

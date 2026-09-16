@@ -1,11 +1,11 @@
 'use client';
 
+import { api } from '@/lib/api-client';
+import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, type MutableRefObject } from 'react';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
-import { api } from '@/lib/api-client';
 import type { QuestionnaireResult } from './types';
-import type { Dispatch, SetStateAction } from 'react';
 
 interface UseQuestionnaireDetailHandlersProps {
   questionnaireId: string;
@@ -52,11 +52,11 @@ export function useQuestionnaireDetailHandlers({
   setHasClickedAutoAnswer,
   setIsAutoAnswerProcessStarted,
   setAnsweringQuestionIndex,
-    setQuestionStatuses,
-    setResults,
-    editingAnswer,
-    setEditingIndex,
-    setEditingAnswer,
+  setQuestionStatuses,
+  setResults,
+  editingAnswer,
+  setEditingIndex,
+  setEditingAnswer,
   setSavingIndex,
   triggerAutoAnswer,
   triggerSingleAnswer,
@@ -68,7 +68,9 @@ export function useQuestionnaireDetailHandlers({
 
   const handleAutoAnswer = () => {
     if (answeringQuestionIndex !== null) {
-      toast.warning('Please wait for the current question to finish before answering all questions');
+      toast.warning(
+        'Please wait for the current question to finish before answering all questions',
+      );
       return;
     }
 
@@ -141,7 +143,7 @@ export function useQuestionnaireDetailHandlers({
     // Process all questions in queue in parallel (no blocking)
     queue.forEach((nextIndex) => {
       const result = results.find((r) => r.originalIndex === nextIndex);
-      
+
       if (!result) {
         // Remove invalid index from queue
         setAnswerQueue((prev) => prev.filter((idx) => idx !== nextIndex));
@@ -172,7 +174,14 @@ export function useQuestionnaireDetailHandlers({
         questionnaireId,
       });
     });
-  }, [results, organizationId, questionnaireId, setAnswerQueue, setQuestionStatuses, triggerSingleAnswer]);
+  }, [
+    results,
+    organizationId,
+    questionnaireId,
+    setAnswerQueue,
+    setQuestionStatuses,
+    triggerSingleAnswer,
+  ]);
 
   const handleAnswerSingleQuestion = (index: number) => {
     // Don't allow adding to queue if batch operation is running
@@ -226,14 +235,11 @@ export function useQuestionnaireDetailHandlers({
 
   const handleDeleteAnswer = async (questionAnswerId: string, questionIndex: number) => {
     try {
-      const response = await api.post(
-        '/v1/questionnaire/delete-answer',
-        {
-          questionnaireId,
-          questionAnswerId,
-          organizationId,
-        },
-      );
+      const response = await api.post('/v1/questionnaire/delete-answer', {
+        questionnaireId,
+        questionAnswerId,
+        organizationId,
+      });
 
       if (response.error) {
         console.error('Failed to delete answer:', response.error);
@@ -250,7 +256,9 @@ export function useQuestionnaireDetailHandlers({
       );
 
       toast.success('Answer deleted. You can now generate a new answer.');
-      mutate((key) => typeof key === 'string' && key.startsWith('/v1/questionnaire'), undefined, { revalidate: true });
+      mutate((key) => typeof key === 'string' && key.startsWith('/v1/questionnaire'), undefined, {
+        revalidate: true,
+      });
     } catch (error) {
       console.error('Failed to delete answer:', error);
       toast.error('Failed to delete answer');
@@ -284,17 +292,14 @@ export function useQuestionnaireDetailHandlers({
     setSavingIndex(index);
 
     try {
-      const response = await api.post(
-        '/v1/questionnaire/save-answer',
-        {
-      questionnaireId,
-      questionAnswerId: result.questionAnswerId,
-          organizationId,
-          answer: trimmedAnswer,
-          status: 'manual',
-          questionIndex: result.originalIndex,
-        },
-      );
+      const response = await api.post('/v1/questionnaire/save-answer', {
+        questionnaireId,
+        questionAnswerId: result.questionAnswerId,
+        organizationId,
+        answer: trimmedAnswer,
+        status: 'manual',
+        questionIndex: result.originalIndex,
+      });
 
       if (response.error) {
         console.error('Failed to save answer:', response.error);
@@ -335,4 +340,3 @@ export function useQuestionnaireDetailHandlers({
     handleSaveAnswer,
   };
 }
-

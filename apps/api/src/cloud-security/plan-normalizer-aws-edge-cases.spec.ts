@@ -44,7 +44,10 @@ describe('normalizeFixPlan — AWS remediation edge cases', () => {
         makeStep({
           service: 's3',
           command: 'PutBucketAclCommand',
-          params: { Bucket: 'opencomp-cloudtrail-123-us-east-1', ACL: 'private' },
+          params: {
+            Bucket: 'opencomp-cloudtrail-123-us-east-1',
+            ACL: 'private',
+          },
         }),
         makeStep({
           service: 'cloudtrail',
@@ -150,7 +153,9 @@ describe('normalizeFixPlan — AWS remediation edge cases', () => {
 // the whole fix falls back to manual steps. The normalizer must guarantee a
 // valid name.
 describe('normalizeFixPlan — CreateLogGroup logGroupName backfill (CS-787)', () => {
-  const createLogGroupStep = (params: Record<string, unknown>): AwsCommandStep =>
+  const createLogGroupStep = (
+    params: Record<string, unknown>,
+  ): AwsCommandStep =>
     makeStep({ service: 'logs', command: 'CreateLogGroupCommand', params });
 
   const updateTrailStep = (logGroupArn: string): AwsCommandStep =>
@@ -247,7 +252,9 @@ describe('normalizeFixPlan — CreateLogGroup logGroupName backfill (CS-787)', (
 
     const result = normalizeFixPlan(plan);
 
-    expect(result.rollbackSteps[0].params.logGroupName).toBe('/compai/cloudtrail');
+    expect(result.rollbackSteps[0].params.logGroupName).toBe(
+      '/compai/cloudtrail',
+    );
   });
 
   it('is a no-op for plans without a CreateLogGroup step', () => {

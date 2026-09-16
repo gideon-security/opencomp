@@ -258,7 +258,9 @@ export class PolicyPdfRendererService {
     for (const cell of firstRow.content) {
       if (cell.type !== 'tableCell' && cell.type !== 'tableHeader') continue;
       const width = colWidth * (cell.attrs?.colspan ?? 1);
-      const text = this.cleanTextForPDF(this.extractCellText(cell.content ?? []));
+      const text = this.cleanTextForPDF(
+        this.extractCellText(cell.content ?? []),
+      );
       const lines = config.doc.splitTextToSize(
         text || ' ',
         width - cellPadding * 2,
@@ -290,7 +292,9 @@ export class PolicyPdfRendererService {
       if (node.type === 'table' && node.content?.length) {
         // Heading trailing gap + the table's first row must fit together.
         return (
-          lead + config.lineHeight + this.measureTableFirstRowHeight(node, config)
+          lead +
+          config.lineHeight +
+          this.measureTableFirstRowHeight(node, config)
         );
       }
       if (this.extractTextFromContent([node]).trim().length === 0) {
@@ -300,7 +304,9 @@ export class PolicyPdfRendererService {
       }
       // First text-bearing block: reserve the heading's first few section lines
       // (HEADING_KEEP_WITH_LINES advances, the last still needs the look-ahead).
-      return lead + HEADING_KEEP_WITH_LINES * config.lineHeight + DEFAULT_BREAK_SPACE;
+      return (
+        lead + HEADING_KEEP_WITH_LINES * config.lineHeight + DEFAULT_BREAK_SPACE
+      );
     }
     return 0;
   }

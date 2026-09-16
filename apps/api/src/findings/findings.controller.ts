@@ -57,7 +57,9 @@ export class FindingsController {
   @Get()
   @UseGuards(PermissionGuard)
   @RequirePermission('finding', 'read')
-  @ApiOperation({ summary: 'List findings for organization (optionally filtered)' })
+  @ApiOperation({
+    summary: 'List findings for organization (optionally filtered)',
+  })
   @ApiQuery({ name: 'status', required: false, enum: FindingStatus })
   @ApiQuery({ name: 'severity', required: false, enum: FindingSeverity })
   @ApiQuery({ name: 'area', required: false, enum: FindingArea })
@@ -188,7 +190,9 @@ export class FindingsController {
   @Post()
   @UseGuards(PermissionGuard)
   @RequirePermission('finding', 'create')
-  @ApiOperation({ summary: 'Create a finding (auditor or platform admin only)' })
+  @ApiOperation({
+    summary: 'Create a finding (auditor or platform admin only)',
+  })
   @ApiBody({ type: CreateFindingDto })
   @UsePipes(
     new ValidationPipe({
@@ -288,7 +292,9 @@ export class FindingsController {
   @Delete(':id')
   @UseGuards(PermissionGuard)
   @RequirePermission('finding', 'delete')
-  @ApiOperation({ summary: 'Delete a finding (auditor or platform admin only)' })
+  @ApiOperation({
+    summary: 'Delete a finding (auditor or platform admin only)',
+  })
   @ApiParam({ name: 'id', description: 'Finding ID' })
   async deleteFinding(
     @Param('id', ValidateFindingIdPipe) id: string,

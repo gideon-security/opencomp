@@ -62,11 +62,11 @@ export const TrustDomainMisconfiguredEmail = ({
             </Text>
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
-              We detected that the custom domain{' '}
-              <strong>{domain}</strong> configured for{' '}
-              <strong>{organizationName}</strong>'s Trust Portal is no longer
-              resolving correctly. Visitors using this domain may be unable to
-              access your Trust Portal until the DNS configuration is fixed.
+              We detected that the custom domain <strong>{domain}</strong>{' '}
+              configured for <strong>{organizationName}</strong>'s Trust Portal
+              is no longer resolving correctly. Visitors using this domain may
+              be unable to access your Trust Portal until the DNS configuration
+              is fixed.
             </Text>
 
             <Section

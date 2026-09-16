@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  buildSheetValueUpdates,
-  quoteSheetTitle,
-} from './google-sheets-api';
+import { buildSheetValueUpdates, quoteSheetTitle } from './google-sheets-api';
 import { buildSheetFormattingRequests } from './google-sheets-formatting';
 
 describe('Google Sheets API value updates', () => {

@@ -29,14 +29,14 @@ info:
 actions:
   # 1. Drop the base64 `fileData` field from the questionnaire JSON upload tool,
   #    leaving `s3Key` as the only way an MCP client can supply a file.
-  - target: "$.components.schemas.UploadAndParseDto.properties.fileData"
+  - target: '$.components.schemas.UploadAndParseDto.properties.fileData'
     remove: true
 
   # 1b. Rewrite the `s3Key` description for the MCP tool. The source description
   #     references `fileData` ("provide exactly one of..."), which is correct for
   #     the public API/docs but dangling here — MCP clients can't see fileData
   #     (we removed it above). Give agents the explicit upload recipe instead.
-  - target: "$.components.schemas.UploadAndParseDto.properties.s3Key"
+  - target: '$.components.schemas.UploadAndParseDto.properties.s3Key'
     update:
       description: >-
         The questionnaire file to parse. First call create-upload-url with
@@ -87,11 +87,11 @@ actions:
   #   use create-upload-url (purpose=attachment|document|evidence) -> PUT to S3 ->
   #   pass the returned `s3Key`. The base spec keeps `fileData` for the web UI /
   #   direct callers; only the MCP tools lose it.
-  - target: "$.components.schemas.UploadAttachmentDto.properties.fileData"
+  - target: '$.components.schemas.UploadAttachmentDto.properties.fileData'
     remove: true
-  - target: "$.components.schemas.UploadDocumentDto.properties.fileData"
+  - target: '$.components.schemas.UploadDocumentDto.properties.fileData'
     remove: true
-  - target: "$.components.schemas.CompleteChecklistItemDto.properties.fileData"
+  - target: '$.components.schemas.CompleteChecklistItemDto.properties.fileData'
     remove: true
 
   # 10-11. Disable the automation-authoring tools for MCP. Creating a working

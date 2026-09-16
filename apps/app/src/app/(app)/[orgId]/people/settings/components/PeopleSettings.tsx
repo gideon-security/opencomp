@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { toast } from 'sonner';
 import { usePermissions } from '@/hooks/use-permissions';
 import { apiClient } from '@/lib/api-client';
 import { Section, Stack, Switch, Text } from '@trycompai/design-system';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { OffboardingChecklistSettings } from './OffboardingChecklistSettings';
 
 interface PeopleSettingsProps {
@@ -38,9 +38,7 @@ export function PeopleSettings({
     }
 
     toast.success(
-      next
-        ? 'Background checks now required'
-        : 'Background checks bypassed for your organization',
+      next ? 'Background checks now required' : 'Background checks bypassed for your organization',
     );
   };
 
@@ -51,9 +49,9 @@ export function PeopleSettings({
           <div className="flex-1">
             <Text weight="medium">Require background checks</Text>
             <Text size="sm" variant="muted">
-              When off, your organization&apos;s members do not need to pass a
-              background check to count toward people completion. Individual
-              members can also be exempted from their profile.
+              When off, your organization&apos;s members do not need to pass a background check to
+              count toward people completion. Individual members can also be exempted from their
+              profile.
             </Text>
           </div>
           <Switch

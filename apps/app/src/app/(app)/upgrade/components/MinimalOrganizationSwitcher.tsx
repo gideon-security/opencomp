@@ -1,6 +1,7 @@
 'use client';
 
 import { authClient } from '@/utils/auth-client';
+import type { Organization } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import {
   DropdownMenu,
@@ -8,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
-import type { Organization } from '@db';
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -38,11 +38,7 @@ export function MinimalOrganizationSwitcher({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="h-auto p-1 text-sm font-medium"
-          disabled={isSwitching}
-        >
+        <Button variant="ghost" className="h-auto p-1 text-sm font-medium" disabled={isSwitching}>
           {currentOrganization?.name || 'Select Organization'}
           {isSwitching ? (
             <Loader2 className="ml-2 h-4 w-4 animate-spin" />

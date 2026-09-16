@@ -32,9 +32,7 @@ import { PhaseCompletionType } from '@db';
   }),
 )
 export class AdminTimelineTemplatesController {
-  constructor(
-    private readonly templatesService: TimelinesTemplatesService,
-  ) {}
+  constructor(private readonly templatesService: TimelinesTemplatesService) {}
 
   @Get()
   async findAll() {

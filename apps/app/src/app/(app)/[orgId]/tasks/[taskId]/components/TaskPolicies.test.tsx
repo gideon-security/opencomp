@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { TaskPolicies } from './TaskPolicies';
 import type { TaskPolicyGroup } from '../hooks/use-task-policies';
+import { TaskPolicies } from './TaskPolicies';
 
 vi.mock('next/navigation', () => ({
   useParams: () => ({ orgId: 'org_1', taskId: 'tsk_1' }),
@@ -74,9 +74,7 @@ describe('TaskPolicies', () => {
 
     render(<TaskPolicies />);
 
-    expect(
-      screen.getByText(/no policies reference this task/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/no policies reference this task/i)).toBeInTheDocument();
   });
 
   it('renders policy and control cells as links that open in a new tab', () => {
@@ -116,11 +114,7 @@ describe('TaskPolicies', () => {
 
     render(<TaskPolicies />);
 
-    expect(
-      screen.getByText(/could not load policies/i),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText(/no policies reference this task/i),
-    ).not.toBeInTheDocument();
+    expect(screen.getByText(/could not load policies/i)).toBeInTheDocument();
+    expect(screen.queryByText(/no policies reference this task/i)).not.toBeInTheDocument();
   });
 });

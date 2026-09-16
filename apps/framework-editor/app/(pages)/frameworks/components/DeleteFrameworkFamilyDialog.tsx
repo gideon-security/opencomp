@@ -39,9 +39,7 @@ export function DeleteFrameworkFamilyDialog({
       onOpenChange(false);
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to delete framework family.',
-      );
+      toast.error(error instanceof Error ? error.message : 'Failed to delete framework family.');
     } finally {
       setIsDeleting(false);
     }
@@ -52,9 +50,7 @@ export function DeleteFrameworkFamilyDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete &ldquo;{familyName}&rdquo;?</AlertDialogTitle>
-          <AlertDialogDescription>
-            Are you sure? This cannot be undone.
-          </AlertDialogDescription>
+          <AlertDialogDescription>Are you sure? This cannot be undone.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>

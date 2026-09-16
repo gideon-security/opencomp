@@ -54,22 +54,27 @@ packages/
 We are migrating away from Next.js server actions toward calling the NestJS API directly.
 
 ### Simple CRUD operations
+
 Client components call the NestJS API via custom SWR hooks. No server action wrapper needed.
 
 ### Multi-step orchestration
+
 When an operation requires multiple API calls (e.g., S3 upload + PATCH), create a Next.js API route (`apps/app/src/app/api/...`) that orchestrates them.
 
 ### What NOT to do
+
 - Do NOT use server actions for new features
 - Do NOT keep server actions as wrappers around API calls
 - Do NOT add direct database (`@db`) access in the Next.js app for mutations — always go through the API
 - Do NOT use `useAction` from `next-safe-action` for new code
 
 ### API Client
+
 - Server-side (Next.js API routes/pages): `serverApi` from `apps/app/src/lib/api-server.ts`
 - Client-side (hooks): `apiClient` / `api` from `@/lib/api-client`
 
 ### API Response Format
+
 - **List endpoints**: `{ data: [...], count, authType, authenticatedUser }` → access via `response.data.data`
 - **Single resource endpoints**: `{ ...entity, authType, authenticatedUser }` → access via `response.data`
 - Both `apiClient` and `serverApi` wrap in `{ data, error, status }`
@@ -79,7 +84,7 @@ When an operation requires multiple API calls (e.g., S3 upload + PATCH), create 
 Every customer-facing endpoint in `apps/api/src/` flows into three systems: the OpenAPI spec (`packages/docs/openapi.json`), the MCP server published as `@gideon-defender/mcp-server` on npm, and the runtime `ValidationPipe`. The full contract is in [.claude/skills/api-endpoint-contract/SKILL.md](.claude/skills/api-endpoint-contract/SKILL.md) (auto-loaded by Claude) and [.cursor/rules/api-endpoint-contract.mdc](.cursor/rules/api-endpoint-contract.mdc) (auto-loaded by Cursor). The short version every body-accepting endpoint must follow:
 
 1. **DTOs are classes** — never interfaces, never inline `@Body() body: { ... }`. Interfaces are erased at runtime and produce empty MCP schemas.
-2. **Two decorator stacks per field** — `@ApiProperty` (or `@ApiPropertyOptional`) for the OpenAPI/MCP schema **and** class-validator (`@IsString`, `@IsOptional`, `@IsObject`, `@IsArray`, etc.) for the ValidationPipe. With only one stack, requests are rejected with *"property X should not exist"* or the MCP tool ships with empty input.
+2. **Two decorator stacks per field** — `@ApiProperty` (or `@ApiPropertyOptional`) for the OpenAPI/MCP schema **and** class-validator (`@IsString`, `@IsOptional`, `@IsObject`, `@IsArray`, etc.) for the ValidationPipe. With only one stack, requests are rejected with _"property X should not exist"_ or the MCP tool ships with empty input.
 3. **Add `@ApiBody({ type: DtoClass })`** on the endpoint — `@nestjs/swagger` does not reliably infer it from `@Body()` alone.
 4. **`@ApiOperation.description` ≤ 240 chars** — `apps/api/src/openapi/seo-text.ts` truncates at a word boundary; longer text loses its actionable instruction.
 5. **Override the MCP tool name** when the auto-derived name is ugly: `@ApiExtension('x-speakeasy-mcp', { name: 'kebab-name' })`.
@@ -95,6 +100,7 @@ After adding an endpoint: `npm run dev --workspace=@gideon-defender/api` regener
 ## RBAC
 
 ### Permissions Model
+
 - Flat `resource:action` model (e.g., `pentest:read`, `control:update`)
 - Single source of truth: `packages/auth/src/permissions.ts`
 - Built-in roles: `owner`, `admin`, `auditor`, `employee`, `contractor`
@@ -102,22 +108,27 @@ After adding an endpoint: `npm run dev --workspace=@gideon-defender/api` regener
 - Multiple roles per user (comma-separated in `member.role`)
 
 ### Multi-Product Architecture
+
 - **Products** (compliance, pen testing) are org-level subscription/feature flags — NOT RBAC
 - **RBAC** controls user access within products
 - `app:read` gates the compliance dashboard; `pentest:read` gates security product
 - Portal-only resources (`policy`, `compliance`) do NOT grant app access
 
 ### API Endpoint Requirements
+
 Every customer-facing API endpoint MUST have:
+
 ```typescript
 @UseGuards(HybridAuthGuard, PermissionGuard)  // at controller or endpoint level
 @RequirePermission('resource', 'action')       // on every endpoint
 ```
+
 - Controller format: `@Controller({ path: 'name', version: '1' })`, NOT `@Controller('v1/name')`
 - `@Public()` for unauthenticated endpoints (webhooks, etc.)
 - The `AuditLogInterceptor` only logs when `@RequirePermission` metadata is present
 
 ### Frontend Permission Gating
+
 - **Nav items**: Gate with `canAccessRoute(permissions, 'routeSegment')`
 - **Rail icons**: Gate product sections (Compliance, Security, Trust, Settings) by permission
 - **Mutation buttons**: Gate with `hasPermission(permissions, 'resource', 'action')`
@@ -126,6 +137,7 @@ Every customer-facing API endpoint MUST have:
 - No manual role string parsing (`role.includes('admin')`) — always use permission checks
 
 ### Permission Resources
+
 `organization`, `member`, `control`, `evidence`, `policy`, `risk`, `vendor`, `task`, `framework`, `audit`, `finding`, `questionnaire`, `integration`, `apiKey`, `trust`, `pentest`, `app`, `compliance`
 
 ## Design System

@@ -1,5 +1,5 @@
-import type { InsertAnswerRequest, ScanDebug } from './types';
 import { isRecord } from './message-utils';
+import type { InsertAnswerRequest, ScanDebug } from './types';
 
 export type ContentRequest =
   | { type: 'comp:collect-questions' }
@@ -20,10 +20,7 @@ export function parseContentRequest(value: unknown): ContentRequest | null {
   if (value.type === 'comp:collect-questions') return { type: value.type };
   if (value.type === 'comp:ensure-inline-buttons') return { type: value.type };
   if (value.type === 'comp:scan-visible-questions') return { type: value.type };
-  if (
-    value.type === 'comp:set-detection-enabled' &&
-    typeof value.enabled === 'boolean'
-  ) {
+  if (value.type === 'comp:set-detection-enabled' && typeof value.enabled === 'boolean') {
     return { type: value.type, enabled: value.enabled };
   }
   if (value.type === 'comp:insert-answers' && Array.isArray(value.answers)) {
@@ -32,21 +29,14 @@ export function parseContentRequest(value: unknown): ContentRequest | null {
       answers: value.answers.flatMap(parseInsertAnswer),
     };
   }
-  if (
-    value.type === 'comp:focus-question' &&
-    typeof value.fieldId === 'string'
-  ) {
+  if (value.type === 'comp:focus-question' && typeof value.fieldId === 'string') {
     return { type: value.type, fieldId: value.fieldId };
   }
   return null;
 }
 
 function parseInsertAnswer(answer: unknown): InsertAnswerRequest[] {
-  if (
-    isRecord(answer) &&
-    typeof answer.fieldId === 'string' &&
-    typeof answer.answer === 'string'
-  ) {
+  if (isRecord(answer) && typeof answer.fieldId === 'string' && typeof answer.answer === 'string') {
     return [{ fieldId: answer.fieldId, answer: answer.answer }];
   }
   return [];

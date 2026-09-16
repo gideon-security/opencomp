@@ -10,7 +10,12 @@ describe('embedTexts', () => {
   it('posts the model and inputs to /api/embed and returns the vectors', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ embeddings: [[0.1, 0.2], [0.3, 0.4]] }),
+      json: async () => ({
+        embeddings: [
+          [0.1, 0.2],
+          [0.3, 0.4],
+        ],
+      }),
     });
     vi.stubGlobal('fetch', fetchMock);
 
@@ -24,7 +29,10 @@ describe('embedTexts', () => {
         body: JSON.stringify({ model: EMBEDDING_MODEL, input: ['alpha', 'beta'] }),
       }),
     );
-    expect(result).toEqual([[0.1, 0.2], [0.3, 0.4]]);
+    expect(result).toEqual([
+      [0.1, 0.2],
+      [0.3, 0.4],
+    ]);
   });
 
   it('uses EMBEDDINGS_BASE_URL when set', async () => {

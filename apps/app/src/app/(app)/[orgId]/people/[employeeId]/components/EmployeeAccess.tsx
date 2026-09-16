@@ -44,9 +44,7 @@ function useMemberAccess(memberId: string) {
   return useSWR(
     memberId ? ['member-access', memberId] : null,
     async () => {
-      const response = await apiClient.get<MemberAccessResponse>(
-        `/v1/people/${memberId}/access`,
-      );
+      const response = await apiClient.get<MemberAccessResponse>(`/v1/people/${memberId}/access`);
       if (response.error || !response.data?.data) {
         throw new Error(response.error || 'Failed to fetch access');
       }
@@ -190,8 +188,8 @@ export function EmployeeAccess({
         ) : (
           <Stack gap="3">
             <Text size="sm" variant="muted">
-              What this person can access in your connected tools, from each
-              integration&apos;s latest Employee Access check.
+              What this person can access in your connected tools, from each integration&apos;s
+              latest Employee Access check.
             </Text>
             {data.sources.map((source) => (
               <SourceRow key={source.slug} source={source} />

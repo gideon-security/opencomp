@@ -1,9 +1,6 @@
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
-import {
-  remediationForReadFailure,
-  toHttpReadFailure,
-} from '../../http-read-failure';
+import { remediationForReadFailure, toHttpReadFailure } from '../../http-read-failure';
 import { gcpListItems, isGcpApiDisabled, resolveGcpProjectIds } from './shared';
 
 interface Bucket {

@@ -1,8 +1,6 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { usePermissions } from '@/hooks/use-permissions';
 import {
   Button,
   Select,
@@ -13,7 +11,9 @@ import {
   Skeleton,
 } from '@trycompai/design-system';
 import { InProgress, Renew } from '@trycompai/design-system/icons';
-import { usePermissions } from '@/hooks/use-permissions';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useDeviceSync } from '../hooks/useDeviceSync';
 
 const NO_SYNC_VALUE = '__no_sync__';
@@ -60,9 +60,7 @@ export function DeviceSyncProviderSelector() {
   // The saved sync source's own connection is broken — the daily sync is
   // failing, which the closed trigger must surface even when other providers
   // are still connected.
-  const selectedIsErrored = erroredProviders.some(
-    (p) => p.slug === selectedProvider,
-  );
+  const selectedIsErrored = erroredProviders.some((p) => p.slug === selectedProvider);
 
   // Empty slot instead of nothing: the labeled placeholder shows exactly what
   // this setting is and how to unlock it (mirrors TwoFactorSourceSelector).
@@ -145,9 +143,7 @@ export function DeviceSyncProviderSelector() {
               // The saved provider's connection is broken, or the only
               // connection(s) are — say so on the closed trigger instead of
               // the misleading "Not syncing".
-              <span className="text-amber-600 dark:text-amber-500">
-                Needs reconnection
-              </span>
+              <span className="text-amber-600 dark:text-amber-500">Needs reconnection</span>
             ) : (
               <span className="text-muted-foreground">Not syncing</span>
             )}

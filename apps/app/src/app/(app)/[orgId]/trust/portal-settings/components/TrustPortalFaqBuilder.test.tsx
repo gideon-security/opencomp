@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -27,7 +27,12 @@ vi.mock('sonner', () => ({
 import { TrustPortalFaqBuilder } from './TrustPortalFaqBuilder';
 
 const mockFaqs = [
-  { id: 'faq-1', question: 'What is your security policy?', answer: 'We follow best practices.', order: 0 },
+  {
+    id: 'faq-1',
+    question: 'What is your security policy?',
+    answer: 'We follow best practices.',
+    order: 0,
+  },
   { id: 'faq-2', question: 'Do you have SOC 2?', answer: 'Yes, we are SOC 2 compliant.', order: 1 },
 ];
 

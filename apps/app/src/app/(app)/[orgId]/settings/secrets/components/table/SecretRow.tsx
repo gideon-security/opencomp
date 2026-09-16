@@ -2,7 +2,6 @@
 
 import { formatDateShort } from '@/lib/format';
 
-import { useTranslations } from 'next-intl';
 import {
   Badge,
   DropdownMenu,
@@ -24,6 +23,7 @@ import {
   ViewOff,
 } from '@trycompai/design-system/icons';
 import { Copy } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import type { Secret } from '../../hooks/useSecrets';
 
 type SettingsTranslator = ReturnType<typeof useTranslations<'settings'>>;
@@ -96,9 +96,7 @@ export function SecretRow({
               <Copy className="h-3 w-3 shrink-0 text-muted-foreground" />
             </button>
           ) : (
-            <span className="font-mono text-sm text-muted-foreground">
-              ••••••••••••
-            </span>
+            <span className="font-mono text-sm text-muted-foreground">••••••••••••</span>
           )}
           <button
             type="button"
@@ -112,9 +110,7 @@ export function SecretRow({
       </TableCell>
       <TableCell>
         {secret.category ? (
-          <Badge variant="secondary">
-            {categoryLabel(t, secret.category)}
-          </Badge>
+          <Badge variant="secondary">{categoryLabel(t, secret.category)}</Badge>
         ) : (
           <Text variant="muted" size="sm">
             —

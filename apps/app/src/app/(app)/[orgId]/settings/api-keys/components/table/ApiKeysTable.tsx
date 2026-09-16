@@ -2,8 +2,8 @@
 
 import { formatDateYmd } from '@/lib/format';
 
-import { useApiKeys } from '@/hooks/use-api-keys';
 import type { ApiKey } from '@/hooks/use-api-keys';
+import { useApiKeys } from '@/hooks/use-api-keys';
 import { usePermissions } from '@/hooks/use-permissions';
 import {
   AlertDialog,
@@ -39,17 +39,17 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Add, OverflowMenuVertical, Search, TrashCan } from '@trycompai/design-system/icons';
-import { groupScopesByResource } from '../../lib/scope-presets';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
+import { groupScopesByResource } from '../../lib/scope-presets';
 import { CreateApiKeySheet } from './CreateApiKeySheet';
 
 function LegacyKeysBanner() {
   return (
     <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3">
       <Text size="sm">
-        You have legacy API keys with unrestricted access. We recommend creating
-        new scoped keys and revoking legacy ones for better security.
+        You have legacy API keys with unrestricted access. We recommend creating new scoped keys and
+        revoking legacy ones for better security.
       </Text>
     </div>
   );
@@ -142,11 +142,7 @@ function ActionsCell({ apiKey }: { apiKey: ApiKey }) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={handleRevoke}
-              disabled={isRevoking}
-            >
+            <AlertDialogAction variant="destructive" onClick={handleRevoke} disabled={isRevoking}>
               {isRevoking ? 'Revoking...' : 'Revoke'}
             </AlertDialogAction>
           </AlertDialogFooter>

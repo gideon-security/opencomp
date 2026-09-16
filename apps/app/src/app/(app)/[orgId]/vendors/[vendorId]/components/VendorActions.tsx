@@ -133,10 +133,7 @@ export function VendorActions({
             <AlertDialogCancel disabled={isAssessmentSubmitting}>
               {tCommon('common.cancel')}
             </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleAssessmentConfirm}
-              disabled={isAssessmentSubmitting}
-            >
+            <AlertDialogAction onClick={handleAssessmentConfirm} disabled={isAssessmentSubmitting}>
               {isAssessmentSubmitting ? t('detail.working') : t('detail.confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>

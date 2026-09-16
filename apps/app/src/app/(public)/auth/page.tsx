@@ -12,8 +12,8 @@ import {
   CardTitle,
 } from '@gideon-defender/ui/card';
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
+import { headers } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 

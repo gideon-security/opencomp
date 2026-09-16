@@ -27,13 +27,7 @@ export function GideonSignIn({
   };
 
   return (
-    <Button
-      onClick={handleSignIn}
-      variant="outline"
-      width="full"
-      size="xl"
-      loading={isLoading}
-    >
+    <Button onClick={handleSignIn} variant="outline" width="full" size="xl" loading={isLoading}>
       Continue with Gideon
     </Button>
   );
@@ -46,10 +40,7 @@ export function GideonSignIn({
  * The origin is a parameter (defaulting to the page origin) so tests can
  * pin the resolution without a DOM.
  */
-export function toAbsoluteUrl(
-  target: string,
-  origin: string = window.location.origin,
-): string {
+export function toAbsoluteUrl(target: string, origin: string = window.location.origin): string {
   try {
     const url = new URL(target, origin);
     if (url.protocol !== 'http:' && url.protocol !== 'https:') return target;

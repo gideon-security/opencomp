@@ -206,30 +206,54 @@ describe('GCPSecurityService — project detection', () => {
       const seenFolderIdsQueried: string[] = [];
       fetchMock.mockImplementation(async (url: string) => {
         // Folder enumeration: top-level folders under the org.
-        if (url.includes('v3/folders') && url.includes('organizations%2F43356919874')) {
+        if (
+          url.includes('v3/folders') &&
+          url.includes('organizations%2F43356919874')
+        ) {
           return foldersPage({ folders: ['9724350536'] });
         }
         // Folder enumeration: sub-folders (none in this tree).
-        if (url.includes('v3/folders') && url.includes('folders%2F9724350536')) {
+        if (
+          url.includes('v3/folders') &&
+          url.includes('folders%2F9724350536')
+        ) {
           return foldersPage({ folders: [] });
         }
         // Direct org children projects.
-        if (url.includes('v1/projects') && url.includes('parent.id%3A43356919874')) {
+        if (
+          url.includes('v1/projects') &&
+          url.includes('parent.id%3A43356919874')
+        ) {
           return gcpPage({
             projects: [
-              { projectId: 'org-root-1', name: 'Root Project', projectNumber: '111' },
+              {
+                projectId: 'org-root-1',
+                name: 'Root Project',
+                projectNumber: '111',
+              },
             ],
           });
         }
         // Per-folder project queries — extract folder ID from filter.
-        if (url.includes('v1/projects') && url.includes('parent.type%3Afolder')) {
+        if (
+          url.includes('v1/projects') &&
+          url.includes('parent.type%3Afolder')
+        ) {
           const m = url.match(/parent\.id%3A(\d+)/);
           if (m) seenFolderIdsQueried.push(m[1]);
           if (m && m[1] === '9724350536') {
             return gcpPage({
               projects: [
-                { projectId: 'propperai-prod', name: 'Propper Prod', projectNumber: '222' },
-                { projectId: 'propperai-demo', name: 'Propper Demo', projectNumber: '333' },
+                {
+                  projectId: 'propperai-prod',
+                  name: 'Propper Prod',
+                  projectNumber: '222',
+                },
+                {
+                  projectId: 'propperai-demo',
+                  name: 'Propper Demo',
+                  projectNumber: '333',
+                },
               ],
             });
           }
@@ -253,7 +277,10 @@ describe('GCPSecurityService — project detection', () => {
       //           └── folder 3000 (nested)
       //                 └── project deep-prod
       fetchMock.mockImplementation(async (url: string) => {
-        if (url.includes('v3/folders') && url.includes('organizations%2F1000')) {
+        if (
+          url.includes('v3/folders') &&
+          url.includes('organizations%2F1000')
+        ) {
           return foldersPage({ folders: ['2000'] });
         }
         if (url.includes('v3/folders') && url.includes('folders%2F2000')) {
@@ -293,7 +320,10 @@ describe('GCPSecurityService — project detection', () => {
         if (url.includes('v1/projects') && url.includes('parent.id%3A123')) {
           return gcpPage({ projects: [makeProject('shared')] });
         }
-        if (url.includes('v1/projects') && url.includes('parent.id%3Afolder-a')) {
+        if (
+          url.includes('v1/projects') &&
+          url.includes('parent.id%3Afolder-a')
+        ) {
           return gcpPage({
             projects: [makeProject('shared'), makeProject('unique')],
           });
@@ -348,7 +378,11 @@ describe('GCPSecurityService — project detection', () => {
         ) {
           return gcpPage({
             projects: [
-              { projectId: 'direct-1', name: 'Direct One', projectNumber: '100' },
+              {
+                projectId: 'direct-1',
+                name: 'Direct One',
+                projectNumber: '100',
+              },
             ],
           });
         }
@@ -360,8 +394,16 @@ describe('GCPSecurityService — project detection', () => {
           broadQueryHits.push(url);
           return gcpPage({
             projects: [
-              { projectId: 'propperai-prod', name: 'Propper Prod', projectNumber: '200' },
-              { projectId: 'propperai-demo', name: 'Propper Demo', projectNumber: '300' },
+              {
+                projectId: 'propperai-prod',
+                name: 'Propper Prod',
+                projectNumber: '200',
+              },
+              {
+                projectId: 'propperai-demo',
+                name: 'Propper Demo',
+                projectNumber: '300',
+              },
             ],
           });
         }
@@ -441,13 +483,19 @@ describe('GCPSecurityService — project detection', () => {
       // selected (the original cubic P2 concern from PR #2899).
       let broadFallbackFired = false;
       fetchMock.mockImplementation(async (url: string) => {
-        if (url.includes('v3/folders') && url.includes('organizations%2Fhealthy-org')) {
+        if (
+          url.includes('v3/folders') &&
+          url.includes('organizations%2Fhealthy-org')
+        ) {
           return foldersPage({ folders: ['healthy-folder'] });
         }
         if (url.includes('v3/folders')) {
           return foldersPage({ folders: [] }); // no sub-folders
         }
-        if (url.includes('parent.id%3Ahealthy-org') && !url.includes('parent.type%3Afolder')) {
+        if (
+          url.includes('parent.id%3Ahealthy-org') &&
+          !url.includes('parent.type%3Afolder')
+        ) {
           return gcpPage({ projects: [] });
         }
         if (
@@ -456,7 +504,11 @@ describe('GCPSecurityService — project detection', () => {
         ) {
           return gcpPage({
             projects: [
-              { projectId: 'scoped-prod', name: 'Scoped', projectNumber: '500' },
+              {
+                projectId: 'scoped-prod',
+                name: 'Scoped',
+                projectNumber: '500',
+              },
             ],
           });
         }
@@ -487,7 +539,11 @@ describe('GCPSecurityService — project detection', () => {
         if (url.includes('parent.id%3A555')) {
           return gcpPage({
             projects: [
-              { projectId: 'direct-only', name: 'Direct Only', projectNumber: '777' },
+              {
+                projectId: 'direct-only',
+                name: 'Direct Only',
+                projectNumber: '777',
+              },
             ],
           });
         }
@@ -502,17 +558,28 @@ describe('GCPSecurityService — project detection', () => {
 
     it('still returns folder-arm projects when the direct arm throws', async () => {
       fetchMock.mockImplementation(async (url: string) => {
-        if (url.includes('v1/projects') && url.includes('parent.id%3A666') && !url.includes('parent.type%3Afolder')) {
+        if (
+          url.includes('v1/projects') &&
+          url.includes('parent.id%3A666') &&
+          !url.includes('parent.type%3Afolder')
+        ) {
           throw new Error('simulated direct-arm failure');
         }
         if (url.includes('v3/folders') && url.includes('organizations%2F666')) {
           return foldersPage({ folders: ['folder-x'] });
         }
         if (url.includes('v3/folders')) return foldersPage({ folders: [] });
-        if (url.includes('v1/projects') && url.includes('parent.id%3Afolder-x')) {
+        if (
+          url.includes('v1/projects') &&
+          url.includes('parent.id%3Afolder-x')
+        ) {
           return gcpPage({
             projects: [
-              { projectId: 'folder-only', name: 'Folder Only', projectNumber: '888' },
+              {
+                projectId: 'folder-only',
+                name: 'Folder Only',
+                projectNumber: '888',
+              },
             ],
           });
         }
@@ -531,10 +598,7 @@ describe('GCPSecurityService — project detection', () => {
       // and any 429s would be silently treated as "empty folder",
       // dropping projects from the picker.
       const FOLDER_COUNT = 20;
-      const folderIds = Array.from(
-        { length: FOLDER_COUNT },
-        (_, i) => `f${i}`,
-      );
+      const folderIds = Array.from({ length: FOLDER_COUNT }, (_, i) => `f${i}`);
 
       let inFlight = 0;
       let maxInFlight = 0;
@@ -620,13 +684,23 @@ describe('GCPSecurityService — project detection', () => {
           return foldersPage({ folders: ['bad-folder', 'good-folder'] });
         }
         if (url.includes('v3/folders')) return foldersPage({ folders: [] });
-        if (url.includes('v1/projects') && url.includes('parent.id%3A777') && !url.includes('parent.type%3Afolder')) {
+        if (
+          url.includes('v1/projects') &&
+          url.includes('parent.id%3A777') &&
+          !url.includes('parent.type%3Afolder')
+        ) {
           return gcpPage({ projects: [] });
         }
-        if (url.includes('v1/projects') && url.includes('parent.id%3Abad-folder')) {
+        if (
+          url.includes('v1/projects') &&
+          url.includes('parent.id%3Abad-folder')
+        ) {
           throw new Error('bad folder query exploded');
         }
-        if (url.includes('v1/projects') && url.includes('parent.id%3Agood-folder')) {
+        if (
+          url.includes('v1/projects') &&
+          url.includes('parent.id%3Agood-folder')
+        ) {
           return gcpPage({
             projects: [
               { projectId: 'good-proj', name: 'Good', projectNumber: '101' },
@@ -687,14 +761,22 @@ describe('resolveGcpServiceId — Vertex AI grouping', () => {
 
   it('falls back to the category mapping for non-AI findings', () => {
     expect(
-      resolveGcpServiceId('PUBLIC_BUCKET_ACL', 'storage.googleapis.com/Bucket', undefined),
+      resolveGcpServiceId(
+        'PUBLIC_BUCKET_ACL',
+        'storage.googleapis.com/Bucket',
+        undefined,
+      ),
     ).toBe('cloud-storage');
   });
 
   it('falls back to security-command-center for unmapped, non-AI findings', () => {
-    expect(resolveGcpServiceId('TOTALLY_UNKNOWN', 'compute.googleapis.com/Foo', undefined)).toBe(
-      'security-command-center',
-    );
+    expect(
+      resolveGcpServiceId(
+        'TOTALLY_UNKNOWN',
+        'compute.googleapis.com/Foo',
+        undefined,
+      ),
+    ).toBe('security-command-center');
   });
 });
 
@@ -758,7 +840,10 @@ describe('GCPSecurityService.scanSecurityFindings — all-scopes-failed guard', 
   // hiding the previous good results. It must now throw so nothing is stored.
   it('throws (re-throwing the actionable SCC error) when the only scope errors, instead of returning []', async () => {
     fetchMock.mockResolvedValue(
-      sccError(403, 'PERMISSION_DENIED: caller lacks securitycenter.findings.list'),
+      sccError(
+        403,
+        'PERMISSION_DENIED: caller lacks securitycenter.findings.list',
+      ),
     );
 
     await expect(
@@ -773,7 +858,10 @@ describe('GCPSecurityService.scanSecurityFindings — all-scopes-failed guard', 
   // no-org account returns 404 NOT_FOUND (SCC never activated for the project).
   it('maps a 404 NOT_FOUND to the actionable SCC_NOT_ACTIVATED error', async () => {
     fetchMock.mockResolvedValue(
-      sccError(404, '{"error":{"code":404,"message":"Requested entity was not found.","status":"NOT_FOUND"}}'),
+      sccError(
+        404,
+        '{"error":{"code":404,"message":"Requested entity was not found.","status":"NOT_FOUND"}}',
+      ),
     );
 
     await expect(
@@ -797,7 +885,8 @@ describe('GCPSecurityService.scanSecurityFindings — all-scopes-failed guard', 
 
   it('does NOT throw when at least one scope succeeds — returns the surviving scope’s findings', async () => {
     fetchMock.mockImplementation(async (url: string) => {
-      if (url.includes('projects/p1')) return sccError(403, 'PERMISSION_DENIED');
+      if (url.includes('projects/p1'))
+        return sccError(403, 'PERMISSION_DENIED');
       return sccPage([sccFinding('p2')]);
     });
 

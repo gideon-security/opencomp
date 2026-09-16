@@ -12,9 +12,7 @@ export function AuthorizationConsentField({
   errorMessage,
 }: AuthorizationConsentFieldProps) {
   const hasError = Boolean(errorMessage);
-  const describedBy = hasError
-    ? 'pt-authorized-help pt-authorized-error'
-    : 'pt-authorized-help';
+  const describedBy = hasError ? 'pt-authorized-help pt-authorized-error' : 'pt-authorized-help';
 
   return (
     <label
@@ -32,12 +30,9 @@ export function AuthorizationConsentField({
         <span className="block font-medium text-foreground">
           I own this target or have written authorization to test it.
         </span>
-        <span
-          id="pt-authorized-help"
-          className="mt-0.5 block text-[11px] text-muted-foreground"
-        >
-          Unauthorized testing may violate applicable computer-misuse laws and your
-          provider's terms of service.
+        <span id="pt-authorized-help" className="mt-0.5 block text-[11px] text-muted-foreground">
+          Unauthorized testing may violate applicable computer-misuse laws and your provider's terms
+          of service.
         </span>
         {hasError && (
           <span

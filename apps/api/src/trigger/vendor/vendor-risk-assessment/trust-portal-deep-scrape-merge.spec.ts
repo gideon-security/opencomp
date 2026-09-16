@@ -118,10 +118,7 @@ describe('mergeCertifications', () => {
 
   it('keeps distinct certifications when slugs differ', () => {
     const core = [cert({ type: 'SOC 2 Type II' })];
-    const deep = [
-      cert({ type: 'ISO 27001' }),
-      cert({ type: 'PCI DSS' }),
-    ];
+    const deep = [cert({ type: 'ISO 27001' }), cert({ type: 'PCI DSS' })];
 
     const result = mergeCertifications(core, deep);
 

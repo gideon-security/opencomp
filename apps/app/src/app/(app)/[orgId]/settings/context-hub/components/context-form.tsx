@@ -1,15 +1,20 @@
 'use client';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@gideon-defender/ui/accordion';
+import { usePermissions } from '@/hooks/use-permissions';
+import type { Context } from '@db';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@gideon-defender/ui/accordion';
 import { Button } from '@gideon-defender/ui/button';
 import { Input } from '@gideon-defender/ui/input';
 import { Label } from '@gideon-defender/ui/label';
 import { Textarea } from '@gideon-defender/ui/textarea';
-import type { Context } from '@db';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { usePermissions } from '@/hooks/use-permissions';
 import { useContextEntries } from '../hooks/useContextEntries';
 
 export function ContextForm({ entry, onSuccess }: { entry?: Context; onSuccess?: () => void }) {

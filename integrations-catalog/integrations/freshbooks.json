@@ -9,16 +9,12 @@
     "type": "oauth2",
     "config": {
       "setupInstructions": "Go to https://my.freshbooks.com/developer to create OAuth app",
-      "scopes": [
-        "user:profile:read"
-      ],
+      "scopes": ["user:profile:read"],
       "clientAuthMethod": "body",
       "supportsRefreshToken": true
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

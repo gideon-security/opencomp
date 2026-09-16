@@ -84,8 +84,7 @@ export function IsmsApprovalSection({
   const publishedVersion = document.currentVersion?.version ?? null;
   const hasPublishedVersion = publishedVersion != null;
   const nextDraftVersion = (publishedVersion ?? 0) + 1;
-  const hasDraftChanges =
-    hasPublishedVersion && (isDeclined || (!isApproved && !isPending));
+  const hasDraftChanges = hasPublishedVersion && (isDeclined || (!isApproved && !isPending));
 
   // The plain submit button is only offered on un-submitted drafts. Pending and
   // resolved (approved / declined) documents render their own state instead.

@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type {
-  CheckContext,
-  CheckFindingResult,
-  CheckPassingResult,
-} from '../../../../types';
+import type { CheckContext, CheckFindingResult, CheckPassingResult } from '../../../../types';
 import type { GitHubRepo, GitHubTreeEntry, GitHubTreeResponse } from '../../types';
 import { sanitizedInputsCheck } from '../sanitized-inputs';
 
@@ -70,7 +66,7 @@ async function runSanitizedInputs(params: {
         description: finding.description,
       });
     },
-    fetch: (async <T,>(path: string): Promise<T> => {
+    fetch: (async <T>(path: string): Promise<T> => {
       // Repo metadata: /repos/<owner>/<repo>
       if (/^\/repos\/[^/]+\/[^/]+$/.test(path)) {
         return makeRepo() as unknown as T;

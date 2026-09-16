@@ -34,9 +34,7 @@ export function parseSheetIdentityFromUrl(url: string): SheetIdentity | null {
   }
 }
 
-export function createDefaultSheetMapping(
-  identity: SheetIdentity,
-): SheetMapping {
+export function createDefaultSheetMapping(identity: SheetIdentity): SheetMapping {
   return {
     spreadsheetId: identity.spreadsheetId,
     gid: identity.gid,
@@ -100,9 +98,8 @@ export function alignSheetMappingToQuestions(params: {
   return {
     ...params.mapping,
     startRow: Math.min(...targets.map((target) => target.row)),
-    endRow: params.mapping.endRow === null
-      ? null
-      : Math.max(...targets.map((target) => target.row)),
+    endRow:
+      params.mapping.endRow === null ? null : Math.max(...targets.map((target) => target.row)),
     updatedAt: Date.now(),
   };
 }
@@ -140,9 +137,7 @@ export function parseSheetMapping(value: unknown): SheetMapping | null {
 }
 
 export function describeSheetMapping(mapping: SheetMapping): string {
-  const rows = mapping.endRow
-    ? `${mapping.startRow}-${mapping.endRow}`
-    : `${mapping.startRow}+`;
+  const rows = mapping.endRow ? `${mapping.startRow}-${mapping.endRow}` : `${mapping.startRow}+`;
   return `questions ${mapping.questionColumn}, answers ${mapping.answerColumn}, rows ${rows}`;
 }
 
@@ -156,11 +151,13 @@ function parseQuestionTag(question: DetectedQuestion): {
   const questionColumn = normalizeColumnName(match[1] ?? '');
   const answerColumn = normalizeColumnName(match[3] ?? '');
   if (!questionColumn || !answerColumn) return [];
-  return [{
-    questionColumn,
-    answerColumn,
-    row: Number(match[2]),
-  }];
+  return [
+    {
+      questionColumn,
+      answerColumn,
+      row: Number(match[2]),
+    },
+  ];
 }
 
 function parseSpreadsheetId(pathname: string): string | null {
@@ -179,10 +176,7 @@ function readColumn(value: unknown): string | null {
 
 function isEndRow(value: unknown, startRow: number): value is number | null {
   return (
-    value === null ||
-    (typeof value === 'number' &&
-      Number.isInteger(value) &&
-      value >= startRow)
+    value === null || (typeof value === 'number' && Number.isInteger(value) && value >= startRow)
   );
 }
 

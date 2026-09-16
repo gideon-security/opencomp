@@ -3,15 +3,6 @@
 import { useFrameworks } from '@/hooks/use-frameworks';
 import { usePermissions } from '@/hooks/use-permissions';
 import {
-  Button,
-  Sheet,
-  SheetBody,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@trycompai/design-system';
-import { Add } from '@trycompai/design-system/icons';
-import {
   Form,
   FormControl,
   FormField,
@@ -22,6 +13,15 @@ import {
 import { Input } from '@gideon-defender/ui/input';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Button,
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@trycompai/design-system';
+import { Add } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -67,9 +67,7 @@ export function CreateCustomFrameworkSheet() {
         router.push(`/${params.orgId}/frameworks/${created.id}`);
       }
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('list.createError'),
-      );
+      toast.error(error instanceof Error ? error.message : t('list.createError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -77,11 +75,7 @@ export function CreateCustomFrameworkSheet() {
 
   return (
     <>
-      <Button
-        size="sm"
-        iconLeft={<Add size={16} />}
-        onClick={() => setIsOpen(true)}
-      >
+      <Button size="sm" iconLeft={<Add size={16} />} onClick={() => setIsOpen(true)}>
         {t('list.addCustomButton')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -91,10 +85,7 @@ export function CreateCustomFrameworkSheet() {
           </SheetHeader>
           <SheetBody>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="name"
@@ -102,10 +93,7 @@ export function CreateCustomFrameworkSheet() {
                     <FormItem>
                       <FormLabel>{tCommon('common.name')}</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          placeholder={t('list.namePlaceholder')}
-                        />
+                        <Input {...field} placeholder={t('list.namePlaceholder')} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

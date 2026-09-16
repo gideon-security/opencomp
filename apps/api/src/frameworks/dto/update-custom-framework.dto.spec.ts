@@ -17,7 +17,9 @@ function transform(payload: Record<string, unknown>) {
 
 describe('UpdateCustomFrameworkDto', () => {
   it('accepts a name-only payload', async () => {
-    expect(await validatePayload({ name: 'Internal Controls' })).toHaveLength(0);
+    expect(await validatePayload({ name: 'Internal Controls' })).toHaveLength(
+      0,
+    );
   });
 
   it('accepts a description-only payload', async () => {

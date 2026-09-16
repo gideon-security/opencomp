@@ -38,9 +38,6 @@ export type State =
     }
   | { kind: 'failed'; reason: string; mode: Mode };
 
-export function isControlDerived(
-  c: SuggestedControl,
-  checkedTaskIds: Set<string>,
-): boolean {
+export function isControlDerived(c: SuggestedControl, checkedTaskIds: Set<string>): boolean {
   return c.viaTaskIds.some((id) => checkedTaskIds.has(id));
 }

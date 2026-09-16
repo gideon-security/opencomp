@@ -25,8 +25,8 @@ import {
 } from '@trycompai/design-system/icons';
 import type { FleetPolicy } from '../../types';
 import { PolicyImagePreviewModal } from './PolicyImagePreviewModal';
-import { PolicyImageUploadModal } from './PolicyImageUploadModal';
 import { PolicyImageResetModal } from './PolicyImageResetModal';
+import { PolicyImageUploadModal } from './PolicyImageUploadModal';
 
 interface FleetPolicyItemProps {
   policy: FleetPolicy;
@@ -46,12 +46,20 @@ export function FleetPolicyItem({ policy, organizationId, onRefresh }: FleetPoli
         return [
           {
             label: 'Preview images',
-            renderIcon: () => <span className="mr-2"><ImageIcon size={16} /></span>,
+            renderIcon: () => (
+              <span className="mr-2">
+                <ImageIcon size={16} />
+              </span>
+            ),
             onClick: () => setIsPreviewOpen(true),
           },
           {
             label: 'Remove images',
-            renderIcon: () => <span className="mr-2"><TrashCan size={16} /></span>,
+            renderIcon: () => (
+              <span className="mr-2">
+                <TrashCan size={16} />
+              </span>
+            ),
             onClick: () => setIsRemoveOpen(true),
           },
         ];
@@ -63,7 +71,11 @@ export function FleetPolicyItem({ policy, organizationId, onRefresh }: FleetPoli
     return [
       {
         label: 'Upload images',
-        renderIcon: () => <span className="mr-2"><Upload size={16} /></span>,
+        renderIcon: () => (
+          <span className="mr-2">
+            <Upload size={16} />
+          </span>
+        ),
         onClick: () => setIsUploadOpen(true),
       },
     ];

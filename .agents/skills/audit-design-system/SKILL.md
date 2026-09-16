@@ -16,6 +16,7 @@ Audit the specified files for design system compliance. **Fix every issue found 
 7. **Patterns**: Sheet (`Sheet > SheetContent > SheetHeader + SheetBody`), Drawer, Collapsible.
 
 ## Process
+
 1. Read files specified in `$ARGUMENTS`
 2. Find `@gideon-defender/ui` imports — check if DS equivalent exists
 3. Find `lucide-react` imports — find matching Carbon icons

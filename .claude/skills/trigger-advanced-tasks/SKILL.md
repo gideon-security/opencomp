@@ -1,6 +1,6 @@
 ---
 name: trigger-advanced-tasks
-description: "Comprehensive rules to help you write advanced Trigger.dev tasks"
+description: 'Comprehensive rules to help you write advanced Trigger.dev tasks'
 ---
 
 Source Cursor rule: `.cursor/rules/trigger.advanced-tasks.mdc`.

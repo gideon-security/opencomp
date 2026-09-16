@@ -200,7 +200,9 @@ describe('GideonOidcService.peekStoredRedirect', () => {
   it('returns undefined when Redis is unavailable', async () => {
     mockRedisGet.mockRejectedValue(new Error('redis down'));
 
-    await expect(service.peekStoredRedirect('state-123')).resolves.toBeUndefined();
+    await expect(
+      service.peekStoredRedirect('state-123'),
+    ).resolves.toBeUndefined();
   });
 
   it('does not break the real exchange (state stays single-use)', async () => {

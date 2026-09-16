@@ -109,9 +109,7 @@ export function ReviewActionRow({
     // the active roster — and a signed review accepts only tracking fields.
     const full = toActionPayload(values);
     const patch = Object.fromEntries(
-      Object.entries(full).filter(
-        ([key]) => dirtyFields[key as keyof ReviewActionFormValues],
-      ),
+      Object.entries(full).filter(([key]) => dirtyFields[key as keyof ReviewActionFormValues]),
     );
     if (Object.keys(patch).length > 0) {
       try {
@@ -161,12 +159,7 @@ export function ReviewActionRow({
               render={({ field: { ref: _ref, ...field }, fieldState }) => (
                 <>
                   {/* Part of the signed minutes — frozen once the chair signs. */}
-                  <Textarea
-                    {...field}
-                    rows={2}
-                    aria-label="Action description"
-                    disabled={locked}
-                  />
+                  <Textarea {...field} rows={2} aria-label="Action description" disabled={locked} />
                   <FieldError>{fieldState.error?.message}</FieldError>
                 </>
               )}
@@ -305,8 +298,8 @@ export function ReviewActionRow({
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete action {reference}?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This permanently removes the action from the review&apos;s outputs and from
-                  every later review&apos;s carried-forward list. This cannot be undone.
+                  This permanently removes the action from the review&apos;s outputs and from every
+                  later review&apos;s carried-forward list. This cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

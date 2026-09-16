@@ -2,9 +2,10 @@
 
 import { StatusIndicator } from '@/components/status-indicator';
 import { Task } from '@db';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@trycompai/design-system';
-import { Search } from '@trycompai/design-system/icons';
 import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
   Table,
   TableBody,
   TableCell,
@@ -13,8 +14,9 @@ import {
   TableRow,
   Text,
 } from '@trycompai/design-system';
-import { useRouter } from 'next/navigation';
+import { Search } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 interface TasksTableProps {
@@ -93,18 +95,12 @@ export function TasksTable({ tasks, orgId }: TasksTableProps) {
                 }}
               >
                 <TableCell>
-                  <span
-                    className="block max-w-[280px] truncate text-sm"
-                    title={task.title}
-                  >
+                  <span className="block max-w-[280px] truncate text-sm" title={task.title}>
                     {task.title}
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span
-                    className="block max-w-[420px] truncate text-sm"
-                    title={task.description}
-                  >
+                  <span className="block max-w-[420px] truncate text-sm" title={task.description}>
                     {task.description}
                   </span>
                 </TableCell>

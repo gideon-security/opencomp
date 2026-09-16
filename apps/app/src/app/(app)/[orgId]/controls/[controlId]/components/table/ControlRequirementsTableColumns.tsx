@@ -29,7 +29,9 @@ export function getControlRequirementsColumns(
         const description = row.original.description || ''; // Default to empty string if null
         const maxLength = 300; // Increased character limit
         const displayText =
-          description.length > maxLength ? `${description.substring(0, maxLength)}...` : description;
+          description.length > maxLength
+            ? `${description.substring(0, maxLength)}...`
+            : description;
 
         return (
           <div className="w-full pr-4" title={description}>

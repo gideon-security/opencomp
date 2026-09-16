@@ -73,11 +73,7 @@ export function renderSheetMappingDialog(mapping: SheetMapping): string {
   `;
 }
 
-function inputField(params: {
-  label: string;
-  name: string;
-  value: string;
-}): string {
+function inputField(params: { label: string; name: string; value: string }): string {
   return `
     <label>
       <span>${escapeHtml(params.label)}</span>
@@ -93,11 +89,7 @@ function inputField(params: {
   `;
 }
 
-function numberField(params: {
-  label: string;
-  name: string;
-  value: string;
-}): string {
+function numberField(params: { label: string; name: string; value: string }): string {
   return `
     <label>
       <span>${escapeHtml(params.label)}</span>

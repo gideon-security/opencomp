@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import { apiRequest } from '../lib/api-client.js';
 import { handleError } from '../lib/errors.js';
 import { outputResult, outputSuccess } from '../lib/output.js';
-import type { Framework, FrameworkWithCounts, ControlDocument } from '../types.js';
+import type { ControlDocument, Framework, FrameworkWithCounts } from '../types.js';
 
 export function registerFrameworkCommands(parent: Command): void {
   const fw = parent

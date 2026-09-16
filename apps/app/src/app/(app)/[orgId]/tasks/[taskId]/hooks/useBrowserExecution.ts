@@ -51,8 +51,7 @@ export function useBrowserExecution({ onNeedsReauth, onComplete }: UseBrowserExe
   // Live-view phase (mirrors the server's metadata). While a session is being
   // torn down between vendors / at the end, the iframe would show Browserbase's
   // "disconnected" notice — the UI covers it based on this instead.
-  const livePhase =
-    (runState?.metadata?.livePhase as BrowserRunLivePhase | undefined) ?? 'running';
+  const livePhase = (runState?.metadata?.livePhase as BrowserRunLivePhase | undefined) ?? 'running';
 
   const closeSession = useCallback(async (id: string) => {
     try {

@@ -30,7 +30,9 @@ describe('normalizeTotpSecret', () => {
 
   it('strips trailing Base32 padding when validating length', () => {
     // 16 significant chars + padding is still a valid seed; padding is preserved.
-    expect(normalizeTotpSecret('JBSWY3DPEHPK3PXP===')).toBe('JBSWY3DPEHPK3PXP===');
+    expect(normalizeTotpSecret('JBSWY3DPEHPK3PXP===')).toBe(
+      'JBSWY3DPEHPK3PXP===',
+    );
     // Padding must not count toward the minimum length.
     expect(normalizeTotpSecret('JBSWY3DP========')).toBeNull();
   });

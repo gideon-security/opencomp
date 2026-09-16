@@ -109,8 +109,8 @@ export function ConnectCaptureForm({
       <div className="flex flex-col gap-1">
         <h3 className="text-sm text-foreground">Your sign-in details</h3>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          We&apos;ll sign in for you now, and the scheduler reuses these so you never
-          re-enter them. Stored encrypted in 1Password — never shared.
+          We&apos;ll sign in for you now, and the scheduler reuses these so you never re-enter them.
+          Stored encrypted in 1Password — never shared.
         </p>
       </div>
 
@@ -122,8 +122,8 @@ export function ConnectCaptureForm({
             background: 'color-mix(in oklab, var(--warning) 9%, transparent)',
           }}
         >
-          We couldn&apos;t read this sign-in page. Add the fields it asks for, exactly as
-          they appear.
+          We couldn&apos;t read this sign-in page. Add the fields it asks for, exactly as they
+          appear.
         </div>
       ) : (
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
@@ -212,10 +212,9 @@ export function ConnectCaptureForm({
             {...register('totpSeed')}
           />
           <p className="text-xs leading-relaxed text-muted-foreground">
-            The long setup key shown once when you add the authenticator app
-            (&ldquo;can&apos;t scan? enter this code&rdquo;) — not the rotating 6-digit
-            code. We use it to generate codes at run time so scheduled runs don&apos;t
-            need you.
+            The long setup key shown once when you add the authenticator app (&ldquo;can&apos;t
+            scan? enter this code&rdquo;) — not the rotating 6-digit code. We use it to generate
+            codes at run time so scheduled runs don&apos;t need you.
           </p>
           <MfaSetupHelp hostname={hostname} />
         </div>

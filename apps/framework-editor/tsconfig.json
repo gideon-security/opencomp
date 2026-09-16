@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "target": "ES6",
     "skipLibCheck": true,
@@ -24,15 +20,9 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@/db": [
-        "./prisma"
-      ],
-      "@/db/server": [
-        "./prisma/server"
-      ]
+      "@/*": ["./*"],
+      "@/db": ["./prisma"],
+      "@/db/server": ["./prisma/server"]
     }
   },
   "include": [
@@ -42,7 +32,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

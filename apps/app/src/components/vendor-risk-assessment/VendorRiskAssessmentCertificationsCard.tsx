@@ -1,7 +1,25 @@
 'use client';
 
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Collapsible, CollapsibleContent, CollapsibleTrigger } from '@trycompai/design-system';
-import { CheckmarkFilled, ChevronDown, ChevronUp, CloseOutline, Launch, Security, Time } from '@trycompai/design-system/icons';
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@trycompai/design-system';
+import {
+  CheckmarkFilled,
+  ChevronDown,
+  ChevronUp,
+  CloseOutline,
+  Launch,
+  Security,
+  Time,
+} from '@trycompai/design-system/icons';
 import { useMemo, useState } from 'react';
 import { filterCertifications } from './filter-certifications';
 import type { VendorRiskAssessmentCertification } from './vendor-risk-assessment-types';
@@ -9,13 +27,21 @@ import type { VendorRiskAssessmentCertification } from './vendor-risk-assessment
 function CertificationRow({ cert }: { cert: VendorRiskAssessmentCertification }) {
   const statusIcon =
     cert.status === 'verified' ? (
-      <div className="text-primary shrink-0"><CheckmarkFilled size={16} /></div>
+      <div className="text-primary shrink-0">
+        <CheckmarkFilled size={16} />
+      </div>
     ) : cert.status === 'expired' ? (
-      <div className="text-destructive shrink-0"><CloseOutline size={16} /></div>
+      <div className="text-destructive shrink-0">
+        <CloseOutline size={16} />
+      </div>
     ) : cert.status === 'not_certified' ? (
-      <div className="text-muted-foreground shrink-0"><CloseOutline size={16} /></div>
+      <div className="text-muted-foreground shrink-0">
+        <CloseOutline size={16} />
+      </div>
     ) : (
-      <div className="text-muted-foreground shrink-0"><Time size={16} /></div>
+      <div className="text-muted-foreground shrink-0">
+        <Time size={16} />
+      </div>
     );
 
   const statusBadge =
@@ -70,7 +96,10 @@ export function VendorRiskAssessmentCertificationsCard({
     [filteredCerts],
   );
 
-  const preview = useMemo(() => filteredCerts.slice(0, previewCount), [filteredCerts, previewCount]);
+  const preview = useMemo(
+    () => filteredCerts.slice(0, previewCount),
+    [filteredCerts, previewCount],
+  );
   const rest = useMemo(() => filteredCerts.slice(previewCount), [filteredCerts, previewCount]);
 
   return (
@@ -112,9 +141,7 @@ export function VendorRiskAssessmentCertificationsCard({
 
             {rest.length > 0 ? (
               <div className="pt-1">
-                <CollapsibleTrigger
-                  className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <CollapsibleTrigger className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {open ? (
                     <>
                       <span>Show less</span>
@@ -135,5 +162,3 @@ export function VendorRiskAssessmentCertificationsCard({
     </Card>
   );
 }
-
-

@@ -27,7 +27,9 @@ export class AiDescriptionService {
    * fallback (showing only the existing per-finding description) rather
    * than throwing.
    */
-  async generate(input: CheckDescriptionInput): Promise<CheckDescription | null> {
+  async generate(
+    input: CheckDescriptionInput,
+  ): Promise<CheckDescription | null> {
     try {
       const { object } = await generateObject({
         model: MODEL,

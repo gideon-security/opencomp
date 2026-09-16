@@ -40,7 +40,6 @@ interface SetupStep {
   >;
 }
 
-
 export function GcpSetupGuide({
   connectionId,
   hasOrgId,
@@ -131,7 +130,9 @@ export function GcpSetupGuide({
       if (resp.data?.projects?.length) setProjects(resp.data.projects);
 
       if (resp.error || !resp.data?.step) {
-        toast.error(typeof resp.error === 'string' ? resp.error : t('cloudTests_couldNotResolveStep'));
+        toast.error(
+          typeof resp.error === 'string' ? resp.error : t('cloudTests_couldNotResolveStep'),
+        );
         return;
       }
 
@@ -164,7 +165,7 @@ export function GcpSetupGuide({
       }
 
       const isBlockingNow = hasBlockingFailuresForSteps(
-        nextSteps.length > 0 ? nextSteps : setupResult?.steps ?? [],
+        nextSteps.length > 0 ? nextSteps : (setupResult?.steps ?? []),
       );
       if (wasBlocking && !isBlockingNow) {
         toast.success(t('cloudTests_setupCompleteRunningScan'));
@@ -217,7 +218,11 @@ export function GcpSetupGuide({
           <div className="space-y-3">
             <StepRow done label={t('cloudTests_connectedViaOauth')} />
             {hasOrgId && <StepRow done label={t('cloudTests_orgDetected')} />}
-            <StepRow failed label={t('cloudTests_noProjectsSelected')} error={t('cloudTests_selectProjectToScan')} />
+            <StepRow
+              failed
+              label={t('cloudTests_noProjectsSelected')}
+              error={t('cloudTests_selectProjectToScan')}
+            />
             <a
               href={`/${orgId}/integrations/gcp`}
               className="inline-flex items-center gap-1.5 rounded-lg border bg-background px-4 py-2.5 text-sm font-medium hover:bg-muted/50 transition-colors"
@@ -246,10 +251,16 @@ export function GcpSetupGuide({
           <div className="space-y-2">
             <StepRow done label={t('cloudTests_connectedViaOauth')} />
             {setupResult.organizationId && (
-              <StepRow done label={t('cloudTests_orgIdLabel', { orgId: setupResult.organizationId })} />
+              <StepRow
+                done
+                label={t('cloudTests_orgIdLabel', { orgId: setupResult.organizationId })}
+              />
             )}
             {setupResult.email && (
-              <StepRow done label={t('cloudTests_accountEmailLabel', { email: setupResult.email })} />
+              <StepRow
+                done
+                label={t('cloudTests_accountEmailLabel', { email: setupResult.email })}
+              />
             )}
 
             {/* Project info */}
@@ -257,7 +268,8 @@ export function GcpSetupGuide({
               <StepRow
                 done
                 label={t('cloudTests_setupProjectLabel', {
-                  project: projects.find((p) => p.id === selectedProjectId)?.name ?? selectedProjectId,
+                  project:
+                    projects.find((p) => p.id === selectedProjectId)?.name ?? selectedProjectId,
                 })}
               />
             )}
@@ -286,9 +298,7 @@ export function GcpSetupGuide({
           >
             <p
               className={`mb-2 text-xs font-medium ${
-                hasBlockingFailures
-                  ? 'text-amber-800 dark:text-amber-300'
-                  : 'text-primary'
+                hasBlockingFailures ? 'text-amber-800 dark:text-amber-300' : 'text-primary'
               }`}
             >
               {hasBlockingFailures
@@ -312,7 +322,9 @@ export function GcpSetupGuide({
                           : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
                       }`}
                     >
-                      {step.requiredForScan === false ? t('cloudTests_optionalBadge') : t('cloudTests_required')}
+                      {step.requiredForScan === false
+                        ? t('cloudTests_optionalBadge')
+                        : t('cloudTests_required')}
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -397,7 +409,6 @@ export function GcpSetupGuide({
           </div>
         )}
       </div>
-
     </div>
   );
 }
@@ -424,8 +435,8 @@ function StepRow({
             : optional
               ? 'bg-amber-100 dark:bg-amber-900/30'
               : failed
-              ? 'bg-red-100 dark:bg-red-900/30'
-              : 'border border-muted-foreground/30'
+                ? 'bg-red-100 dark:bg-red-900/30'
+                : 'border border-muted-foreground/30'
         }`}
       >
         {done && <Check className="h-3 w-3 text-primary" />}
@@ -446,7 +457,11 @@ function StepRow({
           {label}
         </p>
         {error && (
-          <p className={`mt-0.5 text-[11px] ${optional ? 'text-amber-700 dark:text-amber-400' : 'text-red-500'}`}>{error}</p>
+          <p
+            className={`mt-0.5 text-[11px] ${optional ? 'text-amber-700 dark:text-amber-400' : 'text-red-500'}`}
+          >
+            {error}
+          </p>
         )}
       </div>
     </div>

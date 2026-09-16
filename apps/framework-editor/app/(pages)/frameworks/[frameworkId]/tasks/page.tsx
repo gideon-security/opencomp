@@ -8,18 +8,15 @@ interface TaskTemplateWithControls extends FrameworkEditorTaskTemplate {
   controlTemplates?: Array<{ id: string; name: string }>;
 }
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ frameworkId: string }>;
-}) {
+export default async function Page({ params }: { params: Promise<{ frameworkId: string }> }) {
   const isAllowed = await isAuthorized();
   if (!isAllowed) redirect('/auth');
 
   const { frameworkId } = await params;
 
-  const tasks =
-    await serverApi<TaskTemplateWithControls[]>(`/task-template?frameworkId=${frameworkId}`);
+  const tasks = await serverApi<TaskTemplateWithControls[]>(
+    `/task-template?frameworkId=${frameworkId}`,
+  );
 
   return <TasksClientPage initialTasks={tasks} frameworkId={frameworkId} />;
 }

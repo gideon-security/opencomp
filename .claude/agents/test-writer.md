@@ -27,15 +27,18 @@ You write unit tests for React components that use `usePermissions` for RBAC gat
 3. Write the test file with these required scenarios:
 
 ### Admin (write) user
+
 - All mutation elements (buttons, form submits, toggles) are **visible and enabled**
 - Data renders correctly
 
 ### Auditor (read-only) user
+
 - Mutation elements are **hidden or disabled**
 - Read-only content still renders
 - No error states from missing permissions
 
 ### Data always visible
+
 - Tables, lists, text content render regardless of permission level
 
 ## Test template
@@ -43,7 +46,11 @@ You write unit tests for React components that use `usePermissions` for RBAC gat
 ```tsx
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { setMockPermissions, ADMIN_PERMISSIONS, AUDITOR_PERMISSIONS } from '@/test-utils/mocks/permissions';
+import {
+  setMockPermissions,
+  ADMIN_PERMISSIONS,
+  AUDITOR_PERMISSIONS,
+} from '@/test-utils/mocks/permissions';
 import { ComponentUnderTest } from './ComponentUnderTest';
 
 // Mock hooks/dependencies as needed

@@ -44,7 +44,8 @@ function buildReviewSections(
         { label: 'Chair', value: review.chairName || '—' },
         {
           label: 'Attendees',
-          value: review.attendees.length > 0 ? review.attendees.join(', ') : '—',
+          value:
+            review.attendees.length > 0 ? review.attendees.join(', ') : '—',
         },
         { label: 'Status', value: review.status },
       ],

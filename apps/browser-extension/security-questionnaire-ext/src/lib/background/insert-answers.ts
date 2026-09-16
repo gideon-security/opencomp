@@ -45,10 +45,7 @@ async function injectContentScript(tabId: number): Promise<void> {
 
 function shouldInjectContentScript(error: unknown): boolean {
   const message = error instanceof Error ? error.message.toLowerCase() : '';
-  return (
-    message.includes('receiving end') ||
-    message.includes('could not establish connection')
-  );
+  return message.includes('receiving end') || message.includes('could not establish connection');
 }
 
 function isInsertResponse(value: unknown): value is InsertResponse {

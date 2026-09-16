@@ -7,7 +7,9 @@ import type {
   ManifestTask,
 } from '../frameworks/framework-versioning/manifest.types';
 
-export async function buildManifestForFramework(frameworkId: string): Promise<FrameworkManifest> {
+export async function buildManifestForFramework(
+  frameworkId: string,
+): Promise<FrameworkManifest> {
   const framework = await db.frameworkEditorFramework.findUnique({
     where: { id: frameworkId },
     include: {

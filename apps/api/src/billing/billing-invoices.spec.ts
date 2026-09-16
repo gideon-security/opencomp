@@ -2,7 +2,9 @@ import type Stripe from 'stripe';
 import type { StripeService } from '../stripe/stripe.service';
 import { listBillingInvoices } from './billing-invoices';
 
-function mockStripeService(params: { invoices: Stripe.Invoice[] }): StripeService {
+function mockStripeService(params: {
+  invoices: Stripe.Invoice[];
+}): StripeService {
   const invoicesList = jest.fn().mockResolvedValue({ data: params.invoices });
   return {
     isConfigured: () => true,

@@ -17,6 +17,7 @@ Only if the change is genuinely non-security (pure presentation, types, copy, co
 ## 2. Review
 
 Dispatch the **`security-reviewer`** agent on the scoped files. For a broad review (a full PR / many files), fan out **parallel** `security-reviewer` agents by dimension group so coverage is thorough:
+
 - **Access control & tenancy** — guards, `@RequirePermission`, API-key/service-token scope enforcement, authz-vs-attribution, IDOR, `organizationId` scoping.
 - **Injection, XSS & mass assignment** — raw Prisma/SQL, command/path injection, `dangerouslySetInnerHTML`/unsanitized HTML, `...dto` spread into `create/update`.
 - **Secrets, SSRF, auth/session & file handling** — hardcoded/logged secrets, outbound fetch to user URLs, session/cookie/attribution boundaries, S3/upload safety, DoS, info disclosure.

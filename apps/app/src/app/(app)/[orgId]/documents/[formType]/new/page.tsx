@@ -2,9 +2,9 @@ import { CompanySubmissionWizard } from '@/app/(app)/[orgId]/documents/component
 import { formFieldLabel } from '@/app/(app)/[orgId]/documents/form-description-labels';
 import { conciseFormDescriptions } from '@/app/(app)/[orgId]/documents/form-descriptions';
 import { Breadcrumb, PageHeader, PageLayout, Text } from '@trycompai/design-system';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
 import { evidenceFormDefinitions, evidenceFormTypeSchema } from '../../forms';
 
 export default async function NewCompanySubmissionPage({

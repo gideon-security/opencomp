@@ -22,23 +22,17 @@ export async function POST(request: NextRequest) {
 
   const orgId = session.session?.activeOrganizationId;
   if (!orgId) {
-    return NextResponse.json(
-      { error: 'No active organization' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'No active organization' }, { status: 400 });
   }
 
   const body = await request.json().catch(() => ({}));
   const integrationId = body?.integrationId as string | undefined;
 
   try {
-    const handle = await tasks.trigger<typeof runIntegrationTests>(
-      'run-integration-tests',
-      {
-        organizationId: orgId,
-        ...(integrationId ? { integrationId } : {}),
-      },
-    );
+    const handle = await tasks.trigger<typeof runIntegrationTests>('run-integration-tests', {
+      organizationId: orgId,
+      ...(integrationId ? { integrationId } : {}),
+    });
 
     // Poll for completion
     let attempts = 0;
@@ -83,20 +77,14 @@ export async function POST(request: NextRequest) {
     // Timeout
     return NextResponse.json({
       success: false,
-      errors: [
-        'Scan is taking longer than expected. Check the Local trigger dashboard.',
-      ],
+      errors: ['Scan is taking longer than expected. Check the Local trigger dashboard.'],
       taskId: handle.id,
     });
   } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        errors: [
-          error instanceof Error
-            ? error.message
-            : 'Failed to run integration tests',
-        ],
+        errors: [error instanceof Error ? error.message : 'Failed to run integration tests'],
       },
       { status: 500 },
     );

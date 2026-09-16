@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  ColumnResizeHandle,
-  useResizableColumns,
-} from '@/app/components/table/resizable-columns';
+import { ColumnResizeHandle, useResizableColumns } from '@/app/components/table/resizable-columns';
 import { Button } from '@gideon-defender/ui/button';
 import { ChevronDown, ChevronRight, FileText, Folder, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
@@ -82,9 +79,7 @@ export function FrameworksTreeTable({
                 }`}
               >
                 {c.label}
-                {c.resizable && (
-                  <ColumnResizeHandle onResizeStart={(e) => startResize(c.key, e)} />
-                )}
+                {c.resizable && <ColumnResizeHandle onResizeStart={(e) => startResize(c.key, e)} />}
               </th>
             ))}
           </tr>
@@ -150,11 +145,7 @@ function FamilyRow({
             className="text-muted-foreground hover:text-foreground shrink-0"
             aria-label={expanded ? 'Collapse family' : 'Expand family'}
           >
-            {expanded ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
+            {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
           </button>
           <Folder className="text-muted-foreground h-4 w-4 shrink-0" />
           <span className="truncate font-medium">{family.name}</span>
@@ -216,9 +207,7 @@ function FrameworkRow({
           </Link>
         </div>
       </td>
-      <td className={CENTER_CELL}>
-        {framework.latestVersion?.version ?? framework.version}
-      </td>
+      <td className={CENTER_CELL}>{framework.latestVersion?.version ?? framework.version}</td>
       <td className={CENTER_CELL}>
         <FrameworkVisibilityBadge visible={framework.visible} />
       </td>

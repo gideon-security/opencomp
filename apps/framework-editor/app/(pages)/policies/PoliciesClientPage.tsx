@@ -1,7 +1,7 @@
 'use client';
 
-import { apiClient } from '@/app/lib/api-client';
 import { DataTable } from '@/app/components/DataTable';
+import { apiClient } from '@/app/lib/api-client';
 import type { FrameworkEditorPolicyTemplate } from '@/db';
 import { Button } from '@gideon-defender/ui';
 import { Link } from 'lucide-react';
@@ -20,7 +20,11 @@ interface PoliciesClientPageProps {
   frameworkId?: string;
 }
 
-export function PoliciesClientPage({ initialPolicies, emptyMessage, frameworkId }: PoliciesClientPageProps) {
+export function PoliciesClientPage({
+  initialPolicies,
+  emptyMessage,
+  frameworkId,
+}: PoliciesClientPageProps) {
   const [isCreatePolicyDialogOpen, setIsCreatePolicyDialogOpen] = useState(false);
   const [isAddExistingOpen, setIsAddExistingOpen] = useState(false);
   const router = useRouter();
@@ -30,10 +34,7 @@ export function PoliciesClientPage({ initialPolicies, emptyMessage, frameworkId 
     [initialPolicies],
   );
 
-  const fetchAllPolicies = useCallback(
-    () => apiClient<ExistingItemRaw[]>('/policy-template'),
-    [],
-  );
+  const fetchAllPolicies = useCallback(() => apiClient<ExistingItemRaw[]>('/policy-template'), []);
 
   const handleRowClick = (policy: FrameworkEditorPolicyTemplate) => {
     router.push(`/policies/${policy.id}`);
@@ -50,11 +51,7 @@ export function PoliciesClientPage({ initialPolicies, emptyMessage, frameworkId 
         emptyMessage={emptyMessage}
         additionalActions={
           frameworkId ? (
-            <Button
-              variant="outline"
-              onClick={() => setIsAddExistingOpen(true)}
-              size="default"
-            >
+            <Button variant="outline" onClick={() => setIsAddExistingOpen(true)} size="default">
               <Link className="mr-2 h-4 w-4" />
               Add Existing Policy
             </Button>

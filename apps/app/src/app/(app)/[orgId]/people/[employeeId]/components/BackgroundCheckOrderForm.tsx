@@ -2,11 +2,7 @@
 
 import { Button, Input, Textarea } from '@trycompai/design-system';
 import { ArrowRight } from '@trycompai/design-system/icons';
-import {
-  FormFooterInfo,
-  FormFooterRow,
-  LabelRow,
-} from './BackgroundCheckFormHelpers';
+import { FormFooterInfo, FormFooterRow, LabelRow } from './BackgroundCheckFormHelpers';
 
 export interface OrderFormValues {
   employeeName: string;

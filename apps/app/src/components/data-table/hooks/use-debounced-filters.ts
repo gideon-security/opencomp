@@ -1,9 +1,8 @@
 'use client';
 
+import { getFiltersStateParser } from '@/lib/parsers';
 import { useDebouncedCallback } from '@gideon-defender/ui/hooks/use-debounced-callback';
 import { useQueryState } from 'nuqs';
-import { getFiltersStateParser } from '@/lib/parsers';
-import type { ExtendedColumnFilter } from '@/types/data-table';
 
 export const FILTERS_KEY = 'filters';
 export const DEBOUNCE_MS = 300;
@@ -25,13 +24,11 @@ export function useDebouncedFilters<TData>(params: {
 
   const [filters, setFilters] = useQueryState(
     FILTERS_KEY,
-    getFiltersStateParser<TData>(columnIds)
-      .withDefault([])
-      .withOptions({
-        clearOnDefault: true,
-        shallow,
-        throttleMs,
-      }),
+    getFiltersStateParser<TData>(columnIds).withDefault([]).withOptions({
+      clearOnDefault: true,
+      shallow,
+      throttleMs,
+    }),
   );
 
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);

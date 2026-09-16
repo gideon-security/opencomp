@@ -1,9 +1,10 @@
 'use client';
 
 import { StatusIndicator } from '@/components/status-indicator';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@trycompai/design-system';
-import { Search } from '@trycompai/design-system/icons';
 import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
   Table,
   TableBody,
   TableCell,
@@ -12,8 +13,9 @@ import {
   TableRow,
   Text,
 } from '@trycompai/design-system';
-import { useRouter } from 'next/navigation';
+import { Search } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 export interface DocumentTypeWithStatus {
@@ -105,9 +107,7 @@ export function DocumentsTable({ documents, orgId }: DocumentsTableProps) {
                     : t('never')}
                 </TableCell>
                 <TableCell>
-                  <StatusIndicator
-                    status={doc.isCurrent ? 'completed' : 'not_started'}
-                  />
+                  <StatusIndicator status={doc.isCurrent ? 'completed' : 'not_started'} />
                 </TableCell>
               </TableRow>
             ))

@@ -1,9 +1,9 @@
+export { cloudMonitoringAlertingCheck } from './cloud-monitoring-alerting';
+export { cloudSqlBackupsCheck } from './cloud-sql-backups';
+export { cloudSqlEncryptionCheck } from './cloud-sql-encryption';
+export { cloudSqlSslCheck } from './cloud-sql-ssl';
+export { environmentSeparationCheck } from './environment-separation';
 export { iamPrimitiveRolesCheck } from './iam-primitive-roles';
+export { storageEncryptionCheck } from './storage-encryption';
 export { storagePublicAccessCheck } from './storage-public-access';
 export { vpcOpenFirewallsCheck } from './vpc-open-firewalls';
-export { cloudSqlSslCheck } from './cloud-sql-ssl';
-export { cloudSqlBackupsCheck } from './cloud-sql-backups';
-export { cloudMonitoringAlertingCheck } from './cloud-monitoring-alerting';
-export { storageEncryptionCheck } from './storage-encryption';
-export { cloudSqlEncryptionCheck } from './cloud-sql-encryption';
-export { environmentSeparationCheck } from './environment-separation';

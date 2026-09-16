@@ -1,8 +1,6 @@
 import type { SheetPastePayload } from '../../lib/sheets-paste-plan';
 
-export function showSheetPasteDialog(
-  paste: SheetPastePayload,
-): Promise<boolean> {
+export function showSheetPasteDialog(paste: SheetPastePayload): Promise<boolean> {
   return new Promise((resolve) => {
     const container = document.createElement('div');
     container.innerHTML = renderDialog(paste);
@@ -29,9 +27,7 @@ export function showSheetPasteDialog(
     container
       .querySelector('[data-dialog="confirm"]')
       ?.addEventListener('click', () => close(true));
-    container
-      .querySelector('[data-dialog="copy"]')
-      ?.addEventListener('click', handleCopy);
+    container.querySelector('[data-dialog="copy"]')?.addEventListener('click', handleCopy);
   });
 }
 

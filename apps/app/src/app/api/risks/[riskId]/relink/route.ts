@@ -1,7 +1,7 @@
 import { requireApiPermission } from '@/lib/permissions.server';
 import type { linkRisksAndVendorsToWork } from '@/trigger/tasks/onboarding/link-risks-and-vendors-to-work';
 import { db } from '@db/server';
-import { auth as triggerAuth, tasks } from '@gideon-defender/trigger-local';
+import { tasks, auth as triggerAuth } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
@@ -13,10 +13,7 @@ import { NextRequest, NextResponse } from 'next/server';
  *
  * Returns { runId, publicAccessToken } so the UI can subscribe via useRealtimeRun.
  */
-export async function POST(
-  req: NextRequest,
-  { params }: { params: Promise<{ riskId: string }> },
-) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ riskId: string }> }) {
   try {
     const ctx = await requireApiPermission(req, 'risk', 'update');
     if (ctx instanceof NextResponse) return ctx;
@@ -24,10 +21,7 @@ export async function POST(
 
     const { riskId } = await params;
     if (!riskId) {
-      return NextResponse.json(
-        { error: 'Risk ID is required' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Risk ID is required' }, { status: 400 });
     }
 
     const risk = await db.risk.findUnique({

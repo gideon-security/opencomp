@@ -44,11 +44,7 @@ export function getPolicyColumns(orgId: string): ColumnDef<Policy>[] {
       accessorKey: 'department',
       header: ({ column }) => <DataTableColumnHeader column={column} title="Department" />,
       cell: ({ row }) => {
-        return (
-          <Badge variant="secondary">
-            {row.original.department}
-          </Badge>
-        );
+        return <Badge variant="secondary">{row.original.department}</Badge>;
       },
       meta: {
         label: 'Department',
@@ -76,8 +72,7 @@ function PolicyNameCell({ row, orgId }: { row: Row<Policy>; orgId: string }) {
   const policyName = row.getValue('name') as string;
   const policyHref = `/${orgId}/policies/${row.original.id}`;
   const status = usePolicyTailoringStatus(row.original.id);
-  const isTailoring =
-    status === 'queued' || status === 'pending' || status === 'processing';
+  const isTailoring = status === 'queued' || status === 'pending' || status === 'processing';
 
   if (isTailoring) {
     return (
@@ -103,23 +98,21 @@ function PolicyNameCell({ row, orgId }: { row: Row<Policy>; orgId: string }) {
       <span className="max-w-[31.25rem] truncate font-medium group-hover:underline">
         {policyName}
       </span>
-      <Launch size={16} className="shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+      <Launch
+        size={16}
+        className="shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
+      />
     </Link>
   );
 }
 
 function PolicyStatusCell({ row }: { row: Row<Policy> }) {
   const status = usePolicyTailoringStatus(row.original.id);
-  const isTailoring =
-    status === 'queued' || status === 'pending' || status === 'processing';
+  const isTailoring = status === 'queued' || status === 'pending' || status === 'processing';
 
   if (isTailoring) {
     const label =
-      status === 'processing'
-        ? 'Tailoring'
-        : status === 'queued'
-          ? 'Queued'
-          : 'Preparing';
+      status === 'processing' ? 'Tailoring' : status === 'queued' ? 'Queued' : 'Preparing';
     return (
       <div className="flex items-center gap-2 text-sm text-primary">
         <Spinner size={16} />

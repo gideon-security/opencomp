@@ -140,9 +140,7 @@ export function ScanAdvancedOptions({
                             <Information size={14} />
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent side="left">
-                          {checkDescriptions[check]}
-                        </TooltipContent>
+                        <TooltipContent side="left">{checkDescriptions[check]}</TooltipContent>
                       </Tooltip>
                     </label>
                   );

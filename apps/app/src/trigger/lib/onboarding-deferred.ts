@@ -1,6 +1,6 @@
+import { DailyQuotaError, isDailyQuotaExhausted } from '@/lib/llm-call';
 import { db } from '@db/server';
 import { logger } from '@gideon-defender/trigger-local';
-import { DailyQuotaError, isDailyQuotaExhausted } from '@/lib/llm-call';
 
 /**
  * Durable deferral for onboarding LLM work that failed on transient
@@ -31,8 +31,7 @@ export function isTransientLlmFailure(error: unknown): boolean {
   // module exists for — defer them to the next quota reset.
   if (error instanceof DailyQuotaError) return true;
   if (isDailyQuotaExhausted(error)) return true;
-  const message =
-    error instanceof Error ? `${error.message}` : String(error);
+  const message = error instanceof Error ? `${error.message}` : String(error);
   if (/socket|tls|network|disconnected|timeout/i.test(message)) return true;
   const code = (error as NodeJS.ErrnoException | undefined)?.code;
   return typeof code === 'string' && NETWORK_ERROR_CODES.has(code);
@@ -136,10 +135,9 @@ export async function runOrDeferOnboardingWork<T>(params: {
     return await params.run();
   } catch (error) {
     if (!isTransientLlmFailure(error)) throw error;
-    logger.warn(
-      `[onboarding] transient LLM failure for ${params.dedupeKey}; deferring`,
-      { error: error instanceof Error ? error.message : String(error) },
-    );
+    logger.warn(`[onboarding] transient LLM failure for ${params.dedupeKey}; deferring`, {
+      error: error instanceof Error ? error.message : String(error),
+    });
     await deferOnboardingWork({ ...params, error });
     return { deferred: true };
   }

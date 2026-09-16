@@ -20,8 +20,8 @@ import type { IsmsLeadershipNarrative } from '../isms-types';
 import { LeadershipCommitmentRow } from './LeadershipCommitmentRow';
 import {
   buildFormValues,
-  LEADERSHIP_COMMITMENTS,
   createLeadershipSchema,
+  LEADERSHIP_COMMITMENTS,
   type LeadershipNarrativeValues,
 } from './leadership-schema';
 

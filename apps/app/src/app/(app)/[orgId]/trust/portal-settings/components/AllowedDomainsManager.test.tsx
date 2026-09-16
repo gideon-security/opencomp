@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -78,8 +78,8 @@ describe('AllowedDomainsManager permission gating', () => {
     render(<AllowedDomainsManager {...defaultProps} />);
     const removeButtons = screen.getAllByRole('button');
     // The remove buttons inside badges should be disabled
-    const badgeRemoveButtons = removeButtons.filter(
-      (btn) => btn.closest('.flex.items-center.gap-1'),
+    const badgeRemoveButtons = removeButtons.filter((btn) =>
+      btn.closest('.flex.items-center.gap-1'),
     );
     for (const btn of badgeRemoveButtons) {
       expect(btn).toBeDisabled();

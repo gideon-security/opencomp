@@ -1,8 +1,8 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { QuestionnaireView } from '../../components/QuestionnaireView';
 import { useQuestionnaireDetail } from '../../hooks/useQuestionnaireDetail';
-import { useTranslations } from 'next-intl';
 
 interface QuestionnaireDetailClientProps {
   questionnaireId: string;
@@ -108,4 +108,3 @@ export function QuestionnaireDetailClient({
     />
   );
 }
-

@@ -1,12 +1,18 @@
 'use client';
 
 import { CreateRiskSheet } from '@/components/sheets/create-risk-sheet';
+import { Departments, Member, RiskStatus, User } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import { cn } from '@gideon-defender/ui/cn';
 import { Input } from '@gideon-defender/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
 import { Skeleton } from '@gideon-defender/ui/skeleton';
-import { Departments, Member, RiskStatus, User } from '@db';
 import { Plus, Search, X } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import { useCallback, useTransition } from 'react';

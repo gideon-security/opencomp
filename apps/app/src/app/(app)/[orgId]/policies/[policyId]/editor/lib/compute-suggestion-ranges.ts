@@ -1,4 +1,4 @@
-import { structuredPatch, diffWords } from 'diff';
+import { diffWords, structuredPatch } from 'diff';
 import type { DiffSegment, PositionMap, SuggestionRange } from './suggestion-types';
 
 export function computeSuggestionRanges(
@@ -13,8 +13,12 @@ export function computeSuggestionRanges(
 
   // Ensure both inputs end with a newline so the diff library
   // never generates "\ No newline at end of file" markers
-  const normalizedCurrent = currentMarkdown.endsWith('\n') ? currentMarkdown : `${currentMarkdown}\n`;
-  const normalizedProposed = proposedMarkdown.endsWith('\n') ? proposedMarkdown : `${proposedMarkdown}\n`;
+  const normalizedCurrent = currentMarkdown.endsWith('\n')
+    ? currentMarkdown
+    : `${currentMarkdown}\n`;
+  const normalizedProposed = proposedMarkdown.endsWith('\n')
+    ? proposedMarkdown
+    : `${proposedMarkdown}\n`;
 
   const patch = structuredPatch('policy', 'policy', normalizedCurrent, normalizedProposed, '', '', {
     context: 0,
@@ -209,9 +213,9 @@ function computeWordDiff(oldText: string, newText: string): DiffSegment[] {
  */
 function normalizeContent(text: string): string {
   return text
-    .replace(/^[\s]*[-*]\s+/gm, '')    // strip list markers
-    .replace(/^[\s]*#{1,6}\s+/gm, '')  // strip heading markers
-    .replace(/^[\s]*>\s+/gm, '')       // strip blockquote markers
+    .replace(/^[\s]*[-*]\s+/gm, '') // strip list markers
+    .replace(/^[\s]*#{1,6}\s+/gm, '') // strip heading markers
+    .replace(/^[\s]*>\s+/gm, '') // strip blockquote markers
     .replace(/\s+/g, ' ')
     .trim()
     .toLowerCase();

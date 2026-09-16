@@ -8,18 +8,12 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "scopes": [
-        "openid",
-        "offline_access"
-      ],
+      "scopes": ["openid", "offline_access"],
       "clientAuthMethod": "body",
       "supportsRefreshToken": true
     }
   },
-  "capabilities": [
-    "checks",
-    "sync"
-  ],
+  "capabilities": ["checks", "sync"],
   "supportsMultipleConnections": false,
   "syncSupported": true,
   "checks": [

@@ -54,15 +54,16 @@ bun -e '
 
 For each worktree (skip the main one):
 
-| Signal | Classification |
-|---|---|
-| Branch merged to main AND clean working tree AND no unpushed commits | **safe** |
-| PR is `CLOSED` (not merged) | **needs-confirm** |
-| Uncommitted changes OR unpushed commits | **needs-confirm** |
-| No matching PR, no merge, has local commits | **keep** (user may still be working on it) |
-| Is the main worktree | **skip** |
+| Signal                                                               | Classification                             |
+| -------------------------------------------------------------------- | ------------------------------------------ |
+| Branch merged to main AND clean working tree AND no unpushed commits | **safe**                                   |
+| PR is `CLOSED` (not merged)                                          | **needs-confirm**                          |
+| Uncommitted changes OR unpushed commits                              | **needs-confirm**                          |
+| No matching PR, no merge, has local commits                          | **keep** (user may still be working on it) |
+| Is the main worktree                                                 | **skip**                                   |
 
 Gather per worktree:
+
 - `cd <path> && git status --porcelain | wc -l` — uncommitted changes count
 - `cd <path> && git log @{upstream}..HEAD --oneline 2>/dev/null | wc -l` — unpushed commits (0 if no upstream)
 - Branch → PR lookup from step 1
@@ -120,6 +121,7 @@ git worktree list
 ```
 
 Report back:
+
 - Worktrees removed (paths)
 - Databases dropped (names)
 - Anything skipped and why
@@ -135,13 +137,13 @@ Report back:
 
 ## Common Mistakes
 
-| Mistake | Fix |
-|---|---|
-| Dropping the DB but leaving the worktree dir | Run `git worktree prune` then `git worktree remove` |
-| Removing the worktree but leaving the DB (accumulates orphans) | Always do both in the same pass |
-| Using hyphens in the DB name | The hook slug rule is `tr '-' '_'` — always underscores |
-| Running from inside a doomed worktree | `cd` to the main worktree before starting the process |
-| Using `gh pr list` on a branch with no PR | Missing data is not "abandoned" — needs `needs-confirm` classification |
+| Mistake                                                        | Fix                                                                    |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Dropping the DB but leaving the worktree dir                   | Run `git worktree prune` then `git worktree remove`                    |
+| Removing the worktree but leaving the DB (accumulates orphans) | Always do both in the same pass                                        |
+| Using hyphens in the DB name                                   | The hook slug rule is `tr '-' '_'` — always underscores                |
+| Running from inside a doomed worktree                          | `cd` to the main worktree before starting the process                  |
+| Using `gh pr list` on a branch with no PR                      | Missing data is not "abandoned" — needs `needs-confirm` classification |
 
 ## Red Flags
 

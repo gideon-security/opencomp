@@ -1,6 +1,6 @@
 ---
 name: infra
-description: "Use when working with packages, dependencies, monorepo structure, or build configuration"
+description: 'Use when working with packages, dependencies, monorepo structure, or build configuration'
 ---
 
 Source Cursor rule: `.cursor/rules/infra.mdc`.
@@ -127,9 +127,11 @@ mkdir packages/my-package
 ## Package Boundaries
 
 **✅ Create packages for:**
+
 - Code used by 2+ apps
 - Self-contained, focused functionality
 
 **❌ Don't create packages for:**
+
 - Code only used in one app (colocate instead)
 - App-specific business logic

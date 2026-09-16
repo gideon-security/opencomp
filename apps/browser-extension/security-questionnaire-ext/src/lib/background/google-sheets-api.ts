@@ -53,12 +53,13 @@ export async function insertAnswersWithGoogleSheetsApi(params: {
     const resolvedTargets = await resolveSheetTargets({
       queue: params.queue,
       targets,
-      readColumn: (request) => readSheetColumnValues({
-        ...request,
-        sheetTitle,
-        spreadsheetId,
-        token,
-      }),
+      readColumn: (request) =>
+        readSheetColumnValues({
+          ...request,
+          sheetTitle,
+          spreadsheetId,
+          token,
+        }),
     });
     const updates = buildSheetValueUpdates({ sheetTitle, targets: resolvedTargets });
     await batchUpdateValues({ spreadsheetId, token, updates });
@@ -86,9 +87,7 @@ export function quoteSheetTitle(title: string): string {
   return `'${title.replace(/'/g, "''")}'`;
 }
 
-async function withFreshToken<T>(
-  operation: (token: string) => Promise<T>,
-): Promise<T> {
+async function withFreshToken<T>(operation: (token: string) => Promise<T>): Promise<T> {
   const token = await getGoogleAccessToken();
   try {
     return await operation(token);
@@ -122,10 +121,7 @@ function getChromeIdentityApi(): ChromeIdentityApi {
   return identity;
 }
 
-function readRecordProperty(
-  value: unknown,
-  key: string,
-): Record<string, unknown> | null {
+function readRecordProperty(value: unknown, key: string): Record<string, unknown> | null {
   if (!isRecord(value)) return null;
   const property = value[key];
   return isRecord(property) ? property : null;
@@ -248,10 +244,7 @@ function getSpreadsheetId(queue: TabQuestionQueue): string {
   return identity.spreadsheetId;
 }
 
-function readSheetTitle(params: {
-  gid: string;
-  metadata: unknown;
-}): string | null {
+function readSheetTitle(params: { gid: string; metadata: unknown }): string | null {
   if (!isRecord(params.metadata) || !Array.isArray(params.metadata.sheets)) {
     return null;
   }
@@ -269,11 +262,7 @@ async function readApiError(response: Response): Promise<string> {
   const text = await response.text();
   try {
     const parsed: unknown = JSON.parse(text);
-    if (
-      isRecord(parsed) &&
-      isRecord(parsed.error) &&
-      typeof parsed.error.message === 'string'
-    ) {
+    if (isRecord(parsed) && isRecord(parsed.error) && typeof parsed.error.message === 'string') {
       return parsed.error.message;
     }
   } catch {

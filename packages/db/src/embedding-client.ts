@@ -32,9 +32,7 @@ export async function embedTexts(texts: string[]): Promise<number[][]> {
 
   if (!response.ok) {
     const body = await response.text().catch(() => '');
-    throw new Error(
-      `Embedding request to ${baseUrl} failed (${response.status}): ${body}`,
-    );
+    throw new Error(`Embedding request to ${baseUrl} failed (${response.status}): ${body}`);
   }
 
   const data: unknown = await response.json();

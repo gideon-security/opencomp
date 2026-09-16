@@ -18,10 +18,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import type { IsmsRoleAssignment } from '../isms-types';
-import {
-  COMPETENCE_BASIS_LABELS,
-  COMPETENCE_BASIS_OPTIONS,
-} from './roles-constants';
+import { COMPETENCE_BASIS_LABELS, COMPETENCE_BASIS_OPTIONS } from './roles-constants';
 import { IsmsCardActions, IsmsFieldLabel, IsmsRegisterField } from './shared';
 
 /** The competence payload sent to the assignment update endpoint. */
@@ -97,12 +94,8 @@ export function RoleAssignmentRow({
         evidenceRetained: emptyToNull(values.evidenceRetained),
         gap: emptyToNull(values.gap),
         // Remediation only applies when a gap is recorded.
-        remediationAction: values.gap.trim()
-          ? emptyToNull(values.remediationAction)
-          : null,
-        remediationDueDate: values.gap.trim()
-          ? emptyToNull(values.remediationDueDate)
-          : null,
+        remediationAction: values.gap.trim() ? emptyToNull(values.remediationAction) : null,
+        remediationDueDate: values.gap.trim() ? emptyToNull(values.remediationDueDate) : null,
       });
     } catch {
       return;
@@ -164,10 +157,7 @@ export function RoleAssignmentRow({
                 control={control}
                 name="basisOfCompetence"
                 render={({ field }) => (
-                  <Select
-                    value={field.value || undefined}
-                    onValueChange={field.onChange}
-                  >
+                  <Select value={field.value || undefined} onValueChange={field.onChange}>
                     <SelectTrigger aria-label="Basis of competence">
                       <SelectValue placeholder="Select a basis" />
                     </SelectTrigger>
@@ -237,11 +227,7 @@ export function RoleAssignmentRow({
                     control={control}
                     name="remediationDueDate"
                     render={({ field: { ref: _ref, ...field } }) => (
-                      <Input
-                        {...field}
-                        type="date"
-                        aria-label="Remediation due date"
-                      />
+                      <Input {...field} type="date" aria-label="Remediation due date" />
                     )}
                   />
                 </Field>

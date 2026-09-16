@@ -14,9 +14,9 @@ describe('normalizeCheckId', () => {
 
   it('strips a resource-specific suffix matching the resourceId', () => {
     expect(normalizeCheckId('iam-no-mfa-john', 'john')).toBe('iam-no-mfa');
-    expect(normalizeCheckId('cloudtrail-not-logging-prod-trail', 'prod-trail')).toBe(
-      'cloudtrail-not-logging',
-    );
+    expect(
+      normalizeCheckId('cloudtrail-not-logging-prod-trail', 'prod-trail'),
+    ).toBe('cloudtrail-not-logging');
   });
 
   it('returns input unchanged when resourceId is "account-level"', () => {

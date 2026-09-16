@@ -125,12 +125,12 @@ export function ToDoOverview({
                   onClick={handlePublishAllClick}
                   className="flex items-center gap-2 w-full"
                   disabled={isOnboardingInProgress || isPublishing}
-                  title={
-                    isOnboardingInProgress ? t('todo.waitForOnboarding') : undefined
-                  }
+                  title={isOnboardingInProgress ? t('todo.waitForOnboarding') : undefined}
                 >
                   <Play className="h-3 w-3" />
-                  {isOnboardingInProgress ? t('todo.onboardingInProgress') : t('todo.publishAllPolicies')}
+                  {isOnboardingInProgress
+                    ? t('todo.onboardingInProgress')
+                    : t('todo.publishAllPolicies')}
                 </Button>
               </div>
             )}
@@ -223,11 +223,15 @@ export function ToDoOverview({
           <TabsContent value="offboarding" className="mt-4">
             {isPendingLoading ? (
               <div className="flex items-center justify-center gap-2 rounded-lg bg-accent p-3">
-                <span className="text-sm text-muted-foreground">{t('todo.loadingOffboardings')}</span>
+                <span className="text-sm text-muted-foreground">
+                  {t('todo.loadingOffboardings')}
+                </span>
               </div>
             ) : pendingError ? (
               <div className="flex items-center justify-center gap-2 rounded-lg bg-accent p-3">
-                <span className="text-sm text-destructive">{t('todo.failedToLoadOffboardings')}</span>
+                <span className="text-sm text-destructive">
+                  {t('todo.failedToLoadOffboardings')}
+                </span>
               </div>
             ) : pendingOffboardings.length === 0 ? (
               <div className="flex items-center justify-center gap-2 rounded-lg bg-accent p-3">

@@ -1,12 +1,12 @@
 'use server';
 
 import {
-  encrypt as encryptSync,
+  decryptAsync,
+  decryptObject,
   decrypt as decryptSync,
   encryptAsync,
-  decryptAsync,
   encryptObject,
-  decryptObject,
+  encrypt as encryptSync,
   type EncryptedData,
 } from '@gideon-defender/utils/encryption';
 
@@ -23,7 +23,7 @@ export async function decrypt(encryptedData: EncryptedData): Promise<string> {
   return decryptAsync(encryptedData);
 }
 
-export { encryptObject, decryptObject };
+export { decryptObject, encryptObject };
 
 // Also expose sync variants for callers that don't need async
-export { encryptSync as encryptSync, decryptSync as decryptSync };
+export { decryptSync as decryptSync, encryptSync as encryptSync };

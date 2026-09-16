@@ -47,7 +47,9 @@ describe('EmployeePageHeader', () => {
       />,
     );
 
-    expect(screen.queryByLabelText('Employee has completed a background check')).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Employee has completed a background check'),
+    ).not.toBeInTheDocument();
   });
 
   it('hides the verified tick when background checks are bypassed, even if the check is complete', () => {
@@ -62,7 +64,9 @@ describe('EmployeePageHeader', () => {
     );
 
     expect(screen.getByRole('heading', { name: 'Jane Doe' })).toBeInTheDocument();
-    expect(screen.queryByLabelText('Employee has completed a background check')).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Employee has completed a background check'),
+    ).not.toBeInTheDocument();
   });
 
   it('hides the verified tick when the member is exempt', () => {

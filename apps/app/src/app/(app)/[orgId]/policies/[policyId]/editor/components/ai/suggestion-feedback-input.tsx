@@ -72,11 +72,7 @@ export function SuggestionFeedbackInput({
       >
         Send
       </button>
-      <button
-        type="button"
-        className="suggestion-action-btn"
-        onClick={onCancel}
-      >
+      <button type="button" className="suggestion-action-btn" onClick={onCancel}>
         Cancel
       </button>
     </div>

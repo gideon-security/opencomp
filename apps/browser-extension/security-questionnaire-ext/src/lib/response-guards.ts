@@ -1,10 +1,10 @@
+import type { SheetPastePayload } from './sheets-paste-plan';
 import type {
   DomainConfirmationRequest,
   PanelState,
   QuestionQueueItem,
   TabQuestionQueue,
 } from './types';
-import type { SheetPastePayload } from './sheets-paste-plan';
 
 export function isPanelStateResponse(
   value: unknown,
@@ -12,21 +12,14 @@ export function isPanelStateResponse(
   return isRecord(value) && value.ok === true && isRecord(value.panelState);
 }
 
-export function isQueueResponse(
-  value: unknown,
-): value is { ok: true; queue: TabQuestionQueue } {
+export function isQueueResponse(value: unknown): value is { ok: true; queue: TabQuestionQueue } {
   return isRecord(value) && value.ok === true && isRecord(value.queue);
 }
 
 export function isItemResponse(
   value: unknown,
 ): value is { ok: true; item: QuestionQueueItem; queue: TabQuestionQueue } {
-  return (
-    isRecord(value) &&
-    value.ok === true &&
-    isRecord(value.item) &&
-    isRecord(value.queue)
-  );
+  return isRecord(value) && value.ok === true && isRecord(value.item) && isRecord(value.queue);
 }
 
 export function isSheetPasteResponse(

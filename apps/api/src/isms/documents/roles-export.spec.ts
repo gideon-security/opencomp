@@ -35,7 +35,11 @@ const INPUT: DocumentExportInput = {
   objectives: [],
   narrative: null,
   roles: [
-    role({ roleKey: 'top_management', name: 'Top Management', holders: ['Raoul'] }),
+    role({
+      roleKey: 'top_management',
+      name: 'Top Management',
+      holders: ['Raoul'],
+    }),
     role({}),
     role({
       roleKey: 'internal_auditor',

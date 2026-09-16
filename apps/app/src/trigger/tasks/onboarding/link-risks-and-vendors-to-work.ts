@@ -1,9 +1,5 @@
+import { runLinkage, type LinkagePhase, type RunLinkageInput } from '@/lib/embedding/run-linkage';
 import { logger, metadata, task } from '@gideon-defender/trigger-local';
-import {
-  runLinkage,
-  type LinkagePhase,
-  type RunLinkageInput,
-} from '@/lib/embedding/run-linkage';
 
 /**
  * Wraps `runLinkage` and mirrors progress phases into local-trigger run metadata

@@ -3,7 +3,6 @@
 import { useApiKeys } from '@/hooks/use-api-keys';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useMediaQuery } from '@gideon-defender/ui/hooks';
-import type { ScopePreset } from '../../lib/scope-presets';
 import {
   Button,
   Drawer,
@@ -29,6 +28,7 @@ import { Close, Copy } from '@trycompai/design-system/icons';
 import { Check } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
+import type { ScopePreset } from '../../lib/scope-presets';
 import { ScopeSelector } from './ScopeSelector';
 
 interface CreateApiKeySheetProps {
@@ -117,9 +117,7 @@ export function CreateApiKeySheet({ open, onOpenChange }: CreateApiKeySheetProps
         </Text>
         <Select
           value={expiration}
-          onValueChange={(value) =>
-            setExpiration(value as 'never' | '30days' | '90days' | '1year')
-          }
+          onValueChange={(value) => setExpiration(value as 'never' | '30days' | '90days' | '1year')}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select expiration" />
@@ -196,9 +194,7 @@ export function CreateApiKeySheet({ open, onOpenChange }: CreateApiKeySheetProps
                 : "Create a new API key for programmatic access to your organization's data."}
             </SheetDescription>
           </SheetHeader>
-          <SheetBody>
-            {createdApiKey ? renderCreatedKey() : renderForm()}
-          </SheetBody>
+          <SheetBody>{createdApiKey ? renderCreatedKey() : renderForm()}</SheetBody>
         </SheetContent>
       </Sheet>
     );

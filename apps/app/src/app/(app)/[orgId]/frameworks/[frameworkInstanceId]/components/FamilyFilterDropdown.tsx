@@ -1,12 +1,7 @@
 'use client';
 
 import { Button } from '@trycompai/design-system';
-import {
-  Checkbox,
-  CheckboxCheckedFilled,
-  Close,
-  Filter,
-} from '@trycompai/design-system/icons';
+import { Checkbox, CheckboxCheckedFilled, Close, Filter } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { getFamilyDisplayLabel } from './framework-controls-shared';
@@ -96,9 +91,16 @@ export function FamilyFilterDropdown({
                   className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm hover:bg-muted cursor-pointer"
                   onClick={() => onToggleFamily(family)}
                 >
-                  <Icon size={16} className={isSelected ? 'text-primary' : 'text-muted-foreground'} />
-                  <span className="flex-1 truncate text-sm">{getFamilyDisplayLabel(family, t)}</span>
-                  <span className="text-xs text-muted-foreground tabular-nums">{familyCounts.get(family) ?? 0}</span>
+                  <Icon
+                    size={16}
+                    className={isSelected ? 'text-primary' : 'text-muted-foreground'}
+                  />
+                  <span className="flex-1 truncate text-sm">
+                    {getFamilyDisplayLabel(family, t)}
+                  </span>
+                  <span className="text-xs text-muted-foreground tabular-nums">
+                    {familyCounts.get(family) ?? 0}
+                  </span>
                 </button>
               );
             })}

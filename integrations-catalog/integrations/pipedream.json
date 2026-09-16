@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Pipedream at https://pipedream.com\n2. Go to Settings -> Account -> API Key\n3. Copy your API key\n4. Paste it below\n\nAlternatively, create an OAuth client in Settings -> API for scoped access."
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

@@ -119,7 +119,9 @@ describe('DeviceAgentService', () => {
         ContentLength: 859,
       });
 
-      const result = await service.getUpdateFile({ filename: 'latest-mac.yml' });
+      const result = await service.getUpdateFile({
+        filename: 'latest-mac.yml',
+      });
 
       expect(result).toEqual({
         kind: 'stream',
@@ -131,7 +133,9 @@ describe('DeviceAgentService', () => {
     });
 
     it('redirects binary downloads to a presigned S3 URL signed for GET', async () => {
-      mockGetSignedUrl.mockResolvedValue('https://s3.example.com/signed-zip-url');
+      mockGetSignedUrl.mockResolvedValue(
+        'https://s3.example.com/signed-zip-url',
+      );
 
       const result = await service.getUpdateFile({
         filename: 'CompAI-Device-Agent-1.0.5-arm64.zip',

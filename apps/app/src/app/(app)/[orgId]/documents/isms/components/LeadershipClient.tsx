@@ -1,12 +1,9 @@
 'use client';
 
 import { toast } from 'sonner';
-import type {
-  IsmsDocument as IsmsDocumentData,
-  IsmsLeadershipNarrative,
-} from '../isms-types';
-import { IsmsDocumentShell } from './IsmsDocumentShell';
+import type { IsmsDocument as IsmsDocumentData, IsmsLeadershipNarrative } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
+import { IsmsDocumentShell } from './IsmsDocumentShell';
 import { LeadershipForm } from './LeadershipForm';
 import type { LeadershipNarrativeValues } from './leadership-schema';
 
@@ -18,9 +15,7 @@ interface LeadershipClientProps {
   approverOptions: ApproverOption[];
 }
 
-function extractNarrative(
-  document: IsmsDocumentData,
-): Partial<IsmsLeadershipNarrative> | null {
+function extractNarrative(document: IsmsDocumentData): Partial<IsmsLeadershipNarrative> | null {
   const narrative = document.draftNarrative ?? null;
   if (!narrative || typeof narrative !== 'object') return null;
   return narrative as Partial<IsmsLeadershipNarrative>;

@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to your SafeBase admin dashboard\n2. Navigate to Settings > API\n3. Generate a new API key\n4. Copy the key and enter it above"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

@@ -135,9 +135,15 @@ describe('IsmsController', () => {
     mockResolveRolePermissions.mockResolvedValue({ evidence: ['update'] });
     mockPermissionsGrant.mockReturnValue(true);
 
-    await controller.ensureSetup({ frameworkId: 'fw_1' }, 'org_1', sessionContext());
+    await controller.ensureSetup(
+      { frameworkId: 'fw_1' },
+      'org_1',
+      sessionContext(),
+    );
 
-    expect(mockResolveRolePermissions).toHaveBeenCalledWith('org_1', ['auditor']);
+    expect(mockResolveRolePermissions).toHaveBeenCalledWith('org_1', [
+      'auditor',
+    ]);
     expect(mockPermissionsGrant).toHaveBeenCalledWith(
       { evidence: ['update'] },
       'evidence',
@@ -153,7 +159,11 @@ describe('IsmsController', () => {
     mockResolveRolePermissions.mockResolvedValue({ evidence: ['read'] });
     mockPermissionsGrant.mockReturnValue(false);
 
-    await controller.ensureSetup({ frameworkId: 'fw_1' }, 'org_1', sessionContext());
+    await controller.ensureSetup(
+      { frameworkId: 'fw_1' },
+      'org_1',
+      sessionContext(),
+    );
 
     expect(mockIsmsService.ensureSetup).toHaveBeenCalledWith(
       expect.objectContaining({ canWrite: false }),

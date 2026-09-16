@@ -94,37 +94,34 @@ describe('IsmsContextService', () => {
       'objectives_plan',
       'isms_scope',
       'leadership_commitment',
-    ])(
-      'derives + updates the draft snapshot for type %s',
-      async (type) => {
-        (mockDb.ismsDocument.findFirst as jest.Mock)
-          .mockResolvedValueOnce({ id: 'doc_1', type, frameworkId: 'fw_1' })
-          .mockResolvedValueOnce({ id: 'doc_1' });
-        mockCollect.mockResolvedValue(snapshot);
-        const tx = {};
-        (mockDb.$transaction as jest.Mock).mockImplementation((cb) => cb(tx));
+    ])('derives + updates the draft snapshot for type %s', async (type) => {
+      (mockDb.ismsDocument.findFirst as jest.Mock)
+        .mockResolvedValueOnce({ id: 'doc_1', type, frameworkId: 'fw_1' })
+        .mockResolvedValueOnce({ id: 'doc_1' });
+      mockCollect.mockResolvedValue(snapshot);
+      const tx = {};
+      (mockDb.$transaction as jest.Mock).mockImplementation((cb) => cb(tx));
 
-        await service.generate(args);
+      await service.generate(args);
 
-        expect(mockRun).toHaveBeenCalledWith({
-          tx,
-          type,
-          documentId: 'doc_1',
-          organizationId: 'org_1',
-          frameworkId: 'fw_1',
-          data: snapshot,
-        });
-        // CS-701: the drift baseline is the document's draftSnapshot, not a
-        // version row.
-        expect(mockUpdateDraft).toHaveBeenCalledWith({
-          tx,
-          documentId: 'doc_1',
-          snapshot,
-        });
-        // Regenerating an approved document must revert it to draft.
-        expect(mockInvalidate).toHaveBeenCalledWith({ tx, documentId: 'doc_1' });
-      },
-    );
+      expect(mockRun).toHaveBeenCalledWith({
+        tx,
+        type,
+        documentId: 'doc_1',
+        organizationId: 'org_1',
+        frameworkId: 'fw_1',
+        data: snapshot,
+      });
+      // CS-701: the drift baseline is the document's draftSnapshot, not a
+      // version row.
+      expect(mockUpdateDraft).toHaveBeenCalledWith({
+        tx,
+        documentId: 'doc_1',
+        snapshot,
+      });
+      // Regenerating an approved document must revert it to draft.
+      expect(mockInvalidate).toHaveBeenCalledWith({ tx, documentId: 'doc_1' });
+    });
 
     it('reuses pre-collected data and skips collectPlatformData', async () => {
       (mockDb.ismsDocument.findFirst as jest.Mock)
@@ -246,7 +243,9 @@ describe('IsmsContextService', () => {
           status,
           currentVersionId: 'isms_ver_9',
         });
-        (versionService.getVersionExport as jest.Mock).mockResolvedValue(result);
+        (versionService.getVersionExport as jest.Mock).mockResolvedValue(
+          result,
+        );
 
         const out = await service.exportDocument({
           documentId: 'doc_1',

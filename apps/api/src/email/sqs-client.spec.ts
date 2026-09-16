@@ -9,12 +9,10 @@ jest.mock('@aws-sdk/client-sqs', () => ({
   SendMessageCommand: jest
     .fn()
     .mockImplementation((input: unknown) => ({ name: 'SendMessage', input })),
-  SendMessageBatchCommand: jest
-    .fn()
-    .mockImplementation((input: unknown) => ({
-      name: 'SendMessageBatch',
-      input,
-    })),
+  SendMessageBatchCommand: jest.fn().mockImplementation((input: unknown) => ({
+    name: 'SendMessageBatch',
+    input,
+  })),
 }));
 
 import { SendMessageCommand } from '@aws-sdk/client-sqs';
@@ -39,7 +37,8 @@ describe('enqueueEmail', () => {
     const result = await enqueueEmail(message);
 
     expect(sendMock).toHaveBeenCalledTimes(1);
-    const command = (SendMessageCommand as unknown as jest.Mock).mock.calls[0][0];
+    const command = (SendMessageCommand as unknown as jest.Mock).mock
+      .calls[0][0];
     expect(command.QueueUrl).toBe(
       'http://sqs.us-east-1/000000000000/comp-emails',
     );
@@ -54,7 +53,8 @@ describe('enqueueEmail', () => {
 
     await enqueueEmail({ ...message, scheduledAt: future });
 
-    const command = (SendMessageCommand as unknown as jest.Mock).mock.calls[0][0];
+    const command = (SendMessageCommand as unknown as jest.Mock).mock
+      .calls[0][0];
     expect(command.DelaySeconds).toBe(120);
   });
 
@@ -64,7 +64,8 @@ describe('enqueueEmail', () => {
 
     await enqueueEmail({ ...message, scheduledAt: farFuture });
 
-    const command = (SendMessageCommand as unknown as jest.Mock).mock.calls[0][0];
+    const command = (SendMessageCommand as unknown as jest.Mock).mock
+      .calls[0][0];
     expect(command.DelaySeconds).toBe(900);
     expect(console.warn).toHaveBeenCalled();
   });
@@ -102,7 +103,7 @@ describe('enqueueEmailBatch', () => {
     const result = await enqueueEmailBatch(emails);
 
     expect(sendMock).toHaveBeenCalledTimes(2);
-    const command = (SendMessageCommand as unknown as jest.Mock);
+    const command = SendMessageCommand as unknown as jest.Mock;
     expect(command).not.toHaveBeenCalled();
     expect(result).toEqual({ id: 'msg-batch-10' });
   });

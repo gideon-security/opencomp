@@ -1,8 +1,8 @@
 'use client';
 
-import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
 import type { SyncHistoryItem } from '@/types/framework-versioning';
+import useSWR from 'swr';
 
 interface UseFrameworkSyncHistoryOptions {
   fallbackData?: SyncHistoryItem[];

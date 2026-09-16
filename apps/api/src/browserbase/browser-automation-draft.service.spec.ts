@@ -25,7 +25,9 @@ describe('BrowserAutomationDraftService', () => {
 
   it('creates a draft after checking the task is in the org, storing plain JSON steps', async () => {
     (db.task.findFirst as jest.Mock).mockResolvedValue({ id: 'tsk_1' });
-    (db.browserAutomationDraft.create as jest.Mock).mockResolvedValue({ id: 'bad_1' });
+    (db.browserAutomationDraft.create as jest.Mock).mockResolvedValue({
+      id: 'bad_1',
+    });
 
     await service.createDraft(
       {
@@ -40,7 +42,8 @@ describe('BrowserAutomationDraftService', () => {
       where: { id: 'tsk_1', organizationId: 'org_1' },
       select: { id: true },
     });
-    const data = (db.browserAutomationDraft.create as jest.Mock).mock.calls[0][0].data;
+    const data = (db.browserAutomationDraft.create as jest.Mock).mock
+      .calls[0][0].data;
     expect(data.taskId).toBe('tsk_1');
     expect(data.name).toBe('GitHub 2FA');
     // toJson strips undefined -> plain JSON.
@@ -57,10 +60,18 @@ describe('BrowserAutomationDraftService', () => {
   });
 
   it('updates a draft only when it belongs to the org', async () => {
-    (db.browserAutomationDraft.findFirst as jest.Mock).mockResolvedValue({ id: 'bad_1' });
-    (db.browserAutomationDraft.update as jest.Mock).mockResolvedValue({ id: 'bad_1' });
+    (db.browserAutomationDraft.findFirst as jest.Mock).mockResolvedValue({
+      id: 'bad_1',
+    });
+    (db.browserAutomationDraft.update as jest.Mock).mockResolvedValue({
+      id: 'bad_1',
+    });
 
-    await service.updateDraft('bad_1', { steps: [{ instruction: 'y' }] }, 'org_1');
+    await service.updateDraft(
+      'bad_1',
+      { steps: [{ instruction: 'y' }] },
+      'org_1',
+    );
 
     expect(db.browserAutomationDraft.findFirst).toHaveBeenCalledWith({
       where: { id: 'bad_1', task: { organizationId: 'org_1' } },
@@ -75,7 +86,9 @@ describe('BrowserAutomationDraftService', () => {
   it('rejects deleting a draft from another org', async () => {
     (db.browserAutomationDraft.findFirst as jest.Mock).mockResolvedValue(null);
 
-    await expect(service.deleteDraft('bad_x', 'org_1')).rejects.toThrow('Draft not found');
+    await expect(service.deleteDraft('bad_x', 'org_1')).rejects.toThrow(
+      'Draft not found',
+    );
     expect(db.browserAutomationDraft.delete).not.toHaveBeenCalled();
   });
 });

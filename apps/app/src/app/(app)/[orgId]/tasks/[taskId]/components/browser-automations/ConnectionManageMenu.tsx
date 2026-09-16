@@ -94,8 +94,8 @@ export function ConnectionManageMenu({ profile, onChanged }: ConnectionManageMen
                 />
               </div>
               <p className="text-[11px] leading-snug text-muted-foreground">
-                Changing to a different site signs this connection out — you&apos;ll
-                be asked to reconnect.
+                Changing to a different site signs this connection out — you&apos;ll be asked to
+                reconnect.
               </p>
               <div className="flex justify-end gap-2">
                 <Button variant="ghost" onClick={() => setEditing(false)}>
@@ -135,8 +135,8 @@ export function ConnectionManageMenu({ profile, onChanged }: ConnectionManageMen
           <AlertDialogHeader>
             <AlertDialogTitle>Remove {profile.hostname} connection?</AlertDialogTitle>
             <AlertDialogDescription>
-              Automations that rely on this connection stop running until you
-              reconnect. Evidence already captured is kept.
+              Automations that rely on this connection stop running until you reconnect. Evidence
+              already captured is kept.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

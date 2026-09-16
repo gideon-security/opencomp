@@ -24,5 +24,3 @@ import { db } from '@gideon-defender/db';
 
 - Publishing runs a build automatically via `prepublishOnly`.
 - See `INTEGRATION_GUIDE.md` for integration details.
-
-

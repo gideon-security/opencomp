@@ -1,12 +1,9 @@
 'use client';
 
 import { toast } from 'sonner';
-import type {
-  IsmsDocument as IsmsDocumentData,
-  IsmsRiskMethodologyNarrative,
-} from '../isms-types';
-import { IsmsDocumentShell } from './IsmsDocumentShell';
+import type { IsmsDocument as IsmsDocumentData, IsmsRiskMethodologyNarrative } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
+import { IsmsDocumentShell } from './IsmsDocumentShell';
 import { RiskMethodologyForm, type RiskMethodologyValues } from './RiskMethodologyForm';
 
 interface RiskMethodologyClientProps {

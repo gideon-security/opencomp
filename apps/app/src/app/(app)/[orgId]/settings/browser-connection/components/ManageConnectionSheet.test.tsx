@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -162,7 +162,10 @@ describe('ManageConnectionSheet', () => {
     fireEvent.change(input, { target: { value: '  SEED VALUE  ' } });
     fireEvent.click(screen.getByText('connections.saveKey'));
 
-    expect(base.onSetTotp).toHaveBeenCalledWith(expect.objectContaining({ id: 'bap_1' }), 'SEED VALUE');
+    expect(base.onSetTotp).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'bap_1' }),
+      'SEED VALUE',
+    );
   });
 
   it('offers Replace / Turn off when Automatic 2FA is on', () => {

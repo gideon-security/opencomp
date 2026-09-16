@@ -10,14 +10,14 @@ import { toast } from 'sonner';
 import { useIsmsWizard } from '../hooks/useIsmsWizard';
 import { buildWizardDefaults } from './wizard-form-defaults';
 import { pickStepAnswers, resumeStepIndex, WIZARD_STEPS } from './wizard-steps';
-import { WizardProgress } from './WizardProgress';
-import { WizardStepContent } from './WizardStepContent';
 import {
   EMPTY_WIZARD_DEFAULTS,
   wizardFormSchema,
   type WizardFormValues,
   type WizardProfileResponse,
 } from './wizard-types';
+import { WizardProgress } from './WizardProgress';
+import { WizardStepContent } from './WizardStepContent';
 
 interface WizardClientProps {
   organizationId: string;

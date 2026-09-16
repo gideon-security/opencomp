@@ -51,9 +51,7 @@ export function IsmsControlsCell({
     if (isSearching && allControls.length === 0) {
       setIsLoading(true);
       apiClient<ControlTemplateOption[]>(`/control-template?frameworkId=${frameworkId}`)
-        .then((data) =>
-          data.map((c) => ({ id: c.id, name: c.name || 'Unnamed Control' })),
-        )
+        .then((data) => data.map((c) => ({ id: c.id, name: c.name || 'Unnamed Control' })))
         .then(setAllControls)
         .catch(() => toast.error('Failed to load controls'))
         .finally(() => setIsLoading(false));

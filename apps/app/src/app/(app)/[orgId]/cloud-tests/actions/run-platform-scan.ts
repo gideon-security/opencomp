@@ -1,7 +1,7 @@
 'use server';
 
-import { auth } from '@/utils/auth';
 import { serverApi } from '@/lib/api-server';
+import { auth } from '@/utils/auth';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 
@@ -98,8 +98,7 @@ export const runPlatformScan = async (connectionId: string) => {
       if (statusResponse.data?.completed) {
         // Revalidate cache
         const headersList = await headers();
-        let path =
-          headersList.get('x-pathname') || headersList.get('referer') || '';
+        let path = headersList.get('x-pathname') || headersList.get('referer') || '';
         path = path.replace(/\/[a-z]{2}\//, '/');
         if (path) {
           revalidatePath(path);
@@ -140,8 +139,7 @@ export const runPlatformScan = async (connectionId: string) => {
 
     return {
       success: false,
-      error:
-        'Scan is taking longer than expected. Results will appear when complete.',
+      error: 'Scan is taking longer than expected. Results will appear when complete.',
     };
   } catch (error) {
     console.error('Error running platform scan:', error);

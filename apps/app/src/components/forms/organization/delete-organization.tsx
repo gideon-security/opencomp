@@ -2,7 +2,13 @@
 
 import { useOrganizationMutations } from '@/hooks/use-organization-mutations';
 import { usePermissions } from '@/hooks/use-permissions';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gideon-defender/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@gideon-defender/ui/card';
 import { Input } from '@gideon-defender/ui/input';
 import { Label } from '@gideon-defender/ui/label';
 import {
@@ -94,9 +100,7 @@ export function DeleteOrganization({
                   disabled={value !== 'delete' || isSubmitting}
                   variant="destructive"
                 >
-                  {isSubmitting ? (
-                    <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-                  ) : null}
+                  {isSubmitting ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
                   {'Delete'}
                 </AlertDialogAction>
               </AlertDialogFooter>

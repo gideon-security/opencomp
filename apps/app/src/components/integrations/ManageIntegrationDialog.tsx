@@ -52,14 +52,7 @@ interface CredentialField {
   id: string;
   label: string;
   type:
-    | 'text'
-    | 'password'
-    | 'textarea'
-    | 'select'
-    | 'combobox'
-    | 'multi-select'
-    | 'number'
-    | 'url';
+    'text' | 'password' | 'textarea' | 'select' | 'combobox' | 'multi-select' | 'number' | 'url';
   required: boolean;
   placeholder?: string;
   helpText?: string;

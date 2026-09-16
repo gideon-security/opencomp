@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -68,9 +68,7 @@ describe('UpdateOrganizationEvidenceApproval permission gating', () => {
   it('disables the switch when user lacks organization:update permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
 
-    render(
-      <UpdateOrganizationEvidenceApproval evidenceApprovalEnabled={false} />,
-    );
+    render(<UpdateOrganizationEvidenceApproval evidenceApprovalEnabled={false} />);
 
     const switchEl = screen.getByTestId('evidence-approval-switch');
     expect(switchEl).toBeDisabled();
@@ -79,9 +77,7 @@ describe('UpdateOrganizationEvidenceApproval permission gating', () => {
   it('disables the switch when user has no permissions', () => {
     setMockPermissions({});
 
-    render(
-      <UpdateOrganizationEvidenceApproval evidenceApprovalEnabled={false} />,
-    );
+    render(<UpdateOrganizationEvidenceApproval evidenceApprovalEnabled={false} />);
 
     const switchEl = screen.getByTestId('evidence-approval-switch');
     expect(switchEl).toBeDisabled();
@@ -90,9 +86,7 @@ describe('UpdateOrganizationEvidenceApproval permission gating', () => {
   it('enables the switch when user has organization:update permission', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
 
-    render(
-      <UpdateOrganizationEvidenceApproval evidenceApprovalEnabled={false} />,
-    );
+    render(<UpdateOrganizationEvidenceApproval evidenceApprovalEnabled={false} />);
 
     const switchEl = screen.getByTestId('evidence-approval-switch');
     expect(switchEl).not.toBeDisabled();
@@ -101,9 +95,7 @@ describe('UpdateOrganizationEvidenceApproval permission gating', () => {
   it('renders the Evidence Approval label regardless of permissions', () => {
     setMockPermissions({});
 
-    render(
-      <UpdateOrganizationEvidenceApproval evidenceApprovalEnabled={true} />,
-    );
+    render(<UpdateOrganizationEvidenceApproval evidenceApprovalEnabled={true} />);
 
     expect(screen.getByText('Evidence Approval')).toBeInTheDocument();
   });

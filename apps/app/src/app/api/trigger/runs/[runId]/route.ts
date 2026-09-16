@@ -2,10 +2,7 @@ import { auth as betterAuth } from '@/utils/auth';
 import { auth, runs } from '@gideon-defender/trigger-local';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ runId: string }> },
-) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ runId: string }> }) {
   try {
     const { runId } = await params;
 
@@ -47,10 +44,7 @@ export async function GET(
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to retrieve run status',
+        error: error instanceof Error ? error.message : 'Failed to retrieve run status',
       },
       { status: 500 },
     );

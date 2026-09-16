@@ -86,7 +86,8 @@ export class TaskResponseDto {
   taskTemplateId?: string | null;
 
   @ApiProperty({
-    description: 'Cadence for running the integration check attached to this task',
+    description:
+      'Cadence for running the integration check attached to this task',
     enum: ['daily', 'weekly', 'monthly', 'quarterly', 'yearly'],
     example: 'daily',
   })

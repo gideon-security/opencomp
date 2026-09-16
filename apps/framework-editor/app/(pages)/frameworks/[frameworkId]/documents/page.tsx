@@ -9,19 +9,13 @@ interface ControlDocument {
   documentTypes: string[];
 }
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ frameworkId: string }>;
-}) {
+export default async function Page({ params }: { params: Promise<{ frameworkId: string }> }) {
   const isAllowed = await isAuthorized();
   if (!isAllowed) redirect('/auth');
 
   const { frameworkId } = await params;
 
-  const controls = await serverApi<ControlDocument[]>(
-    `/framework/${frameworkId}/documents`,
-  );
+  const controls = await serverApi<ControlDocument[]>(`/framework/${frameworkId}/documents`);
 
   return <DocumentsClientPage controls={controls} frameworkId={frameworkId} />;
 }

@@ -3,8 +3,8 @@
 import type { OrganizationFromMe } from '@/types';
 import { authClient } from '@/utils/auth-client';
 import { OrganizationSelector } from '@trycompai/design-system';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface OrganizationSwitcherProps {

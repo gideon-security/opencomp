@@ -15,6 +15,7 @@
 ## File Structure
 
 **New:**
+
 - `apps/api/src/browserbase/screenshot-overlay.ts` — pure function `renderOverlay()` using sharp
 - `apps/api/src/browserbase/screenshot-overlay.spec.ts` — Jest unit tests for overlay
 - `apps/api/src/browserbase/browserbase.service.spec.ts` — Jest tests for new `getScreenshotRedirectUrl`
@@ -22,6 +23,7 @@
 - `apps/app/src/app/(app)/[orgId]/tasks/[taskId]/components/browser-automations/RunItem.test.tsx` — Vitest tests
 
 **Modify:**
+
 - `apps/api/src/browserbase/browserbase.service.ts` — (a) capture `page.url()` and overlay buffer before returning from `executeAutomation`; (b) add `getScreenshotRedirectUrl` method; (c) eval-error hardening in Task 6.
 - `apps/api/src/browserbase/browserbase.controller.ts` — add `GET runs/:runId/screenshot` redirect endpoint.
 - `apps/app/src/app/(app)/[orgId]/tasks/[taskId]/components/browser-automations/RunItem.tsx` — swap "Open full size" and "Try direct link" hrefs to the stable redirect path.
@@ -31,6 +33,7 @@
 ## Task 1: Write failing tests for screenshot overlay module
 
 **Files:**
+
 - Create: `apps/api/src/browserbase/screenshot-overlay.spec.ts`
 
 - [ ] **Step 1: Create the test file**
@@ -161,6 +164,7 @@ git commit -m "test(browserbase): add failing tests for screenshot overlay rende
 ## Task 2: Implement screenshot overlay module
 
 **Files:**
+
 - Create: `apps/api/src/browserbase/screenshot-overlay.ts`
 
 - [ ] **Step 1: Create the module**
@@ -209,9 +213,7 @@ export async function renderOverlay(input: RenderOverlayInput): Promise<Buffer> 
     timestamp: timestampText,
   });
 
-  const bannerBuffer = await sharp(Buffer.from(bannerSvg))
-    .png()
-    .toBuffer();
+  const bannerBuffer = await sharp(Buffer.from(bannerSvg)).png().toBuffer();
 
   // Extend the source image downward by OVERLAY_HEIGHT_PX and paint the banner there.
   const extended = await sharp(buffer)
@@ -315,6 +317,7 @@ git commit -m "feat(browserbase): add screenshot overlay renderer with audit met
 ## Task 3: Integrate overlay into `executeAutomation`
 
 **Files:**
+
 - Modify: `apps/api/src/browserbase/browserbase.service.ts` (around lines 742-835; `executeAutomation` method)
 
 - [ ] **Step 1: Add the import at the top of the service**
@@ -322,11 +325,13 @@ git commit -m "feat(browserbase): add screenshot overlay renderer with audit met
 Modify `apps/api/src/browserbase/browserbase.service.ts`:
 
 Old (line 13):
+
 ```typescript
 import { getSignedUrl } from '@/app/s3';
 ```
 
 New (append after that line):
+
 ```typescript
 import { getSignedUrl } from '@/app/s3';
 import { renderOverlay } from './screenshot-overlay';
@@ -337,57 +342,56 @@ import { renderOverlay } from './screenshot-overlay';
 In `executeAutomation`, replace the block that currently takes the screenshot and returns (currently around lines 803-817). Old:
 
 ```typescript
-      // Always take a screenshot at the end (no pass/fail criteria gate)
-      page = await this.ensureActivePage(stagehand);
-      const screenshot = await page.screenshot({
-        type: 'jpeg',
-        quality: 80,
-        fullPage: false,
-      });
+// Always take a screenshot at the end (no pass/fail criteria gate)
+page = await this.ensureActivePage(stagehand);
+const screenshot = await page.screenshot({
+  type: 'jpeg',
+  quality: 80,
+  fullPage: false,
+});
 
-      return {
-        success: true,
-        screenshot: screenshot.toString('base64'),
-        evaluationReason: taskContext
-          ? `Navigation completed for "${taskContext.title}". Screenshot captured.`
-          : 'Navigation completed. Screenshot captured.',
-      };
+return {
+  success: true,
+  screenshot: screenshot.toString('base64'),
+  evaluationReason: taskContext
+    ? `Navigation completed for "${taskContext.title}". Screenshot captured.`
+    : 'Navigation completed. Screenshot captured.',
+};
 ```
 
 New:
 
 ```typescript
-      // Always take a screenshot at the end (no pass/fail criteria gate)
-      page = await this.ensureActivePage(stagehand);
-      const sourceUrl = page.url();
-      const rawScreenshot = await page.screenshot({
-        type: 'jpeg',
-        quality: 80,
-        fullPage: false,
-      });
+// Always take a screenshot at the end (no pass/fail criteria gate)
+page = await this.ensureActivePage(stagehand);
+const sourceUrl = page.url();
+const rawScreenshot = await page.screenshot({
+  type: 'jpeg',
+  quality: 80,
+  fullPage: false,
+});
 
-      let finalBuffer: Buffer = rawScreenshot;
-      try {
-        finalBuffer = await renderOverlay({
-          buffer: rawScreenshot,
-          instruction,
-          sourceUrl,
-          capturedAt: new Date(),
-        });
-      } catch (overlayErr) {
-        this.logger.warn('Screenshot overlay render failed; uploading raw image', {
-          error:
-            overlayErr instanceof Error ? overlayErr.message : String(overlayErr),
-        });
-      }
+let finalBuffer: Buffer = rawScreenshot;
+try {
+  finalBuffer = await renderOverlay({
+    buffer: rawScreenshot,
+    instruction,
+    sourceUrl,
+    capturedAt: new Date(),
+  });
+} catch (overlayErr) {
+  this.logger.warn('Screenshot overlay render failed; uploading raw image', {
+    error: overlayErr instanceof Error ? overlayErr.message : String(overlayErr),
+  });
+}
 
-      return {
-        success: true,
-        screenshot: finalBuffer.toString('base64'),
-        evaluationReason: taskContext
-          ? `Navigation completed for "${taskContext.title}". Screenshot captured.`
-          : 'Navigation completed. Screenshot captured.',
-      };
+return {
+  success: true,
+  screenshot: finalBuffer.toString('base64'),
+  evaluationReason: taskContext
+    ? `Navigation completed for "${taskContext.title}". Screenshot captured.`
+    : 'Navigation completed. Screenshot captured.',
+};
 ```
 
 - [ ] **Step 3: Typecheck**
@@ -412,6 +416,7 @@ git commit -m "feat(browserbase): bake audit overlay into captured screenshots"
 ## Task 4: Write failing test for `getScreenshotRedirectUrl` service method
 
 **Files:**
+
 - Create: `apps/api/src/browserbase/browserbase.service.spec.ts`
 
 - [ ] **Step 1: Create the service spec with failing tests**
@@ -526,16 +531,19 @@ git commit -m "test(browserbase): add failing test for getScreenshotRedirectUrl"
 ## Task 5: Implement `getScreenshotRedirectUrl` service method
 
 **Files:**
+
 - Modify: `apps/api/src/browserbase/browserbase.service.ts` (add method after `getPresignedUrl` at line 865)
 
 - [ ] **Step 1: Add `NotFoundException` to the imports**
 
 Old (line 1):
+
 ```typescript
 import { Injectable, Logger } from '@nestjs/common';
 ```
 
 New:
+
 ```typescript
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 ```
@@ -596,6 +604,7 @@ git commit -m "feat(browserbase): add getScreenshotRedirectUrl with org scope"
 ## Task 6: Write failing test for the redirect endpoint
 
 **Files:**
+
 - Create: `apps/api/src/browserbase/browserbase.controller.spec.ts`
 
 - [ ] **Step 1: Create the controller spec**
@@ -638,9 +647,7 @@ describe('BrowserbaseController.redirectToScreenshot', () => {
   };
 
   it('302-redirects to the freshly minted presigned URL', async () => {
-    service.getScreenshotRedirectUrl.mockResolvedValue(
-      'https://s3.example.com/fresh-signed',
-    );
+    service.getScreenshotRedirectUrl.mockResolvedValue('https://s3.example.com/fresh-signed');
     const res = makeRes();
 
     await controller.redirectToScreenshot('bar_1', 'org_1', res);
@@ -683,37 +690,21 @@ git commit -m "test(browserbase): add failing test for screenshot redirect endpo
 ## Task 7: Implement the redirect endpoint
 
 **Files:**
+
 - Modify: `apps/api/src/browserbase/browserbase.controller.ts`
 
 - [ ] **Step 1: Expand the imports from `@nestjs/common`**
 
 Old (lines 1-10):
+
 ```typescript
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 ```
 
 New:
+
 ```typescript
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 ```
 
@@ -767,6 +758,7 @@ git commit -m "feat(browserbase): add GET runs/:runId/screenshot redirect endpoi
 ## Task 8: Write failing tests for RunItem anchor behavior
 
 **Files:**
+
 - Create: `apps/app/src/app/(app)/[orgId]/tasks/[taskId]/components/browser-automations/RunItem.test.tsx`
 
 - [ ] **Step 1: Create the vitest spec**
@@ -793,9 +785,7 @@ describe('RunItem', () => {
   it('Open full size anchor points at the stable redirect endpoint, not the signed URL', () => {
     render(<RunItem run={baseRun} isLatest={true} />);
     const link = screen.getByRole('link', { name: /open full size/i });
-    expect(link.getAttribute('href')).toContain(
-      '/v1/browserbase/runs/bar_123/screenshot',
-    );
+    expect(link.getAttribute('href')).toContain('/v1/browserbase/runs/bar_123/screenshot');
     expect(link.getAttribute('href')).not.toContain('s3.example.com');
   });
 
@@ -805,9 +795,7 @@ describe('RunItem', () => {
     const img = screen.getByAltText('Automation screenshot');
     fireEvent.error(img);
     const fallback = screen.getByRole('link', { name: /try direct link/i });
-    expect(fallback.getAttribute('href')).toContain(
-      '/v1/browserbase/runs/bar_123/screenshot',
-    );
+    expect(fallback.getAttribute('href')).toContain('/v1/browserbase/runs/bar_123/screenshot');
   });
 
   it('renders the inline thumbnail using the presigned URL from the run payload', () => {
@@ -835,11 +823,13 @@ git commit -m "test(run-item): add failing test for stable full-size screenshot 
 ## Task 9: Update `RunItem` to use the stable redirect URL
 
 **Files:**
+
 - Modify: `apps/app/src/app/(app)/[orgId]/tasks/[taskId]/components/browser-automations/RunItem.tsx`
 
 - [ ] **Step 1: Derive the stable URL near the top of the component**
 
 Old (lines 16-25):
+
 ```tsx
 export function RunItem({ run, isLatest }: RunItemProps) {
   const [expanded, setExpanded] = useState(isLatest);
@@ -854,6 +844,7 @@ export function RunItem({ run, isLatest }: RunItemProps) {
 ```
 
 New:
+
 ```tsx
 export function RunItem({ run, isLatest }: RunItemProps) {
   const [expanded, setExpanded] = useState(isLatest);
@@ -873,6 +864,7 @@ export function RunItem({ run, isLatest }: RunItemProps) {
 - [ ] **Step 2: Swap the "Open full size" anchor's href**
 
 Old (line 143):
+
 ```tsx
                   <a
                     href={run.screenshotUrl}
@@ -885,6 +877,7 @@ Old (line 143):
 ```
 
 New:
+
 ```tsx
                   <a
                     href={fullSizeHref}
@@ -899,6 +892,7 @@ New:
 - [ ] **Step 3: Swap the "Try direct link" fallback anchor's href**
 
 Old (line 172):
+
 ```tsx
                 <a
                   href={run.screenshotUrl}
@@ -911,6 +905,7 @@ Old (line 172):
 ```
 
 New:
+
 ```tsx
                 <a
                   href={fullSizeHref}
@@ -948,6 +943,7 @@ git commit -m "fix(run-item): point full-size link at stable redirect endpoint"
 ## Task 10: Investigate the evaluation error state
 
 **Files:**
+
 - Read-only exploration. Update `apps/api/src/browserbase/browserbase.service.ts` as dictated by findings.
 
 Context: the ticket screenshot shows an `Evaluation Failed` state with an error message. Looking at the current code paths:
@@ -962,6 +958,7 @@ Context: the ticket screenshot shows an `Evaluation Failed` state with an error 
 - [ ] **Step 1: Grep for every assignment to `evaluationStatus`, `evaluationReason`, and `run.error`**
 
 Run these and record findings:
+
 ```bash
 rg -n "evaluationStatus\s*:" apps/api/src/browserbase
 rg -n "evaluationReason\s*:" apps/api/src/browserbase
@@ -985,6 +982,7 @@ Trigger an automation from the UI and watch the run land in `failed` status.
 In `executeAutomation`'s generic catch (currently ~line 818-831), the branch that does not match `isNoPage` returns `error: message` — where `message` is the raw thrown-error message. Wrap that with a stable, user-readable message while preserving the raw details in the service logger:
 
 Old:
+
 ```typescript
     } catch (err) {
       this.logger.error('Failed to execute automation', err);
@@ -1004,6 +1002,7 @@ Old:
 ```
 
 New:
+
 ```typescript
     } catch (err) {
       this.logger.error('Failed to execute automation', err);
@@ -1034,10 +1033,12 @@ New:
 - [ ] **Step 4: Typecheck + run all browserbase tests**
 
 Run:
+
 ```bash
 npx turbo run typecheck --filter=@gideon-defender/api
 cd apps/api && npx jest src/browserbase
 ```
+
 Expected: **PASS.**
 
 - [ ] **Step 5: Commit**
@@ -1056,18 +1057,22 @@ git commit -m "fix(browserbase): surface user-readable error for timeouts and ge
 - [ ] **Step 1: Full typecheck across the monorepo**
 
 Run:
+
 ```bash
 npx turbo run typecheck --filter=@gideon-defender/api --filter=@gideon-defender/app
 ```
+
 Expected: **No errors.**
 
 - [ ] **Step 2: Full test sweep**
 
 Run:
+
 ```bash
 cd apps/api && npx jest src/browserbase
 cd ../../apps/app && npx vitest run src/app/\\(app\\)/\\[orgId\\]/tasks/\\[taskId\\]/components/browser-automations
 ```
+
 Expected: **All green.**
 
 - [ ] **Step 3: Lint the touched packages**
@@ -1083,9 +1088,11 @@ Expected: **Both succeed.**
 - [ ] **Step 5: Smoke test the redirect endpoint**
 
 With the dev API running:
+
 ```bash
 curl -I -b "<session-cookie>" http://localhost:3333/v1/browserbase/runs/<a-real-run-id>/screenshot
 ```
+
 Expected: `HTTP/1.1 302 Found` with a `Location: https://...amazonaws.com/...` header.
 
 - [ ] **Step 6: Ask the user before pushing**

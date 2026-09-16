@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-  type SortingState,
-} from '@tanstack/react-table';
+import { apiClient } from '@/app/lib/api-client';
 import {
   Badge,
   Button,
@@ -16,6 +9,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui';
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type SortingState,
+} from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ArrowUpDown, Link, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import {
@@ -30,7 +31,6 @@ import {
   SelectCell,
   type SelectOption,
 } from '../../components/table';
-import { apiClient } from '@/app/lib/api-client';
 import {
   simpleUUID,
   useTaskChangeTracking,
@@ -281,7 +281,15 @@ export function TasksClientPage({ initialTasks, emptyMessage, frameworkId }: Tas
         ),
       }),
     ],
-    [updateCell, updateRelational, deleteRow, createdIds, fetchAllControls, handleLinkControl, handleUnlinkControl],
+    [
+      updateCell,
+      updateRelational,
+      deleteRow,
+      createdIds,
+      fetchAllControls,
+      handleLinkControl,
+      handleUnlinkControl,
+    ],
   );
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -298,15 +306,9 @@ export function TasksClientPage({ initialTasks, emptyMessage, frameworkId }: Tas
 
   const [isAddExistingOpen, setIsAddExistingOpen] = useState(false);
 
-  const existingTaskIds = useMemo(
-    () => new Set(initialTasks.map((t) => t.id)),
-    [initialTasks],
-  );
+  const existingTaskIds = useMemo(() => new Set(initialTasks.map((t) => t.id)), [initialTasks]);
 
-  const fetchAllTasks = useCallback(
-    () => apiClient<ExistingItemRaw[]>('/task-template'),
-    [],
-  );
+  const fetchAllTasks = useCallback(() => apiClient<ExistingItemRaw[]>('/task-template'), []);
 
   const handleAddRow = useCallback(() => {
     addRow({

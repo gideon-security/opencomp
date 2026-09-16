@@ -1,17 +1,13 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import type {
-  IsmsDocument,
-  IsmsDriftResult,
-  IsmsManagementReview,
-} from '../isms-types';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { IsmsDocument, IsmsDriftResult, IsmsManagementReview } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
 
 // ─── Mock usePermissions ─────────────────────────────────────
@@ -78,9 +74,7 @@ vi.mock('./IsmsVersionHistory', () => ({
 
 import { ManagementReviewClient } from './ManagementReviewClient';
 
-function makeReview(
-  overrides: Partial<IsmsManagementReview> = {},
-): IsmsManagementReview {
+function makeReview(overrides: Partial<IsmsManagementReview> = {}): IsmsManagementReview {
   return {
     id: 'mr_1',
     reference: 'MR-2026-01',
@@ -227,13 +221,9 @@ describe('ManagementReviewClient', () => {
     render(<ManagementReviewClient {...baseProps} />);
 
     expect(screen.getByText('Member One')).toBeInTheDocument();
-    expect(
-      screen.getByText('Two improvements agreed at this review.'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Two improvements agreed at this review.')).toBeInTheDocument();
     expect(screen.getByText('MR-2026-01-A01')).toBeInTheDocument();
-    expect(
-      screen.getByText('Formalise a quarterly access review process.'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Formalise a quarterly access review process.')).toBeInTheDocument();
     // Owner resolved from memberOptions.
     expect(screen.getAllByText('Approver Two').length).toBeGreaterThan(0);
   });
@@ -243,29 +233,21 @@ describe('ManagementReviewClient', () => {
     render(<ManagementReviewClient {...baseProps} />);
 
     // The fixture review is signed → locked notice, no edit/delete/add-input.
-    expect(
-      screen.getByText(/signed by the chair and locked/),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByLabelText('Edit review MR-2026-01'),
-    ).not.toBeInTheDocument();
+    expect(screen.getByText(/signed by the chair and locked/)).toBeInTheDocument();
+    expect(screen.queryByLabelText('Edit review MR-2026-01')).not.toBeInTheDocument();
     expect(screen.queryByText('Add input row')).not.toBeInTheDocument();
     expect(screen.queryByText('Add action')).not.toBeInTheDocument();
     // The sign-off slot stays live so the signature can be corrected/cleared,
     // and the action status keeps tracking to closure.
     expect(screen.getByText('Save sign-off')).toBeInTheDocument();
     expect(screen.getByLabelText('Edit MR-2026-01-A01')).toBeInTheDocument();
-    expect(
-      screen.queryByLabelText('Delete MR-2026-01-A01'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Delete MR-2026-01-A01')).not.toBeInTheDocument();
   });
 
   it('allows editing an unsigned review for a user with evidence:update', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.document = makeDocument({
-      reviews: [
-        makeReview({ signoffChairName: null, signoffChairDate: null }),
-      ],
+      reviews: [makeReview({ signoffChairName: null, signoffChairDate: null })],
     });
     render(<ManagementReviewClient {...baseProps} />);
 
@@ -280,9 +262,7 @@ describe('ManagementReviewClient', () => {
   it('hides mutating controls for a read-only user but keeps export', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     hookState.document = makeDocument({
-      reviews: [
-        makeReview({ signoffChairName: null, signoffChairDate: null }),
-      ],
+      reviews: [makeReview({ signoffChairName: null, signoffChairDate: null })],
     });
     render(<ManagementReviewClient {...baseProps} />);
 
@@ -314,9 +294,7 @@ describe('ManagementReviewClient', () => {
     });
     render(<ManagementReviewClient {...baseProps} />);
 
-    expect(
-      screen.getByText('carriedForward.title'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('carriedForward.title')).toBeInTheDocument();
     // The first review's open action appears twice: on its own review and in
     // the second review's carried-forward table.
     expect(screen.getAllByText('MR-2026-01-A01')).toHaveLength(2);
@@ -366,12 +344,10 @@ describe('ManagementReviewClient', () => {
       screen.getAllByText(/MR-2026-01 is complete but has no meeting date\./).length,
     ).toBeGreaterThan(0);
     expect(
-      screen.getAllByText(/MR-2026-01 has 1 input not yet marked as discussed\./)
-        .length,
+      screen.getAllByText(/MR-2026-01 has 1 input not yet marked as discussed\./).length,
     ).toBeGreaterThan(0);
     expect(
-      screen.getAllByText(/MR-2026-01 is complete but has not been signed by the chair\./)
-        .length,
+      screen.getAllByText(/MR-2026-01 is complete but has not been signed by the chair\./).length,
     ).toBeGreaterThan(0);
   });
 });

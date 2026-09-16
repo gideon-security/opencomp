@@ -4,8 +4,6 @@
 // with `apps/app/prisma/index.ts`.
 export type * from '@prisma/client';
 export {
-  Prisma,
-  PrismaClient,
   AttachmentEntityType,
   AttachmentType,
   AuditLogEntityType,
@@ -38,6 +36,8 @@ export {
   PolicyDisplayFormat,
   PolicyStatus,
   PolicyVisibility,
+  Prisma,
+  PrismaClient,
   QuestionnaireAnswerStatus,
   QuestionnaireStatus,
   RiskCategory,

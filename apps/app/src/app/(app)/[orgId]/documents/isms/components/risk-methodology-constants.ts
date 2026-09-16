@@ -22,13 +22,7 @@ export const METHODOLOGY_IMPACT_LABELS = [
 ] as const;
 
 /** Platform risk-level bands, in ascending order (matches risk-score.ts). */
-export const METHODOLOGY_LEVEL_LABELS = [
-  'Very low',
-  'Low',
-  'Medium',
-  'High',
-  'Very high',
-] as const;
+export const METHODOLOGY_LEVEL_LABELS = ['Very low', 'Low', 'Medium', 'High', 'Very high'] as const;
 
 /**
  * Platform treatment strategies in the reference document's display order,

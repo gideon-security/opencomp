@@ -116,9 +116,7 @@ describe('InterestedPartiesRow', () => {
       target: { value: '' },
     });
     fireEvent.click(screen.getByText('Save'));
-    await waitFor(() =>
-      expect(screen.getByLabelText('Interested party name')).toHaveValue(''),
-    );
+    await waitFor(() => expect(screen.getByLabelText('Interested party name')).toHaveValue(''));
     expect(onSave).not.toHaveBeenCalled();
 
     // Restoring a valid value lets the save through.
@@ -127,8 +125,6 @@ describe('InterestedPartiesRow', () => {
     });
     fireEvent.click(screen.getByText('Save'));
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
-    expect(onSave).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'New name' }),
-    );
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ name: 'New name' }));
   });
 });

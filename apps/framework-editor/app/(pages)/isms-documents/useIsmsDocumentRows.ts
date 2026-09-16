@@ -66,10 +66,7 @@ export function useIsmsDocumentRows({
     [templatesState],
   );
 
-  const handleRequirementLinked = (
-    templateId: string,
-    requirement: MappedRequirement,
-  ) => {
+  const handleRequirementLinked = (templateId: string, requirement: MappedRequirement) => {
     setTemplatesState((prev) =>
       prev.map((template) => {
         if (template.id !== templateId) return template;

@@ -21,7 +21,10 @@ function toDto(plain: Record<string, unknown>): UpdateFrameworkFamilyDto {
 
 describe('UpdateFrameworkFamilyDto', () => {
   it('accepts an empty payload (every field is optional)', async () => {
-    const errors = await validate(toDto({}), { whitelist: true, forbidNonWhitelisted: true });
+    const errors = await validate(toDto({}), {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    });
     expect(errors).toHaveLength(0);
   });
 
@@ -50,7 +53,9 @@ describe('UpdateFrameworkFamilyDto', () => {
   });
 
   it('rejects an invalid status value', async () => {
-    const errors = await validate(toDto({ status: 'bogus' }), { whitelist: true });
+    const errors = await validate(toDto({ status: 'bogus' }), {
+      whitelist: true,
+    });
     expect(errors.some((e) => e.property === 'status')).toBe(true);
   });
 });

@@ -1,5 +1,5 @@
-import { verifyUnsubscribeToken } from '@gideon-defender/email';
 import { db } from '@db/server';
+import { verifyUnsubscribeToken } from '@gideon-defender/email';
 import { UnsubscribePreferencesClient, type EmailPreferences } from './client';
 
 interface PageProps {

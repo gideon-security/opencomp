@@ -1,7 +1,6 @@
 'use client';
 
 import { apiClient } from '@/app/lib/api-client';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@gideon-defender/ui/button';
 import {
   Dialog,
@@ -12,7 +11,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
 import { Input } from '@gideon-defender/ui/input';
 import {
   Select,
@@ -22,6 +28,7 @@ import {
   SelectValue,
 } from '@gideon-defender/ui/select';
 import { Textarea } from '@gideon-defender/ui/textarea';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -94,8 +101,7 @@ export function FrameworkFamilyDialog({
       form.reset();
       router.refresh();
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : 'Failed to save framework family.';
+      const message = error instanceof Error ? error.message : 'Failed to save framework family.';
       toast.error(message);
     }
   }

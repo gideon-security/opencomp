@@ -19,12 +19,16 @@ if (hasConfig) fs.renameSync(configPath, configBackup);
 
 try {
   // Copy model files
-  for (const file of fs.readdirSync(schemaDir).filter(f => f.endsWith('.prisma') && f !== 'schema.prisma')) {
+  for (const file of fs
+    .readdirSync(schemaDir)
+    .filter((f) => f.endsWith('.prisma') && f !== 'schema.prisma')) {
     fs.copyFileSync(path.join(schemaDir, file), path.join(tempDir, file));
   }
 
   // Write prisma-client-js generator schema
-  fs.writeFileSync(path.join(tempDir, 'schema.prisma'), `generator client {
+  fs.writeFileSync(
+    path.join(tempDir, 'schema.prisma'),
+    `generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
 }
@@ -33,7 +37,8 @@ datasource db {
   provider   = "postgresql"
   extensions = [pgcrypto]
 }
-`);
+`,
+  );
 
   // Resolve prisma CLI via Node/Bun module resolution (handles hoisting)
   const prismaPackage = require.resolve('prisma/package.json');

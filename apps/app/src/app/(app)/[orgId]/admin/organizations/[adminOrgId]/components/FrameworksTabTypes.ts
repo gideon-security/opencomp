@@ -13,8 +13,7 @@ export interface ActiveFramework {
 }
 
 export type PendingAction =
-  | { type: 'add'; framework: FrameworkDetails }
-  | { type: 'delete'; framework: ActiveFramework };
+  { type: 'add'; framework: FrameworkDetails } | { type: 'delete'; framework: ActiveFramework };
 
 export function getActiveFrameworkDetails(framework: ActiveFramework) {
   return framework.framework ?? framework.customFramework;

@@ -2,6 +2,7 @@
 
 import { DepartmentSelect } from '@/components/DepartmentSelect';
 import { SelectAssignee } from '@/components/SelectAssignee';
+import { usePermissions } from '@/hooks/use-permissions';
 import {
   Departments,
   Frequency,
@@ -41,7 +42,6 @@ import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { usePolicy } from '../hooks/usePolicy';
-import { usePermissions } from '@/hooks/use-permissions';
 
 type PolicyWithVersion = Policy & {
   currentVersion?: (PolicyVersion & { publishedBy: (Member & { user: User }) | null }) | null;
@@ -147,9 +147,16 @@ export function UpdatePolicyOverview({
     const assigneeChanged = selectedAssigneeId !== policy.assigneeId;
     const departmentChanged = selectedDepartment !== (policy.department || Departments.admin);
     const frequencyChanged = selectedFrequency !== (policy.frequency || Frequency.monthly);
-    
+
     return assigneeChanged || departmentChanged || frequencyChanged;
-  }, [selectedAssigneeId, selectedDepartment, selectedFrequency, policy.assigneeId, policy.department, policy.frequency]);
+  }, [
+    selectedAssigneeId,
+    selectedDepartment,
+    selectedFrequency,
+    policy.assigneeId,
+    policy.department,
+    policy.frequency,
+  ]);
 
   const isLoading = isSubmitting;
 

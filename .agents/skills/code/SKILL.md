@@ -1,6 +1,6 @@
 ---
 name: code
-description: "Use when writing TypeScript/React code - covers type safety, component patterns, and file organization"
+description: 'Use when writing TypeScript/React code - covers type safety, component patterns, and file organization'
 ---
 
 Source Cursor rule: `.cursor/rules/code.mdc`.
@@ -57,12 +57,12 @@ export default function taskCard() { ... }
 
 ```tsx
 // ✅ Derived
-const completedCount = tasks.filter(t => t.completed).length;
+const completedCount = tasks.filter((t) => t.completed).length;
 
 // ❌ Synced state
 const [count, setCount] = useState(0);
 useEffect(() => {
-  setCount(tasks.filter(t => t.completed).length);
+  setCount(tasks.filter((t) => t.completed).length);
 }, [tasks]);
 ```
 

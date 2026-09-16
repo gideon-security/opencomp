@@ -17,7 +17,11 @@ const BATCH_THROTTLE_MS = 1000;
 
 let running = true;
 
-function log(level: 'info' | 'warn' | 'error', message: string, meta?: unknown): void {
+function log(
+  level: 'info' | 'warn' | 'error',
+  message: string,
+  meta?: unknown,
+): void {
   const line = `[email-worker] ${new Date().toISOString()} [${level}] ${message}`;
   if (level === 'error') console.error(line, meta ?? '');
   else if (level === 'warn') console.warn(line, meta ?? '');
@@ -61,7 +65,8 @@ async function processMessage(message: Message): Promise<void> {
 
   const testRecipient = process.env.EMAIL_TO_TEST?.trim() || undefined;
   const replyTo =
-    email.channel === 'marketing' && process.env.EMAIL_REPLY_TO_MARKETING?.trim()
+    email.channel === 'marketing' &&
+    process.env.EMAIL_REPLY_TO_MARKETING?.trim()
       ? process.env.EMAIL_REPLY_TO_MARKETING.trim()
       : undefined;
 
@@ -126,7 +131,9 @@ async function poll(): Promise<void> {
           log(
             'error',
             `Failed to send email ${messages[index].MessageId ?? 'unknown'} — leaving in queue for retry`,
-            result.reason instanceof Error ? result.reason.message : result.reason,
+            result.reason instanceof Error
+              ? result.reason.message
+              : result.reason,
           );
         }
       });
@@ -155,6 +162,10 @@ process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
 
 poll().catch((error) => {
-  log('error', 'Email worker terminated', error instanceof Error ? error.message : error);
+  log(
+    'error',
+    'Email worker terminated',
+    error instanceof Error ? error.message : error,
+  );
   process.exit(1);
 });

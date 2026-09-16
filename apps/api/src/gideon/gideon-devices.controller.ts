@@ -102,11 +102,18 @@ export class GideonDevicesProxyController {
 
       let upstream: globalThis.Response;
       try {
-        upstream = await this.fetchWithTimeout(targetUrl.toString(), headers, 5000);
+        upstream = await this.fetchWithTimeout(
+          targetUrl.toString(),
+          headers,
+          5000,
+        );
       } catch (primaryError) {
         const fallback = this.legacyAgentCommsUrl;
         if (fallback && targetUrl.toString().startsWith(this.agentCommsUrl)) {
-          const fallbackUrl = new URL(targetUrl.pathname + targetUrl.search, fallback).toString();
+          const fallbackUrl = new URL(
+            targetUrl.pathname + targetUrl.search,
+            fallback,
+          ).toString();
           this.logger.warn(
             `[GideonShadow] devices proxy primary ${targetUrl.toString()} failed, retrying legacy ${fallbackUrl}: ${(primaryError as Error).message}`,
           );
@@ -121,7 +128,8 @@ export class GideonDevicesProxyController {
 
       const body = await upstream.text().catch(() => '');
       // Try to preserve upstream status and content-type
-      const contentType = upstream.headers.get('content-type') || 'application/json';
+      const contentType =
+        upstream.headers.get('content-type') || 'application/json';
       res.status(upstream.status || 200);
       res.setHeader('content-type', contentType);
       res.setHeader('x-gideon-shadow', '1');

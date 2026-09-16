@@ -211,7 +211,9 @@ describe('checkRootAccessKeys', () => {
     const iam = buildIam((command) => {
       if (command instanceof GenerateCredentialReportCommand) return {};
       if (command instanceof GetCredentialReportCommand) {
-        return Object.assign(new Error('AccessDenied'), { name: 'AccessDenied' });
+        return Object.assign(new Error('AccessDenied'), {
+          name: 'AccessDenied',
+        });
       }
       return {};
     });

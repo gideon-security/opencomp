@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 
 const getAuthMock = vi.fn();
 const setAuthMock = vi.fn();
@@ -28,7 +28,7 @@ describe('reportCheckResults silent upgrade', () => {
         { organizationId: 'org_2', organizationName: 'B', deviceId: 'dev_2' },
       ],
     });
-    ((globalThis.fetch as unknown) as Mock)
+    (globalThis.fetch as unknown as Mock)
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({ isCompliant: true, nextCheckIn: '', upgradedSessionToken: 'new_tok' }),
@@ -41,15 +41,13 @@ describe('reportCheckResults silent upgrade', () => {
     const { reportCheckResults } = await import('./reporter');
     await reportCheckResults([]);
 
-    const calls = ((globalThis.fetch as unknown) as Mock).mock.calls;
+    const calls = (globalThis.fetch as unknown as Mock).mock.calls;
     // First call uses old token
     expect((calls[0][1] as RequestInit).headers).toMatchObject({ Authorization: 'Bearer old_tok' });
     // Second call uses new token (proves we swapped mid-loop)
     expect((calls[1][1] as RequestInit).headers).toMatchObject({ Authorization: 'Bearer new_tok' });
     // Auth was persisted
-    expect(setAuthMock).toHaveBeenCalledWith(
-      expect.objectContaining({ sessionToken: 'new_tok' }),
-    );
+    expect(setAuthMock).toHaveBeenCalledWith(expect.objectContaining({ sessionToken: 'new_tok' }));
   });
 
   it('aborts further check-ins if persisting the upgraded token fails', async () => {
@@ -62,8 +60,10 @@ describe('reportCheckResults silent upgrade', () => {
         { organizationId: 'org_2', organizationName: 'B', deviceId: 'dev_2' },
       ],
     });
-    setAuthMock.mockImplementation(() => { throw new Error('disk full'); });
-    ((globalThis.fetch as unknown) as Mock).mockResolvedValueOnce({
+    setAuthMock.mockImplementation(() => {
+      throw new Error('disk full');
+    });
+    (globalThis.fetch as unknown as Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({ isCompliant: true, nextCheckIn: '', upgradedSessionToken: 'new_tok' }),
     });
@@ -72,6 +72,6 @@ describe('reportCheckResults silent upgrade', () => {
     const result = await reportCheckResults([]);
 
     expect(result.allSucceeded).toBe(false);
-    expect(((globalThis.fetch as unknown) as Mock).mock.calls).toHaveLength(1);
+    expect((globalThis.fetch as unknown as Mock).mock.calls).toHaveLength(1);
   });
 });

@@ -30,9 +30,7 @@ export function footerButtonLabel(params: {
         ? `Insert into sheet (${params.approved})`
         : 'Approve answers to insert';
     }
-    return params.approved > 0
-      ? `Prepare paste (${params.approved})`
-      : 'Approve answers to paste';
+    return params.approved > 0 ? `Prepare paste (${params.approved})` : 'Approve answers to paste';
   }
   if (params.approved > 0) return `Insert ${params.approved} approved`;
   return 'Approve answers to insert';

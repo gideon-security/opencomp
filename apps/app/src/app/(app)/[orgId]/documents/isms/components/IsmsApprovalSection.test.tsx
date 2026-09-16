@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDocumentStatus } from '../isms-types';
@@ -193,9 +193,7 @@ describe('IsmsApprovalSection', () => {
   });
 
   it('does not offer submit affordances to read-only users', () => {
-    render(
-      <IsmsApprovalSection {...baseProps} canManage={false} document={makeDocument()} />,
-    );
+    render(<IsmsApprovalSection {...baseProps} canManage={false} document={makeDocument()} />);
     expect(screen.queryByText('approval.submitForApproval')).not.toBeInTheDocument();
     expect(screen.queryByText('approval.resubmitForApproval')).not.toBeInTheDocument();
   });

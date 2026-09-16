@@ -95,4 +95,3 @@ export function AppShellRailNav({ organizationId }: AppShellRailNavProps) {
     </>
   );
 }
-

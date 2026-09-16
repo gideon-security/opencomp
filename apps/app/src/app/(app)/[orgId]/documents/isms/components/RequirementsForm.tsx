@@ -21,10 +21,7 @@ export function RequirementsForm({ onAdd }: RequirementsFormProps) {
   );
 }
 
-function RequirementsFields({
-  onAdd,
-  onClose,
-}: RequirementsFormProps & { onClose: () => void }) {
+function RequirementsFields({ onAdd, onClose }: RequirementsFormProps & { onClose: () => void }) {
   const {
     control,
     handleSubmit,

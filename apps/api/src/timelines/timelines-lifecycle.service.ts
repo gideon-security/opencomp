@@ -5,7 +5,10 @@ import {
 } from '@nestjs/common';
 import { db, TimelineStatus, TimelinePhaseStatus } from '@db';
 import { recalculatePhaseDates } from './timelines-date.helper';
-import { notifyPhaseCompleted, notifyTimelineCompleted } from './timelines-slack.helper';
+import {
+  notifyPhaseCompleted,
+  notifyTimelineCompleted,
+} from './timelines-slack.helper';
 
 /** Shared Prisma include for timeline instance queries. */
 const INSTANCE_INCLUDE = {
@@ -164,7 +167,8 @@ export class TimelinesLifecycleService {
 
       // If completing before planned end, update endDate and pin it
       // so downstream recalculation anchors off the actual completion date
-      const finishedEarly = !phase.endDate || now.getTime() < new Date(phase.endDate).getTime();
+      const finishedEarly =
+        !phase.endDate || now.getTime() < new Date(phase.endDate).getTime();
 
       await tx.timelinePhase.update({
         where: { id: phaseId },
@@ -269,7 +273,12 @@ export class TimelinesLifecycleService {
         include: INSTANCE_INCLUDE,
       });
 
-      return { result, allCompleted, phaseName: phase.name, completionType: phase.completionType };
+      return {
+        result,
+        allCompleted,
+        phaseName: phase.name,
+        completionType: phase.completionType,
+      };
     });
 
     // Fire-and-forget Slack notifications
@@ -288,7 +297,11 @@ export class TimelinesLifecycleService {
     });
 
     if (txResult.allCompleted) {
-      notifyTimelineCompleted({ orgId: organizationId, orgName, frameworkName });
+      notifyTimelineCompleted({
+        orgId: organizationId,
+        orgName,
+        frameworkName,
+      });
     }
 
     return txResult.result;

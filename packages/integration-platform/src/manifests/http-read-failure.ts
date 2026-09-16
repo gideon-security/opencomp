@@ -18,13 +18,11 @@ export { combineReadFailures, remediationForReadFailure, type ReadFailure };
  * GCP returns 403 PERMISSION_DENIED; ARM returns 403 AuthorizationFailed.
  */
 export function toHttpReadFailure(err: unknown): ReadFailure {
-  const error =
-    err instanceof Error ? err.message.slice(0, 300) : String(err).slice(0, 300);
+  const error = err instanceof Error ? err.message.slice(0, 300) : String(err).slice(0, 300);
   const status = (err as { status?: number } | null)?.status;
   const denied =
     status === 401 ||
     status === 403 ||
-    (err instanceof Error &&
-      /PERMISSION_DENIED|AuthorizationFailed|Forbidden/i.test(err.message));
+    (err instanceof Error && /PERMISSION_DENIED|AuthorizationFailed|Forbidden/i.test(err.message));
   return { error, denied, regionDisabled: false };
 }

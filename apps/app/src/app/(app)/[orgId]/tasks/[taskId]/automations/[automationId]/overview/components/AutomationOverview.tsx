@@ -1,8 +1,8 @@
 'use client';
 
 import { RecentAuditLogs } from '@/components/RecentAuditLogs';
+import { SchedulePicker } from '@/components/schedule-picker';
 import { useAuditLogs } from '@/hooks/use-audit-logs';
-import { Button } from '@gideon-defender/ui/button';
 import type {
   EvidenceAutomation,
   EvidenceAutomationRun,
@@ -10,6 +10,7 @@ import type {
   Task,
   TaskFrequency,
 } from '@db';
+import { Button } from '@gideon-defender/ui/button';
 import {
   Breadcrumb,
   HStack,
@@ -24,9 +25,9 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Code2, Loader2, Play, Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import {
@@ -34,7 +35,6 @@ import {
   toggleAutomationEnabled,
 } from '../../../../automation/[automationId]/actions/task-automation-actions';
 import { DeleteAutomationDialog } from '../../../../automation/[automationId]/components/AutomationSettingsDialogs';
-import { SchedulePicker } from '@/components/schedule-picker';
 import { useTaskAutomation } from '../../../../automation/[automationId]/hooks/use-task-automation';
 import { AutomationRunsCard } from '../../../../components/AutomationRunsCard';
 import { useAutomationRuns } from '../hooks/use-automation-runs';
@@ -141,9 +141,7 @@ export function AutomationOverview({
       );
       await mutateAutomation();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('automationOverview.toggleFailed'),
-      );
+      toast.error(error instanceof Error ? error.message : t('automationOverview.toggleFailed'));
     } finally {
       setIsTogglingEnabled(false);
     }
@@ -179,33 +177,30 @@ export function AutomationOverview({
         });
         const runId = result.data?.runId || `pending-${Date.now()}`;
         const now = new Date();
-        mutateRuns(
-          (currentRuns) => {
-            const pendingRun: RunWithAutomationName = {
-              id: runId,
-              evidenceAutomationId: automation.id,
-              taskId,
-              status: 'pending',
-              success: null,
-              output: null,
-              error: null,
-              version: selectedVersion,
-              evaluationStatus: null,
-              evaluationReason: null,
-              createdAt: now,
-              updatedAt: now,
-              completedAt: null,
-              startedAt: now,
-              logs: null,
-              runDuration: null,
-              triggeredBy: 'manual',
-              evidenceAutomation: { name: automation.name },
-            };
-            const existing = Array.isArray(currentRuns) ? currentRuns : [];
-            return [pendingRun, ...existing];
-          },
-          false,
-        );
+        mutateRuns((currentRuns) => {
+          const pendingRun: RunWithAutomationName = {
+            id: runId,
+            evidenceAutomationId: automation.id,
+            taskId,
+            status: 'pending',
+            success: null,
+            output: null,
+            error: null,
+            version: selectedVersion,
+            evaluationStatus: null,
+            evaluationReason: null,
+            createdAt: now,
+            updatedAt: now,
+            completedAt: null,
+            startedAt: now,
+            logs: null,
+            runDuration: null,
+            triggeredBy: 'manual',
+            evidenceAutomation: { name: automation.name },
+          };
+          const existing = Array.isArray(currentRuns) ? currentRuns : [];
+          return [pendingRun, ...existing];
+        }, false);
       } else {
         toast.error(result.error || t('automationOverview.startTestFailed'));
       }
@@ -329,7 +324,9 @@ export function AutomationOverview({
                       <HStack gap="md" align="center">
                         <div>
                           <HStack gap="sm" align="center">
-                            <Text size="sm" weight="medium">v{v.version}</Text>
+                            <Text size="sm" weight="medium">
+                              v{v.version}
+                            </Text>
                             {isLatest && (
                               <span className="text-[10px] px-1.5 py-0 rounded-full bg-primary/10 text-primary font-medium">
                                 {t('automationOverview.latestBadge')}
@@ -337,11 +334,15 @@ export function AutomationOverview({
                             )}
                           </HStack>
                           {v.changelog && (
-                            <Text size="xs" variant="muted">{v.changelog}</Text>
+                            <Text size="xs" variant="muted">
+                              {v.changelog}
+                            </Text>
                           )}
                           <Text size="xs" variant="muted">
                             {new Date(v.createdAt).toLocaleDateString(undefined, {
-                              month: 'short', day: 'numeric', year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
                             })}
                           </Text>
                         </div>
@@ -454,7 +455,6 @@ export function AutomationOverview({
         onOpenChange={setDeleteDialogOpen}
         onSuccess={mutateAutomation}
       />
-
     </PageLayout>
   );
 }

@@ -25,7 +25,13 @@ import {
   CommandList,
 } from '@gideon-defender/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@gideon-defender/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
 
 const OPEN_MENU_SHORTCUT = 's';
 const REMOVE_SORT_SHORTCUTS = ['backspace', 'delete'];

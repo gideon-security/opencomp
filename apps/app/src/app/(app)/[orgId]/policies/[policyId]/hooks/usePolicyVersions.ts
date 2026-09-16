@@ -78,10 +78,7 @@ export function usePolicyVersions({
     const prevFirstId = prevInitialDataRef.current?.[0]?.id;
     const newFirstId = initialData?.[0]?.id;
 
-    if (
-      initialData &&
-      (prevLength !== newLength || prevFirstId !== newFirstId)
-    ) {
+    if (initialData && (prevLength !== newLength || prevFirstId !== newFirstId)) {
       mutate(initialData, false);
     }
 
@@ -103,9 +100,7 @@ export function usePolicyVersions({
 
   const deleteVersion = useCallback(
     async (versionId: string) => {
-      const response = await apiClient.delete(
-        `/v1/policies/${policyId}/versions/${versionId}`,
-      );
+      const response = await apiClient.delete(`/v1/policies/${policyId}/versions/${versionId}`);
       if (response.error) throw new Error(response.error);
       await mutate();
       return response;
@@ -128,23 +123,17 @@ export function usePolicyVersions({
 
   const updateVersionContent = useCallback(
     async (versionId: string, content: PolicyVersion['content']) => {
-      const response = await apiClient.patch(
-        `/v1/policies/${policyId}/versions/${versionId}`,
-        { content },
-      );
+      const response = await apiClient.patch(`/v1/policies/${policyId}/versions/${versionId}`, {
+        content,
+      });
       if (response.error) throw new Error(response.error);
       // Optimistically update the version content in cache.
       // If cache is empty/undefined, trigger a full revalidation instead of
       // caching [] which would wipe out fallbackData for other hooks.
-      mutate(
-        (currentVersions) => {
-          if (!currentVersions || !Array.isArray(currentVersions)) return currentVersions;
-          return currentVersions.map((v) =>
-            v.id === versionId ? { ...v, content } : v,
-          );
-        },
-        false,
-      );
+      mutate((currentVersions) => {
+        if (!currentVersions || !Array.isArray(currentVersions)) return currentVersions;
+        return currentVersions.map((v) => (v.id === versionId ? { ...v, content } : v));
+      }, false);
       return response;
     },
     [policyId, mutate],

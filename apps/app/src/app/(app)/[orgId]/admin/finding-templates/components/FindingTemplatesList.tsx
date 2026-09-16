@@ -27,10 +27,7 @@ import {
 import { Add, Edit } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
-import {
-  FINDING_TEMPLATE_CATEGORIES,
-  findingTemplateCategoryLabel,
-} from './constants';
+import { FINDING_TEMPLATE_CATEGORIES, findingTemplateCategoryLabel } from './constants';
 import { DeleteTemplateDialog } from './DeleteTemplateDialog';
 import { TemplateFormDialog } from './TemplateFormDialog';
 

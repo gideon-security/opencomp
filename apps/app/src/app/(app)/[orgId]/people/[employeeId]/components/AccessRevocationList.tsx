@@ -8,11 +8,7 @@ import {
   InputGroupInput,
   Text,
 } from '@trycompai/design-system';
-import {
-  Checkmark,
-  DocumentAttachment,
-  Search,
-} from '@trycompai/design-system/icons';
+import { Checkmark, DocumentAttachment, Search } from '@trycompai/design-system/icons';
 import { format } from 'date-fns';
 import { useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -49,9 +45,7 @@ export function AccessRevocationList({
 }: AccessRevocationListProps) {
   const { revocations, isLoading, revokeAccess, undoRevocation, revokeAll } =
     useAccessRevocations(memberId);
-  const [processingVendorId, setProcessingVendorId] = useState<string | null>(
-    null,
-  );
+  const [processingVendorId, setProcessingVendorId] = useState<string | null>(null);
   const [isConfirmingAll, setIsConfirmingAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -117,8 +111,7 @@ export function AccessRevocationList({
     return (
       <div className="border-t bg-muted py-4 pl-11 pr-3.5">
         <Text variant="muted">
-          No vendors configured. Add vendors to your organization to track
-          access revocation.
+          No vendors configured. Add vendors to your organization to track access revocation.
         </Text>
       </div>
     );
@@ -308,12 +301,7 @@ interface RevokedVendorRowProps {
   onUndo: () => void;
 }
 
-function RevokedVendorRow({
-  vendor,
-  canEdit,
-  isProcessing,
-  onUndo,
-}: RevokedVendorRowProps) {
+function RevokedVendorRow({ vendor, canEdit, isProcessing, onUndo }: RevokedVendorRowProps) {
   return (
     <div className="flex items-center justify-between border-b bg-background py-2.5 pl-11 pr-3.5">
       <div className="flex items-center gap-2.5">
@@ -334,8 +322,7 @@ function RevokedVendorRow({
         )}
         {vendor.revokedBy && vendor.revokedAt && (
           <span className="font-mono text-xs text-muted-foreground">
-            {vendor.revokedBy.name} &middot;{' '}
-            {format(new Date(vendor.revokedAt), 'MMM d, yyyy')}
+            {vendor.revokedBy.name} &middot; {format(new Date(vendor.revokedAt), 'MMM d, yyyy')}
           </span>
         )}
         {canEdit && (

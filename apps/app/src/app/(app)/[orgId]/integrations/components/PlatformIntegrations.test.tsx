@@ -1,13 +1,13 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   NO_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -112,7 +112,11 @@ vi.mock('@gideon-defender/ui/button', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/card', () => ({
-  Card: ({ children, ...props }: any) => <div data-testid="card" {...props}>{children}</div>,
+  Card: ({ children, ...props }: any) => (
+    <div data-testid="card" {...props}>
+      {children}
+    </div>
+  ),
   CardContent: ({ children }: any) => <div>{children}</div>,
   CardDescription: ({ children }: any) => <p>{children}</p>,
   CardHeader: ({ children }: any) => <div>{children}</div>,
@@ -120,7 +124,7 @@ vi.mock('@gideon-defender/ui/card', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/dialog', () => ({
-  Dialog: ({ children, open }: any) => open ? <div data-testid="dialog">{children}</div> : null,
+  Dialog: ({ children, open }: any) => (open ? <div data-testid="dialog">{children}</div> : null),
   DialogContent: ({ children }: any) => <div>{children}</div>,
   DialogDescription: ({ children }: any) => <p>{children}</p>,
   DialogHeader: ({ children }: any) => <div>{children}</div>,
@@ -153,9 +157,7 @@ import { toast } from 'sonner';
 import { PlatformIntegrations } from './PlatformIntegrations';
 
 const defaultProps = {
-  taskTemplates: [
-    { id: 'tmpl-1', taskId: 'task-1', name: 'Test Task', description: 'desc' },
-  ],
+  taskTemplates: [{ id: 'tmpl-1', taskId: 'task-1', name: 'Test Task', description: 'desc' }],
 };
 
 describe('PlatformIntegrations', () => {

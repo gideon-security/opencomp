@@ -30,7 +30,8 @@ export function RequestsTab({ orgId }: { orgId: string }) {
     { value: 'denied', label: 'Denied' },
   ];
 
-  const selectedStatusLabel = statusOptions.find((opt) => opt.value === status)?.label ?? 'Filter status';
+  const selectedStatusLabel =
+    statusOptions.find((opt) => opt.value === status)?.label ?? 'Filter status';
 
   const handleResendNda = (requestId: string) => {
     toast.promise(resendNda(requestId), {
@@ -77,9 +78,7 @@ export function RequestsTab({ orgId }: { orgId: string }) {
         </div>
         <div className="w-[200px]">
           <Select value={status} onValueChange={(value) => setStatus(value as string)}>
-            <SelectTrigger>
-              {selectedStatusLabel}
-            </SelectTrigger>
+            <SelectTrigger>{selectedStatusLabel}</SelectTrigger>
             <SelectContent>
               {statusOptions.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>

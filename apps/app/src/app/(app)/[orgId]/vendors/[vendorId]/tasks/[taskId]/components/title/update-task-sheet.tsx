@@ -2,14 +2,32 @@
 
 import { SelectAssignee } from '@/components/SelectAssignee';
 import { useTaskMutations } from '@/hooks/use-task-mutations';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@gideon-defender/ui/accordion';
-import { Button } from '@gideon-defender/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
-import { Input } from '@gideon-defender/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
-import { Textarea } from '@gideon-defender/ui/textarea';
 import type { Member, Task, User } from '@db';
 import { TaskStatus } from '@db';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@gideon-defender/ui/accordion';
+import { Button } from '@gideon-defender/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
+import { Input } from '@gideon-defender/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
+import { Textarea } from '@gideon-defender/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -131,7 +149,11 @@ export function UpdateTaskSheet({ task, assignees, onClose }: UpdateTaskSheetPro
                         <FormItem>
                           <FormLabel>{tCommon('common.description')}</FormLabel>
                           <FormControl>
-                            <Textarea {...field} className="mt-3" placeholder={t('task.enterDescription')} />
+                            <Textarea
+                              {...field}
+                              className="mt-3"
+                              placeholder={t('task.enterDescription')}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

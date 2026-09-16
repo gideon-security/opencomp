@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useApi } from '@/hooks/use-api';
 import { Button } from '@trycompai/design-system';
 import { TrashCan, Upload } from '@trycompai/design-system/icons';
-import { useApi } from '@/hooks/use-api';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { UploadOrgChartDialog } from './UploadOrgChartDialog';
 
@@ -13,11 +13,7 @@ interface OrgChartImageViewProps {
   onChartChange: () => void | Promise<unknown>;
 }
 
-export function OrgChartImageView({
-  imageUrl,
-  chartName,
-  onChartChange,
-}: OrgChartImageViewProps) {
+export function OrgChartImageView({ imageUrl, chartName, onChartChange }: OrgChartImageViewProps) {
   const api = useApi();
   const [isDeleting, setIsDeleting] = useState(false);
   const [showReplace, setShowReplace] = useState(false);
@@ -48,10 +44,7 @@ export function OrgChartImageView({
 
   if (showReplace) {
     return (
-      <UploadOrgChartDialog
-        onClose={() => setShowReplace(false)}
-        onUploaded={onChartChange}
-      />
+      <UploadOrgChartDialog onClose={() => setShowReplace(false)} onUploaded={onChartChange} />
     );
   }
 

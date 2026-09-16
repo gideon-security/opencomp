@@ -37,9 +37,7 @@ export default async function NewQuestionnairePage() {
 
   const policiesResult = await serverApi.get<PolicyApiResponse>('/v1/policies');
   const policies = policiesResult.data?.data ?? [];
-  const hasPublishedPolicies = policies.some(
-    (p) => p.status === 'published' && !p.isArchived,
-  );
+  const hasPublishedPolicies = policies.some((p) => p.status === 'published' && !p.isArchived);
 
   if (!hasPublishedPolicies) {
     return (

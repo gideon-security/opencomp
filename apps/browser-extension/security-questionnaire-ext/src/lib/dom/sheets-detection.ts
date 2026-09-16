@@ -1,11 +1,7 @@
 import { parseSheetIdentity } from '../sheet-mapping';
 import type { DetectedQuestion, SheetMapping } from '../types';
-import {
-  csvToTable,
-  parseGvizTable,
-  type GvizTable,
-} from './sheets-table';
 import { tableToQuestions } from './sheets-question-cells';
+import { csvToTable, parseGvizTable, type GvizTable } from './sheets-table';
 
 export { matrixToQuestions, tableToQuestions } from './sheets-question-cells';
 
@@ -19,10 +15,7 @@ interface SheetFetchResponse {
   text(): Promise<string>;
 }
 
-type SheetFetch = (
-  url: string,
-  init: { credentials: 'include' },
-) => Promise<SheetFetchResponse>;
+type SheetFetch = (url: string, init: { credentials: 'include' }) => Promise<SheetFetchResponse>;
 
 interface Endpoint {
   url: string;

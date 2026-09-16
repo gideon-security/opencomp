@@ -60,10 +60,7 @@ describe('shouldIncludeGoogleWorkspaceUserForCheck', () => {
       include_suspended: 'false',
     });
     expect(
-      shouldIncludeGoogleWorkspaceUserForCheck(
-        baseUser({ orgUnitPath: '/Sales' }),
-        config,
-      ),
+      shouldIncludeGoogleWorkspaceUserForCheck(baseUser({ orgUnitPath: '/Sales' }), config),
     ).toBe(false);
     expect(
       shouldIncludeGoogleWorkspaceUserForCheck(

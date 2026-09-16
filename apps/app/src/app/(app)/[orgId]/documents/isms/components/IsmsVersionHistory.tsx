@@ -16,8 +16,8 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Document, Download, Time } from '@trycompai/design-system/icons';
-import { IsmsEmptyState } from './shared';
 import type { IsmsExportFormat, IsmsPublishedVersion } from '../isms-types';
+import { IsmsEmptyState } from './shared';
 
 interface IsmsVersionHistoryProps {
   versions: IsmsPublishedVersion[];

@@ -9,22 +9,38 @@ import {
 import { FindingSeverity, FindingStatus, FindingType } from '@db';
 
 export class UpdateFindingDto {
-  @ApiProperty({ description: 'Finding status', enum: FindingStatus, required: false })
+  @ApiProperty({
+    description: 'Finding status',
+    enum: FindingStatus,
+    required: false,
+  })
   @IsEnum(FindingStatus)
   @IsOptional()
   status?: FindingStatus;
 
-  @ApiProperty({ description: 'Finding type', enum: FindingType, required: false })
+  @ApiProperty({
+    description: 'Finding type',
+    enum: FindingType,
+    required: false,
+  })
   @IsEnum(FindingType)
   @IsOptional()
   type?: FindingType;
 
-  @ApiProperty({ description: 'Severity', enum: FindingSeverity, required: false })
+  @ApiProperty({
+    description: 'Severity',
+    enum: FindingSeverity,
+    required: false,
+  })
   @IsEnum(FindingSeverity)
   @IsOptional()
   severity?: FindingSeverity;
 
-  @ApiProperty({ description: 'Finding content/message', maxLength: 5000, required: false })
+  @ApiProperty({
+    description: 'Finding content/message',
+    maxLength: 5000,
+    required: false,
+  })
   @IsString()
   @IsOptional()
   @IsNotEmpty({ message: 'Content cannot be empty if provided' })

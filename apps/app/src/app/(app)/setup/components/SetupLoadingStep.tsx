@@ -60,14 +60,10 @@ export function SetupLoadingStep({ organizationId }: SetupLoadingStepProps) {
           <div className="flex items-center justify-between gap-6">
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground">
-                {canContinue
-                  ? t('aiWorkingBackground')
-                  : t('aiSetupInProgress')}
+                {canContinue ? t('aiWorkingBackground') : t('aiSetupInProgress')}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {canContinue
-                  ? t('safeToContinue')
-                  : t('analyzingInfrastructure')}
+                {canContinue ? t('safeToContinue') : t('analyzingInfrastructure')}
               </p>
             </div>
             <Button

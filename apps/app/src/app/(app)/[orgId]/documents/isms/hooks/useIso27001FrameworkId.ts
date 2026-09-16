@@ -1,8 +1,8 @@
 'use client';
 
+import { apiClient } from '@/lib/api-client';
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { apiClient } from '@/lib/api-client';
 import { ISO27001_NAMES } from '../isms-types';
 
 interface FrameworkListResponse {
@@ -33,8 +33,7 @@ export function useIso27001FrameworkId(organizationId: string): string | null {
   return useMemo(() => {
     const frameworks = data?.data ?? [];
     const match = frameworks.find(
-      (instance) =>
-        !!instance.framework?.name && ISO27001_NAMES.includes(instance.framework.name),
+      (instance) => !!instance.framework?.name && ISO27001_NAMES.includes(instance.framework.name),
     );
     return match?.frameworkId ?? null;
   }, [data]);

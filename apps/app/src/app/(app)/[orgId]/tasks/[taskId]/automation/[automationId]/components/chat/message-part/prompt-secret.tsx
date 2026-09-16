@@ -1,5 +1,5 @@
-import { apiClient } from '@/lib/api-client';
 import { secretsListKey } from '@/app/(app)/[orgId]/settings/secrets/hooks/useSecrets';
+import { apiClient } from '@/lib/api-client';
 import { AlertCircle, CheckCircle2, Key } from 'lucide-react';
 import { memo, useState } from 'react';
 import { toast } from 'sonner';

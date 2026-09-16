@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Hightouch at https://app.hightouch.com\n2. Go to Settings > API Keys\n3. Create a new API key\n4. Copy the key and enter it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

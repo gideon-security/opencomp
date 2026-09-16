@@ -1,7 +1,12 @@
 'use client';
 
 // TODO(design-system): migrate to @trycompai/design-system when Tooltip ships.
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
 import type { ReactNode } from 'react';
 
 interface AxisTooltipProps {

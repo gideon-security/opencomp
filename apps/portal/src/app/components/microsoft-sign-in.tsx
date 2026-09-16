@@ -1,7 +1,7 @@
 'use client';
 
-import { authClient } from '@/app/lib/auth-client';
 import { buildSignInCallbackUrls } from '@/app/lib/auth-callback';
+import { authClient } from '@/app/lib/auth-client';
 import { Button } from '@gideon-defender/ui/button';
 import { Icons } from '@gideon-defender/ui/icons';
 import { Spinner } from '@trycompai/design-system';

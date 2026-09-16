@@ -2,8 +2,15 @@
 
 import { updateRiskSchema } from '@/actions/schema';
 import { useRiskActions } from '@/hooks/use-risks';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
 import { Departments, type Risk } from '@db';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Input, Stack, Textarea } from '@trycompai/design-system';
 import { useState } from 'react';
@@ -47,11 +54,9 @@ export function UpdateRiskForm({ risk, onSuccess }: UpdateRiskFormProps) {
         assigneeId: data.assigneeId,
       });
       toast.success('Risk updated successfully');
-      globalMutate(
-        (key) => Array.isArray(key) && key[0]?.includes('/v1/risks'),
-        undefined,
-        { revalidate: true },
-      );
+      globalMutate((key) => Array.isArray(key) && key[0]?.includes('/v1/risks'), undefined, {
+        revalidate: true,
+      });
       onSuccess?.();
     } catch {
       toast.error('Failed to update risk');

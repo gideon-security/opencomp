@@ -3,9 +3,9 @@
 import { Stack } from '@trycompai/design-system';
 import { ListChecked } from '@trycompai/design-system/icons';
 import type { IsmsInterestedPartyRequirement } from '../isms-types';
-import { IsmsRegisterShell } from './shared';
 import { RequirementsForm, type RequirementFormValues } from './RequirementsForm';
 import { RequirementsRow, type RequirementRowValues } from './RequirementsRow';
+import { IsmsRegisterShell } from './shared';
 
 interface RequirementsTableProps {
   requirements: IsmsInterestedPartyRequirement[];

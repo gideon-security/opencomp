@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Rollbar at https://rollbar.com\n2. Go to your project's Settings > Project Access Tokens\n3. Copy a token with 'read' scope\n4. Find your Project ID in Settings > General\n5. Enter both values below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

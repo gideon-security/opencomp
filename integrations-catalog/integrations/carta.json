@@ -9,17 +9,12 @@
     "type": "oauth2",
     "config": {
       "setupInstructions": "To connect Carta:\n1. You need a Carta developer portal invite or API access from Carta\n2. Create an OAuth app in the Carta developer portal at https://developers.app.carta.com\n3. Set the grant type to Authorization Code\n4. Add the CompAI callback URL to your allowed redirect URIs\n5. Select scopes: read_issuer_info and read_issuer_stakeholders\n6. Copy your Client ID and Client Secret into CompAI\n7. Click Connect to authorize access",
-      "scopes": [
-        "read_issuer_info",
-        "read_issuer_stakeholders"
-      ],
+      "scopes": ["read_issuer_info", "read_issuer_stakeholders"],
       "clientAuthMethod": "header",
       "supportsRefreshToken": true
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

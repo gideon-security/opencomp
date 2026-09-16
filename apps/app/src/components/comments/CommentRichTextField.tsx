@@ -43,29 +43,26 @@ export function CommentRichTextField({
   membersRef.current = members;
 
   // Search members for mention suggestions
-  const searchMembers = useCallback(
-    (query: string): MentionUser[] => {
-      const currentMembers = membersRef.current;
-      if (!currentMembers || currentMembers.length === 0) return [];
+  const searchMembers = useCallback((query: string): MentionUser[] => {
+    const currentMembers = membersRef.current;
+    if (!currentMembers || currentMembers.length === 0) return [];
 
-      // Show first 20 members immediately when query is empty
-      if (!query || query.trim() === '') {
-        return currentMembers.slice(0, 20);
-      }
+    // Show first 20 members immediately when query is empty
+    if (!query || query.trim() === '') {
+      return currentMembers.slice(0, 20);
+    }
 
-      // Filter members based on query
-      const lowerQuery = query.toLowerCase();
-      return currentMembers
-        .filter(
-          (member) =>
-            member.name?.toLowerCase().includes(lowerQuery) ||
-            member.email?.toLowerCase().includes(lowerQuery) ||
-            member.id?.toLowerCase().includes(lowerQuery),
-        )
-        .slice(0, 20);
-    },
-    [],
-  );
+    // Filter members based on query
+    const lowerQuery = query.toLowerCase();
+    return currentMembers
+      .filter(
+        (member) =>
+          member.name?.toLowerCase().includes(lowerQuery) ||
+          member.email?.toLowerCase().includes(lowerQuery) ||
+          member.id?.toLowerCase().includes(lowerQuery),
+      )
+      .slice(0, 20);
+  }, []);
 
   // Create mention extension once - it reads members via ref so it always has latest data
   const mentionExtension = useMemo(

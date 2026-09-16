@@ -59,15 +59,13 @@ describe('EvidenceTab', () => {
   });
 
   it('navigates to form submissions on View click', async () => {
-    mockGet
-      .mockResolvedValueOnce({ data: makeStatuses() })
-      .mockResolvedValueOnce({
-        data: {
-          form: { type: 'meeting', label: 'Meeting', fields: [] },
-          submissions: [],
-          total: 0,
-        },
-      });
+    mockGet.mockResolvedValueOnce({ data: makeStatuses() }).mockResolvedValueOnce({
+      data: {
+        form: { type: 'meeting', label: 'Meeting', fields: [] },
+        submissions: [],
+        total: 0,
+      },
+    });
 
     render(<EvidenceTab orgId="org_1" />);
 
@@ -79,9 +77,7 @@ describe('EvidenceTab', () => {
     fireEvent.click(viewButtons[1]);
 
     await waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_1/evidence-forms/meeting',
-      );
+      expect(mockGet).toHaveBeenCalledWith('/v1/admin/organizations/org_1/evidence-forms/meeting');
     });
   });
 
@@ -90,9 +86,7 @@ describe('EvidenceTab', () => {
     render(<EvidenceTab orgId="org_test" />);
 
     await waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_test/evidence-forms',
-      );
+      expect(mockGet).toHaveBeenCalledWith('/v1/admin/organizations/org_test/evidence-forms');
     });
   });
 });

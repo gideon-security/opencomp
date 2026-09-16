@@ -25,21 +25,62 @@ describe('diffManifests', () => {
 
   it('detects added controls', () => {
     const from = emptyManifest();
-    const to = { ...emptyManifest(), controls: [{ id: 'c1', name: 'C1', description: 'd', requirementIds: [], policyIds: [], taskIds: [] }] };
+    const to = {
+      ...emptyManifest(),
+      controls: [
+        {
+          id: 'c1',
+          name: 'C1',
+          description: 'd',
+          requirementIds: [],
+          policyIds: [],
+          taskIds: [],
+        },
+      ],
+    };
     const diff = diffManifests(from, to);
     expect(diff.controls.added).toEqual([to.controls[0]]);
   });
 
   it('detects removed requirements', () => {
-    const from = { ...emptyManifest(), requirements: [{ id: 'r1', identifier: 'CC1.1', name: 'x', description: null }] };
+    const from = {
+      ...emptyManifest(),
+      requirements: [
+        { id: 'r1', identifier: 'CC1.1', name: 'x', description: null },
+      ],
+    };
     const to = emptyManifest();
     const diff = diffManifests(from, to);
     expect(diff.requirements.removed.map((r) => r.id)).toEqual(['r1']);
   });
 
   it('detects updated policies by content change', () => {
-    const from = { ...emptyManifest(), policies: [{ id: 'p1', name: 'P', description: 'old', content: [], frequency: null, department: null }] };
-    const to = { ...emptyManifest(), policies: [{ id: 'p1', name: 'P', description: 'new', content: [], frequency: null, department: null }] };
+    const from = {
+      ...emptyManifest(),
+      policies: [
+        {
+          id: 'p1',
+          name: 'P',
+          description: 'old',
+          content: [],
+          frequency: null,
+          department: null,
+        },
+      ],
+    };
+    const to = {
+      ...emptyManifest(),
+      policies: [
+        {
+          id: 'p1',
+          name: 'P',
+          description: 'new',
+          content: [],
+          frequency: null,
+          department: null,
+        },
+      ],
+    };
     const diff = diffManifests(from, to);
     expect(diff.policies.updated).toHaveLength(1);
     expect(diff.policies.updated[0].id).toBe('p1');
@@ -53,16 +94,40 @@ describe('diffManifests', () => {
     const from = {
       ...emptyManifest(),
       requirements: [r1, r2],
-      controls: [{ id: 'c1', name: 'C', description: '', requirementIds: ['r1'], policyIds: [], taskIds: [] }],
+      controls: [
+        {
+          id: 'c1',
+          name: 'C',
+          description: '',
+          requirementIds: ['r1'],
+          policyIds: [],
+          taskIds: [],
+        },
+      ],
     };
     const to = {
       ...emptyManifest(),
       requirements: [r1, r2],
-      controls: [{ id: 'c1', name: 'C', description: '', requirementIds: ['r2'], policyIds: [], taskIds: [] }],
+      controls: [
+        {
+          id: 'c1',
+          name: 'C',
+          description: '',
+          requirementIds: ['r2'],
+          policyIds: [],
+          taskIds: [],
+        },
+      ],
     };
     const diff = diffManifests(from, to);
-    expect(diff.requirementMapEdges.added).toContainEqual({ controlTemplateId: 'c1', requirementTemplateId: 'r2' });
-    expect(diff.requirementMapEdges.removed).toContainEqual({ controlTemplateId: 'c1', requirementTemplateId: 'r1' });
+    expect(diff.requirementMapEdges.added).toContainEqual({
+      controlTemplateId: 'c1',
+      requirementTemplateId: 'r2',
+    });
+    expect(diff.requirementMapEdges.removed).toContainEqual({
+      controlTemplateId: 'c1',
+      requirementTemplateId: 'r1',
+    });
   });
 
   it('reports no framework-metadata change for identical manifests', () => {
@@ -72,7 +137,10 @@ describe('diffManifests', () => {
 
   it('detects a framework name change (FRAME-9)', () => {
     const from = emptyManifest();
-    const to = { ...emptyManifest(), framework: { ...from.framework, name: 'New Name' } };
+    const to = {
+      ...emptyManifest(),
+      framework: { ...from.framework, name: 'New Name' },
+    };
     const diff = diffManifests(from, to);
     expect(diff.framework.changed).toBe(true);
     expect(diff.framework.name).toEqual({ from: 'n', to: 'New Name' });
@@ -80,8 +148,24 @@ describe('diffManifests', () => {
   });
 
   it('detects a framework description change (FRAME-9)', () => {
-    const from = { ...emptyManifest(), framework: { id: 'f', name: 'n', catalogVersion: '1', description: 'old' } };
-    const to = { ...emptyManifest(), framework: { id: 'f', name: 'n', catalogVersion: '1', description: 'new' } };
+    const from = {
+      ...emptyManifest(),
+      framework: {
+        id: 'f',
+        name: 'n',
+        catalogVersion: '1',
+        description: 'old',
+      },
+    };
+    const to = {
+      ...emptyManifest(),
+      framework: {
+        id: 'f',
+        name: 'n',
+        catalogVersion: '1',
+        description: 'new',
+      },
+    };
     const diff = diffManifests(from, to);
     expect(diff.framework.changed).toBe(true);
     expect(diff.framework.description).toEqual({ from: 'old', to: 'new' });
@@ -96,12 +180,30 @@ describe('diffManifests', () => {
     const from = {
       ...emptyManifest(),
       requirements: [],
-      controls: [{ id: 'c1', name: 'C', description: '', requirementIds: ['cross_framework'], policyIds: [], taskIds: [] }],
+      controls: [
+        {
+          id: 'c1',
+          name: 'C',
+          description: '',
+          requirementIds: ['cross_framework'],
+          policyIds: [],
+          taskIds: [],
+        },
+      ],
     };
     const to = {
       ...emptyManifest(),
       requirements: [],
-      controls: [{ id: 'c1', name: 'C', description: '', requirementIds: [], policyIds: [], taskIds: [] }],
+      controls: [
+        {
+          id: 'c1',
+          name: 'C',
+          description: '',
+          requirementIds: [],
+          policyIds: [],
+          taskIds: [],
+        },
+      ],
     };
     const diff = diffManifests(from, to);
     expect(diff.requirementMapEdges.removed).toHaveLength(0);

@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Finding } from '@/hooks/use-findings-api';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import type { Finding } from '@/hooks/use-findings-api';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -29,8 +29,7 @@ vi.mock('@/hooks/use-findings-api', async () => {
   );
   return {
     ...actual,
-    useOrganizationFindings: (...args: unknown[]) =>
-      mockUseOrganizationFindings(...args),
+    useOrganizationFindings: (...args: unknown[]) => mockUseOrganizationFindings(...args),
   };
 });
 
@@ -57,13 +56,9 @@ vi.mock('@trycompai/design-system', () => ({
   InputGroupInput: (props: any) => <input {...props} />,
   Select: ({ children }: any) => <div data-testid="select">{children}</div>,
   SelectContent: ({ children }: any) => <div>{children}</div>,
-  SelectItem: ({ children, value }: any) => (
-    <button data-value={value}>{children}</button>
-  ),
+  SelectItem: ({ children, value }: any) => <button data-value={value}>{children}</button>,
   SelectTrigger: ({ children }: any) => <div>{children}</div>,
-  SelectValue: ({ children, placeholder }: any) => (
-    <span>{children ?? placeholder}</span>
-  ),
+  SelectValue: ({ children, placeholder }: any) => <span>{children ?? placeholder}</span>,
   Stack: ({ children }: any) => <div>{children}</div>,
   Table: ({ children }: any) => <table>{children}</table>,
   TableBody: ({ children }: any) => <tbody>{children}</tbody>,

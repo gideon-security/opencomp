@@ -8,16 +8,12 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "scopes": [
-        "ess:account:read"
-      ],
+      "scopes": ["ess:account:read"],
       "clientAuthMethod": "body",
       "supportsRefreshToken": true
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": true,
   "syncSupported": false,
   "checks": [

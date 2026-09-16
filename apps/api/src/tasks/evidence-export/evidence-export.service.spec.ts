@@ -205,15 +205,12 @@ describe('EvidenceExportService — streaming ZIPs', () => {
       );
 
       // S3 hit with attachment's S3 key
-      expect(s3Client!.send).toHaveBeenCalledWith(
-        expect.any(GetObjectCommand),
-      );
+      expect(s3Client!.send).toHaveBeenCalledWith(expect.any(GetObjectCommand));
 
       // Summary PDF rendered with attachment count
-      expect(generateTaskSummaryPDF).toHaveBeenCalledWith(
-        expect.any(Object),
-        { attachmentsCount: 1 },
-      );
+      expect(generateTaskSummaryPDF).toHaveBeenCalledWith(expect.any(Object), {
+        attachmentsCount: 1,
+      });
     });
 
     it('writes a placeholder when S3 object is truly missing (NoSuchKey)', async () => {
@@ -484,10 +481,9 @@ describe('EvidenceExportService — streaming ZIPs', () => {
       expect(s3Client!.send).not.toHaveBeenCalled();
 
       // Summary PDF renders with attachmentsCount=0 (line omitted in PDF).
-      expect(generateTaskSummaryPDF).toHaveBeenCalledWith(
-        expect.any(Object),
-        { attachmentsCount: 0 },
-      );
+      expect(generateTaskSummaryPDF).toHaveBeenCalledWith(expect.any(Object), {
+        attachmentsCount: 0,
+      });
     });
 
     it('loads each automation individually instead of all runs at once (OOM fix)', async () => {
@@ -662,7 +658,9 @@ describe('EvidenceExportService — streaming ZIPs', () => {
       const mock = archive as unknown as MockArchive;
       await mock.finalized;
 
-      expect(filename).toMatch(/^acme-corp_all-evidence_\d{4}-\d{2}-\d{2}\.zip$/);
+      expect(filename).toMatch(
+        /^acme-corp_all-evidence_\d{4}-\d{2}-\d{2}\.zip$/,
+      );
 
       const paths = mock.appendCalls.map((c) => c.options.name);
       expect(paths.some((p) => p.endsWith('/manifest.json'))).toBe(true);
@@ -711,8 +709,7 @@ describe('EvidenceExportService — streaming ZIPs', () => {
       // Per-task attachment fetch inside loop
       mockDb.attachment.findMany.mockResolvedValue([]);
 
-      const { archive } =
-        await service.streamOrganizationEvidenceZip('org_1');
+      const { archive } = await service.streamOrganizationEvidenceZip('org_1');
       const mock = archive as unknown as MockArchive;
       await mock.finalized;
 
@@ -753,20 +750,22 @@ describe('EvidenceExportService — streaming ZIPs', () => {
       ]);
 
       // Per-task dispatch — depends on which task findFirst is called for.
-      mockDb.task.findFirst.mockImplementation((args: { where: { id: string } }) => {
-        if (args.where.id === 'tsk_auto') {
+      mockDb.task.findFirst.mockImplementation(
+        (args: { where: { id: string } }) => {
+          if (args.where.id === 'tsk_auto') {
+            return Promise.resolve({
+              id: 'tsk_auto',
+              title: 'Automated',
+              organization: { name: 'Acme Corp' },
+            });
+          }
           return Promise.resolve({
-            id: 'tsk_auto',
-            title: 'Automated',
+            id: 'tsk_att',
+            title: 'Attached',
             organization: { name: 'Acme Corp' },
           });
-        }
-        return Promise.resolve({
-          id: 'tsk_att',
-          title: 'Attached',
-          organization: { name: 'Acme Corp' },
-        });
-      });
+        },
+      );
       mockDb.integrationCheckRun.findMany.mockImplementation(
         (args: { where: { taskId: string } }) =>
           args.where.taskId === 'tsk_auto'
@@ -813,17 +812,16 @@ describe('EvidenceExportService — streaming ZIPs', () => {
         Body: Buffer.from('PDF'),
       });
 
-      const { archive } =
-        await service.streamOrganizationEvidenceZip('org_1');
+      const { archive } = await service.streamOrganizationEvidenceZip('org_1');
       const mock = archive as unknown as MockArchive;
       await mock.finalized;
 
       const paths = mock.appendCalls.map((c) => c.options.name);
       expect(paths.some((p) => p.includes('/automated-'))).toBe(true);
       expect(paths.some((p) => p.includes('/attached-'))).toBe(true);
-      expect(
-        paths.some((p) => p.includes('/01-attachments/proof.pdf')),
-      ).toBe(true);
+      expect(paths.some((p) => p.includes('/01-attachments/proof.pdf'))).toBe(
+        true,
+      );
 
       const manifestCall = mock.appendCalls.find((c) =>
         c.options.name.endsWith('/manifest.json'),

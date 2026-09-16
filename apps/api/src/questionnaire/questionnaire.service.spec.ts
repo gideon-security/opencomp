@@ -559,9 +559,9 @@ describe('QuestionnaireService', () => {
         answeredQuestions: 0,
       });
 
-      await expect(
-        service.triggerAutoAnswer('qst_1', 'org_1'),
-      ).rejects.toThrow('no parsed questions');
+      await expect(service.triggerAutoAnswer('qst_1', 'org_1')).rejects.toThrow(
+        'no parsed questions',
+      );
       expect(tasks.trigger).not.toHaveBeenCalled();
     });
   });

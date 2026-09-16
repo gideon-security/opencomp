@@ -1,7 +1,6 @@
 'use client';
 
 import { apiClient } from '@/app/lib/api-client';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Button,
   Dialog,
@@ -21,6 +20,7 @@ import {
   Switch,
   Textarea,
 } from '@gideon-defender/ui';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';

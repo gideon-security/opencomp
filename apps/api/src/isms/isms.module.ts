@@ -28,11 +28,7 @@ import { AttachmentsModule } from '../attachments/attachments.module';
 @Module({
   // AttachmentsModule: S3 access for retaining per-version rendered exports.
   imports: [AuthModule, AttachmentsModule],
-  controllers: [
-    IsmsController,
-    IsmsRegistersController,
-    IsmsProfileController,
-  ],
+  controllers: [IsmsController, IsmsRegistersController, IsmsProfileController],
   providers: [
     IsmsService,
     IsmsContextService,

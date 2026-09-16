@@ -75,10 +75,12 @@ export const SEED_ROLE_KEYS: string[] = SEED_ROLE_DEFINITIONS.map(
 export const AUTO_DOC_ROLE_ROWS = [
   {
     name: 'Control / asset / risk / policy owners',
-    holders: 'Identified in the platform per policy, control, risk, task, and vendor.',
+    holders:
+      'Identified in the platform per policy, control, risk, task, and vendor.',
     responsibilities:
       'Implement, operate, and evidence the specific controls, policies, risks, and evidence tasks assigned to them. Operational ownership is assigned at the artifact level in OpenComp.',
-    authority: 'Make operational decisions for their assigned item. Authority granted by the SPO.',
+    authority:
+      'Make operational decisions for their assigned item. Authority granted by the SPO.',
   },
   {
     name: 'All personnel and contractors',

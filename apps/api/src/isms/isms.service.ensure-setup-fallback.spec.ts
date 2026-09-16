@@ -51,12 +51,14 @@ describe('IsmsService ensureSetup fallback to ISMS_TYPE_DEFINITIONS (no template
   });
 
   it('creates only missing document types and maps requirements', async () => {
-    (
-      mockDb.frameworkEditorFramework.findUnique as jest.Mock
-    ).mockResolvedValue({
-      id: 'fw_1',
-      requirements: [{ id: 'req_41', name: '4.1 Context', identifier: '4.1' }],
-    });
+    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue(
+      {
+        id: 'fw_1',
+        requirements: [
+          { id: 'req_41', name: '4.1 Context', identifier: '4.1' },
+        ],
+      },
+    );
     // One existing type so only the other five are created.
     (mockDb.ismsDocument.findMany as jest.Mock)
       .mockResolvedValueOnce([{ type: 'context_of_organization' }]) // existing-types probe
@@ -87,9 +89,9 @@ describe('IsmsService ensureSetup fallback to ISMS_TYPE_DEFINITIONS (no template
   });
 
   it('leaves requirementId null when no clause matches', async () => {
-    (
-      mockDb.frameworkEditorFramework.findUnique as jest.Mock
-    ).mockResolvedValue({ id: 'fw_1', requirements: [] });
+    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue(
+      { id: 'fw_1', requirements: [] },
+    );
     (mockDb.ismsDocument.findMany as jest.Mock)
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([])

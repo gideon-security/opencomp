@@ -13,7 +13,8 @@ export class PostHogService implements OnModuleDestroy {
     // Prefer POSTHOG_API_KEY (explicit backend config) over the
     // NEXT_PUBLIC_* fallback so frontend env wiring can't accidentally
     // override the server key if both happen to be present.
-    const apiKey = process.env.POSTHOG_API_KEY || process.env.NEXT_PUBLIC_POSTHOG_KEY;
+    const apiKey =
+      process.env.POSTHOG_API_KEY || process.env.NEXT_PUBLIC_POSTHOG_KEY;
     const apiHost =
       process.env.POSTHOG_HOST ||
       process.env.NEXT_PUBLIC_POSTHOG_HOST ||
@@ -22,7 +23,9 @@ export class PostHogService implements OnModuleDestroy {
     this.initialized = true;
 
     if (!apiKey) {
-      this.logger.warn('PostHog API key not configured; feature flag operations will be no-ops');
+      this.logger.warn(
+        'PostHog API key not configured; feature flag operations will be no-ops',
+      );
       return null;
     }
 

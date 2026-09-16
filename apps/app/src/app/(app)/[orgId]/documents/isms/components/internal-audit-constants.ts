@@ -7,11 +7,7 @@
 
 export const AUDIT_STATUSES = ['planned', 'in_progress', 'complete'] as const;
 
-export const CONCLUSION_VERDICTS = [
-  'conform',
-  'substantially_conform',
-  'not_yet_conform',
-] as const;
+export const CONCLUSION_VERDICTS = ['conform', 'substantially_conform', 'not_yet_conform'] as const;
 
 export const CONTROL_RESULTS = [
   'conformity_confirmed',
@@ -20,12 +16,7 @@ export const CONTROL_RESULTS = [
   'not_sampled',
 ] as const;
 
-export const FINDING_TYPES = [
-  'nc_major',
-  'nc_minor',
-  'ofi',
-  'observation',
-] as const;
+export const FINDING_TYPES = ['nc_major', 'nc_minor', 'ofi', 'observation'] as const;
 
 export const FINDING_STATUSES = ['open', 'in_progress', 'closed'] as const;
 

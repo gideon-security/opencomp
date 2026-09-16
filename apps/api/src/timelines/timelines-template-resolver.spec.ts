@@ -102,7 +102,9 @@ describe('timelines-template-resolver', () => {
       },
     };
 
-    (mockDb.$transaction as jest.Mock).mockImplementation(async (fn: any) => fn(tx));
+    (mockDb.$transaction as jest.Mock).mockImplementation(async (fn: any) =>
+      fn(tx),
+    );
 
     await createInstanceFromTemplate({
       organizationId: 'org_1',

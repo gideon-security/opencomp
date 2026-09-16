@@ -1,8 +1,8 @@
 'use client';
 
+import type { FrameworkUpdateStatus } from '@/types/framework-versioning';
 import { Badge, Button, HStack, Stack, Text } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
-import type { FrameworkUpdateStatus } from '@/types/framework-versioning';
 
 interface UpdateAvailableBannerProps {
   status: FrameworkUpdateStatus;
@@ -26,8 +26,7 @@ export function UpdateAvailableBanner({
         <HStack gap="2" align="center">
           <Badge variant="secondary">{t('instance.updateAvailable')}</Badge>
           <Text weight="medium">
-            v{status.currentVersion?.version ?? '—'} → v
-            {status.latestVersion.version}
+            v{status.currentVersion?.version ?? '—'} → v{status.latestVersion.version}
           </Text>
         </HStack>
         {status.latestVersion.releaseNotes && (

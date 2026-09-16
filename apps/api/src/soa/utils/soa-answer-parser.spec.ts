@@ -1,4 +1,7 @@
-import { createDefaultYesResult, parseAndProcessSOAAnswer } from './soa-answer-parser';
+import {
+  createDefaultYesResult,
+  parseAndProcessSOAAnswer,
+} from './soa-answer-parser';
 import { DEFAULT_INCLUSION_JUSTIFICATION } from './constants';
 
 describe('createDefaultYesResult', () => {

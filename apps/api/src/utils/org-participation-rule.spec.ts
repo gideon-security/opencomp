@@ -9,9 +9,9 @@ import {
 
 describe('org-participation-rule (API mirror)', () => {
   it('excludes platform admins in a customer org', () => {
-    expect(isOrgParticipant(PLATFORM_ADMIN_ROLE, { orgIsInternal: false })).toBe(
-      false,
-    );
+    expect(
+      isOrgParticipant(PLATFORM_ADMIN_ROLE, { orgIsInternal: false }),
+    ).toBe(false);
   });
 
   it('includes platform admins in an internal org', () => {

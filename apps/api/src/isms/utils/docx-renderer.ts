@@ -106,19 +106,22 @@ function dataTable({
   table: IsmsExportTable;
   accent: string;
 }): Table {
-  const widths =
-    table.headers.length === 3 ? [1900, 3000, 4126] : undefined;
+  const widths = table.headers.length === 3 ? [1900, 3000, 4126] : undefined;
   const headerRow = new TableRow({
     tableHeader: true,
     children: table.headers.map(
       (header, index) =>
         new TableCell({
-          width: widths ? { size: widths[index], type: WidthType.DXA } : undefined,
+          width: widths
+            ? { size: widths[index], type: WidthType.DXA }
+            : undefined,
           shading: shaded(accent),
           margins: { top: 60, bottom: 60, left: 90, right: 90 },
           children: [
             new Paragraph({
-              children: [new TextRun({ text: header, bold: true, color: WHITE })],
+              children: [
+                new TextRun({ text: header, bold: true, color: WHITE }),
+              ],
             }),
           ],
         }),
@@ -166,7 +169,12 @@ function sectionElements({
     new Paragraph({
       spacing: { before: 280, after: 120 },
       children: [
-        new TextRun({ text: section.heading, bold: true, color: accent, size: 26 }),
+        new TextRun({
+          text: section.heading,
+          bold: true,
+          color: accent,
+          size: 26,
+        }),
       ],
     }),
   ];
@@ -191,12 +199,18 @@ function sectionElements({
 
   if (section.intro) {
     elements.push(
-      new Paragraph({ spacing: { after: 80 }, children: [new TextRun(section.intro)] }),
+      new Paragraph({
+        spacing: { after: 80 },
+        children: [new TextRun(section.intro)],
+      }),
     );
   }
   for (const paragraph of section.paragraphs ?? []) {
     elements.push(
-      new Paragraph({ spacing: { after: 60 }, children: paragraphRuns(paragraph) }),
+      new Paragraph({
+        spacing: { after: 60 },
+        children: paragraphRuns(paragraph),
+      }),
     );
   }
   for (const bullet of section.bullets ?? []) {
@@ -204,7 +218,8 @@ function sectionElements({
       new Paragraph({ bullet: { level: 0 }, children: [new TextRun(bullet)] }),
     );
   }
-  if (section.keyValues?.length) elements.push(keyValueTable(section.keyValues));
+  if (section.keyValues?.length)
+    elements.push(keyValueTable(section.keyValues));
   if (section.table && section.table.rows.length) {
     elements.push(dataTable({ table: section.table, accent }));
   }
@@ -221,7 +236,12 @@ function coverBlock(metadata: IsmsExportMetadata): Paragraph[] {
         alignment: center,
         spacing: { before: 480, after: 80 },
         children: [
-          new TextRun({ text: metadata.organizationName, bold: true, size: 26, color: INK }),
+          new TextRun({
+            text: metadata.organizationName,
+            bold: true,
+            size: 26,
+            color: INK,
+          }),
         ],
       }),
     );
@@ -230,17 +250,34 @@ function coverBlock(metadata: IsmsExportMetadata): Paragraph[] {
     new Paragraph({
       alignment: center,
       spacing: { after: 160 },
-      children: [new TextRun({ text: metadata.standardLabel, size: 22, color: MUTED })],
+      children: [
+        new TextRun({ text: metadata.standardLabel, size: 22, color: MUTED }),
+      ],
     }),
     new Paragraph({
       alignment: center,
       spacing: { after: 60 },
-      children: [new TextRun({ text: metadata.title, bold: true, size: 44, color: metadata.primaryColor ? normalizeHexColor(metadata.primaryColor) : DEFAULT_ACCENT })],
+      children: [
+        new TextRun({
+          text: metadata.title,
+          bold: true,
+          size: 44,
+          color: metadata.primaryColor
+            ? normalizeHexColor(metadata.primaryColor)
+            : DEFAULT_ACCENT,
+        }),
+      ],
     }),
     new Paragraph({
       alignment: center,
       spacing: { after: 320 },
-      children: [new TextRun({ text: `Clause ${metadata.clause}`, size: 22, color: MUTED })],
+      children: [
+        new TextRun({
+          text: `Clause ${metadata.clause}`,
+          size: 22,
+          color: MUTED,
+        }),
+      ],
     }),
   );
   return block;
@@ -256,10 +293,22 @@ function pageFooter(metadata: IsmsExportMetadata): Footer {
         tabStops: [{ type: 'right', position: 9026 }],
         children: [
           new TextRun({ text: left, size: 16, color: MUTED }),
-          new TextRun({ text: `\t${metadata.documentCode}  ·  Page `, size: 16, color: MUTED }),
-          new TextRun({ children: [PageNumber.CURRENT], size: 16, color: MUTED }),
+          new TextRun({
+            text: `\t${metadata.documentCode}  ·  Page `,
+            size: 16,
+            color: MUTED,
+          }),
+          new TextRun({
+            children: [PageNumber.CURRENT],
+            size: 16,
+            color: MUTED,
+          }),
           new TextRun({ text: ' of ', size: 16, color: MUTED }),
-          new TextRun({ children: [PageNumber.TOTAL_PAGES], size: 16, color: MUTED }),
+          new TextRun({
+            children: [PageNumber.TOTAL_PAGES],
+            size: 16,
+            color: MUTED,
+          }),
         ],
       }),
     ],

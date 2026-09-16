@@ -22,10 +22,14 @@ type Client = Prisma.TransactionClient | typeof db;
 const OWNER_DISPLAY_CAP = 12;
 
 type NamedAssignee = {
-  assignee: { user: { name: string | null; email: string | null } | null } | null;
+  assignee: {
+    user: { name: string | null; email: string | null } | null;
+  } | null;
 };
 
-function memberDisplayName(user: { name: string | null; email: string | null } | null): string {
+function memberDisplayName(
+  user: { name: string | null; email: string | null } | null,
+): string {
   return user?.name?.trim() || user?.email?.trim() || 'Unknown member';
 }
 

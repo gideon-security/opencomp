@@ -3,15 +3,6 @@
 import { useControls } from '@/app/(app)/[orgId]/controls/hooks/useControls';
 import { usePermissions } from '@/hooks/use-permissions';
 import {
-  Button,
-  Sheet,
-  SheetBody,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@trycompai/design-system';
-import { Add } from '@trycompai/design-system/icons';
-import {
   Form,
   FormControl,
   FormField,
@@ -22,6 +13,15 @@ import {
 import { Input } from '@gideon-defender/ui/input';
 import { Textarea } from '@gideon-defender/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Button,
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@trycompai/design-system';
+import { Add } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -55,10 +55,7 @@ export function AddCustomControlSheet({
     () =>
       z.object({
         name: z.string().min(1, t('requirements.nameRequired')).max(200),
-        description: z
-          .string()
-          .min(1, t('requirements.descriptionRequired'))
-          .max(4000),
+        description: z.string().min(1, t('requirements.descriptionRequired')).max(4000),
       }),
     [t],
   );
@@ -89,9 +86,7 @@ export function AddCustomControlSheet({
       form.reset();
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('requirements.controlCreateFailed'),
-      );
+      toast.error(error instanceof Error ? error.message : t('requirements.controlCreateFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -99,11 +94,7 @@ export function AddCustomControlSheet({
 
   return (
     <>
-      <Button
-        size="sm"
-        iconLeft={<Add size={16} />}
-        onClick={() => setIsOpen(true)}
-      >
+      <Button size="sm" iconLeft={<Add size={16} />} onClick={() => setIsOpen(true)}>
         {t('requirements.addControlButton')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -113,10 +104,7 @@ export function AddCustomControlSheet({
           </SheetHeader>
           <SheetBody>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="name"

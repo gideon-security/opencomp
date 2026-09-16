@@ -4,10 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Field, FieldError, HStack, Input, Textarea } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
 import { Controller, useForm } from 'react-hook-form';
-import {
-  interestedPartySchema,
-  type InterestedPartyFormValues,
-} from './interested-party-schema';
+import { interestedPartySchema, type InterestedPartyFormValues } from './interested-party-schema';
 import { IsmsAddCard } from './shared';
 
 interface InterestedPartiesFormProps {

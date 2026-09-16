@@ -1,8 +1,5 @@
 export type VendorRiskAssessmentCertificationStatus =
-  | 'verified'
-  | 'expired'
-  | 'not_certified'
-  | 'unknown';
+  'verified' | 'expired' | 'not_certified' | 'unknown';
 
 export type VendorRiskAssessmentCertification = {
   type: string;
@@ -39,5 +36,3 @@ export type VendorRiskAssessmentDataV1 = {
   links?: VendorRiskAssessmentLink[] | null;
   news?: VendorRiskAssessmentNewsItem[] | null;
 };
-
-

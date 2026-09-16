@@ -2,7 +2,13 @@
 
 import { FileUploader } from '@/components/file-uploader';
 import { usePermissions } from '@/hooks/use-permissions';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@gideon-defender/ui/accordion';
+import { Card } from '@gideon-defender/ui';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@gideon-defender/ui/accordion';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,16 +20,23 @@ import {
   AlertDialogTitle,
 } from '@gideon-defender/ui/alert-dialog';
 import { Button } from '@gideon-defender/ui/button';
-import { Card } from '@gideon-defender/ui';
-import { ChevronLeft, ChevronRight, Download, FileText, Loader2, Trash2, Upload } from 'lucide-react';
-import { useState, useRef, useCallback } from 'react';
-import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
-import { usePagination } from '../../hooks/usePagination';
 import { format } from 'date-fns';
-import { useDocumentProcessing } from '../hooks/useDocumentProcessing';
-import { useKnowledgeBaseDocs } from '../../../hooks/useKnowledgeBaseDocs';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  FileText,
+  Loader2,
+  Trash2,
+  Upload,
+} from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { useCallback, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import type { KBDocument } from '../../../components/types';
+import { useKnowledgeBaseDocs } from '../../../hooks/useKnowledgeBaseDocs';
+import { usePagination } from '../../hooks/usePagination';
+import { useDocumentProcessing } from '../hooks/useDocumentProcessing';
 
 interface ActiveRun {
   runId: string;
@@ -50,7 +63,9 @@ export function AdditionalDocumentsSection({
   const [downloadingIds, setDownloadingIds] = useState<Set<string>>(new Set());
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [documentToDelete, setDocumentToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [documentToDelete, setDocumentToDelete] = useState<{ id: string; name: string } | null>(
+    null,
+  );
   const [activeProcessingRun, setActiveProcessingRun] = useState<ActiveRun | null>(null);
   const [activeDeletionRun, setActiveDeletionRun] = useState<ActiveRun | null>(null);
 
@@ -66,7 +81,7 @@ export function AdditionalDocumentsSection({
   const handleProcessingComplete = useCallback(() => {
     setActiveProcessingRun(null);
     void revalidate();
-      toast.success(t('additionalDocs.uploadCompleted'));
+    toast.success(t('additionalDocs.uploadCompleted'));
   }, [revalidate]);
 
   const handleDeletionComplete = useCallback(() => {
@@ -113,7 +128,9 @@ export function AdditionalDocumentsSection({
     const newProgress: Record<string, number> = {};
 
     try {
-      files.forEach((file) => { newProgress[file.name] = 0; });
+      files.forEach((file) => {
+        newProgress[file.name] = 0;
+      });
       setUploadProgress(newProgress);
 
       const uploadedDocumentIds: string[] = [];
@@ -131,7 +148,12 @@ export function AdditionalDocumentsSection({
           toast.success(t('additionalDocs.uploadSuccess', { name: file.name }));
         } catch (error) {
           console.error(`Error uploading ${file.name}:`, error);
-          toast.error(t('additionalDocs.uploadFailed', { name: file.name, error: error instanceof Error ? error.message : t('additionalDocs.unknownError') }));
+          toast.error(
+            t('additionalDocs.uploadFailed', {
+              name: file.name,
+              error: error instanceof Error ? error.message : t('additionalDocs.unknownError'),
+            }),
+          );
           delete newProgress[file.name];
           setUploadProgress({ ...newProgress });
         }
@@ -230,7 +252,12 @@ export function AdditionalDocumentsSection({
   return (
     <>
       <Card ref={sectionRef} id="additional-documents">
-        <Accordion type="single" collapsible className="w-full" onValueChange={handleAccordionChange}>
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full"
+          onValueChange={handleAccordionChange}
+        >
           <AccordionItem value="additional-documents" className="border-0">
             <AccordionTrigger className="px-6 py-4 hover:no-underline">
               <div className="flex items-center gap-2">
@@ -281,7 +308,8 @@ export function AdditionalDocumentsSection({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Document</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete &quot;{documentToDelete?.name}&quot;? This action cannot be undone.
+              Are you sure you want to delete &quot;{documentToDelete?.name}&quot;? This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -327,7 +355,8 @@ function DocumentListInfo() {
           Supported Formats
         </p>
         <p className="text-xs text-muted-foreground/90 leading-relaxed">
-          PDF, Word (.doc, .docx), Excel (.xlsx, .xls), CSV, text files (.txt, .md), and images (PNG, JPG, GIF, WebP, SVG)
+          PDF, Word (.doc, .docx), Excel (.xlsx, .xls), CSV, text files (.txt, .md), and images
+          (PNG, JPG, GIF, WebP, SVG)
         </p>
       </div>
     </div>
@@ -387,7 +416,7 @@ function DocumentList({
                   </div>
                 </div>
               </div>
-              {(isProcessingDoc || isDeletingVector) ? (
+              {isProcessingDoc || isDeletingVector ? (
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center">
                   <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                 </div>

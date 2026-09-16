@@ -64,7 +64,13 @@ describe('FrameworkRequirementsClientPage — Description column', () => {
   it('makes the Description column expandable (multi-line editor) but not Identifier/Name', () => {
     render(
       <FrameworkRequirementsClientPage
-        frameworkDetails={{ id: 'frk_1', name: 'NIST', version: '1', description: '', visible: true }}
+        frameworkDetails={{
+          id: 'frk_1',
+          name: 'NIST',
+          version: '1',
+          description: '',
+          visible: true,
+        }}
         initialRequirements={[]}
       />,
     );

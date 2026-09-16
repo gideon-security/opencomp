@@ -111,9 +111,7 @@ describe('EmployeeDevice compliance badge', () => {
 
   it('renders a stale-explainer tooltip trigger for a stale device', () => {
     renderWithDevice(makeDevice({ complianceStatus: 'stale', daysSinceLastCheckIn: 9 }));
-    expect(
-      screen.getByRole('button', { name: /What does Stale mean\?/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /What does Stale mean\?/i })).toBeInTheDocument();
   });
 
   it('renders the stale-explainer tooltip trigger when daysSinceLastCheckIn is null (never reported)', () => {
@@ -124,9 +122,7 @@ describe('EmployeeDevice compliance badge', () => {
         lastCheckIn: null,
       }),
     );
-    expect(
-      screen.getByRole('button', { name: /What does Stale mean\?/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /What does Stale mean\?/i })).toBeInTheDocument();
   });
 
   it('does not render the stale-explainer tooltip trigger for a compliant device', () => {

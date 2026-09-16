@@ -145,7 +145,8 @@ describe('CloudExceptionService.markAsException', () => {
       findingId: 'icx_1',
       organizationId: 'org_1',
       userId: 'usr_owner',
-      reason: 'CI pipeline marking this finding under approved exception policy.',
+      reason:
+        'CI pipeline marking this finding under approved exception policy.',
       callerLabel: 'via API key "CI Pipeline"',
     });
 

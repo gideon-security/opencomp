@@ -73,7 +73,9 @@ describe('buildContextSections', () => {
 
   it('renders the mission and intended-outcome bullets in section 3', () => {
     const mission = buildContextSections(input)[2];
-    expect(mission.paragraphs?.some((p) => p.text === '3.1 Mission')).toBe(true);
+    expect(mission.paragraphs?.some((p) => p.text === '3.1 Mission')).toBe(
+      true,
+    );
     expect(
       mission.paragraphs?.some(
         (p) => p.text === 'We build secure compliance tooling.',

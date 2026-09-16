@@ -1,4 +1,8 @@
-import { withTenantRedis, APP_KEY_NAMESPACE, type TenantRedis } from './tenant-redis.client';
+import {
+  withTenantRedis,
+  APP_KEY_NAMESPACE,
+  type TenantRedis,
+} from './tenant-redis.client';
 import { redisClient } from './redis.client';
 
 describe('withTenantRedis', () => {
@@ -27,7 +31,9 @@ describe('withTenantRedis', () => {
       await redis.getdel('k5');
     });
 
-    expect(getSpy).toHaveBeenCalledWith(`${APP_KEY_NAMESPACE}:${orgId}:assistant-chat:v1:usr_1`);
+    expect(getSpy).toHaveBeenCalledWith(
+      `${APP_KEY_NAMESPACE}:${orgId}:assistant-chat:v1:usr_1`,
+    );
     expect(setSpy).toHaveBeenCalledWith(
       `${APP_KEY_NAMESPACE}:${orgId}:k2`,
       { hello: true },
@@ -75,7 +81,15 @@ describe('withTenantRedis', () => {
       await redis.set('k', 'b');
     });
 
-    expect(setSpy).toHaveBeenCalledWith(`${APP_KEY_NAMESPACE}:org_a:k`, 'a', undefined);
-    expect(setSpy).toHaveBeenCalledWith(`${APP_KEY_NAMESPACE}:org_b:k`, 'b', undefined);
+    expect(setSpy).toHaveBeenCalledWith(
+      `${APP_KEY_NAMESPACE}:org_a:k`,
+      'a',
+      undefined,
+    );
+    expect(setSpy).toHaveBeenCalledWith(
+      `${APP_KEY_NAMESPACE}:org_b:k`,
+      'b',
+      undefined,
+    );
   });
 });

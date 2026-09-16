@@ -44,9 +44,7 @@ export class GideonJwtService {
 
   private get identityUrl(): string | null {
     return (
-      process.env.GIDEON_IDENTITY_URL ||
-      process.env.AUTH__IDENTITY_URL ||
-      null
+      process.env.GIDEON_IDENTITY_URL || process.env.AUTH__IDENTITY_URL || null
     );
   }
 
@@ -93,9 +91,14 @@ export class GideonJwtService {
         this.jwks = createRemoteJWKSet(jwksUrl, {
           cooldownDuration: this.getCacheTtl() * 1000,
         });
-        this.logger.log(`Gideon JWKS initialized: ${url} (ttl=${this.getCacheTtl()}s)`);
+        this.logger.log(
+          `Gideon JWKS initialized: ${url} (ttl=${this.getCacheTtl()}s)`,
+        );
       } catch (error) {
-        this.logger.warn(`Failed to create Gideon JWKS client for ${url}`, error as Error);
+        this.logger.warn(
+          `Failed to create Gideon JWKS client for ${url}`,
+          error as Error,
+        );
         return null;
       }
     }
@@ -159,7 +162,9 @@ export class GideonJwtService {
         try {
           const header = decodeProtectedHeader(token);
           if (!header.kid) {
-            this.logger.debug('Gideon JWT missing kid — likely not a Gideon JWT, skipping');
+            this.logger.debug(
+              'Gideon JWT missing kid — likely not a Gideon JWT, skipping',
+            );
             return null;
           }
         } catch {
@@ -181,7 +186,9 @@ export class GideonJwtService {
       if (aalRaw !== undefined) {
         const aal = typeof aalRaw === 'string' ? parseInt(aalRaw, 10) : aalRaw;
         if (Number.isFinite(aal) && aal < 2) {
-          this.logger.warn(`Gideon JWT aal=${aal} <2 — admin routes require aal>=2`);
+          this.logger.warn(
+            `Gideon JWT aal=${aal} <2 — admin routes require aal>=2`,
+          );
           // Do not fail here; PermissionGuard + route will enforce. Phase 0 shadow logs only.
         }
       }
@@ -207,7 +214,7 @@ export class GideonJwtService {
       payload.tid ||
       payload.tenant_id ||
       payload.organizationId ||
-      (payload as Record<string, unknown>).tenantId as string ||
+      ((payload as Record<string, unknown>).tenantId as string) ||
       null
     );
   }

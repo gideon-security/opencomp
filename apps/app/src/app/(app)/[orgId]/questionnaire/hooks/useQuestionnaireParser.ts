@@ -91,11 +91,7 @@ export function useQuestionnaireParser() {
     const isParseActionExecuting = parse.parseAction.status === 'executing';
 
     return isUploading || isParseActionExecuting;
-  }, [
-    parse.uploadFileAction.status,
-    parse.parseAction.status,
-    state.isParseProcessStarted,
-  ]);
+  }, [parse.uploadFileAction.status, parse.parseAction.status, state.isParseProcessStarted]);
 
   const filteredResults = useMemo(() => {
     if (!state.results) return null;
@@ -134,11 +130,7 @@ export function useQuestionnaireParser() {
       return 'analyzing';
     }
     return null;
-  }, [
-    parse.uploadFileAction.status,
-    parse.parseAction.status,
-    state.isParseProcessStarted,
-  ]);
+  }, [parse.uploadFileAction.status, parse.parseAction.status, state.isParseProcessStarted]);
 
   // Throttled status for smooth transitions
   const [parseStatus, setParseStatus] = useState<

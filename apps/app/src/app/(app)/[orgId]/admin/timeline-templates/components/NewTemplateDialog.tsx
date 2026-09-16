@@ -1,13 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { api } from '@/lib/api-client';
 import { useAdminTimelineTemplates } from '@/hooks/use-admin-timelines';
+import { api } from '@/lib/api-client';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Button,
   Input,
@@ -25,6 +20,11 @@ import {
   Stack,
   Text,
 } from '@trycompai/design-system';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 const newTemplateSchema = z.object({
   name: z.string().min(1, 'Template name is required'),
@@ -53,11 +53,9 @@ export function NewTemplateDialog({ open, onClose }: NewTemplateDialogProps) {
 
   useEffect(() => {
     if (!open) return;
-    api
-      .get<{ data: Framework[] }>('/v1/frameworks/available')
-      .then((res) => {
-        if (res.data?.data) setFrameworks(res.data.data);
-      });
+    api.get<{ data: Framework[] }>('/v1/frameworks/available').then((res) => {
+      if (res.data?.data) setFrameworks(res.data.data);
+    });
   }, [open]);
 
   const {
@@ -73,10 +71,7 @@ export function NewTemplateDialog({ open, onClose }: NewTemplateDialogProps) {
 
   const handleCreate = async (values: NewTemplateFormValues) => {
     setSaving(true);
-    const res = await api.post<{ id: string }>(
-      '/v1/admin/timeline-templates',
-      values,
-    );
+    const res = await api.post<{ id: string }>('/v1/admin/timeline-templates', values);
     setSaving(false);
 
     if (res.error) {
@@ -111,11 +106,7 @@ export function NewTemplateDialog({ open, onClose }: NewTemplateDialogProps) {
             <Stack gap="md">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="new-name">Template Name</Label>
-                <Input
-                  id="new-name"
-                  {...register('name')}
-                  placeholder="e.g. SOC 2 Type 2"
-                />
+                <Input id="new-name" {...register('name')} placeholder="e.g. SOC 2 Type 2" />
                 {errors.name && (
                   <Text size="xs" variant="destructive">
                     {errors.name.message}

@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import { format } from 'date-fns';
 import {
   Button,
   Calendar,
@@ -10,7 +8,9 @@ import {
   PopoverTrigger,
 } from '@trycompai/design-system';
 import { Calendar as CalendarIcon, ChevronDown } from '@trycompai/design-system/icons';
+import { format } from 'date-fns';
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 
 const PRESETS = [
   { key: 'last7Days', days: 7 },
@@ -102,13 +102,14 @@ export function DateRangeFilter({
     setOpen(false);
   };
 
-  const displayLabel = from && to
-    ? t('dateRange.range', { from: format(from, 'MMM d'), to: format(to, 'MMM d, yyyy') })
-    : from
-      ? t('dateRange.from', { date: format(from, 'MMM d, yyyy') })
-      : to
-        ? t('dateRange.until', { date: format(to, 'MMM d, yyyy') })
-        : t('dateRange.anyTime');
+  const displayLabel =
+    from && to
+      ? t('dateRange.range', { from: format(from, 'MMM d'), to: format(to, 'MMM d, yyyy') })
+      : from
+        ? t('dateRange.from', { date: format(from, 'MMM d, yyyy') })
+        : to
+          ? t('dateRange.until', { date: format(to, 'MMM d, yyyy') })
+          : t('dateRange.anyTime');
 
   const labelId = `people-${label.toLowerCase()}-filter-label`;
 
@@ -153,14 +154,24 @@ export function DateRangeFilter({
                 <PopoverTrigger>
                   <div className="border-border bg-muted/50 flex h-10 flex-1 items-center gap-2 rounded-lg border px-3 text-sm cursor-pointer">
                     <CalendarIcon size={14} className="text-muted-foreground" />
-                    {draftFrom ? format(draftFrom, 'MMM d, yyyy') : <span className="text-muted-foreground">{t('dateRange.startPlaceholder')}</span>}
+                    {draftFrom ? (
+                      format(draftFrom, 'MMM d, yyyy')
+                    ) : (
+                      <span className="text-muted-foreground">
+                        {t('dateRange.startPlaceholder')}
+                      </span>
+                    )}
                   </div>
                 </PopoverTrigger>
                 <PopoverContent align="start">
                   <Calendar
                     mode="single"
                     selected={draftFrom}
-                    onSelect={(d) => { setDraftFrom(d ?? undefined); setActivePreset(null); setFromPickerOpen(false); }}
+                    onSelect={(d) => {
+                      setDraftFrom(d ?? undefined);
+                      setActivePreset(null);
+                      setFromPickerOpen(false);
+                    }}
                     captionLayout="dropdown"
                     fromYear={2000}
                     toYear={new Date().getFullYear() + 1}
@@ -172,14 +183,22 @@ export function DateRangeFilter({
                 <PopoverTrigger>
                   <div className="border-border bg-muted/50 flex h-10 flex-1 items-center gap-2 rounded-lg border px-3 text-sm cursor-pointer">
                     <CalendarIcon size={14} className="text-muted-foreground" />
-                    {draftTo ? format(draftTo, 'MMM d, yyyy') : <span className="text-muted-foreground">{t('dateRange.endPlaceholder')}</span>}
+                    {draftTo ? (
+                      format(draftTo, 'MMM d, yyyy')
+                    ) : (
+                      <span className="text-muted-foreground">{t('dateRange.endPlaceholder')}</span>
+                    )}
                   </div>
                 </PopoverTrigger>
                 <PopoverContent align="start">
                   <Calendar
                     mode="single"
                     selected={draftTo}
-                    onSelect={(d) => { setDraftTo(d ?? undefined); setActivePreset(null); setToPickerOpen(false); }}
+                    onSelect={(d) => {
+                      setDraftTo(d ?? undefined);
+                      setActivePreset(null);
+                      setToPickerOpen(false);
+                    }}
                     captionLayout="dropdown"
                     fromYear={2000}
                     toYear={new Date().getFullYear() + 1}
@@ -190,10 +209,14 @@ export function DateRangeFilter({
 
             <div className="flex items-center justify-end gap-2 border-t pt-3">
               <div>
-                <Button variant="ghost" size="sm" onClick={handleClear}>{t('dateRange.clear')}</Button>
+                <Button variant="ghost" size="sm" onClick={handleClear}>
+                  {t('dateRange.clear')}
+                </Button>
               </div>
               <div>
-                <Button size="sm" onClick={handleApply}>{t('dateRange.apply')}</Button>
+                <Button size="sm" onClick={handleApply}>
+                  {t('dateRange.apply')}
+                </Button>
               </div>
             </div>
           </div>

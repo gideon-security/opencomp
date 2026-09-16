@@ -1,17 +1,17 @@
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
-import {
-  applyVercelProjectFilter,
-  filteredProjectsVariable,
-  parseVercelProjectFilter,
-  projectFilterModeVariable,
-} from '../variables';
 import type {
   VercelDeployment,
   VercelDeploymentsResponse,
   VercelProject,
   VercelProjectsResponse,
 } from '../types';
+import {
+  applyVercelProjectFilter,
+  filteredProjectsVariable,
+  parseVercelProjectFilter,
+  projectFilterModeVariable,
+} from '../variables';
 
 /**
  * Vercel Monitoring & Alerting Check
@@ -78,7 +78,8 @@ export const monitoringAlertingCheck: IntegrationCheck = {
         resourceId: 'project-filter',
         severity: 'medium',
         description: `Filter mode "${filter.mode}" with ${filter.selectedIds.size} selected project(s) resolved to zero projects in scope. This may indicate deleted or renamed projects.`,
-        remediation: 'Open the Configure sheet for this automation and review the selected projects.',
+        remediation:
+          'Open the Configure sheet for this automation and review the selected projects.',
         evidence: {
           filterMode: filter.mode,
           selectedProjectIds: Array.from(filter.selectedIds),

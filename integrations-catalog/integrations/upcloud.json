@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to UpCloud\n2. Go to Account → API credentials\n3. Use your username and password below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

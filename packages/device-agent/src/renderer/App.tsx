@@ -162,14 +162,24 @@ function CheckCard({
                 variant={remediationInfo.type === 'auto_fix' ? 'default' : 'outline'}
                 onClick={handleRemediate}
                 loading={isRemediating}
-                iconLeft={isGuideOnly
-                  ? (isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />)
-                  : getRemediationButtonIcon(remediationInfo)}
+                iconLeft={
+                  isGuideOnly ? (
+                    isExpanded ? (
+                      <ChevronUp size={14} />
+                    ) : (
+                      <ChevronDown size={14} />
+                    )
+                  ) : (
+                    getRemediationButtonIcon(remediationInfo)
+                  )
+                }
               >
                 {isRemediating
                   ? 'Fixing...'
                   : isGuideOnly
-                    ? (isExpanded ? 'Hide Guide' : 'View Guide')
+                    ? isExpanded
+                      ? 'Hide Guide'
+                      : 'View Guide'
                     : getRemediationButtonLabel(remediationInfo)}
               </Button>
 
@@ -231,7 +241,10 @@ export default function App() {
   useEffect(() => {
     async function init() {
       try {
-        window.compAgent.getAppVersion().then(setAppVersion).catch(() => {});
+        window.compAgent
+          .getAppVersion()
+          .then(setAppVersion)
+          .catch(() => {});
         const authStatus = await window.compAgent.getAuthStatus();
         setIsAuthenticated(authStatus.isAuthenticated);
         if (authStatus.isAuthenticated) {

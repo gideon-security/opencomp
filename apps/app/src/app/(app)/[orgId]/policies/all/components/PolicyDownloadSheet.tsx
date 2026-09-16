@@ -33,11 +33,7 @@ const STATUS_LABEL: Record<PolicyStatus, string> = {
   draft: 'Draft',
 };
 
-export function PolicyDownloadSheet({
-  open,
-  onOpenChange,
-  policies,
-}: PolicyDownloadSheetProps) {
+export function PolicyDownloadSheet({ open, onOpenChange, policies }: PolicyDownloadSheetProps) {
   const allIds = useMemo(() => policies.map((p) => p.id), [policies]);
   const [selected, setSelected] = useState<Set<string>>(() => new Set(allIds));
   const [isDownloading, setIsDownloading] = useState(false);
@@ -55,9 +51,7 @@ export function PolicyDownloadSheet({
   const normalizedQuery = query.trim().toLowerCase();
   const filteredPolicies = useMemo(() => {
     if (!normalizedQuery) return policies;
-    return policies.filter((p) =>
-      (p.name ?? '').toLowerCase().includes(normalizedQuery),
-    );
+    return policies.filter((p) => (p.name ?? '').toLowerCase().includes(normalizedQuery));
   }, [policies, normalizedQuery]);
 
   const groups = useMemo(() => {
@@ -68,22 +62,16 @@ export function PolicyDownloadSheet({
       list.push(p);
       byStatus.set(status, list);
     }
-    return STATUS_ORDER.filter((s) => (byStatus.get(s)?.length ?? 0) > 0).map(
-      (s) => ({ status: s, items: byStatus.get(s) ?? [] }),
-    );
+    return STATUS_ORDER.filter((s) => (byStatus.get(s)?.length ?? 0) > 0).map((s) => ({
+      status: s,
+      items: byStatus.get(s) ?? [],
+    }));
   }, [filteredPolicies]);
 
-  const visibleIds = useMemo(
-    () => filteredPolicies.map((p) => p.id),
-    [filteredPolicies],
-  );
-  const visibleSelectedCount = visibleIds.filter((id) =>
-    selected.has(id),
-  ).length;
-  const allVisibleChecked =
-    visibleIds.length > 0 && visibleSelectedCount === visibleIds.length;
-  const someVisibleChecked =
-    visibleSelectedCount > 0 && visibleSelectedCount < visibleIds.length;
+  const visibleIds = useMemo(() => filteredPolicies.map((p) => p.id), [filteredPolicies]);
+  const visibleSelectedCount = visibleIds.filter((id) => selected.has(id)).length;
+  const allVisibleChecked = visibleIds.length > 0 && visibleSelectedCount === visibleIds.length;
+  const someVisibleChecked = visibleSelectedCount > 0 && visibleSelectedCount < visibleIds.length;
 
   const handleToggle = (id: string) => {
     setSelected((prev) => {
@@ -152,15 +140,11 @@ export function PolicyDownloadSheet({
 
   const count = selected.size;
   const buttonLabel =
-    count === 0
-      ? 'Download'
-      : `Download ${count} ${count === 1 ? 'policy' : 'policies'}`;
+    count === 0 ? 'Download' : `Download ${count} ${count === 1 ? 'policy' : 'policies'}`;
 
   const hasAnyResults = filteredPolicies.length > 0;
   const totalDiffersFromVisible = count !== visibleSelectedCount;
-  const selectAllSuffix = totalDiffersFromVisible
-    ? `, ${count} total selected`
-    : '';
+  const selectAllSuffix = totalDiffersFromVisible ? `, ${count} total selected` : '';
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -198,10 +182,8 @@ export function PolicyDownloadSheet({
               groups.map((group) => {
                 const groupIds = group.items.map((p) => p.id);
                 const groupChecked =
-                  groupIds.length > 0 &&
-                  groupIds.every((id) => selected.has(id));
-                const groupSome =
-                  !groupChecked && groupIds.some((id) => selected.has(id));
+                  groupIds.length > 0 && groupIds.every((id) => selected.has(id));
+                const groupSome = !groupChecked && groupIds.some((id) => selected.has(id));
 
                 return (
                   <div key={group.status} className="flex flex-col">
@@ -237,18 +219,10 @@ export function PolicyDownloadSheet({
           </Stack>
         </SheetBody>
         <SheetFooter>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isDownloading}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isDownloading}>
             Cancel
           </Button>
-          <Button
-            onClick={handleDownload}
-            loading={isDownloading}
-            disabled={count === 0}
-          >
+          <Button onClick={handleDownload} loading={isDownloading} disabled={count === 0}>
             {buttonLabel}
           </Button>
         </SheetFooter>

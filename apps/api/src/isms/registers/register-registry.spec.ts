@@ -6,17 +6,37 @@ import {
 } from './register-registry';
 
 describe('createRegisterRegistry', () => {
-  const contextIssues = { create: jest.fn(), update: jest.fn(), remove: jest.fn() };
+  const contextIssues = {
+    create: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
   const interestedParties = {
     create: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
   };
-  const requirements = { create: jest.fn(), update: jest.fn(), remove: jest.fn() };
-  const objectives = { create: jest.fn(), update: jest.fn(), remove: jest.fn() };
+  const requirements = {
+    create: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
+  const objectives = {
+    create: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
   const reviews = { create: jest.fn(), update: jest.fn(), remove: jest.fn() };
-  const reviewInputs = { create: jest.fn(), update: jest.fn(), remove: jest.fn() };
-  const reviewActions = { create: jest.fn(), update: jest.fn(), remove: jest.fn() };
+  const reviewInputs = {
+    create: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
+  const reviewActions = {
+    create: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
 
   const services = {
     contextIssues,
@@ -33,7 +53,9 @@ describe('createRegisterRegistry', () => {
   beforeEach(() => jest.clearAllMocks());
 
   it('exposes a handler for every register key', () => {
-    expect(Object.keys(registry).sort()).toEqual([...ISMS_REGISTER_KEYS].sort());
+    expect(Object.keys(registry).sort()).toEqual(
+      [...ISMS_REGISTER_KEYS].sort(),
+    );
   });
 
   describe('context-issues', () => {
@@ -94,7 +116,11 @@ describe('createRegisterRegistry', () => {
 
   describe('interested-parties', () => {
     it('create dispatches with documentId and parsed dto', async () => {
-      const data = { name: 'Customers', category: 'Customer', needsExpectations: 'n' };
+      const data = {
+        name: 'Customers',
+        category: 'Customer',
+        needsExpectations: 'n',
+      };
       await registry['interested-parties'].create({
         documentId: 'doc_1',
         organizationId: 'org_1',
@@ -177,12 +203,22 @@ describe('createRegisterRegistry', () => {
       await registry.requirements.create({
         documentId: 'doc_1',
         organizationId: 'org_1',
-        data: { partyName: 'C', requirement: 'r', treatment: 't', interestedPartyId: null },
+        data: {
+          partyName: 'C',
+          requirement: 'r',
+          treatment: 't',
+          interestedPartyId: null,
+        },
       });
       expect(requirements.create).toHaveBeenCalledWith({
         documentId: 'doc_1',
         organizationId: 'org_1',
-        dto: { partyName: 'C', requirement: 'r', treatment: 't', interestedPartyId: null },
+        dto: {
+          partyName: 'C',
+          requirement: 'r',
+          treatment: 't',
+          interestedPartyId: null,
+        },
       });
     });
 

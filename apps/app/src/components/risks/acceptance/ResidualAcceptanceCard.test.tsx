@@ -1,6 +1,6 @@
+import type { RiskAcceptanceEvent } from '@/hooks/use-risk-acceptances';
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { RiskAcceptanceEvent } from '@/hooks/use-risk-acceptances';
 import { ResidualAcceptanceCard } from './ResidualAcceptanceCard';
 
 const mockRecordAcceptance = vi.fn();

@@ -17,11 +17,7 @@ import {
 import { Download, TrashCan } from '@trycompai/design-system/icons';
 import { useState } from 'react';
 import type { IsmsMeasurement, IsmsMetric } from '../isms-types';
-import {
-  buildMeasurementsCsv,
-  downloadCsv,
-  measurementsCsvFilename,
-} from './monitoring-csv';
+import { buildMeasurementsCsv, downloadCsv, measurementsCsvFilename } from './monitoring-csv';
 import { addPeriods, periodLabel, toPeriodKey } from './monitoring-periods';
 import { RecordMeasurementForm, type RecordMeasurementValues } from './RecordMeasurementForm';
 
@@ -68,8 +64,7 @@ function buildHistoryRows(metric: IsmsMetric): HistoryRow[] {
     rows.push({
       kind: 'measurement',
       measurement,
-      periodText:
-        key && cadence ? periodLabel(cadence, key) : (key ?? measurement.periodStart),
+      periodText: key && cadence ? periodLabel(cadence, key) : (key ?? measurement.periodStart),
     });
     if (key && key !== previousKey) previousKey = key;
   }
@@ -105,8 +100,8 @@ export function MeasurementHistory({
     <Stack gap="3">
       <HStack justify="between" align="center">
         <Text size="sm" variant="muted">
-          Every measurement is a timestamped record — the recorded-on date is
-          set by the platform and cannot be edited.
+          Every measurement is a timestamped record — the recorded-on date is set by the platform
+          and cannot be edited.
         </Text>
         <Button
           type="button"

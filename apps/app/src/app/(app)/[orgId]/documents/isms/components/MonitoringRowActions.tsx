@@ -60,13 +60,7 @@ export function MonitoringRowActions({
   if (isEditing) {
     return (
       <HStack align="center" gap="2">
-        <Button
-          type="button"
-          size="sm"
-          variant="ghost"
-          onClick={onCancel}
-          disabled={isSubmitting}
-        >
+        <Button type="button" size="sm" variant="ghost" onClick={onCancel} disabled={isSubmitting}>
           Cancel
         </Button>
         <Button
@@ -124,14 +118,12 @@ export function MonitoringRowActions({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this metric?</AlertDialogTitle>
             <AlertDialogDescription>
-              This permanently removes the custom metric and its entire
-              measurement history. Deactivate instead to keep the history.
+              This permanently removes the custom metric and its entire measurement history.
+              Deactivate instead to keep the history.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setConfirmOpen(false)}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setConfirmOpen(false)}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 setConfirmOpen(false);

@@ -6,7 +6,9 @@ import { UploadPurpose } from './dto/create-upload-url.dto';
 jest.mock('../app/s3', () => ({
   BUCKET_NAME: 'test-bucket',
   s3Client: { send: jest.fn() },
-  getSignedUrl: jest.fn(async () => 'https://test-bucket.s3.amazonaws.com/signed'),
+  getSignedUrl: jest.fn(
+    async () => 'https://test-bucket.s3.amazonaws.com/signed',
+  ),
   getObjectAsBuffer: jest.fn(),
   getObjectContentLength: jest.fn(),
 }));
@@ -39,10 +41,12 @@ describe('UploadsService', () => {
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
 
-      expect(result.uploadUrl).toBe('https://test-bucket.s3.amazonaws.com/signed');
-      expect(
-        result.s3Key.startsWith(`${orgId}/uploads/questionnaire/`),
-      ).toBe(true);
+      expect(result.uploadUrl).toBe(
+        'https://test-bucket.s3.amazonaws.com/signed',
+      );
+      expect(result.s3Key.startsWith(`${orgId}/uploads/questionnaire/`)).toBe(
+        true,
+      );
       expect(result.s3Key).toContain('My_Questionnaire.xlsx'); // sanitized
       expect(result.expiresIn).toBe(900);
     });
@@ -66,13 +70,19 @@ describe('UploadsService', () => {
   describe('assertKeyBelongsToOrg', () => {
     it('accepts a key under the org/uploads prefix', () => {
       expect(() =>
-        service.assertKeyBelongsToOrg(orgId, `${orgId}/uploads/questionnaire/x.pdf`),
+        service.assertKeyBelongsToOrg(
+          orgId,
+          `${orgId}/uploads/questionnaire/x.pdf`,
+        ),
       ).not.toThrow();
     });
 
     it('rejects a key from another org', () => {
       expect(() =>
-        service.assertKeyBelongsToOrg(orgId, 'other_org/uploads/questionnaire/x.pdf'),
+        service.assertKeyBelongsToOrg(
+          orgId,
+          'other_org/uploads/questionnaire/x.pdf',
+        ),
       ).toThrow(BadRequestException);
     });
 
@@ -98,7 +108,10 @@ describe('UploadsService', () => {
 
     it('rejects a cross-org key before hitting S3', async () => {
       await expect(
-        service.readUploadAsBase64(orgId, 'other_org/uploads/questionnaire/x.csv'),
+        service.readUploadAsBase64(
+          orgId,
+          'other_org/uploads/questionnaire/x.csv',
+        ),
       ).rejects.toThrow(/does not belong to this organization/);
       expect(s3.getObjectContentLength).not.toHaveBeenCalled();
       expect(s3.getObjectAsBuffer).not.toHaveBeenCalled();
@@ -145,7 +158,10 @@ describe('UploadsService', () => {
       s3.getObjectContentLength.mockRejectedValueOnce(new Error('NoSuchKey'));
 
       await expect(
-        service.readUploadAsBase64(orgId, `${orgId}/uploads/questionnaire/missing.csv`),
+        service.readUploadAsBase64(
+          orgId,
+          `${orgId}/uploads/questionnaire/missing.csv`,
+        ),
       ).rejects.toThrow(/No file found/);
       expect(s3.getObjectAsBuffer).not.toHaveBeenCalled();
     });
@@ -155,7 +171,10 @@ describe('UploadsService', () => {
       s3.getObjectAsBuffer.mockRejectedValueOnce(new Error('NoSuchKey'));
 
       await expect(
-        service.readUploadAsBase64(orgId, `${orgId}/uploads/questionnaire/missing.csv`),
+        service.readUploadAsBase64(
+          orgId,
+          `${orgId}/uploads/questionnaire/missing.csv`,
+        ),
       ).rejects.toThrow(/No file found/);
     });
   });

@@ -1,6 +1,6 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -22,8 +22,8 @@ vi.mock('../lib/devices-csv', async (importOriginal) => {
   };
 });
 
-import { DeviceAgentDevicesList } from './DeviceAgentDevicesList';
 import { downloadDevicesCsv } from '../lib/devices-csv';
+import { DeviceAgentDevicesList } from './DeviceAgentDevicesList';
 
 const mockDownload = vi.mocked(downloadDevicesCsv);
 
@@ -120,7 +120,12 @@ describe('DeviceAgentDevicesList', () => {
       <DeviceAgentDevicesList
         devices={[
           makeDevice({ name: 'Alpha', id: 'a' }),
-          makeDevice({ name: 'Beta', id: 'b', complianceStatus: 'stale', daysSinceLastCheckIn: 10 }),
+          makeDevice({
+            name: 'Beta',
+            id: 'b',
+            complianceStatus: 'stale',
+            daysSinceLastCheckIn: 10,
+          }),
         ]}
       />,
     );
@@ -136,14 +141,10 @@ describe('DeviceAgentDevicesList', () => {
   it('renders a stale-explainer tooltip trigger next to the Stale badge', () => {
     render(
       <DeviceAgentDevicesList
-        devices={[
-          makeDevice({ complianceStatus: 'stale', daysSinceLastCheckIn: 12 }),
-        ]}
+        devices={[makeDevice({ complianceStatus: 'stale', daysSinceLastCheckIn: 12 })]}
       />,
     );
-    expect(
-      screen.getByRole('button', { name: /What does Stale mean\?/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /What does Stale mean\?/i })).toBeInTheDocument();
   });
 
   it('renders the stale-explainer tooltip trigger when daysSinceLastCheckIn is null (never reported)', () => {
@@ -158,9 +159,7 @@ describe('DeviceAgentDevicesList', () => {
         ]}
       />,
     );
-    expect(
-      screen.getByRole('button', { name: /What does Stale mean\?/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /What does Stale mean\?/i })).toBeInTheDocument();
   });
 
   it('does not render the stale-explainer tooltip trigger for a compliant device', () => {
@@ -188,9 +187,7 @@ describe('DeviceAgentDevicesList', () => {
   });
 });
 
-function makeIntegrationDevice(
-  overrides: Partial<DeviceWithChecks> = {},
-): DeviceWithChecks {
+function makeIntegrationDevice(overrides: Partial<DeviceWithChecks> = {}): DeviceWithChecks {
   return makeDevice({
     id: 'dev_int',
     name: 'Imported Mac',
@@ -245,9 +242,7 @@ describe('DeviceAgentDevicesList — integration-imported devices', () => {
   it('presents an imported device as Offline when the provider has not seen it recently', () => {
     const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
     render(
-      <DeviceAgentDevicesList
-        devices={[makeIntegrationDevice({ lastCheckIn: threeDaysAgo })]}
-      />,
+      <DeviceAgentDevicesList devices={[makeIntegrationDevice({ lastCheckIn: threeDaysAgo })]} />,
     );
     expect(screen.getByTitle('Offline')).toBeInTheDocument();
   });
@@ -288,9 +283,7 @@ describe('DeviceAgentDevicesList — integration-imported devices', () => {
               // Intune with no policies configured calls everything compliant —
               // CompAI's framework standard (the four checks) must overrule it.
               isCompliant: true,
-              checks: [
-                { id: 'disk_encryption', label: 'Disk Encryption', passed: false },
-              ],
+              checks: [{ id: 'disk_encryption', label: 'Disk Encryption', passed: false }],
             },
           }),
         ]}
@@ -344,16 +337,10 @@ describe('DeviceAgentDevicesList — integration-imported devices', () => {
   });
 
   it('renders a source filter only when more than one source is present', () => {
-    const { rerender } = render(
-      <DeviceAgentDevicesList devices={[makeDevice()]} />,
-    );
+    const { rerender } = render(<DeviceAgentDevicesList devices={[makeDevice()]} />);
     expect(screen.queryByLabelText('devicesList.filterBySource')).not.toBeInTheDocument();
 
-    rerender(
-      <DeviceAgentDevicesList
-        devices={[makeDevice(), makeIntegrationDevice()]}
-      />,
-    );
+    rerender(<DeviceAgentDevicesList devices={[makeDevice(), makeIntegrationDevice()]} />);
     expect(screen.getByLabelText('devicesList.filterBySource')).toBeInTheDocument();
   });
 

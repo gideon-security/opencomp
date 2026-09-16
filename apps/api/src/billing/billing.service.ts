@@ -96,7 +96,10 @@ export class BillingService {
     const creditBalancesByProduct = new Map<BillingProductKey, number>();
     for (const balance of creditBalances) {
       const current = creditBalancesByProduct.get(balance.productKey) ?? 0;
-      creditBalancesByProduct.set(balance.productKey, current + balance.balance);
+      creditBalancesByProduct.set(
+        balance.productKey,
+        current + balance.balance,
+      );
     }
 
     return {

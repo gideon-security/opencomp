@@ -16,9 +16,7 @@ import {
 const SCAN_WINDOW_MIN = SCAN_WINDOW_MS / 60_000;
 
 function ms(daysAgo: number, minutesAgoExtra = 0): Date {
-  return new Date(
-    Date.now() - daysAgo * 86_400_000 - minutesAgoExtra * 60_000,
-  );
+  return new Date(Date.now() - daysAgo * 86_400_000 - minutesAgoExtra * 60_000);
 }
 
 describe('filterToLatestScanResults', () => {
@@ -69,7 +67,7 @@ describe('filterToLatestScanResults', () => {
     ).toEqual([inWindow, newestRow]);
   });
 
-  it('handles per-integration scoping correctly (one integration\'s scan window does not leak into another)', () => {
+  it("handles per-integration scoping correctly (one integration's scan window does not leak into another)", () => {
     const intALastRun = ms(0);
     const intBLastRun = ms(7); // a week ago — separate cadence
     const fromA = { integrationId: 'int_A', completedAt: ms(0, 3) };

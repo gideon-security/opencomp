@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@trycompai/design-system';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@trycompai/design-system';
 import { Maximize } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';

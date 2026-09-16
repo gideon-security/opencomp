@@ -74,8 +74,12 @@ export const TaskBulkAssigneeChangedEmail = ({
             </Text>
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
-              <strong>{changedByName}</strong> reassigned <strong>{taskCount} {taskText}</strong> to{' '}
-              <strong>{newAssigneeName}</strong> in <strong>{organizationName}</strong>.
+              <strong>{changedByName}</strong> reassigned{' '}
+              <strong>
+                {taskCount} {taskText}
+              </strong>{' '}
+              to <strong>{newAssigneeName}</strong> in{' '}
+              <strong>{organizationName}</strong>.
             </Text>
 
             <Section className="mt-[32px] mb-[32px] text-center">
@@ -97,7 +101,10 @@ export const TaskBulkAssigneeChangedEmail = ({
             <Section className="mt-[30px] mb-[20px]">
               <Text className="text-[12px] leading-[20px] text-[#666666]">
                 Don't want to receive task assignment notifications?{' '}
-                <Link href={unsubscribeUrl} className="text-[#121212] underline">
+                <Link
+                  href={unsubscribeUrl}
+                  className="text-[#121212] underline"
+                >
                   Manage your email preferences
                 </Link>
                 .

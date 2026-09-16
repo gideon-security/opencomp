@@ -33,9 +33,7 @@ function getFindingTypeForFrameworkName(
   frameworkName: string | null | undefined,
 ): FindingType | undefined {
   if (!frameworkName) return undefined;
-  const normalized = frameworkName
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, '');
+  const normalized = frameworkName.toUpperCase().replace(/[^A-Z0-9]/g, '');
   return FRAMEWORK_TO_FINDING_TYPE[normalized];
 }
 
@@ -286,10 +284,7 @@ async function runPhaseAdvancement({
       ),
     );
 
-    if (
-      autoFindingPhaseStartDates.length > 0 &&
-      findingTypes.length > 0
-    ) {
+    if (autoFindingPhaseStartDates.length > 0 && findingTypes.length > 0) {
       const earliestStartDate = new Date(
         Math.min(...autoFindingPhaseStartDates.map((d) => d.getTime())),
       );

@@ -177,7 +177,9 @@ describe('PoliciesController', () => {
 
     controller = module.get<PoliciesController>(PoliciesController);
     policiesService = module.get(PoliciesService);
-    actingUser = module.get(ActingUserResolver) as jest.Mocked<ActingUserResolver>;
+    actingUser = module.get(
+      ActingUserResolver,
+    ) as jest.Mocked<ActingUserResolver>;
 
     jest.clearAllMocks();
   });
@@ -228,7 +230,12 @@ describe('PoliciesController', () => {
     it('should pass includeArchived=true to service when query param is "true"', async () => {
       mockPoliciesService.findAll.mockResolvedValue([]);
 
-      await controller.getAllPolicies(orgId, mockAuthContext, undefined, 'true');
+      await controller.getAllPolicies(
+        orgId,
+        mockAuthContext,
+        undefined,
+        'true',
+      );
 
       expect(policiesService.findAll).toHaveBeenCalledWith({
         organizationId: orgId,
@@ -303,7 +310,11 @@ describe('PoliciesController', () => {
         isApiKey: true,
       };
 
-      await controller.publishAllPolicies(orgId, apiKeyAuthContext, apiKeyReq());
+      await controller.publishAllPolicies(
+        orgId,
+        apiKeyAuthContext,
+        apiKeyReq(),
+      );
 
       expect(actingUser.resolve).toHaveBeenCalledWith(
         expect.objectContaining({ isApiKey: true }),
@@ -340,7 +351,11 @@ describe('PoliciesController', () => {
     });
 
     it('parses comma-separated policyIds and passes an array to the service', async () => {
-      const mockResult = { downloadUrl: 'https://s3/signed', name: 'all-policies', policyCount: 2 };
+      const mockResult = {
+        downloadUrl: 'https://s3/signed',
+        name: 'all-policies',
+        policyCount: 2,
+      };
       mockPoliciesService.downloadAllPoliciesPdf.mockResolvedValue(mockResult);
 
       await controller.downloadAllPolicies(
@@ -356,7 +371,11 @@ describe('PoliciesController', () => {
     });
 
     it('dedupes policyIds and strips empty entries', async () => {
-      const mockResult = { downloadUrl: 'https://s3/signed', name: 'all-policies', policyCount: 1 };
+      const mockResult = {
+        downloadUrl: 'https://s3/signed',
+        name: 'all-policies',
+        policyCount: 1,
+      };
       mockPoliciesService.downloadAllPoliciesPdf.mockResolvedValue(mockResult);
 
       await controller.downloadAllPolicies(
@@ -372,14 +391,14 @@ describe('PoliciesController', () => {
     });
 
     it('passes undefined when policyIds query is missing', async () => {
-      const mockResult = { downloadUrl: 'https://s3/signed', name: 'all-policies', policyCount: 10 };
+      const mockResult = {
+        downloadUrl: 'https://s3/signed',
+        name: 'all-policies',
+        policyCount: 10,
+      };
       mockPoliciesService.downloadAllPoliciesPdf.mockResolvedValue(mockResult);
 
-      await controller.downloadAllPolicies(
-        orgId,
-        mockAuthContext,
-        undefined,
-      );
+      await controller.downloadAllPolicies(orgId, mockAuthContext, undefined);
 
       expect(policiesService.downloadAllPoliciesPdf).toHaveBeenCalledWith(
         orgId,
@@ -388,14 +407,14 @@ describe('PoliciesController', () => {
     });
 
     it('passes undefined when policyIds query is an empty string', async () => {
-      const mockResult = { downloadUrl: 'https://s3/signed', name: 'all-policies', policyCount: 10 };
+      const mockResult = {
+        downloadUrl: 'https://s3/signed',
+        name: 'all-policies',
+        policyCount: 10,
+      };
       mockPoliciesService.downloadAllPoliciesPdf.mockResolvedValue(mockResult);
 
-      await controller.downloadAllPolicies(
-        orgId,
-        mockAuthContext,
-        '',
-      );
+      await controller.downloadAllPolicies(orgId, mockAuthContext, '');
 
       expect(policiesService.downloadAllPoliciesPdf).toHaveBeenCalledWith(
         orgId,
@@ -404,14 +423,17 @@ describe('PoliciesController', () => {
     });
 
     it('handles repeated-key array form (policyIds=a&policyIds=b)', async () => {
-      const mockResult = { downloadUrl: 'https://s3/signed', name: 'all-policies', policyCount: 2 };
+      const mockResult = {
+        downloadUrl: 'https://s3/signed',
+        name: 'all-policies',
+        policyCount: 2,
+      };
       mockPoliciesService.downloadAllPoliciesPdf.mockResolvedValue(mockResult);
 
-      await controller.downloadAllPolicies(
-        orgId,
-        mockAuthContext,
-        ['p1', 'p2'],
-      );
+      await controller.downloadAllPolicies(orgId, mockAuthContext, [
+        'p1',
+        'p2',
+      ]);
 
       expect(policiesService.downloadAllPoliciesPdf).toHaveBeenCalledWith(
         orgId,
@@ -420,14 +442,17 @@ describe('PoliciesController', () => {
     });
 
     it('handles mixed array form where each value itself contains commas', async () => {
-      const mockResult = { downloadUrl: 'https://s3/signed', name: 'all-policies', policyCount: 3 };
+      const mockResult = {
+        downloadUrl: 'https://s3/signed',
+        name: 'all-policies',
+        policyCount: 3,
+      };
       mockPoliciesService.downloadAllPoliciesPdf.mockResolvedValue(mockResult);
 
-      await controller.downloadAllPolicies(
-        orgId,
-        mockAuthContext,
-        ['p1,p2', 'p3'],
-      );
+      await controller.downloadAllPolicies(orgId, mockAuthContext, [
+        'p1,p2',
+        'p3',
+      ]);
 
       expect(policiesService.downloadAllPoliciesPdf).toHaveBeenCalledWith(
         orgId,
@@ -721,15 +746,16 @@ describe('PoliciesController', () => {
       const { db } = require('@db');
       db.policy.update.mockResolvedValue({});
       db.frameworkControlPolicyLink.deleteMany.mockResolvedValue({ count: 1 });
-      db.$transaction.mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) =>
-        callback({
-          policy: {
-            update: db.policy.update,
-          },
-          frameworkControlPolicyLink: {
-            deleteMany: db.frameworkControlPolicyLink.deleteMany,
-          },
-        }),
+      db.$transaction.mockImplementation(
+        async (callback: (tx: unknown) => Promise<unknown>) =>
+          callback({
+            policy: {
+              update: db.policy.update,
+            },
+            frameworkControlPolicyLink: {
+              deleteMany: db.frameworkControlPolicyLink.deleteMany,
+            },
+          }),
       );
 
       const result = await controller.removePolicyControl(

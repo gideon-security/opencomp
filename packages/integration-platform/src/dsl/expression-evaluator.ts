@@ -1,4 +1,4 @@
-import type { Condition, FieldCondition, ComparisonOperator } from './types';
+import type { ComparisonOperator, Condition, FieldCondition } from './types';
 
 /**
  * Resolves a dot-notation path against a scope object.
@@ -151,10 +151,7 @@ function parseDate(value: unknown): Date | null {
  * Evaluates a condition (field or logical) against the scope.
  * Supports nested `and`, `or`, `not` operators.
  */
-export function evaluateCondition(
-  condition: Condition,
-  scope: Record<string, unknown>,
-): boolean {
+export function evaluateCondition(condition: Condition, scope: Record<string, unknown>): boolean {
   // Logical operators
   if ('op' in condition) {
     switch (condition.op) {

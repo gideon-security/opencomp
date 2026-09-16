@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  Badge,
-  Button,
-  Grid,
-  Heading,
-  HStack,
-  Input,
-  Stack,
-  Text,
-} from '@trycompai/design-system';
+import { Badge, Button, Grid, Heading, HStack, Input, Stack, Text } from '@trycompai/design-system';
 import { Controller, useForm } from 'react-hook-form';
 import type { DueEntry } from './monitoring-constants';
 
@@ -84,15 +75,9 @@ export function MetricsDueCard({ entries, showMetricName, onSaveAll }: MetricsDu
     <form onSubmit={handleSave}>
       <Stack gap="3">
         {entries.map((entry, index) => (
-          <Grid
-            key={`${entry.metric.id}:${entry.periodKey}`}
-            cols={{ base: '1', md: '3' }}
-            gap="2"
-          >
+          <Grid key={`${entry.metric.id}:${entry.periodKey}`} cols={{ base: '1', md: '3' }} gap="2">
             <Stack gap="1">
-              {showMetricName ? (
-                <Heading level="5">{entry.metric.name}</Heading>
-              ) : null}
+              {showMetricName ? <Heading level="5">{entry.metric.name}</Heading> : null}
               <HStack align="center" gap="2">
                 <Text size="sm" variant="muted">
                   {entry.periodText}

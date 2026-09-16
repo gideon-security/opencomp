@@ -36,10 +36,14 @@ describe('isTrustPortalConfigured', () => {
   });
 
   it('ignores non-array faqs values', () => {
-    expect(isTrustPortalConfigured({ ...DEFAULTS, faqs: 'not-an-array' })).toBe(false);
+    expect(isTrustPortalConfigured({ ...DEFAULTS, faqs: 'not-an-array' })).toBe(
+      false,
+    );
   });
 
   it('returns false when frameworkFlags is an empty array', () => {
-    expect(isTrustPortalConfigured({ ...DEFAULTS, frameworkFlags: [] })).toBe(false);
+    expect(isTrustPortalConfigured({ ...DEFAULTS, frameworkFlags: [] })).toBe(
+      false,
+    );
   });
 });

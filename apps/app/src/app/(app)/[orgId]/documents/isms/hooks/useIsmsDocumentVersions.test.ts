@@ -1,6 +1,6 @@
+import { api } from '@/lib/api-client';
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { api } from '@/lib/api-client';
 
 // Capture the SWR key + fetcher so we can assert the endpoint without firing it
 // on mount. `vi.hoisted` keeps the holder available inside the hoisted vi.mock.
@@ -29,9 +29,9 @@ vi.mock('sonner', () => ({
   toast: { error: vi.fn(), success: vi.fn() },
 }));
 
-import { useIsmsDocumentVersions } from './useIsmsDocumentVersions';
-import { exportIsmsDocument } from './exportIsmsDocument';
 import { toast } from 'sonner';
+import { exportIsmsDocument } from './exportIsmsDocument';
+import { useIsmsDocumentVersions } from './useIsmsDocumentVersions';
 
 const getMock = vi.mocked(api.get);
 const exportMock = vi.mocked(exportIsmsDocument);
@@ -55,10 +55,7 @@ describe('useIsmsDocumentVersions', () => {
     expect(swr.key).toEqual(['/v1/isms/documents', DOC_ID, 'versions', ORG_ID]);
     await swr.fetcher?.(['/v1/isms/documents', DOC_ID, 'versions', ORG_ID]);
     // Passes the route org (X-Organization-Id), matching the download path.
-    expect(getMock).toHaveBeenCalledWith(
-      `/v1/isms/documents/${DOC_ID}/versions`,
-      ORG_ID,
-    );
+    expect(getMock).toHaveBeenCalledWith(`/v1/isms/documents/${DOC_ID}/versions`, ORG_ID);
   });
 
   it('does not fetch when no document id is provided', () => {

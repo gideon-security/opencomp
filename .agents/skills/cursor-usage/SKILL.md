@@ -1,6 +1,6 @@
 ---
 name: cursor-usage
-description: "How to write and manage Cursor rules - invoke with @cursor-usage"
+description: 'How to write and manage Cursor rules - invoke with @cursor-usage'
 ---
 
 Source Cursor rule: `.cursor/rules/cursor-usage.mdc`.

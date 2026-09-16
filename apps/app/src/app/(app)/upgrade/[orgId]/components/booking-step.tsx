@@ -3,7 +3,12 @@
 import { CancelOnboardingButton } from '@/app/(app)/onboarding/components/CancelOnboardingButton';
 import { Button } from '@gideon-defender/ui/button';
 import { Card } from '@gideon-defender/ui/card';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -86,10 +91,7 @@ export function BookingStep({
 
           {/* Cancel option */}
           <div className="flex justify-center">
-            <CancelOnboardingButton
-              organizationId={orgId}
-              hasOtherOrgs={hasOtherOrgs}
-            />
+            <CancelOnboardingButton organizationId={orgId} hasOtherOrgs={hasOtherOrgs} />
           </div>
         </div>
       </Card>

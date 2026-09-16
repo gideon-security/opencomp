@@ -1,13 +1,13 @@
 import { Extension } from '@tiptap/core';
-import { Plugin, PluginKey } from '@tiptap/pm/state';
-import type { EditorView } from '@tiptap/pm/view';
-import { Decoration, DecorationSet } from '@tiptap/pm/view';
 import {
   DOMSerializer,
   Fragment,
   type Node as ProseMirrorNode,
   type Schema,
 } from '@tiptap/pm/model';
+import { Plugin, PluginKey } from '@tiptap/pm/state';
+import type { EditorView } from '@tiptap/pm/view';
+import { Decoration, DecorationSet } from '@tiptap/pm/view';
 
 export interface SuggestionRange {
   id: string;
@@ -27,9 +27,7 @@ export interface SuggestionsPluginState {
   decorations: DecorationSet;
 }
 
-export const suggestionsPluginKey = new PluginKey<SuggestionsPluginState>(
-  'suggestions'
-);
+export const suggestionsPluginKey = new PluginKey<SuggestionsPluginState>('suggestions');
 
 export type MarkdownToJSONFn = (markdown: string) => Array<Record<string, unknown>>;
 
@@ -55,7 +53,7 @@ interface ActionCallbacks {
 function createActionBar(
   rangeId: string,
   callbacks: ActionCallbacks,
-  isEditing: boolean
+  isEditing: boolean,
 ): HTMLElement {
   const bar = document.createElement('div');
   bar.className = 'suggestion-actions';
@@ -174,7 +172,7 @@ function createInsertionWidget(
   schema: Schema,
   callbacks: ActionCallbacks,
   isEditing: boolean,
-  markdownToJSON?: (markdown: string) => Array<Record<string, unknown>>
+  markdownToJSON?: (markdown: string) => Array<Record<string, unknown>>,
 ): (view: EditorView) => HTMLElement {
   return (view: EditorView) => {
     const wrapper = document.createElement('div');
@@ -199,10 +197,7 @@ function createInsertionWidget(
 
     const fragment = Fragment.from(nodes);
     const tempDoc = schema.topNodeType.create(null, fragment);
-    const dom = DOMSerializer.fromSchema(schema).serializeFragment(
-      tempDoc.content,
-      { document }
-    );
+    const dom = DOMSerializer.fromSchema(schema).serializeFragment(tempDoc.content, { document });
     content.appendChild(dom);
 
     wrapper.appendChild(content);
@@ -214,10 +209,7 @@ function createInsertionWidget(
  * Parse markdown text into ProseMirror nodes using the editor's schema.
  * This ensures the preview matches exactly what gets inserted on accept.
  */
-function markdownToNodes(
-  markdown: string,
-  schema: Schema
-): ProseMirrorNode[] {
+function markdownToNodes(markdown: string, schema: Schema): ProseMirrorNode[] {
   const lines = markdown.split('\n');
   const result: ProseMirrorNode[] = [];
   let listItems: ProseMirrorNode[] = [];
@@ -245,10 +237,7 @@ function markdownToNodes(
       const headingType = schema.nodes.heading;
       if (headingType) {
         result.push(
-          headingType.create(
-            { level: headingMatch[1].length },
-            schema.text(headingMatch[2])
-          )
+          headingType.create({ level: headingMatch[1].length }, schema.text(headingMatch[2])),
         );
       }
       continue;
@@ -262,10 +251,7 @@ function markdownToNodes(
       const paragraphType = schema.nodes.paragraph;
       if (listItemType && paragraphType) {
         listItems.push(
-          listItemType.create(
-            null,
-            paragraphType.create(null, schema.text(listMatch))
-          )
+          listItemType.create(null, paragraphType.create(null, schema.text(listMatch))),
         );
       }
       continue;
@@ -274,9 +260,7 @@ function markdownToNodes(
     flushList();
     const paragraphType = schema.nodes.paragraph;
     if (paragraphType) {
-      result.push(
-        paragraphType.create(null, schema.text(trimmed))
-      );
+      result.push(paragraphType.create(null, schema.text(trimmed)));
     }
   }
 
@@ -302,7 +286,8 @@ function createSkeletonWidget(lineCount: number): (view: EditorView) => HTMLElem
 
     // Spinner — matches DS loading pattern
     const spinner = document.createElement('div');
-    spinner.className = 'h-3 w-3 rounded-full border-2 border-muted-foreground/30 border-t-muted-foreground animate-spin';
+    spinner.className =
+      'h-3 w-3 rounded-full border-2 border-muted-foreground/30 border-t-muted-foreground animate-spin';
     labelEl.appendChild(spinner);
     labelEl.appendChild(document.createTextNode('Rewriting section\u2026'));
     wrapper.appendChild(labelEl);
@@ -347,7 +332,7 @@ function resolveTopLevelPos(doc: ProseMirrorNode, pos: number): number {
 function findBlockNodesInRange(
   doc: ProseMirrorNode,
   from: number,
-  to: number
+  to: number,
 ): Array<{ node: ProseMirrorNode; pos: number; end: number }> {
   const results: Array<{
     node: ProseMirrorNode;
@@ -429,7 +414,7 @@ function buildDecorations(
   focusedId: string | null,
   editingRangeId: string | null,
   callbacks: ActionCallbacks,
-  markdownToJSON?: MarkdownToJSONFn
+  markdownToJSON?: MarkdownToJSONFn,
 ): DecorationSet {
   const decorations: Decoration[] = [];
   const schema = doc.type.schema;
@@ -444,18 +429,16 @@ function buildDecorations(
     if (range.decision === 'loading') {
       const blocks = findBlockNodesInRange(doc, range.from, range.to);
       // Estimate line count from the proposed text to size the skeleton
-      const lineCount = range.proposedText
-        .split('\n')
-        .filter((l) => l.trim().length > 0).length || 3;
+      const lineCount =
+        range.proposedText.split('\n').filter((l) => l.trim().length > 0).length || 3;
       const firstBlock = blocks[0];
       if (firstBlock) {
         const widgetPos = resolveTopLevelPos(doc, firstBlock.pos);
         decorations.push(
-          Decoration.widget(
-            widgetPos,
-            createSkeletonWidget(lineCount),
-            { side: -1, key: `skeleton-${range.id}` }
-          )
+          Decoration.widget(widgetPos, createSkeletonWidget(lineCount), {
+            side: -1,
+            key: `skeleton-${range.id}`,
+          }),
         );
       }
       // Dim the original content while loading
@@ -463,7 +446,7 @@ function buildDecorations(
         decorations.push(
           Decoration.node(block.pos, block.end, {
             class: 'suggestion-loading-content',
-          })
+          }),
         );
       }
       continue;
@@ -481,9 +464,19 @@ function buildDecorations(
             decorations.push(
               Decoration.widget(
                 widgetPos,
-                createInsertionWidget(range.id, range.proposedText, schema, callbacks, isEditing, markdownToJSON),
-                { side: -1, key: `insert-${range.id}-${isEditing ? 'edit' : 'view'}-${range.proposedText.length}` }
-              )
+                createInsertionWidget(
+                  range.id,
+                  range.proposedText,
+                  schema,
+                  callbacks,
+                  isEditing,
+                  markdownToJSON,
+                ),
+                {
+                  side: -1,
+                  key: `insert-${range.id}-${isEditing ? 'edit' : 'view'}-${range.proposedText.length}`,
+                },
+              ),
             );
           }
         }
@@ -493,7 +486,7 @@ function buildDecorations(
           decorations.push(
             Decoration.node(block.pos, block.end, {
               class: `suggestion-deleted-section${focusedSuffix}`,
-            })
+            }),
           );
         }
         break;
@@ -504,9 +497,19 @@ function buildDecorations(
         decorations.push(
           Decoration.widget(
             widgetPos,
-            createInsertionWidget(range.id, range.proposedText, schema, callbacks, isEditing, markdownToJSON),
-            { side: 1, key: `insert-${range.id}-${isEditing ? 'edit' : 'view'}-${range.proposedText.length}` }
-          )
+            createInsertionWidget(
+              range.id,
+              range.proposedText,
+              schema,
+              callbacks,
+              isEditing,
+              markdownToJSON,
+            ),
+            {
+              side: 1,
+              key: `insert-${range.id}-${isEditing ? 'edit' : 'view'}-${range.proposedText.length}`,
+            },
+          ),
         );
         break;
       }
@@ -527,8 +530,8 @@ function buildDecorations(
                 wrapper.appendChild(createActionBar(range.id, callbacks, isEditing));
                 return wrapper;
               },
-              { side: -1, key: `delete-actions-${range.id}-${isEditing ? 'edit' : 'view'}` }
-            )
+              { side: -1, key: `delete-actions-${range.id}-${isEditing ? 'edit' : 'view'}` },
+            ),
           );
         }
 
@@ -536,7 +539,7 @@ function buildDecorations(
           decorations.push(
             Decoration.node(block.pos, block.end, {
               class: `suggestion-deleted-section${focusedSuffix}`,
-            })
+            }),
           );
         }
         break;
@@ -549,107 +552,107 @@ function buildDecorations(
 
 // ── Extension ──
 
-export const SuggestionsExtension =
-  Extension.create<SuggestionsExtensionOptions>({
-    name: 'suggestions',
+export const SuggestionsExtension = Extension.create<SuggestionsExtensionOptions>({
+  name: 'suggestions',
 
-    addOptions() {
-      return {
-        onAccept: undefined,
-        onReject: undefined,
-        onEditClick: undefined,
-        onFeedbackSubmit: undefined,
-        onFeedbackCancel: undefined,
-        markdownToJSON: undefined,
-      };
-    },
+  addOptions() {
+    return {
+      onAccept: undefined,
+      onReject: undefined,
+      onEditClick: undefined,
+      onFeedbackSubmit: undefined,
+      onFeedbackCancel: undefined,
+      markdownToJSON: undefined,
+    };
+  },
 
-    addProseMirrorPlugins() {
-      const extensionOptions = this.options;
-      const extensionCallbacks: ActionCallbacks = {
-        onAccept: extensionOptions.onAccept,
-        onReject: extensionOptions.onReject,
-        onEditClick: extensionOptions.onEditClick,
-        onFeedbackSubmit: extensionOptions.onFeedbackSubmit,
-        onFeedbackCancel: extensionOptions.onFeedbackCancel,
-      };
+  addProseMirrorPlugins() {
+    const extensionOptions = this.options;
+    const extensionCallbacks: ActionCallbacks = {
+      onAccept: extensionOptions.onAccept,
+      onReject: extensionOptions.onReject,
+      onEditClick: extensionOptions.onEditClick,
+      onFeedbackSubmit: extensionOptions.onFeedbackSubmit,
+      onFeedbackCancel: extensionOptions.onFeedbackCancel,
+    };
 
-      return [
-        new Plugin<SuggestionsPluginState>({
-          key: suggestionsPluginKey,
+    return [
+      new Plugin<SuggestionsPluginState>({
+        key: suggestionsPluginKey,
 
-          state: {
-            init(): SuggestionsPluginState {
-              return {
-                ranges: [],
-                focusedId: null,
-                editingRangeId: null,
-                decorations: DecorationSet.empty,
-              };
-            },
+        state: {
+          init(): SuggestionsPluginState {
+            return {
+              ranges: [],
+              focusedId: null,
+              editingRangeId: null,
+              decorations: DecorationSet.empty,
+            };
+          },
 
-            apply(tr, state): SuggestionsPluginState {
-              const meta = tr.getMeta(suggestionsPluginKey) as
-                | { ranges: SuggestionRange[]; focusedId: string | null; editingRangeId?: string | null }
-                | undefined;
-
-              if (meta !== undefined) {
-                const editingRangeId = meta.editingRangeId ?? null;
-                const pendingRanges = meta.ranges.filter(
-                  (r) => r.decision === 'pending' || r.decision === 'loading'
-                );
-                let decorations: DecorationSet;
-                try {
-                  decorations = buildDecorations(
-                    tr.doc,
-                    pendingRanges,
-                    meta.focusedId,
-                    editingRangeId,
-                    extensionCallbacks,
-                    extensionOptions.markdownToJSON
-                  );
-                } catch (err) {
-                  console.error('[SuggestionsPlugin] buildDecorations failed:', err);
-                  decorations = DecorationSet.empty;
+          apply(tr, state): SuggestionsPluginState {
+            const meta = tr.getMeta(suggestionsPluginKey) as
+              | {
+                  ranges: SuggestionRange[];
+                  focusedId: string | null;
+                  editingRangeId?: string | null;
                 }
-                return {
-                  ranges: meta.ranges,
-                  focusedId: meta.focusedId,
-                  editingRangeId,
-                  decorations,
-                };
-              }
+              | undefined;
 
-              if (tr.docChanged) {
-                return {
-                  ranges: state.ranges,
-                  focusedId: state.focusedId,
-                  editingRangeId: state.editingRangeId,
-                  decorations: state.decorations.map(tr.mapping, tr.doc),
-                };
-              }
-
-              return state;
-            },
-          },
-
-          props: {
-            decorations(state) {
-              return (
-                suggestionsPluginKey.getState(state)?.decorations ??
-                DecorationSet.empty
+            if (meta !== undefined) {
+              const editingRangeId = meta.editingRangeId ?? null;
+              const pendingRanges = meta.ranges.filter(
+                (r) => r.decision === 'pending' || r.decision === 'loading',
               );
-            },
-            attributes(): Record<string, string> {
-              return {};
-            },
-            editable() {
-              // Editability is controlled by the TipTap editor's readOnly prop
-              // and toggled by the React component when suggestions are active.
-              return true;
-            },
+              let decorations: DecorationSet;
+              try {
+                decorations = buildDecorations(
+                  tr.doc,
+                  pendingRanges,
+                  meta.focusedId,
+                  editingRangeId,
+                  extensionCallbacks,
+                  extensionOptions.markdownToJSON,
+                );
+              } catch (err) {
+                console.error('[SuggestionsPlugin] buildDecorations failed:', err);
+                decorations = DecorationSet.empty;
+              }
+              return {
+                ranges: meta.ranges,
+                focusedId: meta.focusedId,
+                editingRangeId,
+                decorations,
+              };
+            }
+
+            if (tr.docChanged) {
+              return {
+                ranges: state.ranges,
+                focusedId: state.focusedId,
+                editingRangeId: state.editingRangeId,
+                decorations: state.decorations.map(tr.mapping, tr.doc),
+              };
+            }
+
+            return state;
           },
-        }),
-      ];
-    },
-  });
+        },
+
+        props: {
+          decorations(state) {
+            return suggestionsPluginKey.getState(state)?.decorations ?? DecorationSet.empty;
+          },
+          attributes(): Record<string, string> {
+            return {};
+          },
+          editable() {
+            // Editability is controlled by the TipTap editor's readOnly prop
+            // and toggled by the React component when suggestions are active.
+            return true;
+          },
+        },
+      }),
+    ];
+  },
+});

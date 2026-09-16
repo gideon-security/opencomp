@@ -247,7 +247,11 @@ export class BrowserAutomationExecutionService {
       result = failedBrowserEvidenceRunResult(error);
     }
 
-    await this.runs.finishRun({ runId: run.id, startedAt: run.startedAt, result });
+    await this.runs.finishRun({
+      runId: run.id,
+      startedAt: run.startedAt,
+      result,
+    });
     return this.toRunResponse({ runId: run.id, result });
   }
 

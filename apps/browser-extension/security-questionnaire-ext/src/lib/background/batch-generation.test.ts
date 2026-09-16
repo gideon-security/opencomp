@@ -157,12 +157,8 @@ describe('generateQueueItemsInBatches', () => {
     ).rejects.toThrow('could not be saved for 1 question');
 
     // b and c must still have been written despite a's failure.
-    expect(stored.items.find((entry) => entry.id === 'b')?.answer).toBe(
-      'generated answer',
-    );
-    expect(stored.items.find((entry) => entry.id === 'c')?.answer).toBe(
-      'generated answer',
-    );
+    expect(stored.items.find((entry) => entry.id === 'b')?.answer).toBe('generated answer');
+    expect(stored.items.find((entry) => entry.id === 'c')?.answer).toBe('generated answer');
   });
 
   it('leaves a failed question retryable instead of stuck generating', async () => {
@@ -193,9 +189,7 @@ describe('generateQueueItemsInBatches', () => {
   });
 
   it('restores the prior status rather than downgrading it to pending', async () => {
-    let stored = queueWith([
-      item({ id: 'a', status: 'generated', answer: 'previous answer' }),
-    ]);
+    let stored = queueWith([item({ id: 'a', status: 'generated', answer: 'previous answer' })]);
     let saveCount = 0;
 
     await expect(

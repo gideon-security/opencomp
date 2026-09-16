@@ -25,7 +25,9 @@ export function OptionalLikelihoodProperty(opts: {
       enum: Likelihood,
       required: false,
       example: opts.example,
-      ...(opts.defaultValue !== undefined ? { default: opts.defaultValue } : {}),
+      ...(opts.defaultValue !== undefined
+        ? { default: opts.defaultValue }
+        : {}),
     }),
     IsOptional(),
     IsEnum(Likelihood),
@@ -43,7 +45,9 @@ export function OptionalImpactProperty(opts: {
       enum: Impact,
       required: false,
       example: opts.example,
-      ...(opts.defaultValue !== undefined ? { default: opts.defaultValue } : {}),
+      ...(opts.defaultValue !== undefined
+        ? { default: opts.defaultValue }
+        : {}),
     }),
     IsOptional(),
     IsEnum(Impact),
@@ -74,7 +78,9 @@ export function OptionalImpactPropertyOptional(opts: {
   );
 }
 
-export function OptionalAssigneeProperty(description = 'ID of the user assigned to this resource'): PropertyDecorator {
+export function OptionalAssigneeProperty(
+  description = 'ID of the user assigned to this resource',
+): PropertyDecorator {
   return applyDecorators(
     ApiProperty({ description, required: false, example: 'mem_abc123def456' }),
     IsOptional(),
@@ -82,7 +88,9 @@ export function OptionalAssigneeProperty(description = 'ID of the user assigned 
   );
 }
 
-export function OptionalAssigneePropertyOptional(description = 'Assignee member ID'): PropertyDecorator {
+export function OptionalAssigneePropertyOptional(
+  description = 'Assignee member ID',
+): PropertyDecorator {
   return applyDecorators(
     ApiPropertyOptional({ description }),
     IsOptional(),

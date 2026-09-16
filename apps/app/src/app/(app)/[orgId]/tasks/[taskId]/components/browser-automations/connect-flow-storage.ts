@@ -51,9 +51,7 @@ export function loadConnectState(taskId: string): PersistedConnectState | null {
     if (!raw) return null;
 
     const parsed = JSON.parse(raw) as Partial<PersistedConnectState>;
-    const fresh =
-      typeof parsed?.savedAt === 'number' &&
-      Date.now() - parsed.savedAt <= MAX_AGE_MS;
+    const fresh = typeof parsed?.savedAt === 'number' && Date.now() - parsed.savedAt <= MAX_AGE_MS;
 
     const hasUrl = typeof parsed?.url === 'string' && parsed.url.length > 0;
 

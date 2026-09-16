@@ -1,5 +1,7 @@
 'use client';
 
+import { usePermissions } from '@/hooks/use-permissions';
+import type { Control } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import {
   DropdownMenu,
@@ -7,12 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
-import type { Control } from '@db';
 import { MoreVertical, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { ControlDeleteDialog } from './ControlDeleteDialog';
-import { usePermissions } from '@/hooks/use-permissions';
 
 interface ControlHeaderActionsProps {
   control: Control;

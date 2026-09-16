@@ -44,12 +44,7 @@ describe('DraftsStrip', () => {
     const onContinue = vi.fn();
     const onDelete = vi.fn();
     render(
-      <DraftsStrip
-        drafts={[draft]}
-        profiles={[]}
-        onContinue={onContinue}
-        onDelete={onDelete}
-      />,
+      <DraftsStrip drafts={[draft]} profiles={[]} onContinue={onContinue} onDelete={onDelete} />,
     );
 
     expect(screen.getByText('2FA enforcement')).toBeInTheDocument();

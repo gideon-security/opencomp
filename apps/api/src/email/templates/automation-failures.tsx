@@ -75,8 +75,8 @@ export const AutomationFailuresEmail = ({
             </Text>
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
-              <strong>{failedCount}</strong> of <strong>{totalCount}</strong> automation(s)
-              failed on task <strong>"{taskTitle}"</strong> in{' '}
+              <strong>{failedCount}</strong> of <strong>{totalCount}</strong>{' '}
+              automation(s) failed on task <strong>"{taskTitle}"</strong> in{' '}
               <strong>{organizationName}</strong>.
             </Text>
 
@@ -105,7 +105,10 @@ export const AutomationFailuresEmail = ({
             <Section className="mt-[30px] mb-[20px]">
               <Text className="text-[12px] leading-[20px] text-[#666666]">
                 Don't want to receive task assignment notifications?{' '}
-                <Link href={unsubscribeUrl} className="text-[#121212] underline">
+                <Link
+                  href={unsubscribeUrl}
+                  className="text-[#121212] underline"
+                >
                   Manage your email preferences
                 </Link>
                 .

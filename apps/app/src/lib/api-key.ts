@@ -50,11 +50,7 @@ function safeEqualHex(a: string, b: string): boolean {
  * Verify a presented API key against a stored PBKDF2 hash. Any other stored
  * format fails closed.
  */
-function matchesStoredKey(
-  presentedKey: string,
-  storedHash: string,
-  salt: string | null,
-): boolean {
+function matchesStoredKey(presentedKey: string, storedHash: string, salt: string | null): boolean {
   if (!storedHash.startsWith(`${CURRENT_HASH_PREFIX}$`)) return false;
   try {
     const [, iterationsRaw, digest] = storedHash.split('$');
@@ -120,10 +116,7 @@ async function validateApiKeyValue(apiKey: string): Promise<string | null> {
     const apiKeyRecords = await db.apiKey.findMany({
       where: {
         isActive: true,
-        OR: [
-          { expiresAt: null },
-          { expiresAt: { gt: new Date() } },
-        ],
+        OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
         ...(keyPrefix ? { keyPrefix } : {}),
       },
       select: {

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { resolveNoActiveOrgRedirect } from './no-active-org-redirect';
 
 describe('resolveNoActiveOrgRedirect (CS-569)', () => {

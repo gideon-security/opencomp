@@ -61,7 +61,10 @@ function resolveCuaModel(logger: Logger): CuaModel {
 }
 
 function claudeFallbackModel(): CuaModel {
-  return { modelName: FALLBACK_CUA_MODEL, apiKey: process.env.ANTHROPIC_API_KEY };
+  return {
+    modelName: FALLBACK_CUA_MODEL,
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  };
 }
 
 async function runCuaNavigation({
@@ -275,7 +278,10 @@ export async function executeBrowserEvidence({
             navError instanceof Error ? navError.message : String(navError)
           }`,
         );
-        log('action', 'Primary navigation model unavailable — retrying with a backup model.');
+        log(
+          'action',
+          'Primary navigation model unavailable — retrying with a backup model.',
+        );
         await runCuaNavigation({
           stagehand: activeStagehand,
           instruction,

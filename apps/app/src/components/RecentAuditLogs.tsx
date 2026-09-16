@@ -1,27 +1,24 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
+import type { AuditLogWithRelations } from '@/hooks/use-audit-logs';
 import type { AuditLog } from '@db';
-import {
-  Badge,
-  Button,
-  HStack,
-  Section,
-  Spinner,
-  Stack,
-  Text,
-} from '@trycompai/design-system';
+import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
+import { Badge, Button, HStack, Section, Spinner, Stack, Text } from '@trycompai/design-system';
 import { ChevronLeft, ChevronRight } from '@trycompai/design-system/icons';
 import { formatDistanceToNow } from 'date-fns';
 import { ActivityIcon, ChevronDownIcon, ChevronRightIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import type { AuditLogWithRelations } from '@/hooks/use-audit-logs';
 
 const LOGS_PER_PAGE = 15;
 
 const getInitials = (name = '') =>
   name
-    ? name.split(' ').map((p) => p[0]).join('').toUpperCase().slice(0, 2)
+    ? name
+        .split(' ')
+        .map((p) => p[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
     : 'U';
 
 /** Extract plain text from a value that may be TipTap JSON */
@@ -38,7 +35,9 @@ function extractPlainText(str: string): string {
       };
       const text = extract(parsed).trim();
       if (text) return text;
-    } catch { /* not JSON, return as-is */ }
+    } catch {
+      /* not JSON, return as-is */
+    }
   }
   return str;
 }
@@ -50,14 +49,19 @@ const formatValue = (value: unknown): string => {
   return extractPlainText(str);
 };
 
-function parseChanges(log: AuditLog): Record<string, { previous: unknown; current: unknown }> | null {
+function parseChanges(
+  log: AuditLog,
+): Record<string, { previous: unknown; current: unknown }> | null {
   try {
     if (typeof log.data === 'object' && log.data !== null) {
       const data = log.data as Record<string, unknown>;
-      const changes = data.changes as Record<string, { previous: unknown; current: unknown }> | undefined;
+      const changes = data.changes as
+        Record<string, { previous: unknown; current: unknown }> | undefined;
       if (changes && Object.keys(changes).length > 0) return changes;
     }
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return null;
 }
 
@@ -84,25 +88,35 @@ function LogRow({ log }: { log: AuditLogWithRelations }) {
         </Avatar>
 
         <Text size="sm" as="span">
-          <Text as="span" size="sm" weight="medium">{userName}</Text>
+          <Text as="span" size="sm" weight="medium">
+            {userName}
+          </Text>
           {log.user?.role === 'admin' && (
             <>
-              {' '}<Badge>OpenComp</Badge>
+              {' '}
+              <Badge>OpenComp</Badge>
             </>
-          )}
-          {' '}
-          <Text as="span" size="sm" variant="muted">{log.description || 'made a change'}</Text>
+          )}{' '}
+          <Text as="span" size="sm" variant="muted">
+            {log.description || 'made a change'}
+          </Text>
           {changeCount > 0 && (
             <Text as="span" size="xs" variant="muted">
               {' '}
-              {expanded ? <ChevronDownIcon className="h-3 w-3 inline align-middle" /> : <ChevronRightIcon className="h-3 w-3 inline align-middle" />}
-              {' '}{changeCount} change{changeCount > 1 ? 's' : ''}
+              {expanded ? (
+                <ChevronDownIcon className="h-3 w-3 inline align-middle" />
+              ) : (
+                <ChevronRightIcon className="h-3 w-3 inline align-middle" />
+              )}{' '}
+              {changeCount} change{changeCount > 1 ? 's' : ''}
             </Text>
           )}
         </Text>
 
         <div className="shrink-0 ml-auto">
-          <Text size="xs" variant="muted" font="mono">{timeAgo}</Text>
+          <Text size="xs" variant="muted" font="mono">
+            {timeAgo}
+          </Text>
         </div>
       </HStack>
 
@@ -111,10 +125,13 @@ function LogRow({ log }: { log: AuditLogWithRelations }) {
           <Stack gap="xs">
             {Object.entries(changes).map(([field, { previous, current }]) => (
               <Text key={field} size="xs" variant="muted">
-                <Text as="span" size="xs" weight="medium">{field}</Text>
+                <Text as="span" size="xs" weight="medium">
+                  {field}
+                </Text>
                 {previous != null && String(previous) !== 'null' && (
                   <>
-                    {' '}<span className="line-through">{formatValue(previous)}</span>
+                    {' '}
+                    <span className="line-through">{formatValue(previous)}</span>
                   </>
                 )}
                 {' → '}
@@ -164,12 +181,7 @@ export function RecentAuditLogs({
   // a partial page (100 rows don't divide evenly by 15) fills in before you
   // cross it — no rows get skipped at the batch boundary.
   useEffect(() => {
-    if (
-      serverPaged &&
-      hasMore &&
-      !isLoadingMore &&
-      (page + 1) * LOGS_PER_PAGE > logs.length
-    ) {
+    if (serverPaged && hasMore && !isLoadingMore && (page + 1) * LOGS_PER_PAGE > logs.length) {
       onLoadMore();
     }
   }, [serverPaged, hasMore, isLoadingMore, page, logs.length, onLoadMore]);
@@ -217,13 +229,23 @@ export function RecentAuditLogs({
               {totalCount}
             </Text>
             <HStack gap="sm" align="center">
-              <Button variant="outline" size="sm" onClick={() => setPage((p) => p - 1)} disabled={page === 0}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage((p) => p - 1)}
+                disabled={page === 0}
+              >
                 <ChevronLeft size={14} />
               </Button>
               <Text size="xs" variant="muted">
                 {page + 1}/{totalPages}
               </Text>
-              <Button variant="outline" size="sm" onClick={() => setPage((p) => p + 1)} disabled={nextDisabled}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage((p) => p + 1)}
+                disabled={nextDisabled}
+              >
                 <ChevronRight size={14} />
               </Button>
             </HStack>

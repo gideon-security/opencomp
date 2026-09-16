@@ -83,9 +83,7 @@ export function MfaSetupHelp({ hostname }: MfaSetupHelpProps) {
         >
           {isLoading && (
             <>
-              <p className="text-[11px] text-muted-foreground">
-                Looking up the steps{forVendor}…
-              </p>
+              <p className="text-[11px] text-muted-foreground">Looking up the steps{forVendor}…</p>
               {['88%', '72%', '80%'].map((width) => (
                 <span
                   key={width}
@@ -101,8 +99,7 @@ export function MfaSetupHelp({ hostname }: MfaSetupHelpProps) {
 
           {!isLoading && error && (
             <p className="text-[11px] leading-relaxed text-muted-foreground">
-              Couldn&apos;t load the steps{forVendor}. Use the vendor&apos;s 2FA settings
-              page, or{' '}
+              Couldn&apos;t load the steps{forVendor}. Use the vendor&apos;s 2FA settings page, or{' '}
               <button
                 type="button"
                 onClick={() => retry()}

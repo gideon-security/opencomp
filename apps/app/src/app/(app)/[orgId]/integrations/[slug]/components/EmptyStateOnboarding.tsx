@@ -4,15 +4,15 @@ import { CloudShellSetup } from '@/components/integrations/CloudShellSetup';
 import { CredentialInput } from '@/components/integrations/CredentialInput';
 import type { IntegrationProvider } from '@/hooks/use-integration-platform';
 import { useIntegrationMutations } from '@/hooks/use-integration-platform';
-import { Button, Label } from '@trycompai/design-system';
 import {
-  getAwsCloudShellUrl,
   getAwsCloudShellScript,
+  getAwsCloudShellUrl,
   getAwsRemediationScript,
   normalizeAwsEnvironment,
 } from '@gideon-defender/integration-platform';
-import { useTranslations } from 'next-intl';
+import { Button, Label } from '@trycompai/design-system';
 import { ArrowRight, Shield } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import {
@@ -274,7 +274,9 @@ function ComingSoonState({ provider }: { provider: IntegrationProvider }) {
             </div>
           </div>
           <div className="rounded-lg bg-muted/40 border border-dashed px-4 py-5 text-center space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">{t('onboarding.comingSoon')}</p>
+            <p className="text-sm font-medium text-muted-foreground">
+              {t('onboarding.comingSoon')}
+            </p>
             <p className="text-xs text-muted-foreground/70 max-w-sm mx-auto">
               {t('onboarding.comingSoonDescription')}
             </p>
@@ -302,9 +304,7 @@ function OAuthSetup({
             <h3 className="text-sm font-semibold">
               {t('onboarding.connectProvider', { name: provider.name })}
             </h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {t('onboarding.redirectOAuth')}
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('onboarding.redirectOAuth')}</p>
           </div>
         </div>
         <Button onClick={onConnect}>
@@ -513,9 +513,7 @@ function CloudSetup({
   // AWS only — which scan engine the customer is choosing for this
   // connection. Sent in createConnection's credentials payload as the
   // `awsScanMode` variable, then read on every scan in cloud-security.service.
-  const [awsScanMode, setAwsScanMode] = useState<AwsScanModeChoice>(
-    DEFAULT_AWS_SCAN_MODE_CHOICE,
-  );
+  const [awsScanMode, setAwsScanMode] = useState<AwsScanModeChoice>(DEFAULT_AWS_SCAN_MODE_CHOICE);
 
   const allFields = provider.credentialFields ?? [];
   const visibleFields = allFields.filter(
@@ -605,9 +603,7 @@ function CloudSetup({
         )
       : regionOptions;
   const setupScript =
-    provider.id === 'aws'
-      ? getAwsCloudShellScript(awsEnvironment)
-      : (provider.setupScript ?? '');
+    provider.id === 'aws' ? getAwsCloudShellScript(awsEnvironment) : (provider.setupScript ?? '');
   const remediationScript = getAwsRemediationScript(awsEnvironment);
   const cloudShellUrl = getAwsCloudShellUrl(awsEnvironment);
 

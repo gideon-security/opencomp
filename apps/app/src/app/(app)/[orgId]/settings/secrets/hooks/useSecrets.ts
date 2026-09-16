@@ -30,8 +30,7 @@ export function useSecrets(options?: UseSecretsOptions) {
   const { data, error, isLoading, mutate } = useSWR(
     secretsListKey(),
     async () => {
-      const response =
-        await apiClient.get<SecretsApiResponse>('/v1/secrets');
+      const response = await apiClient.get<SecretsApiResponse>('/v1/secrets');
       if (response.error) throw new Error(response.error);
       if (!response.data?.data) return [];
       return response.data.data;
@@ -57,14 +56,8 @@ export function useSecrets(options?: UseSecretsOptions) {
     return response.data!;
   };
 
-  const updateSecret = async (
-    id: string,
-    body: Record<string, string | null>,
-  ) => {
-    const response = await apiClient.put<Secret>(
-      `/v1/secrets/${id}`,
-      body,
-    );
+  const updateSecret = async (id: string, body: Record<string, string | null>) => {
+    const response = await apiClient.put<Secret>(`/v1/secrets/${id}`, body);
     if (response.error) throw new Error(response.error);
     await mutate();
     return response.data!;

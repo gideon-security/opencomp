@@ -1,5 +1,5 @@
-import { APICallError, generateObject } from 'ai';
 import { logger } from '@gideon-defender/trigger-local';
+import { APICallError, generateObject } from 'ai';
 import { sleep } from './utils';
 
 /**

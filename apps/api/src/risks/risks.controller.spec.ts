@@ -501,5 +501,4 @@ describe('RisksController', () => {
       expect(result).not.toHaveProperty('authenticatedUser');
     });
   });
-
 });

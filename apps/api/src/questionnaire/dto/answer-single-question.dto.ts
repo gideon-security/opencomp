@@ -10,7 +10,8 @@ export class AnswerSingleQuestionDto {
   question!: string;
 
   @ApiProperty({
-    description: 'Zero-based index of this question in the questionnaire or page batch.',
+    description:
+      'Zero-based index of this question in the questionnaire or page batch.',
     example: 0,
     minimum: 0,
   })
@@ -19,7 +20,8 @@ export class AnswerSingleQuestionDto {
   questionIndex!: number;
 
   @ApiProperty({
-    description: 'Total number of questions in the current questionnaire or page batch.',
+    description:
+      'Total number of questions in the current questionnaire or page batch.',
     example: 12,
     minimum: 1,
   })

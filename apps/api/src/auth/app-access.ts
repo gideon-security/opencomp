@@ -25,7 +25,7 @@ function mergeInto(
 ): void {
   for (const [resource, actions] of Object.entries(perms)) {
     if (!Array.isArray(actions)) continue;
-    (target[resource] ??= new Set<string>());
+    target[resource] ??= new Set<string>();
     for (const action of actions) target[resource].add(action);
   }
 }

@@ -4,8 +4,8 @@ import { Alert, Heading, Stack, Text } from '@trycompai/design-system';
 import { Analytics, WarningAlt } from '@trycompai/design-system/icons';
 import type { IsmsMetric } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
-import { MetricsDueCard, type DueMeasurementRow } from './MetricsDueCard';
 import type { MetricFormValues } from './metric-schema';
+import { MetricsDueCard, type DueMeasurementRow } from './MetricsDueCard';
 import { computeDueEntries } from './monitoring-constants';
 import { MonitoringForm } from './MonitoringForm';
 import { MonitoringRow, type MonitoringRowHandlers } from './MonitoringRow';
@@ -30,9 +30,7 @@ export function MonitoringTable({
   ...rowHandlers
 }: MonitoringTableProps) {
   const rows = Array.isArray(metrics) ? metrics : [];
-  const memberNames = Object.fromEntries(
-    memberOptions.map((member) => [member.id, member.name]),
-  );
+  const memberNames = Object.fromEntries(memberOptions.map((member) => [member.id, member.name]));
   const now = new Date();
   // Every metric currently due or overdue, across all metrics — the ticket's
   // "Metrics due" bulk-entry view, which doubles as cross-metric backfill.
@@ -44,8 +42,7 @@ export function MonitoringTable({
       {validationMessages.length > 0 ? (
         <Alert variant="warning" icon={<WarningAlt />}>
           <Text size="sm">
-            Before the Clause 9.1 document can be submitted:{' '}
-            {validationMessages.join(' ')}
+            Before the Clause 9.1 document can be submitted: {validationMessages.join(' ')}
           </Text>
         </Alert>
       ) : null}
@@ -56,8 +53,7 @@ export function MonitoringTable({
             <Stack gap="1">
               <Heading level="4">Metrics due</Heading>
               <Text size="sm" variant="muted">
-                Fill in the values and save once — one entry per metric per
-                period.
+                Fill in the values and save once — one entry per metric per period.
                 {overdueCount > 0
                   ? ` ${overdueCount} overdue period${overdueCount === 1 ? '' : 's'} can be backfilled here; backfilled values keep today's recorded-on date.`
                   : ''}
@@ -66,9 +62,7 @@ export function MonitoringTable({
           }
         >
           <MetricsDueCard
-            key={dueEntries
-              .map((entry) => `${entry.metric.id}:${entry.periodKey}`)
-              .join('|')}
+            key={dueEntries.map((entry) => `${entry.metric.id}:${entry.periodKey}`).join('|')}
             entries={dueEntries}
             showMetricName
             onSaveAll={onBulkSaveMeasurements}

@@ -57,7 +57,9 @@ describe('OffboardingChecklistService', () => {
     getAttachments: jest.fn(),
     uploadAttachment: jest.fn(),
     deleteAttachment: jest.fn(),
-    getPresignedDownloadUrl: jest.fn().mockResolvedValue('https://signed-url.example.com'),
+    getPresignedDownloadUrl: jest
+      .fn()
+      .mockResolvedValue('https://signed-url.example.com'),
   };
 
   let service: OffboardingChecklistService;
@@ -65,7 +67,9 @@ describe('OffboardingChecklistService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    accessRevocationService = new AccessRevocationService(mockAttachmentsService as never);
+    accessRevocationService = new AccessRevocationService(
+      mockAttachmentsService as never,
+    );
     service = new OffboardingChecklistService(
       mockAttachmentsService as never,
       accessRevocationService,
@@ -159,7 +163,12 @@ describe('OffboardingChecklistService', () => {
         },
       ]);
       mockDb.attachment.findMany.mockResolvedValue([
-        { id: 'att_1', name: 'evidence.pdf', url: 's3://bucket/key', entityId: 'occ_1' },
+        {
+          id: 'att_1',
+          name: 'evidence.pdf',
+          url: 's3://bucket/key',
+          entityId: 'occ_1',
+        },
       ]);
 
       const result = await service.getMemberChecklist('org_1', 'mem_1');
@@ -199,17 +208,17 @@ describe('OffboardingChecklistService', () => {
       });
 
       expect(result.id).toBe('occ_1');
-      expect(
-        mockDb.offboardingChecklistCompletion.create,
-      ).toHaveBeenCalledWith({
-        data: {
-          organizationId: 'org_1',
-          memberId: 'mem_1',
-          templateItemId: 'oct_1',
-          completedById: 'usr_1',
-          notes: 'Done',
+      expect(mockDb.offboardingChecklistCompletion.create).toHaveBeenCalledWith(
+        {
+          data: {
+            organizationId: 'org_1',
+            memberId: 'mem_1',
+            templateItemId: 'oct_1',
+            completedById: 'usr_1',
+            notes: 'Done',
+          },
         },
-      });
+      );
     });
 
     it('throws if already completed', async () => {
@@ -305,9 +314,9 @@ describe('OffboardingChecklistService', () => {
       });
 
       expect(mockAttachmentsService.deleteAttachment).toHaveBeenCalledTimes(2);
-      expect(
-        mockDb.offboardingChecklistCompletion.delete,
-      ).toHaveBeenCalledWith({ where: { id: 'occ_1' } });
+      expect(mockDb.offboardingChecklistCompletion.delete).toHaveBeenCalledWith(
+        { where: { id: 'occ_1' } },
+      );
     });
 
     it('throws if completion not found', async () => {
@@ -337,15 +346,11 @@ describe('OffboardingChecklistService', () => {
 
       const result = await service.deleteTemplateItem('org_1', 'oct_1');
 
-      expect(
-        mockDb.offboardingChecklistTemplate.update,
-      ).toHaveBeenCalledWith({
+      expect(mockDb.offboardingChecklistTemplate.update).toHaveBeenCalledWith({
         where: { id: 'oct_1' },
         data: { isEnabled: false },
       });
-      expect(
-        mockDb.offboardingChecklistTemplate.delete,
-      ).not.toHaveBeenCalled();
+      expect(mockDb.offboardingChecklistTemplate.delete).not.toHaveBeenCalled();
       expect(result.isEnabled).toBe(false);
     });
 
@@ -361,12 +366,10 @@ describe('OffboardingChecklistService', () => {
 
       await service.deleteTemplateItem('org_1', 'oct_2');
 
-      expect(
-        mockDb.offboardingChecklistTemplate.delete,
-      ).toHaveBeenCalledWith({ where: { id: 'oct_2' } });
-      expect(
-        mockDb.offboardingChecklistTemplate.update,
-      ).not.toHaveBeenCalled();
+      expect(mockDb.offboardingChecklistTemplate.delete).toHaveBeenCalledWith({
+        where: { id: 'oct_2' },
+      });
+      expect(mockDb.offboardingChecklistTemplate.update).not.toHaveBeenCalled();
     });
 
     it('throws if item not found', async () => {
@@ -472,7 +475,10 @@ describe('OffboardingChecklistService', () => {
 
   describe('revokeVendorAccess', () => {
     it('creates revocation record', async () => {
-      mockDb.member.findFirst.mockResolvedValue({ id: 'mem_1', organizationId: 'org_1' });
+      mockDb.member.findFirst.mockResolvedValue({
+        id: 'mem_1',
+        organizationId: 'org_1',
+      });
       mockDb.vendor.findFirst.mockResolvedValue({ id: 'vnd_1' });
       mockDb.offboardingAccessRevocation.findUnique.mockResolvedValue(null);
       mockDb.offboardingAccessRevocation.create.mockResolvedValue({
@@ -495,7 +501,10 @@ describe('OffboardingChecklistService', () => {
     });
 
     it('throws if vendor not found', async () => {
-      mockDb.member.findFirst.mockResolvedValue({ id: 'mem_1', organizationId: 'org_1' });
+      mockDb.member.findFirst.mockResolvedValue({
+        id: 'mem_1',
+        organizationId: 'org_1',
+      });
       mockDb.vendor.findFirst.mockResolvedValue(null);
 
       await expect(
@@ -509,7 +518,10 @@ describe('OffboardingChecklistService', () => {
     });
 
     it('throws if already revoked', async () => {
-      mockDb.member.findFirst.mockResolvedValue({ id: 'mem_1', organizationId: 'org_1' });
+      mockDb.member.findFirst.mockResolvedValue({
+        id: 'mem_1',
+        organizationId: 'org_1',
+      });
       mockDb.vendor.findFirst.mockResolvedValue({ id: 'vnd_1' });
       mockDb.offboardingAccessRevocation.findUnique.mockResolvedValue({
         id: 'oar_1',
@@ -542,9 +554,9 @@ describe('OffboardingChecklistService', () => {
         vendorId: 'vnd_1',
       });
 
-      expect(
-        mockDb.offboardingAccessRevocation.delete,
-      ).toHaveBeenCalledWith({ where: { id: 'oar_1' } });
+      expect(mockDb.offboardingAccessRevocation.delete).toHaveBeenCalledWith({
+        where: { id: 'oar_1' },
+      });
       expect(result.success).toBe(true);
     });
 

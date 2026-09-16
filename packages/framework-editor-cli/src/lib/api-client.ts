@@ -1,4 +1,4 @@
-import { getSessionToken, getApiUrl, clearCredentials } from './config.js';
+import { clearCredentials, getApiUrl, getSessionToken } from './config.js';
 import { ApiError, AuthRequiredError } from './errors.js';
 
 const FRAMEWORK_EDITOR_PREFIX = '/v1/framework-editor';
@@ -11,7 +11,11 @@ interface RequestOptions {
   requireAuth?: boolean;
 }
 
-function buildUrl(path: string, apiUrl: string, query?: Record<string, string | number | undefined>): string {
+function buildUrl(
+  path: string,
+  apiUrl: string,
+  query?: Record<string, string | number | undefined>,
+): string {
   const base = `${apiUrl}${FRAMEWORK_EDITOR_PREFIX}${path}`;
   const params = new URLSearchParams();
   if (query) {

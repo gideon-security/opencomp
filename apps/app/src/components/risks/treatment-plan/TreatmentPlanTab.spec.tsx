@@ -89,9 +89,7 @@ describe('TreatmentPlanTab', () => {
     render(<TreatmentPlanTab {...buildProps({ entity })} />);
     const headline = screen.getByLabelText(/From 7 to 7 out of 10/i);
     expect(headline).toBeInTheDocument();
-    expect(
-      screen.getByText(/until tasks supporting the strategy are linked/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/until tasks supporting the strategy are linked/i)).toBeInTheDocument();
   });
 
   it('calls onUpdateStrategy when strategy card is clicked', async () => {
@@ -111,9 +109,7 @@ describe('TreatmentPlanTab', () => {
 
   it('switches the regenerate label based on description presence', () => {
     const { rerender } = render(<TreatmentPlanTab {...buildProps()} />);
-    expect(
-      screen.getByRole('button', { name: /Generate treatment plan/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Generate treatment plan/i })).toBeInTheDocument();
 
     rerender(
       <TreatmentPlanTab
@@ -132,12 +128,8 @@ describe('TreatmentPlanTab', () => {
       treatmentStrategyDescription: 'We accept this risk.',
     };
     render(<TreatmentPlanTab {...buildProps({ entity })} />);
-    expect(
-      screen.queryByRole('button', { name: /Generate treatment plan/i }),
-    ).toBeNull();
-    expect(
-      screen.queryByRole('button', { name: /Regenerate with AI/i }),
-    ).toBeNull();
+    expect(screen.queryByRole('button', { name: /Generate treatment plan/i })).toBeNull();
+    expect(screen.queryByRole('button', { name: /Regenerate with AI/i })).toBeNull();
   });
 
   it('shows the correct description when switching strategies via strategyDescriptions', () => {

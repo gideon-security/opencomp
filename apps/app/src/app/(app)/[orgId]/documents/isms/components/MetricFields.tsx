@@ -16,10 +16,7 @@ import {
 import { Controller, type Control } from 'react-hook-form';
 import type { ApproverOption } from './IsmsApprovalSection';
 import type { MetricFormValues } from './metric-schema';
-import {
-  METRIC_CADENCES,
-  METRIC_CADENCE_LABELS,
-} from './monitoring-constants';
+import { METRIC_CADENCES, METRIC_CADENCE_LABELS } from './monitoring-constants';
 import { IsmsFieldLabel } from './shared';
 
 interface MetricFieldsProps {
@@ -50,9 +47,7 @@ function MemberSelect({
         <SelectValue placeholder="Security & Privacy Owner (default)" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="spo-default">
-          Security &amp; Privacy Owner (default)
-        </SelectItem>
+        <SelectItem value="spo-default">Security &amp; Privacy Owner (default)</SelectItem>
         {memberOptions.map((option) => (
           <SelectItem key={option.id} value={option.id}>
             {option.name}
@@ -101,11 +96,7 @@ export function MetricFields({ control, memberOptions, showName }: MetricFieldsP
           control={control}
           name="method"
           render={({ field: { ref: _ref, ...field } }) => (
-            <Textarea
-              {...field}
-              rows={2}
-              aria-label="Method (how the value is derived)"
-            />
+            <Textarea {...field} rows={2} aria-label="Method (how the value is derived)" />
           )}
         />
       </IsmsFieldLabel>

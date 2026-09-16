@@ -117,10 +117,9 @@ export function AllowedEmailsManager({ initialEmails }: AllowedEmailsManagerProp
               </TooltipTrigger>
               <TooltipContent>
                 <p className="max-w-xs">
-                  Individuals with these exact email addresses receive direct
-                  access to the trust portal without signing an NDA when their
-                  request is approved. Use this when an NDA has already been
-                  signed outside Comp.
+                  Individuals with these exact email addresses receive direct access to the trust
+                  portal without signing an NDA when their request is approved. Use this when an NDA
+                  has already been signed outside Comp.
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -190,9 +189,8 @@ export function AllowedEmailsManager({ initialEmails }: AllowedEmailsManagerProp
           <AlertDialogHeader>
             <AlertDialogTitle>Remove Email</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to remove <strong>{emailToDelete}</strong> from
-              the allowed emails list? This person will need to sign an NDA when
-              requesting access.
+              Are you sure you want to remove <strong>{emailToDelete}</strong> from the allowed
+              emails list? This person will need to sign an NDA when requesting access.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

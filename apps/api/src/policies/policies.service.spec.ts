@@ -75,7 +75,9 @@ jest.mock('../app/s3', () => ({
   s3Client: {
     send: jest.fn(),
   },
-  getSignedUrl: jest.fn(async () => 'https://test-bucket.s3.amazonaws.com/signed-url'),
+  getSignedUrl: jest.fn(
+    async () => 'https://test-bucket.s3.amazonaws.com/signed-url',
+  ),
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -101,15 +103,17 @@ const { db } = require('@db') as {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { filterComplianceMembers: mockedFilterComplianceMembers } = require('../utils/compliance-filters') as {
-  filterComplianceMembers: jest.Mock;
-};
+const { filterComplianceMembers: mockedFilterComplianceMembers } =
+  require('../utils/compliance-filters') as {
+    filterComplianceMembers: jest.Mock;
+  };
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { s3Client: mockedS3Client, getSignedUrl: mockedGetSignedUrl } = require('../app/s3') as {
-  s3Client: { send: jest.Mock };
-  getSignedUrl: jest.Mock;
-};
+const { s3Client: mockedS3Client, getSignedUrl: mockedGetSignedUrl } =
+  require('../app/s3') as {
+    s3Client: { send: jest.Mock };
+    getSignedUrl: jest.Mock;
+  };
 
 describe('PoliciesService', () => {
   let service: PoliciesService;
@@ -193,17 +197,31 @@ describe('PoliciesService', () => {
     it('clears signedBy[] when the status transitions to published', async () => {
       const orgId = 'org_abc';
       const existing = { id: 'pol_1', organizationId: orgId, status: 'draft' };
-      const updatedResult = { ...existing, status: 'published', signedBy: [], name: 'Test Policy' };
+      const updatedResult = {
+        ...existing,
+        status: 'published',
+        signedBy: [],
+        name: 'Test Policy',
+      };
 
       // Make $transaction execute the callback with a tx proxy backed by db mocks
-      db.$transaction.mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) => {
-        const tx = { policy: { findFirst: db.policy.findFirst, update: db.policy.update } };
-        return callback(tx);
-      });
+      db.$transaction.mockImplementation(
+        async (callback: (tx: unknown) => Promise<unknown>) => {
+          const tx = {
+            policy: {
+              findFirst: db.policy.findFirst,
+              update: db.policy.update,
+            },
+          };
+          return callback(tx);
+        },
+      );
       db.policy.findFirst.mockResolvedValueOnce(existing);
       db.policy.update.mockResolvedValueOnce(updatedResult);
 
-      await service.updateById('pol_1', orgId, { status: 'published' } as never);
+      await service.updateById('pol_1', orgId, {
+        status: 'published',
+      } as never);
 
       expect(db.policy.update).toHaveBeenCalledTimes(1);
       const updateArg = db.policy.update.mock.calls[0][0];
@@ -214,13 +232,24 @@ describe('PoliciesService', () => {
 
     it('does not clear signedBy when the policy is already published and status is re-sent', async () => {
       const orgId = 'org_abc';
-      const existing = { id: 'pol_1', organizationId: orgId, status: 'published' };
+      const existing = {
+        id: 'pol_1',
+        organizationId: orgId,
+        status: 'published',
+      };
       const updatedResult = { ...existing, description: 'tweak', name: 'Test' };
 
-      db.$transaction.mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) => {
-        const tx = { policy: { findFirst: db.policy.findFirst, update: db.policy.update } };
-        return callback(tx);
-      });
+      db.$transaction.mockImplementation(
+        async (callback: (tx: unknown) => Promise<unknown>) => {
+          const tx = {
+            policy: {
+              findFirst: db.policy.findFirst,
+              update: db.policy.update,
+            },
+          };
+          return callback(tx);
+        },
+      );
       db.policy.findFirst.mockResolvedValueOnce(existing);
       db.policy.update.mockResolvedValueOnce(updatedResult);
 
@@ -236,17 +265,35 @@ describe('PoliciesService', () => {
 
     it('does not clear signedBy[] on non-publish updates', async () => {
       const orgId = 'org_abc';
-      const existing = { id: 'pol_1', organizationId: orgId, status: 'published', signedBy: ['usr_a'] };
-      const updatedResult = { ...existing, description: 'new desc', name: 'Test Policy' };
+      const existing = {
+        id: 'pol_1',
+        organizationId: orgId,
+        status: 'published',
+        signedBy: ['usr_a'],
+      };
+      const updatedResult = {
+        ...existing,
+        description: 'new desc',
+        name: 'Test Policy',
+      };
 
-      db.$transaction.mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) => {
-        const tx = { policy: { findFirst: db.policy.findFirst, update: db.policy.update } };
-        return callback(tx);
-      });
+      db.$transaction.mockImplementation(
+        async (callback: (tx: unknown) => Promise<unknown>) => {
+          const tx = {
+            policy: {
+              findFirst: db.policy.findFirst,
+              update: db.policy.update,
+            },
+          };
+          return callback(tx);
+        },
+      );
       db.policy.findFirst.mockResolvedValueOnce(existing);
       db.policy.update.mockResolvedValueOnce(updatedResult);
 
-      await service.updateById('pol_1', orgId, { description: 'new desc' } as never);
+      await service.updateById('pol_1', orgId, {
+        description: 'new desc',
+      } as never);
 
       const updateArg = db.policy.update.mock.calls[0][0];
       expect(updateArg.data.signedBy).toBeUndefined();
@@ -269,16 +316,29 @@ describe('PoliciesService', () => {
         pdfUrl: null,
         signedBy: ['usr_a', 'usr_b'],
       };
-      const updatedResult = { ...existing, status: 'published', name: 'Test Policy' };
+      const updatedResult = {
+        ...existing,
+        status: 'published',
+        name: 'Test Policy',
+      };
 
-      db.$transaction.mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) => {
-        const tx = { policy: { findFirst: db.policy.findFirst, update: db.policy.update } };
-        return callback(tx);
-      });
+      db.$transaction.mockImplementation(
+        async (callback: (tx: unknown) => Promise<unknown>) => {
+          const tx = {
+            policy: {
+              findFirst: db.policy.findFirst,
+              update: db.policy.update,
+            },
+          };
+          return callback(tx);
+        },
+      );
       db.policy.findFirst.mockResolvedValueOnce(existing);
       db.policy.update.mockResolvedValueOnce(updatedResult);
 
-      await service.updateById('pol_1', orgId, { status: 'published' } as never);
+      await service.updateById('pol_1', orgId, {
+        status: 'published',
+      } as never);
 
       const updateArg = db.policy.update.mock.calls[0][0];
       // Acknowledgments are NOT wiped — content never changed.
@@ -301,16 +361,29 @@ describe('PoliciesService', () => {
         pdfUrl: null,
         signedBy: ['usr_a'],
       };
-      const updatedResult = { ...existing, status: 'published', name: 'Test Policy' };
+      const updatedResult = {
+        ...existing,
+        status: 'published',
+        name: 'Test Policy',
+      };
 
-      db.$transaction.mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) => {
-        const tx = { policy: { findFirst: db.policy.findFirst, update: db.policy.update } };
-        return callback(tx);
-      });
+      db.$transaction.mockImplementation(
+        async (callback: (tx: unknown) => Promise<unknown>) => {
+          const tx = {
+            policy: {
+              findFirst: db.policy.findFirst,
+              update: db.policy.update,
+            },
+          };
+          return callback(tx);
+        },
+      );
       db.policy.findFirst.mockResolvedValueOnce(existing);
       db.policy.update.mockResolvedValueOnce(updatedResult);
 
-      await service.updateById('pol_1', orgId, { status: 'published' } as never);
+      await service.updateById('pol_1', orgId, {
+        status: 'published',
+      } as never);
 
       const updateArg = db.policy.update.mock.calls[0][0];
       expect(updateArg.data.signedBy).toEqual([]);
@@ -323,7 +396,10 @@ describe('PoliciesService', () => {
     it('syncs draftContent with content when updating a draft policy', async () => {
       const orgId = 'org_abc';
       const newContent = [
-        { type: 'paragraph', content: [{ type: 'text', text: 'rewritten body' }] },
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'rewritten body' }],
+        },
       ];
       const existing = {
         id: 'pol_1',
@@ -335,13 +411,18 @@ describe('PoliciesService', () => {
         pdfUrl: null,
       };
 
-      db.$transaction.mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) => {
-        const tx = {
-          policy: { findFirst: db.policy.findFirst, update: db.policy.update },
-          policyVersion: { update: db.policyVersion.update },
-        };
-        return callback(tx);
-      });
+      db.$transaction.mockImplementation(
+        async (callback: (tx: unknown) => Promise<unknown>) => {
+          const tx = {
+            policy: {
+              findFirst: db.policy.findFirst,
+              update: db.policy.update,
+            },
+            policyVersion: { update: db.policyVersion.update },
+          };
+          return callback(tx);
+        },
+      );
       db.policy.findFirst.mockResolvedValueOnce(existing);
       db.policy.update.mockResolvedValueOnce({
         id: 'pol_1',
@@ -350,7 +431,9 @@ describe('PoliciesService', () => {
         currentVersionId: 'pv_1',
       });
 
-      await service.updateById('pol_1', orgId, { content: newContent } as never);
+      await service.updateById('pol_1', orgId, {
+        content: newContent,
+      } as never);
 
       const updateArg = db.policy.update.mock.calls[0][0];
       expect(updateArg.data.content).toEqual(newContent);
@@ -374,20 +457,28 @@ describe('PoliciesService', () => {
         { type: 'paragraph', content: [{ type: 'text', text: 'old body' }] },
       ];
       const newContent = [
-        { type: 'paragraph', content: [{ type: 'text', text: 'rewritten body' }] },
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'rewritten body' }],
+        },
       ];
 
-      db.$transaction.mockImplementation(async (callback: (tx: unknown) => Promise<unknown>) => {
-        const tx = {
-          policy: { findFirst: db.policy.findFirst, update: db.policy.update },
-          policyVersion: {
-            findFirst: db.policyVersion.findFirst,
-            create: db.policyVersion.create,
-            update: db.policyVersion.update,
-          },
-        };
-        return callback(tx);
-      });
+      db.$transaction.mockImplementation(
+        async (callback: (tx: unknown) => Promise<unknown>) => {
+          const tx = {
+            policy: {
+              findFirst: db.policy.findFirst,
+              update: db.policy.update,
+            },
+            policyVersion: {
+              findFirst: db.policyVersion.findFirst,
+              create: db.policyVersion.create,
+              update: db.policyVersion.update,
+            },
+          };
+          return callback(tx);
+        },
+      );
       db.policy.findFirst.mockResolvedValueOnce({
         id: 'pol_1',
         organizationId: orgId,
@@ -404,7 +495,9 @@ describe('PoliciesService', () => {
         currentVersionId: 'pv_1',
       });
 
-      await service.updateById('pol_1', orgId, { content: newContent } as never);
+      await service.updateById('pol_1', orgId, {
+        content: newContent,
+      } as never);
 
       // Round-trip the row the update just wrote into the publish call.
       const written = db.policy.update.mock.calls[0][0].data;
@@ -436,7 +529,12 @@ describe('PoliciesService', () => {
     describe('auto-route for published content updates', () => {
       const orgId = 'org_abc';
       const policyId = 'pol_1';
-      const newContent = [{ type: 'paragraph', content: [{ type: 'text', text: 'fresh content' }] }];
+      const newContent = [
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'fresh content' }],
+        },
+      ];
 
       const mockAutoRouteTx = () => {
         db.$transaction.mockImplementation(
@@ -467,7 +565,10 @@ describe('PoliciesService', () => {
         };
         db.policy.findFirst.mockResolvedValueOnce(existing);
         db.policyVersion.findFirst.mockResolvedValueOnce({ version: 3 });
-        db.policyVersion.create.mockResolvedValueOnce({ id: 'pv_new', version: 4 });
+        db.policyVersion.create.mockResolvedValueOnce({
+          id: 'pv_new',
+          version: 4,
+        });
         db.policy.update.mockResolvedValueOnce({
           id: policyId,
           name: 'Test',
@@ -476,7 +577,9 @@ describe('PoliciesService', () => {
         });
         mockAutoRouteTx();
 
-        await service.updateById(policyId, orgId, { content: newContent } as never);
+        await service.updateById(policyId, orgId, {
+          content: newContent,
+        } as never);
 
         // A new PolicyVersion was created with the new content + next version number
         expect(db.policyVersion.create).toHaveBeenCalledTimes(1);
@@ -508,11 +611,19 @@ describe('PoliciesService', () => {
         };
         db.policy.findFirst.mockResolvedValueOnce(existing);
         db.policyVersion.findFirst.mockResolvedValueOnce({ version: 1 });
-        db.policyVersion.create.mockResolvedValueOnce({ id: 'pv_new', version: 2 });
-        db.policy.update.mockResolvedValueOnce({ id: policyId, status: 'published' });
+        db.policyVersion.create.mockResolvedValueOnce({
+          id: 'pv_new',
+          version: 2,
+        });
+        db.policy.update.mockResolvedValueOnce({
+          id: policyId,
+          status: 'published',
+        });
         mockAutoRouteTx();
 
-        await service.updateById(policyId, orgId, { content: newContent } as never);
+        await service.updateById(policyId, orgId, {
+          content: newContent,
+        } as never);
 
         expect(db.policyVersion.create).toHaveBeenCalledTimes(1);
         const policyUpdateArg = db.policy.update.mock.calls[0][0];
@@ -577,7 +688,9 @@ describe('PoliciesService', () => {
         });
         mockAutoRouteTx();
 
-        await service.updateById(policyId, orgId, { description: 'tweak' } as never);
+        await service.updateById(policyId, orgId, {
+          description: 'tweak',
+        } as never);
 
         // No new version created — just a normal Policy update
         expect(db.policyVersion.create).not.toHaveBeenCalled();
@@ -594,7 +707,9 @@ describe('PoliciesService', () => {
         { id: 'pol_2', name: 'Backup', frequency: null },
       ];
       db.policy.findMany.mockResolvedValueOnce(drafts);
-      db.$transaction.mockImplementation((updates: unknown[]) => Promise.resolve(updates));
+      db.$transaction.mockImplementation((updates: unknown[]) =>
+        Promise.resolve(updates),
+      );
       db.policy.update.mockImplementation((args) => args);
       db.member.findMany.mockResolvedValueOnce([]);
 
@@ -801,7 +916,11 @@ describe('PoliciesService', () => {
         {
           id: 'mem_signed',
           role: 'employee',
-          user: { email: 'signed@example.com', name: 'Signed User', role: null },
+          user: {
+            email: 'signed@example.com',
+            name: 'Signed User',
+            role: null,
+          },
           organization: { id: orgId, name: 'Acme' },
         },
         {
@@ -899,7 +1018,10 @@ describe('PoliciesService', () => {
         approverId,
       };
       db.policy.findUnique.mockResolvedValueOnce(stalePolicy);
-      db.policy.update.mockResolvedValueOnce({ ...stalePolicy, approverId: null });
+      db.policy.update.mockResolvedValueOnce({
+        ...stalePolicy,
+        approverId: null,
+      });
 
       await expect(
         service.acceptChanges('pol_1', orgId, { approverId }),
@@ -983,7 +1105,10 @@ describe('PoliciesService', () => {
         approverId,
       };
       db.policy.findUnique.mockResolvedValueOnce(stalePolicy);
-      db.policy.update.mockResolvedValueOnce({ ...stalePolicy, approverId: null });
+      db.policy.update.mockResolvedValueOnce({
+        ...stalePolicy,
+        approverId: null,
+      });
 
       await expect(
         service.denyChanges('pol_1', orgId, { approverId }),
@@ -1075,7 +1200,9 @@ describe('PoliciesService', () => {
       );
 
       expect(result).toEqual({ versionId: 'pv_2', version: 2 });
-      expect(mockAttachmentsService.copyPolicyVersionPdf).not.toHaveBeenCalled();
+      expect(
+        mockAttachmentsService.copyPolicyVersionPdf,
+      ).not.toHaveBeenCalled();
     });
 
     it('creates a version with non-empty editor content', async () => {
@@ -1300,8 +1427,15 @@ describe('PoliciesService', () => {
     const organizationId = 'org_abc';
     const userId = 'usr_caller';
 
-    const draftContent = [{ type: 'paragraph', content: [{ type: 'text', text: 'old draft' }] }];
-    const versionContent = [{ type: 'paragraph', content: [{ type: 'text', text: 'fresh version content' }] }];
+    const draftContent = [
+      { type: 'paragraph', content: [{ type: 'text', text: 'old draft' }] },
+    ];
+    const versionContent = [
+      {
+        type: 'paragraph',
+        content: [{ type: 'text', text: 'fresh version content' }],
+      },
+    ];
 
     const buildPolicy = (overrides: Record<string, unknown> = {}) => ({
       id: policyId,
@@ -1431,7 +1565,10 @@ describe('PoliciesService', () => {
       db.member.findFirst.mockResolvedValueOnce({ id: 'mem_caller' });
       db.policy.findUnique.mockResolvedValueOnce(buildPolicy());
       db.policyVersion.findFirst.mockResolvedValueOnce({ version: 1 });
-      db.policyVersion.create.mockResolvedValueOnce({ id: 'pv_new', version: 2 });
+      db.policyVersion.create.mockResolvedValueOnce({
+        id: 'pv_new',
+        version: 2,
+      });
       mockTransactionTx();
 
       const result = await service.publishVersion(
@@ -1472,7 +1609,10 @@ describe('PoliciesService', () => {
     it('throws when the policy has an approval pending (guard before content read)', async () => {
       db.member.findFirst.mockResolvedValueOnce({ id: 'mem_caller' });
       db.policy.findUnique.mockResolvedValueOnce(
-        buildPolicy({ pendingVersionId: 'pv_pending', approverId: 'mem_approver' }),
+        buildPolicy({
+          pendingVersionId: 'pv_pending',
+          approverId: 'mem_approver',
+        }),
       );
 
       await expect(
@@ -1511,7 +1651,9 @@ describe('PoliciesService', () => {
       });
 
       expect(result.uploadUrl).toBe('https://signed.example/url');
-      expect(result.s3Key.startsWith(`${orgId}/policies/${policyId}/`)).toBe(true);
+      expect(result.s3Key.startsWith(`${orgId}/policies/${policyId}/`)).toBe(
+        true,
+      );
       expect(result.s3Key).toContain('My_Policy.pdf');
       expect(result.expiresIn).toBe(900);
     });
@@ -1611,7 +1753,9 @@ describe('PoliciesService', () => {
         fileType: 'application/pdf',
       });
 
-      expect(result.s3Key.startsWith(`${orgId}/policies/${policyId}/`)).toBe(true);
+      expect(result.s3Key.startsWith(`${orgId}/policies/${policyId}/`)).toBe(
+        true,
+      );
       expect(result.s3Key).not.toContain('/v'); // no version prefix
     });
 

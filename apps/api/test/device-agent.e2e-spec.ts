@@ -356,7 +356,10 @@ describe('DeviceAgent (e2e)', () => {
         // first update call is from registerWithSerial
         .mockResolvedValueOnce(existingDevice)
         // second update call links new session
-        .mockResolvedValueOnce({ ...existingDevice, agentSessionId: SESSION_ID_NEW });
+        .mockResolvedValueOnce({
+          ...existingDevice,
+          agentSessionId: SESSION_ID_NEW,
+        });
       mockSession.delete.mockResolvedValueOnce({});
 
       await request(app.getHttpServer())

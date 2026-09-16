@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { IsmsAudit, IsmsAuditControl } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
@@ -158,7 +158,9 @@ describe('AuditControlsTable', () => {
     // The add-card trigger and the form submit button share the label.
     expect(screen.getAllByText('auditControls.addRow').length).toBeGreaterThan(0);
     expect(screen.getByText('auditControls.newFormTitle')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('auditControls.form.controlRefPlaceholder')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('auditControls.form.controlRefPlaceholder'),
+    ).toBeInTheDocument();
   });
 
   it('hides the add-control card and actions column from read-only users', () => {

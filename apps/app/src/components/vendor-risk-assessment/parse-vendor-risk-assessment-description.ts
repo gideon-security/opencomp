@@ -133,5 +133,3 @@ export function parseVendorRiskAssessmentDescription(
     news: null,
   };
 }
-
-

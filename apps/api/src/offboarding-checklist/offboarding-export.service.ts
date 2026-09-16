@@ -33,22 +33,23 @@ export class OffboardingExportService {
     const archive = archiver('zip', { zlib: { level: 9 } });
     archive.on('error', (err) => {
       archive.abort();
-      if ('destroy' in output && typeof (output as { destroy?: unknown }).destroy === 'function') {
+      if (
+        'destroy' in output &&
+        typeof (output as { destroy?: unknown }).destroy === 'function'
+      ) {
         (output as { destroy: (err: Error) => void }).destroy(err);
       }
     });
     archive.pipe(output);
 
-    const checklist =
-      await this.offboardingChecklistService.getMemberChecklist(
-        organizationId,
-        memberId,
-      );
-    const revocations =
-      await this.accessRevocationService.getAccessRevocations(
-        organizationId,
-        memberId,
-      );
+    const checklist = await this.offboardingChecklistService.getMemberChecklist(
+      organizationId,
+      memberId,
+    );
+    const revocations = await this.accessRevocationService.getAccessRevocations(
+      organizationId,
+      memberId,
+    );
 
     this.appendSummaryCsv(archive, checklist.items);
     this.appendVendorRevocationsCsv(archive, revocations.vendors);
@@ -160,7 +161,10 @@ export class OffboardingExportService {
     const archive = archiver('zip', { zlib: { level: 9 } });
     archive.on('error', (err) => {
       archive.abort();
-      if ('destroy' in output && typeof (output as { destroy?: unknown }).destroy === 'function') {
+      if (
+        'destroy' in output &&
+        typeof (output as { destroy?: unknown }).destroy === 'function'
+      ) {
         (output as { destroy: (err: Error) => void }).destroy(err);
       }
     });
@@ -171,7 +175,11 @@ export class OffboardingExportService {
 
     while (true) {
       const batch = await db.member.findMany({
-        where: { organizationId, offboardDate: { not: null }, deactivated: true },
+        where: {
+          organizationId,
+          offboardDate: { not: null },
+          deactivated: true,
+        },
         include: { user: { select: { name: true, email: true } } },
         orderBy: [{ offboardDate: 'desc' }, { id: 'asc' }],
         take: BATCH_SIZE,
@@ -185,19 +193,31 @@ export class OffboardingExportService {
           .toLowerCase();
         const prefix = `offboarded-employees/${safeName}-${member.id}/`;
 
-        const checklist = await this.offboardingChecklistService.getMemberChecklist(
-          organizationId,
-          member.id,
-        );
-        const revocations = await this.accessRevocationService.getAccessRevocations(
-          organizationId,
-          member.id,
-        );
+        const checklist =
+          await this.offboardingChecklistService.getMemberChecklist(
+            organizationId,
+            member.id,
+          );
+        const revocations =
+          await this.accessRevocationService.getAccessRevocations(
+            organizationId,
+            member.id,
+          );
 
         this.appendSummaryCsv(archive, checklist.items, prefix);
         this.appendVendorRevocationsCsv(archive, revocations.vendors, prefix);
-        await this.appendVendorEvidence(archive, organizationId, revocations.vendors, prefix);
-        await this.appendChecklistEvidence(archive, organizationId, checklist.items, prefix);
+        await this.appendVendorEvidence(
+          archive,
+          organizationId,
+          revocations.vendors,
+          prefix,
+        );
+        await this.appendChecklistEvidence(
+          archive,
+          organizationId,
+          checklist.items,
+          prefix,
+        );
       }
 
       if (batch.length < BATCH_SIZE) break;

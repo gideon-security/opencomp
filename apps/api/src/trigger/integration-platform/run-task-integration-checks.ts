@@ -1,4 +1,7 @@
-import { getManifest, runAllChecks } from '@gideon-defender/integration-platform';
+import {
+  getManifest,
+  runAllChecks,
+} from '@gideon-defender/integration-platform';
 import { db } from '@db';
 import { logger, tags, task } from '@gideon-defender/trigger-local';
 import { isCheckDisabledForTask } from '../../integration-platform/utils/disabled-task-checks';
@@ -464,7 +467,10 @@ export const runTaskIntegrationChecks = task({
           `Held ${heldCount} check(s) as inconclusive (pending) for task ${taskId} — not failed, not done`,
         );
       }
-      const effectiveFailures = countEffectiveFailures(statusFailures, exceptions);
+      const effectiveFailures = countEffectiveFailures(
+        statusFailures,
+        exceptions,
+      );
       const newStatus = decideTaskStatus(
         effectiveFailures,
         totalPassing,

@@ -15,4 +15,3 @@ export const createVendorSchema = z.object({
 });
 
 export type CreateVendorFormValues = z.infer<typeof createVendorSchema>;
-

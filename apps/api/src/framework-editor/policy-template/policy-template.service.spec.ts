@@ -25,7 +25,9 @@ describe('PolicyTemplateService', () => {
   beforeEach(() => {
     service = new PolicyTemplateService();
     jest.clearAllMocks();
-    (mockDb.frameworkEditorPolicyTemplate.create as jest.Mock).mockResolvedValue({
+    (
+      mockDb.frameworkEditorPolicyTemplate.create as jest.Mock
+    ).mockResolvedValue({
       id: 'frk_pt_new',
       name: 'New Policy',
     });
@@ -47,28 +49,33 @@ describe('PolicyTemplateService', () => {
     // but a legacy caller passing one anyway must still produce an unlinked
     // row.
     it('never queries or auto-links framework controls on create, even when a stray frameworkId is passed', async () => {
-      (mockDb.frameworkEditorControlTemplate.findMany as jest.Mock).mockResolvedValue([
-        { id: 'frk_ct_1' },
-        { id: 'frk_ct_2' },
-      ]);
+      (
+        mockDb.frameworkEditorControlTemplate.findMany as jest.Mock
+      ).mockResolvedValue([{ id: 'frk_ct_1' }, { id: 'frk_ct_2' }]);
 
       // Bypass TypeScript so we can simulate a stray legacy caller still
       // passing frameworkId — the service must ignore it.
-      await (service.create as (dto: unknown, frameworkId?: string) => Promise<unknown>)(
-        baseDto,
-        'frk_soc2',
-      );
+      await (
+        service.create as (
+          dto: unknown,
+          frameworkId?: string,
+        ) => Promise<unknown>
+      )(baseDto, 'frk_soc2');
 
-      expect(mockDb.frameworkEditorControlTemplate.findMany).not.toHaveBeenCalled();
-      const createArgs = (mockDb.frameworkEditorPolicyTemplate.create as jest.Mock).mock
-        .calls[0][0];
+      expect(
+        mockDb.frameworkEditorControlTemplate.findMany,
+      ).not.toHaveBeenCalled();
+      const createArgs = (
+        mockDb.frameworkEditorPolicyTemplate.create as jest.Mock
+      ).mock.calls[0][0];
       expect(createArgs.data).not.toHaveProperty('controlTemplates');
     });
 
     it('persists name, description, frequency, department and an empty content blob', async () => {
       await service.create(baseDto);
-      const createArgs = (mockDb.frameworkEditorPolicyTemplate.create as jest.Mock).mock
-        .calls[0][0];
+      const createArgs = (
+        mockDb.frameworkEditorPolicyTemplate.create as jest.Mock
+      ).mock.calls[0][0];
       expect(createArgs.data).toMatchObject({
         name: 'New Policy',
         description: 'desc',

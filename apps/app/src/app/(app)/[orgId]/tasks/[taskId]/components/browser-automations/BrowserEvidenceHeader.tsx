@@ -3,6 +3,7 @@
 import { VendorLogo } from '@/components/VendorLogo';
 import { formatMonthDayUtc, nextRunAfter } from '@/components/schedule-utils';
 import { cn } from '@/lib/utils';
+import type { TaskFrequency } from '@db';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from '@trycompai/design-system';
 import { Add, Calendar, ChevronDown, OverflowMenuVertical } from '@trycompai/design-system/icons';
-import type { TaskFrequency } from '@db';
 import type { BrowserAutomation } from '../../hooks/types';
 
 /** Cadence options for the task-wide schedule control (matches TaskFrequency). */
@@ -181,7 +181,10 @@ export function BrowserEvidenceHeader({
                 {vendors.slice(0, MAX_VENDOR_LOGOS).map((host, index) => (
                   <span
                     key={host}
-                    className={cn('inline-flex rounded-[5px] ring-2 ring-card', index > 0 && '-ml-1.5')}
+                    className={cn(
+                      'inline-flex rounded-[5px] ring-2 ring-card',
+                      index > 0 && '-ml-1.5',
+                    )}
                   >
                     <VendorLogo hostname={host} size={16} />
                   </span>

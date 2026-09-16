@@ -98,7 +98,10 @@ export function PropertySelector<T>({
                   >
                     {showCheck && (
                       <Check
-                        className={cn('mr-2 h-4 w-4 shrink-0', value === key ? 'opacity-100' : 'opacity-0')}
+                        className={cn(
+                          'mr-2 h-4 w-4 shrink-0',
+                          value === key ? 'opacity-100' : 'opacity-0',
+                        )}
                       />
                     )}
                     <div className={cn('flex-1 min-w-0 overflow-hidden', !showCheck && 'w-full')}>

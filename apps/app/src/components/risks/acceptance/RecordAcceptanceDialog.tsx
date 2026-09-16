@@ -1,5 +1,6 @@
 'use client';
 
+import type { RecordAcceptanceInput } from '@/hooks/use-risk-acceptances';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Button,
@@ -19,7 +20,6 @@ import {
 } from '@trycompai/design-system';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import type { RecordAcceptanceInput } from '@/hooks/use-risk-acceptances';
 
 const acceptanceSchema = z.object({
   acceptedById: z.string().min(1, 'Choose who is accepting this risk'),
@@ -65,9 +65,7 @@ export function RecordAcceptanceDialog({
   // Only preselect the owner when they are actually selectable (active) —
   // a deactivated owner would otherwise be silently submitted and rejected
   // by the API. With no valid default the user must pick a member.
-  const validDefaultId = acceptorOptions.some(
-    (option) => option.id === defaultAcceptorId,
-  )
+  const validDefaultId = acceptorOptions.some((option) => option.id === defaultAcceptorId)
     ? (defaultAcceptorId ?? '')
     : '';
   const {

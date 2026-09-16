@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { useChat } from '@ai-sdk/react';
+import { EvidenceAutomationVersion } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import {
   Dialog,
@@ -19,7 +20,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
-import { EvidenceAutomationVersion } from '@db';
 import { Code, Loader2, RotateCcw, Upload, Zap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
@@ -197,7 +197,8 @@ export function WorkflowVisualizerSimple({ className }: Props) {
       toast.message(t('workflow.visualizer.runningTestToast'));
       await execute();
     } catch (error) {
-      const message = error instanceof Error ? error.message : t('workflow.visualizer.runTestFailed');
+      const message =
+        error instanceof Error ? error.message : t('workflow.visualizer.runTestFailed');
       toast.error(message);
     }
   };
@@ -293,7 +294,9 @@ Please fix the automation script to resolve this error.`;
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-56">
-                      <DropdownMenuLabel>{t('workflow.visualizer.overwriteMenuLabel')}</DropdownMenuLabel>
+                      <DropdownMenuLabel>
+                        {t('workflow.visualizer.overwriteMenuLabel')}
+                      </DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       {versions.map((version) => (
                         <DropdownMenuItem

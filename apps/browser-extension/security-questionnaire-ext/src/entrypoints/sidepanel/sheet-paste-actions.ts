@@ -1,4 +1,5 @@
 import { browser } from 'wxt/browser';
+import { extensionConfig } from '../../lib/config';
 import {
   getResponseError,
   isConfirmationResponse,
@@ -6,12 +7,8 @@ import {
   isQueueResponse,
   isSheetPasteResponse,
 } from '../../lib/response-guards';
-import { extensionConfig } from '../../lib/config';
 import type { DomainConfirmationRequest, PanelState } from '../../lib/types';
-import {
-  saveAllVisibleAnswers,
-  saveAnswerForItem,
-} from './answer-edits';
+import { saveAllVisibleAnswers, saveAnswerForItem } from './answer-edits';
 import { showDialog } from './dialog';
 import { renderDomainDialog, renderInsertDialog } from './render';
 import { showSheetPasteDialog } from './sheet-paste-dialog';
@@ -112,15 +109,17 @@ async function confirmBatchInsert(state: PanelState): Promise<boolean> {
   const org = state.auth.organizations.find(
     (entry) => entry.id === state.auth.selectedOrganizationId,
   );
-  return showDialog(renderInsertDialog({
-    count: approved.length,
-    host: state.queue.host,
-    organizationName: org?.name ?? 'selected organization',
-    operation: 'Insert',
-    lowConfidenceCount: state.queue.items.filter(
-      (item) => item.confidence === 'low' && item.status !== 'approved',
-    ).length,
-  }));
+  return showDialog(
+    renderInsertDialog({
+      count: approved.length,
+      host: state.queue.host,
+      organizationName: org?.name ?? 'selected organization',
+      operation: 'Insert',
+      lowConfidenceCount: state.queue.items.filter(
+        (item) => item.confidence === 'low' && item.status !== 'approved',
+      ).length,
+    }),
+  );
 }
 
 async function prepareSheetPaste(params: {
@@ -165,11 +164,11 @@ async function insertSheetWithApi(params: {
   return insertSheetWithApi(params);
 }
 
-async function confirmDomain(
-  confirmation: DomainConfirmationRequest,
-): Promise<boolean> {
-  return showDialog(renderDomainDialog({
-    host: confirmation.host,
-    organizationName: confirmation.organizationName,
-  }));
+async function confirmDomain(confirmation: DomainConfirmationRequest): Promise<boolean> {
+  return showDialog(
+    renderDomainDialog({
+      host: confirmation.host,
+      organizationName: confirmation.organizationName,
+    }),
+  );
 }

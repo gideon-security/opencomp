@@ -1,13 +1,13 @@
 'use client';
 
 import { useCallback, useMemo, type Dispatch, type SetStateAction } from 'react';
+import type { QuestionAnswer } from '../../components/types';
 import { useQuestionnaireActions } from '../useQuestionnaireActions';
 import { useQuestionnaireAutoAnswer } from '../useQuestionnaireAutoAnswer';
 import { useQuestionnaireSingleAnswer } from '../useQuestionnaireSingleAnswer';
-import type { QuestionAnswer } from '../../components/types';
-import { useQuestionnaireDetailState } from './useQuestionnaireDetailState';
-import { useQuestionnaireDetailHandlers } from './useQuestionnaireDetailHandlers';
 import type { UseQuestionnaireDetailProps } from './types';
+import { useQuestionnaireDetailHandlers } from './useQuestionnaireDetailHandlers';
+import { useQuestionnaireDetailState } from './useQuestionnaireDetailState';
 
 export function useQuestionnaireDetail({
   questionnaireId,
@@ -35,60 +35,61 @@ export function useQuestionnaireDetail({
   });
 
   // Wrapper for setResults that handles QuestionnaireResult[] with originalIndex
-  const setResultsWrapper = useCallback((updater: SetStateAction<QuestionAnswer[] | null>) => {
-    state.setResults((prevResults) => {
-      if (!prevResults) {
-        const newResults = typeof updater === 'function' ? updater(null) : updater;
-        if (!newResults) return prevResults;
-        return newResults.map((r, index) => ({
+  const setResultsWrapper = useCallback(
+    (updater: SetStateAction<QuestionAnswer[] | null>) => {
+      state.setResults((prevResults) => {
+        if (!prevResults) {
+          const newResults = typeof updater === 'function' ? updater(null) : updater;
+          if (!newResults) return prevResults;
+          return newResults.map((r, index) => ({
+            question: r.question,
+            answer: r.answer ?? null,
+            originalIndex: index,
+            sources: r.sources || [],
+            questionAnswerId: '',
+            status: 'untouched' as const,
+            failedToGenerate: r.failedToGenerate ?? false,
+          }));
+        }
+
+        const questionAnswerResults = prevResults.map((r) => ({
           question: r.question,
-          answer: r.answer ?? null,
-          originalIndex: index,
-          sources: r.sources || [],
-          questionAnswerId: '',
-          status: 'untouched' as const,
-          failedToGenerate: r.failedToGenerate ?? false,
+          answer: r.answer,
+          sources: r.sources,
+          failedToGenerate: (r as any).failedToGenerate ?? false,
+          _originalIndex: r.originalIndex,
         }));
-      }
 
-      const questionAnswerResults = prevResults.map((r) => ({
-        question: r.question,
-        answer: r.answer,
-        sources: r.sources,
-        failedToGenerate: (r as any).failedToGenerate ?? false,
-        _originalIndex: r.originalIndex,
-      }));
+        const newResults = typeof updater === 'function' ? updater(questionAnswerResults) : updater;
 
-      const newResults =
-        typeof updater === 'function' ? updater(questionAnswerResults) : updater;
+        if (!newResults) return prevResults;
 
-      if (!newResults) return prevResults;
-
-      return newResults.map((newR, index) => {
-        const originalIndex =
-          newR._originalIndex !== undefined ? newR._originalIndex : index;
-        const existingResult = prevResults.find((r) => r.originalIndex === originalIndex);
-        if (existingResult) {
+        return newResults.map((newR, index) => {
+          const originalIndex = newR._originalIndex !== undefined ? newR._originalIndex : index;
+          const existingResult = prevResults.find((r) => r.originalIndex === originalIndex);
+          if (existingResult) {
+            return {
+              ...existingResult,
+              question: newR.question,
+              answer: newR.answer ?? null,
+              sources: newR.sources,
+              failedToGenerate: newR.failedToGenerate ?? false,
+            };
+          }
           return {
-            ...existingResult,
             question: newR.question,
             answer: newR.answer ?? null,
-            sources: newR.sources,
+            originalIndex,
+            sources: newR.sources || [],
+            questionAnswerId: '',
+            status: 'untouched' as const,
             failedToGenerate: newR.failedToGenerate ?? false,
           };
-        }
-        return {
-          question: newR.question,
-          answer: newR.answer ?? null,
-          originalIndex,
-          sources: newR.sources || [],
-          questionAnswerId: '',
-          status: 'untouched' as const,
-          failedToGenerate: newR.failedToGenerate ?? false,
-        };
+        });
       });
-    });
-  }, [state.setResults]);
+    },
+    [state.setResults],
+  );
 
   // Single answer hook
   const singleAnswer = useQuestionnaireSingleAnswer({
@@ -170,7 +171,7 @@ export function useQuestionnaireDetail({
     return state.results.filter(
       (r) =>
         r.question.toLowerCase().includes(query) ||
-        (r.answer && r.answer.toLowerCase().includes(query))
+        (r.answer && r.answer.toLowerCase().includes(query)),
     );
   }, [state.results, state.searchQuery]);
 
@@ -197,16 +198,12 @@ export function useQuestionnaireDetail({
 
   const isLoading = useMemo(() => {
     const hasProcessingQuestions = Array.from(state.questionStatuses.values()).some(
-      (status) => status === 'processing'
+      (status) => status === 'processing',
     );
     const isSingleAnswerTriggering = singleAnswer.isSingleAnswerTriggering;
     const isAutoAnswerTriggering = autoAnswer.isAutoAnswerTriggering;
 
-    return (
-      hasProcessingQuestions ||
-      isSingleAnswerTriggering ||
-      isAutoAnswerTriggering
-    );
+    return hasProcessingQuestions || isSingleAnswerTriggering || isAutoAnswerTriggering;
   }, [
     state.questionStatuses,
     singleAnswer.isSingleAnswerTriggering,
@@ -247,4 +244,3 @@ export function useQuestionnaireDetail({
     handleToggleSource: actions.handleToggleSource,
   };
 }
-

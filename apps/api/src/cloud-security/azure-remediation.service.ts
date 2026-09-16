@@ -496,7 +496,9 @@ export class AzureRemediationService {
       action.organizationId,
     );
     if (!accessToken) {
-      throw new Error('Cannot obtain Azure access token for rollback. Please reconnect the integration.');
+      throw new Error(
+        'Cannot obtain Azure access token for rollback. Please reconnect the integration.',
+      );
     }
 
     this.logger.log(
@@ -663,7 +665,8 @@ export class AzureRemediationService {
     organizationId: string,
   ): Promise<string | null> {
     const manifest = getManifest('azure');
-    const oauthConfig = manifest?.auth?.type === 'oauth2' ? manifest.auth.config : null;
+    const oauthConfig =
+      manifest?.auth?.type === 'oauth2' ? manifest.auth.config : null;
 
     if (oauthConfig) {
       const oauthCreds = await this.oauthCredentialsService.getCredentials(
@@ -697,7 +700,11 @@ export class AzureRemediationService {
     }
 
     // Legacy service principal flow
-    if (credentials.tenantId && credentials.clientId && credentials.clientSecret) {
+    if (
+      credentials.tenantId &&
+      credentials.clientId &&
+      credentials.clientSecret
+    ) {
       return this.azureSecurityService.getAccessToken(
         credentials.tenantId as string,
         credentials.clientId as string,
@@ -733,7 +740,10 @@ export class AzureRemediationService {
       throw new Error('Azure connection not found or not active');
     }
 
-    const accessToken = await this.getValidAzureToken(connectionId, organizationId);
+    const accessToken = await this.getValidAzureToken(
+      connectionId,
+      organizationId,
+    );
 
     const checkResult = await db.integrationCheckResult.findFirst({
       where: {

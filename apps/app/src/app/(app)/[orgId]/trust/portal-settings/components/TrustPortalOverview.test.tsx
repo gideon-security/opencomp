@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -36,7 +36,9 @@ vi.mock('remark-gfm', () => ({
 // Mock design system
 vi.mock('@trycompai/design-system', () => ({
   Button: ({ children, onClick, disabled, loading, ...props }: any) => (
-    <button onClick={onClick} disabled={disabled} {...props}>{children}</button>
+    <button onClick={onClick} disabled={disabled} {...props}>
+      {children}
+    </button>
   ),
   Input: (props: any) => <input {...props} />,
   Textarea: (props: any) => <textarea {...props} />,
@@ -66,9 +68,7 @@ describe('TrustPortalOverview permission gating', () => {
   it('renders description regardless of permissions', () => {
     setMockPermissions({});
     render(<TrustPortalOverview {...defaultProps} />);
-    expect(
-      screen.getByText(/add a mission statement or overview text/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/add a mission statement or overview text/i)).toBeInTheDocument();
   });
 
   it('shows Save Changes button when user has trust:update permission', () => {

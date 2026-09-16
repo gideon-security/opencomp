@@ -53,8 +53,9 @@ export function UpdateOrganizationEvidenceApproval({
                 <div className="space-y-1">
                   <div className="text-sm font-medium">Evidence Approval</div>
                   <div className="text-muted-foreground text-sm leading-relaxed">
-                    When enabled, evidence tasks can be submitted for review before being marked as done.
-                    An approver can be assigned to each task who must approve the evidence before completion.
+                    When enabled, evidence tasks can be submitted for review before being marked as
+                    done. An approver can be assigned to each task who must approve the evidence
+                    before completion.
                   </div>
                   {isSaving && (
                     <div className="flex items-center text-muted-foreground text-xs pt-1">

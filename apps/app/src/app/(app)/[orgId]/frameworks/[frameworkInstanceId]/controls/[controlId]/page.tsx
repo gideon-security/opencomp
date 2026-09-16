@@ -49,8 +49,7 @@ export default async function FrameworkControlPage({ params }: PageProps) {
   }
 
   const control = controlRes.data;
-  const frameworkName =
-    frameworkRes.data?.framework?.name ?? t('controls.frameworkFallback');
+  const frameworkName = frameworkRes.data?.framework?.name ?? t('controls.frameworkFallback');
 
   const matchedRequirement = control.requirementsMapped?.find(
     (rm) => rm.frameworkInstanceId === frameworkInstanceId,

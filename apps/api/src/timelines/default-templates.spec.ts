@@ -8,7 +8,9 @@ describe('default-templates', () => {
   it('matches framework defaults using normalized names', () => {
     const soc2Templates = getDefaultTemplatesForFramework('SOC2');
 
-    expect(soc2Templates.map((template) => template.cycleNumber).sort()).toEqual([1, 1, 2]);
+    expect(
+      soc2Templates.map((template) => template.cycleNumber).sort(),
+    ).toEqual([1, 1, 2]);
   });
 
   it('defines independent SOC 2 tracks with their own cycle 1 templates', () => {
@@ -46,8 +48,12 @@ describe('default-templates', () => {
       trackKey: 'primary',
     });
 
-    const type1AuditorReview = type1?.phases.find((phase) => phase.name === 'Auditor Review');
-    const type2AuditorReview = type2?.phases.find((phase) => phase.name === 'Auditor Review');
+    const type1AuditorReview = type1?.phases.find(
+      (phase) => phase.name === 'Auditor Review',
+    );
+    const type2AuditorReview = type2?.phases.find(
+      (phase) => phase.name === 'Auditor Review',
+    );
     const legacyAuditorReview = legacyType1?.phases.find(
       (phase) => phase.name === 'Auditor Review',
     );
@@ -92,7 +98,11 @@ describe('default-templates', () => {
     const template = getDefaultTemplateForCycle('Custom Framework XYZ', 1);
 
     expect(template?.name).toBe(GENERIC_DEFAULT_TIMELINE_TEMPLATE.name);
-    expect(template?.phases.length).toBe(GENERIC_DEFAULT_TIMELINE_TEMPLATE.phases.length);
-    expect(template?.phases.some((phase) => phase.locksTimelineOnComplete)).toBe(false);
+    expect(template?.phases.length).toBe(
+      GENERIC_DEFAULT_TIMELINE_TEMPLATE.phases.length,
+    );
+    expect(
+      template?.phases.some((phase) => phase.locksTimelineOnComplete),
+    ).toBe(false);
   });
 });

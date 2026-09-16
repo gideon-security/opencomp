@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -113,9 +113,7 @@ describe('TrustPortalAdditionalDocumentsSection permission gating', () => {
     // <Button> delete buttons should not be present. The delete buttons use
     // the Trash2 icon; without permission, the entire block is not rendered.
     // There should be no actual <button> elements (only div[role="button"] for download).
-    const realButtons = screen.queryAllByRole('button').filter(
-      (el) => el.tagName === 'BUTTON',
-    );
+    const realButtons = screen.queryAllByRole('button').filter((el) => el.tagName === 'BUTTON');
     expect(realButtons.length).toBe(0);
   });
 });

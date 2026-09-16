@@ -1,6 +1,5 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Button,
   Dialog,
@@ -18,6 +17,7 @@ import {
   Input,
   Textarea,
 } from '@gideon-defender/ui';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm, type ControllerRenderProps } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -159,9 +159,7 @@ export function PublishVersionDialog({
                     <Input placeholder="e.g. 1.1.0" {...field} className="rounded-sm" />
                   </FormControl>
                   <FormMessage />
-                  {collisionError && (
-                    <p className="text-destructive text-xs">{collisionError}</p>
-                  )}
+                  {collisionError && <p className="text-destructive text-xs">{collisionError}</p>}
                 </FormItem>
               )}
             />
@@ -237,4 +235,3 @@ export function PublishVersionDialog({
     </Dialog>
   );
 }
-

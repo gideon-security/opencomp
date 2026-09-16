@@ -1,16 +1,16 @@
 # OpenComp × Gideon Auth integration plan
 
-**Status:** Milestone 1 done (2026-09-15); Milestones 2–3 planned
-**Date:** 2026-09-07 (updated 2026-09-15)
+**Status:** Milestone 1 done (2026-09-15); Milestone 2 code-complete, flip pending (2026-09-16); Milestone 3 planned
+**Date:** 2026-09-07 (updated 2026-09-16)
 **Goal:** Replace better-auth (including Google/GitHub/Microsoft social, magic link, email OTP) with Gideon Auth as the sole authenticator for OpenComp.
 
 ## Milestone map
 
-| Milestone | Scope | Plan steps |
-|---|---|---|
+| Milestone                                           | Scope           | Plan steps             |
+| --------------------------------------------------- | --------------- | ---------------------- |
 | 1 — OIDC login via library (dual-run, no deletions) | Done 2026-09-15 | §4.5 + §5.7, 8, 10, 11 |
-| 2 — Session reads off better-auth | Planned | §8 + §5.9 |
-| 3 — Cutover and deletion | Planned | §6 + §7 |
+| 2 — Session reads off better-auth                   | Code done 2026-09-16, flip pending | §8 + §5.9              |
+| 3 — Cutover and deletion                            | Planned         | §6 + §7                |
 
 ## 1. Context
 
@@ -43,17 +43,17 @@
 
 From `apps/api/src/auth/auth.server.ts`, guards, frontend, and Prisma:
 
-| Concern | Implementation |
-|---|---|
-| Session cookies (cross-subdomain `.gideondefender.com`) | `Session` table, `getSession` on every guard/page |
-| Social login | Google, GitHub, Microsoft (`socialProviders`, `Account` linking) |
-| Passwordless | Magic link + email OTP (`Verification` table, email templates) |
-| Orgs / members / invites / custom roles | better-auth `organization` plugin → `Organization`, `Member`, `Invitation`, `OrganizationRole` tables; `activeOrganizationId` set in the session-creation hook |
-| Admin functions | better-auth `admin()` plugin: impersonation, ban/unban, user CRUD (`auth.controller.ts`) |
-| Hosted MCP (Gram) OAuth | better-auth `mcp` / OIDC-provider plugin → `OauthApplication`, `OauthAccessToken`, `OauthConsent` tables; "Sign in with Google" for MCP |
-| Token auth | `bearer()` plugin; `multiSession()`; email verification + change-email |
-| Frontends | `authClient` (better-auth client) in app + portal; `GoogleSignIn`, `github-sign-in`, `magic-link`, portal `otp-form`; `(public)/auth` pages; invite-accept flow |
-| API guard order | `x-api-key` → `x-service-token` → Gideon JWT (shadow) → better-auth session |
+| Concern                                                 | Implementation                                                                                                                                                  |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Session cookies (cross-subdomain `.gideondefender.com`) | `Session` table, `getSession` on every guard/page                                                                                                               |
+| Social login                                            | Google, GitHub, Microsoft (`socialProviders`, `Account` linking)                                                                                                |
+| Passwordless                                            | Magic link + email OTP (`Verification` table, email templates)                                                                                                  |
+| Orgs / members / invites / custom roles                 | better-auth `organization` plugin → `Organization`, `Member`, `Invitation`, `OrganizationRole` tables; `activeOrganizationId` set in the session-creation hook  |
+| Admin functions                                         | better-auth `admin()` plugin: impersonation, ban/unban, user CRUD (`auth.controller.ts`)                                                                        |
+| Hosted MCP (Gram) OAuth                                 | better-auth `mcp` / OIDC-provider plugin → `OauthApplication`, `OauthAccessToken`, `OauthConsent` tables; "Sign in with Google" for MCP                         |
+| Token auth                                              | `bearer()` plugin; `multiSession()`; email verification + change-email                                                                                          |
+| Frontends                                               | `authClient` (better-auth client) in app + portal; `GoogleSignIn`, `github-sign-in`, `magic-link`, portal `otp-form`; `(public)/auth` pages; invite-accept flow |
+| API guard order                                         | `x-api-key` → `x-service-token` → Gideon JWT (shadow) → better-auth session                                                                                     |
 
 ## 3. Key decisions
 
@@ -103,8 +103,8 @@ From `apps/api/src/auth/auth.server.ts`, guards, frontend, and Prisma:
 > Implemented files: `apps/api/src/auth/gideon-oidc.service.ts` (discovery,
 > `buildLoginUrl`, `handleCallback`), `gideon-oidc-provisioning.ts` (JIT
 > find-or-create + session mint), `gideon-oidc.controller.ts` (`GET
-> /v1/auth/gideon/login`, `GET /v1/auth/gideon/callback`, `POST
-> /v1/auth/gideon/logout`), `gideon-oidc-client.ts`, `session-cookie.ts`
+/v1/auth/gideon/login`, `GET /v1/auth/gideon/callback`, `POST
+/v1/auth/gideon/logout`), `gideon-oidc-client.ts`, `session-cookie.ts`
 > (shares `getCookieDomain()` with `auth.server.ts`), `dto/gideon-oidc.dto.ts`,
 > `gideon-oidc.service.spec.ts` (12 tests), migration
 > `20260915000000_gideon_oidc_fields` (`User.gideonSub @unique`,
@@ -122,7 +122,7 @@ From `apps/api/src/auth/auth.server.ts`, guards, frontend, and Prisma:
 8. On callback: find-or-create `User` by verified email (or `gideonSub`), set
    `gideonSub`, mint a standard `Session` row + cookie (reuse the existing
    `activeOrganizationId` session-creation hook).
-9. (Milestone 2, §8) Promote `GideonJwtService` from shadow to enforcing
+9. (Milestone 2, §8 — code-ready 2026-09-16, flip pending) Promote `GideonJwtService` from shadow to enforcing
    second factor in `HybridAuthGuard` behind `GIDEON_JWT_ENABLED`, keeping
    better-auth session as fallback during dual-run.
 10. Sign-in UI: "Continue with Gideon" button on `(public)/auth` and portal
@@ -176,17 +176,26 @@ From `apps/api/src/auth/auth.server.ts`, guards, frontend, and Prisma:
 Goal: no frontend code depends on better-auth session resolution, so the
 auth library can be deleted in Milestone 3 without touching UI code.
 
-1. Replace every `authClient.useSession` call with an SWR hook on the
-   existing `GET /v1/auth/me` (works for both session types, so it is safe
-   mid-migration). Known call sites (2026-09-15): `notification-bell.tsx`,
+1. ✅ Done 2026-09-16 — every `authClient.useSession` call replaced with the
+   `useAuthMe` SWR hook on `GET /v1/auth/me` (`apps/app/src/hooks/use-auth-me.ts`
+   + `use-auth-me.test.tsx`; shared envelope unwrap in `unwrapApiData`,
+   `apps/app/src/lib/api-client.ts`). Migrated call sites: `notification-bell.tsx`,
    `FindingDetailSheet.tsx`, `policy-overview.tsx`, `ai/chat.tsx`,
-   `ImpersonationBanner.tsx` (all in `apps/app/src`). Audit the portal too.
-2. Carry out step 9 (§5.9): switch the `HybridAuthGuard` Gideon path from
-   shadow to enforcing (`GIDEON_JWT_ENABLED=true`), keeping the better-auth
-   session as fallback. Monitor shadow-mismatch logs
-   (`GideonShadowService`) before proceeding.
-3. Dual-run exit check: Gideon logins mint usable sessions, `GET /v1/auth/me`
-   resolves for both session types, mismatch logs are clean.
+   `ImpersonationBanner.tsx` (all in `apps/app/src`; the banner revalidates via
+   `mutate()` after stop-impersonating so it hides immediately). Portal audit:
+   zero `useSession()` callers, nothing to migrate. `GET /v1/auth/me` now also
+   returns `impersonatedBy`, `authType`, and `hasInactiveMembership`
+   (`AuthController.getMe`, surfaced through `@AuthContext()`).
+2. 🟡 Code-ready, flip pending — `HybridAuthGuard` Gideon path resolves `sub`
+   through `User.gideonSub` before the membership check (unlinked subs 401 in
+   enforce mode, fall through to session in shadow mode), with 6 new guard
+   tests (linked/unlinked × shadow/enforce). Still to do: set
+   `GIDEON_JWT_ENABLED=true` per environment, keeping the better-auth session
+   as fallback. Monitor shadow-mismatch logs (`GideonShadowService`) before
+   proceeding.
+3. ⏳ Pending (operational) — dual-run exit check: Gideon logins mint usable
+   sessions, `GET /v1/auth/me` resolves for both session types, mismatch logs
+   are clean.
 
 ## 9. Milestone 3 — Cutover and deletion
 

@@ -7,11 +7,13 @@ Manual answers are automatically synced to the pgvector database to improve AI a
 ## Embedding ID Format
 
 When a manual answer is saved, it gets an embedding ID in the format:
+
 ```
 manual_answer_{manualAnswerId}
 ```
 
 For example:
+
 - Manual Answer ID: `sqma_abc123xyz`
 - Embedding ID: `manual_answer_sqma_abc123xyz`
 
@@ -23,8 +25,8 @@ When you save a manual answer, the response includes the `embeddingId`:
 
 ```typescript
 const result = await saveManualAnswer.execute({
-  question: "What is your data retention policy?",
-  answer: "We retain data for 7 years as per GDPR requirements.",
+  question: 'What is your data retention policy?',
+  answer: 'We retain data for 7 years as per GDPR requirements.',
 });
 
 if (result.data?.success) {
@@ -48,6 +50,7 @@ if (result.data?.success) {
 ### Synchronous Sync (Single Manual Answer)
 
 When a user saves a manual answer:
+
 1. Manual answer is saved to the database
 2. **Immediately** synced to vector DB (~1-2 seconds)
 3. Embedding ID is returned in the response
@@ -56,6 +59,7 @@ When a user saves a manual answer:
 ### Automatic Sync (Before Answer Generation)
 
 Before generating answers for questionnaires:
+
 1. `syncOrganizationEmbeddings()` is called automatically
 2. This ensures all manual answers are up-to-date
 3. Manual answers are included in the RAG search
@@ -63,6 +67,7 @@ Before generating answers for questionnaires:
 ### Background Sync (Delete All)
 
 When deleting all manual answers:
+
 1. Orchestrator task is triggered in the background
 2. Deletions happen in parallel batches (50 at a time)
 3. Progress can be tracked via Local trigger dashboard
@@ -82,6 +87,7 @@ If an embedding is not found:
 ### Sync Failed
 
 If sync fails:
+
 - The manual answer is still saved in the database
 - It will be synced automatically on the next organization sync
 - Check server logs for detailed error messages
@@ -107,4 +113,3 @@ if (saveResult.data?.embeddingId) {
 - `apps/app/src/lib/vector/core/find-existing-embeddings.ts` - Functions to find embeddings by source
 - `apps/app/src/jobs/tasks/vector/delete-manual-answer.ts` - Single deletion task
 - `apps/app/src/jobs/tasks/vector/delete-all-manual-answers-orchestrator.ts` - Batch deletion orchestrator
-

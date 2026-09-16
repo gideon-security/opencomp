@@ -4,8 +4,8 @@ import { Stack } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
-import { AuditsList } from './AuditsList';
 import type { AuditHandlers } from './AuditCard';
+import { AuditsList } from './AuditsList';
 import type { ApproverOption } from './IsmsApprovalSection';
 import { IsmsDocumentShell } from './IsmsDocumentShell';
 import { ProgrammeCard } from './ProgrammeCard';
@@ -63,9 +63,7 @@ export function InternalAuditClient({
         const messages = auditValidationMessages(tIsms, {
           audits: Array.isArray(document.audits) ? document.audits : [],
         });
-        return messages.length > 0
-          ? t('submitBlocked', { messages: messages.join(' ') })
-          : null;
+        return messages.length > 0 ? t('submitBlocked', { messages: messages.join(' ') }) : null;
       }}
     >
       {({ document, canManage, hook }) => {

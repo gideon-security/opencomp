@@ -47,15 +47,15 @@ interface PdfViewerProps {
   onMutate?: () => void;
 }
 
-export function PdfViewer({ 
-  policyId, 
-  versionId, 
-  pdfUrl, 
-  isPendingApproval, 
-  isVersionReadOnly = false, 
+export function PdfViewer({
+  policyId,
+  versionId,
+  pdfUrl,
+  isPendingApproval,
+  isVersionReadOnly = false,
   isViewingActiveVersion = false,
   isViewingPendingVersion = false,
-  onMutate 
+  onMutate,
 }: PdfViewerProps) {
   // Combine both checks - can't modify if pending approval OR version is read-only
   const isReadOnly = isPendingApproval || isVersionReadOnly;
@@ -75,17 +75,20 @@ export function PdfViewer({
       setUrlLoading(true);
       setSignedUrl(null); // Reset before fetching
       const query = versionId ? `?versionId=${versionId}` : '';
-      api.get<{ url: string }>(`/v1/policies/${policyId}/pdf-url${query}`).then((response) => {
-        if (response.data?.url) {
-          setSignedUrl(response.data.url);
-        } else {
-          setSignedUrl(null);
-        }
-        setUrlLoading(false);
-      }).catch(() => {
-        toast.error(t('loadFailedToast'));
-        setUrlLoading(false);
-      });
+      api
+        .get<{ url: string }>(`/v1/policies/${policyId}/pdf-url${query}`)
+        .then((response) => {
+          if (response.data?.url) {
+            setSignedUrl(response.data.url);
+          } else {
+            setSignedUrl(null);
+          }
+          setUrlLoading(false);
+        })
+        .catch(() => {
+          toast.error(t('loadFailedToast'));
+          setUrlLoading(false);
+        });
     } else {
       // No PDF for this version - reset state
       setSignedUrl(null);
@@ -228,10 +231,7 @@ export function PdfViewer({
                 disabled={isUploading || isDeleting}
               />
               <DropdownMenu>
-                <DropdownMenuTrigger
-                  variant="ellipsis"
-                  disabled={isUploading || isDeleting}
-                >
+                <DropdownMenuTrigger variant="ellipsis" disabled={isUploading || isDeleting}>
                   {isDeleting ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
@@ -257,14 +257,12 @@ export function PdfViewer({
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              
+
               <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>{t('deleteTitle')}</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      {t('deleteDescription')}
-                    </AlertDialogDescription>
+                    <AlertDialogDescription>{t('deleteDescription')}</AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
@@ -287,133 +285,125 @@ export function PdfViewer({
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-        {isVersionReadOnly && pdfUrl && (
-          <div className="flex items-center gap-4 rounded-lg border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-foreground">
-            <span>
-              {isViewingPendingVersion
-                ? t('pendingApprovalReadOnly')
-                : isViewingActiveVersion
-                  ? t('publishedReadOnly')
-                  : t('readOnlyGeneric')}
-            </span>
-          </div>
-        )}
-        {pdfUrl ? (
-          <div className="space-y-4">
-            {isUrlLoading ? (
-              <div className="flex h-[800px] w-full items-center justify-center rounded-md border">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-              </div>
-            ) : signedUrl ? (
-              <div className="relative">
-                <iframe
-                  key={signedUrl}
-                  src={`${signedUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-                  className="h-[800px] w-full rounded-md border"
-                  title={t('iframeTitle')}
-                  onError={() => {
-                    console.error('PDF failed to load in iframe, trying fallback');
-                  }}
-                />
-              </div>
-            ) : (
-              <div className="flex h-[800px] w-full flex-col items-center justify-center rounded-md border text-center">
-                <DocumentPdf size={48} className="text-destructive" />
-                <p className="mt-4 font-semibold">{t('loadFailedTitle')}</p>
-                <p className="text-sm text-muted-foreground">
-                  {t('loadFailedDescription')}
-                </p>
-              </div>
-            )}
-            {!isReadOnly && (
-              <Dropzone
-                onDrop={handleMainCardDrop}
-                accept={{ 'application/pdf': [] }}
-                maxSize={100 * 1024 * 1024}
-                maxFiles={1}
-                multiple={false}
-                disabled={isUploading || isDeleting}
-              >
-                {({ getRootProps, getInputProps, isDragActive }) => (
-                  <div
-                    {...getRootProps()}
-                    className={cn(
-                      'cursor-pointer rounded-md border-2 border-dashed p-4 text-center transition-colors',
-                      isDragActive
-                        ? 'border-primary bg-primary/10 dark:border-primary dark:bg-primary/10'
-                        : 'border-primary/30 hover:border-primary/50 dark:border-primary/30 dark:hover:border-primary/50',
-                      (isUploading || isDeleting) && 'pointer-events-none opacity-60',
-                    )}
-                  >
-                    <input {...getInputProps()} />
-                    <p className="text-sm text-muted-foreground">
-                      {isUploading
-                        ? t('uploadingNew')
-                        : isDeleting
-                          ? t('deleting')
-                          : isDragActive
-                            ? t('dropReplaceActive')
-                            : t('dropReplace')}
-                    </p>
-                  </div>
-                )}
-              </Dropzone>
-            )}
-          </div>
-        ) : !isReadOnly ? (
-          <Dropzone
-            onDrop={handleMainCardDrop}
-            accept={{ 'application/pdf': [] }}
-            maxSize={100 * 1024 * 1024}
-            maxFiles={1}
-            multiple={false}
-            disabled={isUploading || isDeleting}
-          >
-            {({ getRootProps, getInputProps, isDragActive }) => (
-              <div
-                {...getRootProps()}
-                className={cn(
-                  'flex cursor-pointer flex-col items-center justify-center space-y-4 rounded-md border-2 border-dashed p-12 text-center transition-colors',
-                  isDragActive
-                    ? 'border-primary bg-primary/10 dark:border-primary dark:bg-primary/10'
-                    : 'border-primary/30 hover:border-primary/50 dark:border-primary/30 dark:hover:border-primary/50',
-                  (isUploading || isDeleting) && 'pointer-events-none opacity-60',
-                )}
-              >
-                <input {...getInputProps()} />
-                {isUploading ? (
-                  <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                ) : (
-                  <DocumentPdf size={48} className="text-primary" />
-                )}
-                <h3 className="text-lg font-semibold">
-                  {isUploading
-                    ? t('uploading')
-                    : isDragActive
-                      ? t('dropHereActive')
-                      : t('noPdf')}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {isUploading
-                    ? t('pleaseWait')
-                    : isDragActive
-                      ? t('releaseToUpload')
-                      : t('dropInitial')}
-                </p>
-              </div>
-            )}
-          </Dropzone>
-        ) : (
-          <div className="flex flex-col items-center justify-center space-y-4 rounded-md border-2 border-dashed border-muted p-12 text-center">
-            <DocumentPdf size={48} className="text-muted-foreground" />
-            <h3 className="text-lg font-semibold">{t('noPdf')}</h3>
-            <p className="text-sm text-muted-foreground">
-              {isReadOnly
-                ? t('emptyVersionNote')
-                : t('emptyPolicyNote')}
-            </p>
-          </div>
-        )}
+          {isVersionReadOnly && pdfUrl && (
+            <div className="flex items-center gap-4 rounded-lg border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-foreground">
+              <span>
+                {isViewingPendingVersion
+                  ? t('pendingApprovalReadOnly')
+                  : isViewingActiveVersion
+                    ? t('publishedReadOnly')
+                    : t('readOnlyGeneric')}
+              </span>
+            </div>
+          )}
+          {pdfUrl ? (
+            <div className="space-y-4">
+              {isUrlLoading ? (
+                <div className="flex h-[800px] w-full items-center justify-center rounded-md border">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : signedUrl ? (
+                <div className="relative">
+                  <iframe
+                    key={signedUrl}
+                    src={`${signedUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                    className="h-[800px] w-full rounded-md border"
+                    title={t('iframeTitle')}
+                    onError={() => {
+                      console.error('PDF failed to load in iframe, trying fallback');
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="flex h-[800px] w-full flex-col items-center justify-center rounded-md border text-center">
+                  <DocumentPdf size={48} className="text-destructive" />
+                  <p className="mt-4 font-semibold">{t('loadFailedTitle')}</p>
+                  <p className="text-sm text-muted-foreground">{t('loadFailedDescription')}</p>
+                </div>
+              )}
+              {!isReadOnly && (
+                <Dropzone
+                  onDrop={handleMainCardDrop}
+                  accept={{ 'application/pdf': [] }}
+                  maxSize={100 * 1024 * 1024}
+                  maxFiles={1}
+                  multiple={false}
+                  disabled={isUploading || isDeleting}
+                >
+                  {({ getRootProps, getInputProps, isDragActive }) => (
+                    <div
+                      {...getRootProps()}
+                      className={cn(
+                        'cursor-pointer rounded-md border-2 border-dashed p-4 text-center transition-colors',
+                        isDragActive
+                          ? 'border-primary bg-primary/10 dark:border-primary dark:bg-primary/10'
+                          : 'border-primary/30 hover:border-primary/50 dark:border-primary/30 dark:hover:border-primary/50',
+                        (isUploading || isDeleting) && 'pointer-events-none opacity-60',
+                      )}
+                    >
+                      <input {...getInputProps()} />
+                      <p className="text-sm text-muted-foreground">
+                        {isUploading
+                          ? t('uploadingNew')
+                          : isDeleting
+                            ? t('deleting')
+                            : isDragActive
+                              ? t('dropReplaceActive')
+                              : t('dropReplace')}
+                      </p>
+                    </div>
+                  )}
+                </Dropzone>
+              )}
+            </div>
+          ) : !isReadOnly ? (
+            <Dropzone
+              onDrop={handleMainCardDrop}
+              accept={{ 'application/pdf': [] }}
+              maxSize={100 * 1024 * 1024}
+              maxFiles={1}
+              multiple={false}
+              disabled={isUploading || isDeleting}
+            >
+              {({ getRootProps, getInputProps, isDragActive }) => (
+                <div
+                  {...getRootProps()}
+                  className={cn(
+                    'flex cursor-pointer flex-col items-center justify-center space-y-4 rounded-md border-2 border-dashed p-12 text-center transition-colors',
+                    isDragActive
+                      ? 'border-primary bg-primary/10 dark:border-primary dark:bg-primary/10'
+                      : 'border-primary/30 hover:border-primary/50 dark:border-primary/30 dark:hover:border-primary/50',
+                    (isUploading || isDeleting) && 'pointer-events-none opacity-60',
+                  )}
+                >
+                  <input {...getInputProps()} />
+                  {isUploading ? (
+                    <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                  ) : (
+                    <DocumentPdf size={48} className="text-primary" />
+                  )}
+                  <h3 className="text-lg font-semibold">
+                    {isUploading ? t('uploading') : isDragActive ? t('dropHereActive') : t('noPdf')}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {isUploading
+                      ? t('pleaseWait')
+                      : isDragActive
+                        ? t('releaseToUpload')
+                        : t('dropInitial')}
+                  </p>
+                </div>
+              )}
+            </Dropzone>
+          ) : (
+            <div className="flex flex-col items-center justify-center space-y-4 rounded-md border-2 border-dashed border-muted p-12 text-center">
+              <DocumentPdf size={48} className="text-muted-foreground" />
+              <h3 className="text-lg font-semibold">{t('noPdf')}</h3>
+              <p className="text-sm text-muted-foreground">
+                {isReadOnly ? t('emptyVersionNote') : t('emptyPolicyNote')}
+              </p>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

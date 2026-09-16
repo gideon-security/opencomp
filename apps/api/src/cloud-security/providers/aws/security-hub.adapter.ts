@@ -49,7 +49,10 @@ export class SecurityHubAdapter implements AwsServiceAdapter {
       // Returning [] is the agreed graceful path when SecHub isn't subscribed
       // or the role can't see findings — the cloud-security service surfaces
       // a clearer onboarding error elsewhere when this happens consistently.
-      if (message.includes('not subscribed') || message.includes('AccessDenied')) {
+      if (
+        message.includes('not subscribed') ||
+        message.includes('AccessDenied')
+      ) {
         return [];
       }
       throw error;
@@ -148,7 +151,8 @@ export function mapSecurityHubFinding(
     id: finding.Id ?? '',
     title,
     description: finding.Description ?? 'No description available',
-    severity: SEVERITY_BY_SECHUB_LABEL[finding.Severity?.Label ?? ''] ?? 'medium',
+    severity:
+      SEVERITY_BY_SECHUB_LABEL[finding.Severity?.Label ?? ''] ?? 'medium',
     resourceType: finding.Resources?.[0]?.Type ?? 'unknown',
     resourceId: finding.Resources?.[0]?.Id ?? 'unknown',
     remediation: buildRemediationText(finding),

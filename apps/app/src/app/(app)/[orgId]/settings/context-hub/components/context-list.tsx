@@ -1,5 +1,6 @@
 'use client';
 
+import type { Context } from '@db';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,14 +29,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@gideon-defender/ui/dialog';
-import type { Context } from '@db';
 import { Pencil, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useContextEntries } from '../hooks/useContextEntries';
 import { ContextForm } from './context-form';
 
-export function ContextList({ entries: initialEntries, locale }: { entries: Context[]; locale: string }) {
+export function ContextList({
+  entries: initialEntries,
+  locale,
+}: {
+  entries: Context[];
+  locale: string;
+}) {
   const { entries, deleteEntry } = useContextEntries({ initialData: initialEntries });
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState<Record<string, boolean>>({});

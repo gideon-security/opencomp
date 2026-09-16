@@ -10,9 +10,7 @@ export function useAutomationRuns() {
   }>();
 
   const { data, error, isLoading, mutate } = useSWR<EvidenceAutomationRun[]>(
-    taskId && automationId
-      ? `/v1/tasks/${taskId}/automations/${automationId}/runs`
-      : null,
+    taskId && automationId ? `/v1/tasks/${taskId}/automations/${automationId}/runs` : null,
     async (url: string) => {
       const res = await apiClient.get<EvidenceAutomationRun[]>(url);
       if (res.error) throw new Error(res.error);

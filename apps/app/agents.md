@@ -233,18 +233,18 @@ import { Plus, Download } from 'lucide-react';
 
 Common icon mappings from lucide-react to Carbon:
 
-| lucide-react | @carbon/icons-react |
-|--------------|---------------------|
-| Plus | Add |
-| X | Close |
-| Check | Checkmark |
-| ChevronDown | ChevronDown |
-| ChevronRight | ChevronRight |
-| Settings | Settings |
-| Trash | TrashCan |
-| Edit | Edit |
-| Search | Search |
-| Loader2 | (use Button loading prop) |
+| lucide-react | @carbon/icons-react       |
+| ------------ | ------------------------- |
+| Plus         | Add                       |
+| X            | Close                     |
+| Check        | Checkmark                 |
+| ChevronDown  | ChevronDown               |
+| ChevronRight | ChevronRight              |
+| Settings     | Settings                  |
+| Trash        | TrashCan                  |
+| Edit         | Edit                      |
+| Search       | Search                    |
+| Loader2      | (use Button loading prop) |
 
 <!-- BEGIN:nextjs-agent-rules -->
 

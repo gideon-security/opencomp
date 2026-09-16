@@ -1,15 +1,30 @@
 'use client';
 
 import { Button } from '@gideon-defender/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@gideon-defender/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@gideon-defender/ui/table';
 import { Textarea } from '@gideon-defender/ui/textarea';
-import { BookOpen, ChevronDown, ChevronUp, Link as LinkIcon, Loader2, Zap, Pencil } from 'lucide-react';
+import {
+  BookOpen,
+  ChevronDown,
+  ChevronUp,
+  Link as LinkIcon,
+  Loader2,
+  Pencil,
+  Zap,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import type { QuestionAnswer } from './types';
 import { deduplicateSources } from '../utils/deduplicate-sources';
 import { KnowledgeBaseDocumentLink } from './KnowledgeBaseDocumentLink';
 import { ManualAnswerLink } from './ManualAnswerLink';
+import type { QuestionAnswer } from './types';
 
 interface QuestionnaireResultsTableProps {
   orgId: string;
@@ -63,15 +78,18 @@ export function QuestionnaireResultsTable({
           <TableRow className="bg-muted/30 hover:bg-muted/30">
             <TableHead className="w-12 text-xs font-semibold pl-6">#</TableHead>
             <TableHead className="w-1/2 text-xs font-semibold">{t('results.question')}</TableHead>
-            <TableHead className="w-1/2 text-xs font-semibold pr-6">{t('results.answer')}</TableHead>
+            <TableHead className="w-1/2 text-xs font-semibold pr-6">
+              {t('results.answer')}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredResults.map((qa, index) => {
             // Use originalIndex if available (from detail page), otherwise find by question text
-            const originalIndex = qa._originalIndex !== undefined 
-              ? qa._originalIndex 
-              : results.findIndex((r) => r.question === qa.question);
+            const originalIndex =
+              qa._originalIndex !== undefined
+                ? qa._originalIndex
+                : results.findIndex((r) => r.question === qa.question);
             // Fallback to index if not found (shouldn't happen, but safety check)
             const safeIndex = originalIndex >= 0 ? originalIndex : index;
             const isEditing = editingIndex === safeIndex;
@@ -83,21 +101,24 @@ export function QuestionnaireResultsTable({
             // 1. Status is explicitly 'processing'
             // 2. This is the single question being answered
             // 3. Auto-answer is running and this question doesn't have an answer yet (or has empty answer)
-            const isProcessing = 
-              questionStatus === 'processing' || 
+            const isProcessing =
+              questionStatus === 'processing' ||
               answeringQuestionIndex === safeIndex ||
-              (isAutoAnswering && hasClickedAutoAnswer && (!qa.answer || qa.answer.trim().length === 0) && questionStatus !== 'completed');
-            
+              (isAutoAnswering &&
+                hasClickedAutoAnswer &&
+                (!qa.answer || qa.answer.trim().length === 0) &&
+                questionStatus !== 'completed');
+
             // Deduplicate sources for this question
             const uniqueSources = qa.sources ? deduplicateSources(qa.sources) : [];
 
             return (
-              <TableRow 
-                key={`row-${safeIndex}-${qa.question.substring(0, 20)}`} 
+              <TableRow
+                key={`row-${safeIndex}-${qa.question.substring(0, 20)}`}
                 className="group animate-in fade-in duration-500 ease-out"
-                style={{ 
+                style={{
                   animationDelay: `${index * 50}ms`,
-                  animationFillMode: 'backwards'
+                  animationFillMode: 'backwards',
                 }}
               >
                 <TableCell className="align-top py-6 font-medium pl-6">
@@ -116,8 +137,8 @@ export function QuestionnaireResultsTable({
                         autoFocus
                       />
                       <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           onClick={() => onSaveAnswer(safeIndex)}
                           disabled={isSaving && savingIndex === safeIndex}
                         >
@@ -130,9 +151,9 @@ export function QuestionnaireResultsTable({
                             tCommon('common.save')
                           )}
                         </Button>
-                        <Button 
-                          size="sm" 
-                          onClick={onCancelEdit} 
+                        <Button
+                          size="sm"
+                          onClick={onCancelEdit}
                           variant="outline"
                           disabled={isSaving && savingIndex === safeIndex}
                         >
@@ -143,7 +164,7 @@ export function QuestionnaireResultsTable({
                   ) : (
                     <div className="space-y-3">
                       {qa.answer && qa.answer.trim().length > 0 ? (
-                        <div 
+                        <div
                           className="group relative cursor-pointer rounded-md p-2 -m-2 border border-transparent transition-colors duration-150 ease-in-out hover:bg-muted/30 hover:border-primary/30"
                           onClick={() => onEditAnswer(safeIndex)}
                           title={t('results.clickToEdit')}
@@ -158,12 +179,16 @@ export function QuestionnaireResultsTable({
                       ) : isProcessing ? (
                         <div className="flex items-center justify-end gap-2 py-2 min-h-[40px]">
                           <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
-                          <span className="text-sm text-muted-foreground">{t('results.findingAnswer')}</span>
+                          <span className="text-sm text-muted-foreground">
+                            {t('results.findingAnswer')}
+                          </span>
                         </div>
                       ) : isQueued ? (
                         <div className="flex items-center justify-end gap-2 py-2 min-h-[40px]">
                           <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />
-                          <span className="text-sm text-muted-foreground">{t('results.findingAnswer')}</span>
+                          <span className="text-sm text-muted-foreground">
+                            {t('results.findingAnswer')}
+                          </span>
                         </div>
                       ) : qa.failedToGenerate ? (
                         <div className="flex items-center justify-between gap-4">
@@ -236,7 +261,8 @@ export function QuestionnaireResultsTable({
                               {uniqueSources.map((source, sourceIndex) => {
                                 const isPolicy = source.sourceType === 'policy' && source.sourceId;
                                 const isKnowledgeBaseDocument =
-                                  source.sourceType === 'knowledge_base_document' && source.sourceId;
+                                  source.sourceType === 'knowledge_base_document' &&
+                                  source.sourceId;
                                 const isManualAnswer =
                                   source.sourceType === 'manual_answer' && source.sourceId;
                                 const sourceContent = source.sourceName || source.sourceType;

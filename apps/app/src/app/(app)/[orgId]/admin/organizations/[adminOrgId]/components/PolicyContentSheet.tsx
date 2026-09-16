@@ -1,7 +1,8 @@
 'use client';
 
-import { api } from '@/lib/api-client';
 import { PolicyEditor } from '@/components/editor/policy-editor';
+import { api } from '@/lib/api-client';
+import type { JSONContent } from '@tiptap/react';
 import {
   Badge,
   Button,
@@ -14,7 +15,6 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Renew } from '@trycompai/design-system/icons';
-import type { JSONContent } from '@tiptap/react';
 import { useState } from 'react';
 
 interface PolicyWithContent {
@@ -26,19 +26,14 @@ interface PolicyWithContent {
   draftContent?: unknown[];
 }
 
-const STATUS_VARIANT: Record<
-  string,
-  'default' | 'secondary' | 'destructive' | 'outline'
-> = {
+const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
   draft: 'outline',
   published: 'default',
   needs_review: 'secondary',
 };
 
 function formatLabel(value: string) {
-  return value
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return value.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export function PolicyContentSheet({
@@ -57,9 +52,7 @@ export function PolicyContentSheet({
   const handleRegenerate = async () => {
     if (!policy) return;
     setRegenerating(true);
-    await api.post(
-      `/v1/admin/organizations/${orgId}/policies/${policy.id}/regenerate`,
-    );
+    await api.post(`/v1/admin/organizations/${orgId}/policies/${policy.id}/regenerate`);
     setRegenerating(false);
     onRegenerated();
   };

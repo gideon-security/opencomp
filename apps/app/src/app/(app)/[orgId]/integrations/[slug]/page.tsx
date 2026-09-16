@@ -15,8 +15,10 @@ export default async function ProviderDetailPage({ params, searchParams }: PageP
   const providerParam = typeof sp.provider === 'string' ? sp.provider : '';
   const gcpOAuthJustConnected = slug === 'gcp' && success === 'true' && providerParam === 'gcp';
 
-  const { provider, providerErrored, connections, taskTemplates } =
-    await loadIntegrationPageData(slug, { sortTasks: true });
+  const { provider, providerErrored, connections, taskTemplates } = await loadIntegrationPageData(
+    slug,
+    { sortTasks: true },
+  );
 
   if (!provider || providerErrored) {
     redirect(`/${orgId}/integrations`);

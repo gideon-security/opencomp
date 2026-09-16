@@ -1,8 +1,8 @@
 'use client';
 
 import { api } from '@/lib/api-client';
-import useSWR from 'swr';
 import { useParams } from 'next/navigation';
+import useSWR from 'swr';
 
 interface ActivityLog {
   id: string;
@@ -40,4 +40,3 @@ export function useTaskItemActivity(taskItemId: string | null) {
     mutate,
   };
 }
-

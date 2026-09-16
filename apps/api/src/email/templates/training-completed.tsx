@@ -74,7 +74,10 @@ export const TrainingCompletedEmail = ({
 
             <Section
               className="mt-[24px] mb-[24px] rounded-[8px] p-[24px] text-center"
-              style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0' }}
+              style={{
+                backgroundColor: '#f0fdf4',
+                border: '1px solid #bbf7d0',
+              }}
             >
               <Text className="m-0 text-[16px] font-medium text-[#166534]">
                 Completion Date: {formattedDate}

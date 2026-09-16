@@ -1,8 +1,13 @@
-import { google } from '@ai-sdk/google';
-import { db, FrameworkEditorFramework, FrameworkEditorPolicyTemplate, type Policy } from '@db/server';
-import type { JSONContent } from '@tiptap/react';
-import { logger } from '@gideon-defender/trigger-local';
 import { generateObjectWithRetry } from '@/lib/llm-call';
+import { google } from '@ai-sdk/google';
+import {
+  db,
+  FrameworkEditorFramework,
+  FrameworkEditorPolicyTemplate,
+  type Policy,
+} from '@db/server';
+import { logger } from '@gideon-defender/trigger-local';
+import type { JSONContent } from '@tiptap/react';
 import { z } from 'zod';
 import { processTemplate } from './process-policy-template';
 
@@ -48,10 +53,7 @@ function setTextAtPath(nodes: JsonNode[], path: number[], newText: string): void
  * targeted LLM call. Only fires when cue lines are detected — most
  * policies skip this entirely.
  */
-async function refineCueLines(
-  content: JsonNode[],
-  policyName: string,
-): Promise<JsonNode[]> {
+async function refineCueLines(content: JsonNode[], policyName: string): Promise<JsonNode[]> {
   const cueLines = findCueLines(content);
   if (cueLines.length === 0) return content;
 

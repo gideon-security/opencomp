@@ -109,7 +109,11 @@ describe('BrowserAutomationsList', () => {
   it('hides each action when its callback is not provided (manual task)', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     render(
-      <BrowserAutomationsList {...defaultProps} onCreate={undefined} onConnectAnother={undefined} />,
+      <BrowserAutomationsList
+        {...defaultProps}
+        onCreate={undefined}
+        onConnectAnother={undefined}
+      />,
     );
     expect(screen.queryByText('New evidence')).not.toBeInTheDocument();
     expect(screen.queryByText('Connect another vendor')).not.toBeInTheDocument();
@@ -128,17 +132,11 @@ describe('BrowserAutomationsList', () => {
   it('auto-expands the row of a just-finished manual run', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     const { rerender } = render(<BrowserAutomationsList {...defaultProps} />);
-    expect(screen.getByTestId('automation-item-auto_1')).toHaveAttribute(
-      'data-expanded',
-      'false',
-    );
+    expect(screen.getByTestId('automation-item-auto_1')).toHaveAttribute('data-expanded', 'false');
 
     // The hook hands down a fresh { id } when a run finishes → row expands.
     rerender(<BrowserAutomationsList {...defaultProps} autoExpand={{ id: 'auto_1' }} />);
-    expect(screen.getByTestId('automation-item-auto_1')).toHaveAttribute(
-      'data-expanded',
-      'true',
-    );
+    expect(screen.getByTestId('automation-item-auto_1')).toHaveAttribute('data-expanded', 'true');
   });
 
   it('flags a row whose connection needs reconnect and calls onReconnect', () => {

@@ -2,11 +2,9 @@
 
 import { formatDateShort } from '@/lib/format';
 
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
-import { api } from '@/lib/api-client';
+import { TimelinePhaseBar } from '@/app/(app)/[orgId]/overview/components/TimelinePhaseBar';
 import type { AdminOrgTimeline } from '@/hooks/use-admin-timelines';
+import { api } from '@/lib/api-client';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,16 +23,18 @@ import {
 import {
   Checkmark,
   CircleDash,
+  Edit,
   InProgress,
   Locked,
   Pause,
   Play,
-  Edit,
   Reset,
   TrashCan,
   Unlocked,
 } from '@trycompai/design-system/icons';
-import { TimelinePhaseBar } from '@/app/(app)/[orgId]/overview/components/TimelinePhaseBar';
+import { useTranslations } from 'next-intl';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { TimelineActivateForm } from './TimelineActivateForm';
 import { TimelinePhaseEditor } from './TimelinePhaseEditor';
 
@@ -140,9 +140,7 @@ export function TimelineCard({ timeline, orgId, onMutate }: TimelineCardProps) {
     timeline.template?.name ??
     timeline.frameworkInstance?.framework.name ??
     t('organizations.timeline.unknownFramework');
-  const sortedPhases = [...timeline.phases].sort(
-    (a, b) => a.orderIndex - b.orderIndex,
-  );
+  const sortedPhases = [...timeline.phases].sort((a, b) => a.orderIndex - b.orderIndex);
 
   const runAction = async (
     method: 'post' | 'delete',
@@ -151,11 +149,9 @@ export function TimelineCard({ timeline, orgId, onMutate }: TimelineCardProps) {
     body?: unknown,
   ) => {
     setActionLoading(true);
-    const res = await (
-      method === 'delete'
-        ? api.delete(path, undefined, body)
-        : api.post(path, body)
-    );
+    const res = await (method === 'delete'
+      ? api.delete(path, undefined, body)
+      : api.post(path, body));
     setActionLoading(false);
     if (res.error) {
       toast.error(res.error);
@@ -184,19 +180,39 @@ export function TimelineCard({ timeline, orgId, onMutate }: TimelineCardProps) {
             timelineId={timeline.id}
             loading={actionLoading}
             onPause={() =>
-              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/pause`, t('organizations.timeline.toastPaused'))
+              runAction(
+                'post',
+                `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/pause`,
+                t('organizations.timeline.toastPaused'),
+              )
             }
             onResume={() =>
-              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/resume`, t('organizations.timeline.toastResumed'))
+              runAction(
+                'post',
+                `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/resume`,
+                t('organizations.timeline.toastResumed'),
+              )
             }
             onReset={() =>
-              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/reset`, t('organizations.timeline.toastReset'))
+              runAction(
+                'post',
+                `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/reset`,
+                t('organizations.timeline.toastReset'),
+              )
             }
             onDelete={() =>
-              runAction('delete', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}`, t('organizations.timeline.toastDeleted'))
+              runAction(
+                'delete',
+                `/v1/admin/organizations/${orgId}/timelines/${timeline.id}`,
+                t('organizations.timeline.toastDeleted'),
+              )
             }
             onStartNextCycle={() =>
-              runAction('post', `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/next-cycle`, t('organizations.timeline.toastNextCycle'))
+              runAction(
+                'post',
+                `/v1/admin/organizations/${orgId}/timelines/${timeline.id}/next-cycle`,
+                t('organizations.timeline.toastNextCycle'),
+              )
             }
             onUnlock={(unlockReason) =>
               runAction(
@@ -300,12 +316,8 @@ function PhaseRow({
           {t('organizations.timeline.lock')}
         </Badge>
       ) : null}
-      <Badge variant="outline">
-        {completionTypeLabel(t, phase.completionType)}
-      </Badge>
-      <Badge variant="outline">
-        {phaseStatusLabel(t, phase.status)}
-      </Badge>
+      <Badge variant="outline">{completionTypeLabel(t, phase.completionType)}</Badge>
+      <Badge variant="outline">{phaseStatusLabel(t, phase.status)}</Badge>
       {editable && (
         <button
           onClick={onEdit}
@@ -422,9 +434,7 @@ function TimelineActions({
   if (status === 'ACTIVE') {
     return (
       <div className="flex items-center gap-2">
-        {lockedAt ? (
-          <UnlockDialogButton onConfirm={onUnlock} loading={loading} />
-        ) : null}
+        {lockedAt ? <UnlockDialogButton onConfirm={onUnlock} loading={loading} /> : null}
         <ConfirmButton
           title="Pause Timeline"
           description="Pausing will stop auto-completion checks. You can resume later and dates will be adjusted."
@@ -450,9 +460,7 @@ function TimelineActions({
   if (status === 'PAUSED') {
     return (
       <div className="flex items-center gap-2">
-        {lockedAt ? (
-          <UnlockDialogButton onConfirm={onUnlock} loading={loading} />
-        ) : null}
+        {lockedAt ? <UnlockDialogButton onConfirm={onUnlock} loading={loading} /> : null}
         <ConfirmButton
           title="Resume Timeline"
           description="Resuming will adjust dates forward based on the pause duration."

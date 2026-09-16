@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to my.vultr.com\n2. Go to Account > API\n3. Enable API access if not already enabled\n4. Copy the API key (or create a new one)\n5. Paste it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

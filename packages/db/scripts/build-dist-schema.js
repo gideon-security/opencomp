@@ -22,10 +22,7 @@ if (!fs.existsSync(distDir)) fs.mkdirSync(distDir, { recursive: true });
 // schema.prisma (generator + datasource) must come first; everything else
 // after, in deterministic order.
 const all = fs.readdirSync(schemaDir).filter((f) => f.endsWith('.prisma'));
-const ordered = [
-  'schema.prisma',
-  ...all.filter((f) => f !== 'schema.prisma').sort(),
-];
+const ordered = ['schema.prisma', ...all.filter((f) => f !== 'schema.prisma').sort()];
 
 const parts = ordered.map((file) => {
   const body = fs.readFileSync(path.join(schemaDir, file), 'utf8').trimEnd();

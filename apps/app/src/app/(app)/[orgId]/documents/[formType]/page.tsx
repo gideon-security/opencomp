@@ -1,10 +1,10 @@
 import { CompanyFormPageClient } from '@/app/(app)/[orgId]/documents/components/CompanyFormPageClient';
+import { auth } from '@/utils/auth';
 import { Breadcrumb, PageLayout } from '@trycompai/design-system';
+import { headers } from 'next/headers';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { evidenceFormDefinitions, evidenceFormTypeSchema } from '../forms';
-import { auth } from '@/utils/auth';
-import { headers } from 'next/headers';
 
 export default async function CompanyFormDetailPage({
   params,

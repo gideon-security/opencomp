@@ -42,9 +42,7 @@ export function classifyExecuteResult(value: unknown): ExecuteClassification {
   if (record.guidedOnly === true && guidedSteps && guidedSteps.length > 0) {
     return {
       type: 'manual',
-      reason:
-        error ??
-        'Automatic fix could not be applied — follow the guided steps.',
+      reason: error ?? 'Automatic fix could not be applied — follow the guided steps.',
       guidedSteps,
     };
   }

@@ -77,9 +77,7 @@ describe('BulkUploadPoliciesSheet', () => {
     await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false));
 
     const createCalls = post.mock.calls.filter(([url]) => url === '/v1/policies');
-    const attachCalls = post.mock.calls.filter(
-      ([url]) => url === '/v1/policies/pol_A/pdf',
-    );
+    const attachCalls = post.mock.calls.filter(([url]) => url === '/v1/policies/pol_A/pdf');
     // The draft is created once and re-attached — no orphan/duplicate draft.
     expect(createCalls).toHaveLength(1);
     expect(attachCalls).toHaveLength(2);

@@ -1,21 +1,20 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import { env } from '@/env.mjs';
+import { useAuthMe } from '@/hooks/use-auth-me';
 import { Inbox } from '@novu/nextjs';
-import { useSession } from '@/utils/auth-client';
 import { Notification, Settings } from '@trycompai/design-system/icons';
-import { useState, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
 export function NotificationBell() {
   const applicationIdentifier = env.NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER;
-  const { data: session } = useSession();
-  const sessionData = session?.session;
+  const { user } = useAuthMe();
   const pathname = usePathname();
   const orgId = pathname?.split('/')[1] || null;
   const [visible, setVisible] = useState(false);
   const inboxRef = useRef<HTMLDivElement>(null);
-  
+
   // Handle click outside to close inbox
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -32,9 +31,9 @@ export function NotificationBell() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [visible]);
-  
+
   // Don't render if we don't have the required config
-  if (!applicationIdentifier || !sessionData?.userId || !orgId) {
+  if (!applicationIdentifier || !user?.id || !orgId) {
     return null;
   }
 
@@ -61,15 +60,15 @@ export function NotificationBell() {
       },
       notificationBar: ({ notification }: { notification: any }) => {
         return notification.isRead ? 'bg-transparent' : 'bg-primary';
-      }
-    }
+      },
+    },
   };
 
   return (
     <div ref={inboxRef} suppressHydrationWarning>
       <Inbox
         applicationIdentifier={applicationIdentifier}
-        subscriber={`${sessionData.userId}-${orgId}`}
+        subscriber={`${user.id}-${orgId}`}
         appearance={appearance}
         open={visible}
         renderBell={({ total }) => (
@@ -88,9 +87,7 @@ export function NotificationBell() {
         renderSubject={(notification) => <strong>{notification.subject}</strong>}
         renderBody={(notification) => (
           <div className="mt-1">
-            <p className="text-xs text-muted-foreground">
-              {notification.body}
-            </p>
+            <p className="text-xs text-muted-foreground">{notification.body}</p>
           </div>
         )}
         onNotificationClick={() => setVisible(false)}

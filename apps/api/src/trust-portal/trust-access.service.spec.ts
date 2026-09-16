@@ -619,7 +619,9 @@ describe('TrustAccessService access request notification', () => {
 
   it('points the review button at the access requests page, not the trust overview', async () => {
     // contactEmail present -> single recipient, no member fallback lookup.
-    mockDb.trust.findUnique.mockResolvedValue({ contactEmail: 'owner@acme.com' });
+    mockDb.trust.findUnique.mockResolvedValue({
+      contactEmail: 'owner@acme.com',
+    });
 
     const dto: CreateAccessRequestDto = {
       name: 'Jane Doe',
@@ -638,7 +640,8 @@ describe('TrustAccessService access request notification', () => {
     // trust portal settings/overview page).
     expect(emailService.sendAccessRequestNotification).toHaveBeenCalledWith(
       expect.objectContaining({
-        reviewUrl: 'https://app.gideondefender.com/org_123/trust/access-requests',
+        reviewUrl:
+          'https://app.gideondefender.com/org_123/trust/access-requests',
       }),
     );
   });

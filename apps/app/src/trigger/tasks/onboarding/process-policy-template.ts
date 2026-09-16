@@ -44,9 +44,7 @@ export function buildVariables({
   return vars;
 }
 
-export function buildFlags(
-  frameworks: Array<{ name: string }>,
-): Record<string, boolean> {
+export function buildFlags(frameworks: Array<{ name: string }>): Record<string, boolean> {
   const flags: Record<string, boolean> = {};
   for (const [flag, test] of FRAMEWORK_MATCHERS) {
     flags[flag] = frameworks.some((f) => test(f.name.toLowerCase()));
@@ -86,7 +84,11 @@ function stripMarkerText(node: JsonNode, marker: RegExp): JsonNode {
   return node;
 }
 
-function processTextNode(node: JsonNode, vars: Record<string, string>, flags: Record<string, boolean>): JsonNode | null {
+function processTextNode(
+  node: JsonNode,
+  vars: Record<string, string>,
+  flags: Record<string, boolean>,
+): JsonNode | null {
   if (typeof node.text !== 'string') return node;
 
   let text = node.text;
@@ -97,7 +99,11 @@ function processTextNode(node: JsonNode, vars: Record<string, string>, flags: Re
   return { ...node, text };
 }
 
-function processNode(node: JsonNode, vars: Record<string, string>, flags: Record<string, boolean>): JsonNode | null {
+function processNode(
+  node: JsonNode,
+  vars: Record<string, string>,
+  flags: Record<string, boolean>,
+): JsonNode | null {
   if (node.type === 'text') {
     return processTextNode(node, vars, flags);
   }
@@ -128,8 +134,8 @@ export function processContentArray(
 
     const openMatch = text.match(/\{\{#if\s+(\w+)\}\}/);
     const closeMatch = text.includes('{{/if}}');
-    const hasOnlyMarker = /^\s*\{\{#if\s+\w+\}\}\s*$/.test(text) ||
-                          /^\s*\{\{\/if\}\}\s*$/.test(text);
+    const hasOnlyMarker =
+      /^\s*\{\{#if\s+\w+\}\}\s*$/.test(text) || /^\s*\{\{\/if\}\}\s*$/.test(text);
 
     if (openMatch && closeMatch) {
       if (skipDepth === 0) {

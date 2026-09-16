@@ -20,10 +20,10 @@ import { Edit, TrashCan } from '@trycompai/design-system/icons';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { IsmsRole } from '../isms-types';
-import type { ApproverOption } from './IsmsApprovalSection';
 import { AuditRoutePicker, type AuditRouteUpdate } from './AuditRoutePicker';
-import { RoleAssignments } from './RoleAssignments';
+import type { ApproverOption } from './IsmsApprovalSection';
 import type { AssignmentCompetenceUpdate } from './RoleAssignmentRow';
+import { RoleAssignments } from './RoleAssignments';
 import { RoleFields } from './RoleFields';
 import { roleSchema, type RoleFormValues } from './role-schema';
 import { INTERNAL_AUDITOR_ROLE_KEY } from './roles-constants';
@@ -34,10 +34,7 @@ export interface RolesRowHandlers {
   onDeleteRole: (roleId: string) => Promise<void>;
   onSaveAuditRoute: (roleId: string, update: AuditRouteUpdate) => Promise<void>;
   onAddAssignment: (roleId: string, memberId: string) => Promise<void>;
-  onUpdateAssignment: (
-    assignmentId: string,
-    update: AssignmentCompetenceUpdate,
-  ) => Promise<void>;
+  onUpdateAssignment: (assignmentId: string, update: AssignmentCompetenceUpdate) => Promise<void>;
   onRemoveAssignment: (assignmentId: string) => Promise<void>;
 }
 
@@ -184,15 +181,11 @@ export function RolesRow({
       ) : (
         <Stack gap="4">
           <Grid cols={{ base: '1', md: '2' }} gap="3">
-            <IsmsRegisterField label="Description">
-              {role.description || '—'}
-            </IsmsRegisterField>
+            <IsmsRegisterField label="Description">{role.description || '—'}</IsmsRegisterField>
             <IsmsRegisterField label="Responsibilities">
               {role.responsibilities || '—'}
             </IsmsRegisterField>
-            <IsmsRegisterField label="Authorities">
-              {role.authorities || '—'}
-            </IsmsRegisterField>
+            <IsmsRegisterField label="Authorities">{role.authorities || '—'}</IsmsRegisterField>
             <IsmsRegisterField label="Authority granted by">
               {role.authorityGrantedBy || '—'}
             </IsmsRegisterField>

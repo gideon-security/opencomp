@@ -11,9 +11,7 @@ type SendHandler = (command: unknown) => unknown;
 function buildClient(handler: SendHandler) {
   return {
     send: jest.fn((command: unknown) => Promise.resolve(handler(command))),
-  } as unknown as Parameters<
-    ConfigAdapter['scan']
-  >[0] extends infer _
+  } as unknown as Parameters<ConfigAdapter['scan']>[0] extends infer _
     ? import('@aws-sdk/client-config-service').ConfigServiceClient
     : never;
 }

@@ -1,5 +1,12 @@
 'use client';
 
+import { Button as CompButton } from '@gideon-defender/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@gideon-defender/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,13 +22,6 @@ import {
   InputGroupInput,
 } from '@trycompai/design-system';
 import { Flash, Search } from '@trycompai/design-system/icons';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@gideon-defender/ui/dropdown-menu';
-import { Button as CompButton } from '@gideon-defender/ui/button';
 import {
   ChevronDown,
   Download,

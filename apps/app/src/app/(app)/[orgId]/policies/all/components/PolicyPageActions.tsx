@@ -2,9 +2,9 @@
 
 import { CreatePolicySheet } from '@/components/sheets/create-policy-sheet';
 import { usePermissions } from '@/hooks/use-permissions';
-import { Add, Download, Upload } from '@trycompai/design-system/icons';
 import type { Policy } from '@db';
 import { Button, HStack } from '@trycompai/design-system';
+import { Add, Download, Upload } from '@trycompai/design-system/icons';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { BulkUploadPoliciesSheet } from './BulkUploadPoliciesSheet';
@@ -26,8 +26,7 @@ export function PolicyPageActions({ policies }: PolicyPageActionsProps) {
   // policy:create (create step) and policy:update (attach step). Gating on
   // create alone lets create-only users spawn empty draft policies whose PDF
   // attach then 403s, leaving orphan drafts.
-  const canBulkUpload =
-    hasPermission('policy', 'create') && hasPermission('policy', 'update');
+  const canBulkUpload = hasPermission('policy', 'create') && hasPermission('policy', 'update');
 
   const handleOpenDownloadSheet = () => setIsDownloadSheetOpen(true);
 
@@ -41,20 +40,12 @@ export function PolicyPageActions({ policies }: PolicyPageActionsProps) {
     <>
       <HStack gap="sm" align="center">
         {policies.length > 0 && (
-          <Button
-            variant="outline"
-            iconLeft={<Download />}
-            onClick={handleOpenDownloadSheet}
-          >
+          <Button variant="outline" iconLeft={<Download />} onClick={handleOpenDownloadSheet}>
             Download All
           </Button>
         )}
         {canBulkUpload && (
-          <Button
-            variant="outline"
-            iconLeft={<Upload />}
-            onClick={() => setIsBulkUploadOpen(true)}
-          >
+          <Button variant="outline" iconLeft={<Upload />} onClick={() => setIsBulkUploadOpen(true)}>
             Bulk upload
           </Button>
         )}
@@ -65,10 +56,7 @@ export function PolicyPageActions({ policies }: PolicyPageActionsProps) {
         )}
       </HStack>
       <CreatePolicySheet />
-      <BulkUploadPoliciesSheet
-        open={isBulkUploadOpen}
-        onOpenChange={setIsBulkUploadOpen}
-      />
+      <BulkUploadPoliciesSheet open={isBulkUploadOpen} onOpenChange={setIsBulkUploadOpen} />
       <PolicyDownloadSheet
         open={isDownloadSheetOpen}
         onOpenChange={setIsDownloadSheetOpen}

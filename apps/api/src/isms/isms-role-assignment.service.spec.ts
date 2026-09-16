@@ -4,7 +4,11 @@ import { IsmsRoleAssignmentService } from './isms-role-assignment.service';
 
 jest.mock('@db', () => {
   const db = {
-    ismsDocument: { findFirst: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
+    ismsDocument: {
+      findFirst: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
     ismsRole: { findFirst: jest.fn() },
     member: { findFirst: jest.fn() },
     ismsRoleAssignment: {
@@ -26,7 +30,9 @@ describe('IsmsRoleAssignmentService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (mockDb.ismsDocument.findUnique as jest.Mock).mockResolvedValue({ status: 'draft' });
+    (mockDb.ismsDocument.findUnique as jest.Mock).mockResolvedValue({
+      status: 'draft',
+    });
     service = new IsmsRoleAssignmentService();
   });
 
@@ -37,20 +43,30 @@ describe('IsmsRoleAssignmentService', () => {
   };
 
   function stubCreatePreconditions() {
-    (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue({ id: 'doc_1' });
-    (mockDb.ismsRole.findFirst as jest.Mock).mockResolvedValue({ id: 'role_1' });
+    (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue({
+      id: 'doc_1',
+    });
+    (mockDb.ismsRole.findFirst as jest.Mock).mockResolvedValue({
+      id: 'role_1',
+    });
     (mockDb.member.findFirst as jest.Mock).mockResolvedValue({ id: 'mem_1' });
   }
 
   it('rejects a role that is not in the document', async () => {
-    (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue({ id: 'doc_1' });
+    (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue({
+      id: 'doc_1',
+    });
     (mockDb.ismsRole.findFirst as jest.Mock).mockResolvedValue(null);
     await expect(service.create(createArgs)).rejects.toThrow(NotFoundException);
   });
 
   it('rejects a member who is not in the org', async () => {
-    (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue({ id: 'doc_1' });
-    (mockDb.ismsRole.findFirst as jest.Mock).mockResolvedValue({ id: 'role_1' });
+    (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue({
+      id: 'doc_1',
+    });
+    (mockDb.ismsRole.findFirst as jest.Mock).mockResolvedValue({
+      id: 'role_1',
+    });
     (mockDb.member.findFirst as jest.Mock).mockResolvedValue(null);
     await expect(service.create(createArgs)).rejects.toThrow(NotFoundException);
   });
@@ -60,7 +76,9 @@ describe('IsmsRoleAssignmentService', () => {
     (mockDb.ismsRoleAssignment.findFirst as jest.Mock)
       .mockResolvedValueOnce(null) // no existing (roleId, memberId)
       .mockResolvedValueOnce({ position: 0 }); // nextPosition
-    (mockDb.ismsRoleAssignment.create as jest.Mock).mockResolvedValue({ id: 'ra_1' });
+    (mockDb.ismsRoleAssignment.create as jest.Mock).mockResolvedValue({
+      id: 'ra_1',
+    });
 
     await service.create(createArgs);
 
@@ -111,7 +129,11 @@ describe('IsmsRoleAssignmentService', () => {
   it('throws when updating an assignment outside the org', async () => {
     (mockDb.ismsRoleAssignment.findFirst as jest.Mock).mockResolvedValue(null);
     await expect(
-      service.update({ assignmentId: 'ra_x', organizationId: 'org_1', dto: {} }),
+      service.update({
+        assignmentId: 'ra_x',
+        organizationId: 'org_1',
+        dto: {},
+      }),
     ).rejects.toThrow(NotFoundException);
   });
 
@@ -121,7 +143,10 @@ describe('IsmsRoleAssignmentService', () => {
       documentId: 'doc_1',
     });
     (mockDb.ismsRoleAssignment.delete as jest.Mock).mockResolvedValue({});
-    const result = await service.remove({ assignmentId: 'ra_1', organizationId: 'org_1' });
+    const result = await service.remove({
+      assignmentId: 'ra_1',
+      organizationId: 'org_1',
+    });
     expect(result).toEqual({ success: true });
   });
 });

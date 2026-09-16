@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Button,
-  Checkbox,
-  HStack,
-  Section,
-  Stack,
-  Text,
-} from '@trycompai/design-system';
+import { Button, Checkbox, HStack, Section, Stack, Text } from '@trycompai/design-system';
 import { Lock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -97,8 +90,7 @@ export function EmailNotificationPreferences({
 }: Props) {
   const t = useTranslations('settings');
   const { savePreferences } = useEmailPreferences({ initialPreferences });
-  const [preferences, setPreferences] =
-    useState<EmailPreferences>(initialPreferences);
+  const [preferences, setPreferences] = useState<EmailPreferences>(initialPreferences);
   const [saving, setSaving] = useState(false);
 
   const handleToggle = (key: keyof EmailPreferences, checked: boolean) => {
@@ -191,26 +183,18 @@ export function EmailNotificationPreferences({
               <label
                 key={item.key}
                 className={`flex items-start gap-4 rounded-lg border p-4 transition-colors ${
-                  locked
-                    ? 'opacity-60 cursor-default'
-                    : 'cursor-pointer hover:bg-muted/50'
+                  locked ? 'opacity-60 cursor-default' : 'cursor-pointer hover:bg-muted/50'
                 }`}
               >
                 <Checkbox
                   checked={checked}
-                  onCheckedChange={
-                    locked
-                      ? undefined
-                      : (c) => handleToggle(item.key, c === true)
-                  }
+                  onCheckedChange={locked ? undefined : (c) => handleToggle(item.key, c === true)}
                   disabled={locked}
                 />
                 <div className="flex-1 min-w-0">
                   <HStack align="center" gap="xs">
                     <Text weight="medium">{itemLabel(t, item)}</Text>
-                    {locked && (
-                      <Lock className="h-3.5 w-3.5 text-muted-foreground" />
-                    )}
+                    {locked && <Lock className="h-3.5 w-3.5 text-muted-foreground" />}
                   </HStack>
                   <Text size="sm" variant="muted">
                     {itemDescription(t, item)}
@@ -227,9 +211,7 @@ export function EmailNotificationPreferences({
         </Stack>
 
         <Text size="xs" variant="muted">
-          {isAdminOrOwner
-            ? t('emailPrefs.footerAdmin')
-            : t('emailPrefs.footerMember')}
+          {isAdminOrOwner ? t('emailPrefs.footerAdmin') : t('emailPrefs.footerMember')}
         </Text>
       </Stack>
     </Section>

@@ -13,11 +13,9 @@ import { parseAsStringEnum, useQueryState } from 'nuqs';
 import * as React from 'react';
 
 import { getDefaultFilterOperator, getFilterOperators } from '@/lib/data-table';
-import { useDebouncedFilters } from './hooks/use-debounced-filters';
 import { dataTableConfig } from '@/lib/data-table-config';
 import { formatDate } from '@/lib/format';
 import { generateId } from '@/lib/id';
-import { getFiltersStateParser } from '@/lib/parsers';
 import type { ExtendedColumnFilter, FilterOperator, JoinOperator } from '@/types/data-table';
 import { Badge } from '@gideon-defender/ui/badge';
 import { Button } from '@gideon-defender/ui/button';
@@ -33,7 +31,13 @@ import {
 } from '@gideon-defender/ui/command';
 import { Input } from '@gideon-defender/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@gideon-defender/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
 import { DataTableRangeFilter } from './data-table-range-filter';
 import {
   Faceted,
@@ -46,6 +50,7 @@ import {
   FacetedList,
   FacetedTrigger,
 } from './faceted';
+import { useDebouncedFilters } from './hooks/use-debounced-filters';
 import {
   Sortable,
   SortableContent,

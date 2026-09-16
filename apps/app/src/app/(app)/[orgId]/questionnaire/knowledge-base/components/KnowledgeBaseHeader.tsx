@@ -15,4 +15,3 @@ export function KnowledgeBaseHeader({ organizationId }: KnowledgeBaseHeaderProps
     </div>
   );
 }
-

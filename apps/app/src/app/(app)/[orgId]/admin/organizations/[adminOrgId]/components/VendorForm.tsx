@@ -1,6 +1,8 @@
 'use client';
 
 import { api } from '@/lib/api-client';
+import { Label } from '@gideon-defender/ui/label';
+import { Textarea } from '@gideon-defender/ui/textarea';
 import {
   Button,
   Input,
@@ -11,8 +13,6 @@ import {
   Stack,
   Text,
 } from '@trycompai/design-system';
-import { Label } from '@gideon-defender/ui/label';
-import { Textarea } from '@gideon-defender/ui/textarea';
 import { useState } from 'react';
 
 interface VendorFormProps {
@@ -63,10 +63,7 @@ export function VendorForm({ orgId, onCreated }: VendorFormProps) {
     if (status) body.status = status;
     if (website.trim()) body.website = website.trim();
 
-    const res = await api.post(
-      `/v1/admin/organizations/${orgId}/vendors`,
-      body,
-    );
+    const res = await api.post(`/v1/admin/organizations/${orgId}/vendors`, body);
 
     if (res.error) {
       setError(res.error);
@@ -102,7 +99,12 @@ export function VendorForm({ orgId, onCreated }: VendorFormProps) {
 
         <div>
           <Label>Category</Label>
-          <Select value={category} onValueChange={(val) => { if (val) setCategory(val); }}>
+          <Select
+            value={category}
+            onValueChange={(val) => {
+              if (val) setCategory(val);
+            }}
+          >
             <SelectTrigger>
               <span className="text-sm">
                 {CATEGORY_OPTIONS.find((o) => o.value === category)?.label ?? 'Other (default)'}
@@ -120,7 +122,12 @@ export function VendorForm({ orgId, onCreated }: VendorFormProps) {
 
         <div>
           <Label>Status</Label>
-          <Select value={status} onValueChange={(val) => { if (val) setStatus(val); }}>
+          <Select
+            value={status}
+            onValueChange={(val) => {
+              if (val) setStatus(val);
+            }}
+          >
             <SelectTrigger>
               <span className="text-sm">
                 {STATUS_OPTIONS.find((o) => o.value === status)?.label ?? 'Not Assessed (default)'}

@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Roboflow at https://app.roboflow.com\n2. Go to Settings → API Keys (or Workspace Settings → Roboflow API)\n3. Copy your API key\n4. Paste it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

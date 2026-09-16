@@ -36,7 +36,10 @@ describe('loadOrgProfile intendedOutcomes', () => {
   });
 
   it('falls back to the default outcomes when there is no saved profile', async () => {
-    mockDb.organization.findUnique.mockResolvedValue({ name: 'Acme', website: null });
+    mockDb.organization.findUnique.mockResolvedValue({
+      name: 'Acme',
+      website: null,
+    });
     mockDb.context.findMany.mockResolvedValue([]);
     mockDb.ismsProfile.findUnique.mockResolvedValue(null);
 
@@ -55,7 +58,9 @@ describe('loadOrgProfile intendedOutcomes', () => {
 
   it('uses saved intended outcomes when provided, overriding defaults', async () => {
     seedDb({
-      answers: { intendedOutcomes: ['Protect customer data', 'Stay certified'] },
+      answers: {
+        intendedOutcomes: ['Protect customer data', 'Stay certified'],
+      },
     });
 
     const profile = await loadOrgProfile(ARGS);

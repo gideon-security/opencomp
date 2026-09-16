@@ -1,9 +1,9 @@
 'use server';
 
+import type { Prisma } from '@db';
+import { db, PolicyStatus } from '@db/server';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { db, PolicyStatus } from '@db/server';
-import type { Prisma } from '@db';
 import { authActionClient } from '../safe-action';
 
 interface ContentNode {
@@ -107,7 +107,10 @@ export const updateVersionContentAction = authActionClient
 
     // Cannot edit the current version unless the policy is in draft status
     // This covers both 'published' and 'needs_review' states
-    if (version.id === version.policy.currentVersionId && version.policy.status !== PolicyStatus.draft) {
+    if (
+      version.id === version.policy.currentVersionId &&
+      version.policy.status !== PolicyStatus.draft
+    ) {
       return {
         success: false,
         error: 'Cannot edit the published version. Create a new version to make changes.',

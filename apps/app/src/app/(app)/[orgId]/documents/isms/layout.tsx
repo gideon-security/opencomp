@@ -1,8 +1,8 @@
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { getFeatureFlags } from '@/app/posthog';
 import { serverApi } from '@/lib/api-server';
 import { auth } from '@/utils/auth';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { ISO27001_NAMES } from './isms-types';
 
 interface FrameworkApiResponse {
@@ -42,8 +42,7 @@ export default async function IsmsLayout({
   const flags = await getFeatureFlags(session.user.id, {
     groups: { organization: organizationId },
   });
-  const ismsFlagEnabled =
-    flags[ISMS_FEATURE_FLAG] === true || flags[ISMS_FEATURE_FLAG] === 'true';
+  const ismsFlagEnabled = flags[ISMS_FEATURE_FLAG] === true || flags[ISMS_FEATURE_FLAG] === 'true';
   const flagAllowsIsms = ismsFlagEnabled || process.env.NODE_ENV === 'development';
 
   if (!flagAllowsIsms) redirect(`/${orgId}/documents`);

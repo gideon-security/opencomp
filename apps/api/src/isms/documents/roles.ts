@@ -22,7 +22,9 @@ export function teamSizeBand(memberCount: number): IsmsTeamSizeBand {
 }
 
 /** Seeded roles that must be present + assigned before the 5.3 doc can be published. */
-const REQUIRED_SEED_ROLE_KEYS = SEED_ROLE_DEFINITIONS.map((role) => role.roleKey);
+const REQUIRED_SEED_ROLE_KEYS = SEED_ROLE_DEFINITIONS.map(
+  (role) => role.roleKey,
+);
 
 /** The subset of role fields the completeness check needs (server + client share it). */
 export interface RoleValidationRow {
@@ -224,7 +226,9 @@ function internalAuditParagraph(role: RoleExportRow | undefined): string {
     return `The organisation engages an external independent auditor to conduct its internal ISMS audit${firm}.${evidence}`;
   }
   // training_planned
-  const who = role.auditRouteHolderName ? ` by ${role.auditRouteHolderName}` : '';
+  const who = role.auditRouteHolderName
+    ? ` by ${role.auditRouteHolderName}`
+    : '';
   const course = role.auditCourse ? ` through ${role.auditCourse}` : '';
   const due = role.auditDueDate ? `, due ${role.auditDueDate}` : '';
   return `Internal audit competence is being developed${who}${course}${due}. Until it is in place, an external independent auditor is the recommended interim route.`;
@@ -310,7 +314,8 @@ export function buildRolesSections(
   const ownership = input.operationalOwnership ?? [];
   const band: IsmsTeamSizeBand = input.band ?? 'standard';
   const spo = roles.find((role) => role.roleKey === 'spo');
-  const spoHolders = spo && spo.holders.length > 0 ? ` (${spo.holders.join(', ')})` : '';
+  const spoHolders =
+    spo && spo.holders.length > 0 ? ` (${spo.holders.join(', ')})` : '';
   const auditor = roles.find((role) => role.roleKey === 'internal_auditor');
 
   const sections: IsmsExportSection[] = [
@@ -337,7 +342,8 @@ export function buildRolesSections(
     },
     {
       heading: 'Specific assignments required by Clause 5.3',
-      intro: 'Top management has assigned the responsibility and authority for:',
+      intro:
+        'Top management has assigned the responsibility and authority for:',
       paragraphs: [
         {
           text: `(a) Ensuring that the ISMS conforms to the requirements of ISO/IEC 27001 — assigned to the Security & Privacy Owner${spoHolders}.`,

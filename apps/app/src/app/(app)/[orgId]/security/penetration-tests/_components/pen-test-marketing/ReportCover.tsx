@@ -20,9 +20,7 @@ export function ReportCover() {
         }}
       >
         <span>C O M P&nbsp;&nbsp;A I</span>
-        <span style={{ color: '#777' }}>
-          {t('penTest.report.confidentiality')}
-        </span>
+        <span style={{ color: '#777' }}>{t('penTest.report.confidentiality')}</span>
       </div>
       <div style={{ fontSize: 7, color: '#777', marginBottom: 4, fontFamily: 'var(--font-mono)' }}>
         yourapp.example.com
@@ -55,7 +53,9 @@ export function ReportCover() {
       >
         {t('penTest.report.reportType')}
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 4, fontSize: 7, color: '#333' }}>
+      <div
+        style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 4, fontSize: 7, color: '#333' }}
+      >
         <Meta label={t('penTest.report.assessmentPeriod')} value="May 5, 2026 — May 5, 2026" />
         <Meta label={t('penTest.report.reportDate')} value="May 5, 2026" />
         <Meta label={t('penTest.report.version')} value="1.0" />

@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to the Pinecone console at https://app.pinecone.io\n2. Select your project\n3. Go to the 'API Keys' tab\n4. Create or copy an existing API key with at least ReadOnly control plane permissions\n5. Paste the API key below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

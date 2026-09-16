@@ -24,15 +24,12 @@ import {
   Text,
   Textarea,
 } from '@trycompai/design-system';
-import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import {
-  FINDING_TEMPLATE_CATEGORIES,
-  findingTemplateCategoryLabel,
-} from './constants';
+import { FINDING_TEMPLATE_CATEGORIES, findingTemplateCategoryLabel } from './constants';
 
 type AdminTranslator = ReturnType<typeof useTranslations<'admin'>>;
 
@@ -107,9 +104,7 @@ export function TemplateFormDialog({ open, template, onClose }: TemplateFormDial
     }
 
     toast.success(
-      isEdit
-        ? t('findingTemplates.form.toastUpdated')
-        : t('findingTemplates.form.toastCreated'),
+      isEdit ? t('findingTemplates.form.toastUpdated') : t('findingTemplates.form.toastCreated'),
     );
     mutate();
     onClose();
@@ -120,9 +115,7 @@ export function TemplateFormDialog({ open, template, onClose }: TemplateFormDial
       <SheetContent>
         <SheetHeader>
           <SheetTitle>
-            {isEdit
-              ? t('findingTemplates.form.editTitle')
-              : t('findingTemplates.form.newTitle')}
+            {isEdit ? t('findingTemplates.form.editTitle') : t('findingTemplates.form.newTitle')}
           </SheetTitle>
         </SheetHeader>
         <SheetBody>

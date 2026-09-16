@@ -1,9 +1,9 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { QuestionnaireResults } from './QuestionnaireResults';
 import { QuestionnaireSidebar } from './QuestionnaireSidebar';
 import { QuestionnaireUpload } from './QuestionnaireUpload';
-import { useTranslations } from 'next-intl';
 
 interface QuestionnaireViewProps {
   // Common props
@@ -49,7 +49,7 @@ interface QuestionnaireViewProps {
   onCancelEdit: () => void;
   onExport: (format: 'xlsx' | 'csv' | 'pdf') => void;
   onToggleSource: (index: number) => void;
-  
+
   // New questionnaire specific props (optional)
   selectedFile?: File | null;
   onFileSelect?: (acceptedFiles: File[], rejectedFiles: any[]) => void;
@@ -59,7 +59,7 @@ interface QuestionnaireViewProps {
   showExitDialog?: boolean;
   onShowExitDialogChange?: (show: boolean) => void;
   onExit?: () => void;
-  
+
   // Existing questionnaire specific props (optional)
   filename?: string;
   description?: string;
@@ -190,4 +190,3 @@ export function QuestionnaireView({
     </div>
   );
 }
-

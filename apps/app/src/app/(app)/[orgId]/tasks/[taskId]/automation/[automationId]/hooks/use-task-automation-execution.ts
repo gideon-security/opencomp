@@ -63,8 +63,7 @@ const TERMINAL_STATUS_MESSAGES: Record<string, string> = {
   TIMED_OUT:
     'The automation took too long and timed out before it could finish. Try simplifying the script or check any external services it calls.',
   CRASHED: 'The automation crashed while running. This is usually temporary — please try again.',
-  SYSTEM_FAILURE:
-    'The automation stopped because of a system error. Please try again in a moment.',
+  SYSTEM_FAILURE: 'The automation stopped because of a system error. Please try again in a moment.',
   CANCELED: 'The automation run was canceled before it finished.',
   EXPIRED: 'The automation expired before it could start. Please try again.',
 };
@@ -258,8 +257,8 @@ export function useTaskAutomationExecution({
       }
     } catch (err) {
       // Sanitize with fallback to ensure state cleanup always happens
-      const sanitizedMessage = await sanitizeErrorMessage(err).catch(
-        () => (err instanceof Error ? err.message : 'An unexpected error occurred'),
+      const sanitizedMessage = await sanitizeErrorMessage(err).catch(() =>
+        err instanceof Error ? err.message : 'An unexpected error occurred',
       );
       const error = new Error(sanitizedMessage);
       setError(error);

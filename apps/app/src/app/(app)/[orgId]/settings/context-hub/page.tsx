@@ -30,12 +30,7 @@ export default async function ContextHubSettings({
     pageCount: number;
   }>(`/v1/context?${queryParams.toString()}`);
 
-  return (
-    <ContextTable
-      entries={res.data?.data ?? []}
-      pageCount={res.data?.pageCount ?? 0}
-    />
-  );
+  return <ContextTable entries={res.data?.data ?? []} pageCount={res.data?.pageCount ?? 0} />;
 }
 
 export async function generateMetadata(): Promise<Metadata> {

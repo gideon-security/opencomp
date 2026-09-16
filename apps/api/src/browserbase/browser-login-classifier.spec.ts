@@ -14,8 +14,7 @@ describe('classifyLoginOutcome', () => {
   }) =>
     ({
       context: {
-        pages: () =>
-          opts.url !== undefined ? [{ url: () => opts.url }] : [],
+        pages: () => (opts.url !== undefined ? [{ url: () => opts.url }] : []),
       },
       extract:
         opts.extract ?? jest.fn().mockResolvedValue({ state: opts.state }),
@@ -29,9 +28,9 @@ describe('classifyLoginOutcome', () => {
       'challenge',
       'unknown',
     ] as const) {
-      await expect(classifyLoginOutcome(makeStagehand({ state }))).resolves.toBe(
-        state,
-      );
+      await expect(
+        classifyLoginOutcome(makeStagehand({ state })),
+      ).resolves.toBe(state);
     }
   });
 

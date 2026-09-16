@@ -54,7 +54,9 @@ describe('IsmsDocumentControlService', () => {
 
     it('throws NotFoundException when the document is not in the org', async () => {
       (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue(null);
-      await expect(service.addControls(args)).rejects.toThrow(NotFoundException);
+      await expect(service.addControls(args)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('rejects controls that do not belong to the org', async () => {
@@ -100,8 +102,9 @@ describe('IsmsDocumentControlService', () => {
 
       const lockOrder = (mockDb.$executeRaw as jest.Mock).mock
         .invocationCallOrder[0];
-      const writeOrder = (mockDb.ismsDocumentControlLink.createMany as jest.Mock)
-        .mock.invocationCallOrder[0];
+      const writeOrder = (
+        mockDb.ismsDocumentControlLink.createMany as jest.Mock
+      ).mock.invocationCallOrder[0];
       expect(lockOrder).toBeLessThan(writeOrder);
     });
   });
@@ -182,7 +185,9 @@ describe('IsmsDocumentControlService', () => {
         status: 'approved',
       });
       // createMany inserts nothing because the links already exist.
-      (mockDb.ismsDocumentControlLink.createMany as jest.Mock).mockResolvedValue({
+      (
+        mockDb.ismsDocumentControlLink.createMany as jest.Mock
+      ).mockResolvedValue({
         count: 0,
       });
 
@@ -199,7 +204,9 @@ describe('IsmsDocumentControlService', () => {
       (mockDb.ismsDocument.findUnique as jest.Mock).mockResolvedValue({
         status: 'approved',
       });
-      (mockDb.ismsDocumentControlLink.deleteMany as jest.Mock).mockResolvedValue({
+      (
+        mockDb.ismsDocumentControlLink.deleteMany as jest.Mock
+      ).mockResolvedValue({
         count: 0,
       });
 

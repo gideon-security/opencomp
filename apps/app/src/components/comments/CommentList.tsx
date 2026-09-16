@@ -15,7 +15,13 @@ export function CommentList({
   return (
     <div className="space-y-2">
       {comments.map((comment) => (
-        <CommentItem key={comment.id} comment={comment} refreshComments={refreshComments} readOnly={readOnly} entityType={entityType} />
+        <CommentItem
+          key={comment.id}
+          comment={comment}
+          refreshComments={refreshComments}
+          readOnly={readOnly}
+          entityType={entityType}
+        />
       ))}
     </div>
   );

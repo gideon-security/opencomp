@@ -51,4 +51,3 @@ export function useApiSWR<T = unknown>(
 
   return swrResponse;
 }
-

@@ -4,7 +4,11 @@ import { IsmsInterestedPartyService } from './isms-interested-party.service';
 
 jest.mock('@db', () => {
   const db = {
-    ismsDocument: { findFirst: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
+    ismsDocument: {
+      findFirst: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
     ismsInterestedParty: {
       findFirst: jest.fn(),
       count: jest.fn(),

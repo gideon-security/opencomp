@@ -19,7 +19,5 @@ export default async function Page() {
     serverApi<FrameworkFamilyWithCount[]>('/framework-family'),
   ]);
 
-  return (
-    <FrameworksClientPage initialFrameworks={frameworks} initialFamilies={families} />
-  );
+  return <FrameworksClientPage initialFrameworks={frameworks} initialFamilies={families} />;
 }

@@ -41,7 +41,10 @@ function setCorsHeaders(params: {
     'Access-Control-Allow-Headers',
     requestedHeaders ?? DEFAULT_CORS_HEADERS,
   );
-  params.response.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+  params.response.setHeader(
+    'Access-Control-Expose-Headers',
+    'Content-Disposition',
+  );
 }
 
 async function isCorsOriginAllowed(params: {

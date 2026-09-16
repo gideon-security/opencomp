@@ -24,15 +24,10 @@ export const downloadHipaaCertificate = authActionClient
     const { session } = ctx;
 
     if (session.activeOrganizationId !== organizationId) {
-      throw new Error(
-        'Unauthorized: You do not have access to this organization',
-      );
+      throw new Error('Unauthorized: You do not have access to this organization');
     }
 
-    const apiUrl =
-      env.NEXT_PUBLIC_API_URL ||
-      process.env.API_BASE_URL ||
-      'http://localhost:3333';
+    const apiUrl = env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || 'http://localhost:3333';
 
     const headerStore = await headers();
     const cookieHeader = headerStore.get('cookie');
@@ -45,14 +40,11 @@ export const downloadHipaaCertificate = authActionClient
       requestHeaders['Cookie'] = cookieHeader;
     }
 
-    const response = await fetch(
-      `${apiUrl}/v1/training/generate-hipaa-certificate`,
-      {
-        method: 'POST',
-        headers: requestHeaders,
-        body: JSON.stringify({ memberId, organizationId }),
-      },
-    );
+    const response = await fetch(`${apiUrl}/v1/training/generate-hipaa-certificate`, {
+      method: 'POST',
+      headers: requestHeaders,
+      body: JSON.stringify({ memberId, organizationId }),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

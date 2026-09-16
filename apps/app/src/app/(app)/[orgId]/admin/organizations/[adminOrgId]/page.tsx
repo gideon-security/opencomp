@@ -7,9 +7,7 @@ export default async function AdminOrganizationDetailPage({
   params: Promise<{ orgId: string; adminOrgId: string }>;
 }) {
   const { orgId, adminOrgId } = await params;
-  const res = await serverApi.get<AdminOrgDetail>(
-    `/v1/admin/organizations/${adminOrgId}`,
-  );
+  const res = await serverApi.get<AdminOrgDetail>(`/v1/admin/organizations/${adminOrgId}`);
 
   if (!res.data) {
     return (

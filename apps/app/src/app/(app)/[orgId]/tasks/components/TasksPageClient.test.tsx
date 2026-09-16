@@ -1,12 +1,12 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -55,10 +55,7 @@ const mockRealtime: {
   ) => void;
 } = {};
 vi.mock('@gideon-defender/trigger-react', () => ({
-  useRealtimeRun: (
-    _runId: string,
-    options: { onComplete?: typeof mockRealtime.onComplete },
-  ) => {
+  useRealtimeRun: (_runId: string, options: { onComplete?: typeof mockRealtime.onComplete }) => {
     mockRealtime.onComplete = options.onComplete;
     return { run: undefined };
   },
@@ -99,25 +96,13 @@ vi.mock('@trycompai/design-system', () => ({
       {children}
     </button>
   ),
-  PageHeader: ({
-    title,
-    actions,
-  }: {
-    title: string;
-    actions?: React.ReactNode;
-  }) => (
+  PageHeader: ({ title, actions }: { title: string; actions?: React.ReactNode }) => (
     <div>
       <h1>{title}</h1>
       {actions}
     </div>
   ),
-  PageLayout: ({
-    children,
-    header,
-  }: {
-    children: React.ReactNode;
-    header: React.ReactNode;
-  }) => (
+  PageLayout: ({ children, header }: { children: React.ReactNode; header: React.ReactNode }) => (
     <div>
       {header}
       {children}
@@ -130,9 +115,21 @@ vi.mock('@trycompai/design-system', () => ({
   PopoverTitle: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   PopoverTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Switch: () => <input type="checkbox" />,
-  Tabs: ({ children, defaultValue: _dv, onValueChange: _ovc }: { children: React.ReactNode; defaultValue?: string; onValueChange?: (v: string) => void }) => <div>{children}</div>,
-  TabsList: ({ children, variant: _v }: { children: React.ReactNode; variant?: string }) => <div>{children}</div>,
-  TabsTrigger: ({ children, value: _val }: { children: React.ReactNode; value: string }) => <div>{children}</div>,
+  Tabs: ({
+    children,
+    defaultValue: _dv,
+    onValueChange: _ovc,
+  }: {
+    children: React.ReactNode;
+    defaultValue?: string;
+    onValueChange?: (v: string) => void;
+  }) => <div>{children}</div>,
+  TabsList: ({ children, variant: _v }: { children: React.ReactNode; variant?: string }) => (
+    <div>{children}</div>
+  ),
+  TabsTrigger: ({ children, value: _val }: { children: React.ReactNode; value: string }) => (
+    <div>{children}</div>
+  ),
 }));
 
 vi.mock('@trycompai/design-system/icons', () => ({
@@ -238,9 +235,7 @@ describe('TasksPageClient evidence export', () => {
     });
 
     expect(clickSpy).toHaveBeenCalledTimes(1);
-    expect(mockToastSuccess).toHaveBeenCalledWith(
-      'page.downloadSuccess',
-    );
+    expect(mockToastSuccess).toHaveBeenCalledWith('page.downloadSuccess');
     expect(mockToastError).not.toHaveBeenCalled();
   });
 
@@ -252,9 +247,7 @@ describe('TasksPageClient evidence export', () => {
       mockRealtime.onComplete?.({ status: 'COMPLETED', output: null, metadata: {} });
     });
 
-    expect(mockToastError).toHaveBeenCalledWith(
-      'page.downloadLinkMissing',
-    );
+    expect(mockToastError).toHaveBeenCalledWith('page.downloadLinkMissing');
     expect(mockToastSuccess).not.toHaveBeenCalled();
   });
 
@@ -266,9 +259,7 @@ describe('TasksPageClient evidence export', () => {
       mockRealtime.onComplete?.({ status: 'FAILED' });
     });
 
-    expect(mockToastError).toHaveBeenCalledWith(
-      'page.exportFailed',
-    );
+    expect(mockToastError).toHaveBeenCalledWith('page.exportFailed');
     expect(mockToastSuccess).not.toHaveBeenCalled();
   });
 });

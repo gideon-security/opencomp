@@ -1,5 +1,5 @@
-import { DynamicIntegrationDefinitionSchema } from './types';
 import type { DynamicIntegrationDefinition } from './types';
+import { DynamicIntegrationDefinitionSchema } from './types';
 
 export interface ValidationResult {
   success: boolean;
@@ -14,9 +14,7 @@ export interface ValidationResult {
  * Validates a full dynamic integration definition (manifest + checks) against the Zod schema.
  * Returns typed data on success, or structured errors on failure.
  */
-export function validateIntegrationDefinition(
-  input: unknown,
-): ValidationResult {
+export function validateIntegrationDefinition(input: unknown): ValidationResult {
   const result = DynamicIntegrationDefinitionSchema.safeParse(input);
 
   if (result.success) {

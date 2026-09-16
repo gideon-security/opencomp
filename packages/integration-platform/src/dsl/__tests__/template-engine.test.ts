@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { interpolate, interpolateTemplate } from '../template-engine';
 
 describe('interpolate', () => {
@@ -7,9 +7,9 @@ describe('interpolate', () => {
   });
 
   it('replaces nested variables', () => {
-    expect(
-      interpolate('Email: {{user.email}}', { user: { email: 'a@b.com' } }),
-    ).toBe('Email: a@b.com');
+    expect(interpolate('Email: {{user.email}}', { user: { email: 'a@b.com' } })).toBe(
+      'Email: a@b.com',
+    );
   });
 
   it('handles missing variables as empty strings', () => {
@@ -38,9 +38,7 @@ describe('interpolate', () => {
   });
 
   it('handles multiple replacements', () => {
-    expect(
-      interpolate('{{first}} {{last}}', { first: 'John', last: 'Doe' }),
-    ).toBe('John Doe');
+    expect(interpolate('{{first}} {{last}}', { first: 'John', last: 'Doe' })).toBe('John Doe');
   });
 
   it('handles whitespace in variable names', () => {

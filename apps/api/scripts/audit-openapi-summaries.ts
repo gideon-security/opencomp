@@ -41,7 +41,14 @@ for (const [routePath, methods] of Object.entries(doc.paths)) {
       flag = 'AUTO_GEN';
     }
 
-    rows.push({ method: method.toUpperCase(), path: routePath, summary, operationId, tag, flag });
+    rows.push({
+      method: method.toUpperCase(),
+      path: routePath,
+      summary,
+      operationId,
+      tag,
+      flag,
+    });
   }
 }
 
@@ -58,5 +65,7 @@ for (const r of flagged) {
     currentTag = r.tag;
     console.log(`\n## ${currentTag}`);
   }
-  console.log(`  [${r.flag.padEnd(9)}] ${r.method.padEnd(6)} ${r.path}  —  "${r.summary}"`);
+  console.log(
+    `  [${r.flag.padEnd(9)}] ${r.method.padEnd(6)} ${r.path}  —  "${r.summary}"`,
+  );
 }

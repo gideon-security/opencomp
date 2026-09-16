@@ -58,10 +58,9 @@ export function LoadingShell({ variant, mainPane }: LoadingShellProps) {
         </div>
       </aside>
       <main
-        className={[
-          'min-w-0 flex-1 flex-col',
-          showMainMobile ? 'flex' : 'hidden xl:flex',
-        ].join(' ')}
+        className={['min-w-0 flex-1 flex-col', showMainMobile ? 'flex' : 'hidden xl:flex'].join(
+          ' ',
+        )}
       >
         {/* Back-bar skeleton on non-list routes. Matches the "← Scans"
             bar SplitView renders on detail/create URLs below xl —
@@ -102,11 +101,7 @@ export function OverviewMainSkeleton() {
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className={
-                i > 0
-                  ? 'space-y-3 md:border-l md:border-border md:pl-6'
-                  : 'space-y-3'
-              }
+              className={i > 0 ? 'space-y-3 md:border-l md:border-border md:pl-6' : 'space-y-3'}
             >
               <div className="h-3 w-20 rounded bg-muted animate-pulse" />
               <div className="h-10 w-16 rounded bg-muted animate-pulse" />
@@ -139,10 +134,7 @@ export function DetailMainSkeleton() {
           <div className="h-3 w-24 rounded bg-muted animate-pulse" />
           <div className="grid grid-cols-11 gap-1.5">
             {Array.from({ length: 22 }).map((_, i) => (
-              <div
-                key={i}
-                className="aspect-square rounded bg-muted animate-pulse"
-              />
+              <div key={i} className="aspect-square rounded bg-muted animate-pulse" />
             ))}
           </div>
           <div className="h-3 w-32 rounded bg-muted animate-pulse" />
@@ -162,10 +154,7 @@ export function DetailMainSkeleton() {
           <div className="h-3 w-24 rounded bg-muted animate-pulse" />
           <div className="space-y-1 rounded border border-border p-2">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-8 rounded bg-muted animate-pulse"
-              />
+              <div key={i} className="h-8 rounded bg-muted animate-pulse" />
             ))}
           </div>
         </div>

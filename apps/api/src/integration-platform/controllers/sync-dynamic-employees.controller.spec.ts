@@ -79,7 +79,10 @@ describe('SyncController - dynamic provider employee sync filter', () => {
       },
     });
     mockGetDecryptedCredentials.mockResolvedValue({ api_key: 'fake-key' });
-    mockCheckRunCreate.mockResolvedValue({ id: 'run_1', startedAt: new Date() });
+    mockCheckRunCreate.mockResolvedValue({
+      id: 'run_1',
+      startedAt: new Date(),
+    });
     mockCheckRunComplete.mockResolvedValue(undefined);
     mockInterpretDeclarativeSync.mockReturnValue({
       run: jest.fn().mockResolvedValue(employees),
@@ -142,7 +145,10 @@ describe('SyncController - dynamic provider employee sync filter', () => {
         },
         {
           provide: CheckRunRepository,
-          useValue: { create: mockCheckRunCreate, complete: mockCheckRunComplete },
+          useValue: {
+            create: mockCheckRunCreate,
+            complete: mockCheckRunComplete,
+          },
         },
       ],
     })

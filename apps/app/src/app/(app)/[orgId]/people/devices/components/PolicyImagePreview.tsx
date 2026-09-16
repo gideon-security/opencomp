@@ -1,6 +1,6 @@
-import useSWR from 'swr';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
+import useSWR from 'swr';
 
 const fetcher = async (key: string) => {
   const res = await fetch(key, { cache: 'no-store', credentials: 'include' });
@@ -19,7 +19,11 @@ export function PolicyImagePreview({ image }: { image: string }) {
   const orgIdParam = params?.orgId;
   const organizationId = Array.isArray(orgIdParam) ? orgIdParam[0] : orgIdParam;
 
-  const { data: signedUrl, error, isLoading } = useSWR(
+  const {
+    data: signedUrl,
+    error,
+    isLoading,
+  } = useSWR(
     () =>
       image && organizationId
         ? `/api/get-image-url?key=${encodeURIComponent(image)}&organizationId=${encodeURIComponent(organizationId)}`
@@ -28,11 +32,19 @@ export function PolicyImagePreview({ image }: { image: string }) {
   );
 
   if (isLoading) {
-    return <div className="h-[500px] w-full flex items-center justify-center text-sm text-muted-foreground">Loading image...</div>;
+    return (
+      <div className="h-[500px] w-full flex items-center justify-center text-sm text-muted-foreground">
+        Loading image...
+      </div>
+    );
   }
 
   if (error || !signedUrl) {
-    return <div className="h-[500px] w-full flex items-center justify-center text-sm text-muted-foreground">Failed to load image</div>;
+    return (
+      <div className="h-[500px] w-full flex items-center justify-center text-sm text-muted-foreground">
+        Failed to load image
+      </div>
+    );
   }
 
   return (

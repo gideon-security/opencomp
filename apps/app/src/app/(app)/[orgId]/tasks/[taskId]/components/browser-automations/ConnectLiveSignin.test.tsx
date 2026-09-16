@@ -31,41 +31,25 @@ const baseProps = {
 
 describe('ConnectLiveSignin — 2FA take-over guidance', () => {
   it('defaults to entering a code, with a confirm button', () => {
-    render(
-      <ConnectLiveSignin {...baseProps} variant="2fa" twoFactorMethod="code" />,
-    );
+    render(<ConnectLiveSignin {...baseProps} variant="2fa" twoFactorMethod="code" />);
     expect(screen.getByText('Enter the code in the page')).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /entered it/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /entered it/i })).toBeInTheDocument();
   });
 
   it('tells the user to switch off a passkey when another method is available', () => {
-    render(
-      <ConnectLiveSignin {...baseProps} variant="2fa" twoFactorMethod="passkey" />,
-    );
+    render(<ConnectLiveSignin {...baseProps} variant="2fa" twoFactorMethod="passkey" />);
     expect(screen.getByText('Switch to a code method')).toBeInTheDocument();
     // Points them at the vendor's own "use another method" control.
     expect(screen.getByText(/More options/)).toBeInTheDocument();
     // They can still complete it, so the confirm button stays.
-    expect(
-      screen.getByRole('button', { name: /entered it/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /entered it/i })).toBeInTheDocument();
   });
 
   it('warns and hides the confirm button when the login is passkey-only', () => {
-    render(
-      <ConnectLiveSignin
-        {...baseProps}
-        variant="2fa"
-        twoFactorMethod="passkey_only"
-      />,
-    );
+    render(<ConnectLiveSignin {...baseProps} variant="2fa" twoFactorMethod="passkey_only" />);
     expect(screen.getByText('Passkey-only login')).toBeInTheDocument();
     expect(screen.getByText(/can't be completed/i)).toBeInTheDocument();
     // Nothing here for the user to complete — don't offer a misleading button.
-    expect(
-      screen.queryByRole('button', { name: /entered it/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /entered it/i })).not.toBeInTheDocument();
   });
 });

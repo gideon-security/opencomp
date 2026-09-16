@@ -80,7 +80,12 @@ export const Comments = ({
   return (
     <Stack gap="md">
       {!readOnly && (
-        <CommentForm entityId={entityId} entityType={entityType} mentionResource={mentionResource} organizationId={resolvedOrgId} />
+        <CommentForm
+          entityId={entityId}
+          entityType={entityType}
+          mentionResource={mentionResource}
+          organizationId={resolvedOrgId}
+        />
       )}
 
       {commentsLoading && (
@@ -121,7 +126,12 @@ export const Comments = ({
       )}
 
       {!commentsLoading && !commentsError && comments.length > 0 && (
-        <CommentList comments={comments} refreshComments={refreshComments} readOnly={readOnly} entityType={mentionResource ?? entityType} />
+        <CommentList
+          comments={comments}
+          refreshComments={refreshComments}
+          readOnly={readOnly}
+          entityType={mentionResource ?? entityType}
+        />
       )}
     </Stack>
   );

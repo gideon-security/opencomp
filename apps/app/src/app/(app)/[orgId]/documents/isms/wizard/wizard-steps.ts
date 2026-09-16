@@ -71,11 +71,7 @@ export function pickStepAnswers({
  * and the pre-filled answers stay in sync), the last step when everything is
  * saved, and step 0 when nothing is saved.
  */
-export function resumeStepIndex({
-  answers,
-}: {
-  answers: PartialWizardAnswers | null;
-}): number {
+export function resumeStepIndex({ answers }: { answers: PartialWizardAnswers | null }): number {
   if (!answers) return 0;
   const firstUnsaved = WIZARD_STEPS.findIndex(
     (step) => !step.fields.every((field) => answers[field] !== undefined),

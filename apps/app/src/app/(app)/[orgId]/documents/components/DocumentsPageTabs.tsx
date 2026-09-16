@@ -59,9 +59,7 @@ export function DocumentsPageTabs({
   // falls through so the tab is visible locally without PostHog.
   const hasIso27001 = !!useIso27001FrameworkId(organizationId);
   const ismsFlagEnabled = useFeatureFlag(ISMS_FEATURE_FLAG);
-  const showIsmsTab =
-    hasIso27001 &&
-    (ismsFlagEnabled || process.env.NODE_ENV === 'development');
+  const showIsmsTab = hasIso27001 && (ismsFlagEnabled || process.env.NODE_ENV === 'development');
   const activeTab = tabParamToInternal({ tabParam: searchParams.get('tab'), showIsmsTab });
 
   const handleTabChange = useCallback(

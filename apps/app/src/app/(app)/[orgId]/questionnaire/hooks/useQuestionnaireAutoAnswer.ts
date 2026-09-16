@@ -1,9 +1,9 @@
 'use client';
 
+import { env } from '@/env.mjs';
 import { useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import type { QuestionAnswer } from '../components/types';
-import { env } from '@/env.mjs';
 
 interface UseQuestionnaireAutoAnswerProps {
   results: QuestionAnswer[] | null;
@@ -60,10 +60,13 @@ export function useQuestionnaireAutoAnswer({
         results.forEach((result, index) => {
           if (!result.answer || result.answer.trim().length === 0) {
             // Use originalIndex/_originalIndex if available, otherwise fall back to array index
-            const resultOriginalIndex = (result as QuestionAnswer & { originalIndex?: number; _originalIndex?: number }).originalIndex ?? 
-                                       (result as QuestionAnswer & { originalIndex?: number; _originalIndex?: number })._originalIndex ?? 
-                                       index;
-            
+            const resultOriginalIndex =
+              (result as QuestionAnswer & { originalIndex?: number; _originalIndex?: number })
+                .originalIndex ??
+              (result as QuestionAnswer & { originalIndex?: number; _originalIndex?: number })
+                ._originalIndex ??
+              index;
+
             if (prev.get(resultOriginalIndex) !== 'processing') {
               newStatuses.set(resultOriginalIndex, 'processing');
               hasChanges = true;
@@ -78,12 +81,12 @@ export function useQuestionnaireAutoAnswer({
       const response = await fetch(
         `${env.NEXT_PUBLIC_API_URL || 'http://localhost:3333'}/v1/questionnaire/auto-answer`,
         {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        body: JSON.stringify({
+          body: JSON.stringify({
             organizationId: payload.organizationId,
             questionnaireId: payload.questionnaireId ?? questionnaireId,
             questionsAndAnswers: payload.questionsAndAnswers.map((qa, index) => ({
@@ -143,16 +146,26 @@ export function useQuestionnaireAutoAnswer({
                       // Find the result by matching originalIndex (like useQuestionnaireSingleAnswer does)
                       let resultIndex = -1;
                       for (let i = 0; i < updatedResults.length; i++) {
-                        const result = updatedResults[i] as QuestionAnswer & { originalIndex?: number; _originalIndex?: number };
+                        const result = updatedResults[i] as QuestionAnswer & {
+                          originalIndex?: number;
+                          _originalIndex?: number;
+                        };
                         // Check both originalIndex (from QuestionnaireResult) and _originalIndex (from QuestionAnswer)
-                        if (result.originalIndex === targetOriginalIndex || result._originalIndex === targetOriginalIndex) {
+                        if (
+                          result.originalIndex === targetOriginalIndex ||
+                          result._originalIndex === targetOriginalIndex
+                        ) {
                           resultIndex = i;
                           break;
                         }
                       }
 
                       // Fallback to array index if not found by originalIndex (for backward compatibility)
-                      if (resultIndex === -1 && targetOriginalIndex >= 0 && targetOriginalIndex < updatedResults.length) {
+                      if (
+                        resultIndex === -1 &&
+                        targetOriginalIndex >= 0 &&
+                        targetOriginalIndex < updatedResults.length
+                      ) {
                         resultIndex = targetOriginalIndex;
                       }
 

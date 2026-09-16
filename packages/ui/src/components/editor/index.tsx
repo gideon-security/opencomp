@@ -177,6 +177,6 @@ export {
 export { createMentionExtension, type MentionUser } from './extensions/mention';
 
 // Export suggestions extension
+export type { Editor as TipTapEditor } from '@tiptap/react';
 export { SuggestionsExtension, suggestionsPluginKey } from './extensions/suggestions';
 export type { SuggestionRange as EditorSuggestionRange } from './extensions/suggestions';
-export type { Editor as TipTapEditor } from '@tiptap/react';

@@ -152,9 +152,7 @@ export function AutomationItem({
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
           <div className="flex min-w-0 items-center gap-2">
             {/* Read-only rows have no switch, so the dot carries the status. */}
-            {readOnly && (
-              <span className={cn('h-1.5 w-1.5 flex-none rounded-full', dotColor)} />
-            )}
+            {readOnly && <span className={cn('h-1.5 w-1.5 flex-none rounded-full', dotColor)} />}
             <p
               className="truncate text-sm font-semibold tracking-tight text-foreground"
               title={automation.name}

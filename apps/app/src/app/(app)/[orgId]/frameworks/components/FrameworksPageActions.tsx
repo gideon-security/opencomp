@@ -1,13 +1,13 @@
 'use client';
 
+import { AddFrameworkModal } from '@/app/(app)/[orgId]/overview/components/AddFrameworkModal';
+import { usePermissions } from '@/hooks/use-permissions';
+import type { FrameworkEditorFramework } from '@db';
+import { Dialog } from '@gideon-defender/ui/dialog';
 import { Button } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
-import { Dialog } from '@gideon-defender/ui/dialog';
-import type { FrameworkEditorFramework } from '@db';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { usePermissions } from '@/hooks/use-permissions';
-import { AddFrameworkModal } from '@/app/(app)/[orgId]/overview/components/AddFrameworkModal';
 import { CreateCustomFrameworkSheet } from './CreateCustomFrameworkSheet';
 
 interface FrameworksPageActionsProps {
@@ -29,11 +29,7 @@ export function FrameworksPageActions({ availableFrameworks }: FrameworksPageAct
   return (
     <div className="flex items-center gap-2">
       <CreateCustomFrameworkSheet />
-      <Button
-        size="sm"
-        iconLeft={<Add size={16} />}
-        onClick={() => setIsModalOpen(true)}
-      >
+      <Button size="sm" iconLeft={<Add size={16} />} onClick={() => setIsModalOpen(true)}>
         {t('list.addButton')}
       </Button>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>

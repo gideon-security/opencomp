@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -127,12 +127,7 @@ describe('TaskSmartForm permission gating', () => {
   it('disables submit button when user lacks task:create permission even with title filled', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
 
-    render(
-      <TaskSmartForm
-        {...defaultProps}
-        initialValues={{ title: 'Test task' }}
-      />,
-    );
+    render(<TaskSmartForm {...defaultProps} initialValues={{ title: 'Test task' }} />);
 
     const submitButton = screen.getByText('Create Task');
     expect(submitButton).toBeDisabled();
@@ -141,12 +136,7 @@ describe('TaskSmartForm permission gating', () => {
   it('enables submit button when user has task:create and title is provided', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
 
-    render(
-      <TaskSmartForm
-        {...defaultProps}
-        initialValues={{ title: 'Test task' }}
-      />,
-    );
+    render(<TaskSmartForm {...defaultProps} initialValues={{ title: 'Test task' }} />);
 
     const submitButton = screen.getByText('Create Task');
     expect(submitButton).not.toBeDisabled();
@@ -155,12 +145,7 @@ describe('TaskSmartForm permission gating', () => {
   it('disables submit button with no permissions at all', () => {
     setMockPermissions({});
 
-    render(
-      <TaskSmartForm
-        {...defaultProps}
-        initialValues={{ title: 'Test task' }}
-      />,
-    );
+    render(<TaskSmartForm {...defaultProps} initialValues={{ title: 'Test task' }} />);
 
     const submitButton = screen.getByText('Create Task');
     expect(submitButton).toBeDisabled();

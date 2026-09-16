@@ -1,8 +1,8 @@
 'use client';
 
+import type { FrameworkEditorFramework } from '@db';
 import { Checkbox } from '@gideon-defender/ui/checkbox';
 import { cn } from '@gideon-defender/ui/cn';
-import type { FrameworkEditorFramework } from '@db';
 
 type FrameworkCardProps = {
   framework: Pick<FrameworkEditorFramework, 'id' | 'name' | 'description' | 'version' | 'visible'>;

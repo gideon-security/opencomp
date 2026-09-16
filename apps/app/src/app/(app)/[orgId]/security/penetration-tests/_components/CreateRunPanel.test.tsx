@@ -40,9 +40,7 @@ vi.mock('../hooks/use-pentest-finding-contexts', () => ({
 }));
 
 async function confirmAuthorization(user: ReturnType<typeof userEvent.setup>) {
-  await user.click(
-    screen.getByText('I own this target or have written authorization to test it.'),
-  );
+  await user.click(screen.getByText('I own this target or have written authorization to test it.'));
 }
 
 function checkInput(label: RegExp) {
@@ -106,9 +104,7 @@ describe('CreateRunPanel', () => {
 
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={vi.fn()} />);
 
-    expect(
-      screen.getByText(/penTest\.runContext\.sharedNotesCount/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/penTest\.runContext\.sharedNotesCount/i)).toBeInTheDocument();
   });
 
   it('routes users without allowance to billing even when required fields are empty', async () => {
@@ -263,7 +259,11 @@ describe('CreateRunPanel', () => {
   it('uses design-system radio styling for evidence options', () => {
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={vi.fn()} />);
 
-    expect(validationLevel().getByLabelText(/safe proof/i, { selector: 'input' }).closest('label')).toHaveClass(
+    expect(
+      validationLevel()
+        .getByLabelText(/safe proof/i, { selector: 'input' })
+        .closest('label'),
+    ).toHaveClass(
       'has-[[data-checked]]:border-primary',
       'has-[[data-checked]]:bg-primary/5',
       'has-[[data-checked]]:text-primary',
@@ -291,9 +291,7 @@ describe('CreateRunPanel', () => {
 
     await user.click(screen.getByText('Quick'));
 
-    expect(
-      screen.getByText(/findings are reported without exploitation/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/findings are reported without exploitation/i)).toBeInTheDocument();
   });
 
   it('renders the Scan coverage panel open by default and exposes validation level options', async () => {
@@ -303,14 +301,18 @@ describe('CreateRunPanel', () => {
 
     expect(screen.getByText(/penTest\.advanced\.scanCoverage/i)).toBeInTheDocument();
     expect(screen.getByText(/penTest\.advanced\.validationLevel/i)).toBeInTheDocument();
-    expect(validationLevel().getByLabelText(/report only/i, { selector: 'input' })).toBeInTheDocument();
-    expect(validationLevel().getByLabelText(/safe proof/i, { selector: 'input' })).toBeInTheDocument();
-    expect(validationLevel().getByLabelText(/impact proof/i, { selector: 'input' })).toBeInTheDocument();
+    expect(
+      validationLevel().getByLabelText(/report only/i, { selector: 'input' }),
+    ).toBeInTheDocument();
+    expect(
+      validationLevel().getByLabelText(/safe proof/i, { selector: 'input' }),
+    ).toBeInTheDocument();
+    expect(
+      validationLevel().getByLabelText(/impact proof/i, { selector: 'input' }),
+    ).toBeInTheDocument();
 
     await user.click(validationLevel().getByLabelText(/report only/i, { selector: 'input' }));
-    expect(
-      screen.getByText(/findings are reported without exploitation/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/findings are reported without exploitation/i)).toBeInTheDocument();
 
     await user.click(validationLevel().getByLabelText(/safe proof/i, { selector: 'input' }));
     expect(
@@ -341,9 +343,7 @@ describe('CreateRunPanel', () => {
     await user.click(screen.getByRole('button', { name: /startScan/i }));
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/penTest\.create\.authorizationRequired/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/penTest\.create\.authorizationRequired/i)).toBeInTheDocument();
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });
@@ -390,9 +390,7 @@ describe('CreateRunPanel', () => {
       within(dialog).getByText(/penTest\.create\.confirmImpactProofDescription/i),
     ).toBeInTheDocument();
 
-    await user.click(
-      within(dialog).getByRole('button', { name: /runImpactProofScan/i }),
-    );
+    await user.click(within(dialog).getByRole('button', { name: /runImpactProofScan/i }));
 
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith(
@@ -423,9 +421,9 @@ describe('CreateRunPanel', () => {
   it('exposes a tooltip trigger for each vulnerability check', () => {
     render(<CreateRunPanel orgId="org_1" balance={1} onSubmit={vi.fn()} />);
 
-    expect(
-      screen.getAllByRole('button', { name: /penTest\.advanced\.about/i }),
-    ).toHaveLength(allPentestChecks.length);
+    expect(screen.getAllByRole('button', { name: /penTest\.advanced\.about/i })).toHaveLength(
+      allPentestChecks.length,
+    );
   });
 });
 

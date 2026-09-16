@@ -21,9 +21,7 @@ const services = [
 
 describe('ServicesGrid — evidence task counts', () => {
   it('falls back to total mapped tasks when taskTemplates is not provided', () => {
-    render(
-      <ServicesGrid services={services} connectionId="c1" orgId="o" slug="aws" />,
-    );
+    render(<ServicesGrid services={services} connectionId="c1" orgId="o" slug="aws" />);
     // taskTemplates omitted → addedTemplateIds undefined → card counts all mapped.
     expect(screen.getByText('2 evidence tasks')).toBeInTheDocument();
   });

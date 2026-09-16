@@ -67,10 +67,7 @@ import { TransferFamilyAdapter } from './aws/transfer-family.adapter';
 import { ElasticBeanstalkAdapter } from './aws/elastic-beanstalk.adapter';
 import { AppFlowAdapter } from './aws/appflow.adapter';
 import { SecurityHubAdapter } from './aws/security-hub.adapter';
-import {
-  type AwsScanMode,
-  DEFAULT_AWS_SCAN_MODE,
-} from '../aws-scan-mode';
+import { type AwsScanMode, DEFAULT_AWS_SCAN_MODE } from '../aws-scan-mode';
 
 const GOVCLOUD_UNSUPPORTED_SERVICE_IDS = new Set(['cloudfront', 'shield']);
 
@@ -318,7 +315,8 @@ export class AWSSecurityService {
     setup: AwsScanSetup,
     enabledServices: string[] | undefined,
   ): Promise<SecurityFinding[]> {
-    const { awsCredentials, configuredRegions, primaryRegion, partition } = setup;
+    const { awsCredentials, configuredRegions, primaryRegion, partition } =
+      setup;
 
     // undefined = scan all (no detection data), [] = scan nothing (all disabled), [...] = scan specific
     const activeAdaptersBeforePartitionFilter =
@@ -328,7 +326,8 @@ export class AWSSecurityService {
     const activeAdapters =
       partition === 'aws-us-gov'
         ? activeAdaptersBeforePartitionFilter.filter(
-            (adapter) => !GOVCLOUD_UNSUPPORTED_SERVICE_IDS.has(adapter.serviceId),
+            (adapter) =>
+              !GOVCLOUD_UNSUPPORTED_SERVICE_IDS.has(adapter.serviceId),
           )
         : activeAdaptersBeforePartitionFilter;
 
@@ -506,8 +505,7 @@ export class AWSSecurityService {
     region: string,
   ): Promise<AwsCredentials> {
     const remediationRoleArn = credentials.remediationRoleArn as
-      | string
-      | undefined;
+      string | undefined;
     if (!remediationRoleArn) {
       throw new Error(
         'Remediation role ARN not configured. Add a Remediation Role ARN to your AWS connection.',
@@ -542,7 +540,9 @@ export class AWSSecurityService {
     const { roleArn, externalId, region, sessionName } = params;
     const parsedRoleArn = parseAwsRoleArn(roleArn);
     const partition =
-      params.partition ?? parsedRoleArn?.partition ?? getAwsPartitionForRegion(region);
+      params.partition ??
+      parsedRoleArn?.partition ??
+      getAwsPartitionForRegion(region);
 
     if (!parsedRoleArn) {
       throw new Error(
@@ -559,9 +559,7 @@ export class AWSSecurityService {
     const roleAssumerArn = getAwsRoleAssumerArn(partition);
     if (!roleAssumerArn) {
       const envName = getAwsRoleAssumerEnvName(partition);
-      throw new Error(
-        `Missing ${envName} (our ${partition} roleAssumer ARN).`,
-      );
+      throw new Error(`Missing ${envName} (our ${partition} roleAssumer ARN).`);
     }
 
     // Hop 1: task role -> roleAssumer

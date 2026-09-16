@@ -11,7 +11,7 @@ The integration platform supports **4 authentication strategies**. Choose based 
 
 | Type           | When to Use                    | User Setup                  | Platform Setup             | Token Refresh           |
 | -------------- | ------------------------------ | --------------------------- | -------------------------- | ----------------------- |
-| **OAuth 2.0**  | Service has OAuth              | 1-click connect             | Admin configures OAuth app | Auto                 |
+| **OAuth 2.0**  | Service has OAuth              | 1-click connect             | Admin configures OAuth app | Auto                    |
 | **API Key**    | Service uses API keys          | User enters key             | None                       | N/A (keys don't expire) |
 | **Basic Auth** | Service uses username/password | User enters creds           | None                       | N/A                     |
 | **Custom**     | Complex multi-field auth       | User enters multiple fields | None                       | N/A                     |
@@ -429,8 +429,8 @@ Does the service have OAuth?
 
 ### Comparison: OAuth vs API Key
 
-| Aspect              | OAuth 2.0                       | API Key                      |
-| ------------------- | ------------------------------- | ---------------------------- |
+| Aspect              | OAuth 2.0                    | API Key                   |
+| ------------------- | ---------------------------- | ------------------------- |
 | **User Experience** | Best (1-click)               | OK (find & paste key)     |
 | **Security**        | Tokens expire & refresh      | Long-lived secrets        |
 | **Platform Setup**  | Admin must configure         | None needed               |
@@ -444,7 +444,7 @@ Does the service have OAuth?
 | Aspect       | Basic Auth            | Custom Auth               |
 | ------------ | --------------------- | ------------------------- |
 | **Fields**   | 2 (username/password) | Any number                |
-| **Encoding** | Auto (Base64)      | Manual in check code      |
+| **Encoding** | Auto (Base64)         | Manual in check code      |
 | **Use Case** | Simple APIs           | Complex auth (AWS, Azure) |
 | **Setup**    | Minimal config        | Define all fields         |
 

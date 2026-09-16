@@ -75,7 +75,10 @@ describe('IsmsService document lifecycle', () => {
         controlLinks: [],
       });
 
-      await service.getDocument({ documentId: 'doc_1', organizationId: 'org_1' });
+      await service.getDocument({
+        documentId: 'doc_1',
+        organizationId: 'org_1',
+      });
 
       const callArgs = (mockDb.ismsDocument.findFirst as jest.Mock).mock
         .calls[0][0];
@@ -146,8 +149,18 @@ describe('IsmsService document lifecycle', () => {
           auditRoute: null,
           assignments: [{ memberId: 'mem_dead' }], // only a deactivated member
         },
-        { roleKey: 'spo', name: 'SPO', auditRoute: null, assignments: [{ memberId: 'b' }] },
-        { roleKey: 'deputy_spo', name: 'Deputy SPO', auditRoute: null, assignments: [{ memberId: 'c' }] },
+        {
+          roleKey: 'spo',
+          name: 'SPO',
+          auditRoute: null,
+          assignments: [{ memberId: 'b' }],
+        },
+        {
+          roleKey: 'deputy_spo',
+          name: 'Deputy SPO',
+          auditRoute: null,
+          assignments: [{ memberId: 'c' }],
+        },
         {
           roleKey: 'internal_auditor',
           name: 'Internal Auditor',
@@ -158,7 +171,9 @@ describe('IsmsService document lifecycle', () => {
         },
       ]);
 
-      await expect(service.submitForApproval(args)).rejects.toThrow(BadRequestException);
+      await expect(service.submitForApproval(args)).rejects.toThrow(
+        BadRequestException,
+      );
       expect(mockDb.ismsDocument.update).not.toHaveBeenCalled();
     });
 
@@ -176,9 +191,24 @@ describe('IsmsService document lifecycle', () => {
         { id: 'e' },
       ]);
       (mockDb.ismsRole.findMany as jest.Mock).mockResolvedValue([
-        { roleKey: 'top_management', name: 'Top Management', auditRoute: null, assignments: [{ memberId: 'a' }] },
-        { roleKey: 'spo', name: 'SPO', auditRoute: null, assignments: [{ memberId: 'b' }] },
-        { roleKey: 'deputy_spo', name: 'Deputy SPO', auditRoute: null, assignments: [{ memberId: 'c' }] },
+        {
+          roleKey: 'top_management',
+          name: 'Top Management',
+          auditRoute: null,
+          assignments: [{ memberId: 'a' }],
+        },
+        {
+          roleKey: 'spo',
+          name: 'SPO',
+          auditRoute: null,
+          assignments: [{ memberId: 'b' }],
+        },
+        {
+          roleKey: 'deputy_spo',
+          name: 'Deputy SPO',
+          auditRoute: null,
+          assignments: [{ memberId: 'c' }],
+        },
         {
           roleKey: 'internal_auditor',
           name: 'Internal Auditor',
@@ -362,11 +392,14 @@ describe('IsmsService document lifecycle', () => {
         status: 'needs_review',
         approverId: 'mem_1',
       });
-      (mockDb.ismsDocument.updateMany as jest.Mock).mockResolvedValue({ count: 1 });
+      (mockDb.ismsDocument.updateMany as jest.Mock).mockResolvedValue({
+        count: 1,
+      });
 
       await service.decline(args);
 
-      const call = (mockDb.ismsDocument.updateMany as jest.Mock).mock.calls[0][0];
+      const call = (mockDb.ismsDocument.updateMany as jest.Mock).mock
+        .calls[0][0];
       // Guarded transition: only matches while awaiting this member's review.
       expect(call.where).toEqual({
         id: 'doc_1',
@@ -385,7 +418,9 @@ describe('IsmsService document lifecycle', () => {
         status: 'needs_review',
         approverId: 'mem_1',
       });
-      (mockDb.ismsDocument.updateMany as jest.Mock).mockResolvedValue({ count: 0 });
+      (mockDb.ismsDocument.updateMany as jest.Mock).mockResolvedValue({
+        count: 0,
+      });
 
       await expect(service.decline(args)).rejects.toThrow(BadRequestException);
     });

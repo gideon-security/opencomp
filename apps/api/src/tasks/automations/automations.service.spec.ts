@@ -43,7 +43,10 @@ describe('AutomationsService.createVersion — error mapping', () => {
 
   it('records the version and returns it on success', async () => {
     const created = { id: 'eav_1', version: 1, scriptKey: input.scriptKey };
-    (db.$transaction as jest.Mock).mockResolvedValue([created, { id: 'aut_1' }]);
+    (db.$transaction as jest.Mock).mockResolvedValue([
+      created,
+      { id: 'aut_1' },
+    ]);
 
     const result = await service.createVersion('aut_1', input);
 

@@ -94,12 +94,7 @@ describe('CheckRunItem scope actions', () => {
   it('offers "Mark out of scope" on failing rows and reports the full target', () => {
     const actions = buildActions();
     render(
-      <CheckRunItem
-        run={buildRun()}
-        isLatest
-        organizationName="Acme"
-        exceptionActions={actions}
-      />,
+      <CheckRunItem run={buildRun()} isLatest organizationName="Acme" exceptionActions={actions} />,
     );
 
     const markButton = screen.getByRole('button', { name: 'Mark out of scope' });
@@ -117,18 +112,11 @@ describe('CheckRunItem scope actions', () => {
   it('shows the excepted row with its reason and offers revoke with the exception id', () => {
     const actions = buildActions();
     render(
-      <CheckRunItem
-        run={buildRun()}
-        isLatest
-        organizationName="Acme"
-        exceptionActions={actions}
-      />,
+      <CheckRunItem run={buildRun()} isLatest organizationName="Acme" exceptionActions={actions} />,
     );
 
     expect(screen.getByText('Out of scope')).toBeInTheDocument();
-    expect(
-      screen.getByText('Bucket only hosts a static website redirect.'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Bucket only hosts a static website redirect.')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Move back in scope' }));
 
@@ -152,12 +140,8 @@ describe('CheckRunItem scope actions', () => {
       />,
     );
 
-    expect(
-      screen.queryByRole('button', { name: 'Mark out of scope' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Move back in scope' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Mark out of scope' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Move back in scope' })).not.toBeInTheDocument();
     // Read-only users still see the excepted state + reason.
     expect(screen.getByText('Out of scope')).toBeInTheDocument();
   });
@@ -172,12 +156,8 @@ describe('CheckRunItem scope actions', () => {
       />,
     );
 
-    expect(
-      screen.queryByRole('button', { name: 'Mark out of scope' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Move back in scope' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Mark out of scope' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Move back in scope' })).not.toBeInTheDocument();
   });
 
   it('expands beyond the first three failing rows so every sampled resource is markable', () => {
@@ -196,9 +176,7 @@ describe('CheckRunItem scope actions', () => {
     run.failedCount = 5;
     run.exceptedCount = 0;
 
-    render(
-      <CheckRunItem run={run} isLatest organizationName="Acme" exceptionActions={actions} />,
-    );
+    render(<CheckRunItem run={run} isLatest organizationName="Acme" exceptionActions={actions} />);
 
     // Collapsed: only the first three rows are actionable.
     expect(screen.getAllByRole('button', { name: 'Mark out of scope' })).toHaveLength(3);
@@ -207,19 +185,13 @@ describe('CheckRunItem scope actions', () => {
 
     // Expanded: every sampled failing row is actionable.
     expect(screen.getAllByRole('button', { name: 'Mark out of scope' })).toHaveLength(5);
-    expect(
-      screen.queryByRole('button', { name: /Show .* more issues/ }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Show .* more issues/ })).not.toBeInTheDocument();
   });
 
   it('renders no actions at all when none are provided (other callers unaffected)', () => {
     render(<CheckRunItem run={buildRun()} isLatest organizationName="Acme" />);
 
-    expect(
-      screen.queryByRole('button', { name: 'Mark out of scope' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Move back in scope' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Mark out of scope' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Move back in scope' })).not.toBeInTheDocument();
   });
 });

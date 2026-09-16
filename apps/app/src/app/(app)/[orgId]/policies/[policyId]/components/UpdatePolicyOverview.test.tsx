@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
 import { Departments, Frequency, PolicyStatus } from '@db';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -44,11 +44,9 @@ vi.mock('date-fns', () => ({
 
 // Mock SelectAssignee
 vi.mock('@/components/SelectAssignee', () => ({
-  SelectAssignee: ({
-    disabled,
-  }: {
-    disabled: boolean;
-  }) => <div data-testid="select-assignee" data-disabled={disabled} />,
+  SelectAssignee: ({ disabled }: { disabled: boolean }) => (
+    <div data-testid="select-assignee" data-disabled={disabled} />
+  ),
 }));
 
 import { UpdatePolicyOverview } from './UpdatePolicyOverview';
@@ -113,9 +111,7 @@ describe('UpdatePolicyOverview', () => {
           isPendingApproval={false}
         />,
       );
-      expect(
-        screen.getByRole('button', { name: /save/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument();
     });
 
     it('hides the Save button when pending approval even for admin', () => {
@@ -126,9 +122,7 @@ describe('UpdatePolicyOverview', () => {
           isPendingApproval={true}
         />,
       );
-      expect(
-        screen.queryByRole('button', { name: /save/i }),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /save/i })).not.toBeInTheDocument();
     });
 
     it('renders the assignee selector as enabled', () => {
@@ -157,9 +151,7 @@ describe('UpdatePolicyOverview', () => {
           isPendingApproval={false}
         />,
       );
-      expect(
-        screen.queryByRole('button', { name: /save/i }),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /save/i })).not.toBeInTheDocument();
     });
 
     it('renders form fields as read-only (assignee selector disabled)', () => {

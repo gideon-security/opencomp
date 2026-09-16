@@ -33,10 +33,7 @@ export interface CitationsHeadingInput {
  * the DB client (which `onboard-organization-helpers.ts` imports at the
  * top level).
  */
-export function buildCitationsHeading({
-  citations,
-  linkedTotals,
-}: CitationsHeadingInput): string {
+export function buildCitationsHeading({ citations, linkedTotals }: CitationsHeadingInput): string {
   const formatter = new Intl.ListFormat('en', { style: 'long', type: 'conjunction' });
 
   // Happy path: at least one linked control or task exists. Report the

@@ -67,14 +67,12 @@ export function StatementOfApplicabilitySection({
   soaError,
 }: StatementOfApplicabilitySectionProps) {
   const soaDocumentId =
-    ((soaData?.document as { id?: string | null } | null | undefined)?.id ??
-      null);
+    (soaData?.document as { id?: string | null } | null | undefined)?.id ?? null;
   const { handleExport, isExporting } = useSOADocument({
     documentId: soaDocumentId,
     organizationId,
     fallbackData:
-      (soaData?.document as Parameters<typeof useSOADocument>[0]['fallbackData']) ??
-      null,
+      (soaData?.document as Parameters<typeof useSOADocument>[0]['fallbackData']) ?? null,
   });
 
   if (soaError) {
@@ -116,7 +114,9 @@ export function StatementOfApplicabilitySection({
           canCurrentUserApprove={soaData.canCurrentUserApprove}
           currentMemberId={soaData.currentMemberId}
           ownerAdminMembers={
-            soaData.ownerAdminMembers as Parameters<typeof SOAFrameworkTable>[0]['ownerAdminMembers']
+            soaData.ownerAdminMembers as Parameters<
+              typeof SOAFrameworkTable
+            >[0]['ownerAdminMembers']
           }
         />
       </div>

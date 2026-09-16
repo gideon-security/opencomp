@@ -1,10 +1,10 @@
 import { serverApi } from '@/lib/api-server';
+import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import type { FrameworkEditorFramework } from '@db';
 import { PageHeader, PageLayout } from '@trycompai/design-system';
-import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import { getTranslations } from 'next-intl/server';
-import { FrameworksTable } from './components/FrameworksTable';
 import { FrameworksPageActions } from './components/FrameworksPageActions';
+import { FrameworksTable } from './components/FrameworksTable';
 
 export async function generateMetadata() {
   const t = await getTranslations('frameworks');
@@ -18,7 +18,9 @@ export default async function FrameworksPage({ params }: { params: Promise<{ org
   const t = await getTranslations('frameworks');
 
   const [frameworksRes, availableRes] = await Promise.all([
-    serverApi.get<{ data: FrameworkWithScore[] }>('/v1/frameworks?includeControls=true&includeScores=true'),
+    serverApi.get<{ data: FrameworkWithScore[] }>(
+      '/v1/frameworks?includeControls=true&includeScores=true',
+    ),
     serverApi.get<{ data: FrameworkEditorFramework[] }>('/v1/frameworks/available'),
   ]);
 
@@ -26,16 +28,12 @@ export default async function FrameworksPage({ params }: { params: Promise<{ org
   const allFrameworks = availableRes.data?.data ?? [];
 
   const frameworksWithControls = frameworksData.map(({ complianceScore: _, ...fw }) => fw);
-  const complianceMap = new Map(
-    frameworksData.map((fw) => [fw.id, fw.complianceScore ?? 0]),
-  );
+  const complianceMap = new Map(frameworksData.map((fw) => [fw.id, fw.complianceScore ?? 0]));
 
   const availableToAdd = allFrameworks.filter(
     (framework) =>
       !frameworksWithControls.some(
-        (fc) =>
-          fc.framework?.id === framework.id ||
-          fc.customFramework?.id === framework.id,
+        (fc) => fc.framework?.id === framework.id || fc.customFramework?.id === framework.id,
       ),
   );
 
@@ -44,9 +42,7 @@ export default async function FrameworksPage({ params }: { params: Promise<{ org
       header={
         <PageHeader
           title={t('list.title')}
-          actions={
-            <FrameworksPageActions availableFrameworks={availableToAdd} />
-          }
+          actions={<FrameworksPageActions availableFrameworks={availableToAdd} />}
         />
       }
     >

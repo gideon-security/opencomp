@@ -12,7 +12,5 @@ export function SecondaryFields({
   assignees: (Member & { user: User })[];
   onUpdate?: () => void;
 }) {
-  return (
-    <UpdateSecondaryFieldsForm vendor={vendor} assignees={assignees} onUpdate={onUpdate} />
-  );
+  return <UpdateSecondaryFieldsForm vendor={vendor} assignees={assignees} onUpdate={onUpdate} />;
 }

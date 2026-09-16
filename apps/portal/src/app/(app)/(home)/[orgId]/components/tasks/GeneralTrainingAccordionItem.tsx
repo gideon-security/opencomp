@@ -1,7 +1,7 @@
 'use client';
 
-import { trainingVideos } from '@/lib/data/training-videos';
 import { useTrainingCompletions } from '@/hooks/use-training-completions';
+import { trainingVideos } from '@/lib/data/training-videos';
 import {
   AccordionContent,
   AccordionItem,
@@ -21,16 +21,12 @@ export function GeneralTrainingAccordionItem() {
 
   const completedVideoIds = new Set(
     completions
-      .filter(
-        (c) =>
-          generalTrainingVideoIds.includes(c.videoId) &&
-          c.completedAt !== null,
-      )
+      .filter((c) => generalTrainingVideoIds.includes(c.videoId) && c.completedAt !== null)
       .map((c) => c.videoId),
   );
 
-  const hasCompletedGeneralTraining = generalTrainingVideoIds.every(
-    (videoId) => completedVideoIds.has(videoId),
+  const hasCompletedGeneralTraining = generalTrainingVideoIds.every((videoId) =>
+    completedVideoIds.has(videoId),
   );
 
   const completedCount = completedVideoIds.size;
@@ -54,8 +50,7 @@ export function GeneralTrainingAccordionItem() {
               <span
                 className={cn(
                   'text-base',
-                  hasCompletedGeneralTraining &&
-                    'text-muted-foreground line-through',
+                  hasCompletedGeneralTraining && 'text-muted-foreground line-through',
                 )}
               >
                 Security Awareness Training
@@ -71,8 +66,8 @@ export function GeneralTrainingAccordionItem() {
         <AccordionContent>
           <div className="px-4 pb-4 space-y-4">
             <p className="text-muted-foreground text-sm">
-              Complete the security awareness training videos to learn about
-              best practices for keeping company data secure.
+              Complete the security awareness training videos to learn about best practices for
+              keeping company data secure.
             </p>
             <VideoCarousel />
           </div>

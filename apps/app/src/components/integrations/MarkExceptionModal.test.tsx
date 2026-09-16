@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const postMock = vi.fn();
@@ -15,23 +15,14 @@ vi.mock('sonner', () => ({
 vi.mock('@gideon-defender/ui/dialog', () => {
   const Pass = ({ children }: { children: React.ReactNode }) => <>{children}</>;
   return {
-    Dialog: ({
-      open,
-      children,
-    }: {
-      open: boolean;
-      children: React.ReactNode;
-    }) => (open ? <div>{children}</div> : null),
+    Dialog: ({ open, children }: { open: boolean; children: React.ReactNode }) =>
+      open ? <div>{children}</div> : null,
     DialogContent: Pass,
     // Title/description get their own elements so text queries can match
     // them individually (a fragment would merge them into one text blob).
-    DialogDescription: ({ children }: { children: React.ReactNode }) => (
-      <p>{children}</p>
-    ),
+    DialogDescription: ({ children }: { children: React.ReactNode }) => <p>{children}</p>,
     DialogHeader: Pass,
-    DialogTitle: ({ children }: { children: React.ReactNode }) => (
-      <h2>{children}</h2>
-    ),
+    DialogTitle: ({ children }: { children: React.ReactNode }) => <h2>{children}</h2>,
   };
 });
 
@@ -68,9 +59,7 @@ describe('MarkExceptionModal', () => {
         resourceLabel="IAM Account: 123456789012"
       />,
     );
-    expect(
-      screen.getByText('IAM password policy < 14 characters'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('IAM password policy < 14 characters')).toBeInTheDocument();
     expect(screen.getByText('IAM Account: 123456789012')).toBeInTheDocument();
   });
 
@@ -88,32 +77,17 @@ describe('MarkExceptionModal', () => {
         expiryHint="Leave empty for never."
       />,
     );
-    expect(
-      screen.getByText('Mark this resource as out of scope?'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /^Mark out of scope$/ }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText(/Reason this resource is out of scope/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Mark this resource as out of scope?')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^Mark out of scope$/ })).toBeInTheDocument();
+    expect(screen.getByLabelText(/Reason this resource is out of scope/i)).toBeInTheDocument();
     expect(screen.getByText('Leave empty for never.')).toBeInTheDocument();
     // Default copy is fully replaced.
-    expect(
-      screen.queryByText('Mark this finding as an exception?'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Mark this finding as an exception?')).not.toBeInTheDocument();
     expect(screen.queryByText(/Reason for exception/i)).not.toBeInTheDocument();
   });
 
   it('keeps the submit button disabled until reason reaches min length', () => {
-    render(
-      <MarkExceptionModal
-        open
-        onOpenChange={() => {}}
-        findingId="icx_1"
-        findingTitle="X"
-      />,
-    );
+    render(<MarkExceptionModal open onOpenChange={() => {}} findingId="icx_1" findingTitle="X" />);
     const submit = screen.getByRole('button', { name: /^Mark as exception$/ });
     expect(submit).toBeDisabled();
 
@@ -147,9 +121,7 @@ describe('MarkExceptionModal', () => {
         value: 'This is a long enough documented reason for the exception.',
       },
     });
-    fireEvent.click(
-      screen.getByRole('button', { name: /^Mark as exception$/ }),
-    );
+    fireEvent.click(screen.getByRole('button', { name: /^Mark as exception$/ }));
     await act(async () => {
       await Promise.resolve();
       await Promise.resolve();
@@ -180,9 +152,7 @@ describe('MarkExceptionModal', () => {
         value: 'This is a long enough documented reason for the exception.',
       },
     });
-    fireEvent.click(
-      screen.getByRole('button', { name: /^Mark as exception$/ }),
-    );
+    fireEvent.click(screen.getByRole('button', { name: /^Mark as exception$/ }));
     await act(async () => {
       await Promise.resolve();
       await Promise.resolve();

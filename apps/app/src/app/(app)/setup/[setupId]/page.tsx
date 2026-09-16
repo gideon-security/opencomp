@@ -1,8 +1,8 @@
 import { MinimalHeader } from '@/components/layout/MinimalHeader';
 import { auth } from '@/utils/auth';
 import { db } from '@db/server';
-import { getTranslations } from 'next-intl/server';
 import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { OnboardingSidebar } from '../components/OnboardingSidebar';

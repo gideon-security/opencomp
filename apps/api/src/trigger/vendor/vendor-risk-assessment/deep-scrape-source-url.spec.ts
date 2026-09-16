@@ -72,9 +72,7 @@ describe('pickDeepScrapeSourceUrl', () => {
   it('rejects off-domain labelled links', () => {
     const result = pickDeepScrapeSourceUrl({
       vendorDomain,
-      links: [
-        { label: 'Trust & Security', url: 'https://acme.trust.page' },
-      ],
+      links: [{ label: 'Trust & Security', url: 'https://acme.trust.page' }],
       certifications: [],
     });
     expect(result).toBeNull();

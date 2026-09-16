@@ -98,9 +98,7 @@ export function EmployeeCompletionChart({
       }
 
       const hipaaComplete = hasHipaaFramework
-        ? hipaaCompletions.some(
-            (c) => c.memberId === employee.id && c.completedAt !== null,
-          )
+        ? hipaaCompletions.some((c) => c.memberId === employee.id && c.completedAt !== null)
         : false;
       const hipaaCount = hasHipaaFramework ? 1 : 0;
 
@@ -127,7 +125,14 @@ export function EmployeeCompletionChart({
         overallPercentage,
       };
     });
-  }, [employees, policies, trainingVideos, securityTrainingStepEnabled, hasHipaaFramework, hipaaCompletions]);
+  }, [
+    employees,
+    policies,
+    trainingVideos,
+    securityTrainingStepEnabled,
+    hasHipaaFramework,
+    hipaaCompletions,
+  ]);
 
   // Filter employees based on search term
   const filteredStats = React.useMemo(() => {
@@ -277,10 +282,7 @@ export function EmployeeCompletionChart({
                         </>
                       )}
                       {hasHipaaFramework && (
-                        <>
-                          {' '}
-                          • HIPAA {stat.hipaaCompleted ? 'done' : 'pending'}
-                        </>
+                        <> • HIPAA {stat.hipaaCompleted ? 'done' : 'pending'}</>
                       )}
                     </div>
                   </div>
@@ -329,7 +331,8 @@ export function EmployeeCompletionChart({
 }
 
 function TaskBarChart({ stat }: { stat: EmployeeTaskStats }) {
-  const totalCompleted = stat.policiesCompleted + stat.trainingsCompleted + (stat.hipaaCompleted ? 1 : 0);
+  const totalCompleted =
+    stat.policiesCompleted + stat.trainingsCompleted + (stat.hipaaCompleted ? 1 : 0);
   const totalIncomplete = stat.totalTasks - totalCompleted;
   const barHeight = 12;
 

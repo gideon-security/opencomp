@@ -18,10 +18,7 @@ function getAwsRoleAssumerArn(environment: AwsEnvironment): string {
   return `arn:${environment}:iam::${accountId}:role/roleAssumer`;
 }
 
-function getAwsManagedPolicyArn(
-  environment: AwsEnvironment,
-  policyName: string,
-): string {
+function getAwsManagedPolicyArn(environment: AwsEnvironment, policyName: string): string {
   return `arn:${environment}:iam::aws:policy/${policyName}`;
 }
 
@@ -142,17 +139,11 @@ export const awsCredentialSchema = z.object({
   connectionName: z.string().min(1, 'Connection name is required'),
   roleArn: z
     .string()
-    .regex(
-      /^arn:(aws|aws-us-gov):iam::\d{12}:role\/.+$/,
-      'Must be a valid IAM Role ARN',
-    ),
+    .regex(/^arn:(aws|aws-us-gov):iam::\d{12}:role\/.+$/, 'Must be a valid IAM Role ARN'),
   externalId: z.string().min(1),
   remediationRoleArn: z
     .string()
-    .regex(
-      /^arn:(aws|aws-us-gov):iam::\d{12}:role\/.+$/,
-      'Must be a valid IAM Role ARN',
-    )
+    .regex(/^arn:(aws|aws-us-gov):iam::\d{12}:role\/.+$/, 'Must be a valid IAM Role ARN')
     .optional()
     .or(z.literal('')),
   regions: z.array(z.string()).min(1, 'Select at least one region'),
@@ -164,14 +155,8 @@ export const awsCredentialSchema = z.object({
  */
 export function getAwsCloudShellScript(environment: AwsEnvironment = 'aws'): string {
   const roleAssumerArn = getAwsRoleAssumerArn(environment);
-  const securityAuditPolicyArn = getAwsManagedPolicyArn(
-    environment,
-    'SecurityAudit',
-  );
-  const viewOnlyPolicyArn = getAwsManagedPolicyArn(
-    environment,
-    'job-function/ViewOnlyAccess',
-  );
+  const securityAuditPolicyArn = getAwsManagedPolicyArn(environment, 'SecurityAudit');
+  const viewOnlyPolicyArn = getAwsManagedPolicyArn(environment, 'job-function/ViewOnlyAccess');
 
   return `# Create Auditor Role for OpenComp
 # Run this in AWS CloudShell to create the read-only IAM role.
@@ -216,9 +201,7 @@ export const awsCloudShellScript = getAwsCloudShellScript();
  * CloudShell setup script for the remediation IAM role.
  * Separate from the auditor role so the audit role stays read-only.
  */
-export function getAwsRemediationScript(
-  environment: AwsEnvironment = 'aws',
-): string {
+export function getAwsRemediationScript(environment: AwsEnvironment = 'aws'): string {
   const roleAssumerArn = getAwsRoleAssumerArn(environment);
 
   return `# Create Remediation Role for Auto-Fix

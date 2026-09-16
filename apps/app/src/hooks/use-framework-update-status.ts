@@ -1,8 +1,8 @@
 'use client';
 
-import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
 import type { FrameworkUpdateStatus } from '@/types/framework-versioning';
+import useSWR from 'swr';
 
 interface UseFrameworkUpdateStatusOptions {
   fallbackData?: FrameworkUpdateStatus;
@@ -12,9 +12,7 @@ export function useFrameworkUpdateStatus(
   frameworkInstanceId: string,
   options?: UseFrameworkUpdateStatusOptions,
 ) {
-  const key = frameworkInstanceId
-    ? `/v1/frameworks/${frameworkInstanceId}/update-status`
-    : null;
+  const key = frameworkInstanceId ? `/v1/frameworks/${frameworkInstanceId}/update-status` : null;
 
   return useSWR<FrameworkUpdateStatus>(
     key,

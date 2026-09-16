@@ -5,7 +5,6 @@ import { ChangeEmailConfirmationEmail } from './change-email-confirmation';
 import { InviteEmail } from './invite';
 import { InvitePortalEmail } from './invite-portal';
 import { MagicLinkEmail } from './magic-link';
-import { VerifyEmail } from './verify-email';
 import { WelcomeEmail } from './marketing/welcome';
 import { OTPVerificationEmail } from './otp';
 import { PolicyAcknowledgmentDigestEmail } from './policy-acknowledgment-digest';
@@ -15,6 +14,7 @@ import { TaskStatusNotificationEmail } from './reminders/task-status-notificatio
 import { WeeklyTaskDigestEmail } from './reminders/weekly-task-digest';
 import { TrainingCompletedEmail } from './training-completed';
 import { UnassignedItemsNotificationEmail } from './unassigned-items-notification';
+import { VerifyEmail } from './verify-email';
 
 // Regression: PR #2501 removed <head> from every template, which broke
 // @react-email/tailwind's media-query injection (md:* classes) and caused

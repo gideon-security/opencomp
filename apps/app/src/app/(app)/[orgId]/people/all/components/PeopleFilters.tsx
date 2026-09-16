@@ -110,75 +110,75 @@ export function PeopleFilters({
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Popover>
-      {/* PopoverTrigger renders its own <button>; a styled div inside (same
+        {/* PopoverTrigger renders its own <button>; a styled div inside (same
           pattern as the date chips) avoids invalid nested buttons. */}
-      <PopoverTrigger>
-        <div className="border-border bg-background hover:bg-muted flex h-8 cursor-pointer items-center gap-2 whitespace-nowrap rounded-md border px-3 text-sm transition-colors">
-          <Filter size={16} className="text-muted-foreground" />
-          {t('filters.title')}
-          {activeCount > 0 && <Badge variant="accent">{activeCount}</Badge>}
-        </div>
-      </PopoverTrigger>
-      <PopoverContent align="start" style={{ width: 'auto' }}>
-        <div className="flex w-[280px] flex-col gap-4 p-1.5">
-          <div className="flex flex-col gap-1">
-            <span id="people-status-filter-label" className="text-xs text-muted-foreground">
-              {t('filters.status')}
-            </span>
-            <Select value={statusFilter || undefined} onValueChange={onStatusChange}>
-              <SelectTrigger aria-labelledby="people-status-filter-label">
-                <SelectValue placeholder={t('filters.active')}>
-                  {hasOffboardFilter && !statusFilter
-                    ? t('filters.allPeople')
-                    : (statusLabels[statusFilter] ?? t('filters.active'))}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{statusLabels.all}</SelectItem>
-                <SelectItem value="active">{statusLabels.active}</SelectItem>
-                <SelectItem value="pending">{statusLabels.pending}</SelectItem>
-                <SelectItem value="deactivated">{statusLabels.deactivated}</SelectItem>
-              </SelectContent>
-            </Select>
+        <PopoverTrigger>
+          <div className="border-border bg-background hover:bg-muted flex h-8 cursor-pointer items-center gap-2 whitespace-nowrap rounded-md border px-3 text-sm transition-colors">
+            <Filter size={16} className="text-muted-foreground" />
+            {t('filters.title')}
+            {activeCount > 0 && <Badge variant="accent">{activeCount}</Badge>}
           </div>
+        </PopoverTrigger>
+        <PopoverContent align="start" style={{ width: 'auto' }}>
+          <div className="flex w-[280px] flex-col gap-4 p-1.5">
+            <div className="flex flex-col gap-1">
+              <span id="people-status-filter-label" className="text-xs text-muted-foreground">
+                {t('filters.status')}
+              </span>
+              <Select value={statusFilter || undefined} onValueChange={onStatusChange}>
+                <SelectTrigger aria-labelledby="people-status-filter-label">
+                  <SelectValue placeholder={t('filters.active')}>
+                    {hasOffboardFilter && !statusFilter
+                      ? t('filters.allPeople')
+                      : (statusLabels[statusFilter] ?? t('filters.active'))}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{statusLabels.all}</SelectItem>
+                  <SelectItem value="active">{statusLabels.active}</SelectItem>
+                  <SelectItem value="pending">{statusLabels.pending}</SelectItem>
+                  <SelectItem value="deactivated">{statusLabels.deactivated}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="flex flex-col gap-1">
-            <span id="people-role-filter-label" className="text-xs text-muted-foreground">
-              {t('filters.role')}
-            </span>
-            <Select value={roleFilter || undefined} onValueChange={onRoleChange}>
-              <SelectTrigger aria-labelledby="people-role-filter-label">
-                <SelectValue placeholder={t('filters.allRoles')}>
-                  {roleLabels[roleFilter] ?? t('filters.allRoles')}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{roleLabels.all}</SelectItem>
-                <SelectItem value="owner">{roleLabels.owner}</SelectItem>
-                <SelectItem value="admin">{roleLabels.admin}</SelectItem>
-                <SelectItem value="auditor">{roleLabels.auditor}</SelectItem>
-                <SelectItem value="employee">{roleLabels.employee}</SelectItem>
-                <SelectItem value="contractor">{roleLabels.contractor}</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex flex-col gap-1">
+              <span id="people-role-filter-label" className="text-xs text-muted-foreground">
+                {t('filters.role')}
+              </span>
+              <Select value={roleFilter || undefined} onValueChange={onRoleChange}>
+                <SelectTrigger aria-labelledby="people-role-filter-label">
+                  <SelectValue placeholder={t('filters.allRoles')}>
+                    {roleLabels[roleFilter] ?? t('filters.allRoles')}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{roleLabels.all}</SelectItem>
+                  <SelectItem value="owner">{roleLabels.owner}</SelectItem>
+                  <SelectItem value="admin">{roleLabels.admin}</SelectItem>
+                  <SelectItem value="auditor">{roleLabels.auditor}</SelectItem>
+                  <SelectItem value="employee">{roleLabels.employee}</SelectItem>
+                  <SelectItem value="contractor">{roleLabels.contractor}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <DateRangeFilter
+              label={t('filters.onboarded')}
+              from={onboardFrom}
+              to={onboardTo}
+              onApply={onOnboardApply}
+              onClear={onOnboardClear}
+            />
+            <DateRangeFilter
+              label={t('filters.offboarded')}
+              from={offboardFrom}
+              to={offboardTo}
+              onApply={onOffboardApply}
+              onClear={onOffboardClear}
+            />
           </div>
-
-          <DateRangeFilter
-            label={t('filters.onboarded')}
-            from={onboardFrom}
-            to={onboardTo}
-            onApply={onOnboardApply}
-            onClear={onOnboardClear}
-          />
-          <DateRangeFilter
-            label={t('filters.offboarded')}
-            from={offboardFrom}
-            to={offboardTo}
-            onApply={onOffboardApply}
-            onClear={onOffboardClear}
-          />
-        </div>
-      </PopoverContent>
+        </PopoverContent>
       </Popover>
 
       {/* Applied filters as removable chips — visible + one-click clearable

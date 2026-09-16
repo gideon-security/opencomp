@@ -21,9 +21,7 @@ export function buildTwoFactorStatusMap(
 ): Record<string, TwoFactorStatus> {
   if (!response?.configured) return {};
 
-  const byEmail = new Map(
-    response.statuses.map((s) => [s.email.toLowerCase().trim(), s.status]),
-  );
+  const byEmail = new Map(response.statuses.map((s) => [s.email.toLowerCase().trim(), s.status]));
 
   const map: Record<string, TwoFactorStatus> = {};
   for (const member of members) {

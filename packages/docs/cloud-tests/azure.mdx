@@ -1,6 +1,6 @@
 ---
-title: "Azure Cloud Tests"
-description: "Connect Microsoft Azure to OpenComp over OAuth (or a service principal) to run continuous cloud security checks against Microsoft Defender for Cloud."
+title: 'Azure Cloud Tests'
+description: 'Connect Microsoft Azure to OpenComp over OAuth (or a service principal) to run continuous cloud security checks against Microsoft Defender for Cloud.'
 ---
 
 ## About the Azure integration
@@ -10,7 +10,8 @@ OpenComp connects to Microsoft Azure to pull security posture, identity, network
 The recommended connection method is **Microsoft OAuth** — you sign in with an Azure AD account that has the required roles, and OpenComp auto-detects your subscription. A **service principal** flow is also supported for customers who prefer to provision a dedicated identity.
 
 <Note>
-  OpenComp only ever issues `GET`/`list` API calls. It does not create, modify, or delete Azure resources, even when connected with a user that has write permissions.
+  OpenComp only ever issues `GET`/`list` API calls. It does not create, modify, or delete Azure
+  resources, even when connected with a user that has write permissions.
 </Note>
 
 ## How access works
@@ -48,6 +49,7 @@ Before connecting Azure, make sure you have:
     - **Defender for Cloud enabled**
 
     Any blocking issue is shown with a link to the exact Azure portal blade to fix it.
+
   </Step>
   <Step title="Run your first scan">
     When all required steps pass, the first scan starts automatically. You can re-run it any time from the connection's page.
@@ -55,7 +57,8 @@ Before connecting Azure, make sure you have:
 </Steps>
 
 <Note>
-  Microsoft OAuth uses the RBAC roles on your account. Granting **Reader + Security Reader + Monitoring Reader** is enough — you do **not** need Contributor or Owner.
+  Microsoft OAuth uses the RBAC roles on your account. Granting **Reader + Security Reader +
+  Monitoring Reader** is enough — you do **not** need Contributor or Owner.
 </Note>
 
 ## Connect with a service principal (alternative)
@@ -75,6 +78,7 @@ Use this flow if you want a dedicated non-human identity or your tenant restrict
     - **Reader**
     - **Security Reader**
     - **Monitoring Reader**
+
   </Step>
   <Step title="Collect the four IDs">
     From the Azure portal, copy:
@@ -83,6 +87,7 @@ Use this flow if you want a dedicated non-human identity or your tenant restrict
     - **Client ID** — App registration → Overview (Application ID)
     - **Client Secret** — the value from the previous step
     - **Subscription ID** — Subscriptions → your subscription
+
   </Step>
   <Step title="Paste into OpenComp">
     In the Azure connection form, switch to the service principal option and paste the four values. Click **Save and Connect**.
@@ -93,15 +98,15 @@ Use this flow if you want a dedicated non-human identity or your tenant restrict
 
 The Azure integration evaluates findings across services including:
 
-| Area          | Services                                                          |
-| ------------- | ----------------------------------------------------------------- |
-| Posture       | Microsoft Defender for Cloud (assessments + alerts)               |
-| Identity      | Microsoft Entra ID                                                |
-| Governance    | Azure Policy                                                      |
-| Data security | Key Vault, Storage Accounts, SQL Database, Cosmos DB              |
-| Compute       | Virtual Machines, App Service, AKS, Container Registry            |
-| Network       | Network Watcher (NSGs, flow logs)                                 |
-| Observability | Azure Monitor (activity logs, diagnostic settings)                |
+| Area          | Services                                               |
+| ------------- | ------------------------------------------------------ |
+| Posture       | Microsoft Defender for Cloud (assessments + alerts)    |
+| Identity      | Microsoft Entra ID                                     |
+| Governance    | Azure Policy                                           |
+| Data security | Key Vault, Storage Accounts, SQL Database, Cosmos DB   |
+| Compute       | Virtual Machines, App Service, AKS, Container Registry |
+| Network       | Network Watcher (NSGs, flow logs)                      |
+| Observability | Azure Monitor (activity logs, diagnostic settings)     |
 
 The **Services** tab inside the connection lets you enable or disable specific checks.
 
@@ -125,21 +130,28 @@ Findings are mapped to the controls used by:
 ## Troubleshooting
 
 <Accordion title="Defender for Cloud shows no assessments" icon="shield">
-  Defender for Cloud must be enabled on the subscription. Open the **Microsoft Defender for Cloud** blade, select the subscription, and confirm at least the free tier is turned on. Initial data can take up to 24 hours to appear.
+  Defender for Cloud must be enabled on the subscription. Open the **Microsoft Defender for Cloud**
+  blade, select the subscription, and confirm at least the free tier is turned on. Initial data can
+  take up to 24 hours to appear.
 </Accordion>
 
 <Accordion title="Authentication failed" icon="lock">
   For OAuth: make sure your account still has the three required roles on the subscription — `User_impersonation` scope alone is not enough.
 
-  For service principal: confirm the client secret has not expired and the app registration has not been disabled.
+For service principal: confirm the client secret has not expired and the app registration has not been disabled.
+
 </Accordion>
 
 <Accordion title="Subscription not detected after sign-in" icon="magnifying-glass">
-  OpenComp only sees subscriptions your signed-in account has access to. If you manage multiple subscriptions, sign in with an account that has **Reader** on the one you want to monitor, or use the service principal flow to target it explicitly.
+  OpenComp only sees subscriptions your signed-in account has access to. If you manage multiple
+  subscriptions, sign in with an account that has **Reader** on the one you want to monitor, or use
+  the service principal flow to target it explicitly.
 </Accordion>
 
 <Accordion title="Missing findings for a specific service" icon="circle-exclamation">
-  Check that the service is enabled under the **Services** tab for this connection. Some services also require Defender plans beyond the free tier — for example, Defender for Servers, SQL, or Containers.
+  Check that the service is enabled under the **Services** tab for this connection. Some services
+  also require Defender plans beyond the free tier — for example, Defender for Servers, SQL, or
+  Containers.
 </Accordion>
 
 ## Support

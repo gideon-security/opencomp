@@ -75,8 +75,7 @@ const formatUsernames = (members: GitHubOrgMember[]): string =>
 export const twoFactorAuthCheck: IntegrationCheck = {
   id: 'two_factor_auth',
   name: '2FA Enforcement',
-  description:
-    'Verify that all GitHub organization members have two-factor authentication enabled',
+  description: 'Verify that all GitHub organization members have two-factor authentication enabled',
   service: 'code-security',
   taskMapping: TASK_TEMPLATES.twoFactorAuth,
   defaultSeverity: 'high',
@@ -172,7 +171,7 @@ export const twoFactorAuthCheck: IntegrationCheck = {
             resourceId: orgLogin,
             severity: 'medium',
             remediation:
-              'Reconnect the GitHub integration with an account that is an owner of this organization, or remove the org\'s repositories from the selection.',
+              "Reconnect the GitHub integration with an account that is an owner of this organization, or remove the org's repositories from the selection.",
           });
           continue;
         }

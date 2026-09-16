@@ -21,15 +21,19 @@ function createRequest(origin: string): Partial<Request> {
   return { method: 'GET', path: '/v1/controls', headers: { origin } };
 }
 
-function createResponse(): Partial<Response> & { headers: Record<string, string> } {
+function createResponse(): Partial<Response> & {
+  headers: Record<string, string>;
+} {
   const response: Partial<Response> & { headers: Record<string, string> } = {
     headers: {},
   };
   response.vary = jest.fn().mockReturnValue(response);
-  response.setHeader = jest.fn().mockImplementation((key: string, value: string) => {
-    response.headers[key] = value;
-    return response;
-  });
+  response.setHeader = jest
+    .fn()
+    .mockImplementation((key: string, value: string) => {
+      response.headers[key] = value;
+      return response;
+    });
   response.status = jest.fn().mockReturnValue(response);
   response.send = jest.fn().mockReturnValue(response);
   return response;
@@ -91,6 +95,8 @@ describe('the API resolves origins without AUTH_TRUSTED_ORIGINS', () => {
   );
 
   it('does not extend the wildcard to plain HTTP', () => {
-    expect(isStaticTrustedOrigin('http://anything.gideondefender.com')).toBe(false);
+    expect(isStaticTrustedOrigin('http://anything.gideondefender.com')).toBe(
+      false,
+    );
   });
 });

@@ -28,10 +28,7 @@ export const autoAnswerQuestionnaireTask = task({
   id: 'auto-answer-questionnaire',
   retry: { maxAttempts: 2 },
   maxDuration: 60 * 20, // 20 minutes (seconds) for large questionnaires
-  run: async (payload: {
-    questionnaireId: string;
-    organizationId: string;
-  }) => {
+  run: async (payload: { questionnaireId: string; organizationId: string }) => {
     const { questionnaireId, organizationId } = payload;
 
     await tags.add([`org:${organizationId}`]);
@@ -58,7 +55,9 @@ export const autoAnswerQuestionnaireTask = task({
     );
 
     if (toAnswer.length === 0) {
-      logger.info('No unanswered questions; nothing to do', { questionnaireId });
+      logger.info('No unanswered questions; nothing to do', {
+        questionnaireId,
+      });
       metadata.set('status', 'completed').set('progress', 100);
       return {
         questionnaireId,

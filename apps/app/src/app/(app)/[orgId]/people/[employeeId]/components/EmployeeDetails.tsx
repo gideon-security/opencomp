@@ -2,8 +2,8 @@
 
 import { DepartmentSelect } from '@/components/DepartmentSelect';
 import { useApi } from '@/hooks/use-api';
-import { Popover, PopoverContent, PopoverTrigger } from '@gideon-defender/ui/popover';
 import type { Member, User } from '@db';
+import { Popover, PopoverContent, PopoverTrigger } from '@gideon-defender/ui/popover';
 import {
   Button,
   Calendar,
@@ -82,7 +82,15 @@ export const EmployeeDetails = ({
       (offboardDate?.toISOString() ?? null) !==
       (employee.offboardDate ? new Date(employee.offboardDate).toISOString() : null);
 
-    return nameChanged || emailChanged || jobTitleChanged || departmentChanged || statusChanged || onboardDateChanged || offboardDateChanged;
+    return (
+      nameChanged ||
+      emailChanged ||
+      jobTitleChanged ||
+      departmentChanged ||
+      statusChanged ||
+      onboardDateChanged ||
+      offboardDateChanged
+    );
   }, [name, email, jobTitle, department, status, onboardDate, offboardDate, employee]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -210,11 +218,7 @@ export const EmployeeDetails = ({
             {/* Department Field */}
             <Stack gap="sm">
               <Label htmlFor="department">{t('employeeDetails.department')}</Label>
-              <DepartmentSelect
-                value={department}
-                onChange={setDepartment}
-                disabled={!canEdit}
-              />
+              <DepartmentSelect value={department} onChange={setDepartment} disabled={!canEdit} />
             </Stack>
 
             {/* Status Field */}

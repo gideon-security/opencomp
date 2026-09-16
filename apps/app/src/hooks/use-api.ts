@@ -18,10 +18,7 @@ export function useApi() {
     organizationId: orgIdFromParams,
 
     // Standard API methods (for mutations)
-    get: useCallback(
-      <T = unknown>(endpoint: string) => api.get<T>(endpoint),
-      [],
-    ),
+    get: useCallback(<T = unknown>(endpoint: string) => api.get<T>(endpoint), []),
 
     post: useCallback(
       <T = unknown>(endpoint: string, body?: unknown) => api.post<T>(endpoint, body),
@@ -38,10 +35,7 @@ export function useApi() {
       [],
     ),
 
-    delete: useCallback(
-      <T = unknown>(endpoint: string) => api.delete<T>(endpoint),
-      [],
-    ),
+    delete: useCallback(<T = unknown>(endpoint: string) => api.delete<T>(endpoint), []),
 
     // SWR-based GET requests (recommended for data fetching)
     useSWR: <T = unknown>(endpoint: string | null, options?: UseApiSWROptions<T>) => {
@@ -49,4 +43,3 @@ export function useApi() {
     },
   };
 }
-

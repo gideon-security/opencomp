@@ -64,8 +64,7 @@ export function filterToLatestScanResults<T extends LatestScanResult>(
     if (referenceMs === undefined) return false;
     const completedMs = r.completedAt.getTime();
     return (
-      completedMs <= referenceMs &&
-      completedMs >= referenceMs - SCAN_WINDOW_MS
+      completedMs <= referenceMs && completedMs >= referenceMs - SCAN_WINDOW_MS
     );
   });
 }

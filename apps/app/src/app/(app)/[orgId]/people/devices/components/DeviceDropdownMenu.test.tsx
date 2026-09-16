@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   NO_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -32,26 +32,18 @@ vi.mock('../../all/components/RemoveDeviceAlert', () => ({
 
 // Mock @gideon-defender/ui components
 vi.mock('@gideon-defender/ui', () => ({
-  Button: ({ children, ...props }: any) => (
-    <button {...props}>{children}</button>
-  ),
+  Button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
 }));
 
 vi.mock('@gideon-defender/ui/dropdown-menu', () => ({
-  DropdownMenu: ({ children }: any) => (
-    <div data-testid="dropdown-menu">{children}</div>
-  ),
-  DropdownMenuContent: ({ children }: any) => (
-    <div data-testid="dropdown-content">{children}</div>
-  ),
+  DropdownMenu: ({ children }: any) => <div data-testid="dropdown-menu">{children}</div>,
+  DropdownMenuContent: ({ children }: any) => <div data-testid="dropdown-content">{children}</div>,
   DropdownMenuItem: ({ children, onSelect }: any) => (
     <div data-testid="dropdown-item" onClick={onSelect} role="menuitem">
       {children}
     </div>
   ),
-  DropdownMenuTrigger: ({ children }: any) => (
-    <div data-testid="dropdown-trigger">{children}</div>
-  ),
+  DropdownMenuTrigger: ({ children }: any) => <div data-testid="dropdown-trigger">{children}</div>,
 }));
 
 // Mock lucide-react
@@ -149,9 +141,7 @@ describe('DeviceDropdownMenu', () => {
     it('checks the correct resource and action for permission', () => {
       setMockPermissions(ADMIN_PERMISSIONS);
 
-      render(
-        <DeviceDropdownMenu host={mockHost} isCurrentUserOwner={false} />,
-      );
+      render(<DeviceDropdownMenu host={mockHost} isCurrentUserOwner={false} />);
 
       expect(mockHasPermission).toHaveBeenCalledWith('member', 'delete');
     });
@@ -161,9 +151,7 @@ describe('DeviceDropdownMenu', () => {
     it('renders the Remove Device menu item', () => {
       setMockPermissions(ADMIN_PERMISSIONS);
 
-      render(
-        <DeviceDropdownMenu host={mockHost} isCurrentUserOwner={false} />,
-      );
+      render(<DeviceDropdownMenu host={mockHost} isCurrentUserOwner={false} />);
 
       expect(screen.getByText('Remove Device')).toBeInTheDocument();
       expect(screen.getByTestId('laptop-icon')).toBeInTheDocument();
@@ -172,9 +160,7 @@ describe('DeviceDropdownMenu', () => {
     it('renders the more actions trigger button', () => {
       setMockPermissions(ADMIN_PERMISSIONS);
 
-      render(
-        <DeviceDropdownMenu host={mockHost} isCurrentUserOwner={false} />,
-      );
+      render(<DeviceDropdownMenu host={mockHost} isCurrentUserOwner={false} />);
 
       expect(screen.getByTestId('more-icon')).toBeInTheDocument();
     });

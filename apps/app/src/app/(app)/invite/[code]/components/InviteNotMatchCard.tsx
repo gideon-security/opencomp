@@ -13,10 +13,7 @@ export function InviteNotMatchCard({
 }) {
   const t = useTranslations('invite');
   return (
-    <InviteStatusCard
-      title={t('wrongAccount')}
-      description={t('wrongAccountDescription')}
-    >
+    <InviteStatusCard title={t('wrongAccount')} description={t('wrongAccountDescription')}>
       <div className="mx-auto max-w-[42ch] text-muted-foreground leading-relaxed flex flex-col gap-4">
         <div className="space-y-2 text-sm">
           <p>

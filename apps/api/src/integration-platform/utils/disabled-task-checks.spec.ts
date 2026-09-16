@@ -106,7 +106,11 @@ describe('disabled-task-checks utils', () => {
     });
 
     it('defaults environment-separation checks to disconnected until reconnected', () => {
-      for (const checkId of ['aws-environment-separation', 'gcp-environment-separation', 'azure-environment-separation']) {
+      for (const checkId of [
+        'aws-environment-separation',
+        'gcp-environment-separation',
+        'azure-environment-separation',
+      ]) {
         expect(isCheckDisabledForTask(null, 'tsk_abc', checkId)).toBe(true);
       }
 
@@ -290,7 +294,11 @@ describe('disabled-task-checks utils', () => {
     });
 
     it('records opt-in when reconnecting environment-separation checks', () => {
-      const result = withCheckEnabled(null, 'tsk_abc', 'gcp-environment-separation');
+      const result = withCheckEnabled(
+        null,
+        'tsk_abc',
+        'gcp-environment-separation',
+      );
       expect(result[ENABLED_TASK_CHECKS_KEY]).toEqual({
         tsk_abc: ['gcp-environment-separation'],
       });

@@ -70,7 +70,9 @@ export class IsmsProfileController {
 
   @Get('profile')
   @RequirePermission('evidence', 'read')
-  @ApiOperation({ summary: 'Get the ISMS wizard profile, defaults and members' })
+  @ApiOperation({
+    summary: 'Get the ISMS wizard profile, defaults and members',
+  })
   @ApiOkResponse({ description: 'Wizard profile, defaults and member options' })
   async getProfile(
     @Query('frameworkId') frameworkId: string,

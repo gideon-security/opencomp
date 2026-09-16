@@ -537,7 +537,6 @@ export class AttachmentsService {
    * - Trim whitespace
    */
   private sanitizeHeaderValue(value: string): string {
-     
     const withoutControls = value.replace(/[\x00-\x1F\x7F]/g, '');
     const asciiOnly = withoutControls.replace(/[^\x20-\x7E]/g, '_');
     return asciiOnly.trim();

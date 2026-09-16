@@ -1,9 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import {
-  interpretDeclarativeCheck,
-  interpretDeclarativeDeviceSync,
-} from '../interpreter';
+import { describe, expect, it } from 'vitest';
 import type { CheckContext } from '../../types';
+import { interpretDeclarativeCheck, interpretDeclarativeDeviceSync } from '../interpreter';
 import type { CheckDefinition, SyncDefinition } from '../types';
 
 /**
@@ -111,9 +108,7 @@ describe('interpretDeclarativeCheck', () => {
             itemAs: 'user',
             resourceType: 'user',
             resourceIdPath: 'user.email',
-            conditions: [
-              { field: 'user.mfa_enabled', operator: 'eq', value: true },
-            ],
+            conditions: [{ field: 'user.mfa_enabled', operator: 'eq', value: true }],
             onPass: {
               title: 'MFA enabled for {{user.email}}',
               description: 'User has MFA configured',
@@ -491,9 +486,7 @@ describe('interpretDeclarativeCheck', () => {
             resourceType: 'user',
             resourceIdPath: 'user.email',
             filter: { field: 'user.active', operator: 'eq', value: true },
-            conditions: [
-              { field: 'user.mfa_enabled', operator: 'eq', value: true },
-            ],
+            conditions: [{ field: 'user.mfa_enabled', operator: 'eq', value: true }],
             onPass: {
               title: 'MFA enabled for {{user.email}}',
               resourceType: 'user',
@@ -541,7 +534,7 @@ describe('interpretDeclarativeCheck', () => {
             path: '/v1.0/users',
             as: 'users',
             dataPath: 'value',
-            params: { '$select': 'id,displayName,userPrincipalName' },
+            params: { $select: 'id,displayName,userPrincipalName' },
           },
           {
             type: 'forEach',
@@ -564,7 +557,8 @@ describe('interpretDeclarativeCheck', () => {
               resourceType: 'user',
               resourceId: '{{user.userPrincipalName}}',
               severity: 'high',
-              remediation: 'Go to Microsoft 365 admin center > Users > Active users > select user > Manage multifactor authentication',
+              remediation:
+                'Go to Microsoft 365 admin center > Users > Active users > select user > Manage multifactor authentication',
             },
           },
         ],
@@ -626,9 +620,7 @@ describe('interpretDeclarativeCheck', () => {
             itemAs: 'user',
             resourceType: 'user',
             resourceIdPath: 'user.email',
-            conditions: [
-              { field: 'user.mfa', operator: 'eq', value: true },
-            ],
+            conditions: [{ field: 'user.mfa', operator: 'eq', value: true }],
             onPass: {
               title: 'MFA OK for {{user.email}}',
               resourceType: 'user',
@@ -883,9 +875,7 @@ describe('interpretDeclarativeCheck', () => {
                 `,
               },
             ],
-            conditions: [
-              { field: 'repo.branchProtection', operator: 'eq', value: true },
-            ],
+            conditions: [{ field: 'repo.branchProtection', operator: 'eq', value: true }],
             onPass: {
               title: '{{repo.name}} has branch protection',
               resourceType: 'repository',
@@ -910,10 +900,7 @@ describe('interpretDeclarativeCheck', () => {
       });
 
       const ctx = createMockContext();
-      ctx._fetchResponses.set('/api/repos', [
-        { name: 'frontend' },
-        { name: 'backend' },
-      ]);
+      ctx._fetchResponses.set('/api/repos', [{ name: 'frontend' }, { name: 'backend' }]);
       ctx._fetchResponses.set('/api/repos/frontend/settings', { branch_protection: true });
       ctx._fetchResponses.set('/api/repos/backend/settings', { branch_protection: false });
 
@@ -1040,9 +1027,7 @@ describe('interpretDeclarativeCheck', () => {
             itemAs: 'user',
             resourceType: 'user',
             resourceIdPath: 'user.email',
-            conditions: [
-              { field: 'user.roleName', operator: 'neq', value: 'Unknown' },
-            ],
+            conditions: [{ field: 'user.roleName', operator: 'neq', value: 'Unknown' }],
             onPass: {
               title: '{{user.email}} has role {{user.roleName}}',
               resourceType: 'user',
@@ -1209,8 +1194,6 @@ describe('interpretDeclarativeDeviceSync', () => {
       definition: deviceDef(`scope.devices = { not: 'an array' };`),
     });
 
-    await expect(runner.run(createMockContext())).rejects.toThrow(
-      'did not produce an array',
-    );
+    await expect(runner.run(createMockContext())).rejects.toThrow('did not produce an array');
   });
 });

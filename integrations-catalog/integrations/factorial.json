@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Factorial as an admin\n2. Go to Settings > API Keys\n3. Create a new API key\n4. Copy the key and paste it below\n\nNote: API Keys have full admin access. Store securely."
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

@@ -14,17 +14,11 @@ import {
   Text,
   Textarea,
 } from '@trycompai/design-system';
-import { Controller, type Control } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
+import { Controller, type Control } from 'react-hook-form';
 import type { AuditDetailsFormValues } from './audit-schema';
-import {
-  AUDIT_STATUSES,
-  CONCLUSION_VERDICTS,
-} from './internal-audit-constants';
-import {
-  auditStatusLabel,
-  conclusionVerdictLabel,
-} from './internal-audit-labels';
+import { AUDIT_STATUSES, CONCLUSION_VERDICTS } from './internal-audit-constants';
+import { auditStatusLabel, conclusionVerdictLabel } from './internal-audit-labels';
 import { IsmsFieldLabel } from './shared';
 
 const NO_VERDICT = 'no-verdict';
@@ -180,9 +174,7 @@ export function AuditFields({ control, auditorOptions }: AuditFieldsProps) {
           render={({ field }) => (
             <Select
               value={field.value || NO_VERDICT}
-              onValueChange={(next) =>
-                field.onChange(next === NO_VERDICT ? '' : next)
-              }
+              onValueChange={(next) => field.onChange(next === NO_VERDICT ? '' : next)}
             >
               <SelectTrigger aria-label="Conclusion verdict">
                 <SelectValue placeholder="No verdict yet" />

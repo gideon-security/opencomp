@@ -7,9 +7,7 @@ describe('normalizeUrl', () => {
   });
 
   it('keeps an existing https:// URL', () => {
-    expect(normalizeUrl('https://app.notion.so/login')).toBe(
-      'https://app.notion.so/login',
-    );
+    expect(normalizeUrl('https://app.notion.so/login')).toBe('https://app.notion.so/login');
   });
 
   it('keeps an existing http:// URL', () => {

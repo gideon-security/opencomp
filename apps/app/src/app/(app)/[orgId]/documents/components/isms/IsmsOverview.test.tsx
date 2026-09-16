@@ -22,7 +22,9 @@ vi.mock('swr', () => ({
     if (Array.isArray(key) && key[0] === '/v1/frameworks') {
       return {
         data: {
-          data: [{ id: 'fi-1', frameworkId: 'fw-iso', framework: { id: 'fw-iso', name: 'ISO 27001' } }],
+          data: [
+            { id: 'fi-1', frameworkId: 'fw-iso', framework: { id: 'fw-iso', name: 'ISO 27001' } },
+          ],
         },
       };
     }
@@ -31,7 +33,13 @@ vi.mock('swr', () => ({
         data: {
           success: true,
           documents: [
-            { id: 'd1', type: 'context_of_organization', status: 'draft', requirementId: null, hasApprovedVersion: false },
+            {
+              id: 'd1',
+              type: 'context_of_organization',
+              status: 'draft',
+              requirementId: null,
+              hasApprovedVersion: false,
+            },
           ],
         },
       };
@@ -40,7 +48,11 @@ vi.mock('swr', () => ({
       return { data: { isStale: false, changedSources: [] } };
     }
     // SOAOverviewCard's own ensure-setup
-    return { data: { success: true, configuration: {}, document: null }, isLoading: false, error: null };
+    return {
+      data: { success: true, configuration: {}, document: null },
+      isLoading: false,
+      error: null,
+    };
   },
 }));
 
@@ -62,7 +74,12 @@ vi.mock('@trycompai/design-system', () => ({
   Heading: ({ children }: Kids) => <h2>{children}</h2>,
   HStack: ({ children }: Kids) => <div>{children}</div>,
   Stack: ({ children }: Kids) => <div>{children}</div>,
-  Section: ({ title, description, actions, children }: Kids & {
+  Section: ({
+    title,
+    description,
+    actions,
+    children,
+  }: Kids & {
     title?: string;
     description?: string;
     actions?: React.ReactNode;
@@ -110,8 +127,8 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-import { IsmsOverview } from './IsmsOverview';
 import { ISMS_TYPE_META } from '../../isms/isms-types';
+import { IsmsOverview } from './IsmsOverview';
 
 describe('IsmsOverview', () => {
   beforeEach(() => {
@@ -141,7 +158,9 @@ describe('IsmsOverview', () => {
     render(<IsmsOverview organizationId="org-1" />);
     const contextLink = screen
       .getAllByRole('link')
-      .find((link) => link.getAttribute('href')?.includes('/documents/isms/context-of-organization'));
+      .find((link) =>
+        link.getAttribute('href')?.includes('/documents/isms/context-of-organization'),
+      );
     expect(contextLink).toBeDefined();
   });
 

@@ -6,7 +6,13 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
-import { ApiExcludeController, ApiOperation, ApiParam, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import {
+  ApiExcludeController,
+  ApiOperation,
+  ApiParam,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { db } from '@db';
 import { OrganizationId } from './auth-context.decorator';
 import { PermissionGuard } from './permission.guard';
@@ -30,7 +36,14 @@ export class AuthController {
   async getMe(@AuthContext() authContext: AuthContextType) {
     const userId = authContext.userId;
     if (!userId) {
-      return { user: null, organizations: [], pendingInvitation: null };
+      return {
+        user: null,
+        organizations: [],
+        pendingInvitation: null,
+        hasInactiveMembership: false,
+        impersonatedBy: null,
+        authType: authContext.authType,
+      };
     }
 
     const [user, memberships, pendingInvitation, inactiveMembershipCount] =
@@ -92,6 +105,12 @@ export class AuthController {
       })),
       pendingInvitation,
       hasInactiveMembership: inactiveMembershipCount > 0,
+      // Impersonation state for the banner UI. Resolved server-side from the
+      // session by HybridAuthGuard, so frontends read it here instead of
+      // better-auth session resolution (Milestone 2). Null for API-key,
+      // service-token, and Gideon-JWT callers, which cannot impersonate.
+      impersonatedBy: authContext.impersonatedBy ?? null,
+      authType: authContext.authType,
     };
   }
 

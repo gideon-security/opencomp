@@ -1,8 +1,8 @@
 import { browser } from 'wxt/browser';
-import { parseBackgroundRequest } from '../lib/messaging';
-import { handleBackgroundRequest } from '../lib/background/handlers';
 import { setupAuthFlowWatcher } from '../lib/background/auth';
 import { setupContentScriptAutoInjection } from '../lib/background/content-script-injection';
+import { handleBackgroundRequest } from '../lib/background/handlers';
+import { parseBackgroundRequest } from '../lib/messaging';
 
 export default defineBackground(() => {
   setupAuthFlowWatcher();

@@ -151,10 +151,7 @@ function shouldRunCli(force: boolean): boolean {
     return true;
   }
 
-  return Boolean(
-    process.env.CI === 'true' ||
-    process.env.PRISMA_GENERATE_ON_INSTALL === '1',
-  );
+  return Boolean(process.env.CI === 'true' || process.env.PRISMA_GENERATE_ON_INSTALL === '1');
 }
 
 function runCli() {

@@ -240,9 +240,7 @@ describe('ConnectionService', () => {
       findTasks.mockResolvedValue([
         {
           id: 'tsk_6',
-          evidenceAutomations: [
-            { runs: [{ evaluationStatus: 'fail' }] },
-          ],
+          evidenceAutomations: [{ runs: [{ evaluationStatus: 'fail' }] }],
           integrationCheckRuns: [],
         },
       ]);

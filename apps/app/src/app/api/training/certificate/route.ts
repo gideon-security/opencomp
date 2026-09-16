@@ -6,10 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const session = await auth.api.getSession({ headers: req.headers });
 
-    if (
-      !session?.session?.activeOrganizationId ||
-      !session.session.userId
-    ) {
+    if (!session?.session?.activeOrganizationId || !session.session.userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -39,8 +36,7 @@ export async function POST(req: NextRequest) {
 
     // Users can generate their own certificate; admins/owners can generate for anyone
     const isAdmin =
-      currentUserMember.role.includes('admin') ||
-      currentUserMember.role.includes('owner');
+      currentUserMember.role.includes('admin') || currentUserMember.role.includes('owner');
     const isSelf = currentUserMember.id === memberId;
 
     if (!isAdmin && !isSelf) {
@@ -51,9 +47,7 @@ export async function POST(req: NextRequest) {
     }
 
     const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL ||
-      process.env.API_BASE_URL ||
-      'http://localhost:3333';
+      process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || 'http://localhost:3333';
 
     // Forward the user's session cookies to the NestJS API for authentication
     const cookieHeader = req.headers.get('cookie') || '';
@@ -90,9 +84,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error('Error generating certificate:', error);
-    return NextResponse.json(
-      { error: 'Failed to generate certificate.' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to generate certificate.' }, { status: 500 });
   }
 }

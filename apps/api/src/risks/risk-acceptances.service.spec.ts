@@ -7,8 +7,8 @@ const mockDb = {
   riskAcceptance: { findMany: jest.fn(), create: jest.fn() },
   // The create paths run inside a transaction with a subject row-lock; the
   // callback receives this same mock as the transaction client.
-  $transaction: jest.fn(
-    (fn: (tx: typeof mockDb) => unknown): unknown => fn(mockDb),
+  $transaction: jest.fn((fn: (tx: typeof mockDb) => unknown): unknown =>
+    fn(mockDb),
   ),
   $queryRaw: jest.fn().mockResolvedValue([]),
 };
@@ -118,7 +118,10 @@ describe('RiskAcceptancesService', () => {
     });
 
     it('rejects when the risk has no owner and no acceptor was chosen', async () => {
-      mockDb.risk.findFirst.mockResolvedValue({ ...baseRisk, assigneeId: null });
+      mockDb.risk.findFirst.mockResolvedValue({
+        ...baseRisk,
+        assigneeId: null,
+      });
 
       await expect(service.createForRisk('rsk_1', ORG, {})).rejects.toThrow(
         BadRequestException,

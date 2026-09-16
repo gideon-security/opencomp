@@ -16,10 +16,7 @@ const mockRealtime: {
 } = {};
 
 vi.mock('@gideon-defender/trigger-react', () => ({
-  useRealtimeRun: (
-    _runId: string,
-    options: { onComplete?: typeof mockRealtime.onComplete },
-  ) => {
+  useRealtimeRun: (_runId: string, options: { onComplete?: typeof mockRealtime.onComplete }) => {
     mockRealtime.onComplete = options.onComplete;
     return { run: undefined };
   },
@@ -84,10 +81,7 @@ vi.mock('@trycompai/design-system', () => ({
       <div data-testid="sheet">
         {/* Stands in for the overlay / ESC / X close affordances, all of which
             route through onOpenChange. */}
-        <button
-          data-testid="sheet-request-close"
-          onClick={() => onOpenChange(false)}
-        />
+        <button data-testid="sheet-request-close" onClick={() => onOpenChange(false)} />
         {children}
       </div>
     ) : null,
@@ -107,9 +101,7 @@ async function startExport() {
   fireEvent.click(screen.getByRole('button', { name: 'Export All Evidence' }));
   fireEvent.click(screen.getByRole('button', { name: 'Export' }));
   // Wait for the trigger promise to resolve and the running UI to render.
-  await waitFor(() =>
-    expect(screen.getByText('Starting export...')).toBeInTheDocument(),
-  );
+  await waitFor(() => expect(screen.getByText('Starting export...')).toBeInTheDocument());
 }
 
 describe('ExportEvidenceButton', () => {
@@ -131,9 +123,7 @@ describe('ExportEvidenceButton', () => {
     render(<ExportEvidenceButton organizationName="Acme" />);
 
     expect(screen.queryByTestId('sheet')).not.toBeInTheDocument();
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Export All Evidence' }),
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'Export All Evidence' }));
     expect(screen.getByTestId('sheet')).toBeInTheDocument();
     expect(screen.getByText('Include raw JSON files')).toBeInTheDocument();
   });
@@ -146,9 +136,7 @@ describe('ExportEvidenceButton', () => {
     // background — the sheet must honor a close request while running.
     fireEvent.click(screen.getByTestId('sheet-request-close'));
 
-    await waitFor(() =>
-      expect(screen.queryByTestId('sheet')).not.toBeInTheDocument(),
-    );
+    await waitFor(() => expect(screen.queryByTestId('sheet')).not.toBeInTheDocument());
   });
 
   it('auto-downloads and toasts success when the run completes with a download URL', async () => {
@@ -164,9 +152,7 @@ describe('ExportEvidenceButton', () => {
     });
 
     expect(clickSpy).toHaveBeenCalledTimes(1);
-    expect(mockToastSuccess).toHaveBeenCalledWith(
-      'Evidence package downloaded successfully',
-    );
+    expect(mockToastSuccess).toHaveBeenCalledWith('Evidence package downloaded successfully');
     expect(mockToastError).not.toHaveBeenCalled();
   });
 
@@ -209,9 +195,7 @@ describe('ExportEvidenceButton', () => {
       mockRealtime.onComplete?.({ status: 'FAILED' });
     });
 
-    expect(mockToastError).toHaveBeenCalledWith(
-      'Evidence export failed. Please try again.',
-    );
+    expect(mockToastError).toHaveBeenCalledWith('Evidence export failed. Please try again.');
     expect(mockToastSuccess).not.toHaveBeenCalled();
   });
 
@@ -226,9 +210,7 @@ describe('ExportEvidenceButton', () => {
       );
     });
 
-    expect(mockToastError).toHaveBeenCalledWith(
-      'Evidence export failed. Please try again.',
-    );
+    expect(mockToastError).toHaveBeenCalledWith('Evidence export failed. Please try again.');
     expect(mockToastSuccess).not.toHaveBeenCalled();
   });
 });

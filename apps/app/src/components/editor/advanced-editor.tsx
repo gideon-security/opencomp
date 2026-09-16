@@ -1,9 +1,9 @@
 'use client';
 
 import '@/styles/editor.css';
+import { Editor, type JSONContent } from '@gideon-defender/ui/editor';
 import type { Extension } from '@tiptap/core';
 import type { Editor as TipTapEditor } from '@tiptap/react';
-import { Editor, type JSONContent } from '@gideon-defender/ui/editor';
 
 interface AdvancedEditorProps {
   initialContent?: JSONContent | JSONContent[];

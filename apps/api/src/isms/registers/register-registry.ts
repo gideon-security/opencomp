@@ -47,10 +47,19 @@ const AUDIT_CONTROL_RESULT = [
   'observation_raised',
   'not_sampled',
 ] as const;
-const AUDIT_FINDING_TYPE = ['nc_major', 'nc_minor', 'ofi', 'observation'] as const;
+const AUDIT_FINDING_TYPE = [
+  'nc_major',
+  'nc_minor',
+  'ofi',
+  'observation',
+] as const;
 const AUDIT_FINDING_STATUS = ['open', 'in_progress', 'closed'] as const;
 const REVIEW_STATUS = ['planned', 'in_progress', 'complete'] as const;
-const REVIEW_CONCLUSION_VERDICT = ['suitable', 'adequate', 'effective'] as const;
+const REVIEW_CONCLUSION_VERDICT = [
+  'suitable',
+  'adequate',
+  'effective',
+] as const;
 const REVIEW_ACTION_STATUS = ['open', 'in_progress', 'closed'] as const;
 
 const schemas = {
@@ -333,17 +342,18 @@ const schemas = {
 
 /** One-save payload for the "Metrics due" / backfill views. */
 export const measurementBulkCreateSchema = z.object({
-  measurements: z
-    .array(schemas.measurementCreate)
-    .min(1)
-    .max(200), // a backfill save is bounded by the missing-period cap per metric
+  measurements: z.array(schemas.measurementCreate).min(1).max(200), // a backfill save is bounded by the missing-period cap per metric
 });
 
 // Inferred input types — the single source of truth for register row shapes.
 // Service method signatures use these directly; the per-register DTO classes were
 // removed because they only duplicated these schemas.
-export type CreateContextIssueInput = z.infer<typeof schemas.contextIssueCreate>;
-export type UpdateContextIssueInput = z.infer<typeof schemas.contextIssueUpdate>;
+export type CreateContextIssueInput = z.infer<
+  typeof schemas.contextIssueCreate
+>;
+export type UpdateContextIssueInput = z.infer<
+  typeof schemas.contextIssueUpdate
+>;
 export type CreateInterestedPartyInput = z.infer<
   typeof schemas.interestedPartyCreate
 >;
@@ -385,12 +395,8 @@ export type UpdateAuditFindingInput = z.infer<
 >;
 export type CreateReviewInput = z.infer<typeof schemas.reviewCreate>;
 export type UpdateReviewInput = z.infer<typeof schemas.reviewUpdate>;
-export type CreateReviewInputInput = z.infer<
-  typeof schemas.reviewInputCreate
->;
-export type UpdateReviewInputInput = z.infer<
-  typeof schemas.reviewInputUpdate
->;
+export type CreateReviewInputInput = z.infer<typeof schemas.reviewInputCreate>;
+export type UpdateReviewInputInput = z.infer<typeof schemas.reviewInputUpdate>;
 export type CreateReviewActionInput = z.infer<
   typeof schemas.reviewActionCreate
 >;

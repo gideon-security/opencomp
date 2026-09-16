@@ -33,9 +33,15 @@ vi.mock('@gideon-defender/trigger-local', () => ({
 
 import { linkRisksAndVendorsToWork } from './link-risks-and-vendors-to-work';
 
-const runTask = (linkRisksAndVendorsToWork as unknown as {
-  run: (payload: { organizationId: string; riskId?: string; vendorId?: string }) => Promise<unknown>;
-}).run;
+const runTask = (
+  linkRisksAndVendorsToWork as unknown as {
+    run: (payload: {
+      organizationId: string;
+      riskId?: string;
+      vendorId?: string;
+    }) => Promise<unknown>;
+  }
+).run;
 
 // By default the reranker echoes cosine scores scaled to a 0-10 range, so
 // tests can reason about candidate ordering via the input `score` values
@@ -150,7 +156,12 @@ describe('linkRisksAndVendorsToWork', () => {
   it('links vendors via _TaskToVendor when vendorId is provided', async () => {
     dbMock.risk.findMany.mockResolvedValueOnce([]);
     dbMock.vendor.findMany.mockResolvedValueOnce([
-      { id: 'vnd_1', name: 'AcmeSaaS', description: 'cloud crm', category: 'software_as_a_service' },
+      {
+        id: 'vnd_1',
+        name: 'AcmeSaaS',
+        description: 'cloud crm',
+        category: 'software_as_a_service',
+      },
     ]);
     dbMock.task.findMany.mockResolvedValueOnce([
       { id: 'tsk_a', title: 'vendor review', description: '', department: Departments.gov },

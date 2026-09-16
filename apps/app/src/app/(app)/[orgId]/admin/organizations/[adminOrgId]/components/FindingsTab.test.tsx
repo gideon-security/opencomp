@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -90,7 +90,9 @@ describe('FindingsTab', () => {
     render(<FindingsTab orgId="org_1" />);
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'organizations.findingsTab.logFinding' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'organizations.findingsTab.logFinding' }),
+      ).toBeInTheDocument();
     });
   });
 
@@ -99,9 +101,7 @@ describe('FindingsTab', () => {
     render(<FindingsTab orgId="org_test" />);
 
     await waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_test/findings',
-      );
+      expect(mockGet).toHaveBeenCalledWith('/v1/admin/organizations/org_test/findings');
     });
   });
 });

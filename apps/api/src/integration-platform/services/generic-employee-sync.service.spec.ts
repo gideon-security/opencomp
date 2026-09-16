@@ -81,9 +81,7 @@ describe('GenericEmployeeSyncService role validation', () => {
   });
 
   it('persists a known custom role from the provider as-is', async () => {
-    mockOrgRoleFindMany.mockResolvedValue([
-      { name: 'security-engineer' },
-    ]);
+    mockOrgRoleFindMany.mockResolvedValue([{ name: 'security-engineer' }]);
 
     await service.processEmployees({
       organizationId: 'org_1',
@@ -167,7 +165,9 @@ describe('GenericEmployeeSyncService role validation', () => {
 
       await service.processEmployees({
         organizationId: 'org_1',
-        employees: [baseEmployee({ email: 'mc@example.com', role: 'employee' })],
+        employees: [
+          baseEmployee({ email: 'mc@example.com', role: 'employee' }),
+        ],
         options: { defaultRole: 'employee' },
       });
 

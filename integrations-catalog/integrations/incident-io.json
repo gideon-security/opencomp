@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to your incident.io dashboard\n2. Go to Settings > API keys\n3. Create a new API key with appropriate permissions\n4. Enter the API key below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

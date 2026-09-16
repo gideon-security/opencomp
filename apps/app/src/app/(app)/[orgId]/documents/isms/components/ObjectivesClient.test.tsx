@@ -1,12 +1,12 @@
-import { render, screen, waitFor } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDriftResult, IsmsObjective } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
 

@@ -56,8 +56,7 @@ export function resolveProviderChecks({
   // Loose check shape so a real `IntegrationManifest` (whose `taskMapping` is a
   // literal-union-or-undefined) is accepted; `.map` below normalizes it.
   manifest:
-    | { checks?: Array<{ id: string; taskMapping?: string | null }> }
-    | undefined;
+    { checks?: Array<{ id: string; taskMapping?: string | null }> } | undefined;
   dynamicChecks: ProviderCheck[] | undefined;
 }): ProviderCheck[] {
   if (manifest?.checks) {
@@ -344,10 +343,9 @@ export const integrationChecksSchedule = schedules.task({
         deviceSyncsTriggered++;
       } catch (error) {
         deviceSyncFailures++;
-        logger.error(
-          `Failed to trigger device sync for org ${org.id}`,
-          { error: error instanceof Error ? error.message : String(error) },
-        );
+        logger.error(`Failed to trigger device sync for org ${org.id}`, {
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }
 
@@ -357,8 +355,7 @@ export const integrationChecksSchedule = schedules.task({
       // Report failure when not every queued task was dispatched (via its org
       // runner) OR a device-sync dispatch threw, so partial/failed runs aren't
       // masked.
-      success:
-        tasksTriggered === tasksToRun.length && deviceSyncFailures === 0,
+      success: tasksTriggered === tasksToRun.length && deviceSyncFailures === 0,
       tasksTriggered,
       orgsTriggered,
       deviceSyncsTriggered,

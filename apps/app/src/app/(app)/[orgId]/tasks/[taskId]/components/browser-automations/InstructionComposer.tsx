@@ -1,8 +1,8 @@
 'use client';
 
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { Button } from '@trycompai/design-system';
 import { Add, Close, Play } from '@trycompai/design-system/icons';
-import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -265,14 +265,9 @@ export function InstructionComposer({
     setTestRun(null);
   }, [closeTestSession]);
 
-  const patchStep = useCallback(
-    (index: number, patch: Partial<EditableStep>) => {
-      setSteps((current) =>
-        current.map((step, i) => (i === index ? { ...step, ...patch } : step)),
-      );
-    },
-    [],
-  );
+  const patchStep = useCallback((index: number, patch: Partial<EditableStep>) => {
+    setSteps((current) => current.map((step, i) => (i === index ? { ...step, ...patch } : step)));
+  }, []);
 
   const handleActivate = useCallback(
     (index: number) => {
@@ -293,7 +288,16 @@ export function InstructionComposer({
     (index: number) => {
       resetTest();
       setSteps((current) => current.filter((_, i) => i !== index));
-      setActiveIndex((current) => Math.max(0, current > index ? current - 1 : current === index ? Math.min(current, steps.length - 2) : current));
+      setActiveIndex((current) =>
+        Math.max(
+          0,
+          current > index
+            ? current - 1
+            : current === index
+              ? Math.min(current, steps.length - 2)
+              : current,
+        ),
+      );
     },
     [resetTest, steps.length],
   );
@@ -377,7 +381,9 @@ export function InstructionComposer({
       <div className="border-b border-border px-6 py-4">
         <div className="flex items-center justify-between gap-3">
           <div className="text-base text-foreground">
-            {mode === 'edit' ? t('instructionComposer.titleEdit') : t('instructionComposer.titleCreate')}
+            {mode === 'edit'
+              ? t('instructionComposer.titleEdit')
+              : t('instructionComposer.titleCreate')}
             <span className="ml-2 text-xs text-muted-foreground">
               {t('instructionComposer.stepsCount', { count: steps.length })}
               {checkCount > 0 && t('instructionComposer.checksCount', { count: checkCount })}
@@ -393,9 +399,7 @@ export function InstructionComposer({
             <Close size={16} />
           </button>
         </div>
-        <p className="mt-0.5 text-xs text-muted-foreground">
-          {t('instructionComposer.subtitle')}
-        </p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{t('instructionComposer.subtitle')}</p>
       </div>
 
       <div className="flex min-h-[430px] flex-col md:flex-row">

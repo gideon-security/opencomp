@@ -26,9 +26,7 @@ interface TimelinesQueryOptions {
 
 @Injectable()
 export class TimelinesService {
-  constructor(
-    private readonly lifecycle: TimelinesLifecycleService,
-  ) {}
+  constructor(private readonly lifecycle: TimelinesLifecycleService) {}
 
   // ---------------------------------------------------------------------------
   // Customer-facing queries
@@ -107,8 +105,7 @@ export class TimelinesService {
           continue;
         }
 
-        const locked =
-          timeline.status === 'COMPLETED' || !!timeline.lockedAt;
+        const locked = timeline.status === 'COMPLETED' || !!timeline.lockedAt;
         const canAutoTransition = timeline.status === 'ACTIVE' && !locked;
 
         for (const phase of timeline.phases) {
@@ -295,7 +292,9 @@ export class TimelinesService {
       include: {
         phases: {
           orderBy: { orderIndex: 'asc' },
-          include: { completedBy: { select: { id: true, name: true, email: true } } },
+          include: {
+            completedBy: { select: { id: true, name: true, email: true } },
+          },
         },
         frameworkInstance: { include: { framework: true } },
         template: {
@@ -450,7 +449,12 @@ export class TimelinesService {
     unlockedById: string,
     unlockReason: string,
   ) {
-    return this.lifecycle.unlock(id, organizationId, unlockedById, unlockReason);
+    return this.lifecycle.unlock(
+      id,
+      organizationId,
+      unlockedById,
+      unlockReason,
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -461,7 +465,9 @@ export class TimelinesService {
     const current = await this.findOne(id, organizationId);
 
     if (current.status !== 'COMPLETED') {
-      throw new BadRequestException('Timeline must be completed to start the next cycle');
+      throw new BadRequestException(
+        'Timeline must be completed to start the next cycle',
+      );
     }
 
     const nextCycleNumber = current.cycleNumber + 1;
@@ -478,7 +484,9 @@ export class TimelinesService {
     });
 
     if (existing) {
-      throw new BadRequestException(`Cycle ${nextCycleNumber} already exists for this framework`);
+      throw new BadRequestException(
+        `Cycle ${nextCycleNumber} already exists for this framework`,
+      );
     }
 
     // Prefer explicit template progression when configured.

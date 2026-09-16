@@ -11,9 +11,7 @@ export function approveGeneratedItems(queue: TabQuestionQueue): TabQuestionQueue
   });
 }
 
-export function approveHighConfidenceItems(
-  queue: TabQuestionQueue,
-): TabQuestionQueue {
+export function approveHighConfidenceItems(queue: TabQuestionQueue): TabQuestionQueue {
   return approveMatchingGeneratedItems({
     queue,
     matches: (item) => item.confidence === 'high' && hasAnswerText(item),

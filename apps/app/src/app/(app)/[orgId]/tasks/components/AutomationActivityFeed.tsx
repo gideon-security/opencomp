@@ -110,9 +110,7 @@ export function AutomationActivityFeed({
             <div className="text-center py-8">
               <Clock className="h-8 w-8 text-muted-foreground mx-auto mb-2 opacity-50" />
               <p className="text-muted-foreground text-sm">No recent activity</p>
-              <p className="text-muted-foreground text-xs mt-1">
-                Automation runs will appear here
-              </p>
+              <p className="text-muted-foreground text-xs mt-1">Automation runs will appear here</p>
             </div>
           ) : (
             recentRuns.map((run, index) => {
@@ -182,4 +180,3 @@ export function AutomationActivityFeed({
     </Card>
   );
 }
-

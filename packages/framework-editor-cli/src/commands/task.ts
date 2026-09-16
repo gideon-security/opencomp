@@ -1,9 +1,9 @@
 import { Command } from 'commander';
 import { apiRequest } from '../lib/api-client.js';
-import { handleError, CliError } from '../lib/errors.js';
+import { CliError, handleError } from '../lib/errors.js';
 import { outputResult, outputSuccess } from '../lib/output.js';
 import type { TaskTemplate } from '../types.js';
-import { FREQUENCY_VALUES, DEPARTMENT_VALUES, AUTOMATION_STATUS_VALUES } from '../types.js';
+import { AUTOMATION_STATUS_VALUES, DEPARTMENT_VALUES, FREQUENCY_VALUES } from '../types.js';
 
 export function registerTaskCommands(parent: Command): void {
   const task = parent
@@ -58,10 +58,7 @@ export function registerTaskCommands(parent: Command): void {
     )
     .requiredOption('--name <name>', 'Task name (e.g. "Review access control logs")')
     .option('--description <text>', 'Task description')
-    .option(
-      '--frequency <value>',
-      `Task frequency (choices: ${FREQUENCY_VALUES.join(', ')})`,
-    )
+    .option('--frequency <value>', `Task frequency (choices: ${FREQUENCY_VALUES.join(', ')})`)
     .option(
       '--department <value>',
       `Responsible department (choices: ${DEPARTMENT_VALUES.join(', ')})`,
@@ -76,7 +73,8 @@ export function registerTaskCommands(parent: Command): void {
       try {
         if (opts.frequency) validateEnum('frequency', opts.frequency, FREQUENCY_VALUES);
         if (opts.department) validateEnum('department', opts.department, DEPARTMENT_VALUES);
-        if (opts.automationStatus) validateEnum('automation-status', opts.automationStatus, AUTOMATION_STATUS_VALUES);
+        if (opts.automationStatus)
+          validateEnum('automation-status', opts.automationStatus, AUTOMATION_STATUS_VALUES);
         const body: Record<string, unknown> = { name: opts.name };
         if (opts.description !== undefined) body.description = opts.description;
         if (opts.frequency !== undefined) body.frequency = opts.frequency;
@@ -106,10 +104,7 @@ export function registerTaskCommands(parent: Command): void {
     .description('Update a task template. Only provided fields are changed.')
     .option('--name <name>', 'New task name')
     .option('--description <text>', 'New description')
-    .option(
-      '--frequency <value>',
-      `Task frequency (choices: ${FREQUENCY_VALUES.join(', ')})`,
-    )
+    .option('--frequency <value>', `Task frequency (choices: ${FREQUENCY_VALUES.join(', ')})`)
     .option(
       '--department <value>',
       `Responsible department (choices: ${DEPARTMENT_VALUES.join(', ')})`,
@@ -167,8 +162,6 @@ export function registerTaskCommands(parent: Command): void {
 
 function validateEnum(field: string, value: string, allowed: readonly string[]): void {
   if (!allowed.includes(value)) {
-    throw new CliError(
-      `Invalid ${field}: "${value}". Must be one of: ${allowed.join(', ')}`,
-    );
+    throw new CliError(`Invalid ${field}: "${value}". Must be one of: ${allowed.join(', ')}`);
   }
 }

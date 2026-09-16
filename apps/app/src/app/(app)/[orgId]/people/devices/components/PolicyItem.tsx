@@ -1,17 +1,17 @@
 'use client';
 
 import { cn } from '@gideon-defender/ui/cn';
-import { CheckCircle2, Image as ImageIcon, MoreVertical, XCircle } from 'lucide-react';
-import { useMemo, useState } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
+import { CheckCircle2, Image as ImageIcon, MoreVertical, XCircle } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
-import { FleetPolicy } from "../types";
 import { Button } from '@gideon-defender/ui/button';
+import { FleetPolicy } from '../types';
 import { PolicyImagePreviewModal } from './PolicyImagePreviewModal';
 
 interface PolicyItemProps {

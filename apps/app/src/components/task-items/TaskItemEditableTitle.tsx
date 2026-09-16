@@ -1,6 +1,6 @@
+import { cn } from '@/lib/utils';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 interface TaskItemEditableTitleProps {
   title: string;
@@ -78,14 +78,21 @@ export function TaskItemEditableTitle({
               }
             }}
             disabled={isUpdating}
-            className={cn('w-full text-2xl font-semibold bg-transparent border-none outline-none resize-none rounded px-2 py-1 -mx-2 -my-1 overflow-hidden', className)}
+            className={cn(
+              'w-full text-2xl font-semibold bg-transparent border-none outline-none resize-none rounded px-2 py-1 -mx-2 -my-1 overflow-hidden',
+              className,
+            )}
             rows={1}
           />
         </div>
       ) : (
         <h1
           onClick={() => !readOnly && setIsEditingTitle(true)}
-          className={cn('text-2xl font-semibold rounded px-2 py-1 -mx-2 -my-1 transition-colors', readOnly ? 'cursor-default' : 'cursor-text hover:bg-accent/50', className)}
+          className={cn(
+            'text-2xl font-semibold rounded px-2 py-1 -mx-2 -my-1 transition-colors',
+            readOnly ? 'cursor-default' : 'cursor-text hover:bg-accent/50',
+            className,
+          )}
         >
           {title}
         </h1>
@@ -93,5 +100,3 @@ export function TaskItemEditableTitle({
     </div>
   );
 }
-
-

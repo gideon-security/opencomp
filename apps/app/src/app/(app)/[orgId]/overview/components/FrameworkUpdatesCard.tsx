@@ -49,13 +49,8 @@ export function FrameworkUpdatesCard() {
             <Badge variant="default">{t('findings.newLabel')}</Badge>
           </HStack>
           <CollapsibleTrigger className="flex cursor-pointer items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {open
-              ? t('findings.hideCount', { count })
-              : t('findings.showCount', { count })}
-            <ChevronUp
-              size={16}
-              className={`transition-transform ${open ? '' : 'rotate-180'}`}
-            />
+            {open ? t('findings.hideCount', { count }) : t('findings.showCount', { count })}
+            <ChevronUp size={16} className={`transition-transform ${open ? '' : 'rotate-180'}`} />
           </CollapsibleTrigger>
         </div>
 
@@ -73,8 +68,7 @@ export function FrameworkUpdatesCard() {
                     {status.frameworkName ?? t('findings.framework')}
                   </Text>
                   <Text size="sm" variant="muted">
-                    v{status.currentVersion?.version ?? '—'} → v
-                    {status.latestVersion?.version}
+                    v{status.currentVersion?.version ?? '—'} → v{status.latestVersion?.version}
                   </Text>
                 </HStack>
                 {canUpdate && (

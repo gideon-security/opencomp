@@ -34,8 +34,7 @@ export async function removeMemberFromOrgChart(
 
   const updatedNodes = chartNodes.filter((n) => !removedNodeIds.has(n.id as string));
   const updatedEdges = chartEdges.filter(
-    (e) =>
-      !removedNodeIds.has(e.source as string) && !removedNodeIds.has(e.target as string),
+    (e) => !removedNodeIds.has(e.source as string) && !removedNodeIds.has(e.target as string),
   );
 
   await db.organizationChart.update({

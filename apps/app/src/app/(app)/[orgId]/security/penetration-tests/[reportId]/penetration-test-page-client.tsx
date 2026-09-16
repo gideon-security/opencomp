@@ -12,9 +12,6 @@ interface PenetrationTestPageClientProps {
  * list page but with `selectedRunId` set, so the right pane picks the
  * appropriate detail variant (running / completed / clean / failed).
  */
-export function PenetrationTestPageClient({
-  orgId,
-  reportId,
-}: PenetrationTestPageClientProps) {
+export function PenetrationTestPageClient({ orgId, reportId }: PenetrationTestPageClientProps) {
   return <SplitView orgId={orgId} selectedRunId={reportId} />;
 }

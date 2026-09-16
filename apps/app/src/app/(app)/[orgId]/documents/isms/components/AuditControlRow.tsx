@@ -28,11 +28,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import type { IsmsAuditControl } from '../isms-types';
-import {
-  auditControlSchema,
-  toControlPayload,
-  type AuditControlFormValues,
-} from './audit-schema';
+import { auditControlSchema, toControlPayload, type AuditControlFormValues } from './audit-schema';
 import { CONTROL_RESULTS } from './internal-audit-constants';
 import { controlResultLabel } from './internal-audit-labels';
 
@@ -270,8 +266,8 @@ export function AuditControlRow({
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete this control row?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Findings linked to it keep their clause text but lose the row link. Removed
-                  seeded rows are not re-added. This cannot be undone.
+                  Findings linked to it keep their clause text but lose the row link. Removed seeded
+                  rows are not re-added. This cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

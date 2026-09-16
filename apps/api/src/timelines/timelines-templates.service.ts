@@ -45,10 +45,9 @@ export class TimelinesTemplatesService {
           if (existing) {
             const expectedTemplateKey = template.templateKey ?? null;
             const expectedNextTemplateKey = template.nextTemplateKey ?? null;
-            const legacyDefaultName =
-              expectedTemplateKey
-                ? LEGACY_DEFAULT_TEMPLATE_NAME_BY_KEY[expectedTemplateKey]
-                : undefined;
+            const legacyDefaultName = expectedTemplateKey
+              ? LEGACY_DEFAULT_TEMPLATE_NAME_BY_KEY[expectedTemplateKey]
+              : undefined;
             const shouldNormalizeLegacyDefaultName =
               !!legacyDefaultName &&
               existing.name === legacyDefaultName &&
@@ -109,7 +108,11 @@ export class TimelinesTemplatesService {
         phases: { orderBy: { orderIndex: 'asc' } },
         framework: true,
       },
-      orderBy: [{ frameworkId: 'asc' }, { trackKey: 'asc' }, { cycleNumber: 'asc' }],
+      orderBy: [
+        { frameworkId: 'asc' },
+        { trackKey: 'asc' },
+        { cycleNumber: 'asc' },
+      ],
     });
   }
 
@@ -147,7 +150,10 @@ export class TimelinesTemplatesService {
     });
   }
 
-  async update(id: string, data: { name?: string; frameworkId?: string; cycleNumber?: number }) {
+  async update(
+    id: string,
+    data: { name?: string; frameworkId?: string; cycleNumber?: number },
+  ) {
     const template = await db.timelineTemplate.findUnique({
       where: { id },
     });

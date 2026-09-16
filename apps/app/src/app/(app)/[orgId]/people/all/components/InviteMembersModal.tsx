@@ -13,6 +13,7 @@ import useSWR from 'swr';
 import { z } from 'zod';
 
 import { Button } from '@gideon-defender/ui/button';
+import { Checkbox } from '@gideon-defender/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -31,7 +32,6 @@ import {
   FormMessage,
 } from '@gideon-defender/ui/form';
 import { Input } from '@gideon-defender/ui/input';
-import { Checkbox } from '@gideon-defender/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@gideon-defender/ui/tabs';
 import { MultiRoleCombobox } from './MultiRoleCombobox';
 
@@ -57,9 +57,7 @@ const createFormSchema = (
 
   const manualModeSchema = z.object({
     mode: z.literal('manual'),
-    manualInvites: z
-      .array(manualInviteSchema)
-      .min(1, { message: t('invite.addAtLeastOneInvite') }),
+    manualInvites: z.array(manualInviteSchema).min(1, { message: t('invite.addAtLeastOneInvite') }),
     sendPortalEmail: z.boolean(),
     csvFile: z.any().optional(), // Optional here, validated by union
   });
@@ -98,13 +96,12 @@ export function InviteMembersModal({
   const [csvFileName, setCsvFileName] = useState<string | null>(null);
 
   // Fetch custom roles from the API
-  const { data: customRolesData } = useSWR(
-    open ? `/v1/roles` : null,
-    async (endpoint: string) => {
-      const res = await api.get<{ customRoles: Array<{ id: string; name: string; permissions: Record<string, string[]> }> }>(endpoint);
-      return res.data?.customRoles ?? [];
-    },
-  );
+  const { data: customRolesData } = useSWR(open ? `/v1/roles` : null, async (endpoint: string) => {
+    const res = await api.get<{
+      customRoles: Array<{ id: string; name: string; permissions: Record<string, string[]> }>;
+    }>(endpoint);
+    return res.data?.customRoles ?? [];
+  });
   const customRoles = customRolesData ?? [];
   const customRoleNames = customRoles.map((r) => r.name);
 
@@ -160,7 +157,9 @@ export function InviteMembersModal({
             `Manual mode validation failed: No roles selected for: ${invalidInvites.map((i) => i.email || 'invite').join(', ')}`,
           );
           toast.error(
-            t('invite.selectRoleFor', { invites: invalidInvites.map((i) => i.email || 'invite').join(', ') }),
+            t('invite.selectRoleFor', {
+              invites: invalidInvites.map((i) => i.email || 'invite').join(', '),
+            }),
           );
           setIsLoading(false);
           return;
@@ -294,7 +293,8 @@ export function InviteMembersModal({
           }
 
           // Parse CSV rows into invite items, validating locally first
-          const csvInvites: Array<{ email: string; roles: string[]; sendPortalEmail: boolean }> = [];
+          const csvInvites: Array<{ email: string; roles: string[]; sendPortalEmail: boolean }> =
+            [];
           const clientErrors: { email: string; error: string }[] = [];
 
           for (const row of dataRows) {

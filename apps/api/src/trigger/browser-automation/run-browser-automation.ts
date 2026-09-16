@@ -194,7 +194,9 @@ export const runBrowserAutomation = task({
         const failedUpdate = await db.task.updateMany({
           where: {
             id: taskId,
-            status: { notIn: ['failed', ...AUTOMATION_PROTECTED_TASK_STATUSES] },
+            status: {
+              notIn: ['failed', ...AUTOMATION_PROTECTED_TASK_STATUSES],
+            },
           },
           data: { status: 'failed' },
         });

@@ -7,9 +7,17 @@ import { LanguageSwitcher } from '@/components/language-switcher';
 import { NotificationBell } from '@/components/notifications/notification-bell';
 import { OrganizationSwitcher } from '@/components/organization-switcher';
 import { SidebarProvider, useSidebar } from '@/context/sidebar-context';
-import { canAccessCompliance, canAccessRoute, hasAnyPermission, type UserPermissions } from '@/lib/permissions';
+import {
+  canAccessCompliance,
+  canAccessRoute,
+  hasAnyPermission,
+  type UserPermissions,
+} from '@/lib/permissions';
+import type { OrganizationFromMe } from '@/types';
 import { authClient } from '@/utils/auth-client';
 import { Badge, Globe, Locked, Logout, ManageProtection, Settings } from '@carbon/icons-react';
+import type { Onboarding, Organization } from '@db';
+import { BrandLogo } from '@gideon-defender/ui/brand-logo';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,20 +26,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
-import type { Onboarding, Organization } from '@db';
-import type { OrganizationFromMe } from '@/types';
 import {
   AppShell,
+  AppShellAIChatTrigger,
   AppShellBody,
   AppShellContent,
   AppShellMain,
   AppShellNavbar,
   AppShellRail,
-  AppShellAIChatTrigger,
   AppShellSidebar,
   AppShellSidebarHeader,
   AppShellUserMenu,
-  TooltipProvider,
   Avatar,
   AvatarFallback,
   AvatarImage,
@@ -39,18 +44,18 @@ import {
   HStack,
   Text,
   ThemeSwitcher,
+  TooltipProvider,
 } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useAction } from 'next-safe-action/hooks';
 import { useTheme } from 'next-themes';
-import { BrandLogo } from '@gideon-defender/ui/brand-logo';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { Suspense, useCallback, useRef } from 'react';
 import { AdminSidebar } from '../admin/components/AdminSidebar';
 import { ImpersonationBanner } from '../admin/components/ImpersonationBanner';
-import { SettingsSidebar } from '../settings/components/SettingsSidebar';
 import { SecuritySidebar } from '../security/components/SecuritySidebar';
+import { SettingsSidebar } from '../settings/components/SettingsSidebar';
 import { TrustSidebar } from '../trust/components/TrustSidebar';
 import { getAppShellSearchGroups } from './app-shell-search-groups';
 import { AppSidebar } from './AppSidebar';
@@ -251,19 +256,22 @@ function AppShellWrapperContent({
             {canAccessCompliance(permissions) && (
               <ShellRailNavItem
                 href={`/${organization.id}/overview`}
-                isActive={!isSettingsActive && !isTrustActive && !isSecurityActive && !isAdminActive}
+                isActive={
+                  !isSettingsActive && !isTrustActive && !isSecurityActive && !isAdminActive
+                }
                 icon={<Badge className="size-5" />}
                 label={t('compliance')}
               />
             )}
-            {isTrustNdaEnabled && hasAnyPermission(permissions, [{ resource: 'trust', action: 'read' }]) && (
-              <ShellRailNavItem
-                href={`/${organization.id}/trust`}
-                isActive={isTrustActive}
-                icon={<Globe className="size-5" />}
-                label={t('trust')}
-              />
-            )}
+            {isTrustNdaEnabled &&
+              hasAnyPermission(permissions, [{ resource: 'trust', action: 'read' }]) && (
+                <ShellRailNavItem
+                  href={`/${organization.id}/trust`}
+                  isActive={isTrustActive}
+                  icon={<Globe className="size-5" />}
+                  label={t('trust')}
+                />
+              )}
             {isSecurityEnabled && canAccessRoute(permissions, 'penetration-tests') ? (
               <ShellRailNavItem
                 href={`/${organization.id}/security`}
@@ -307,7 +315,11 @@ function AppShellWrapperContent({
               {isAdminActive && isAdmin ? (
                 <AdminSidebar orgId={organization.id} />
               ) : isSettingsActive ? (
-                <SettingsSidebar orgId={organization.id} showBrowserTab={isWebAutomationsEnabled} showBillingTab={isSecurityEnabled} />
+                <SettingsSidebar
+                  orgId={organization.id}
+                  showBrowserTab={isWebAutomationsEnabled}
+                  showBillingTab={isSecurityEnabled}
+                />
               ) : isTrustActive ? (
                 <TrustSidebar orgId={organization.id} />
               ) : isSecurityActive && isSecurityEnabled ? (

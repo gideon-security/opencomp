@@ -22,13 +22,13 @@ import { useTranslations } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 import { useCallback, useMemo, useState } from 'react';
-import { FamilyFilterDropdown } from './FamilyFilterDropdown';
 import {
   areAllFamiliesExpanded,
   isFamilyExpanded,
   toggleAllFamilyExpansion,
   toggleFamilyExpansion,
 } from './family-expansion-state';
+import { FamilyFilterDropdown } from './FamilyFilterDropdown';
 import {
   buildControlItems,
   buildRequirementMap,
@@ -51,7 +51,10 @@ export function FrameworkControlsGrouped({
   tasks: (Task & { controls: Control[] })[];
   evidenceSubmissions?: EvidenceSubmissionInfo[];
 }) {
-  const { orgId, frameworkInstanceId } = useParams<{ orgId: string; frameworkInstanceId: string }>();
+  const { orgId, frameworkInstanceId } = useParams<{
+    orgId: string;
+    frameworkInstanceId: string;
+  }>();
   const router = useRouter();
   const t = useTranslations('frameworks');
 
@@ -62,8 +65,14 @@ export function FrameworkControlsGrouped({
     [orgId, frameworkInstanceId, router],
   );
 
-  const [searchTerm, setSearchTerm] = useQueryState('q', parseAsString.withDefault('').withOptions({ shallow: true, throttleMs: 300 }));
-  const [familyFilterParam, setFamilyFilterParam] = useQueryState('families', parseAsArrayOf(parseAsString, '|').withDefault([]).withOptions({ shallow: true }));
+  const [searchTerm, setSearchTerm] = useQueryState(
+    'q',
+    parseAsString.withDefault('').withOptions({ shallow: true, throttleMs: 300 }),
+  );
+  const [familyFilterParam, setFamilyFilterParam] = useQueryState(
+    'families',
+    parseAsArrayOf(parseAsString, '|').withDefault([]).withOptions({ shallow: true }),
+  );
   const [expandedFamilies, setExpandedFamilies] = useState<Set<string>>(new Set());
 
   const selectedFamilyFilter = useMemo(() => new Set(familyFilterParam), [familyFilterParam]);
@@ -99,7 +108,10 @@ export function FrameworkControlsGrouped({
   }, [allGroups, selectedFamilyFilter]);
 
   const allFamilyNames = useMemo(() => allGroups.map((g) => g.family), [allGroups]);
-  const familyCounts = useMemo(() => new Map(allGroups.map((g) => [g.family, g.items.length])), [allGroups]);
+  const familyCounts = useMemo(
+    () => new Map(allGroups.map((g) => [g.family, g.items.length])),
+    [allGroups],
+  );
 
   const isSearching = searchTerm.trim().length > 0;
   const visibleFamilyNames = useMemo(() => groups.map((g) => g.family), [groups]);
@@ -109,9 +121,7 @@ export function FrameworkControlsGrouped({
   });
 
   const handleToggleFamily = (family: string) => {
-    setExpandedFamilies((prev) =>
-      toggleFamilyExpansion({ expandedFamilies: prev, family }),
-    );
+    setExpandedFamilies((prev) => toggleFamilyExpansion({ expandedFamilies: prev, family }));
   };
 
   const handleToggleAll = () => {

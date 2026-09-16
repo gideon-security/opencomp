@@ -2,9 +2,16 @@
 
 import { SelectAssignee } from '@/components/SelectAssignee';
 import { PolicyEditor } from '@/components/editor/policy-editor';
+import { usePermissions } from '@/hooks/use-permissions';
 import { useChat } from '@ai-sdk/react';
+import {
+  PolicyStatus,
+  type Member,
+  type PolicyDisplayFormat,
+  type PolicyVersion,
+  type User,
+} from '@db';
 import { Badge } from '@gideon-defender/ui/badge';
-import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import {
   Dialog,
   DialogContent,
@@ -19,8 +26,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
-import { validateAndFixTipTapContent, SuggestionsExtension } from '@gideon-defender/ui/editor';
-import { PolicyStatus, type Member, type PolicyDisplayFormat, type PolicyVersion, type User } from '@db';
+import { SuggestionsExtension, validateAndFixTipTapContent } from '@gideon-defender/ui/editor';
+import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import type { JSONContent, Editor as TipTapEditor } from '@tiptap/react';
 import {
   AlertDialog,
@@ -43,24 +50,31 @@ import {
 import { MagicWand } from '@trycompai/design-system/icons';
 import { DefaultChatTransport } from 'ai';
 import { format } from 'date-fns';
-import { ArrowDownUp, ChevronDown, ChevronLeft, ChevronRight, FileText, Trash2, Upload } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import {
+  ArrowDownUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  Trash2,
+  Upload,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { usePolicy } from '../../hooks/usePolicy';
-import { usePolicyVersions } from '../../hooks/usePolicyVersions';
-import { usePermissions } from '@/hooks/use-permissions';
 import { PdfViewer } from '../../components/PdfViewer';
 import { PublishVersionDialog } from '../../components/PublishVersionDialog';
-import type { PolicyChatUIMessage } from '../types';
-import { PolicyAiAssistant } from './ai/policy-ai-assistant';
+import { usePolicy } from '../../hooks/usePolicy';
+import { usePolicyVersions } from '../../hooks/usePolicyVersions';
 import { useSuggestions } from '../hooks/use-suggestions';
 import { buildPositionMap } from '../lib/build-position-map';
 import { sanitizeMarkdown } from '../lib/policy-markdown';
 import { resolveInitialPolicyContent } from '../lib/resolve-initial-content';
+import type { PolicyChatUIMessage } from '../types';
 import { InlineEditBubble } from './ai/inline-edit-bubble';
 import { markdownToTipTapJSON } from './ai/markdown-utils';
+import { PolicyAiAssistant } from './ai/policy-ai-assistant';
 
 import { SuggestionsTopBar } from './ai/suggestions-top-bar';
 
@@ -122,12 +136,8 @@ function getLatestCompletedProposal(
         content: sanitizeMarkdown(input.content),
         summary: input.summary ?? t('details.proposalDefaultSummary'),
         title: input.title ?? input.summary ?? t('details.proposalDefaultTitle'),
-        detail:
-          input.detail ??
-          t('details.proposalDefaultDetail'),
-        reviewHint:
-          input.reviewHint ??
-          t('details.proposalDefaultReviewHint'),
+        detail: input.detail ?? t('details.proposalDefaultDetail'),
+        reviewHint: input.reviewHint ?? t('details.proposalDefaultReviewHint'),
       };
     }
   }
@@ -243,7 +253,8 @@ export function PolicyContentManager({
         onAccept: (id: string) => suggestionCallbacksRef.current.onAccept(id),
         onReject: (id: string) => suggestionCallbacksRef.current.onReject(id),
         onEditClick: (id: string) => suggestionCallbacksRef.current.onEditClick(id),
-        onFeedbackSubmit: (id: string, feedback: string) => suggestionCallbacksRef.current.onFeedbackSubmit(id, feedback),
+        onFeedbackSubmit: (id: string, feedback: string) =>
+          suggestionCallbacksRef.current.onFeedbackSubmit(id, feedback),
         onFeedbackCancel: () => suggestionCallbacksRef.current.onFeedbackCancel(),
         markdownToJSON: markdownToTipTapJSON,
       }),
@@ -316,7 +327,7 @@ export function PolicyContentManager({
   useEffect(() => {
     // Don't reset if we're waiting for a pending version switch
     if (pendingVersionSwitch) return;
-    
+
     // If the currently viewed version no longer exists, switch to current version
     const viewedVersionExists = versions.some((v) => v.id === viewingVersion);
     if (!viewedVersionExists) {
@@ -413,7 +424,7 @@ export function PolicyContentManager({
 
       // If we deleted the selected version, switch to another one
       if (viewingVersion === versionToDelete.id) {
-        const remainingVersions = versions.filter(v => v.id !== versionToDelete.id);
+        const remainingVersions = versions.filter((v) => v.id !== versionToDelete.id);
         setViewingVersion(currentVersionId ?? remainingVersions[0]?.id ?? '');
       }
 
@@ -443,9 +454,7 @@ export function PolicyContentManager({
     setIsSubmittingForApproval(true);
     try {
       await submitForApproval(viewingVersion, publishApproverId);
-      toast.success(
-        t('details.versionSubmittedToast', { version: versionToPublish.version }),
-      );
+      toast.success(t('details.versionSubmittedToast', { version: versionToPublish.version }));
       setIsPublishApprovalDialogOpen(false);
       setPublishApproverId(null);
       onMutate?.();
@@ -473,7 +482,13 @@ export function PolicyContentManager({
 
     // For draft/needs_review, can publish the current version
     return policyStatus === PolicyStatus.draft || policyStatus === PolicyStatus.needs_review;
-  }, [canPublishPolicy, isPendingApproval, isViewingPendingVersion, policyStatus, isViewingActiveVersion]);
+  }, [
+    canPublishPolicy,
+    isPendingApproval,
+    isViewingPendingVersion,
+    policyStatus,
+    isViewingActiveVersion,
+  ]);
 
   // Content to display is always currentContent (editable)
   const displayContent = useMemo(() => {
@@ -500,9 +515,7 @@ export function PolicyContentManager({
   // so every request — initial and retry — re-derives it from the current doc.
   const buildChatBody = useCallback(
     () => ({
-      currentContent: editorInstance
-        ? buildPositionMap(editorInstance.state.doc).markdown
-        : '',
+      currentContent: editorInstance ? buildPositionMap(editorInstance.state.doc).markdown : '',
     }),
     [editorInstance],
   );
@@ -710,7 +723,9 @@ export function PolicyContentManager({
                             const pinnedVersions = [
                               publishedVersion,
                               // Only add pending if it's different from published
-                              pendingVersion && pendingVersion.id !== publishedVersion?.id ? pendingVersion : null,
+                              pendingVersion && pendingVersion.id !== publishedVersion?.id
+                                ? pendingVersion
+                                : null,
                             ].filter(Boolean) as PolicyVersionWithPublisher[];
                             return pinnedVersions.map((version) => {
                               const isActive = version.id === currentVersionId;
@@ -910,40 +925,55 @@ export function PolicyContentManager({
                   {t('details.createNewVersion')}
                 </Button>
               )}
-              {!isVersionReadOnly && canUpdatePolicy && aiAssistantEnabled && activeTab === 'EDITOR' && (
-                <Button
-                  variant={showAiAssistant ? 'default' : 'outline'}
-                  size="default"
-                  onClick={() => setShowAiAssistant((prev) => !prev)}
-                  iconLeft={<MagicWand size={16} />}
-                >
-                  {t('details.aiAssistant')}
-                </Button>
-              )}
+              {!isVersionReadOnly &&
+                canUpdatePolicy &&
+                aiAssistantEnabled &&
+                activeTab === 'EDITOR' && (
+                  <Button
+                    variant={showAiAssistant ? 'default' : 'outline'}
+                    size="default"
+                    onClick={() => setShowAiAssistant((prev) => !prev)}
+                    iconLeft={<MagicWand size={16} />}
+                  >
+                    {t('details.aiAssistant')}
+                  </Button>
+                )}
             </div>
           </div>
 
           {/* Mobile/tablet and medium desktop: AI assistant above the editor */}
-          {aiAssistantEnabled && showAiAssistant && !isVersionReadOnly && activeTab === 'EDITOR' && !isWideDesktop && (
-            <div className="h-[400px]">
-              <PolicyAiAssistant
-                messages={messages}
-                status={status}
-                errorMessage={chatErrorMessage}
-                sendMessage={sendMessage}
-                stop={stopChat}
-                retry={handleRetryChat}
-                close={() => setShowAiAssistant(false)}
-              />
-            </div>
-          )}
+          {aiAssistantEnabled &&
+            showAiAssistant &&
+            !isVersionReadOnly &&
+            activeTab === 'EDITOR' &&
+            !isWideDesktop && (
+              <div className="h-[400px]">
+                <PolicyAiAssistant
+                  messages={messages}
+                  status={status}
+                  errorMessage={chatErrorMessage}
+                  sendMessage={sendMessage}
+                  stop={stopChat}
+                  retry={handleRetryChat}
+                  close={() => setShowAiAssistant(false)}
+                />
+              </div>
+            )}
 
           <div
             className={
-              showAiAssistant && aiAssistantEnabled && isWideDesktop ? 'flex flex-row items-start gap-6' : ''
+              showAiAssistant && aiAssistantEnabled && isWideDesktop
+                ? 'flex flex-row items-start gap-6'
+                : ''
             }
           >
-            <div className={showAiAssistant && aiAssistantEnabled && isWideDesktop ? 'flex-[7] min-w-0 max-h-[calc(100dvh-24rem)] overflow-y-auto' : 'w-full'}>
+            <div
+              className={
+                showAiAssistant && aiAssistantEnabled && isWideDesktop
+                  ? 'flex-[7] min-w-0 max-h-[calc(100dvh-24rem)] overflow-y-auto'
+                  : 'w-full'
+              }
+            >
               <Stack gap="sm">
                 <TabsContent value="EDITOR">
                   {suggestions.isActive && (
@@ -1003,21 +1033,24 @@ export function PolicyContentManager({
             </div>
 
             {/* Wide desktop (1536px+): AI assistant side panel */}
-            {aiAssistantEnabled && showAiAssistant && !isVersionReadOnly && activeTab === 'EDITOR' && isWideDesktop && (
-              <div className="flex-[3] min-w-[320px] sticky top-0 h-[calc(100dvh-24rem)]">
-                <PolicyAiAssistant
-                  messages={messages}
-                  status={status}
-                  errorMessage={chatErrorMessage}
-                  sendMessage={sendMessage}
-                  stop={stopChat}
-                  retry={handleRetryChat}
-                  close={() => setShowAiAssistant(false)}
-                />
-              </div>
-            )}
+            {aiAssistantEnabled &&
+              showAiAssistant &&
+              !isVersionReadOnly &&
+              activeTab === 'EDITOR' &&
+              isWideDesktop && (
+                <div className="flex-[3] min-w-[320px] sticky top-0 h-[calc(100dvh-24rem)]">
+                  <PolicyAiAssistant
+                    messages={messages}
+                    status={status}
+                    errorMessage={chatErrorMessage}
+                    sendMessage={sendMessage}
+                    stop={stopChat}
+                    retry={handleRetryChat}
+                    close={() => setShowAiAssistant(false)}
+                  />
+                </div>
+              )}
           </div>
-
         </Stack>
       </Tabs>
 

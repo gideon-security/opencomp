@@ -11,7 +11,9 @@ describe('security-hub.adapter helpers', () => {
   describe('deriveFindingKey', () => {
     it('combines standard + control for a foundational best-practices GeneratorId', () => {
       expect(
-        deriveFindingKey('aws-foundational-security-best-practices/v/1.0.0/EC2.13'),
+        deriveFindingKey(
+          'aws-foundational-security-best-practices/v/1.0.0/EC2.13',
+        ),
       ).toBe('aws-securityhub-aws-foundational-security-best-practices-ec2.13');
     });
 
@@ -46,8 +48,12 @@ describe('security-hub.adapter helpers', () => {
       // Findings sharing both standard AND control SHOULD merge — that's
       // the whole point of findingKey: group instances of the same check
       // across resources.
-      const a = deriveFindingKey('aws-foundational-security-best-practices/v/1.0.0/EC2.13');
-      const b = deriveFindingKey('aws-foundational-security-best-practices/v/1.0.0/EC2.13');
+      const a = deriveFindingKey(
+        'aws-foundational-security-best-practices/v/1.0.0/EC2.13',
+      );
+      const b = deriveFindingKey(
+        'aws-foundational-security-best-practices/v/1.0.0/EC2.13',
+      );
       expect(a).toBe(b);
     });
 
@@ -154,7 +160,9 @@ describe('security-hub.adapter helpers', () => {
         Compliance: { RelatedRequirements: ['NIST.800-53.r5 AC-2'] },
       });
       expect(result).toContain('Enable encryption on the bucket.');
-      expect(result).toContain('More info: https://docs.aws.amazon.com/whatever');
+      expect(result).toContain(
+        'More info: https://docs.aws.amazon.com/whatever',
+      );
       expect(result).toContain('Compliance:');
     });
 
@@ -209,8 +217,7 @@ describe('security-hub.adapter helpers', () => {
         Status: 'FAILED',
         RelatedRequirements: ['NIST.800-53.r5 AC-2'],
       },
-      GeneratorId:
-        'aws-foundational-security-best-practices/v/1.0.0/EC2.13',
+      GeneratorId: 'aws-foundational-security-best-practices/v/1.0.0/EC2.13',
       Remediation: {
         Recommendation: {
           Text: 'Update the security group rules.',

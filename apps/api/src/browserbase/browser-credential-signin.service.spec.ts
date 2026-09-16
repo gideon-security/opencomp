@@ -86,7 +86,10 @@ describe('BrowserCredentialSigninService', () => {
 
   it('connects to the given session and never closes it', async () => {
     const extract = jest.fn().mockResolvedValue({ state: 'logged_in' });
-    const sessions = makeSessions(extract, jest.fn().mockResolvedValue(undefined));
+    const sessions = makeSessions(
+      extract,
+      jest.fn().mockResolvedValue(undefined),
+    );
     const profiles = makeProfiles(profile);
     withCredentials({ username: 'u', password: 'p' });
 
@@ -141,7 +144,10 @@ describe('BrowserCredentialSigninService', () => {
       .fn()
       .mockResolvedValueOnce({ state: 'unknown' })
       .mockResolvedValue({ state: 'invalid_credentials' });
-    const sessions = makeSessions(extract, jest.fn().mockResolvedValue(undefined));
+    const sessions = makeSessions(
+      extract,
+      jest.fn().mockResolvedValue(undefined),
+    );
     const profiles = makeProfiles(profile);
     withCredentials({ username: 'user@x.com', password: 'wrong' });
 
@@ -164,7 +170,10 @@ describe('BrowserCredentialSigninService', () => {
       .fn()
       .mockResolvedValueOnce({ state: 'unknown' })
       .mockResolvedValue({ state: 'needs_2fa' });
-    const sessions = makeSessions(extract, jest.fn().mockResolvedValue(undefined));
+    const sessions = makeSessions(
+      extract,
+      jest.fn().mockResolvedValue(undefined),
+    );
     const profiles = makeProfiles(profile);
     withCredentials({ username: 'user@x.com', password: 'secret' }); // no totpCode
 
@@ -183,7 +192,10 @@ describe('BrowserCredentialSigninService', () => {
       .mockResolvedValueOnce({ state: 'unknown' })
       .mockResolvedValueOnce({ state: 'needs_2fa' })
       .mockResolvedValueOnce({ method: 'passkey' });
-    const sessions = makeSessions(extract, jest.fn().mockResolvedValue(undefined));
+    const sessions = makeSessions(
+      extract,
+      jest.fn().mockResolvedValue(undefined),
+    );
     const profiles = makeProfiles(profile);
     withCredentials({ username: 'user@x.com', password: 'secret' }); // no totpCode
 
@@ -201,7 +213,10 @@ describe('BrowserCredentialSigninService', () => {
       .mockResolvedValueOnce({ state: 'unknown' })
       .mockResolvedValueOnce({ state: 'unknown' })
       .mockResolvedValueOnce({ method: 'passkey' });
-    const sessions = makeSessions(extract, jest.fn().mockResolvedValue(undefined));
+    const sessions = makeSessions(
+      extract,
+      jest.fn().mockResolvedValue(undefined),
+    );
     const profiles = makeProfiles(profile);
     withCredentials({ username: 'user@x.com', password: 'secret' });
 
@@ -216,7 +231,10 @@ describe('BrowserCredentialSigninService', () => {
       .fn()
       .mockResolvedValueOnce({ state: 'unknown' })
       .mockResolvedValue({ state: 'needs_2fa' });
-    const sessions = makeSessions(extract, jest.fn().mockResolvedValue(undefined));
+    const sessions = makeSessions(
+      extract,
+      jest.fn().mockResolvedValue(undefined),
+    );
     const profiles = makeProfiles(profile);
     withCredentials({ username: 'user@x.com', password: 'secret' }); // no code → manual 2FA
     const onLiveView = jest.fn();
@@ -225,7 +243,10 @@ describe('BrowserCredentialSigninService', () => {
       profiles as unknown as BrowserAuthProfileService,
     );
 
-    const promise = service.signInWithStoredCredentials({ ...input, onLiveView });
+    const promise = service.signInWithStoredCredentials({
+      ...input,
+      onLiveView,
+    });
     await jest.runAllTimersAsync();
     const result = await promise;
 

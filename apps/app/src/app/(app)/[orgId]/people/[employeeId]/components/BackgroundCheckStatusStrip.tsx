@@ -17,10 +17,7 @@ interface StatusStripProps {
   canManageBilling: boolean;
 }
 
-const stripCopy = (
-  status: StripStatus,
-  t: Translator,
-): { label: string; sentence: string } => {
+const stripCopy = (status: StripStatus, t: Translator): { label: string; sentence: string } => {
   switch (status) {
     case 'not_started':
       return {

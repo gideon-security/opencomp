@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to webflow.com\n2. Go to Account Settings > Integrations > API Access\n3. Generate an API token with sites:read scope\n4. Copy the token and paste it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

@@ -14,7 +14,10 @@ const FRAMEWORK_TRUST_MAP: Record<
   { statusField: string; trustFramework: string }
 > = {
   'SOC 2': { statusField: 'soc2type2_status', trustFramework: 'soc2_type2' },
-  'SOC 2 v.1': { statusField: 'soc2type1_status', trustFramework: 'soc2_type1' },
+  'SOC 2 v.1': {
+    statusField: 'soc2type1_status',
+    trustFramework: 'soc2_type1',
+  },
   'ISO 27001': { statusField: 'iso27001_status', trustFramework: 'iso_27001' },
   ISO27001: { statusField: 'iso27001_status', trustFramework: 'iso_27001' },
   'ISO 42001': { statusField: 'iso42001_status', trustFramework: 'iso_42001' },
@@ -103,7 +106,10 @@ async function queryTaskScore(
   }
 
   const tasks = await db.task.findMany({
-    where: { archivedAt: null, controls: { some: { id: { in: controlIds }, archivedAt: null } } },
+    where: {
+      archivedAt: null,
+      controls: { some: { id: { in: controlIds }, archivedAt: null } },
+    },
     select: { id: true, status: true, updatedAt: true },
     distinct: ['id'],
   });
@@ -155,7 +161,10 @@ function assignActivePhases(
   if (!evidenceGatheringDone) {
     return recalculated.map((p, idx) => ({
       id: p.id,
-      status: idx === 0 ? TimelinePhaseStatus.IN_PROGRESS : TimelinePhaseStatus.PENDING,
+      status:
+        idx === 0
+          ? TimelinePhaseStatus.IN_PROGRESS
+          : TimelinePhaseStatus.PENDING,
       startDate: p.startDate,
       endDate: p.endDate,
       completedAt: null,
@@ -169,27 +178,39 @@ function assignActivePhases(
     if (idx === 0) {
       const endDate = p.endDate < now ? p.endDate : now;
       return {
-        id: p.id, status: TimelinePhaseStatus.COMPLETED,
-        startDate: p.startDate, endDate, completedAt: endDate,
+        id: p.id,
+        status: TimelinePhaseStatus.COMPLETED,
+        startDate: p.startDate,
+        endDate,
+        completedAt: endDate,
       };
     }
     if (foundCurrent) {
       return {
-        id: p.id, status: TimelinePhaseStatus.PENDING,
-        startDate: p.startDate, endDate: p.endDate, completedAt: null,
+        id: p.id,
+        status: TimelinePhaseStatus.PENDING,
+        startDate: p.startDate,
+        endDate: p.endDate,
+        completedAt: null,
       };
     }
     if (p.endDate < now) {
       return {
-        id: p.id, status: TimelinePhaseStatus.COMPLETED,
-        startDate: p.startDate, endDate: p.endDate, completedAt: p.endDate,
+        id: p.id,
+        status: TimelinePhaseStatus.COMPLETED,
+        startDate: p.startDate,
+        endDate: p.endDate,
+        completedAt: p.endDate,
       };
     }
     // Current phase
     foundCurrent = true;
     return {
-      id: p.id, status: TimelinePhaseStatus.IN_PROGRESS,
-      startDate: p.startDate, endDate: p.endDate, completedAt: null,
+      id: p.id,
+      status: TimelinePhaseStatus.IN_PROGRESS,
+      startDate: p.startDate,
+      endDate: p.endDate,
+      completedAt: null,
     };
   });
 }
@@ -259,10 +280,9 @@ export async function backfillTimeline({
   forceRefresh?: boolean;
 }): Promise<void> {
   const { framework } = frameworkInstance;
-  const timelinesToCreate =
-    MULTI_TIMELINE_FRAMEWORKS[framework.name] ?? [
-      { cycleNumber: 1, trackKey: 'primary' },
-    ];
+  const timelinesToCreate = MULTI_TIMELINE_FRAMEWORKS[framework.name] ?? [
+    { cycleNumber: 1, trackKey: 'primary' },
+  ];
 
   for (const timelineToCreate of timelinesToCreate) {
     try {
@@ -342,7 +362,11 @@ async function backfillSingleTimeline({
     await applyBackfillState(
       instance.id,
       assignCompletedPhases(instance.phases, inferredStartDate, completedAt),
-      { status: TimelineStatus.COMPLETED, startDate: inferredStartDate, completedAt },
+      {
+        status: TimelineStatus.COMPLETED,
+        startDate: inferredStartDate,
+        completedAt,
+      },
     );
     return;
   }

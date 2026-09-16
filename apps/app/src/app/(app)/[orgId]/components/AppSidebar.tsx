@@ -1,12 +1,12 @@
 'use client';
 
-import { canAccessRoute, type UserPermissions } from '@/lib/permissions';
 import type { NavMessageKey } from '@/i18n/keys';
+import { canAccessRoute, type UserPermissions } from '@/lib/permissions';
 import type { Organization } from '@db';
 import { AppShellNav, AppShellNavItem } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 
 interface NavItem {
   id: string;
@@ -143,9 +143,7 @@ export function AppSidebar({
     <AppShellNav>
       {visibleItems.map((item) => (
         <Link key={item.id} href={item.path}>
-          <AppShellNavItem isActive={isPathActive(item.path)}>
-            {t(item.nameKey)}
-          </AppShellNavItem>
+          <AppShellNavItem isActive={isPathActive(item.path)}>{t(item.nameKey)}</AppShellNavItem>
         </Link>
       ))}
     </AppShellNav>

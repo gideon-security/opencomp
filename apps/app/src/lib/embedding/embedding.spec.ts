@@ -1,14 +1,7 @@
 import { Departments } from '@db';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const {
-  upsertMock,
-  queryMock,
-  infoMock,
-  deleteMock,
-  rangeMock,
-  embedMock,
-} = vi.hoisted(() => ({
+const { upsertMock, queryMock, infoMock, deleteMock, rangeMock, embedMock } = vi.hoisted(() => ({
   upsertMock: vi.fn(),
   queryMock: vi.fn(),
   infoMock: vi.fn(),
@@ -31,11 +24,11 @@ vi.mock('@gideon-defender/db', () => ({
 }));
 
 import {
-  upsertEntityEmbeddings,
-  findSimilarTasks,
   cosineToUnitScore,
-  waitForIndexed,
+  findSimilarTasks,
   pruneOrphanTaskVectors,
+  upsertEntityEmbeddings,
+  waitForIndexed,
 } from './index';
 
 beforeEach(() => {
@@ -45,9 +38,7 @@ beforeEach(() => {
   deleteMock.mockReset();
   rangeMock.mockReset();
   embedMock.mockReset();
-  embedMock.mockImplementation((texts: string[]) =>
-    texts.map(() => Array(1024).fill(0.5)),
-  );
+  embedMock.mockImplementation((texts: string[]) => texts.map(() => Array(1024).fill(0.5)));
 });
 
 describe('upsertEntityEmbeddings', () => {
@@ -92,9 +83,7 @@ describe('upsertEntityEmbeddings', () => {
       ],
     });
     expect(upsertMock).toHaveBeenCalledTimes(1);
-    expect(upsertMock).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'task_org_1_tsk_c' }),
-    );
+    expect(upsertMock).toHaveBeenCalledWith(expect.objectContaining({ id: 'task_org_1_tsk_c' }));
     expect(result.appliedHashes.map((h) => h.id)).toEqual(['tsk_c']);
   });
 
@@ -102,9 +91,7 @@ describe('upsertEntityEmbeddings', () => {
     await upsertEntityEmbeddings({
       organizationId: 'org_1',
       kind: 'task',
-      entities: [
-        { id: 'tsk_a', text: 'hr task', department: Departments.hr },
-      ],
+      entities: [{ id: 'tsk_a', text: 'hr task', department: Departments.hr }],
     });
     expect(upsertMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -205,7 +192,11 @@ describe('findSimilarTasks', () => {
     // is deterministic: tsk_a (identical) > tsk_b (orthogonal) > tsk_c (opposite).
     embedMock.mockResolvedValueOnce([[1, 0]]);
     taskPage([
-      { id: 'task_org_1_tsk_b', vector: [0, 1], metadata: { sourceId: 'tsk_b', department: 'none' } },
+      {
+        id: 'task_org_1_tsk_b',
+        vector: [0, 1],
+        metadata: { sourceId: 'tsk_b', department: 'none' },
+      },
       { id: 'task_org_1_tsk_a', vector: [1, 0], metadata: { sourceId: 'tsk_a', department: 'hr' } },
       { id: 'task_org_1_tsk_c', vector: [-1, 0], metadata: { sourceId: 'tsk_c' } },
     ]);
@@ -513,9 +504,7 @@ describe('pruneOrphanTaskVectors', () => {
     expect(deleteMock).toHaveBeenCalledTimes(2);
     // Only the second (successful) batch's 50 sourceIds are returned.
     expect(result.deletedSourceIds).toHaveLength(50);
-    expect(result.deletedSourceIds).toEqual(
-      vectors.slice(100).map((v) => v.metadata.sourceId),
-    );
+    expect(result.deletedSourceIds).toEqual(vectors.slice(100).map((v) => v.metadata.sourceId));
     expect(errSpy).toHaveBeenCalled();
     errSpy.mockRestore();
   });

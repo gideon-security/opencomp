@@ -37,10 +37,7 @@ function isRunGoneError(err: unknown): boolean {
  *
  * DELETE on the same path discards the active run (user clicked Discard).
  */
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ riskId: string }> },
-) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ riskId: string }> }) {
   try {
     const ctx = await requireApiPermission(req, 'risk', 'read');
     if (ctx instanceof NextResponse) return ctx;

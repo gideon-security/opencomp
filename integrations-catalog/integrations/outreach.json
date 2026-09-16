@@ -9,16 +9,12 @@
     "type": "oauth2",
     "config": {
       "setupInstructions": "1. Go to https://developers.outreach.io and create a new OAuth app\n2. Set the redirect URI to the one provided by CompAI\n3. Copy the Client ID and Client Secret\n4. Enter them in CompAI to connect your Outreach account",
-      "scopes": [
-        "users.read"
-      ],
+      "scopes": ["users.read"],
       "clientAuthMethod": "body",
       "supportsRefreshToken": true
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

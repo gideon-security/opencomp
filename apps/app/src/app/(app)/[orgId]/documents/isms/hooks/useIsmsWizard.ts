@@ -1,8 +1,8 @@
 'use client';
 
+import { api } from '@/lib/api-client';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
-import { api } from '@/lib/api-client';
 import type {
   PartialWizardAnswers,
   SaveProfileResponse,
@@ -20,7 +20,10 @@ function buildKey(
   frameworkId: string | null,
 ): readonly [string, string] | null {
   if (!frameworkId) return null;
-  return [`/v1/isms/profile?frameworkId=${encodeURIComponent(frameworkId)}`, organizationId] as const;
+  return [
+    `/v1/isms/profile?frameworkId=${encodeURIComponent(frameworkId)}`,
+    organizationId,
+  ] as const;
 }
 
 async function unwrap<T>(
@@ -41,11 +44,7 @@ async function unwrap<T>(
  *   - complete: full POST /v1/isms/profile { complete: true }.
  *   - generateAll: POST /v1/isms/generate-all (run on completion).
  */
-export function useIsmsWizard({
-  organizationId,
-  frameworkId,
-  fallbackData,
-}: UseIsmsWizardOptions) {
+export function useIsmsWizard({ organizationId, frameworkId, fallbackData }: UseIsmsWizardOptions) {
   const { data, error, isLoading, mutate } = useSWR<WizardProfileResponse>(
     buildKey(organizationId, frameworkId),
     async ([key]: readonly [string, string]) =>
@@ -74,10 +73,7 @@ export function useIsmsWizard({
       api.post<SaveProfileResponse>('/v1/isms/profile', { frameworkId, answers }, organizationId),
       'Failed to save answers',
     );
-    await mutate(
-      (current) => (current ? { ...current, answers: result.answers } : current),
-      false,
-    );
+    await mutate((current) => (current ? { ...current, answers: result.answers } : current), false);
     return result;
   };
 
@@ -90,10 +86,7 @@ export function useIsmsWizard({
       ),
       'Failed to complete the wizard',
     );
-    await mutate(
-      (current) => (current ? { ...current, answers: result.answers } : current),
-      false,
-    );
+    await mutate((current) => (current ? { ...current, answers: result.answers } : current), false);
     return result;
   };
 

@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -37,10 +37,16 @@ vi.mock('@/actions/schema', async () => {
   };
 });
 
-// Mock useSession
-vi.mock('@/utils/auth-client', () => ({
-  useSession: () => ({
-    data: { user: { id: 'user_1' } },
+// Mock useAuthMe (GET /v1/auth/me — Milestone 2, no better-auth session reads)
+vi.mock('@/hooks/use-auth-me', () => ({
+  useAuthMe: () => ({
+    user: { id: 'user_1' },
+    organizations: [],
+    impersonatedBy: null,
+    authType: 'session',
+    hasInactiveMembership: false,
+    isLoading: false,
+    isError: false,
   }),
 }));
 

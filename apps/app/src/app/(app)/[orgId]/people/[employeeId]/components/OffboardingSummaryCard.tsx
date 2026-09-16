@@ -20,8 +20,7 @@ export function OffboardingSummaryCard({
   hasEvidence,
 }: OffboardingSummaryCardProps) {
   const daysSince = Math.max(0, differenceInDays(new Date(), new Date(offboardDate)));
-  const progressPercent =
-    totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+  const progressPercent = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
 
   return (
     <div className="grid grid-cols-[1.4fr_1fr_1fr_1fr_auto] items-center gap-6 rounded-lg border p-5">
@@ -32,12 +31,8 @@ export function OffboardingSummaryCard({
           </span>
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="font-mono text-2xl font-normal tabular-nums">
-            {completedItems}
-          </span>
-          <span className="text-sm text-muted-foreground">
-            / {totalItems} tasks
-          </span>
+          <span className="font-mono text-2xl font-normal tabular-nums">{completedItems}</span>
+          <span className="text-sm text-muted-foreground">/ {totalItems} tasks</span>
         </div>
         <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
           <div
@@ -62,9 +57,7 @@ export function OffboardingSummaryCard({
             Days since
           </span>
         </div>
-        <p className="mt-1 font-mono text-2xl font-normal text-primary tabular-nums">
-          {daysSince}
-        </p>
+        <p className="mt-1 font-mono text-2xl font-normal text-primary tabular-nums">{daysSince}</p>
       </div>
       <div>
         <div className="mb-1">
@@ -72,9 +65,7 @@ export function OffboardingSummaryCard({
             Completion
           </span>
         </div>
-        <p className="mt-1 font-mono text-2xl font-normal tabular-nums">
-          {progressPercent}%
-        </p>
+        <p className="mt-1 font-mono text-2xl font-normal tabular-nums">{progressPercent}%</p>
       </div>
       <div>
         <Button

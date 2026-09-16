@@ -26,30 +26,21 @@ interface UpdatePolicyData {
  * but don't have access to the full usePolicy hook (which requires policyId).
  */
 export function usePolicyMutations() {
-  const createPolicy = useCallback(
-    async (data: CreatePolicyData) => {
-      const response = await apiClient.post('/v1/policies', data);
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      return response.data;
-    },
-    [],
-  );
+  const createPolicy = useCallback(async (data: CreatePolicyData) => {
+    const response = await apiClient.post('/v1/policies', data);
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    return response.data;
+  }, []);
 
-  const updatePolicy = useCallback(
-    async (policyId: string, data: UpdatePolicyData) => {
-      const response = await apiClient.patch(
-        `/v1/policies/${policyId}`,
-        data,
-      );
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      return response.data;
-    },
-    [],
-  );
+  const updatePolicy = useCallback(async (policyId: string, data: UpdatePolicyData) => {
+    const response = await apiClient.patch(`/v1/policies/${policyId}`, data);
+    if (response.error) {
+      throw new Error(response.error);
+    }
+    return response.data;
+  }, []);
 
   return { createPolicy, updatePolicy };
 }

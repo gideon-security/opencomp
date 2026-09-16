@@ -144,7 +144,10 @@ export class RisksService {
   async create(organizationId: string, createRiskDto: CreateRiskDto) {
     try {
       if (createRiskDto.assigneeId) {
-        await validateAssigneeNotPlatformAdmin(createRiskDto.assigneeId, organizationId);
+        await validateAssigneeNotPlatformAdmin(
+          createRiskDto.assigneeId,
+          organizationId,
+        );
       }
       const risk = await db.risk.create({
         data: {
@@ -176,7 +179,10 @@ export class RisksService {
       const existing = await this.findById(id, organizationId);
 
       if (updateRiskDto.assigneeId) {
-        await validateAssigneeNotPlatformAdmin(updateRiskDto.assigneeId, organizationId);
+        await validateAssigneeNotPlatformAdmin(
+          updateRiskDto.assigneeId,
+          organizationId,
+        );
       }
 
       // Keep per-strategy descriptions independent in the strategyDescriptions
