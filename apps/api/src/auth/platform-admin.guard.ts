@@ -8,7 +8,6 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { db } from '@db';
-import { auth } from './auth.server';
 import { NativeSessionService } from './native-session.service';
 
 interface PlatformAdminRequest {
@@ -45,8 +44,9 @@ export class PlatformAdminGuard implements CanActivate {
       );
     }
 
-    // Milestone 3 — resolve the session natively first (Session-row lookup,
-    // no better-auth). better-auth stays as fallback during dual-run.
+    // Sessions resolve natively (direct Session-row lookup). Gideon OIDC
+    // and legacy logins both mint plain Session rows, so every cookie or
+    // bearer session token resolves here with no better-auth involved.
     if (this.nativeSessionService) {
       const native = await this.nativeSessionService.resolveFromHeaders({
         cookieHeader,
@@ -60,30 +60,7 @@ export class PlatformAdminGuard implements CanActivate {
       }
     }
 
-    // Build headers for better-auth SDK
-    const headers = new Headers();
-    if (authHeader) {
-      headers.set('authorization', authHeader);
-    }
-    if (cookieHeader) {
-      headers.set('cookie', cookieHeader);
-    }
-
-    // Resolve session via better-auth SDK
-    const session = await auth.api.getSession({ headers });
-
-    if (!session?.user?.id) {
-      throw new UnauthorizedException('Invalid or expired session');
-    }
-
-    const rawImpersonatedBy = (
-      session.session as Record<string, unknown> | undefined
-    )?.impersonatedBy;
-    return this.activateForUser(request, session.user.id, {
-      sessionId: session.session?.id,
-      impersonatedBy:
-        typeof rawImpersonatedBy === 'string' ? rawImpersonatedBy : null,
-    });
+    throw new UnauthorizedException('Invalid or expired session');
   }
 
   private async activateForUser(

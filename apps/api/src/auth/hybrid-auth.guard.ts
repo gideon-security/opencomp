@@ -317,10 +317,9 @@ export class HybridAuthGuard implements CanActivate {
         );
       }
 
-      // Milestone 3 — resolve the session natively (direct Session-row
-      // lookup, no better-auth). Sessions minted by either login path are
-      // plain Session rows, so this succeeds for legacy and Gideon logins
-      // alike. better-auth stays as fallback during dual-run.
+      // Sessions resolve natively (direct Session-row lookup). Gideon OIDC
+      // and legacy logins both mint plain Session rows, so every cookie or
+      // bearer session token resolves here with no better-auth involved.
       if (this.nativeSessionService) {
         const native = await this.nativeSessionService.resolveFromHeaders({
           cookieHeader,
@@ -332,7 +331,9 @@ export class HybridAuthGuard implements CanActivate {
         }
       }
 
-      // Build headers for better-auth SDK
+      // Fallback: the hosted MCP server (Gram) sends an OAuth access token
+      // as a Bearer token, which is not a session token. Try the MCP OAuth
+      // path before rejecting the request.
       // Forwards both Authorization (bearer session token) and Cookie headers
       const headers = new Headers();
       if (authHeader) {
@@ -341,56 +342,10 @@ export class HybridAuthGuard implements CanActivate {
       if (cookieHeader) {
         headers.set('cookie', cookieHeader);
       }
-
-      // Use better-auth SDK to resolve session
-      // Works with both bearer session tokens and httpOnly cookies
-      const session = await auth.api.getSession({ headers });
-
-      if (!session) {
-        // Fallback: the hosted MCP server (Gram) sends an OAuth access token as a
-        // Bearer token, which getSession does not resolve. Try the MCP OAuth path.
-        if (await this.tryMcpOAuthAuth(request, headers)) {
-          return true;
-        }
-        throw new UnauthorizedException('Invalid or expired session');
+      if (await this.tryMcpOAuthAuth(request, headers)) {
+        return true;
       }
-
-      const { user, session: sessionData } = session;
-
-      if (!user?.id) {
-        throw new UnauthorizedException(
-          'Invalid session: missing user information',
-        );
-      }
-
-      await this.populateSessionRequest(
-        request,
-        {
-          user: {
-            id: user.id,
-            email: user.email,
-            role: (user as { role?: string | null }).role ?? null,
-          },
-          session: {
-            id: sessionData.id,
-            activeOrganizationId:
-              ((sessionData as Record<string, unknown>).activeOrganizationId as
-                string | null) ?? null,
-            impersonatedBy:
-              typeof (sessionData as Record<string, unknown>).impersonatedBy ===
-              'string'
-                ? ((sessionData as Record<string, unknown>)
-                    .impersonatedBy as string)
-                : null,
-            deviceAgent:
-              (sessionData as Record<string, unknown>).deviceAgent === true,
-            expiresAt: sessionData.expiresAt,
-          },
-        },
-        skipOrgCheck,
-      );
-
-      return true;
+      throw new UnauthorizedException('Invalid or expired session');
     } catch (error) {
       // Re-throw deliberate auth/permission errors as-is (e.g. the 403 from the
       // MCP org-resolution path). Only unexpected failures collapse to a 401.

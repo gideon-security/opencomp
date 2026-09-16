@@ -1,5 +1,3 @@
-import { betterAuth } from 'better-auth';
-import { memoryAdapter } from 'better-auth/adapters/memory';
 import {
   getSessionCookieAttributes,
   getSessionCookieName,
@@ -160,68 +158,6 @@ describe('session-cookie', () => {
       expect(unsignedSessionToken(undefined)).toBeNull();
       expect(unsignedSessionToken(null)).toBeNull();
       expect(unsignedSessionToken('')).toBeNull();
-    });
-  });
-
-  describe('better-auth compatibility', () => {
-    const TEST_SECRET = 'oidc-cookie-compat-secret-at-least-32b!!';
-
-    function buildTestAuth() {
-      return betterAuth({
-        baseURL: 'http://localhost:3333',
-        secret: TEST_SECRET,
-        // The memory adapter needs pre-created tables; reads against a
-        // missing table throw instead of returning null.
-        database: memoryAdapter({
-          user: [],
-          session: [],
-          account: [],
-          verification: [],
-        }),
-        emailAndPassword: { enabled: true },
-        advanced: { cookiePrefix: 'local' },
-        rateLimit: { enabled: false },
-      });
-    }
-
-    async function mintRealSessionToken(): Promise<{
-      auth: ReturnType<typeof buildTestAuth>;
-      token: string;
-    }> {
-      process.env.SECRET_KEY = TEST_SECRET;
-      process.env.BASE_URL = 'http://localhost:3333';
-      process.env.NODE_ENV = 'test';
-      const auth = buildTestAuth();
-      const signup = await auth.api.signUpEmail({
-        body: {
-          name: 'Oidc',
-          email: 'oidc@example.com',
-          password: 'password123',
-        },
-      });
-      if (!signup.token) {
-        throw new Error('signUpEmail did not return a session token');
-      }
-      return { auth, token: signup.token };
-    }
-
-    it('signed OIDC cookie resolves through the real getSession', async () => {
-      const { auth, token } = await mintRealSessionToken();
-      const headers = new Headers();
-      headers.set(
-        'cookie',
-        `${getSessionCookieName()}=${encodeURIComponent(signSessionToken(token))}`,
-      );
-      const session = await auth.api.getSession({ headers });
-      expect(session?.user.email).toBe('oidc@example.com');
-      expect(session?.session.token).toBe(token);
-    });
-
-    it('unsigned cookie does not resolve (regression)', async () => {
-      const { auth, token } = await mintRealSessionToken();
-      const headers = new Headers();
-      headers.set('cookie', `${getSessionCookieName()}=${token}`);
-      await expect(auth.api.getSession({ headers })).resolves.toBeNull();
     });
   });
 });

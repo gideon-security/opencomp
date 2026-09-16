@@ -145,9 +145,10 @@ export function setSessionCookie({
 }
 
 /**
- * The secret better-auth signs session cookies with (`auth.server.ts` passes
- * the same value as its `secret` option). Signing with anything else mints
- * cookies `getSession` rejects, so a missing secret fails closed here.
+ * The secret session cookies are signed with (`auth.server.ts` passes the
+ * same value as its `secret` option). Signing with anything else mints
+ * cookies the native session resolver rejects, so a missing secret fails
+ * closed here.
  */
 export function getSessionSigningSecret(): string {
   const secret = process.env.SECRET_KEY;
@@ -161,8 +162,8 @@ export function getSessionSigningSecret(): string {
  * Sign a raw session token for the cookie value (`token.signature`).
  * Byte-identical to better-call's `signCookieValue`: HMAC-SHA-256 over the
  * raw token, standard base64. Express applies the URI-encoding on write and
- * better-auth decodes before verifying, so this returns the unencoded form.
- * Unsigned values never resolve via `auth.api.getSession` — the guard reads
+ * the native session resolver decodes before verifying, so this returns the
+ * unencoded form. Unsigned cookie values never resolve — the resolver reads
  * the cookie with `getSignedCookie` and drops anything without a valid
  * signature.
  */
