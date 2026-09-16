@@ -1,5 +1,6 @@
 'use client';
 
+import { GideonSignIn } from '@/components/gideon-sign-in';
 import { GithubSignIn } from '@/components/github-sign-in';
 import { GoogleSignIn } from '@/components/google-sign-in';
 import { MagicLinkSignIn } from '@/components/magic-link';
@@ -90,6 +91,7 @@ export function LoginForm({
 
   return (
     <div className="space-y-4">
+      <GideonSignIn inviteCode={inviteCode} redirectTo={redirectTo} />
       {preferredSignInOption}
 
       {moreOptionsList.length > 0 && (

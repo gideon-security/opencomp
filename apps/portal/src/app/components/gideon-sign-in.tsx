@@ -1,0 +1,60 @@
+'use client';
+
+import { Button } from '@trycompai/design-system';
+import { useState } from 'react';
+
+/**
+ * Milestone 1 — "Continue with Gideon" (dual-run, OTP/social buttons kept).
+ * Plain redirect to the API's OIDC login endpoint; no client library involved.
+ */
+export function GideonSignIn({
+  inviteCode,
+  redirectTo,
+}: {
+  inviteCode?: string;
+  redirectTo?: string;
+}) {
+  const [isLoading, setLoading] = useState(false);
+
+  const handleSignIn = () => {
+    setLoading(true);
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
+    const params = new URLSearchParams();
+    if (inviteCode) params.set('inviteCode', inviteCode);
+    if (redirectTo) params.set('redirectTo', toAbsoluteUrl(redirectTo));
+    const query = params.toString();
+    window.location.href = `${apiBase}/v1/auth/gideon/login${query ? `?${query}` : ''}`;
+  };
+
+  return (
+    <Button
+      onClick={handleSignIn}
+      variant="outline"
+      width="full"
+      size="xl"
+      loading={isLoading}
+    >
+      Continue with Gideon
+    </Button>
+  );
+}
+
+/**
+ * Resolve the post-login target against the portal's own origin so the API
+ * can redirect back here. The API only honors absolute URLs on its
+ * trusted-origin list, so a crafted value cannot become an open redirect.
+ * The origin is a parameter (defaulting to the page origin) so tests can
+ * pin the resolution without a DOM.
+ */
+export function toAbsoluteUrl(
+  target: string,
+  origin: string = window.location.origin,
+): string {
+  try {
+    const url = new URL(target, origin);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return target;
+    return url.toString();
+  } catch {
+    return target;
+  }
+}

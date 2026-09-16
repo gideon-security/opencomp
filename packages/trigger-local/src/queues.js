@@ -1,7 +1,7 @@
 'use strict';
 
 const { Queue, Worker } = require('bullmq');
-const { getRedis } = require('./redis');
+const { getRedis, isTestEnv } = require('./redis');
 
 // Runs are executed by a BullMQ queue backed by the project's existing Redis.
 // Queue, worker and repeatable schedulers are process-scoped singletons kept on
@@ -40,7 +40,9 @@ function state() {
 
 function getQueue() {
   const s = state();
-  if (!s || isBuilding()) return null;
+  // No Redis in unit tests (see redis.isTestEnv) — there is nothing to
+  // connect a Queue to, and creating one leaks reconnect timers into Jest.
+  if (!s || isBuilding() || isTestEnv()) return null;
   if (!s.queue) {
     s.queue = new Queue(queueName(), { connection: getRedis() });
   }
@@ -51,7 +53,7 @@ async function ensureWorker() {
   const s = state();
   if (!s) return null;
   if (s.worker) return s.worker;
-  if (isBuilding()) return null;
+  if (isBuilding() || isTestEnv()) return null;
   if (!s.startPromise) {
     s.startPromise = (async () => {
       try {
@@ -106,7 +108,7 @@ async function removeJob(jobId) {
 }
 
 async function upsertSchedule(scheduleId, cron, timezone) {
-  if (isBuilding()) return;
+  if (isBuilding() || isTestEnv()) return;
   const queue = getQueue();
   if (!queue) return;
   await queue.upsertJobScheduler(
@@ -125,6 +127,7 @@ async function upsertSchedule(scheduleId, cron, timezone) {
 }
 
 async function removeSchedule(scheduleId) {
+  if (isTestEnv()) return;
   const queue = getQueue();
   if (!queue) return;
   await queue.removeJobScheduler(scheduleId).catch(() => {});
