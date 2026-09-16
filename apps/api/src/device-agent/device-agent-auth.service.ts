@@ -3,11 +3,13 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  Optional,
+  Inject,
   UnauthorizedException,
 } from '@nestjs/common';
 import { randomBytes } from 'node:crypto';
 import { db, Prisma } from '@db';
-import { auth } from '../auth/auth.server';
+import { NativeSessionService } from '../auth/native-session.service';
 import { deviceAgentRedisClient } from './device-agent-kv';
 import { createDeviceAgentSession } from './device-agent-session.helper';
 import {
@@ -34,6 +36,29 @@ const CHECK_TYPE_TO_FIELD: Record<string, string> = {
 export class DeviceAgentAuthService {
   private readonly logger = new Logger(DeviceAgentAuthService.name);
 
+  constructor(
+    // @Inject keeps the runtime reference (the Pick<> type alone would be
+    // elided, leaving Nest an undefined token). @Optional preserves the
+    // manual-construction path used in unit tests.
+    @Optional()
+    @Inject(NativeSessionService)
+    private readonly nativeSessionService?: Pick<
+      NativeSessionService,
+      'resolveFromHeaders'
+    >,
+  ) {}
+
+  private get sessions(): Pick<NativeSessionService, 'resolveFromHeaders'> {
+    // Nest injects the real service in production; specs construct the
+    // service without args, in which case there is nothing to resolve
+    // against and callers get the unauthenticated path.
+    return (
+      this.nativeSessionService ?? {
+        resolveFromHeaders: () => Promise.resolve(null),
+      }
+    );
+  }
+
   async generateAuthCode({
     headers,
     state,
@@ -41,9 +66,14 @@ export class DeviceAgentAuthService {
     headers: Headers;
     state: string;
   }) {
-    const session = await auth.api.getSession({ headers });
+    // Milestone 3 — resolve the browser session natively (Session-row
+    // lookup) instead of better-auth's getSession.
+    const resolved = await this.sessions.resolveFromHeaders({
+      cookieHeader: headers.get('cookie') ?? undefined,
+      authHeader: headers.get('authorization') ?? undefined,
+    });
 
-    if (!session?.user) {
+    if (!resolved?.user) {
       throw new UnauthorizedException('No active session');
     }
 
@@ -52,7 +82,7 @@ export class DeviceAgentAuthService {
     await deviceAgentRedisClient.set(
       `app:device-auth:${code}`,
       {
-        userId: session.user.id,
+        userId: resolved.user.id,
         state,
         createdAt: Date.now(),
       },

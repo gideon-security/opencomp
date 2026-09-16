@@ -79,6 +79,30 @@ export function permissionsGrant(
 }
 
 /**
+ * Milestone 3 — native RBAC check without better-auth.
+ *
+ * Checks `required` (`{ resource: actions[] }`) against the union of the
+ * given role names in the org (built-in + custom `organization_role` rows).
+ * Replaces `auth.api.hasPermission` wherever `HybridAuthGuard` already
+ * resolved `request.userRoles` from the `Member` row — the same data source
+ * better-auth's organization plugin reads, so decisions are identical.
+ */
+export async function rolesGrantPermissions({
+  organizationId,
+  roles,
+  required,
+}: {
+  organizationId: string;
+  roles: string[];
+  required: Record<string, string[]>;
+}): Promise<boolean> {
+  const perms = await resolveRolePermissions(organizationId, roles);
+  return Object.entries(required).every(([resource, actions]) =>
+    actions.every((action) => permissionsGrant(perms, resource, action)),
+  );
+}
+
+/**
  * Whether a member's role(s) grant **app access** (`app:read`) in the given org
  * — the same gate the web app uses (owner/admin/auditor + custom roles with the
  * "App Access" toggle), excluding Portal-only roles (employee/contractor).

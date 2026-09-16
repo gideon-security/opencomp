@@ -33,16 +33,21 @@ export default async function Page({
       ? `/auth/device-callback?callback_port=${encodeURIComponent(callbackPort)}&state=${encodeURIComponent(state)}`
       : undefined;
 
-  const defaultSignInOptions = (
+  // Milestone 3 — Gideon is the default authenticator. Legacy entry points
+  // (email OTP, Google/Microsoft social) render only behind the kill-switch.
+  const legacyAuthEnabled = process.env.NEXT_PUBLIC_LEGACY_AUTH_ENABLED === 'true';
+
+  const defaultSignInOptions = legacyAuthEnabled ? (
     <div className="flex flex-col space-y-2">
       <OtpSignIn deviceAuthRedirect={deviceAuthRedirect} />
     </div>
-  );
+  ) : null;
 
   // Social providers are configured on the NestJS API.
   // Use optional env vars to explicitly disable them on the portal if needed.
-  const showGoogle = process.env.PORTAL_DISABLE_GOOGLE_SIGN_IN !== 'true';
-  const showMicrosoft = process.env.PORTAL_DISABLE_MICROSOFT_SIGN_IN !== 'true';
+  const showGoogle = legacyAuthEnabled && process.env.PORTAL_DISABLE_GOOGLE_SIGN_IN !== 'true';
+  const showMicrosoft =
+    legacyAuthEnabled && process.env.PORTAL_DISABLE_MICROSOFT_SIGN_IN !== 'true';
 
   return (
     <div className="flex min-h-dvh flex-col text-foreground">
@@ -56,7 +61,9 @@ export default async function Page({
               Employee Portal
             </CardTitle>
             <CardDescription className="text-base text-muted-foreground px-4">
-              Enter your email address to receive a one time password.
+              {legacyAuthEnabled
+                ? 'Enter your email address to receive a one time password.'
+                : 'Continue with Gideon to access the employee portal.'}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pb-6">

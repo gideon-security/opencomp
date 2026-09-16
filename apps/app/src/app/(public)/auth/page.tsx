@@ -48,9 +48,14 @@ export default async function Page({
 
   const t = await getTranslations('auth');
 
-  const showGoogle = !!(env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET);
-  const showGithub = !!(env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET);
-  const showMicrosoft = !!(env.AUTH_MICROSOFT_CLIENT_ID && env.AUTH_MICROSOFT_CLIENT_SECRET);
+  // Milestone 3 — Gideon is the default authenticator. Legacy entry points
+  // (Google/GitHub/Microsoft social, magic link) render only when the public
+  // kill-switch is on AND the provider credentials are configured.
+  const legacyAuthEnabled = env.NEXT_PUBLIC_LEGACY_AUTH_ENABLED === 'true';
+  const showGoogle = legacyAuthEnabled && !!(env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET);
+  const showGithub = legacyAuthEnabled && !!(env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET);
+  const showMicrosoft =
+    legacyAuthEnabled && !!(env.AUTH_MICROSOFT_CLIENT_ID && env.AUTH_MICROSOFT_CLIENT_SECRET);
 
   return (
     <div className="flex min-h-dvh flex-col text-foreground">
@@ -71,6 +76,7 @@ export default async function Page({
             <LoginForm
               inviteCode={inviteCode}
               redirectTo={safeRedirectTo}
+              legacyAuthEnabled={legacyAuthEnabled}
               showGoogle={showGoogle}
               showGithub={showGithub}
               showMicrosoft={showMicrosoft}

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RESTRICTED_ROLES, PRIVILEGED_ROLES } from '@gideon-defender/auth';
-import { permissionsGrant, resolveRolePermissions } from './app-access';
+import { rolesGrantPermissions } from './app-access';
 import { auth } from './auth.server';
 import { resolveServiceByName } from './service-token.config';
 import { AuthenticatedRequest } from './types';
@@ -26,11 +26,13 @@ export interface RequiredPermission {
 export const PERMISSIONS_KEY = 'required_permissions';
 
 /**
- * PermissionGuard - Validates user permissions using better-auth's SDK
+ * PermissionGuard - Validates user permissions natively from resolved roles,
+ * falling back to better-auth's SDK only when roles weren't resolved.
  *
  * This guard:
  * 1. Extracts required permissions from route metadata
- * 2. Uses better-auth's hasPermission SDK to validate against role definitions
+ * 2. Checks them against the roles HybridAuthGuard resolved (native, no I/O
+ *    beyond the custom-role lookup) — better-auth fallback for the rest
  * 3. For restricted roles (employee/contractor), also checks assignment access
  *
  * Usage:
@@ -134,18 +136,21 @@ export class PermissionGuard implements CanActivate {
     // resolves a session + active org) can't authorize them. Check the required
     // permissions against the roles HybridAuthGuard already resolved for the
     // bound org. (Mirrors better-auth's union-of-roles semantics.)
-    if (request.isMcpOAuth) {
-      const perms = await resolveRolePermissions(
-        request.organizationId,
-        request.userRoles ?? [],
-      );
-      const granted = Object.entries(permissionBody).every(
-        ([resource, actions]) =>
-          actions.every((action) => permissionsGrant(perms, resource, action)),
-      );
+    //
+    // Milestone 3 — the same native check also covers session and Gideon-JWT
+    // callers: HybridAuthGuard resolves `userRoles` from the Member row (the
+    // same source better-auth's organization plugin reads), so re-resolving
+    // via `auth.api.hasPermission` is redundant. better-auth stays as the
+    // fallback for callers without resolved roles (e.g. skipOrgCheck).
+    if (request.isMcpOAuth || request.userRoles) {
+      const granted = await rolesGrantPermissions({
+        organizationId: request.organizationId,
+        roles: request.userRoles ?? [],
+        required: permissionBody,
+      });
       if (!granted) {
         this.logger.warn(
-          `[PermissionGuard] MCP OAuth access denied for ${request.method} ${request.url}. Required: ${JSON.stringify(permissionBody)}`,
+          `[PermissionGuard] Access denied for ${request.method} ${request.url}. Required: ${JSON.stringify(permissionBody)}`,
         );
         throw new ForbiddenException('Access denied');
       }

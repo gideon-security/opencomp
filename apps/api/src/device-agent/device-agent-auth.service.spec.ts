@@ -29,12 +29,8 @@ jest.mock('@db', () => ({
   },
 }));
 
-jest.mock('../auth/auth.server', () => ({
-  auth: {
-    api: {
-      getSession: jest.fn(),
-    },
-  },
+jest.mock('../auth/native-session.service', () => ({
+  NativeSessionService: jest.fn(),
 }));
 
 jest.mock('./device-agent-kv', () => ({
@@ -49,12 +45,11 @@ jest.mock('./device-agent-session.helper', () => ({
 }));
 
 import { db } from '@db';
-import { auth } from '../auth/auth.server';
 import { deviceAgentRedisClient } from './device-agent-kv';
 import { createDeviceAgentSession } from './device-agent-session.helper';
+import type { NativeSessionService } from '../auth/native-session.service';
 
 const mockDb = db as jest.Mocked<typeof db>;
-const mockAuth = auth as jest.Mocked<typeof auth>;
 const mockKv = deviceAgentRedisClient as jest.Mocked<
   typeof deviceAgentRedisClient
 >;
@@ -63,20 +58,24 @@ const mockCreateDeviceAgentSession =
     typeof createDeviceAgentSession
   >;
 
+function nativeSessions(
+  result: { user: { id: string } } | null,
+): Pick<NativeSessionService, 'resolveFromHeaders'> {
+  return { resolveFromHeaders: jest.fn().mockResolvedValue(result) };
+}
+
 describe('DeviceAgentAuthService', () => {
   let service: DeviceAgentAuthService;
 
   beforeEach(() => {
-    service = new DeviceAgentAuthService();
+    service = new DeviceAgentAuthService(
+      nativeSessions({ user: { id: 'user-1' } }),
+    );
     jest.clearAllMocks();
   });
 
   describe('generateAuthCode', () => {
     it('should generate an auth code and store it in KV', async () => {
-      (mockAuth.api.getSession as unknown as jest.Mock).mockResolvedValue({
-        user: { id: 'user-1' },
-      });
-
       const headers = new Headers();
       headers.set('cookie', 'session=abc');
 
@@ -97,7 +96,7 @@ describe('DeviceAgentAuthService', () => {
     });
 
     it('should throw UnauthorizedException if no session', async () => {
-      (mockAuth.api.getSession as unknown as jest.Mock).mockResolvedValue(null);
+      service = new DeviceAgentAuthService(nativeSessions(null));
 
       const headers = new Headers();
       await expect(

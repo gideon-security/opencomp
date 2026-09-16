@@ -19,6 +19,8 @@ import { useState } from 'react';
 interface LoginFormProps {
   inviteCode?: string;
   redirectTo?: string;
+  /** Milestone 3 kill-switch: false renders Gideon-only (no legacy options). */
+  legacyAuthEnabled: boolean;
   showGoogle: boolean;
   showGithub: boolean;
   showMicrosoft: boolean;
@@ -27,6 +29,7 @@ interface LoginFormProps {
 export function LoginForm({
   inviteCode,
   redirectTo,
+  legacyAuthEnabled,
   showGoogle,
   showGithub,
   showMicrosoft,
@@ -57,6 +60,16 @@ export function LoginForm({
           </Button>
         </CardContent>
       </Card>
+    );
+  }
+
+  // Milestone 3 — Gideon-only default. Legacy options (Google social,
+  // magic link, Microsoft, GitHub) render only behind the kill-switch.
+  if (!legacyAuthEnabled) {
+    return (
+      <div className="space-y-4">
+        <GideonSignIn inviteCode={inviteCode} redirectTo={redirectTo} />
+      </div>
     );
   }
 

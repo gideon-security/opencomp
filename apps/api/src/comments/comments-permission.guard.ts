@@ -9,6 +9,7 @@ import { Reflector } from '@nestjs/core';
 import { CommentEntityType } from '@db';
 import type { Request } from 'express';
 import { auth } from '../auth/auth.server';
+import { rolesGrantPermissions } from '../auth/app-access';
 import {
   PERMISSIONS_KEY,
   type RequiredPermission,
@@ -45,7 +46,8 @@ type GuardedRequest = AuthenticatedRequest & Request;
  *        is opaque; resolving entityType would need a DB lookup which
  *        Phase 4 v1 explicitly defers — author-only editing keeps the
  *        existing task-permission gate in practice).
- *   3. Call better-auth's `hasPermission` with the resolved permission.
+ *   3. Check the resolved permission natively against the caller's roles
+ *      (better-auth's `hasPermission` as fallback).
  */
 @Injectable()
 export class CommentsPermissionGuard implements CanActivate {
@@ -155,8 +157,9 @@ export class CommentsPermissionGuard implements CanActivate {
   }
 
   /**
-   * Mirrors the cookie/header forwarding pattern of the standard
-   * PermissionGuard so role-based and custom-role permissions both work.
+   * Milestone 3 — native fast-path when HybridAuthGuard already resolved
+   * roles from the Member row; better-auth `hasPermission` stays as the
+   * fallback (e.g. skipOrgCheck callers without resolved roles).
    * Kept private and inline rather than extracted to a shared utility —
    * Phase 4 introduces only this one extra caller.
    */
@@ -164,6 +167,13 @@ export class CommentsPermissionGuard implements CanActivate {
     request: GuardedRequest,
     permissions: Record<string, string[]>,
   ): Promise<boolean> {
+    if (request.userRoles && request.organizationId) {
+      return rolesGrantPermissions({
+        organizationId: request.organizationId,
+        roles: request.userRoles,
+        required: permissions,
+      });
+    }
     const headers = new Headers();
     const authHeader = request.headers['authorization'] as string;
     if (authHeader) headers.set('authorization', authHeader);

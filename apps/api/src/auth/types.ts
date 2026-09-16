@@ -22,6 +22,7 @@ export interface AuthenticatedRequest extends Request {
   sessionId?: string; // Session ID (only set for session auth)
   sessionDeviceAgent?: boolean; // Whether the session is a device-agent session (only set for session auth)
   isMcpOAuth?: boolean; // True when authenticated via a hosted-MCP OAuth token (no real session). PermissionGuard checks RBAC from userRoles instead of better-auth's session-based hasPermission.
+  gideonAal?: number; // Assurance level from a Gideon JWT payload (only set for Gideon-JWT auth). Native admin endpoints require aal >= 2.
 }
 
 export interface AuthContext {

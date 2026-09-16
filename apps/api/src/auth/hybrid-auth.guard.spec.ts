@@ -754,3 +754,266 @@ describe('HybridAuthGuard — service token x-user-id acting member', () => {
     expect(request.isServiceToken).toBe(true);
   });
 });
+
+describe('HybridAuthGuard — native session first (Milestone 3)', () => {
+  let guard: HybridAuthGuard;
+  let reflector: Reflector;
+  const mockResolveFromHeaders = jest.fn();
+
+  const createContext = (
+    headers: Record<string, string>,
+  ): { context: ExecutionContext; request: Record<string, unknown> } => {
+    const request: Record<string, unknown> = { headers };
+    const context = {
+      switchToHttp: () => ({ getRequest: () => request }),
+      getHandler: () => jest.fn(),
+      getClass: () => jest.fn(),
+    } as unknown as ExecutionContext;
+    return { context, request };
+  };
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        HybridAuthGuard,
+        {
+          provide: ApiKeyService,
+          useValue: { extractApiKey: jest.fn(), validateApiKey: jest.fn() },
+        },
+        Reflector,
+      ],
+    }).compile();
+
+    reflector = module.get<Reflector>(Reflector);
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false);
+    const apiKeyService = module.get<ApiKeyService>(ApiKeyService);
+    const nativeSessionService = {
+      resolveFromHeaders: (...args: unknown[]) =>
+        mockResolveFromHeaders(...args),
+    } as unknown as import('./native-session.service').NativeSessionService;
+    guard = new HybridAuthGuard(
+      apiKeyService,
+      reflector,
+      undefined,
+      undefined,
+      nativeSessionService,
+    );
+    // Native miss by default; individual tests opt into a hit.
+    mockResolveFromHeaders.mockResolvedValue(null);
+    mockGetSession.mockResolvedValue(null);
+    mockGetMcpSession.mockResolvedValue(null);
+    mockMemberFindFirst.mockResolvedValue(null);
+  });
+
+  function mockNativeHit() {
+    mockResolveFromHeaders.mockResolvedValue({
+      user: { id: 'usr_1', email: 'native@acme.com', role: 'user' },
+      session: {
+        id: 'ses_native',
+        activeOrganizationId: 'org_1',
+        impersonatedBy: null,
+        deviceAgent: false,
+        expiresAt: new Date(Date.now() + 60_000),
+      },
+    });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_1',
+      role: 'admin',
+      department: 'it',
+    });
+  }
+
+  it('resolves the session natively without touching better-auth', async () => {
+    mockNativeHit();
+
+    const { context, request } = createContext({
+      cookie: 'local.session_token=native_tok',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(mockResolveFromHeaders).toHaveBeenCalledWith({
+      cookieHeader: 'local.session_token=native_tok',
+      authHeader: undefined,
+    });
+    expect(mockGetSession).not.toHaveBeenCalled();
+    expect(request.authType).toBe('session');
+    expect(request.userId).toBe('usr_1');
+    expect(request.userEmail).toBe('native@acme.com');
+    expect(request.userRoles).toEqual(['admin']);
+    expect(request.memberId).toBe('mem_1');
+    expect(request.sessionId).toBe('ses_native');
+    expect(request.isPlatformAdmin).toBe(false);
+  });
+
+  it('falls back to better-auth when the native lookup misses', async () => {
+    mockResolveFromHeaders.mockResolvedValue(null);
+    mockGetSession.mockResolvedValue({
+      user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
+      session: { id: 'sess_9', activeOrganizationId: 'org_9' },
+    });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_9',
+      role: 'owner',
+      department: 'none',
+    });
+
+    const { context, request } = createContext({
+      cookie: 'local.session_token=legacy',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(mockGetSession).toHaveBeenCalledTimes(1);
+    expect(request.authType).toBe('session');
+    expect(request.userId).toBe('usr_9');
+  });
+
+  it('propagates impersonation state from the native session', async () => {
+    mockResolveFromHeaders.mockResolvedValue({
+      user: { id: 'usr_2', email: 'imp@acme.com', role: 'user' },
+      session: {
+        id: 'ses_imp',
+        activeOrganizationId: 'org_1',
+        impersonatedBy: 'admin_1',
+        deviceAgent: false,
+        expiresAt: new Date(Date.now() + 60_000),
+      },
+    });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_2',
+      role: 'admin',
+      department: 'it',
+    });
+
+    const { context, request } = createContext({
+      cookie: 'local.session_token=imp_tok',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(request.impersonatedBy).toBe('admin_1');
+    expect(request.sessionId).toBe('ses_imp');
+  });
+});
+
+describe('HybridAuthGuard — MCP via Gideon JWT (Milestone 3)', () => {
+  let guard: HybridAuthGuard;
+  let reflector: Reflector;
+  const mockVerify = jest.fn();
+
+  const createContext = (
+    headers: Record<string, string>,
+  ): { context: ExecutionContext; request: Record<string, unknown> } => {
+    const request: Record<string, unknown> = { headers };
+    const context = {
+      switchToHttp: () => ({ getRequest: () => request }),
+      getHandler: () => jest.fn(),
+      getClass: () => jest.fn(),
+    } as unknown as ExecutionContext;
+    return { context, request };
+  };
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        HybridAuthGuard,
+        {
+          provide: ApiKeyService,
+          useValue: { extractApiKey: jest.fn(), validateApiKey: jest.fn() },
+        },
+        Reflector,
+      ],
+    }).compile();
+
+    reflector = module.get<Reflector>(Reflector);
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false);
+    const apiKeyService = module.get<ApiKeyService>(ApiKeyService);
+    const gideonJwtService = {
+      isConfigured: () => true,
+      isEnforceMode: () => false,
+      isShadowMode: () => true,
+      verify: (...args: unknown[]) => mockVerify(...args),
+      resolveTenantId: () => null,
+      resolveUserId: (payload: { sub?: string }) => payload.sub ?? null,
+    } as unknown as import('./gideon-jwt.service').GideonJwtService;
+    guard = new HybridAuthGuard(
+      apiKeyService,
+      reflector,
+      gideonJwtService,
+      undefined,
+      undefined,
+    );
+    mockGetSession.mockResolvedValue(null);
+    mockGetMcpSession.mockResolvedValue(null);
+    mockMcpBindingFindUnique.mockResolvedValue(null);
+    mockOrgRoleFindMany.mockResolvedValue([]);
+  });
+
+  it('authenticates a Gideon-issued MCP token via the gideonSub link', async () => {
+    mockVerify.mockResolvedValue({
+      payload: { sub: 'gideon-sub-mcp', email: 'mcp@acme.com', aal: 2 },
+      protectedHeader: { kid: 'k1' },
+    });
+    // First user lookup: gideonSub link. Second: MCP org binding by id.
+    mockUserFindUnique
+      .mockResolvedValueOnce({ id: 'usr_mcp' })
+      .mockResolvedValueOnce({
+        id: 'usr_mcp',
+        email: 'mcp@acme.com',
+        role: 'user',
+      });
+    mockMemberFindMany.mockResolvedValue([
+      {
+        id: 'mem_mcp',
+        role: 'admin',
+        department: 'it',
+        organizationId: 'org_1',
+      },
+    ]);
+
+    const { context, request } = createContext({
+      authorization: 'Bearer gideon.mcp.jwt',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(mockVerify).toHaveBeenCalledWith('gideon.mcp.jwt');
+    expect(mockGetMcpSession).not.toHaveBeenCalled();
+    expect(request.isMcpOAuth).toBe(true);
+    expect(request.isGideonJwt).toBe(true);
+    expect(request.gideonAal).toBe(2);
+    expect(request.userId).toBe('usr_mcp');
+    expect(request.organizationId).toBe('org_1');
+    expect(request.userRoles).toEqual(['admin']);
+  });
+
+  it('falls back to legacy MCP session when the JWT sub is not linked', async () => {
+    mockVerify.mockResolvedValue({
+      payload: { sub: 'gideon-sub-unknown', email: 'x@acme.com' },
+      protectedHeader: { kid: 'k1' },
+    });
+    mockUserFindUnique.mockResolvedValue(null); // no gideonSub link
+    mockGetMcpSession.mockResolvedValue({ userId: 'usr_legacy' });
+    mockUserFindUnique.mockResolvedValueOnce(null).mockResolvedValueOnce({
+      id: 'usr_legacy',
+      email: 'legacy@acme.com',
+      role: 'user',
+    });
+    mockMemberFindMany.mockResolvedValue([
+      {
+        id: 'mem_leg',
+        role: 'owner',
+        department: 'it',
+        organizationId: 'org_1',
+      },
+    ]);
+
+    const { context, request } = createContext({
+      authorization: 'Bearer gideon.unknown.jwt',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(mockGetMcpSession).toHaveBeenCalledTimes(1);
+    expect(request.isMcpOAuth).toBe(true);
+    expect(request.userId).toBe('usr_legacy');
+  });
+});

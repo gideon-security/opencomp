@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   ForbiddenException,
   HttpException,
+  Inject,
   Injectable,
   Logger,
   Optional,
@@ -19,6 +20,10 @@ import { resolveServiceByToken } from './service-token.config';
 import { AuthenticatedRequest } from './types';
 import { GideonJwtService } from './gideon-jwt.service';
 import { GideonShadowService } from '../gideon/gideon-shadow.service';
+import {
+  NativeSessionService,
+  type NativeSessionResult,
+} from './native-session.service';
 
 @Injectable()
 export class HybridAuthGuard implements CanActivate {
@@ -29,6 +34,12 @@ export class HybridAuthGuard implements CanActivate {
     private readonly reflector: Reflector,
     @Optional() private readonly gideonJwtService?: GideonJwtService,
     @Optional() private readonly gideonShadowService?: GideonShadowService,
+    // @Inject keeps the runtime token reference — without it the import is
+    // only used in type positions and TS elides it, leaving Nest an
+    // undefined token (silently masked by @Optional, disabling native auth).
+    @Optional()
+    @Inject(NativeSessionService)
+    private readonly nativeSessionService?: NativeSessionService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -266,6 +277,14 @@ export class HybridAuthGuard implements CanActivate {
     request.isServiceToken = false;
     request.isGideonJwt = true;
     request.gideonTenantId = tenantId;
+    // Surface the assurance level for downstream enforcement (native admin
+    // endpoints require aal >= 2 for Gideon-JWT callers). Absent → unknown,
+    // enforced as missing by the consumer.
+    const aalRaw = result.payload.aal;
+    const aal = typeof aalRaw === 'string' ? parseInt(aalRaw, 10) : aalRaw;
+    if (typeof aal === 'number' && Number.isFinite(aal)) {
+      request.gideonAal = aal;
+    }
     // Gideon JWTs from KMS are already verified; platform admin is determined
     // via opencomp Member role, not JWT role. Keep false here; PermissionGuard
     // will check hasAppAccess.
@@ -289,22 +308,38 @@ export class HybridAuthGuard implements CanActivate {
     skipOrgCheck = false,
   ): Promise<boolean> {
     try {
-      // Build headers for better-auth SDK
-      // Forwards both Authorization (bearer session token) and Cookie headers
-      const headers = new Headers();
       const authHeader = request.headers['authorization'] as string;
-      if (authHeader) {
-        headers.set('authorization', authHeader);
-      }
       const cookieHeader = request.headers['cookie'] as string;
-      if (cookieHeader) {
-        headers.set('cookie', cookieHeader);
-      }
 
       if (!authHeader && !cookieHeader) {
         throw new UnauthorizedException(
           'Authentication required: Provide either X-API-Key, Bearer token, or session cookie',
         );
+      }
+
+      // Milestone 3 — resolve the session natively (direct Session-row
+      // lookup, no better-auth). Sessions minted by either login path are
+      // plain Session rows, so this succeeds for legacy and Gideon logins
+      // alike. better-auth stays as fallback during dual-run.
+      if (this.nativeSessionService) {
+        const native = await this.nativeSessionService.resolveFromHeaders({
+          cookieHeader,
+          authHeader,
+        });
+        if (native) {
+          await this.populateSessionRequest(request, native, skipOrgCheck);
+          return true;
+        }
+      }
+
+      // Build headers for better-auth SDK
+      // Forwards both Authorization (bearer session token) and Cookie headers
+      const headers = new Headers();
+      if (authHeader) {
+        headers.set('authorization', authHeader);
+      }
+      if (cookieHeader) {
+        headers.set('cookie', cookieHeader);
       }
 
       // Use better-auth SDK to resolve session
@@ -328,63 +363,32 @@ export class HybridAuthGuard implements CanActivate {
         );
       }
 
-      const organizationId = sessionData.activeOrganizationId;
-      if (!organizationId && !skipOrgCheck) {
-        throw new UnauthorizedException(
-          'No active organization. Please select an organization.',
-        );
-      }
-
-      // Fetch member data for role and department info
-      // Skip if no active org or if org check is skipped (e.g., during onboarding)
-      let userRoles: string[] | null = null;
-      if (organizationId && !skipOrgCheck) {
-        const member = await db.member.findFirst({
-          where: {
-            userId: user.id,
-            organizationId,
-            deactivated: false,
+      await this.populateSessionRequest(
+        request,
+        {
+          user: {
+            id: user.id,
+            email: user.email,
+            role: (user as { role?: string | null }).role ?? null,
           },
-          select: {
-            id: true,
-            role: true,
-            department: true,
+          session: {
+            id: sessionData.id,
+            activeOrganizationId:
+              ((sessionData as Record<string, unknown>).activeOrganizationId as
+                string | null) ?? null,
+            impersonatedBy:
+              typeof (sessionData as Record<string, unknown>).impersonatedBy ===
+              'string'
+                ? ((sessionData as Record<string, unknown>)
+                    .impersonatedBy as string)
+                : null,
+            deviceAgent:
+              (sessionData as Record<string, unknown>).deviceAgent === true,
+            expiresAt: sessionData.expiresAt,
           },
-        });
-
-        if (!member) {
-          throw new UnauthorizedException(
-            `User is not a member of the active organization`,
-          );
-        }
-
-        userRoles = member.role ? member.role.split(',') : null;
-        request.memberId = member.id;
-        request.memberDepartment = member.department;
-      }
-
-      // Set request context for session auth
-      request.userId = user.id;
-      request.userEmail = user.email;
-      request.userRoles = userRoles;
-      request.organizationId = organizationId || '';
-      request.authType = 'session';
-      request.isApiKey = false;
-      request.isServiceToken = false;
-      request.sessionId = sessionData.id;
-      request.sessionDeviceAgent =
-        (sessionData as Record<string, unknown>).deviceAgent === true;
-      // Resolve isPlatformAdmin from the User.role column (via better-auth session),
-      // not from the member relation. This ensures the flag is set regardless of
-      // org membership or skipOrgCheck.
-      request.isPlatformAdmin =
-        (user as { role?: string | null }).role === 'admin';
-
-      const rawImpersonatedBy = (sessionData as Record<string, unknown>)
-        .impersonatedBy;
-      if (typeof rawImpersonatedBy === 'string' && rawImpersonatedBy) {
-        request.impersonatedBy = rawImpersonatedBy;
-      }
+        },
+        skipOrgCheck,
+      );
 
       return true;
     } catch (error) {
@@ -400,9 +404,84 @@ export class HybridAuthGuard implements CanActivate {
   }
 
   /**
-   * Resolve a hosted-MCP OAuth access token (issued by better-auth's mcp/oidc
-   * provider and forwarded by the Gram-hosted MCP server). Populates the request
-   * context and returns true on success; returns false when the bearer token is
+   * Populate the request context from a resolved session (native or
+   * better-auth shape). Shared by both resolution paths so behavior cannot
+   * drift: active-org membership is required unless skipped, member
+   * role/department is attached, and platform-admin comes from `User.role`.
+   */
+  private async populateSessionRequest(
+    request: AuthenticatedRequest,
+    resolved: NativeSessionResult,
+    skipOrgCheck: boolean,
+  ): Promise<void> {
+    const { user, session: sessionData } = resolved;
+
+    if (!user?.id) {
+      throw new UnauthorizedException(
+        'Invalid session: missing user information',
+      );
+    }
+
+    const organizationId = sessionData.activeOrganizationId;
+    if (!organizationId && !skipOrgCheck) {
+      throw new UnauthorizedException(
+        'No active organization. Please select an organization.',
+      );
+    }
+
+    // Fetch member data for role and department info
+    // Skip if no active org or if org check is skipped (e.g., during onboarding)
+    let userRoles: string[] | null = null;
+    if (organizationId && !skipOrgCheck) {
+      const member = await db.member.findFirst({
+        where: {
+          userId: user.id,
+          organizationId,
+          deactivated: false,
+        },
+        select: {
+          id: true,
+          role: true,
+          department: true,
+        },
+      });
+
+      if (!member) {
+        throw new UnauthorizedException(
+          `User is not a member of the active organization`,
+        );
+      }
+
+      userRoles = member.role ? member.role.split(',') : null;
+      request.memberId = member.id;
+      request.memberDepartment = member.department;
+    }
+
+    // Set request context for session auth
+    request.userId = user.id;
+    request.userEmail = user.email;
+    request.userRoles = userRoles;
+    request.organizationId = organizationId || '';
+    request.authType = 'session';
+    request.isApiKey = false;
+    request.isServiceToken = false;
+    request.sessionId = sessionData.id;
+    request.sessionDeviceAgent = sessionData.deviceAgent;
+    // Resolve isPlatformAdmin from the User.role column, not from the member
+    // relation. This ensures the flag is set regardless of org membership
+    // or skipOrgCheck.
+    request.isPlatformAdmin = user.role === 'admin';
+
+    if (sessionData.impersonatedBy) {
+      request.impersonatedBy = sessionData.impersonatedBy;
+    }
+  }
+
+  /**
+   * Resolve a hosted-MCP OAuth access token — either Gideon-issued (Gram as a
+   * Gideon OAuth client, validated via `GideonJwtService`) or legacy
+   * better-auth `mcp`/OIDC-provider tokens forwarded by the Gram-hosted MCP
+   * server. Populates the request context and returns true on success; returns false when the bearer token is
    * not a valid MCP OAuth token (so the caller throws the generic 401). Throws
    * when no organization can be resolved.
    *
@@ -424,12 +503,56 @@ export class HybridAuthGuard implements CanActivate {
     request: AuthenticatedRequest,
     headers: Headers,
   ): Promise<boolean> {
+    // Milestone 3 — accept Gideon-issued MCP tokens (Gram registered as a
+    // Gideon OAuth client, validated against Gideon JWKS). Falls through to
+    // the legacy better-auth MCP session when the bearer token is not a
+    // Gideon JWT linked to an OpenComp user.
+    const bearer = headers.get('authorization');
+    const gideonToken =
+      bearer?.startsWith('Bearer ') &&
+      this.gideonJwtService?.isConfigured() &&
+      looksLikeJwtForMcp(bearer.slice(7).trim())
+        ? bearer.slice(7).trim()
+        : null;
+    if (gideonToken && this.gideonJwtService) {
+      const verified = await this.gideonJwtService.verify(gideonToken);
+      const sub = verified
+        ? this.gideonJwtService.resolveUserId(verified.payload)
+        : null;
+      if (sub) {
+        const linked = await db.user.findUnique({
+          where: { gideonSub: sub },
+          select: { id: true },
+        });
+        if (linked) {
+          const aalRaw = verified?.payload.aal;
+          const aal =
+            typeof aalRaw === 'string' ? parseInt(aalRaw, 10) : aalRaw;
+          if (typeof aal === 'number' && Number.isFinite(aal)) {
+            request.gideonAal = aal;
+          }
+          request.isGideonJwt = true;
+          return this.populateMcpRequest(request, linked.id, 'gideon');
+        }
+        this.logger.warn(
+          '[Gideon] MCP token sub not linked to an OpenComp user',
+        );
+      }
+    }
+
     const token = await auth.api.getMcpSession({ headers }).catch(() => null);
     if (!token?.userId) {
       return false;
     }
 
-    const userId = token.userId;
+    return this.populateMcpRequest(request, token.userId, 'legacy');
+  }
+
+  private async populateMcpRequest(
+    request: AuthenticatedRequest,
+    userId: string,
+    issuer: 'gideon' | 'legacy',
+  ): Promise<boolean> {
     const user = await db.user.findUnique({
       where: { id: userId },
       select: { id: true, email: true, role: true },
@@ -510,8 +633,13 @@ export class HybridAuthGuard implements CanActivate {
     request.userRoles = member.role ? member.role.split(',') : null;
 
     this.logger.log(
-      `MCP OAuth token authenticated for user ${user.id} (org ${member.organizationId})`,
+      `MCP OAuth token (${issuer}) authenticated for user ${user.id} (org ${member.organizationId})`,
     );
     return true;
   }
+}
+
+/** Bearer values with 3 dot-segments are JWT-shaped (vs opaque session tokens). */
+function looksLikeJwtForMcp(token: string): boolean {
+  return token.split('.').length === 3;
 }

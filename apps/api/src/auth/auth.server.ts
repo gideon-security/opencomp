@@ -127,40 +127,52 @@ export async function isTrustedOrigin(origin: string): Promise<boolean> {
   }
 }
 
-// Build social providers config
+// ── Milestone 3 — legacy login kill-switch ───────────────────────────────────
+// `LEGACY_AUTH_ENABLED=true` keeps the better-auth entry points alive
+// (Google/GitHub/Microsoft social, magic link, email OTP) during dual-run.
+// Default is Gideon-only: the social/magic/OTP plugins are not registered,
+// so the legacy `/api/auth/*` entry points stop working and the frontends
+// render the Gideon button exclusively (see NEXT_PUBLIC_LEGACY_AUTH_ENABLED).
+export function isLegacyAuthEnabled(): boolean {
+  return process.env.LEGACY_AUTH_ENABLED === 'true';
+}
+
+// Build social providers config (legacy only — empty when Gideon-only)
 const socialProviders: Record<string, unknown> = {};
 
-if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
-  socialProviders.google = {
-    clientId: process.env.AUTH_GOOGLE_ID,
-    clientSecret: process.env.AUTH_GOOGLE_SECRET,
-  };
-}
+if (isLegacyAuthEnabled()) {
+  if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
+    socialProviders.google = {
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    };
+  }
 
-if (process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET) {
-  socialProviders.github = {
-    clientId: process.env.AUTH_GITHUB_ID,
-    clientSecret: process.env.AUTH_GITHUB_SECRET,
-  };
-}
+  if (process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET) {
+    socialProviders.github = {
+      clientId: process.env.AUTH_GITHUB_ID,
+      clientSecret: process.env.AUTH_GITHUB_SECRET,
+    };
+  }
 
-if (
-  process.env.AUTH_MICROSOFT_CLIENT_ID &&
-  process.env.AUTH_MICROSOFT_CLIENT_SECRET
-) {
-  socialProviders.microsoft = {
-    clientId: process.env.AUTH_MICROSOFT_CLIENT_ID,
-    clientSecret: process.env.AUTH_MICROSOFT_CLIENT_SECRET,
-    tenantId: process.env.AUTH_MICROSOFT_TENANT_ID || 'common',
-    prompt: 'select_account',
-    // Microsoft Entra often omits the `email` claim for work/school accounts,
-    // which makes better-auth abort sign-in with `email_not_found`. Fall back to
-    // the username/UPN claims so these users can sign in. Accounts that DO return
-    // an `email` claim are unaffected. See ./microsoft-email.ts.
-    mapProfileToUser: (profile: MicrosoftEmailClaims) => ({
-      email: resolveMicrosoftEmail(profile),
-    }),
-  };
+  if (
+    process.env.AUTH_MICROSOFT_CLIENT_ID &&
+    process.env.AUTH_MICROSOFT_CLIENT_SECRET
+  ) {
+    socialProviders.microsoft = {
+      clientId: process.env.AUTH_MICROSOFT_CLIENT_ID,
+      clientSecret: process.env.AUTH_MICROSOFT_CLIENT_SECRET,
+      tenantId: process.env.AUTH_MICROSOFT_TENANT_ID || 'common',
+      prompt: 'select_account',
+      // Microsoft Entra often omits the `email` claim for work/school accounts,
+      // which makes better-auth abort sign-in with `email_not_found`. Fall back to
+      // the username/UPN claims so these users can sign in. Accounts that DO return
+      // an `email` claim are unaffected. See ./microsoft-email.ts.
+      mapProfileToUser: (profile: MicrosoftEmailClaims) => ({
+        email: resolveMicrosoftEmail(profile),
+      }),
+    };
+  }
 }
 
 const cookieDomain = getCookieDomain();
@@ -471,38 +483,44 @@ export const auth = betterAuth({
         },
       },
     }),
-    magicLink({
-      expiresIn: MAGIC_LINK_EXPIRES_IN_SECONDS,
-      sendMagicLink: async ({ email, url }) => {
-        // The `url` from better-auth points to the API's verify endpoint
-        // and includes the callbackURL from the client's sign-in request.
-        // Flow: user clicks link → API verifies token & sets session cookie
-        // → API redirects (302) to callbackURL (the app).
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[Auth] Sending magic link to:', email);
-          console.log('[Auth] Magic link URL:', url);
-        }
-        await triggerEmail({
-          to: email,
-          subject: 'Login to OpenComp',
-          react: MagicLinkEmail({ email, url }),
-        });
-      },
-    }),
-    emailOTP({
-      otpLength: 6,
-      expiresIn: 10 * 60,
-      async sendVerificationOTP({ email, otp }) {
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[Auth] Sending OTP to:', email);
-        }
-        await triggerEmail({
-          to: email,
-          subject: 'One-Time Password for OpenComp',
-          react: OTPVerificationEmail({ email, otp }),
-        });
-      },
-    }),
+    // Milestone 3 — legacy entry points (magic link + email OTP) only exist
+    // when LEGACY_AUTH_ENABLED=true. Gideon-only is the default.
+    ...(isLegacyAuthEnabled()
+      ? [
+          magicLink({
+            expiresIn: MAGIC_LINK_EXPIRES_IN_SECONDS,
+            sendMagicLink: async ({ email, url }) => {
+              // The `url` from better-auth points to the API's verify endpoint
+              // and includes the callbackURL from the client's sign-in request.
+              // Flow: user clicks link → API verifies token & sets session cookie
+              // → API redirects (302) to callbackURL (the app).
+              if (process.env.NODE_ENV === 'development') {
+                console.log('[Auth] Sending magic link to:', email);
+                console.log('[Auth] Magic link URL:', url);
+              }
+              await triggerEmail({
+                to: email,
+                subject: 'Login to OpenComp',
+                react: MagicLinkEmail({ email, url }),
+              });
+            },
+          }),
+          emailOTP({
+            otpLength: 6,
+            expiresIn: 10 * 60,
+            async sendVerificationOTP({ email, otp }) {
+              if (process.env.NODE_ENV === 'development') {
+                console.log('[Auth] Sending OTP to:', email);
+              }
+              await triggerEmail({
+                to: email,
+                subject: 'One-Time Password for OpenComp',
+                react: OTPVerificationEmail({ email, otp }),
+              });
+            },
+          }),
+        ]
+      : []),
     multiSession(),
     bearer(),
     admin({
@@ -560,8 +578,11 @@ export const auth = betterAuth({
   account: {
     modelName: 'Account',
     accountLinking: {
-      enabled: true,
-      trustedProviders: ['google', 'github', 'microsoft'],
+      // Legacy social linking only — disabled in Gideon-only mode.
+      enabled: isLegacyAuthEnabled(),
+      trustedProviders: isLegacyAuthEnabled()
+        ? ['google', 'github', 'microsoft']
+        : [],
     },
     // Skip the state cookie CSRF check for OAuth flows.
     // In our cross-origin setup (app/portal → API), the state cookie may not
