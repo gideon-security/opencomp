@@ -74,10 +74,15 @@ export default async function Layout({
   const currentActiveOrgId = session.session.activeOrganizationId;
   if (!currentActiveOrgId || currentActiveOrgId !== requestedOrgId) {
     try {
-      await auth.api.setActiveOrganization({
+      const syncedSession = await auth.api.setActiveOrganization({
         headers: requestHeaders,
         body: { organizationId: requestedOrgId },
       });
+      if (!syncedSession) {
+        console.error(
+          `[Layout] setActiveOrganization returned null for org ${requestedOrgId} (session had ${currentActiveOrgId ?? 'no'} active org); org-scoped API calls may 401 until the session syncs`,
+        );
+      }
     } catch (error) {
       console.error('[Layout] Failed to sync activeOrganizationId:', error);
     }

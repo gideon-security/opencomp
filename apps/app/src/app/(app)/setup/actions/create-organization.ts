@@ -112,13 +112,20 @@ export const createOrganization = authActionClientWithoutOrg
         });
       }
 
-      // Set new org as active
-      await auth.api.setActiveOrganization({
+      // Set new org as active. A null return means the session still has no
+      // active org — every org-scoped API call will 401 until the [orgId]
+      // layout sync repairs it, so log loudly instead of failing silently.
+      const activatedSession = await auth.api.setActiveOrganization({
         headers: await headers(),
         body: {
           organizationId: orgId,
         },
       });
+      if (!activatedSession) {
+        console.error(
+          `[create-organization] setActiveOrganization failed for org ${orgId}; session has no active org until the [orgId] layout sync repairs it`,
+        );
+      }
 
       // Publish the trust portal so trust.inc/{slug} is live immediately, even
       // while empty. Goes through the guarded API (GET settings lazily creates a

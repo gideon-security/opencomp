@@ -7247,6 +7247,7 @@
     },
     "/v1/vendors/global/search": {
       "get": {
+        "description": "Search global vendor records to prefill vendor profiles and speed up third-party risk assessment workflows.",
         "operationId": "VendorsController_searchGlobalVendors_v1",
         "parameters": [
           {
@@ -7271,7 +7272,6 @@
         ],
         "summary": "Search global vendors",
         "tags": ["Vendors"],
-        "description": "Search global vendor records to prefill vendor profiles and speed up third-party risk assessment workflows.",
         "x-mint": {
           "metadata": {
             "title": "Search global vendors | OpenComp API",

@@ -36,20 +36,18 @@ These variables are required for a functional Docker deployment:
 
 ### Authentication
 
-| Name                           | Service(s)  | Phase   | Required         | Notes                                                                 |
-| ------------------------------ | ----------- | ------- | ---------------- | --------------------------------------------------------------------- |
-| `AUTH_SECRET`                  | app         | runtime | required-minimal | Main app auth secret                                                  |
-| `SECRET_KEY`                   | app         | runtime | required-minimal | Encryption key for sensitive data                                     |
-| `BETTER_AUTH_URL`              | app, portal | runtime | required-minimal | Base URL for auth                                                     |
-| `BETTER_AUTH_SECRET`           | portal      | runtime | required-minimal | Portal auth secret                                                    |
-| `NEXT_PUBLIC_BETTER_AUTH_URL`  | app, portal | build   | required-minimal | Public auth URL for client code                                       |
-| `AUTH_GOOGLE_ID`               | app         | runtime | conditional      | Google OAuth client ID                                                |
-| `AUTH_GOOGLE_SECRET`           | app         | runtime | conditional      | Google OAuth client secret                                            |
-| `AUTH_GITHUB_ID`               | app         | runtime | optional         | GitHub OAuth client ID                                                |
-| `AUTH_GITHUB_SECRET`           | app         | runtime | optional         | GitHub OAuth client secret                                            |
-| `AUTH_MICROSOFT_CLIENT_ID`     | app         | runtime | conditional      | Microsoft/Entra OAuth client ID                                       |
-| `AUTH_MICROSOFT_CLIENT_SECRET` | app         | runtime | conditional      | Microsoft/Entra OAuth client secret                                   |
-| `AUTH_MICROSOFT_TENANT_ID`     | app         | runtime | optional         | `common` (default), `organizations`, or tenant GUID to restrict login |
+Sign-in is handled by the external Gideon identity provider (OIDC) — there
+are no social-login client IDs/secrets to configure. The API's Gideon client
+registration lives in `apps/api/.env` (see the `GIDEON_OIDC_*` block in
+`apps/api/.env.example`).
+
+| Name                          | Service(s)  | Phase   | Required         | Notes                             |
+| ----------------------------- | ----------- | ------- | ---------------- | --------------------------------- |
+| `AUTH_SECRET`                 | app         | runtime | required-minimal | Main app auth secret              |
+| `SECRET_KEY`                  | app         | runtime | required-minimal | Encryption key for sensitive data |
+| `BETTER_AUTH_URL`             | app, portal | runtime | required-minimal | Base URL for auth                 |
+| `BETTER_AUTH_SECRET`          | portal      | runtime | required-minimal | Portal auth secret                |
+| `NEXT_PUBLIC_BETTER_AUTH_URL` | app, portal | build   | required-minimal | Public auth URL for client code   |
 
 ### Email (SES + SQS, apps/api)
 

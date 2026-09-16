@@ -129,13 +129,20 @@ export const createOrganizationMinimal = authActionClientWithoutOrg
           }
         }
 
-        // Ensure this org is set as the active one
-        await auth.api.setActiveOrganization({
+        // Ensure this org is set as the active one (log loudly on failure —
+        // a null return leaves the session without an active org and every
+        // org-scoped API call 401s until the [orgId] layout sync repairs it).
+        const reusedActivatedSession = await auth.api.setActiveOrganization({
           headers: await headers(),
           body: {
             organizationId: existingOrg.id,
           },
         });
+        if (!reusedActivatedSession) {
+          console.error(
+            `[create-organization-minimal] setActiveOrganization failed for reused org ${existingOrg.id}`,
+          );
+        }
 
         // Publish the trust portal via the guarded API (non-fatal).
         const trustPortalResponse = await serverApi.get('/v1/trust-portal/settings');
@@ -230,13 +237,20 @@ export const createOrganizationMinimal = authActionClientWithoutOrg
       }
 
       // Set new org as active — after this point, the session references
-      // the org so we must NOT delete it on cleanup.
-      await auth.api.setActiveOrganization({
+      // the org so we must NOT delete it on cleanup. A null return leaves
+      // the session without an active org (org-scoped API calls 401 until
+      // the [orgId] layout sync repairs it), so log loudly.
+      const activatedSession = await auth.api.setActiveOrganization({
         headers: await headers(),
         body: {
           organizationId: orgId,
         },
       });
+      if (!activatedSession) {
+        console.error(
+          `[create-organization-minimal] setActiveOrganization failed for org ${orgId}`,
+        );
+      }
       createdOrgId = undefined; // Org is fully initialized, disable cleanup
 
       // Publish the trust portal so trust.inc/{slug} is live immediately, even

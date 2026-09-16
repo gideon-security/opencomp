@@ -183,30 +183,21 @@ Some environment variables may not load correctly from `.env` — in such cases,
 
 ### Cloud & Auth Configuration
 
-#### 1. Google OAuth
+#### 1. Gideon OIDC login
 
-- Go to [Google Cloud OAuth Console](https://console.cloud.google.com/auth/clients)
-- Create an OAuth client:
-  - Type: Web Application
-  - Name: `comp_app` # You can choose a different name if you prefer!
-- Add these **Authorized Redirect URIs**:
+Sign-in is handled by the external Gideon identity provider (OIDC) — there is
+no per-developer OAuth client setup. Legacy logins (Google/GitHub/Microsoft
+social, magic link) were removed; their `AUTH_*` variables no longer exist.
 
-  ```
-  http://localhost
-  http://localhost:3000
-  http://localhost:3002
-  http://localhost:3000/api/auth/callback/google
-  http://localhost:3002/api/auth/callback/google
-  http://localhost:3000/auth
-  http://localhost:3002/auth
-  ```
+The API needs a Gideon OIDC client registration (ask the auth team for the
+per-environment client ID). Configure it in `opencomp/apps/api/.env` (see the
+documented `GIDEON_OIDC_*` block in `apps/api/.env.example`):
 
-- After creating the app, copy the `GOOGLE_ID` and `GOOGLE_SECRET`
-  - Add them to your `.env` files
-  - If that doesn’t work, hard-code them in:
-    ```
-    opencomp/apps/portal/src/app/lib/auth.ts
-    ```
+```env
+GIDEON_OIDC_CLIENT_ID=""     # e.g. opencomp-local (registered with auth team)
+GIDEON_OIDC_REDIRECT_URI=""  # e.g. http://localhost:3333/v1/auth/gideon/callback
+# GIDEON_OIDC_CLIENT_SECRET="" # only for confidential apps; public apps use PKCE
+```
 
 #### 2. Redis
 

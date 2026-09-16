@@ -193,7 +193,10 @@ export class AdminController {
     });
     // Return the restored session's org so the frontend can land back on the
     // admin surface without a second session read.
-    return { success: true, activeOrganizationId: session.activeOrganizationId };
+    return {
+      success: true,
+      activeOrganizationId: session.activeOrganizationId,
+    };
   }
 
   @Post('ban')

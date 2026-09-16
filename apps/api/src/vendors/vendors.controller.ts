@@ -24,6 +24,7 @@ import { AuthContext, OrganizationId } from '../auth/auth-context.decorator';
 import { HybridAuthGuard } from '../auth/hybrid-auth.guard';
 import { PermissionGuard } from '../auth/permission.guard';
 import { RequirePermission } from '../auth/require-permission.decorator';
+import { SkipOrgCheck } from '../auth/skip-org-check.decorator';
 import { ActingUserResolver } from '../auth/acting-user.service';
 import type {
   AuthContext as AuthContextType,
@@ -53,8 +54,12 @@ export class VendorsController {
   ) {}
 
   @Get('global/search')
-  @RequirePermission('vendor', 'read')
-  @ApiOperation({ summary: 'Search global vendors database' })
+  @SkipOrgCheck()
+  @ApiOperation({
+    summary: 'Search global vendors database',
+    description:
+      'Requires session, no active org needed — used during onboarding.',
+  })
   @ApiQuery({
     name: 'name',
     required: false,

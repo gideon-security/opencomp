@@ -1,5 +1,6 @@
 'use client';
 
+import { retryOnboarding } from '@/app/(app)/onboarding/actions/retry-onboarding';
 import type { Onboarding } from '@db';
 import { useRun } from '@gideon-defender/trigger-react';
 import { Button } from '@gideon-defender/ui/button';
@@ -21,6 +22,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useAction } from 'next-safe-action/hooks';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -79,12 +81,29 @@ export const OnboardingTracker = ({ onboarding }: { onboarding: Onboarding }) =>
     setIsDismissed(true);
   }, [dismissKey]);
 
+  // "Retry setup" retriggers the onboard job server-side (a Server Action can
+  // mint the new run's tracking cookie; a page navigation cannot) and lands
+  // back on the org home, where the tracker follows the new triggerJobId.
+  const { execute: executeRetry, isExecuting: isRetrying } = useAction(retryOnboarding, {
+    onSuccess: ({ data }) => {
+      if (data?.redirectUrl) {
+        router.push(data.redirectUrl);
+      }
+    },
+    onError: ({ error }) => {
+      console.error(
+        '[OnboardingTracker] Retry setup failed:',
+        error.serverError ?? 'unknown error',
+      );
+    },
+  });
+
   const handleRetry = useCallback(() => {
-    if (!organizationId) {
+    if (!organizationId || isRetrying) {
       return;
     }
-    void router.push(`/onboarding/${organizationId}?retry=1`);
-  }, [organizationId, router]);
+    executeRetry({ organizationId });
+  }, [organizationId, isRetrying, executeRetry]);
 
   useEffect(() => {
     setMounted(true);
@@ -945,7 +964,9 @@ export const OnboardingTracker = ({ onboarding }: { onboarding: Onboarding }) =>
               </div>
             </div>
             <div className="flex gap-2 flex-wrap">
-              <Button size="sm" onClick={handleRetry} disabled={!organizationId}>
+              {/* Legacy ui Button has no loading prop — disabled state alone
+                  guards double-submit while the retry action runs. */}
+              <Button size="sm" onClick={handleRetry} disabled={!organizationId || isRetrying}>
                 {t('tracker.retrySetup')}
               </Button>
               <Button size="sm" variant="outline" asChild>
