@@ -1,10 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { LoginAnalysis } from '../../hooks/types';
-import {
-  clearConnectState,
-  loadConnectState,
-  saveConnectState,
-} from './connect-flow-storage';
+import { clearConnectState, loadConnectState, saveConnectState } from './connect-flow-storage';
 
 const TASK = 'tsk_123';
 

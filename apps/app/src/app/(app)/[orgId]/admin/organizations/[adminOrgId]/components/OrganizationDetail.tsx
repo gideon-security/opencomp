@@ -2,7 +2,6 @@
 
 import { RecentAuditLogs } from '@/components/RecentAuditLogs';
 import { apiClient } from '@/lib/api-client';
-import { useAdminAuditLogs } from '../hooks/use-admin-audit-logs';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +21,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useAdminAuditLogs } from '../hooks/use-admin-audit-logs';
 
 interface AdminOrgDetail {
   id: string;
@@ -115,8 +115,7 @@ export function OrganizationDetail({
     );
   };
 
-  const { logs, total, hasMore, loadMore, isLoadingMore, isLoading } =
-    useAdminAuditLogs(org.id);
+  const { logs, total, hasMore, loadMore, isLoadingMore, isLoading } = useAdminAuditLogs(org.id);
 
   return (
     <Stack gap="lg">
@@ -126,10 +125,7 @@ export function OrganizationDetail({
           value={hasAccess ? t('organizations.detail.active') : t('organizations.detail.inactive')}
           variant={hasAccess ? 'default' : 'destructive'}
         />
-        <InfoCard
-          label={t('organizations.detail.members')}
-          value={String(org.members.length)}
-        />
+        <InfoCard label={t('organizations.detail.members')} value={String(org.members.length)} />
         <InfoCard
           label={t('organizations.detail.created')}
           value={new Date(org.createdAt).toLocaleDateString()}

@@ -123,9 +123,7 @@ export function getPolicyTools({ currentPolicyId, cookieHeader }: PolicyToolsOpt
           cookieHeader,
         });
         // Filter out the current policy
-        const filtered = result.data.filter(
-          (p) => p.id !== currentPolicyId,
-        );
+        const filtered = result.data.filter((p) => p.id !== currentPolicyId);
         return { policies: filtered, count: filtered.length };
       },
     }),

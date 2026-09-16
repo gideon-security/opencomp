@@ -1,4 +1,10 @@
-import { logger, metadata, queue, schemaTask, tags } from '@gideon-defender/trigger-local';
+import {
+  logger,
+  metadata,
+  queue,
+  schemaTask,
+  tags,
+} from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 import { processPolicyUpdate } from './update-policy-helpers';
 

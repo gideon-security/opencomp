@@ -1,5 +1,6 @@
 import { browser } from 'wxt/browser';
 import { generateAnswer } from '../api';
+import type { BackgroundRequest, BackgroundResponse } from '../messaging';
 import {
   applyGeneratedAnswer,
   approveQueueItem,
@@ -10,10 +11,7 @@ import {
   setQueueOrganization,
   updateQueueItemStatus,
 } from '../queue';
-import {
-  approveGeneratedItems,
-  approveHighConfidenceItems,
-} from '../queue-approval';
+import { approveGeneratedItems, approveHighConfidenceItems } from '../queue-approval';
 import { isDomainConfirmed } from '../storage';
 import type {
   AuthState,
@@ -21,30 +19,26 @@ import type {
   GeneratedAnswer,
   TabQuestionQueue,
 } from '../types';
-import type { BackgroundRequest, BackgroundResponse } from '../messaging';
 import { ensureActiveOrganization } from './auth';
 import { generateQueueItemsInBatches } from './batch-generation';
 import { insertAnswersIntoTab } from './insert-answers';
 import { loadTabQueue, saveTabQueue } from './queue-store';
-import {
-  insertSheetAnswersWithApi,
-  prepareSheetPaste,
-} from './sheet-actions';
+import { insertSheetAnswersWithApi, prepareSheetPaste } from './sheet-actions';
 
 const UPDATE_MESSAGE = 'comp:queue-updated';
 
-export async function handleQueueAction(
-  request: BackgroundRequest,
-): Promise<BackgroundResponse> {
+export async function handleQueueAction(request: BackgroundRequest): Promise<BackgroundResponse> {
   if (request.type === 'comp:generate-queue-item') {
     return generateQueueItem(request.tabId, request.itemId);
   }
   if (request.type === 'comp:generate-all') return generateAll(request.tabId);
   if (request.type === 'comp:approve-queue-item') {
-    return updateAndReturn(approveQueueItem({
-      queue: await requireQueue(request.tabId),
-      itemId: request.itemId,
-    }));
+    return updateAndReturn(
+      approveQueueItem({
+        queue: await requireQueue(request.tabId),
+        itemId: request.itemId,
+      }),
+    );
   }
   if (request.type === 'comp:approve-high-confidence') {
     return updateAndReturn(approveHighConfidenceItems(await requireQueue(request.tabId)));
@@ -53,17 +47,21 @@ export async function handleQueueAction(
     return updateAndReturn(approveGeneratedItems(await requireQueue(request.tabId)));
   }
   if (request.type === 'comp:edit-queue-item') {
-    return updateAndReturn(editQueueItem({
-      queue: await requireQueue(request.tabId),
-      itemId: request.itemId,
-      answer: request.answer,
-    }));
+    return updateAndReturn(
+      editQueueItem({
+        queue: await requireQueue(request.tabId),
+        itemId: request.itemId,
+        answer: request.answer,
+      }),
+    );
   }
   if (request.type === 'comp:select-queue-item') {
-    return updateAndReturn(selectQueueItem({
-      queue: await requireQueue(request.tabId),
-      itemId: request.itemId,
-    }));
+    return updateAndReturn(
+      selectQueueItem({
+        queue: await requireQueue(request.tabId),
+        itemId: request.itemId,
+      }),
+    );
   }
   if (request.type === 'comp:insert-approved') return insertApproved(request.tabId);
   if (request.type === 'comp:insert-queue-item') {
@@ -76,10 +74,12 @@ export async function handleQueueAction(
     return insertSheetAnswersWithApi(request.tabId, request.itemId);
   }
   if (request.type === 'comp:mark-sheet-paste-inserted') {
-    return updateAndReturn(markQueueItemsInserted({
-      queue: await requireQueue(request.tabId),
-      itemIds: request.itemIds,
-    }));
+    return updateAndReturn(
+      markQueueItemsInserted({
+        queue: await requireQueue(request.tabId),
+        itemIds: request.itemIds,
+      }),
+    );
   }
   throw new Error('Unsupported request.');
 }
@@ -106,10 +106,7 @@ export async function saveQueueAndNotify(queue: TabQuestionQueue): Promise<void>
     .catch(() => undefined);
 }
 
-async function generateQueueItem(
-  tabId: number,
-  itemId: string,
-): Promise<BackgroundResponse> {
+async function generateQueueItem(tabId: number, itemId: string): Promise<BackgroundResponse> {
   const auth = await ensureActiveOrganization();
   const queue = setQueueOrganization({
     queue: await requireQueue(tabId),
@@ -175,10 +172,7 @@ async function insertApproved(tabId: number): Promise<BackgroundResponse> {
   return { ok: true, count: insertedItemIds.length, queue: updated };
 }
 
-async function insertSingle(
-  tabId: number,
-  itemId: string,
-): Promise<BackgroundResponse> {
+async function insertSingle(tabId: number, itemId: string): Promise<BackgroundResponse> {
   const queue = await requireQueue(tabId);
   const item = queue.items.find((entry) => entry.id === itemId);
   if (!item?.answer) throw new Error('No answer is ready to insert.');

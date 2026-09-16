@@ -1,9 +1,9 @@
 'use client';
 
+import { validateAndFixTipTapContent } from '@gideon-defender/ui';
 import type { JSONContent } from '@tiptap/react';
 import { useMemo } from 'react';
 import AdvancedEditor from './AdvancedEditor'; // Use local AdvancedEditor
-import { validateAndFixTipTapContent } from '@gideon-defender/ui';
 
 interface PolicyEditorProps {
   // Accept raw JSONContent or array from DB

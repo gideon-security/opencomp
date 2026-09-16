@@ -45,8 +45,10 @@ export function FindingContextSection({
   type FindingContextForm = z.infer<typeof findingContextSchema>;
 
   const canEdit = hasPermission('pentest', 'update');
-  const { contextByIssueId, isSaving, saveContext, removeContext } =
-    usePentestFindingContexts(orgId, targetUrl);
+  const { contextByIssueId, isSaving, saveContext, removeContext } = usePentestFindingContexts(
+    orgId,
+    targetUrl,
+  );
   const existing = contextByIssueId.get(issue.id);
   // Save against the pentest run id the page is built on (run.id), NOT
   // issue.runId. Maced's Issue.runId is a per-issue run id with no
@@ -75,9 +77,7 @@ export function FindingContextSection({
       toast.success(t('penTest.findingContext.savedToast'));
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : t('penTest.findingContext.unableToSaveToast'),
+        error instanceof Error ? error.message : t('penTest.findingContext.unableToSaveToast'),
       );
     }
   });
@@ -89,9 +89,7 @@ export function FindingContextSection({
       toast.success(t('penTest.findingContext.removedToast'));
     } catch (error) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : t('penTest.findingContext.unableToRemoveToast'),
+        error instanceof Error ? error.message : t('penTest.findingContext.unableToRemoveToast'),
       );
     }
   };
@@ -115,9 +113,7 @@ export function FindingContextSection({
             {...form.register('context')}
           />
           {form.formState.errors.context ? (
-            <p className="text-xs text-destructive">
-              {form.formState.errors.context.message}
-            </p>
+            <p className="text-xs text-destructive">{form.formState.errors.context.message}</p>
           ) : null}
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -149,9 +145,7 @@ export function FindingContextSection({
           </div>
         </form>
       ) : existing ? (
-        <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed">
-          {existing.context}
-        </p>
+        <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed">{existing.context}</p>
       ) : null}
     </section>
   );

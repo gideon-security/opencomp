@@ -74,190 +74,177 @@ async function runRbacLeastPrivilegeForSubscription(
   // burns budget.
   resolvedDefs: Map<string, RoleDefinition>,
 ): Promise<void> {
+  const [assignments, definitions] = await Promise.all([
+    armListAllOrFail<RoleAssignment>(
+      ctx,
+      `${ARM_BASE}/subscriptions/${sub}/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01`,
+      { what: 'role assignments', resourceType: 'azure-subscription', subscriptionId: sub },
+    ),
+    armListAllOrFail<RoleDefinition>(
+      ctx,
+      `${ARM_BASE}/subscriptions/${sub}/providers/Microsoft.Authorization/roleDefinitions?api-version=2022-04-01`,
+      { what: 'role definitions', resourceType: 'azure-subscription', subscriptionId: sub },
+    ),
+  ]);
+  if (!assignments || !definitions) return;
 
-    const [assignments, definitions] = await Promise.all([
-      armListAllOrFail<RoleAssignment>(
-        ctx,
-        `${ARM_BASE}/subscriptions/${sub}/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01`,
-        { what: 'role assignments', resourceType: 'azure-subscription', subscriptionId: sub },
+  const defMap = new Map(definitions.map((d) => [d.id, d]));
+
+  // Assignments can reference role definitions scoped to a management group or
+  // resource group, which won't appear in the subscription-scope list above.
+  // Resolve any missing definition directly so privileged principals aren't
+  // undercounted. The shared cross-subscription cache (resolvedDefs) only
+  // avoids refetching; the wildcard scan below must see ONLY definitions
+  // referenced by THIS subscription's assignments (subResolvedDefs), or a
+  // wildcard role from another subscription's loop would be re-reported here.
+  const resolveFailures: ReadFailure[] = [];
+  const subResolvedDefs = new Map<string, RoleDefinition>();
+  const resolveDef = async (roleDefinitionId: string): Promise<RoleDefinition | null> => {
+    const own = defMap.get(roleDefinitionId);
+    if (own) return own;
+    const shared = resolvedDefs.get(roleDefinitionId);
+    if (shared) {
+      subResolvedDefs.set(roleDefinitionId, shared);
+      return shared;
+    }
+    try {
+      const def = await ctx.fetch<RoleDefinition>(`${roleDefinitionId}?api-version=2022-04-01`);
+      if (def?.properties) {
+        resolvedDefs.set(roleDefinitionId, def);
+        subResolvedDefs.set(roleDefinitionId, def);
+        return def;
+      }
+      return null;
+    } catch (err) {
+      const failure = toHttpReadFailure(err);
+      resolveFailures.push(failure);
+      ctx.warn('Failed to resolve Azure role definition for assignment', {
+        roleDefinitionId,
+        error: failure.error,
+      });
+      return null;
+    }
+  };
+
+  const privileged: RoleAssignment[] = [];
+  let unresolvedAssignments = 0;
+  for (const a of assignments) {
+    const def = await resolveDef(a.properties.roleDefinitionId);
+    if (!def) {
+      // Could not classify this assignment's role — do not silently treat it
+      // as non-privileged (ERROR-READS-NEVER-SILENT-PASS).
+      unresolvedAssignments++;
+      continue;
+    }
+    if (defIsPrivileged(def)) privileged.push(a);
+  }
+
+  let violations = 0;
+
+  if (unresolvedAssignments > 0) {
+    violations++;
+    ctx.fail({
+      title: 'Could not verify all role assignments',
+      description: `${unresolvedAssignments} role assignment(s) reference role definitions that could not be loaded (e.g. custom roles defined at management-group or resource-group scope), so their privilege level is unverified.`,
+      resourceType: 'azure-subscription',
+      resourceId: sub,
+      severity: 'medium',
+      remediation: remediationForReadFailure(
+        combineReadFailures(resolveFailures),
+        'Ensure the integration principal has read access to all role definitions in scope (including management-group and resource-group scopes), then re-run the check.',
       ),
-      armListAllOrFail<RoleDefinition>(
-        ctx,
-        `${ARM_BASE}/subscriptions/${sub}/providers/Microsoft.Authorization/roleDefinitions?api-version=2022-04-01`,
-        { what: 'role definitions', resourceType: 'azure-subscription', subscriptionId: sub },
+      evidence: {
+        unresolvedAssignments,
+        // first few real errors so the cause is visible without log digging
+        readErrors: resolveFailures.slice(0, 3).map((f) => f.error),
+      },
+    });
+  }
+
+  if (privileged.length > 5) {
+    violations++;
+    ctx.fail({
+      title: 'Excessive privileged role assignments',
+      description: `${privileged.length} principals hold privileged roles (Owner/Contributor/User Access Administrator). Limit to essential accounts.`,
+      resourceType: 'azure-subscription',
+      resourceId: sub,
+      severity: 'high',
+      remediation:
+        'Review privileged role assignments and remove unnecessary ones; use just-in-time access via Azure PIM.',
+      evidence: {
+        privilegedCount: privileged.length,
+        threshold: 5,
+        principalIds: privileged.map((a) => a.properties.principalId),
+        principalTypes: privileged.map((a) => a.properties.principalType),
+      },
+    });
+  }
+
+  const spPrivileged = privileged.filter((a) => a.properties.principalType === 'ServicePrincipal');
+  if (spPrivileged.length > 0) {
+    violations++;
+    ctx.fail({
+      title: 'Service principals with privileged roles',
+      description: `${spPrivileged.length} service principal(s) hold privileged roles. Service principals should use least-privilege access.`,
+      resourceType: 'azure-subscription',
+      resourceId: sub,
+      severity: 'medium',
+      remediation: 'Replace broad roles with scoped custom roles for service principals.',
+      evidence: {
+        count: spPrivileged.length,
+        principalIds: spPrivileged.map((a) => a.properties.principalId),
+      },
+    });
+  }
+
+  // Inspect every role definition actually seen — the subscription-scope list
+  // PLUS any out-of-scope definitions resolved from assignments above (e.g.
+  // custom roles defined at a management group and assigned into this
+  // subscription). Filtering only the subscription-scope `definitions` would
+  // miss assigned MG/RG-scoped wildcard custom roles entirely. Dedupe by id.
+  const allDefs = new Map<string, RoleDefinition>(definitions.map((d) => [d.id, d]));
+  for (const [id, def] of subResolvedDefs) allDefs.set(id, def);
+
+  const wildcardRoles = [...allDefs.values()].filter(
+    (d) =>
+      d.properties.type === 'CustomRole' &&
+      d.properties.permissions.some(
+        (perm) =>
+          (perm.actions ?? []).some(isWildcardAction) ||
+          (perm.dataActions ?? []).some(isWildcardAction),
       ),
-    ]);
-    if (!assignments || !definitions) return;
-
-    const defMap = new Map(definitions.map((d) => [d.id, d]));
-
-    // Assignments can reference role definitions scoped to a management group or
-    // resource group, which won't appear in the subscription-scope list above.
-    // Resolve any missing definition directly so privileged principals aren't
-    // undercounted. The shared cross-subscription cache (resolvedDefs) only
-    // avoids refetching; the wildcard scan below must see ONLY definitions
-    // referenced by THIS subscription's assignments (subResolvedDefs), or a
-    // wildcard role from another subscription's loop would be re-reported here.
-    const resolveFailures: ReadFailure[] = [];
-    const subResolvedDefs = new Map<string, RoleDefinition>();
-    const resolveDef = async (
-      roleDefinitionId: string,
-    ): Promise<RoleDefinition | null> => {
-      const own = defMap.get(roleDefinitionId);
-      if (own) return own;
-      const shared = resolvedDefs.get(roleDefinitionId);
-      if (shared) {
-        subResolvedDefs.set(roleDefinitionId, shared);
-        return shared;
-      }
-      try {
-        const def = await ctx.fetch<RoleDefinition>(
-          `${roleDefinitionId}?api-version=2022-04-01`,
-        );
-        if (def?.properties) {
-          resolvedDefs.set(roleDefinitionId, def);
-          subResolvedDefs.set(roleDefinitionId, def);
-          return def;
-        }
-        return null;
-      } catch (err) {
-        const failure = toHttpReadFailure(err);
-        resolveFailures.push(failure);
-        ctx.warn('Failed to resolve Azure role definition for assignment', {
-          roleDefinitionId,
-          error: failure.error,
-        });
-        return null;
-      }
-    };
-
-    const privileged: RoleAssignment[] = [];
-    let unresolvedAssignments = 0;
-    for (const a of assignments) {
-      const def = await resolveDef(a.properties.roleDefinitionId);
-      if (!def) {
-        // Could not classify this assignment's role — do not silently treat it
-        // as non-privileged (ERROR-READS-NEVER-SILENT-PASS).
-        unresolvedAssignments++;
-        continue;
-      }
-      if (defIsPrivileged(def)) privileged.push(a);
-    }
-
-    let violations = 0;
-
-    if (unresolvedAssignments > 0) {
-      violations++;
-      ctx.fail({
-        title: 'Could not verify all role assignments',
-        description: `${unresolvedAssignments} role assignment(s) reference role definitions that could not be loaded (e.g. custom roles defined at management-group or resource-group scope), so their privilege level is unverified.`,
-        resourceType: 'azure-subscription',
-        resourceId: sub,
-        severity: 'medium',
-        remediation: remediationForReadFailure(
-          combineReadFailures(resolveFailures),
-          'Ensure the integration principal has read access to all role definitions in scope (including management-group and resource-group scopes), then re-run the check.',
-        ),
-        evidence: {
-          unresolvedAssignments,
-          // first few real errors so the cause is visible without log digging
-          readErrors: resolveFailures.slice(0, 3).map((f) => f.error),
-        },
-      });
-    }
-
-    if (privileged.length > 5) {
-      violations++;
-      ctx.fail({
-        title: 'Excessive privileged role assignments',
-        description: `${privileged.length} principals hold privileged roles (Owner/Contributor/User Access Administrator). Limit to essential accounts.`,
-        resourceType: 'azure-subscription',
-        resourceId: sub,
-        severity: 'high',
-        remediation:
-          'Review privileged role assignments and remove unnecessary ones; use just-in-time access via Azure PIM.',
-        evidence: {
-          privilegedCount: privileged.length,
-          threshold: 5,
-          principalIds: privileged.map((a) => a.properties.principalId),
-          principalTypes: privileged.map((a) => a.properties.principalType),
-        },
-      });
-    }
-
-    const spPrivileged = privileged.filter(
-      (a) => a.properties.principalType === 'ServicePrincipal',
+  );
+  for (const role of wildcardRoles) {
+    violations++;
+    const wildcardActions = role.properties.permissions.flatMap((perm) =>
+      [...(perm.actions ?? []), ...(perm.dataActions ?? [])].filter(isWildcardAction),
     );
-    if (spPrivileged.length > 0) {
-      violations++;
-      ctx.fail({
-        title: 'Service principals with privileged roles',
-        description: `${spPrivileged.length} service principal(s) hold privileged roles. Service principals should use least-privilege access.`,
-        resourceType: 'azure-subscription',
-        resourceId: sub,
-        severity: 'medium',
-        remediation:
-          'Replace broad roles with scoped custom roles for service principals.',
-        evidence: {
-          count: spPrivileged.length,
-          principalIds: spPrivileged.map((a) => a.properties.principalId),
-        },
-      });
-    }
+    ctx.fail({
+      title: `Custom role with wildcard permissions: ${role.properties.roleName}`,
+      description: `Custom role "${role.properties.roleName}" grants wildcard (*) permissions, which is overly permissive.`,
+      resourceType: 'azure-role-definition',
+      resourceId: role.id,
+      severity: 'high',
+      remediation: 'Restrict the custom role to only the specific actions required.',
+      evidence: { roleName: role.properties.roleName, wildcardActions },
+    });
+  }
 
-    // Inspect every role definition actually seen — the subscription-scope list
-    // PLUS any out-of-scope definitions resolved from assignments above (e.g.
-    // custom roles defined at a management group and assigned into this
-    // subscription). Filtering only the subscription-scope `definitions` would
-    // miss assigned MG/RG-scoped wildcard custom roles entirely. Dedupe by id.
-    const allDefs = new Map<string, RoleDefinition>(
-      definitions.map((d) => [d.id, d]),
-    );
-    for (const [id, def] of subResolvedDefs) allDefs.set(id, def);
-
-    const wildcardRoles = [...allDefs.values()].filter(
-      (d) =>
-        d.properties.type === 'CustomRole' &&
-        d.properties.permissions.some(
-          (perm) =>
-            (perm.actions ?? []).some(isWildcardAction) ||
-            (perm.dataActions ?? []).some(isWildcardAction),
-        ),
-    );
-    for (const role of wildcardRoles) {
-      violations++;
-      const wildcardActions = role.properties.permissions.flatMap((perm) =>
-        [...(perm.actions ?? []), ...(perm.dataActions ?? [])].filter(
-          isWildcardAction,
-        ),
-      );
-      ctx.fail({
-        title: `Custom role with wildcard permissions: ${role.properties.roleName}`,
-        description: `Custom role "${role.properties.roleName}" grants wildcard (*) permissions, which is overly permissive.`,
-        resourceType: 'azure-role-definition',
-        resourceId: role.id,
-        severity: 'high',
-        remediation:
-          'Restrict the custom role to only the specific actions required.',
-        evidence: { roleName: role.properties.roleName, wildcardActions },
-      });
-    }
-
-    if (violations === 0) {
-      ctx.pass({
-        title: 'RBAC follows least privilege',
-        description: `${privileged.length} privileged assignment(s); no wildcard custom roles or privileged service principals.`,
-        resourceType: 'azure-subscription',
-        resourceId: sub,
-        evidence: {
-          privilegedCount: privileged.length,
-          threshold: 5,
-          wildcardCustomRoles: wildcardRoles.length,
-          privilegedServicePrincipals: spPrivileged.length,
-          assignmentsEvaluated: assignments.length,
-        },
-      });
-    }
+  if (violations === 0) {
+    ctx.pass({
+      title: 'RBAC follows least privilege',
+      description: `${privileged.length} privileged assignment(s); no wildcard custom roles or privileged service principals.`,
+      resourceType: 'azure-subscription',
+      resourceId: sub,
+      evidence: {
+        privilegedCount: privileged.length,
+        threshold: 5,
+        wildcardCustomRoles: wildcardRoles.length,
+        privilegedServicePrincipals: spPrivileged.length,
+        assignmentsEvaluated: assignments.length,
+      },
+    });
+  }
 }
 
 export const rbacLeastPrivilegeCheck: IntegrationCheck = {

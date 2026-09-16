@@ -59,7 +59,7 @@ export function WizardStepLeadership({ control, members }: WizardStepLeadershipP
           const value = field.value ?? { memberId: null, toBeNamed: false };
           // Always a string so the Select is controlled from first render
           // ('' = nothing picked → placeholder shows, no controlled/uncontrolled warning).
-          const selectValue = value.toBeNamed ? TO_BE_NAMED : value.memberId ?? '';
+          const selectValue = value.toBeNamed ? TO_BE_NAMED : (value.memberId ?? '');
 
           return (
             <WizardField

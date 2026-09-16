@@ -52,13 +52,16 @@ export function SOATableRow({
   onUpdate,
 }: SOATableRowProps) {
   const isProcessing = questionStatus === 'processing';
-  const isInsufficientData = questionStatus === 'insufficient_data' as any;
-  const hasInsufficientData = processedResult && 'insufficientData' in processedResult && processedResult.insufficientData === true;
-  
+  const isInsufficientData = questionStatus === ('insufficient_data' as any);
+  const hasInsufficientData =
+    processedResult &&
+    'insufficientData' in processedResult &&
+    processedResult.insufficientData === true;
+
   // For controls with closure starting with "7." and fully remote org, always show NO
   const controlClosure = question.columnMapping.closure || '';
   const isControl7 = controlClosure.startsWith('7.');
-  
+
   // Applicability + justification are per-organization values (from this
   // document's own answers or an in-session autofill result), never from the
   // shared framework configuration.
@@ -74,20 +77,21 @@ export function SOATableRow({
       {columns.map((column, colIndex) => {
         const columnKey = column.name as keyof typeof question.columnMapping;
         let value = question.columnMapping[columnKey];
-        
+
         // For isApplicable column, use displayIsApplicable
         if (column.name === 'isApplicable') {
           value = displayIsApplicable;
         }
-        
+
         // For justification column, use justificationValue
         if (column.name === 'justification') {
           value = justificationValue;
         }
-        
+
         // Show spinner for isApplicable and justification columns if processing
-        const showSpinner = (column.name === 'isApplicable' || column.name === 'justification') && isProcessing;
-        
+        const showSpinner =
+          (column.name === 'isApplicable' || column.name === 'justification') && isProcessing;
+
         return (
           <td
             key={column.name}
@@ -130,17 +134,19 @@ export function SOATableRow({
                   {justificationValue || '—'}
                 </p>
               )
+            ) : // For other columns (title, control_objective), show "Insufficient data" if question has insufficient data
+            (isInsufficientData || hasInsufficientData) &&
+              column.name !== 'title' &&
+              column.name !== 'control_objective' ? (
+              <span className="text-xs text-muted-foreground italic">Insufficient data</span>
             ) : (
-              // For other columns (title, control_objective), show "Insufficient data" if question has insufficient data
-              (isInsufficientData || hasInsufficientData) && column.name !== 'title' && column.name !== 'control_objective' ? (
-                <span className="text-xs text-muted-foreground italic">Insufficient data</span>
-              ) : (
-                <span className={`leading-relaxed whitespace-pre-wrap ${
+              <span
+                className={`leading-relaxed whitespace-pre-wrap ${
                   value ? 'text-foreground' : 'text-muted-foreground'
-                }`}>
-                  {value || '—'}
-                </span>
-              )
+                }`}
+              >
+                {value || '—'}
+              </span>
             )}
           </td>
         );
@@ -148,4 +154,3 @@ export function SOATableRow({
     </tr>
   );
 }
-

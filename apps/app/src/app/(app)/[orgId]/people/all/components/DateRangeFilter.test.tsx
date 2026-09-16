@@ -1,7 +1,7 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -9,9 +9,7 @@ import { DateRangeFilter } from './DateRangeFilter';
 
 const noop = vi.fn();
 
-function renderFilter(
-  overrides: Partial<Parameters<typeof DateRangeFilter>[0]> = {},
-) {
+function renderFilter(overrides: Partial<Parameters<typeof DateRangeFilter>[0]> = {}) {
   return render(
     <DateRangeFilter
       label="Onboarded"

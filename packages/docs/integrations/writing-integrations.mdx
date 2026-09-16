@@ -19,6 +19,7 @@ cd packages/integration-platform/src/manifests/your-service
 ```
 
 **File structure:**
+
 ```
 your-service/
 ├── index.ts           # Manifest definition
@@ -44,7 +45,7 @@ export interface YourServiceUser {
 
 export interface YourServiceCredentials {
   access_token?: string; // For OAuth
-  api_key?: string;      // For API key auth
+  api_key?: string; // For API key auth
 }
 ```
 
@@ -165,7 +166,7 @@ const targetReposVariable: CheckVariable = {
   type: 'multi-select',
   required: true,
   helpText: 'Select which repositories to check',
-  
+
   // Dynamic options from API
   fetchOptions: async (ctx) => {
     const repos = await ctx.fetch<Repo[]>('/repos');
@@ -179,7 +180,7 @@ const targetReposVariable: CheckVariable = {
 export const yourCheck: IntegrationCheck = {
   id: 'repo-check',
   variables: [targetReposVariable],
-  
+
   run: async (ctx) => {
     const targetRepos = ctx.variables.target_repos as string[];
     // Only check selected repos
@@ -203,6 +204,7 @@ export const registry: IntegrationRegistry = {
 ## Step 7: Test It
 
 1. **Start dev servers:**
+
    ```bash
    bun run dev
    ```
@@ -240,9 +242,7 @@ let items: Item[] = [];
 let page = 1;
 
 while (true) {
-  const response = await ctx.fetch<{ data: Item[]; hasMore: boolean }>(
-    `/items?page=${page}`
-  );
+  const response = await ctx.fetch<{ data: Item[]; hasMore: boolean }>(`/items?page=${page}`);
   items.push(...response.data);
   if (!response.hasMore) break;
   page++;
@@ -257,7 +257,7 @@ try {
   // Process data
 } catch (error) {
   const errorMessage = error instanceof Error ? error.message : String(error);
-  
+
   // Handle specific errors
   if (errorMessage.includes('PERMISSION_DENIED')) {
     ctx.fail({
@@ -271,7 +271,7 @@ try {
     });
     return;
   }
-  
+
   // Generic error
   ctx.log(`Error: ${errorMessage}`);
 }
@@ -317,14 +317,14 @@ export const manifest: IntegrationManifest = {
 
 ## Examples to Reference
 
-| Integration | Type | Good for learning |
-|-------------|------|-------------------|
-| **GitHub** | OAuth | Dynamic variables, pagination, multiple checks |
-| **Google Workspace** | OAuth | User iteration, domain-scoped checks |
-| **AWS** | Custom | Complex credentials, error handling |
-| **Azure** | Custom | Multi-field credentials, API error mapping |
-| **Linear** | OAuth | Simple OAuth, GraphQL |
-| **Vercel** | OAuth | Project scoping, deployment checks |
+| Integration          | Type   | Good for learning                              |
+| -------------------- | ------ | ---------------------------------------------- |
+| **GitHub**           | OAuth  | Dynamic variables, pagination, multiple checks |
+| **Google Workspace** | OAuth  | User iteration, domain-scoped checks           |
+| **AWS**              | Custom | Complex credentials, error handling            |
+| **Azure**            | Custom | Multi-field credentials, API error mapping     |
+| **Linear**           | OAuth  | Simple OAuth, GraphQL                          |
+| **Vercel**           | OAuth  | Project scoping, deployment checks             |
 
 All integration source code is in `packages/integration-platform/src/manifests/`.
 
@@ -333,4 +333,3 @@ All integration source code is in `packages/integration-platform/src/manifests/`
 - Check existing integration manifests for patterns
 - Review type definitions in `src/types.ts`
 - See the [Contributing Guide](/integrations/contributing) for PR requirements
-

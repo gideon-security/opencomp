@@ -39,9 +39,8 @@ export const ChangeEmailConfirmationEmail = ({ currentEmail, newEmail, url }: Pr
             <Text className="text-[14px] leading-[24px] text-[#121212]">
               You requested to change your OpenComp login email from{' '}
               <span className="font-medium">{currentEmail}</span> to{' '}
-              <span className="font-medium">{newEmail}</span>. Confirm below,
-              then follow the verification link we send to your new address to
-              finish the change.
+              <span className="font-medium">{newEmail}</span>. Confirm below, then follow the
+              verification link we send to your new address to finish the change.
             </Text>
             <Section className="mt-[32px] mb-[42px] text-center">
               <Button
@@ -62,9 +61,8 @@ export const ChangeEmailConfirmationEmail = ({ currentEmail, newEmail, url }: Pr
             <br />
             <Section>
               <Text className="text-[12px] leading-[24px] text-[#666666]">
-                If you did not request this change, you can safely ignore this
-                email — your login email will stay{' '}
-                <span className="text-[#121212]">{currentEmail}</span>.
+                If you did not request this change, you can safely ignore this email — your login
+                email will stay <span className="text-[#121212]">{currentEmail}</span>.
               </Text>
             </Section>
 

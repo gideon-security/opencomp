@@ -1,5 +1,6 @@
 'use client';
 
+import { Badge } from '@gideon-defender/ui';
 import {
   createColumnHelper,
   flexRender,
@@ -8,7 +9,6 @@ import {
   useReactTable,
   type SortingState,
 } from '@tanstack/react-table';
-import { Badge } from '@gideon-defender/ui';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { DOCUMENT_TYPE_OPTIONS } from '../controls/document-type-options';
@@ -188,11 +188,7 @@ export function DocumentsClientPage({ controls, frameworkId }: DocumentsClientPa
                 className="border-border hover:bg-muted/30 border-b transition-colors"
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="p-0"
-                    style={{ width: cell.column.getSize() }}
-                  >
+                  <td key={cell.id} className="p-0" style={{ width: cell.column.getSize() }}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}

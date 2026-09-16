@@ -438,7 +438,9 @@ describe('PeopleService', () => {
 
       it('propagates ConflictException from validation without wrapping', async () => {
         (validateLoginEmailChange as jest.Mock).mockRejectedValue(
-          new ConflictException('That email is already used by another account'),
+          new ConflictException(
+            'That email is already used by another account',
+          ),
         );
 
         await expect(

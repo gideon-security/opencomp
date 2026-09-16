@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RiskTreatmentTable, type RiskTreatmentTableRow } from './RiskTreatmentTable';
 

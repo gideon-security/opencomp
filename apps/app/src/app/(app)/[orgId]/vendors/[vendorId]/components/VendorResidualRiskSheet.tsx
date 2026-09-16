@@ -1,9 +1,8 @@
 'use client';
 
 import { ResidualRiskForm } from '@/app/(app)/[orgId]/vendors/[vendorId]/forms/risks/ResidualRiskForm';
-import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import type { Vendor } from '@db';
-import { useTranslations } from 'next-intl';
+import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import {
   Drawer,
   DrawerContent,
@@ -16,6 +15,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useQueryState } from 'nuqs';
 
 export function VendorResidualRiskSheet({

@@ -4,8 +4,8 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
 import { InterestedPartiesTable } from './InterestedPartiesTable';
-import { IsmsDocumentShell } from './IsmsDocumentShell';
 import type { ApproverOption } from './IsmsApprovalSection';
+import { IsmsDocumentShell } from './IsmsDocumentShell';
 
 interface InterestedPartiesClientProps {
   organizationId: string;
@@ -41,9 +41,7 @@ export function InterestedPartiesClient(props: InterestedPartiesClientProps) {
             toast.success(t('interestedParties.partyAdded'));
           } catch (caught) {
             toast.error(
-              caught instanceof Error
-                ? caught.message
-                : t('interestedParties.partyAddFailed'),
+              caught instanceof Error ? caught.message : t('interestedParties.partyAddFailed'),
             );
             // Re-throw so the form keeps the user's input and stays open on failure.
             throw caught;
@@ -55,13 +53,15 @@ export function InterestedPartiesClient(props: InterestedPartiesClientProps) {
           input: { name: string; category: string; needsExpectations: string };
         }) => {
           try {
-            await hook.updateRow({ register: REGISTER, id: params.partyId, data: { ...params.input } });
+            await hook.updateRow({
+              register: REGISTER,
+              id: params.partyId,
+              data: { ...params.input },
+            });
             toast.success(t('interestedParties.partyUpdated'));
           } catch (caught) {
             toast.error(
-              caught instanceof Error
-                ? caught.message
-                : t('interestedParties.partyUpdateFailed'),
+              caught instanceof Error ? caught.message : t('interestedParties.partyUpdateFailed'),
             );
             // Re-throw so the row stays in edit mode with the user's changes on failure.
             throw caught;
@@ -74,9 +74,7 @@ export function InterestedPartiesClient(props: InterestedPartiesClientProps) {
             toast.success(t('interestedParties.partyDeleted'));
           } catch (caught) {
             toast.error(
-              caught instanceof Error
-                ? caught.message
-                : t('interestedParties.partyDeleteFailed'),
+              caught instanceof Error ? caught.message : t('interestedParties.partyDeleteFailed'),
             );
             // Re-throw so the row's delete state resets only after a real outcome.
             throw caught;

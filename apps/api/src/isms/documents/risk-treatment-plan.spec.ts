@@ -1,7 +1,4 @@
-import type {
-  RiskTreatmentExportRow,
-  VendorTreatmentExportRow,
-} from './types';
+import type { RiskTreatmentExportRow, VendorTreatmentExportRow } from './types';
 import {
   buildRiskTreatmentPlanSections,
   riskTreatmentValidationMessages,
@@ -88,7 +85,8 @@ describe('buildRiskTreatmentPlanSections', () => {
         riskRow({
           reference: 'R-02',
           title: 'EU privacy compliance',
-          acceptance: 'Stale — accepted 2026-04-15 (Jane Doe); residual has changed since',
+          acceptance:
+            'Stale — accepted 2026-04-15 (Jane Doe); residual has changed since',
           acceptanceState: 'stale',
           residualLevel: 'Medium',
         }),
@@ -201,6 +199,8 @@ describe('buildRiskTreatmentPlanSections', () => {
 
     expect(risks?.table?.rows).toHaveLength(0);
     expect(risks?.emptyText).toBe('No risks recorded in the Risk Register.');
-    expect(vendors?.emptyText).toBe('No vendors recorded in the Vendors module.');
+    expect(vendors?.emptyText).toBe(
+      'No vendors recorded in the Vendors module.',
+    );
   });
 });

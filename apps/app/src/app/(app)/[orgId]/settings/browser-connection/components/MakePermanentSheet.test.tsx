@@ -86,9 +86,7 @@ describe('MakePermanentSheet', () => {
       expect.objectContaining({ id: 'bap_1' }),
       'JBSWY3DPEHPK3PXP',
     );
-    expect(
-      await screen.findByText(/now stays signed in on its own/i),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/now stays signed in on its own/i)).toBeInTheDocument();
   });
 
   it('recovers to the form (with an error) if the save throws', async () => {
@@ -116,8 +114,6 @@ describe('MakePermanentSheet', () => {
 
     // Back on the form (Save key button reappears), no success screen.
     await waitFor(() => expect(screen.getByText('Save key')).toBeInTheDocument());
-    expect(
-      screen.queryByText(/now stays signed in on its own/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/now stays signed in on its own/i)).not.toBeInTheDocument();
   });
 });

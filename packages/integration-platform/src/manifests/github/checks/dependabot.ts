@@ -7,11 +7,7 @@
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { IntegrationCheck } from '../../../types';
 import type { GitHubDependabotAlert, GitHubOrg, GitHubRepo } from '../types';
-import {
-  alertSeverityThresholdVariable,
-  parseRepoBranch,
-  targetReposVariable,
-} from '../variables';
+import { alertSeverityThresholdVariable, parseRepoBranch, targetReposVariable } from '../variables';
 import {
   countAtOrAboveSeverity,
   highestPresentSeverity,
@@ -233,8 +229,7 @@ export const dependabotCheck: IntegrationCheck = {
       const alertsAtOrAboveThreshold = alertCounts
         ? countAtOrAboveSeverity(alertCounts.bySeverity, severityThreshold)
         : 0;
-      const isDependabotActive =
-        dependabotStatus === 'enabled' || dependabotStatus === 'paused';
+      const isDependabotActive = dependabotStatus === 'enabled' || dependabotStatus === 'paused';
 
       if (alertCounts && alertsAtOrAboveThreshold > 0 && isDependabotActive) {
         const isSingular = alertsAtOrAboveThreshold === 1;

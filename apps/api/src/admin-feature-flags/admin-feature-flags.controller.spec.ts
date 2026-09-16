@@ -57,7 +57,10 @@ describe('AdminFeatureFlagsController', () => {
       .overrideGuard(PlatformAdminGuard)
       .useValue({ canActivate: () => true })
       .overrideInterceptor(AdminAuditLogInterceptor)
-      .useValue({ intercept: (_ctx: unknown, next: { handle: () => unknown }) => next.handle() })
+      .useValue({
+        intercept: (_ctx: unknown, next: { handle: () => unknown }) =>
+          next.handle(),
+      })
       .compile();
 
     controller = module.get(AdminFeatureFlagsController);

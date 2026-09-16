@@ -186,10 +186,7 @@ export class EvidenceExportController {
       );
 
     res.setHeader('Content-Type', 'application/zip');
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="${filename}"`,
-    );
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     // Push the response status line + headers to the wire immediately so
     // upstream proxies (Cloudflare, ALB, etc.) don't apply their idle-timeout
     // while we assemble the first archive entry — a TTFB > ~60s on a large

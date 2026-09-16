@@ -10,16 +10,16 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Stack,
   Spinner,
+  Stack,
 } from '@trycompai/design-system';
 import { Search } from '@trycompai/design-system/icons';
 import { useMemo, useState } from 'react';
 import { usePolicyOnboardingStatus } from '../../(overview)/hooks/use-policy-onboarding-status';
 import { isArchivedPolicy } from '../../lib/policy-archive-state';
 import { PoliciesTableDS } from './PoliciesTableDS';
-import { PolicyTailoringProvider } from './policy-tailoring-context';
 import { comparePoliciesByName } from './policy-name-sort';
+import { PolicyTailoringProvider } from './policy-tailoring-context';
 
 interface PolicyFiltersProps {
   policies: Policy[];
@@ -136,7 +136,9 @@ export function PolicyFilters({ policies, onboardingRunId }: PolicyFiltersProps)
             <div className="flex-1 md:w-[160px] md:flex-none">
               <Select
                 value={statusFilter}
-                onValueChange={(v) => setStatusFilter((v ?? 'all') as PolicyStatus | 'all' | 'archived')}
+                onValueChange={(v) =>
+                  setStatusFilter((v ?? 'all') as PolicyStatus | 'all' | 'archived')
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Status">{statusLabel}</SelectValue>
@@ -151,7 +153,10 @@ export function PolicyFilters({ policies, onboardingRunId }: PolicyFiltersProps)
               </Select>
             </div>
             <div className="flex-1 md:w-[160px] md:flex-none">
-              <Select value={departmentFilter} onValueChange={(v) => setDepartmentFilter(v ?? 'all')}>
+              <Select
+                value={departmentFilter}
+                onValueChange={(v) => setDepartmentFilter(v ?? 'all')}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Department">{departmentLabel}</SelectValue>
                 </SelectTrigger>

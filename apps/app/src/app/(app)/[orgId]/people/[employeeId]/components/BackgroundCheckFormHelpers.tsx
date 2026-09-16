@@ -56,9 +56,7 @@ export function FormFooterRow({
 }) {
   return (
     <div
-      className={`flex items-center gap-2 ${
-        align === 'end' ? 'justify-end' : 'justify-between'
-      }`}
+      className={`flex items-center gap-2 ${align === 'end' ? 'justify-end' : 'justify-between'}`}
     >
       {info ?? <span />}
       <div className="flex gap-2">{children}</div>

@@ -6,11 +6,11 @@ import { Add } from '@trycompai/design-system/icons';
 import { useForm } from 'react-hook-form';
 import type { ApproverOption } from './IsmsApprovalSection';
 import { objectiveSchema, type ObjectiveFormValues } from './objective-schema';
-import { IsmsAddCard } from './shared';
 import { ObjectivesFormFields } from './ObjectivesFormFields';
+import { IsmsAddCard } from './shared';
 
-export { OBJECTIVE_STATUS_LABELS } from './objectives-status';
 export type { ObjectiveFormValues } from './objective-schema';
+export { OBJECTIVE_STATUS_LABELS } from './objectives-status';
 
 interface ObjectivesFormProps {
   ownerOptions: ApproverOption[];

@@ -30,9 +30,9 @@ describe('normalizeTargetUrl', () => {
   });
 
   it('preserves a trailing slash that belongs to a query value', () => {
-    expect(
-      normalizeTargetUrl('https://app.example.com/?next=/portal/'),
-    ).toBe('https://app.example.com/?next=/portal/');
+    expect(normalizeTargetUrl('https://app.example.com/?next=/portal/')).toBe(
+      'https://app.example.com/?next=/portal/',
+    );
   });
 
   it('strips path trailing slashes while keeping the query intact', () => {
@@ -48,9 +48,7 @@ describe('normalizeTargetUrl', () => {
 
 describe('buildAdditionalContext', () => {
   it('returns undefined when there is nothing to send', () => {
-    expect(
-      buildAdditionalContext({ findingContexts: [] }),
-    ).toBeUndefined();
+    expect(buildAdditionalContext({ findingContexts: [] })).toBeUndefined();
     expect(
       buildAdditionalContext({
         userProvidedContext: '   ',

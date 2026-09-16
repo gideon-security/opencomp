@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { employeeAccessCheck } from '../checks/employee-access';
 import type { CheckContext, CheckResult, CheckVariableValues } from '../../../types';
+import { employeeAccessCheck } from '../checks/employee-access';
 import type { GoogleWorkspaceUser } from '../types';
 
-const makeUser = (overrides: Partial<GoogleWorkspaceUser> & { primaryEmail: string }): GoogleWorkspaceUser => ({
+const makeUser = (
+  overrides: Partial<GoogleWorkspaceUser> & { primaryEmail: string },
+): GoogleWorkspaceUser => ({
   id: `id_${overrides.primaryEmail}`,
   name: { givenName: 'Test', familyName: 'User', fullName: 'Test User' },
   isAdmin: false,
@@ -39,7 +41,7 @@ async function runCheck(
     fail: (result) => {
       failed.push(result as CheckResult);
     },
-    fetch: (async <T,>(path: string): Promise<T> => {
+    fetch: (async <T>(path: string): Promise<T> => {
       if (path.includes('/roles')) {
         return { items: [{ roleId: 'r1', roleName: 'Groups Admin' }] } as unknown as T;
       }

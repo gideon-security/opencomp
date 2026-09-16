@@ -45,6 +45,7 @@ git worktree add .worktrees/<short-slug> -b <branch-name> origin/main
 **Do not** run any of these by hand. If the hook logs a failure, diagnose and fix at the source — don't paper over with a manual install.
 
 Skip toggles (rare):
+
 - `SKIP_WORKTREE_DB=1` — share the main `comp` DB (drift risk; only for read-only worktrees)
 - `SKIP_WORKTREE_SETUP=1` — skip install + migrate + generate (for a "just files" worktree)
 - `SETUP_WORKTREE_WITH_BUILD=1` — also run `npm run build` (adds minutes; only when you need the built artifacts)
@@ -65,6 +66,7 @@ Trigger.dev's `trigger dev` CLI **cannot** be isolated per worktree. Running `np
 ### 4. Code the feature
 
 Standard repo conventions apply (see `AGENTS.md`). Highlights:
+
 - TDD for any non-trivial change (`superpowers:test-driven-development`)
 - Brainstorm before building new UX (`superpowers:brainstorming`)
 - Plans + subagent-driven execution for multi-step work
@@ -105,10 +107,10 @@ If you catch yourself doing any of these, stop — the hook should have handled 
 
 ## Common Mistakes
 
-| Mistake | Fix |
-|---|---|
-| Creating the worktree from another worktree instead of the main clone | Always `cd` to `/Users/mariano/code/comp` first |
-| Editing `.env` in a worktree and expecting it to propagate | If it's a symlink, yes; if it's a real copy (has `DATABASE_URL`), no. Check with `ls -la`. |
-| Forgetting to bump `PORT` → two dev servers collide | Put `PORT=<free-port>` in the worktree's `.env.local` |
-| Running `trigger dev` in multiple worktrees | Switch to `dev:no-trigger` in all but one |
-| Not cleaning up → orphan `compdev_*` databases piling up | Use the `stale-worktree-cleanup` skill regularly |
+| Mistake                                                               | Fix                                                                                        |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Creating the worktree from another worktree instead of the main clone | Always `cd` to `/Users/mariano/code/comp` first                                            |
+| Editing `.env` in a worktree and expecting it to propagate            | If it's a symlink, yes; if it's a real copy (has `DATABASE_URL`), no. Check with `ls -la`. |
+| Forgetting to bump `PORT` → two dev servers collide                   | Put `PORT=<free-port>` in the worktree's `.env.local`                                      |
+| Running `trigger dev` in multiple worktrees                           | Switch to `dev:no-trigger` in all but one                                                  |
+| Not cleaning up → orphan `compdev_*` databases piling up              | Use the `stale-worktree-cleanup` skill regularly                                           |

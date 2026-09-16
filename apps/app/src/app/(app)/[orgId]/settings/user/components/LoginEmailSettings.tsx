@@ -2,14 +2,7 @@
 
 import { authClient } from '@/utils/auth-client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Button,
-  Input,
-  Label,
-  Section,
-  Stack,
-  Text,
-} from '@trycompai/design-system';
+import { Button, Input, Label, Section, Stack, Text } from '@trycompai/design-system';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -41,9 +34,7 @@ export function LoginEmailSettings({ currentEmail }: Props) {
     to: string;
   } | null>(null);
   const pendingEmail =
-    pendingRequest && pendingRequest.from === currentEmail
-      ? pendingRequest.to
-      : null;
+    pendingRequest && pendingRequest.from === currentEmail ? pendingRequest.to : null;
 
   const {
     register,
@@ -78,10 +69,7 @@ export function LoginEmailSettings({ currentEmail }: Props) {
   });
 
   return (
-    <Section
-      title="Login Email"
-      description={`You currently sign in as ${currentEmail}.`}
-    >
+    <Section title="Login Email" description={`You currently sign in as ${currentEmail}.`}>
       <form onSubmit={handleChangeEmail} noValidate>
         <Stack gap="md">
           <Stack gap="sm">
@@ -92,9 +80,7 @@ export function LoginEmailSettings({ currentEmail }: Props) {
                 type="email"
                 placeholder="you@company.com"
                 aria-invalid={errors.newEmail ? true : undefined}
-                aria-describedby={
-                  errors.newEmail ? 'newEmail-error' : undefined
-                }
+                aria-describedby={errors.newEmail ? 'newEmail-error' : undefined}
                 {...register('newEmail')}
               />
             </div>
@@ -106,9 +92,8 @@ export function LoginEmailSettings({ currentEmail }: Props) {
               </div>
             ) : (
               <Text size="sm" variant="muted">
-                We'll send a confirmation link to your current email first,
-                then a verification link to the new address to complete the
-                change.
+                We'll send a confirmation link to your current email first, then a verification link
+                to the new address to complete the change.
               </Text>
             )}
           </Stack>
@@ -122,10 +107,9 @@ export function LoginEmailSettings({ currentEmail }: Props) {
           {pendingEmail && (
             <div className="bg-muted rounded-md p-3" role="status">
               <Text size="sm" variant="muted">
-                We sent a confirmation link to {currentEmail}. Once you confirm
-                it, a verification link goes to {pendingEmail} to finish the
-                change. If it doesn't arrive, the new address may already be in
-                use.
+                We sent a confirmation link to {currentEmail}. Once you confirm it, a verification
+                link goes to {pendingEmail} to finish the change. If it doesn't arrive, the new
+                address may already be in use.
               </Text>
             </div>
           )}

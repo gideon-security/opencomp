@@ -1,12 +1,12 @@
-import { render, screen, waitFor } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDriftResult, IsmsLeadershipNarrative } from '../isms-types';
 
 // ─── Mock usePermissions ─────────────────────────────────────
@@ -61,7 +61,13 @@ vi.mock('@trycompai/design-system', () => ({
   AlertTitle: ({ children }: { children: React.ReactNode }) => <strong>{children}</strong>,
   AlertDescription: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Badge: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
-  Button: ({ children, onClick, disabled, type, 'aria-label': ariaLabel }: {
+  Button: ({
+    children,
+    onClick,
+    disabled,
+    type,
+    'aria-label': ariaLabel,
+  }: {
     children?: React.ReactNode;
     onClick?: () => void;
     disabled?: boolean;
@@ -211,9 +217,7 @@ describe('LeadershipClient', () => {
     expect(
       screen.getByDisplayValue('Top management is fully committed to the ISMS.'),
     ).toBeInTheDocument();
-    expect(
-      screen.getByDisplayValue('Policy aligned to strategy commitment.'),
-    ).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Policy aligned to strategy commitment.')).toBeInTheDocument();
     expect(
       screen.getByDisplayValue('Other management roles supported commitment.'),
     ).toBeInTheDocument();
@@ -241,9 +245,7 @@ describe('LeadershipClient', () => {
     expect(
       screen.queryByDisplayValue('Top management is fully committed to the ISMS.'),
     ).not.toBeInTheDocument();
-    expect(
-      screen.getByText('Top management is fully committed to the ISMS.'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Top management is fully committed to the ISMS.')).toBeInTheDocument();
     expect(screen.getByText('Policy aligned to strategy commitment.')).toBeInTheDocument();
     // Export remains available to readers.
     expect(screen.getByText('shell.exportPdf')).toBeInTheDocument();

@@ -1,5 +1,4 @@
 import { serverApi } from '@/lib/api-server';
-import { Breadcrumb, PageHeader, PageLayout } from '@trycompai/design-system';
 import type {
   Control,
   FrameworkEditorFramework,
@@ -9,6 +8,7 @@ import type {
   RequirementMap,
   Task,
 } from '@db';
+import { Breadcrumb, PageHeader, PageLayout } from '@trycompai/design-system';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -39,9 +39,7 @@ export default async function ControlPage({ params }: ControlPageProps) {
   const { controlId, orgId } = await Promise.resolve(params);
   const t = await getTranslations('controls');
 
-  const controlRes = await serverApi.get<ControlDetail>(
-    `/v1/controls/${controlId}`,
-  );
+  const controlRes = await serverApi.get<ControlDetail>(`/v1/controls/${controlId}`);
 
   if (!controlRes.data || controlRes.error) {
     redirect('/');
@@ -67,10 +65,7 @@ export default async function ControlPage({ params }: ControlPageProps) {
           { label: control.name, isCurrent: true },
         ]}
       />
-      <PageHeader
-        title={control.name}
-        actions={<ControlHeaderActions control={control} />}
-      />
+      <PageHeader title={control.name} actions={<ControlHeaderActions control={control} />} />
       <SingleControl
         control={control}
         controlProgress={controlProgress}

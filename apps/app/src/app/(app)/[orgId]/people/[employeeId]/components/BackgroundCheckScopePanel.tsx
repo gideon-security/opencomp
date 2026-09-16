@@ -99,11 +99,7 @@ function ScopeRowItem({ row, isFirst }: { row: ScopeRow; isFirst: boolean }) {
         <div>{row.label}</div>
         <div className="text-xs text-muted-foreground">{row.description}</div>
       </div>
-      {row.required ? (
-        <Badge variant="default">Required</Badge>
-      ) : (
-        <span aria-hidden />
-      )}
+      {row.required ? <Badge variant="default">Required</Badge> : <span aria-hidden />}
     </div>
   );
 }

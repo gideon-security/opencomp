@@ -55,7 +55,9 @@ const base = {
 
 describe('BrowserEvidenceHeader', () => {
   it('shows "All passing" when every latest run succeeded', () => {
-    render(<BrowserEvidenceHeader {...base} automations={[automation({ runs: [run('completed')] })]} />);
+    render(
+      <BrowserEvidenceHeader {...base} automations={[automation({ runs: [run('completed')] })]} />,
+    );
     expect(screen.getByText('All passing')).toBeInTheDocument();
   });
 

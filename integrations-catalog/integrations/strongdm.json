@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to StrongDM Admin UI\n2. Go to Settings > User Management > Provisioning\n3. Select the 'Generic' provider option\n4. Click 'Activate' to generate a bearer token\n5. Copy the generated token and paste it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

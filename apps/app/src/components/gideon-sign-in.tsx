@@ -27,13 +27,7 @@ export function GideonSignIn({ inviteCode, redirectTo }: GideonSignInProps) {
   };
 
   return (
-    <Button
-      onClick={handleSignIn}
-      variant="outline"
-      width="full"
-      size="xl"
-      loading={isLoading}
-    >
+    <Button onClick={handleSignIn} variant="outline" width="full" size="xl" loading={isLoading}>
       Continue with Gideon
     </Button>
   );

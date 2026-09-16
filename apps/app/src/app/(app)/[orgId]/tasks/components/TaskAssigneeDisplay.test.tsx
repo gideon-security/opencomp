@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ModernTaskListItem } from './ModernTaskListItem';

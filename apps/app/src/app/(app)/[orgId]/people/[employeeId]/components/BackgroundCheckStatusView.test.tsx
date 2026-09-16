@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { toast } from 'sonner';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BackgroundCheckStatusView } from './BackgroundCheckStatusView';
@@ -46,15 +46,11 @@ describe('BackgroundCheckStatusView', () => {
   it('copies the candidate link with a toast', async () => {
     render(<BackgroundCheckStatusView backgroundCheck={record()} />);
 
-    fireEvent.click(
-      screen.getByRole('button', { name: 'backgroundCheck.view.copyCandidateLink' }),
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'backgroundCheck.view.copyCandidateLink' }));
 
     await waitFor(() => {
       expect(writeText).toHaveBeenCalledWith('https://identity.gideondefender.com/cand_1');
-      expect(toast.success).toHaveBeenCalledWith(
-        'backgroundCheck.view.candidateLinkCopied',
-      );
+      expect(toast.success).toHaveBeenCalledWith('backgroundCheck.view.candidateLinkCopied');
     });
     expect(screen.queryByRole('link', { name: /candidate link/i })).not.toBeInTheDocument();
   });
@@ -63,14 +59,10 @@ describe('BackgroundCheckStatusView', () => {
     writeText.mockRejectedValueOnce(new Error('blocked'));
     render(<BackgroundCheckStatusView backgroundCheck={record()} />);
 
-    fireEvent.click(
-      screen.getByRole('button', { name: 'backgroundCheck.view.copyCandidateLink' }),
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'backgroundCheck.view.copyCandidateLink' }));
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith(
-        'backgroundCheck.view.couldNotCopyLink',
-      );
+      expect(toast.error).toHaveBeenCalledWith('backgroundCheck.view.couldNotCopyLink');
     });
   });
 
@@ -283,7 +275,9 @@ describe('BackgroundCheckStatusView', () => {
       );
       expect(writeText).toHaveBeenCalledWith(expect.stringContaining('KEY FINDINGS'));
       expect(writeText).toHaveBeenCalledWith(
-        expect.stringContaining('Employment verified. (Company profile: https://example.com/source)'),
+        expect.stringContaining(
+          'Employment verified. (Company profile: https://example.com/source)',
+        ),
       );
       expect(writeText).toHaveBeenCalledWith(
         expect.stringContaining('SOURCES\n- Company profile: https://example.com/source'),

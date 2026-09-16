@@ -240,14 +240,11 @@ export function useIntegrationMutations() {
         return { success: false, error: 'No organization selected' };
       }
 
-      const response = await api.post<{ id: string }>(
-        '/v1/integrations/connections',
-        {
-          providerSlug,
-          organizationId: orgId,
-          credentials,
-        },
-      );
+      const response = await api.post<{ id: string }>('/v1/integrations/connections', {
+        providerSlug,
+        organizationId: orgId,
+        credentials,
+      });
 
       if (response.error) {
         return { success: false, error: response.error };
@@ -288,9 +285,7 @@ export function useIntegrationMutations() {
    */
   const pauseConnection = useCallback(
     async (connectionId: string): Promise<{ success: boolean; error?: string }> => {
-      const response = await api.post(
-        `/v1/integrations/connections/${connectionId}/pause`,
-      );
+      const response = await api.post(`/v1/integrations/connections/${connectionId}/pause`);
 
       if (response.error) {
         return { success: false, error: response.error };
@@ -309,9 +304,7 @@ export function useIntegrationMutations() {
    */
   const resumeConnection = useCallback(
     async (connectionId: string): Promise<{ success: boolean; error?: string }> => {
-      const response = await api.post(
-        `/v1/integrations/connections/${connectionId}/resume`,
-      );
+      const response = await api.post(`/v1/integrations/connections/${connectionId}/resume`);
 
       if (response.error) {
         return { success: false, error: response.error };
@@ -330,9 +323,7 @@ export function useIntegrationMutations() {
    */
   const disconnectConnection = useCallback(
     async (connectionId: string): Promise<{ success: boolean; error?: string }> => {
-      const response = await api.post(
-        `/v1/integrations/connections/${connectionId}/disconnect`,
-      );
+      const response = await api.post(`/v1/integrations/connections/${connectionId}/disconnect`);
 
       if (response.error) {
         return { success: false, error: response.error };
@@ -636,10 +627,9 @@ export function useConnectionServices(connectionId: string | null) {
         .filter((s) => (s.id === serviceId ? enabled : s.enabled))
         .map((s) => s.id);
 
-      const response = await api.put(
-        `/v1/integrations/connections/${connectionId}/services`,
-        { services: newEnabledIds },
-      );
+      const response = await api.put(`/v1/integrations/connections/${connectionId}/services`, {
+        services: newEnabledIds,
+      });
 
       if (response.error) {
         throw new Error(response.error);

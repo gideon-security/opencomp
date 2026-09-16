@@ -59,9 +59,7 @@ export function ComboboxCell({
     ? options.filter((opt) => opt.toLowerCase().includes(normalizedSearch))
     : options;
 
-  const exactMatchExists = options.some(
-    (opt) => opt.toLowerCase() === normalizedSearch,
-  );
+  const exactMatchExists = options.some((opt) => opt.toLowerCase() === normalizedSearch);
   const showCreateOption = trimmedSearch !== '' && !exactMatchExists;
 
   const handleSelect = (selected: string) => {
@@ -88,9 +86,7 @@ export function ComboboxCell({
     );
   }
 
-  const dropdownPosition = dropUp
-    ? 'bottom-full mb-1'
-    : 'top-full mt-1';
+  const dropdownPosition = dropUp ? 'bottom-full mb-1' : 'top-full mt-1';
 
   return (
     <div ref={containerRef} className="relative">
@@ -98,16 +94,16 @@ export function ComboboxCell({
         className="hover:bg-muted/50 flex cursor-pointer items-center justify-between px-2 py-1.5"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span
-          className={`truncate text-sm ${!value ? 'text-muted-foreground italic' : ''}`}
-        >
+        <span className={`truncate text-sm ${!value ? 'text-muted-foreground italic' : ''}`}>
           {value || placeholder}
         </span>
         <ChevronDown className="text-muted-foreground h-4 w-4 shrink-0" />
       </div>
 
       {isOpen && (
-        <div className={`bg-popover border-border absolute left-0 ${dropdownPosition} z-50 min-w-[220px] rounded-xs border shadow-lg`}>
+        <div
+          className={`bg-popover border-border absolute left-0 ${dropdownPosition} z-50 min-w-[220px] rounded-xs border shadow-lg`}
+        >
           <div className="border-border flex items-center border-b px-3 py-1.5">
             <Search className="text-muted-foreground mr-2 h-3.5 w-3.5 shrink-0" />
             <input
@@ -149,9 +145,7 @@ export function ComboboxCell({
               </button>
             ))}
             {filteredOptions.length === 0 && !showCreateOption && (
-              <div className="text-muted-foreground px-3 py-1.5 text-sm">
-                No options found
-              </div>
+              <div className="text-muted-foreground px-3 py-1.5 text-sm">No options found</div>
             )}
             {showCreateOption && (
               <button

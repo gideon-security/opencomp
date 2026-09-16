@@ -1,5 +1,8 @@
 'use client';
 
+import { SelectAssignee } from '@/components/SelectAssignee';
+import type { TaskItem, TaskItemPriority, TaskItemStatus } from '@/hooks/use-task-items';
+import type { Member, User } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import {
   DropdownMenu,
@@ -7,23 +10,27 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
-import { Checkmark, ArrowLeft, Link, Tag, TrashCan, User as UserIcon } from '@trycompai/design-system/icons';
-import { SelectAssignee } from '@/components/SelectAssignee';
+import {
+  ArrowLeft,
+  Checkmark,
+  Link,
+  Tag,
+  TrashCan,
+  User as UserIcon,
+} from '@trycompai/design-system/icons';
 import { toast } from 'sonner';
-import type { TaskItem, TaskItemPriority, TaskItemStatus } from '@/hooks/use-task-items';
-import type { Member, User } from '@db';
+import {
+  PRIORITY_OPTIONS,
+  STATUS_OPTIONS,
+  getPriorityColor,
+  getPriorityIcon,
+  getStatusColor,
+  getStatusIcon,
+} from './task-item-utils';
 
 type OrganizationMember = Member & {
   user: User;
 };
-import {
-  STATUS_OPTIONS,
-  PRIORITY_OPTIONS,
-  getStatusIcon,
-  getStatusColor,
-  getPriorityIcon,
-  getPriorityColor,
-} from './task-item-utils';
 
 interface TaskItemFocusSidebarProps {
   taskItem: TaskItem;
@@ -70,7 +77,7 @@ export function TaskItemFocusSidebar({
       <div className="w-12 shrink-0 relative flex flex-col items-center -mr-6 transition-all duration-300 ease-in-out overflow-hidden">
         {/* Left border line */}
         <div className="absolute left-0 top-0 bottom-0 w-px bg-border -my-6" />
-        
+
         {/* All controls in one centered column */}
         <div className="flex flex-col items-center gap-2 py-2 w-full">
           {/* Collapse button */}
@@ -83,7 +90,7 @@ export function TaskItemFocusSidebar({
           >
             <ArrowLeft className="h-3.5 w-3.5 shrink-0 transition-transform duration-400 ease-in-out" />
           </Button>
-          
+
           {/* Status */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild disabled={readOnly}>
@@ -119,7 +126,6 @@ export function TaskItemFocusSidebar({
               })}
             </DropdownMenuContent>
           </DropdownMenu>
-
 
           {/* Priority */}
           <DropdownMenu>
@@ -157,7 +163,6 @@ export function TaskItemFocusSidebar({
             </DropdownMenuContent>
           </DropdownMenu>
 
-
           {/* Assignee */}
           {assignableMembers && assignableMembers.length > 0 && (
             <DropdownMenu>
@@ -166,13 +171,19 @@ export function TaskItemFocusSidebar({
                   variant="ghost"
                   size="icon"
                   className="h-7 w-7 rounded-md bg-muted/50 hover:bg-muted"
-                  title={taskItem.assignee ? `Assignee: ${taskItem.assignee.user?.name || taskItem.assignee.user?.email}` : 'No assignee'}
+                  title={
+                    taskItem.assignee
+                      ? `Assignee: ${taskItem.assignee.user?.name || taskItem.assignee.user?.email}`
+                      : 'No assignee'
+                  }
                   disabled={readOnly}
                 >
                   {taskItem.assignee?.user?.image ? (
                     <img
                       src={taskItem.assignee.user.image}
-                      alt={taskItem.assignee.user.name || taskItem.assignee.user.email || 'Assignee'}
+                      alt={
+                        taskItem.assignee.user.name || taskItem.assignee.user.email || 'Assignee'
+                      }
                       className="h-5 w-5 rounded-full"
                     />
                   ) : (
@@ -206,9 +217,9 @@ export function TaskItemFocusSidebar({
                             alt={member.user.name || member.user.email || 'User'}
                             className="h-4 w-4 rounded-full shrink-0"
                           />
-                  ) : (
-                    <UserIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  )}
+                        ) : (
+                          <UserIcon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                        )}
                         <span className="truncate">{member.user.name || member.user.email}</span>
                         {isSelected && <span className="ml-auto text-xs">✓</span>}
                       </div>
@@ -219,7 +230,7 @@ export function TaskItemFocusSidebar({
             </DropdownMenu>
           )}
         </div>
-        
+
         {/* Spacer */}
         <div className="flex-1" />
       </div>
@@ -230,7 +241,7 @@ export function TaskItemFocusSidebar({
     <div className="w-64 shrink-0 space-y-3 pl-6 relative flex flex-col transition-all duration-300 ease-in-out overflow-hidden">
       {/* Left border line - extends full height */}
       <div className="absolute left-0 top-0 bottom-0 w-px bg-border -my-6" />
-      
+
       {/* Properties */}
       <div className="space-y-3">
         <div className="flex items-center justify-between pb-3 border-b border-border min-w-0">
@@ -244,9 +255,9 @@ export function TaskItemFocusSidebar({
             >
               <ArrowLeft className="h-3.5 w-3.5 shrink-0 transition-transform duration-400 ease-in-out rotate-180" />
             </Button>
-          <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
-            Properties
-          </label>
+            <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
+              Properties
+            </label>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <Button
@@ -256,7 +267,11 @@ export function TaskItemFocusSidebar({
               onClick={onCopyLink}
               title="Copy task link"
             >
-              {copiedLink ? <Checkmark className="h-3.5 w-3.5" /> : <Link className="h-3.5 w-3.5" />}
+              {copiedLink ? (
+                <Checkmark className="h-3.5 w-3.5" />
+              ) : (
+                <Link className="h-3.5 w-3.5" />
+              )}
             </Button>
             <Button
               variant="ghost"
@@ -265,7 +280,11 @@ export function TaskItemFocusSidebar({
               onClick={onCopyTaskId}
               title="Copy task ID"
             >
-              {copiedTaskId ? <Checkmark className="h-3.5 w-3.5" /> : <Tag className="h-3.5 w-3.5" />}
+              {copiedTaskId ? (
+                <Checkmark className="h-3.5 w-3.5" />
+              ) : (
+                <Tag className="h-3.5 w-3.5" />
+              )}
             </Button>
             {canDelete && (
               <Button
@@ -387,4 +406,3 @@ export function TaskItemFocusSidebar({
     </div>
   );
 }
-

@@ -20,4 +20,3 @@ export interface UseQuestionnaireDetailProps {
   organizationId: string;
   initialQuestions: QuestionnaireQuestionAnswer[];
 }
-

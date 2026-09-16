@@ -58,5 +58,3 @@ export function normalizeWebsite(website: string | null | undefined): string | n
     return null;
   }
 }
-
-

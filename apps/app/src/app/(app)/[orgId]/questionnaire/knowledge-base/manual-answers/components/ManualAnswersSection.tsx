@@ -1,6 +1,12 @@
 'use client';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@gideon-defender/ui/accordion';
+import { Card } from '@gideon-defender/ui';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@gideon-defender/ui/accordion';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,23 +18,24 @@ import {
   AlertDialogTitle,
 } from '@gideon-defender/ui/alert-dialog';
 import { Button } from '@gideon-defender/ui/button';
-import { Card } from '@gideon-defender/ui';
-import { useTranslations } from 'next-intl';
+import { format } from 'date-fns';
 import { ChevronLeft, ChevronRight, ExternalLink, PenTool, Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useRef, useState, useEffect } from 'react';
-import { usePagination } from '../../hooks/usePagination';
-import { format } from 'date-fns';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { useManualAnswers } from '../../../hooks/useManualAnswers';
 import type { ManualAnswer } from '../../../components/types';
+import { useManualAnswers } from '../../../hooks/useManualAnswers';
+import { usePagination } from '../../hooks/usePagination';
 
 interface ManualAnswersSectionProps {
   manualAnswers: ManualAnswer[];
 }
 
-export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: ManualAnswersSectionProps) {
+export function ManualAnswersSection({
+  manualAnswers: initialManualAnswers,
+}: ManualAnswersSectionProps) {
   const params = useParams();
   const orgId = params.orgId as string;
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -42,11 +49,10 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
   const [isDeletingAll, setIsDeletingAll] = useState(false);
   const [accordionValue, setAccordionValue] = useState<string>('');
 
-  const {
-    manualAnswers,
-    deleteAnswer,
-    deleteAll,
-  } = useManualAnswers({ organizationId: orgId, fallbackData: initialManualAnswers });
+  const { manualAnswers, deleteAnswer, deleteAll } = useManualAnswers({
+    organizationId: orgId,
+    fallbackData: initialManualAnswers,
+  });
 
   const { currentPage, totalPages, paginatedItems, handlePageChange } = usePagination({
     items: manualAnswers,
@@ -124,7 +130,9 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
 
     handleHashNavigation();
     window.addEventListener('hashchange', handleHashNavigation);
-    return () => { window.removeEventListener('hashchange', handleHashNavigation); };
+    return () => {
+      window.removeEventListener('hashchange', handleHashNavigation);
+    };
   }, []);
 
   return (
@@ -144,9 +152,7 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
             <div className="flex items-center gap-2">
               <PenTool className="h-5 w-5 text-muted-foreground" />
               <span className="text-base font-semibold">{t('manualAnswers.title')}</span>
-              <span className="text-sm text-muted-foreground">
-                ({manualAnswers.length})
-              </span>
+              <span className="text-sm text-muted-foreground">({manualAnswers.length})</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-4">
@@ -193,7 +199,7 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
               disabled={isDeleting}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-                      {isDeleting ? t('manualAnswers.deleting') : tCommon('common.delete')}
+              {isDeleting ? t('manualAnswers.deleting') : tCommon('common.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -205,7 +211,8 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
           <AlertDialogHeader>
             <AlertDialogTitle>Delete All Manual Answers</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete all {manualAnswers.length} manual answers? This action cannot be undone.
+              Are you sure you want to delete all {manualAnswers.length} manual answers? This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -215,7 +222,7 @@ export function ManualAnswersSection({ manualAnswers: initialManualAnswers }: Ma
               disabled={isDeletingAll}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-                      {isDeletingAll ? t('manualAnswers.deleting') : t('manualAnswers.deleteAll')}
+              {isDeletingAll ? t('manualAnswers.deleting') : t('manualAnswers.deleteAll')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -40,19 +40,24 @@ describe('PeopleAccessService.getMemberAccess', () => {
     listSourcesBoundToTask: jest.fn(),
     getLatestResultsByCheck: jest.fn(),
   };
-  const service = new PeopleAccessService(checkResults as unknown as CheckResultsService);
+  const service = new PeopleAccessService(
+    checkResults as unknown as CheckResultsService,
+  );
 
   beforeEach(() => {
     jest.clearAllMocks();
-    memberFindFirst.mockResolvedValue({ id: 'mem_1', user: { email: 'Jane@X.com ' } });
+    memberFindFirst.mockResolvedValue({
+      id: 'mem_1',
+      user: { email: 'Jane@X.com ' },
+    });
     checkResults.listSourcesBoundToTask.mockResolvedValue([SOURCE]);
   });
 
   it('404s when the member is not in this organization', async () => {
     memberFindFirst.mockResolvedValue(null);
-    await expect(service.getMemberAccess('org_1', 'mem_x')).rejects.toBeInstanceOf(
-      NotFoundException,
-    );
+    await expect(
+      service.getMemberAccess('org_1', 'mem_x'),
+    ).rejects.toBeInstanceOf(NotFoundException);
   });
 
   it('matches per-user rows by lowercased email and builds display entries', async () => {
@@ -81,7 +86,9 @@ describe('PeopleAccessService.getMemberAccess', () => {
     expect(sources[0].entries).toHaveLength(1);
     const entry = sources[0].entries[0];
     expect(entry.id).toBe('icr_1');
-    expect(entry.summary).toBe('Jane has access to Google Workspace as Super Admin');
+    expect(entry.summary).toBe(
+      'Jane has access to Google Workspace as Super Admin',
+    );
     // Primitive evidence values become labeled fields; nulls, arrays, and
     // timestamp keys are excluded; raw evidence is passed through for auditors.
     expect(entry.fields).toEqual({

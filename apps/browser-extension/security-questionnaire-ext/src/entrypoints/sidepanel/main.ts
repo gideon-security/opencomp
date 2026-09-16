@@ -1,4 +1,5 @@
 import { browser } from 'wxt/browser';
+import { buildAnswersClipboardText } from '../../lib/answers-clipboard';
 import {
   getResponseError,
   isConfirmationResponse,
@@ -7,16 +8,12 @@ import {
   isPanelStateResponse,
   isQueueResponse,
 } from '../../lib/response-guards';
-import { buildAnswersClipboardText } from '../../lib/answers-clipboard';
 import type { DomainConfirmationRequest, PanelState } from '../../lib/types';
-import {
-  bindAnswerAutosave,
-  saveAllVisibleAnswers,
-  saveAnswerForItem,
-} from './answer-edits';
 import { getActiveTab, getHost } from './active-tab';
+import { bindAnswerAutosave, saveAllVisibleAnswers, saveAnswerForItem } from './answer-edits';
 import { collectQuestions } from './content-collector';
 import { showDialog } from './dialog';
+import './queue-polish.css';
 import {
   renderDomainDialog,
   renderInsertDialog,
@@ -24,11 +21,10 @@ import {
   renderStaleDialog,
 } from './render';
 import { handleSheetMappingChange } from './sheet-mapping-actions';
-import { handleSheetPaste } from './sheet-paste-actions';
-import './style.css';
-import './queue-polish.css';
-import './sticky-footer.css';
 import './sheet-mapping.css';
+import { handleSheetPaste } from './sheet-paste-actions';
+import './sticky-footer.css';
+import './style.css';
 
 const app = document.getElementById('app');
 if (!app) throw new Error('Side panel root not found');
@@ -113,7 +109,9 @@ async function handleAction(target: HTMLElement): Promise<void> {
       await refreshFromPage();
     } catch (error) {
       statusMessage = error instanceof Error ? error.message : 'Unable to refresh scan.';
-    } finally { isRefreshing = false; }
+    } finally {
+      isRefreshing = false;
+    }
     render(statusMessage || `Scan refreshed · ${state?.queue.items.length ?? 0} found.`);
   }
   if (action === 'close') await closePanel();
@@ -169,10 +167,12 @@ async function handleOrgSwitch(organizationId: string): Promise<void> {
 
 async function handleSelectItem(itemId: string): Promise<void> {
   await runQueueAction({ type: 'comp:select-queue-item', itemId });
-  await browser.tabs.sendMessage(activeTabId ?? 0, {
-    type: 'comp:focus-question',
-    fieldId: itemId,
-  }).catch(() => undefined);
+  await browser.tabs
+    .sendMessage(activeTabId ?? 0, {
+      type: 'comp:focus-question',
+      fieldId: itemId,
+    })
+    .catch(() => undefined);
 }
 
 async function handleInsertApproved(): Promise<void> {
@@ -194,15 +194,17 @@ async function handleInsertApproved(): Promise<void> {
   const org = currentState.auth.organizations.find(
     (entry) => entry.id === currentState.auth.selectedOrganizationId,
   );
-  const confirmed = await showDialog(renderInsertDialog({
-    count: approved.length,
-    host: currentState.queue.host,
-    organizationName: org?.name ?? 'selected organization',
-    operation: 'Insert',
-    lowConfidenceCount: currentState.queue.items.filter(
-      (item) => item.confidence === 'low' && item.status !== 'approved',
-    ).length,
-  }));
+  const confirmed = await showDialog(
+    renderInsertDialog({
+      count: approved.length,
+      host: currentState.queue.host,
+      organizationName: org?.name ?? 'selected organization',
+      operation: 'Insert',
+      lowConfidenceCount: currentState.queue.items.filter(
+        (item) => item.confidence === 'low' && item.status !== 'approved',
+      ).length,
+    }),
+  );
   if (confirmed) await runQueueAction({ type: 'comp:insert-approved' });
 }
 
@@ -238,10 +240,12 @@ async function handleDomainConfirmation(
   confirmation: DomainConfirmationRequest,
   retry: Parameters<typeof runQueueAction>[0],
 ): Promise<void> {
-  const confirmed = await showDialog(renderDomainDialog({
-    host: confirmation.host,
-    organizationName: confirmation.organizationName,
-  }));
+  const confirmed = await showDialog(
+    renderDomainDialog({
+      host: confirmation.host,
+      organizationName: confirmation.organizationName,
+    }),
+  );
   if (!confirmed) return;
   await browser.runtime.sendMessage({
     type: 'comp:confirm-domain',
@@ -293,8 +297,12 @@ function restoreListScrollTop(value: number | null): void {
 }
 
 function isPanelRefreshMessage(value: unknown): value is { type: string } {
-  return typeof value === 'object' && value !== null && 'type' in value &&
-    (value.type === 'comp:queue-updated' || value.type === 'comp:auth-updated');
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'type' in value &&
+    (value.type === 'comp:queue-updated' || value.type === 'comp:auth-updated')
+  );
 }
 
 function isStaleResponse(value: unknown): value is { ok: true; staleDraftCount: number } {

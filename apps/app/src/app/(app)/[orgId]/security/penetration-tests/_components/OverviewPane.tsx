@@ -1,10 +1,10 @@
 'use client';
 
+import type { PentestRun } from '@/lib/security/penetration-tests-client';
 import { Button } from '@trycompai/design-system';
 import { Add, ArrowRight } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import type { PentestRun } from '@/lib/security/penetration-tests-client';
 import {
   LatestAssessment,
   RecentScansSection,
@@ -19,8 +19,8 @@ import {
   sortByUpdatedDesc,
   uniqueTargets,
 } from './overview-internals';
-import { StatusPill } from './StatusPill';
 import { isRunInProgress } from './severity';
+import { StatusPill } from './StatusPill';
 
 interface OverviewPaneProps {
   orgId: string;
@@ -102,19 +102,12 @@ interface InProgressStateProps {
  * card so the user lands on something that matches the sidebar instead
  * of the onboarding empty state.
  */
-function InProgressState({
-  orgId,
-  runs,
-  onCreateClick,
-  canCreate,
-}: InProgressStateProps) {
+function InProgressState({ orgId, runs, onCreateClick, canCreate }: InProgressStateProps) {
   const router = useRouter();
   const sorted = [...runs].sort(
-    (a, b) =>
-      new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
   );
-  const headline =
-    sorted.length === 1 ? 'Scan in progress' : `${sorted.length} scans in progress`;
+  const headline = sorted.length === 1 ? 'Scan in progress' : `${sorted.length} scans in progress`;
 
   return (
     <div className="flex h-full items-center justify-center px-4 py-10 md:px-8 md:py-12">
@@ -122,12 +115,10 @@ function InProgressState({
         <div className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
           Penetration tests · Overview
         </div>
-        <h1 className="mt-3 text-[24px] font-medium tracking-[-0.01em]">
-          {headline}
-        </h1>
+        <h1 className="mt-3 text-[24px] font-medium tracking-[-0.01em]">{headline}</h1>
         <p className="mt-2 max-w-[480px] text-sm text-muted-foreground">
-          Findings stream in as agents discover them. You don't need to keep
-          this page open — open the run any time to see live progress.
+          Findings stream in as agents discover them. You don't need to keep this page open — open
+          the run any time to see live progress.
         </p>
 
         <ul className="mt-6 space-y-2">
@@ -136,9 +127,7 @@ function InProgressState({
               <button
                 type="button"
                 onClick={() =>
-                  router.push(
-                    `/${orgId}/security/penetration-tests/${encodeURIComponent(run.id)}`,
-                  )
+                  router.push(`/${orgId}/security/penetration-tests/${encodeURIComponent(run.id)}`)
                 }
                 className="flex w-full items-center justify-between gap-4 rounded-[var(--radius)] border border-border bg-card p-4 text-left transition hover:border-foreground/20 hover:bg-muted/40"
               >
@@ -149,9 +138,7 @@ function InProgressState({
                       {toShortRunId(run.id)}
                     </span>
                   </div>
-                  <div className="truncate font-mono text-sm">
-                    {targetHost(run.targetUrl)}
-                  </div>
+                  <div className="truncate font-mono text-sm">{targetHost(run.targetUrl)}</div>
                 </div>
                 <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
               </button>
@@ -323,7 +310,6 @@ function PostureOverview({
     </div>
   );
 }
-
 
 interface StatBandProps {
   completed: number;

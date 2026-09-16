@@ -3,10 +3,7 @@ import { db } from '@db';
 import type { Prisma } from '@db';
 import { AttachmentsService } from '../attachments/attachments.service';
 import { buildExportMetadata } from './utils/export-metadata';
-import {
-  DOCX_MIME_TYPE,
-  type IsmsExportFormat,
-} from './utils/export-shared';
+import { DOCX_MIME_TYPE, type IsmsExportFormat } from './utils/export-shared';
 import {
   sanitizeExportName,
   type IsmsExportResult,
@@ -68,7 +65,11 @@ export class IsmsVersionService {
     now: Date;
     snapshotData: unknown;
     changelog?: string | null;
-  }): Promise<{ versionId: string; version: number; snapshot: IsmsExportSnapshot }> {
+  }): Promise<{
+    versionId: string;
+    version: number;
+    snapshot: IsmsExportSnapshot;
+  }> {
     const nextVersion = await this.nextVersion(tx, document.id);
 
     // Read the org profile through the same transaction so the snapshot's profile
@@ -100,15 +101,17 @@ export class IsmsVersionService {
       preparedBy: document.preparedBy,
       owner: null,
       approverName:
-        document.approver?.user?.name ||
-        document.approver?.user?.email ||
-        null,
+        document.approver?.user?.name || document.approver?.user?.email || null,
       approvedAt: now,
       declinedAt: null,
       organizationName: document.organization.name,
       primaryColor: document.organization.primaryColor,
     });
-    const snapshot: IsmsExportSnapshot = { type: document.type, input, metadata };
+    const snapshot: IsmsExportSnapshot = {
+      type: document.type,
+      input,
+      metadata,
+    };
 
     // Keep the one-latest-per-document invariant (partial unique index).
     await tx.ismsDocumentVersion.updateMany({
@@ -212,7 +215,9 @@ export class IsmsVersionService {
         // approver being deleted) and download availability (a version is still
         // downloadable via snapshot re-render even if its stored file is absent).
         contentSnapshot: true,
-        publishedBy: { select: { user: { select: { name: true, email: true } } } },
+        publishedBy: {
+          select: { user: { select: { name: true, email: true } } },
+        },
       },
     });
 

@@ -2,13 +2,11 @@
 
 import type { Column, Table } from '@tanstack/react-table';
 import { BadgeCheck, CalendarIcon, Check, ListFilter, Text, X } from 'lucide-react';
-import { useQueryState } from 'nuqs';
 import * as React from 'react';
 
 import { getDefaultFilterOperator, getFilterOperators } from '@/lib/data-table';
 import { formatDate } from '@/lib/format';
 import { generateId } from '@/lib/id';
-import { useDebouncedFilters } from './hooks/use-debounced-filters';
 import type { ExtendedColumnFilter, FilterOperator } from '@/types/data-table';
 import { Button } from '@gideon-defender/ui/button';
 import { Calendar } from '@gideon-defender/ui/calendar';
@@ -23,8 +21,15 @@ import {
 } from '@gideon-defender/ui/command';
 import { Input } from '@gideon-defender/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@gideon-defender/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
 import { DataTableRangeFilter } from './data-table-range-filter';
+import { useDebouncedFilters } from './hooks/use-debounced-filters';
 
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;

@@ -1,14 +1,7 @@
 import { getFeatureFlags } from '@/app/posthog';
 import { serverApi } from '@/lib/api-server';
 import { auth } from '@/utils/auth';
-import type {
-  Control,
-  EvidenceAutomation,
-  EvidenceAutomationRun,
-  Member,
-  Task,
-  User,
-} from '@db';
+import type { Control, EvidenceAutomation, EvidenceAutomationRun, Member, Task, User } from '@db';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';

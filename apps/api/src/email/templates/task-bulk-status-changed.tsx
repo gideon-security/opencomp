@@ -76,7 +76,10 @@ export const TaskBulkStatusChangedEmail = ({
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
               <strong>{changedByName}</strong> changed the status of{' '}
-              <strong>{taskCount} {taskText}</strong> to <strong>{statusText}</strong> in{' '}
+              <strong>
+                {taskCount} {taskText}
+              </strong>{' '}
+              to <strong>{statusText}</strong> in{' '}
               <strong>{organizationName}</strong>.
             </Text>
 
@@ -99,7 +102,10 @@ export const TaskBulkStatusChangedEmail = ({
             <Section className="mt-[30px] mb-[20px]">
               <Text className="text-[12px] leading-[20px] text-[#666666]">
                 Don't want to receive task assignment notifications?{' '}
-                <Link href={unsubscribeUrl} className="text-[#121212] underline">
+                <Link
+                  href={unsubscribeUrl}
+                  className="text-[#121212] underline"
+                >
                   Manage your email preferences
                 </Link>
                 .

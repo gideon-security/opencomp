@@ -49,16 +49,11 @@ export function RiskActions({ riskId, orgId }: { riskId: string; orgId: string }
       }
       toast.success(t('detail.regenerationTriggered'));
       refreshRisk();
+      globalMutate((key) => Array.isArray(key) && key[0] === 'risks', undefined, {
+        revalidate: true,
+      });
       globalMutate(
-        (key) => Array.isArray(key) && key[0] === 'risks',
-        undefined,
-        { revalidate: true },
-      );
-      globalMutate(
-        (key) =>
-          typeof key === 'string' &&
-          key.includes('/v1/comments') &&
-          key.includes(riskId),
+        (key) => typeof key === 'string' && key.includes('/v1/comments') && key.includes(riskId),
         undefined,
         { revalidate: true },
       );
@@ -89,7 +84,9 @@ export function RiskActions({ riskId, orgId }: { riskId: string; orgId: string }
             <AlertDialogDescription>{t('detail.regenerateConfirmation')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isRegenerating}>{tCommon('common.cancel')}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isRegenerating}>
+              {tCommon('common.cancel')}
+            </AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirm} disabled={isRegenerating}>
               {isRegenerating ? t('detail.working') : t('detail.confirm')}
             </AlertDialogAction>

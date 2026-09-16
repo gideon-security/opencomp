@@ -24,9 +24,7 @@ export default async function AutomationOverviewPage({
     serverApi.get<{ success: boolean; automation: EvidenceAutomation }>(
       `/v1/tasks/${taskId}/automations/${automationId}`,
     ),
-    serverApi.get<RunWithAutomationName[]>(
-      `/v1/tasks/${taskId}/automations/${automationId}/runs`,
-    ),
+    serverApi.get<RunWithAutomationName[]>(`/v1/tasks/${taskId}/automations/${automationId}/runs`),
     serverApi.get<{ success: boolean; versions: EvidenceAutomationVersion[] }>(
       `/v1/tasks/${taskId}/automations/${automationId}/versions?limit=10`,
     ),

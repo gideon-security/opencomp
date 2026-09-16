@@ -66,8 +66,19 @@ export const ripplingManifest: IntegrationManifest = {
   isDirectorySource: true,
 
   services: [
-    { id: 'employee-sync', name: 'Employee Sync', description: 'Sync employees from Rippling to organization members', enabledByDefault: true, implemented: true },
-    { id: 'device-management', name: 'Device Management', description: 'Monitor device compliance and enrollment status', implemented: false },
+    {
+      id: 'employee-sync',
+      name: 'Employee Sync',
+      description: 'Sync employees from Rippling to organization members',
+      enabledByDefault: true,
+      implemented: true,
+    },
+    {
+      id: 'device-management',
+      name: 'Device Management',
+      description: 'Monitor device compliance and enrollment status',
+      implemented: false,
+    },
   ],
 
   // No checks defined - custom UI handles the sync

@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Track automation status filter state for assertions
@@ -82,16 +82,15 @@ vi.mock('@trycompai/design-system', () => ({
     </div>
   ),
   SelectContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  SelectItem: ({
-    children,
-    value,
-  }: {
-    children: React.ReactNode;
-    value: string;
-  }) => (
-    <option value={value} data-testid={`select-item-${value}`}>
+  SelectItem: ({ children, value }: { children: React.ReactNode; value: string }) => (
+    <div
+      role="option"
+      aria-selected="false"
+      data-value={value}
+      data-testid={`select-item-${value}`}
+    >
       {children}
-    </option>
+    </div>
   ),
   SelectTrigger: ({
     children,
@@ -100,12 +99,9 @@ vi.mock('@trycompai/design-system', () => ({
     size?: string;
     disabled?: boolean;
   }) => <div>{children}</div>,
-  SelectValue: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    placeholder?: string;
-  }) => <div>{children}</div>,
+  SelectValue: ({ children }: { children: React.ReactNode; placeholder?: string }) => (
+    <div>{children}</div>
+  ),
   Separator: () => <hr />,
   Stack: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Tabs: ({
@@ -178,7 +174,6 @@ const defaultProps = {
 };
 
 mockNextIntl();
-
 
 describe('TaskList automation status filter', () => {
   beforeEach(() => {

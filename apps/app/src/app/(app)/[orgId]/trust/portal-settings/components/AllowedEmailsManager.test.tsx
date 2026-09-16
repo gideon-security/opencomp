@@ -50,9 +50,7 @@ describe('AllowedEmailsManager', () => {
 
   it('renders existing emails as chips', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(
-      <AllowedEmailsManager initialEmails={['chang@client.com']} orgId="org-1" />,
-    );
+    render(<AllowedEmailsManager initialEmails={['chang@client.com']} orgId="org-1" />);
 
     expect(screen.getByText('chang@client.com')).toBeInTheDocument();
   });
@@ -82,11 +80,7 @@ describe('AllowedEmailsManager', () => {
       key: 'Enter',
     });
 
-    await waitFor(() =>
-      expect(updateAllowedEmails).toHaveBeenCalledWith([
-        'chang.liu@client.com',
-      ]),
-    );
+    await waitFor(() => expect(updateAllowedEmails).toHaveBeenCalledWith(['chang.liu@client.com']));
     expect(toast.success).toHaveBeenCalledWith('Allowed emails updated');
   });
 

@@ -7,11 +7,13 @@ This package provides a combined Prisma schema file for your application.
 The `@gideon-defender/db` package provides a single, combined schema file that includes all our database models. You generate your own Prisma client from this schema.
 
 **What's included:**
+
 - 📄 Combined Prisma schema file
 - 🗂️ All database models and enums
 - 🔗 Proper relationships and constraints
 
 **Benefits:**
+
 - ✅ Always up-to-date with your Prisma version
 - ✅ No version conflicts
 - ✅ You control the generator configuration
@@ -104,7 +106,7 @@ Import and use the database client in your application:
 // Import the database client
 import { db } from '@gideon-defender/db';
 
-// Import types  
+// Import types
 import type { User, Organization, Departments } from '@gideon-defender/db/types';
 
 // Query examples

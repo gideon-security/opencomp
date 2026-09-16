@@ -25,14 +25,18 @@ describe('RequirementService — sortOrder (FRAME-18)', () => {
   beforeEach(() => {
     service = new RequirementService();
     jest.clearAllMocks();
-    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue({
-      id: 'frk_1',
-    });
+    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue(
+      {
+        id: 'frk_1',
+      },
+    );
     (mockDb.frameworkEditorRequirement.create as jest.Mock).mockResolvedValue({
       id: 'frk_rq_new',
       name: 'New',
     });
-    (mockDb.frameworkEditorRequirement.findUnique as jest.Mock).mockResolvedValue({
+    (
+      mockDb.frameworkEditorRequirement.findUnique as jest.Mock
+    ).mockResolvedValue({
       id: 'frk_rq_1',
     });
     (mockDb.frameworkEditorRequirement.update as jest.Mock).mockResolvedValue({
@@ -40,15 +44,17 @@ describe('RequirementService — sortOrder (FRAME-18)', () => {
       name: 'Updated',
     });
     // batchUpdate wraps the per-row update() promises in a transaction.
-    (mockDb.$transaction as jest.Mock).mockImplementation((ops: Promise<unknown>[]) =>
-      Promise.all(ops),
+    (mockDb.$transaction as jest.Mock).mockImplementation(
+      (ops: Promise<unknown>[]) => Promise.all(ops),
     );
   });
 
   const createDataOf = () =>
-    (mockDb.frameworkEditorRequirement.create as jest.Mock).mock.calls[0][0].data;
+    (mockDb.frameworkEditorRequirement.create as jest.Mock).mock.calls[0][0]
+      .data;
   const updateDataOf = (i = 0) =>
-    (mockDb.frameworkEditorRequirement.update as jest.Mock).mock.calls[i][0].data;
+    (mockDb.frameworkEditorRequirement.update as jest.Mock).mock.calls[i][0]
+      .data;
 
   describe('create', () => {
     it('persists a provided sortOrder', async () => {
@@ -107,13 +113,15 @@ describe('RequirementService — sortOrder (FRAME-18)', () => {
 
   describe('findAll / findAllForFramework ordering', () => {
     beforeEach(() => {
-      (mockDb.frameworkEditorRequirement.findMany as jest.Mock).mockResolvedValue([]);
+      (
+        mockDb.frameworkEditorRequirement.findMany as jest.Mock
+      ).mockResolvedValue([]);
     });
 
     it('orders by sortOrder ascending with nulls last, then name', async () => {
       await service.findAll();
-      const orderBy = (mockDb.frameworkEditorRequirement.findMany as jest.Mock).mock
-        .calls[0][0].orderBy;
+      const orderBy = (mockDb.frameworkEditorRequirement.findMany as jest.Mock)
+        .mock.calls[0][0].orderBy;
       expect(orderBy).toEqual([
         { sortOrder: { sort: 'asc', nulls: 'last' } },
         { identifier: 'asc' },
@@ -123,8 +131,8 @@ describe('RequirementService — sortOrder (FRAME-18)', () => {
 
     it('orders per-framework requirements the same way', async () => {
       await service.findAllForFramework('frk_1');
-      const orderBy = (mockDb.frameworkEditorRequirement.findMany as jest.Mock).mock
-        .calls[0][0].orderBy;
+      const orderBy = (mockDb.frameworkEditorRequirement.findMany as jest.Mock)
+        .mock.calls[0][0].orderBy;
       expect(orderBy).toEqual([
         { sortOrder: { sort: 'asc', nulls: 'last' } },
         { identifier: 'asc' },

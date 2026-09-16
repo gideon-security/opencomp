@@ -1,9 +1,9 @@
 import { hasPermission } from '@/lib/permissions';
 import { resolveUserPermissions } from '@/lib/permissions.server';
 import { auth } from '@/utils/auth';
+import type { Role } from '@db';
 import { db } from '@db/server';
 import type { Metadata } from 'next';
-import type { Role } from '@db';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
@@ -35,10 +35,7 @@ export default async function PeoplePage({ params }: { params: Promise<{ orgId: 
   const currentUserRoles = currentUserMember?.role?.split(',').map((r) => r.trim()) ?? [];
   const isCurrentUserOwner = currentUserRoles.includes('owner');
 
-  const userPermissions = await resolveUserPermissions(
-    currentUserMember?.role ?? null,
-    orgId,
-  );
+  const userPermissions = await resolveUserPermissions(currentUserMember?.role ?? null, orgId);
   const canManageMembers = hasPermission(userPermissions, 'member', 'update');
   const canInviteUsers = hasPermission(userPermissions, 'member', 'create');
 
@@ -50,11 +47,7 @@ export default async function PeoplePage({ params }: { params: Promise<{ orgId: 
   const allowedBuiltInRoles: Role[] = hasWriteMemberAccess
     ? ['admin', 'auditor', 'employee', 'contractor']
     : ['employee', 'contractor'];
-  const canManageOrgSettings = hasPermission(
-    userPermissions,
-    'organization',
-    'update',
-  );
+  const canManageOrgSettings = hasPermission(userPermissions, 'organization', 'update');
 
   const organization = canManageOrgSettings
     ? await db.organization.findUnique({
@@ -85,9 +78,7 @@ export default async function PeoplePage({ params }: { params: Promise<{ orgId: 
       settingsContent={
         canManageOrgSettings && organization ? (
           <PeopleSettings
-            backgroundCheckStepEnabled={
-              organization.backgroundCheckStepEnabled === true
-            }
+            backgroundCheckStepEnabled={organization.backgroundCheckStepEnabled === true}
           />
         ) : null
       }

@@ -45,7 +45,11 @@ export function SettingsTabs({ orgId, children }: SettingsTabsProps) {
       header={
         <PageHeader
           title={title}
-          actions={isSecretsPage && hasPermission('organization', 'update') ? <AddSecretDialog /> : undefined}
+          actions={
+            isSecretsPage && hasPermission('organization', 'update') ? (
+              <AddSecretDialog />
+            ) : undefined
+          }
         />
       }
     >

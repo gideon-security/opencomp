@@ -1,6 +1,6 @@
+import { render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 // The TipTap editor instance is irrelevant to the plain-text render branch

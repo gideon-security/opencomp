@@ -22,17 +22,13 @@ describe('isRetryableAssumeError', () => {
   it('retries expired-token, throttling, 5xx and network errors', () => {
     expect(isRetryableAssumeError(awsError('ExpiredToken'))).toBe(true);
     expect(isRetryableAssumeError(awsError('ThrottlingException'))).toBe(true);
-    expect(
-      isRetryableAssumeError({ name: 'X', $metadata: { httpStatusCode: 503 } }),
-    ).toBe(true);
+    expect(isRetryableAssumeError({ name: 'X', $metadata: { httpStatusCode: 503 } })).toBe(true);
     expect(isRetryableAssumeError(new Error('socket hang up'))).toBe(true);
   });
 
   it('does NOT retry hard configuration errors', () => {
     expect(isRetryableAssumeError(awsError('ValidationError'))).toBe(false);
-    expect(
-      isRetryableAssumeError(new Error('Invalid IAM Role ARN format')),
-    ).toBe(false);
+    expect(isRetryableAssumeError(new Error('Invalid IAM Role ARN format'))).toBe(false);
     expect(isRetryableAssumeError(null)).toBe(false);
     expect(isRetryableAssumeError(undefined)).toBe(false);
   });

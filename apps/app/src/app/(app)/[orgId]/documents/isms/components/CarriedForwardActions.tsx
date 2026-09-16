@@ -17,10 +17,7 @@ import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
 import type { IsmsManagementReview, IsmsReviewAction } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
-import {
-  REVIEW_ACTION_STATUS_LABELS,
-  fullActionReference,
-} from './management-review-constants';
+import { fullActionReference, REVIEW_ACTION_STATUS_LABELS } from './management-review-constants';
 
 interface CarriedForwardActionsProps {
   entries: Array<{ review: IsmsManagementReview; action: IsmsReviewAction }>;
@@ -33,10 +30,7 @@ interface CarriedForwardActionsProps {
  * across. Read-only here: each action is edited on its own review, and its
  * live status keeps tracking to closure.
  */
-export function CarriedForwardActions({
-  entries,
-  memberOptions,
-}: CarriedForwardActionsProps) {
+export function CarriedForwardActions({ entries, memberOptions }: CarriedForwardActionsProps) {
   const t = useTranslations('isms');
 
   const memberNameById = useMemo(() => {

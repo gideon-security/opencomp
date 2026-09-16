@@ -4,7 +4,11 @@ import { IsmsObjectiveService } from './isms-objective.service';
 
 jest.mock('@db', () => {
   const db = {
-    ismsDocument: { findFirst: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
+    ismsDocument: {
+      findFirst: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
     member: { findFirst: jest.fn() },
     ismsObjective: {
       findFirst: jest.fn(),

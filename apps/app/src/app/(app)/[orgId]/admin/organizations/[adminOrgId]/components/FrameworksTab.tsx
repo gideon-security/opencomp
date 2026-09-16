@@ -27,11 +27,7 @@ import {
   type PendingAction,
 } from './FrameworksTabTypes';
 
-export type {
-  ActiveFramework,
-  FrameworkDetails,
-  PendingAction,
-} from './FrameworksTabTypes';
+export type { ActiveFramework, FrameworkDetails, PendingAction } from './FrameworksTabTypes';
 
 interface AdminFrameworksResponse {
   frameworks: ActiveFramework[];

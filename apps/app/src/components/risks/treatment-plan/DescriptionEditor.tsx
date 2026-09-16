@@ -1,12 +1,12 @@
 'use client';
 
+import { cn } from '@/lib/utils';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { Button } from '@trycompai/design-system';
 import { Edit, Renew } from '@trycompai/design-system/icons';
-import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { cn } from '@/lib/utils';
 
 interface DescriptionEditorProps {
   value: string;
@@ -34,7 +34,10 @@ function regenStatusCopy(status: string | undefined): { headline: string; sub: s
     return { headline: 'Starting AI scan…', sub: 'Allocating compute capacity.' };
   }
   if (status === 'QUEUED' || status === 'DELAYED') {
-    return { headline: 'Queued — waiting to start…', sub: 'Your regeneration will begin in a moment.' };
+    return {
+      headline: 'Queued — waiting to start…',
+      sub: 'Your regeneration will begin in a moment.',
+    };
   }
   if (status === 'INTERRUPTED' || status === 'WAITING_TO_RESUME') {
     return { headline: 'Resuming…', sub: 'Picking up where the run left off.' };
@@ -64,9 +67,7 @@ export function DescriptionEditor({
   // Initialized to edit mode when value is empty (nothing to preview).
   // Parent uses key={strategy} to remount on strategy change, so this
   // always initializes from the correct value — no sync effects needed.
-  const [draft, setDraft] = useState<string | null>(
-    value.trim().length > 0 ? null : value,
-  );
+  const [draft, setDraft] = useState<string | null>(value.trim().length > 0 ? null : value);
   const [saving, setSaving] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -126,7 +127,12 @@ export function DescriptionEditor({
           style={{ resize: 'none', minHeight: 200 }}
         />
       )}
-      <div className={cn('flex items-center gap-2 border-t border-border pt-2.5', !isEditing && !hasValue && 'mt-4')}>
+      <div
+        className={cn(
+          'flex items-center gap-2 border-t border-border pt-2.5',
+          !isEditing && !hasValue && 'mt-4',
+        )}
+      >
         <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
           {wordCount} {wordCount === 1 ? 'word' : 'words'} · {charCount}{' '}
           {charCount === 1 ? 'char' : 'chars'}
@@ -253,30 +259,18 @@ function MarkdownPreview({ content }: { content: string }) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          p: ({ children }) => (
-            <p className="my-2 first:mt-0 last:mb-0">{children}</p>
-          ),
-          ul: ({ children }) => (
-            <ul className="my-2 list-disc space-y-1 pl-5">{children}</ul>
-          ),
-          ol: ({ children }) => (
-            <ol className="my-2 list-decimal space-y-1 pl-5">{children}</ol>
-          ),
+          p: ({ children }) => <p className="my-2 first:mt-0 last:mb-0">{children}</p>,
+          ul: ({ children }) => <ul className="my-2 list-disc space-y-1 pl-5">{children}</ul>,
+          ol: ({ children }) => <ol className="my-2 list-decimal space-y-1 pl-5">{children}</ol>,
           li: ({ children }) => <li className="pl-0.5">{children}</li>,
           h1: ({ children }) => (
-            <h3 className="mt-4 mb-2 text-base font-semibold first:mt-0">
-              {children}
-            </h3>
+            <h3 className="mt-4 mb-2 text-base font-semibold first:mt-0">{children}</h3>
           ),
           h2: ({ children }) => (
-            <h4 className="mt-3 mb-1.5 text-sm font-semibold first:mt-0">
-              {children}
-            </h4>
+            <h4 className="mt-3 mb-1.5 text-sm font-semibold first:mt-0">{children}</h4>
           ),
           h3: ({ children }) => (
-            <h5 className="mt-3 mb-1 text-sm font-semibold first:mt-0">
-              {children}
-            </h5>
+            <h5 className="mt-3 mb-1 text-sm font-semibold first:mt-0">{children}</h5>
           ),
           strong: ({ children }) => (
             <strong className="font-semibold text-foreground">{children}</strong>
@@ -293,9 +287,7 @@ function MarkdownPreview({ content }: { content: string }) {
             </a>
           ),
           code: ({ children }) => (
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-[0.85em]">
-              {children}
-            </code>
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-[0.85em]">{children}</code>
           ),
           blockquote: ({ children }) => (
             <blockquote className="my-2 border-l-2 border-border pl-3 text-muted-foreground">

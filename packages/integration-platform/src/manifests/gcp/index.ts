@@ -28,12 +28,7 @@ export const gcpManifest: IntegrationManifest = {
     config: {
       authorizeUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
       tokenUrl: 'https://oauth2.googleapis.com/token',
-      scopes: [
-        'https://www.googleapis.com/auth/cloud-platform',
-        'openid',
-        'email',
-        'profile',
-      ],
+      scopes: ['https://www.googleapis.com/auth/cloud-platform', 'openid', 'email', 'profile'],
       pkce: false,
       clientAuthMethod: 'body',
       supportsRefreshToken: true,
@@ -84,20 +79,107 @@ This is industry standard - all GCP security monitoring tools use the same scope
 
   services: [
     // All services below are scanned via Security Command Center (60+ check categories)
-    { id: 'cloud-storage', name: 'Cloud Storage', description: 'Bucket ACLs, public access, logging, encryption, and retention checks', enabledByDefault: false, implemented: true },
-    { id: 'compute-engine', name: 'Compute Engine', description: 'Instance security, service accounts, shielded VM, and OS login checks', enabledByDefault: false, implemented: true },
-    { id: 'vpc-network', name: 'VPC Network', description: 'Firewall rules, open ports, SSH/RDP exposure, and flow log checks', enabledByDefault: false, implemented: true },
-    { id: 'iam', name: 'IAM', description: 'Over-privileged accounts, MFA enforcement, service account key rotation, and role separation', enabledByDefault: false, implemented: true },
-    { id: 'cloud-sql', name: 'Cloud SQL', description: 'Public IP, SSL enforcement, backup configuration, and database flag checks', enabledByDefault: false, implemented: true },
-    { id: 'gke', name: 'GKE', description: 'Cluster security, private clusters, network policies, and workload identity checks', enabledByDefault: false, implemented: true },
-    { id: 'cloud-kms', name: 'Cloud KMS', description: 'Encryption key rotation and project ownership checks', enabledByDefault: false, implemented: true },
-    { id: 'cloud-logging', name: 'Cloud Logging', description: 'Audit logging, log export, and retention policy checks', enabledByDefault: false, implemented: true },
-    { id: 'cloud-monitoring', name: 'Cloud Monitoring', description: 'Monitoring for audit config, firewall, network, and SQL changes', enabledByDefault: false, implemented: true },
-    { id: 'cloud-dns', name: 'Cloud DNS', description: 'DNSSEC configuration and signing algorithm checks', enabledByDefault: false, implemented: true },
-    { id: 'bigquery', name: 'BigQuery', description: 'Dataset encryption and public access checks', enabledByDefault: false, implemented: true },
-    { id: 'pubsub', name: 'Pub/Sub', description: 'Topic encryption configuration checks', enabledByDefault: false, implemented: true },
-    { id: 'cloud-armor', name: 'Cloud Armor', description: 'SSL policy strength and WAF configuration checks', enabledByDefault: false, implemented: true },
-    { id: 'vertex-ai', name: 'Vertex AI', description: 'Vertex AI and Workbench checks — encryption (CMEK), public access, and notebook exposure. Requires SCC Premium or Enterprise.', enabledByDefault: false, implemented: true },
+    {
+      id: 'cloud-storage',
+      name: 'Cloud Storage',
+      description: 'Bucket ACLs, public access, logging, encryption, and retention checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'compute-engine',
+      name: 'Compute Engine',
+      description: 'Instance security, service accounts, shielded VM, and OS login checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'vpc-network',
+      name: 'VPC Network',
+      description: 'Firewall rules, open ports, SSH/RDP exposure, and flow log checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'iam',
+      name: 'IAM',
+      description:
+        'Over-privileged accounts, MFA enforcement, service account key rotation, and role separation',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'cloud-sql',
+      name: 'Cloud SQL',
+      description: 'Public IP, SSL enforcement, backup configuration, and database flag checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'gke',
+      name: 'GKE',
+      description:
+        'Cluster security, private clusters, network policies, and workload identity checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'cloud-kms',
+      name: 'Cloud KMS',
+      description: 'Encryption key rotation and project ownership checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'cloud-logging',
+      name: 'Cloud Logging',
+      description: 'Audit logging, log export, and retention policy checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'cloud-monitoring',
+      name: 'Cloud Monitoring',
+      description: 'Monitoring for audit config, firewall, network, and SQL changes',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'cloud-dns',
+      name: 'Cloud DNS',
+      description: 'DNSSEC configuration and signing algorithm checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'bigquery',
+      name: 'BigQuery',
+      description: 'Dataset encryption and public access checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'pubsub',
+      name: 'Pub/Sub',
+      description: 'Topic encryption configuration checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'cloud-armor',
+      name: 'Cloud Armor',
+      description: 'SSL policy strength and WAF configuration checks',
+      enabledByDefault: false,
+      implemented: true,
+    },
+    {
+      id: 'vertex-ai',
+      name: 'Vertex AI',
+      description:
+        'Vertex AI and Workbench checks — encryption (CMEK), public access, and notebook exposure. Requires SCC Premium or Enterprise.',
+      enabledByDefault: false,
+      implemented: true,
+    },
   ],
 
   // Integration-level variables (used by cloud security scanning)
@@ -126,13 +208,9 @@ This is industry standard - all GCP security monitoring tools use the same scope
               name: string;
               state?: string;
             }>;
-          }>(
-            'https://cloudresourcemanager.googleapis.com/v3/organizations:search',
-          );
+          }>('https://cloudresourcemanager.googleapis.com/v3/organizations:search');
 
-          const activeOrg = (orgData.organizations ?? []).find(
-            (o) => o.state === 'ACTIVE',
-          );
+          const activeOrg = (orgData.organizations ?? []).find((o) => o.state === 'ACTIVE');
           const orgId = activeOrg?.name?.replace('organizations/', '');
 
           const filter = orgId

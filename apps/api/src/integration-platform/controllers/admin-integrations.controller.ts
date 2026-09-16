@@ -16,7 +16,10 @@ import { ApiExcludeController } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { OAuthCredentialsService } from '../services/oauth-credentials.service';
 import { PlatformCredentialRepository } from '../repositories/platform-credential.repository';
-import { getAllManifests, getManifest } from '@gideon-defender/integration-platform';
+import {
+  getAllManifests,
+  getManifest,
+} from '@gideon-defender/integration-platform';
 import { PlatformAdminGuard } from '../../auth/platform-admin.guard';
 import { PlatformAuditLogInterceptor } from '../interceptors/platform-audit-log.interceptor';
 
@@ -76,8 +79,7 @@ export class AdminIntegrationsController {
         existingCustomSettings:
           (
             credential as
-              | { customSettings?: Record<string, unknown> }
-              | undefined
+              { customSettings?: Record<string, unknown> } | undefined
           )?.customSettings || undefined,
         ...(manifest.auth.type === 'oauth2' && {
           setupInstructions: manifest.auth.config.setupInstructions,

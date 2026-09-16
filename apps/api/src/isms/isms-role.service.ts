@@ -86,7 +86,9 @@ export class IsmsRoleService {
           requiredCompetence: dto.requiredCompetence ?? undefined,
           auditRoute: dto.auditRoute === undefined ? undefined : dto.auditRoute,
           auditRouteMemberId:
-            dto.auditRouteMemberId === undefined ? undefined : auditRouteMemberId,
+            dto.auditRouteMemberId === undefined
+              ? undefined
+              : auditRouteMemberId,
           auditFirmName:
             dto.auditFirmName === undefined ? undefined : dto.auditFirmName,
           auditEvidenceRef:

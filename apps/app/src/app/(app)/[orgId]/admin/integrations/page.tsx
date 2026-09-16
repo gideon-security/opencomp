@@ -12,10 +12,7 @@ import {
   Stack,
   Text,
 } from '@trycompai/design-system';
-import {
-  InProgress,
-  Renew,
-} from '@trycompai/design-system/icons';
+import { InProgress, Renew } from '@trycompai/design-system/icons';
 import { useState } from 'react';
 import useSWR from 'swr';
 import { IntegrationCard, type Integration } from './components/IntegrationCard';
@@ -74,12 +71,11 @@ export default function AdminIntegrationsPage() {
   const otherIntegrations = filteredIntegrations?.filter((i) => i.authType !== 'oauth2') || [];
 
   const configuredCount = integrations?.filter((i) => i.hasCredentials).length || 0;
-  const oauthPendingCount = integrations?.filter((i) => i.authType === 'oauth2' && !i.hasCredentials).length || 0;
+  const oauthPendingCount =
+    integrations?.filter((i) => i.authType === 'oauth2' && !i.hasCredentials).length || 0;
 
   return (
-    <PageLayout
-      header={<PageHeader title="Integration Credentials" />}
-    >
+    <PageLayout header={<PageHeader title="Integration Credentials" />}>
       <Stack gap="lg">
         <div className="grid grid-cols-3 gap-4">
           <StatCard label="Total Integrations" value={integrations?.length || 0} />
@@ -95,7 +91,12 @@ export default function AdminIntegrationsPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button variant="outline" onClick={() => mutate()} loading={isLoading} iconLeft={<Renew size={16} />}>
+          <Button
+            variant="outline"
+            onClick={() => mutate()}
+            loading={isLoading}
+            iconLeft={<Renew size={16} />}
+          >
             Refresh
           </Button>
         </div>
@@ -108,7 +109,9 @@ export default function AdminIntegrationsPage() {
 
         {isLoading && (
           <div className="flex items-center justify-center py-12">
-            <div className="h-8 w-8 animate-spin text-muted-foreground"><InProgress /></div>
+            <div className="h-8 w-8 animate-spin text-muted-foreground">
+              <InProgress />
+            </div>
           </div>
         )}
 
@@ -156,7 +159,9 @@ function StatCard({
       <CardContent>
         <div className={`pt-6 ${colorClass}`}>
           <div className="text-2xl font-bold">{value}</div>
-          <Text size="sm" variant="muted">{label}</Text>
+          <Text size="sm" variant="muted">
+            {label}
+          </Text>
         </div>
       </CardContent>
     </Card>
@@ -174,14 +179,12 @@ function IntegrationSection({
 }) {
   return (
     <div>
-      <Text size="lg" weight="semibold">{title}</Text>
+      <Text size="lg" weight="semibold">
+        {title}
+      </Text>
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {integrations.map((integration) => (
-          <IntegrationCard
-            key={integration.id}
-            integration={integration}
-            onRefresh={onRefresh}
-          />
+          <IntegrationCard key={integration.id} integration={integration} onRefresh={onRefresh} />
         ))}
       </div>
     </div>

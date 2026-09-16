@@ -3,11 +3,30 @@
 import { SelectAssignee } from '@/components/SelectAssignee';
 import { VENDOR_STATUS_TYPES, VendorStatus } from '@/components/vendor-status';
 import { useVendorActions } from '@/hooks/use-vendors';
+import {
+  Member,
+  type User,
+  type Vendor,
+  VendorCategory,
+  VendorStatus as VendorStatusEnum,
+} from '@db';
 import { Button } from '@gideon-defender/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
 import { Input } from '@gideon-defender/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
-import { Member, type User, type Vendor, VendorCategory, VendorStatus as VendorStatusEnum } from '@db';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -37,9 +56,7 @@ export function UpdateSecondaryFieldsForm({
     category: z.nativeEnum(VendorCategory),
     status: z.nativeEnum(VendorStatusEnum),
     assigneeId: z.string().nullable(),
-    website: z
-      .union([z.string().url(t('create.urlInvalid')), z.literal('')])
-      .optional(),
+    website: z.union([z.string().url(t('create.urlInvalid')), z.literal('')]).optional(),
     isSubProcessor: z.boolean().optional(),
   });
 

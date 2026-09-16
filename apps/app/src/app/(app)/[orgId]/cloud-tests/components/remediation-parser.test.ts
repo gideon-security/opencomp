@@ -58,8 +58,7 @@ describe('parseRemediation', () => {
   });
 
   it('handles compliance frameworks with multiple IDs each', () => {
-    const input =
-      'Fix the issue.\n\nCompliance: cis 1.0 (1.1, 1.2, 1.3); pci 3.2.1 (2.1.1, 2.2.2)';
+    const input = 'Fix the issue.\n\nCompliance: cis 1.0 (1.1, 1.2, 1.3); pci 3.2.1 (2.1.1, 2.2.2)';
 
     const parsed = parseRemediation(input);
 
@@ -120,9 +119,7 @@ describe('parseRemediation', () => {
 
     expect(parsed.steps).toBe('Steps text.');
     expect(parsed.referenceUrl).toBe('https://example.com');
-    expect(parsed.compliance).toEqual([
-      { standard: 'cis', version: '1.0', ids: ['1.1'] },
-    ]);
+    expect(parsed.compliance).toEqual([{ standard: 'cis', version: '1.0', ids: ['1.1'] }]);
   });
 });
 
@@ -132,9 +129,7 @@ describe('safeHttpUrl', () => {
   });
 
   it('returns https URLs unchanged', () => {
-    expect(safeHttpUrl('https://cloud.google.com/docs')).toBe(
-      'https://cloud.google.com/docs',
-    );
+    expect(safeHttpUrl('https://cloud.google.com/docs')).toBe('https://cloud.google.com/docs');
   });
 
   it('rejects javascript: URLs', () => {

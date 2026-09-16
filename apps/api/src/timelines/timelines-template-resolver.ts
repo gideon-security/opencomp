@@ -117,7 +117,11 @@ export async function resolveTemplate(
   }: { forceRefresh?: boolean; trackKey?: string } = {},
 ) {
   if (!forceRefresh) {
-    const dbTemplate = await findTemplateForCycle(frameworkId, cycleNumber, trackKey);
+    const dbTemplate = await findTemplateForCycle(
+      frameworkId,
+      cycleNumber,
+      trackKey,
+    );
     if (dbTemplate) return dbTemplate;
   }
 

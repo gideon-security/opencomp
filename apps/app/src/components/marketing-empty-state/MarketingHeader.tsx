@@ -28,9 +28,7 @@ export function MarketingHeader({
           <div className="mb-2 flex items-center gap-2">
             {lockLabel && <LockPill label={lockLabel} />}
             {statusText && (
-              <span className="font-mono text-[12px] text-muted-foreground">
-                {statusText}
-              </span>
+              <span className="font-mono text-[12px] text-muted-foreground">{statusText}</span>
             )}
           </div>
         )}

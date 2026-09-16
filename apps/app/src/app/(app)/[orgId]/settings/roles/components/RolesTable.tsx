@@ -2,6 +2,7 @@
 
 import { formatDateShort } from '@/lib/format';
 
+import { usePermissions } from '@/hooks/use-permissions';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,7 +31,6 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Add, Edit, OverflowMenuVertical, Search, TrashCan } from '@trycompai/design-system/icons';
-import { usePermissions } from '@/hooks/use-permissions';
 import { useParams, useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -53,11 +53,7 @@ interface RolesTableProps {
   roles: CustomRole[];
 }
 
-function ActionsCell({
-  role,
-}: {
-  role: CustomRole;
-}) {
+function ActionsCell({ role }: { role: CustomRole }) {
   const router = useRouter();
   const params = useParams();
   const orgId = params.orgId as string;
@@ -110,13 +106,13 @@ function ActionsCell({
               {memberCount > 0 ? (
                 <>
                   This role is currently assigned to <strong>{memberCount}</strong>{' '}
-                  {memberCount === 1 ? 'member' : 'members'}. You must reassign or remove
-                  these members before deleting this role.
+                  {memberCount === 1 ? 'member' : 'members'}. You must reassign or remove these
+                  members before deleting this role.
                 </>
               ) : (
                 <>
-                  Are you sure you want to delete the role{' '}
-                  <strong>{role.name}</strong>? This action cannot be undone.
+                  Are you sure you want to delete the role <strong>{role.name}</strong>? This action
+                  cannot be undone.
                 </>
               )}
             </AlertDialogDescription>

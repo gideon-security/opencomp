@@ -18,7 +18,11 @@ interface Props {
   newEmail: string;
 }
 
-export const LoginEmailChangedEmail = ({ organizationName, oldEmail, newEmail }: Props) => {
+export const LoginEmailChangedEmail = ({
+  organizationName,
+  oldEmail,
+  newEmail,
+}: Props) => {
   return (
     <Html>
       <Tailwind>
@@ -49,14 +53,15 @@ export const LoginEmailChangedEmail = ({ organizationName, oldEmail, newEmail }:
             </Heading>
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
-              An administrator of <span className="font-medium">{organizationName}</span>{' '}
-              changed your OpenComp login email from{' '}
+              An administrator of{' '}
+              <span className="font-medium">{organizationName}</span> changed
+              your OpenComp login email from{' '}
               <span className="font-medium">{oldEmail}</span> to{' '}
               <span className="font-medium">{newEmail}</span>.
             </Text>
             <Text className="text-[14px] leading-[24px] text-[#121212]">
-              From now on, use <span className="font-medium">{newEmail}</span> to
-              sign in.
+              From now on, use <span className="font-medium">{newEmail}</span>{' '}
+              to sign in.
             </Text>
 
             <br />

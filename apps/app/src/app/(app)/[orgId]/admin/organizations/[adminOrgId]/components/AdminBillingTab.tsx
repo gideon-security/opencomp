@@ -1,8 +1,8 @@
 'use client';
 
 import { api } from '@/lib/api-client';
-import { useTranslations } from 'next-intl';
 import { Badge, Button, Section, Stack, Text } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import useSWR from 'swr';

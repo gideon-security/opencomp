@@ -1,10 +1,10 @@
 'use client';
 
+import type { AuditLog } from '@db';
 import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
 import { Badge } from '@gideon-defender/ui/badge';
 import { Button } from '@gideon-defender/ui/button';
 import { cn } from '@gideon-defender/ui/cn';
-import type { AuditLog } from '@db';
 import { format } from 'date-fns';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
@@ -37,19 +37,17 @@ function LogEntry({ log, isLast = false }: { log: ActivityLog; isLast?: boolean 
       <div className="flex flex-col items-center">
         <Avatar className="h-8 w-8 shrink-0 relative z-10">
           {user?.image && <AvatarImage src={user.image} alt={userName} />}
-          <AvatarFallback className="text-xs">
-            {userName.charAt(0).toUpperCase()}
-          </AvatarFallback>
+          <AvatarFallback className="text-xs">{userName.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
-        {!isLast && (
-          <div className="w-px flex-1 bg-border mt-1" />
-        )}
+        {!isLast && <div className="w-px flex-1 bg-border mt-1" />}
       </div>
       <div className="flex-1 min-w-0 pb-6">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-sm font-medium truncate">{userName}</span>
           {user?.role === 'admin' && (
-            <span className="inline-flex items-center rounded-md bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">OpenComp</span>
+            <span className="inline-flex items-center rounded-md bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">
+              OpenComp
+            </span>
           )}
           <Badge
             variant="outline"
@@ -76,15 +74,15 @@ function LogEntryCompact({ log }: { log: ActivityLog }) {
     <div className="flex items-start gap-2.5">
       <Avatar className="h-6 w-6 shrink-0 mt-0.5">
         {user?.image && <AvatarImage src={user.image} alt={userName} />}
-        <AvatarFallback className="text-[10px]">
-          {userName.charAt(0).toUpperCase()}
-        </AvatarFallback>
+        <AvatarFallback className="text-[10px]">{userName.charAt(0).toUpperCase()}</AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-xs font-medium truncate">{userName}</span>
           {user?.role === 'admin' && (
-            <span className="inline-flex items-center rounded-md bg-primary px-1 py-0 text-[9px] font-medium text-primary-foreground">OpenComp</span>
+            <span className="inline-flex items-center rounded-md bg-primary px-1 py-0 text-[9px] font-medium text-primary-foreground">
+              OpenComp
+            </span>
           )}
           <Badge
             variant="outline"
@@ -201,11 +199,7 @@ export function TaskActivityFull() {
     <div className="flex flex-col">
       <div className="min-h-[540px]">
         {logs.map((log, index) => (
-          <LogEntry
-            key={log.id}
-            log={log}
-            isLast={index === logs.length - 1}
-          />
+          <LogEntry key={log.id} log={log} isLast={index === logs.length - 1} />
         ))}
       </div>
       {totalPages > 1 && (
@@ -234,7 +228,9 @@ export function TaskActivityFull() {
               }, [])
               .map((item, i) =>
                 item === 'ellipsis' ? (
-                  <span key={`ellipsis-${i}`} className="px-1 text-xs text-muted-foreground">...</span>
+                  <span key={`ellipsis-${i}`} className="px-1 text-xs text-muted-foreground">
+                    ...
+                  </span>
                 ) : (
                   <Button
                     key={item}

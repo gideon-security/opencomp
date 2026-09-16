@@ -5,11 +5,7 @@ import { LoginEmailSettings } from './components/LoginEmailSettings';
 import { McpOrganizationSelector } from './components/McpOrganizationSelector';
 import type { McpOrganizationData } from './hooks/useMcpOrganization';
 
-export default async function UserSettings({
-  params,
-}: {
-  params: Promise<{ orgId: string }>;
-}) {
+export default async function UserSettings({ params }: { params: Promise<{ orgId: string }> }) {
   const { orgId } = await params;
 
   const [emailRes, mcpRes] = await Promise.all([
@@ -49,9 +45,7 @@ export default async function UserSettings({
         isAdminOrOwner={emailRes.data.isAdminOrOwner}
         roleNotifications={emailRes.data.roleNotifications}
       />
-      {mcpRes.data ? (
-        <McpOrganizationSelector initialData={mcpRes.data} />
-      ) : null}
+      {mcpRes.data ? <McpOrganizationSelector initialData={mcpRes.data} /> : null}
     </div>
   );
 }

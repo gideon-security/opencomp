@@ -168,9 +168,7 @@ export function ConnectLiveSignin({
               {/* Show the ring only once the browser has rendered, so it fades in
                   with the page instead of appearing over a blank frame. Green
                   glow while the AI drives; amber "Your turn" when the user acts. */}
-              {!success && loaded && (
-                <LiveActivityBorder state={variant === 'ai' ? 'ai' : 'you'} />
-              )}
+              {!success && loaded && <LiveActivityBorder state={variant === 'ai' ? 'ai' : 'you'} />}
             </div>
           </div>
         </div>
@@ -222,8 +220,8 @@ export function ConnectLiveSignin({
             <div className="rounded-md border border-border p-3">
               <div className="mb-1 text-[12.5px] text-foreground">Finish sign-in yourself</div>
               <div className="mb-2.5 text-[11.5px] leading-normal text-muted-foreground">
-                Complete the sign-in in the live browser — OpenComp saves the session as
-                usual. Then confirm.
+                Complete the sign-in in the live browser — OpenComp saves the session as usual. Then
+                confirm.
               </div>
               <Button
                 onClick={onConfirm}

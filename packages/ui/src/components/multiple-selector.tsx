@@ -5,10 +5,10 @@ import { X } from 'lucide-react';
 import * as React from 'react';
 import { forwardRef, useEffect } from 'react';
 
+import { useDebounce } from '../hooks/use-debounce';
 import { cn } from '../utils';
 import { Badge } from './badge';
 import { Command, CommandGroup, CommandItem, CommandList } from './command';
-import { useDebounce } from '../hooks/use-debounce';
 
 export interface Option {
   value: string;

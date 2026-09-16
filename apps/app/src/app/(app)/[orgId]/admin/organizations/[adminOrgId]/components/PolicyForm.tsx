@@ -1,6 +1,7 @@
 'use client';
 
 import { api } from '@/lib/api-client';
+import { Label } from '@gideon-defender/ui/label';
 import {
   Button,
   Input,
@@ -11,7 +12,6 @@ import {
   Stack,
   Text,
 } from '@trycompai/design-system';
-import { Label } from '@gideon-defender/ui/label';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
@@ -96,10 +96,7 @@ export function PolicyForm({ orgId, onCreated }: PolicyFormProps) {
     if (department && department !== 'none') body.department = department;
     if (frequency) body.frequency = frequency;
 
-    const res = await api.post(
-      `/v1/admin/organizations/${orgId}/policies`,
-      body,
-    );
+    const res = await api.post(`/v1/admin/organizations/${orgId}/policies`, body);
 
     if (res.error) {
       setError(res.error);
@@ -136,12 +133,15 @@ export function PolicyForm({ orgId, onCreated }: PolicyFormProps) {
 
         <div>
           <Label>{t('organizations.policyForm.statusLabel')}</Label>
-          <Select value={status} onValueChange={(val) => { if (val) setStatus(val); }}>
+          <Select
+            value={status}
+            onValueChange={(val) => {
+              if (val) setStatus(val);
+            }}
+          >
             <SelectTrigger>
               <span className="text-sm">
-                {status
-                  ? statusLabel(t, status)
-                  : t('organizations.policyForm.statusDefault')}
+                {status ? statusLabel(t, status) : t('organizations.policyForm.statusDefault')}
               </span>
             </SelectTrigger>
             <SelectContent>
@@ -156,7 +156,12 @@ export function PolicyForm({ orgId, onCreated }: PolicyFormProps) {
 
         <div>
           <Label>{t('organizations.policyForm.departmentLabel')}</Label>
-          <Select value={department} onValueChange={(val) => { if (val) setDepartment(val); }}>
+          <Select
+            value={department}
+            onValueChange={(val) => {
+              if (val) setDepartment(val);
+            }}
+          >
             <SelectTrigger>
               <span className="text-sm">
                 {department
@@ -176,7 +181,12 @@ export function PolicyForm({ orgId, onCreated }: PolicyFormProps) {
 
         <div>
           <Label>{t('organizations.policyForm.frequencyLabel')}</Label>
-          <Select value={frequency} onValueChange={(val) => { if (val) setFrequency(val); }}>
+          <Select
+            value={frequency}
+            onValueChange={(val) => {
+              if (val) setFrequency(val);
+            }}
+          >
             <SelectTrigger>
               <span className="text-sm">
                 {frequency

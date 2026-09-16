@@ -64,7 +64,8 @@ export const inviteMember = authActionClient
         invitedEmail: safeEmail,
         role,
         durationMs: Date.now() - startTime,
-        resultKeys: inviteResult && typeof inviteResult === 'object' ? Object.keys(inviteResult) : [],
+        resultKeys:
+          inviteResult && typeof inviteResult === 'object' ? Object.keys(inviteResult) : [],
       });
 
       return {

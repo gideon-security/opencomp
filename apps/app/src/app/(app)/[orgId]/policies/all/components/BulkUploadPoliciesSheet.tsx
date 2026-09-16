@@ -1,10 +1,7 @@
 'use client';
 
 import { useApi } from '@/hooks/use-api';
-import {
-  bulkUploadFileKey as fileKey,
-  bulkUploadPoliciesViaApi,
-} from '@/lib/policies-bulk-upload';
+import { bulkUploadPoliciesViaApi, bulkUploadFileKey as fileKey } from '@/lib/policies-bulk-upload';
 import {
   Button,
   cn,
@@ -34,17 +31,13 @@ interface BulkUploadPoliciesSheetProps {
 function readFileAsBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () =>
-      resolve((reader.result as string).split(',')[1] ?? '');
+    reader.onload = () => resolve((reader.result as string).split(',')[1] ?? '');
     reader.onerror = () => reject(new Error(`Failed to read ${file.name}`));
     reader.readAsDataURL(file);
   });
 }
 
-export function BulkUploadPoliciesSheet({
-  open,
-  onOpenChange,
-}: BulkUploadPoliciesSheetProps) {
+export function BulkUploadPoliciesSheet({ open, onOpenChange }: BulkUploadPoliciesSheetProps) {
   const router = useRouter();
   const api = useApi();
   const [files, setFiles] = useState<File[]>([]);
@@ -52,9 +45,7 @@ export function BulkUploadPoliciesSheet({
   const [errors, setErrors] = useState<Record<string, string>>({});
   // Drafts created by a previous attempt whose PDF attach failed, keyed by
   // name+size. A retry reuses these ids instead of creating duplicate drafts.
-  const [policyIdsByFile, setPolicyIdsByFile] = useState<
-    Record<string, string>
-  >({});
+  const [policyIdsByFile, setPolicyIdsByFile] = useState<Record<string, string>>({});
   const [isUploading, setIsUploading] = useState(false);
 
   const resetAndClose = () => {
@@ -109,15 +100,14 @@ export function BulkUploadPoliciesSheet({
       // Upload straight to the NestJS API from the browser (like the
       // single-policy PDF upload) so the PDFs never pass through the Next.js
       // route's body limit, processed with bounded concurrency.
-      const { results, createdCount, failedCount } =
-        await bulkUploadPoliciesViaApi({
-          post: api.post,
-          files,
-          readFileAsBase64,
-          // Reuse drafts left behind by earlier failed attaches so a retry
-          // doesn't spawn duplicate/orphan drafts.
-          existingPolicyIds: policyIdsByFile,
-        });
+      const { results, createdCount, failedCount } = await bulkUploadPoliciesViaApi({
+        post: api.post,
+        files,
+        readFileAsBase64,
+        // Reuse drafts left behind by earlier failed attaches so a retry
+        // doesn't spawn duplicate/orphan drafts.
+        existingPolicyIds: policyIdsByFile,
+      });
 
       if (createdCount > 0) {
         toast.success(
@@ -147,8 +137,7 @@ export function BulkUploadPoliciesSheet({
       }
       if (createdCount === 0) {
         toast.error(
-          results.find((r) => r.status === 'failed')?.error ||
-            'No policies were imported.',
+          results.find((r) => r.status === 'failed')?.error || 'No policies were imported.',
         );
       }
       setErrors(failedErrors);
@@ -188,9 +177,8 @@ export function BulkUploadPoliciesSheet({
         <SheetBody>
           <Stack gap="md">
             <Text>
-              Import pre-existing policy documents you&apos;re migrating from
-              another platform. Each PDF becomes a draft policy with the
-              document attached — up to {MAX_FILES} at a time.
+              Import pre-existing policy documents you&apos;re migrating from another platform. Each
+              PDF becomes a draft policy with the document attached — up to {MAX_FILES} at a time.
             </Text>
 
             <Dropzone
@@ -199,9 +187,7 @@ export function BulkUploadPoliciesSheet({
               maxSize={MAX_FILE_SIZE}
               multiple
               disabled={isUploading}
-              onDropRejected={() =>
-                toast.error('Only PDF files up to 100MB are supported.')
-              }
+              onDropRejected={() => toast.error('Only PDF files up to 100MB are supported.')}
             >
               {({ getRootProps, getInputProps, isDragActive }) => (
                 <div
@@ -238,14 +224,8 @@ export function BulkUploadPoliciesSheet({
                       )}
                     >
                       <div className="flex items-center gap-2">
-                        <DocumentPdf
-                          size={16}
-                          className="text-muted-foreground shrink-0"
-                        />
-                        <span
-                          className="flex-1 truncate text-sm"
-                          title={file.name}
-                        >
+                        <DocumentPdf size={16} className="text-muted-foreground shrink-0" />
+                        <span className="flex-1 truncate text-sm" title={file.name}>
                           {file.name}
                         </span>
                         <button
@@ -258,11 +238,7 @@ export function BulkUploadPoliciesSheet({
                           <TrashCan size={16} />
                         </button>
                       </div>
-                      {error && (
-                        <span className="text-destructive pl-6 text-xs">
-                          {error}
-                        </span>
-                      )}
+                      {error && <span className="text-destructive pl-6 text-xs">{error}</span>}
                     </div>
                   );
                 })}
@@ -271,18 +247,10 @@ export function BulkUploadPoliciesSheet({
           </Stack>
         </SheetBody>
         <SheetFooter>
-          <Button
-            variant="outline"
-            onClick={resetAndClose}
-            disabled={isUploading}
-          >
+          <Button variant="outline" onClick={resetAndClose} disabled={isUploading}>
             Cancel
           </Button>
-          <Button
-            onClick={handleUpload}
-            loading={isUploading}
-            disabled={files.length === 0}
-          >
+          <Button onClick={handleUpload} loading={isUploading} disabled={files.length === 0}>
             {uploadLabel}
           </Button>
         </SheetFooter>

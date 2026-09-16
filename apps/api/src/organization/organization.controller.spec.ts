@@ -178,11 +178,9 @@ describe('OrganizationController', () => {
     it('passes backgroundCheckStepEnabled through to the service', async () => {
       mockOrganizationService.updateById.mockResolvedValue({ id: 'org_123' });
 
-      await controller.updateOrganization(
-        'org_123',
-        sessionAuthContext,
-        { backgroundCheckStepEnabled: false },
-      );
+      await controller.updateOrganization('org_123', sessionAuthContext, {
+        backgroundCheckStepEnabled: false,
+      });
 
       expect(mockOrganizationService.updateById).toHaveBeenCalledWith(
         'org_123',
@@ -256,7 +254,10 @@ describe('OrganizationController', () => {
 
   describe('createApiKey', () => {
     beforeEach(() => {
-      mockApiKeyService.create.mockResolvedValue({ id: 'apk_1', key: 'comp_x' });
+      mockApiKeyService.create.mockResolvedValue({
+        id: 'apk_1',
+        key: 'comp_x',
+      });
     });
 
     it('attributes a session-created key to the creating member', async () => {

@@ -1,19 +1,18 @@
 'use client';
 
-import { authClient, useSession } from '@/utils/auth-client';
+import { useAuthMe } from '@/hooks/use-auth-me';
+import { authClient } from '@/utils/auth-client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export function ImpersonationBanner() {
-  const { data: session } = useSession();
+  // Milestone 2 — impersonation state comes from GET /v1/auth/me (resolved
+  // server-side by HybridAuthGuard), not better-auth session resolution.
+  // Stop-impersonating still uses the better-auth admin plugin until it is
+  // reimplemented as a native endpoint in Milestone 3 (plan §6 step 15).
+  const { user, impersonatedBy, mutate } = useAuthMe();
   const router = useRouter();
   const [stopping, setStopping] = useState(false);
-
-  const rawImpersonatedBy = (
-    session?.session as Record<string, unknown> | undefined
-  )?.impersonatedBy;
-  const impersonatedBy =
-    typeof rawImpersonatedBy === 'string' ? rawImpersonatedBy : undefined;
 
   if (!impersonatedBy) return null;
 
@@ -21,13 +20,14 @@ export function ImpersonationBanner() {
     setStopping(true);
     try {
       await authClient.admin.stopImpersonating();
+      // Revalidate GET /v1/auth/me so the banner hides immediately. Without
+      // this the SWR cache still holds the impersonated user (no focus
+      // revalidation) and router.refresh() alone does not remount us.
+      await mutate();
       const { data: restored } = await authClient.getSession();
-      (authClient.$store as { notify: (signal: string) => void }).notify(
-        '$sessionSignal',
-      );
-      const adminOrgId = (
-        restored?.session as Record<string, unknown> | undefined
-      )?.activeOrganizationId;
+      (authClient.$store as { notify: (signal: string) => void }).notify('$sessionSignal');
+      const adminOrgId = (restored?.session as Record<string, unknown> | undefined)
+        ?.activeOrganizationId;
       if (typeof adminOrgId === 'string' && adminOrgId) {
         router.push(`/${adminOrgId}/admin/organizations`);
       } else {
@@ -42,8 +42,7 @@ export function ImpersonationBanner() {
   return (
     <div className="flex items-center justify-between border-b bg-destructive/10 px-4 py-1.5 text-xs text-destructive">
       <span>
-        Impersonating <span className="font-medium">{session?.user?.name ?? 'a user'}</span>{' '}
-        ({session?.user?.email})
+        Impersonating <span className="font-medium">{user?.name ?? 'a user'}</span> ({user?.email})
       </span>
       <button
         onClick={handleStop}

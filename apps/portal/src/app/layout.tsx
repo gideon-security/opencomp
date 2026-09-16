@@ -2,7 +2,6 @@ import { auth } from '@/app/lib/auth';
 import { env } from '@/env.mjs';
 import { initializeServer } from '@gideon-defender/analytics/server';
 import { cn } from '@gideon-defender/ui/cn';
-import './globals.css';
 import '@trycompai/design-system/globals.css';
 import { GeistMono } from 'geist/font/mono';
 import type { Metadata } from 'next';
@@ -11,6 +10,7 @@ import { headers } from 'next/headers';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Suspense } from 'react';
 import { Toaster } from 'sonner';
+import './globals.css';
 import { Providers } from './providers';
 
 export const metadata: Metadata = {

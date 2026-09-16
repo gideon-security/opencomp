@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Expel Workbench at https://workbench.expel.io\n2. Go to Organization Settings > Service Accounts\n3. Create a new service account with the appropriate role (admin or analyst)\n4. Copy the generated API key\n5. Paste the API key in the field below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

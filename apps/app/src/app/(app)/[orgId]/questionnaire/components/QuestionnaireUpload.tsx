@@ -29,96 +29,93 @@ export function QuestionnaireUpload({
   const t = useTranslations('questionnaire');
   return (
     <div className="flex flex-col gap-6">
-        {selectedFile ? (
-          <div className="flex items-center justify-between gap-4 p-4 bg-muted/30 rounded-lg border border-border/40">
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-              <Document size={20} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{selectedFile.name}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                </p>
-              </div>
+      {selectedFile ? (
+        <div className="flex items-center justify-between gap-4 p-4 bg-muted/30 rounded-lg border border-border/40">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <Document size={20} />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{selectedFile.name}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+              </p>
             </div>
-            {!isLoading && (
-              <div className="shrink-0">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onFileRemove}
-                  disabled={isLoading}
-                  iconLeft={<Close size={16} />}
-                />
-              </div>
-            )}
           </div>
-        ) : (
-          <Dropzone
-            onDrop={onFileSelect}
-            maxSize={100 * 1024 * 1024}
-            maxFiles={1}
-            multiple={false}
-            disabled={isLoading}
-            accept={{
-              'application/pdf': ['.pdf'],
-              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-              'text/csv': ['.csv'],
-            }}
-          >
-            {({ getRootProps, getInputProps, isDragActive }) => (
-              <div
-                {...getRootProps()}
-                className={cn(
-                  'flex flex-col items-center justify-center gap-4 border-2 border-dashed rounded-xs p-12 lg:p-16 cursor-pointer transition-all',
-                  isDragActive
-                    ? 'border-primary bg-primary/5 scale-[1.01]'
-                    : 'border-border/40 bg-muted/10 hover:border-primary/40 hover:bg-muted/20',
-                  isLoading && 'opacity-50 pointer-events-none',
-                )}
-              >
-                <input {...getInputProps()} />
-                <div className="flex flex-col items-center gap-3">
-                  <Upload size={40} />
-                  <div className="text-center space-y-1">
-                    <p className="text-sm font-medium text-foreground">
-                      {isDragActive ? t('view.dropFileHere') : t('view.dragDrop')}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {t('view.fileFormats')}
-                    </p>
-                  </div>
+          {!isLoading && (
+            <div className="shrink-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onFileRemove}
+                disabled={isLoading}
+                iconLeft={<Close size={16} />}
+              />
+            </div>
+          )}
+        </div>
+      ) : (
+        <Dropzone
+          onDrop={onFileSelect}
+          maxSize={100 * 1024 * 1024}
+          maxFiles={1}
+          multiple={false}
+          disabled={isLoading}
+          accept={{
+            'application/pdf': ['.pdf'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+            'text/csv': ['.csv'],
+          }}
+        >
+          {({ getRootProps, getInputProps, isDragActive }) => (
+            <div
+              {...getRootProps()}
+              className={cn(
+                'flex flex-col items-center justify-center gap-4 border-2 border-dashed rounded-xs p-12 lg:p-16 cursor-pointer transition-all',
+                isDragActive
+                  ? 'border-primary bg-primary/5 scale-[1.01]'
+                  : 'border-border/40 bg-muted/10 hover:border-primary/40 hover:bg-muted/20',
+                isLoading && 'opacity-50 pointer-events-none',
+              )}
+            >
+              <input {...getInputProps()} />
+              <div className="flex flex-col items-center gap-3">
+                <Upload size={40} />
+                <div className="text-center space-y-1">
+                  <p className="text-sm font-medium text-foreground">
+                    {isDragActive ? t('view.dropFileHere') : t('view.dragDrop')}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{t('view.fileFormats')}</p>
                 </div>
               </div>
-            )}
-          </Dropzone>
-        )}
+            </div>
+          )}
+        </Dropzone>
+      )}
 
-        <div className="flex items-center justify-end">
-          <div className="w-full sm:w-auto">
-            <Button
-              onClick={onParse}
-              disabled={isLoading || !selectedFile || hasResults}
-              loading={isLoading}
-              size="lg"
-              iconLeft={!isLoading ? <Document size={16} /> : undefined}
-            >
-              {isLoading
-                ? parseStatus === 'uploading'
-                  ? t('view.uploading')
-                  : parseStatus === 'starting'
-                    ? t('view.gettingReady')
-                    : parseStatus === 'queued'
-                      ? t('view.almostReady')
-                      : parseStatus === 'analyzing'
-                        ? t('view.readingDocument')
-                        : parseStatus === 'processing'
-                          ? t('view.findingQuestions')
-                          : t('view.almostDone')
-                : t('view.analyzeQuestionnaire')}
-            </Button>
-          </div>
+      <div className="flex items-center justify-end">
+        <div className="w-full sm:w-auto">
+          <Button
+            onClick={onParse}
+            disabled={isLoading || !selectedFile || hasResults}
+            loading={isLoading}
+            size="lg"
+            iconLeft={!isLoading ? <Document size={16} /> : undefined}
+          >
+            {isLoading
+              ? parseStatus === 'uploading'
+                ? t('view.uploading')
+                : parseStatus === 'starting'
+                  ? t('view.gettingReady')
+                  : parseStatus === 'queued'
+                    ? t('view.almostReady')
+                    : parseStatus === 'analyzing'
+                      ? t('view.readingDocument')
+                      : parseStatus === 'processing'
+                        ? t('view.findingQuestions')
+                        : t('view.almostDone')
+              : t('view.analyzeQuestionnaire')}
+          </Button>
         </div>
+      </div>
     </div>
   );
 }
-

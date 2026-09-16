@@ -185,7 +185,9 @@ export class TwoFactorSourceController {
    * task), with each one's connection state for this org.
    */
   @Get('available-2fa-sources')
-  @ApiOperation({ summary: 'List integrations that can supply per-user 2FA status' })
+  @ApiOperation({
+    summary: 'List integrations that can supply per-user 2FA status',
+  })
   @RequirePermission('integration', 'read')
   async getAvailableTwoFactorSources(@OrganizationId() organizationId: string) {
     const sources = await this.checkResults.listSourcesBoundToTask(

@@ -1,16 +1,11 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { db, PhaseCompletionType } from '@db';
 import { TimelinesLifecycleService } from './timelines-lifecycle.service';
 import { recalculatePhaseDates } from './timelines-date.helper';
 
 @Injectable()
 export class TimelinesPhasesService {
-  constructor(
-    private readonly lifecycle: TimelinesLifecycleService,
-  ) {}
+  constructor(private readonly lifecycle: TimelinesLifecycleService) {}
 
   async updatePhase(
     instanceId: string,
@@ -72,15 +67,23 @@ export class TimelinesPhasesService {
       where: { id: phaseId },
       data: {
         ...(data.name !== undefined && { name: data.name }),
-        ...(data.description !== undefined && { description: data.description }),
-        ...(data.durationWeeks !== undefined && { durationWeeks: data.durationWeeks }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
+        ...(data.durationWeeks !== undefined && {
+          durationWeeks: data.durationWeeks,
+        }),
         ...(data.completionType !== undefined && {
           completionType: data.completionType,
         }),
         ...(data.startDate !== undefined && { startDate: data.startDate }),
         ...(newEndDate !== undefined && { endDate: newEndDate }),
-        ...(data.documentUrl !== undefined && { documentUrl: data.documentUrl }),
-        ...(data.documentName !== undefined && { documentName: data.documentName }),
+        ...(data.documentUrl !== undefined && {
+          documentUrl: data.documentUrl,
+        }),
+        ...(data.documentName !== undefined && {
+          documentName: data.documentName,
+        }),
         ...(datesPinned !== undefined && { datesPinned }),
         ...(data.locksTimelineOnComplete !== undefined && {
           locksTimelineOnComplete: data.locksTimelineOnComplete,

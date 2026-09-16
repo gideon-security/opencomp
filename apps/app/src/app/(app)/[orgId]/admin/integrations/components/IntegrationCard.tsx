@@ -8,10 +8,11 @@ import {
   Launch,
   Settings,
   TrashCan,
+  View,
+  ViewOff,
 } from '@trycompai/design-system/icons';
 import Image from 'next/image';
 import { useState } from 'react';
-import { View, ViewOff } from '@trycompai/design-system/icons';
 
 interface AdditionalOAuthSetting {
   id: string;
@@ -119,68 +120,66 @@ export function IntegrationCard({
     <Card>
       <CardContent>
         <div className="space-y-4">
-        <div className="flex items-start gap-3">
-          <div className="relative h-10 w-10 shrink-0 rounded-lg border bg-muted/50 p-1.5">
-            <Image
-              src={integration.logoUrl}
-              alt={integration.name}
-              fill
-              className="object-contain p-1"
-              unoptimized
-            />
-            {integration.hasCredentials && (
-              <div className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-green-500 text-white">
-                <CheckmarkFilled className="h-2.5 w-2.5" />
-              </div>
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <h3 className="truncate text-sm font-semibold">{integration.name}</h3>
-              {!integration.hasCredentials && (
-                <Badge variant="outline">Not configured</Badge>
+          <div className="flex items-start gap-3">
+            <div className="relative h-10 w-10 shrink-0 rounded-lg border bg-muted/50 p-1.5">
+              <Image
+                src={integration.logoUrl}
+                alt={integration.name}
+                fill
+                className="object-contain p-1"
+                unoptimized
+              />
+              {integration.hasCredentials && (
+                <div className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-green-500 text-white">
+                  <CheckmarkFilled className="h-2.5 w-2.5" />
+                </div>
               )}
             </div>
-            <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
-              {integration.description}
-            </p>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <h3 className="truncate text-sm font-semibold">{integration.name}</h3>
+                {!integration.hasCredentials && <Badge variant="outline">Not configured</Badge>}
+              </div>
+              <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                {integration.description}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-          <Badge variant="outline">{integration.category}</Badge>
-          <span className="uppercase tracking-wide">{integration.authType}</span>
-          {integration.hasCredentials && integration.credentialUpdatedAt && (
-            <span>Updated {new Date(integration.credentialUpdatedAt).toLocaleDateString()}</span>
+          <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+            <Badge variant="outline">{integration.category}</Badge>
+            <span className="uppercase tracking-wide">{integration.authType}</span>
+            {integration.hasCredentials && integration.credentialUpdatedAt && (
+              <span>Updated {new Date(integration.credentialUpdatedAt).toLocaleDateString()}</span>
+            )}
+          </div>
+
+          {integration.hasCredentials && integration.decryptedClientId && (
+            <CardCredentialsSummary
+              clientId={integration.decryptedClientId}
+              clientSecret={integration.decryptedClientSecret}
+            />
           )}
-        </div>
 
-        {integration.hasCredentials && integration.decryptedClientId && (
-          <CardCredentialsSummary
-            clientId={integration.decryptedClientId}
-            clientSecret={integration.decryptedClientSecret}
-          />
-        )}
-
-        {integration.authType === 'oauth2' && (
-          <OAuthConfig
-            integration={integration}
-            showConfig={showConfig}
-            setShowConfig={setShowConfig}
-            clientId={clientId}
-            setClientId={setClientId}
-            clientSecret={clientSecret}
-            setClientSecret={setClientSecret}
-            customSettingsValues={customSettingsValues}
-            setCustomSettingsValues={setCustomSettingsValues}
-            isSaving={isSaving}
-            isDeleting={isDeleting}
-            error={error}
-            additionalSettings={additionalSettings}
-            handleSave={handleSave}
-            handleDelete={handleDelete}
-          />
-        )}
+          {integration.authType === 'oauth2' && (
+            <OAuthConfig
+              integration={integration}
+              showConfig={showConfig}
+              setShowConfig={setShowConfig}
+              clientId={clientId}
+              setClientId={setClientId}
+              clientSecret={clientSecret}
+              setClientSecret={setClientSecret}
+              customSettingsValues={customSettingsValues}
+              setCustomSettingsValues={setCustomSettingsValues}
+              isSaving={isSaving}
+              isDeleting={isDeleting}
+              error={error}
+              additionalSettings={additionalSettings}
+              handleSave={handleSave}
+              handleDelete={handleDelete}
+            />
+          )}
         </div>
       </CardContent>
     </Card>
@@ -256,9 +255,7 @@ function OAuthConfig({
 
       {showConfig && (
         <div className="space-y-4 rounded-lg border bg-muted/30 p-4">
-          {error && (
-            <div className="rounded bg-red-500/10 p-2 text-sm text-red-500">{error}</div>
-          )}
+          {error && <div className="rounded bg-red-500/10 p-2 text-sm text-red-500">{error}</div>}
 
           {integration.hasCredentials && (
             <CredentialsDisplay
@@ -386,7 +383,9 @@ function CardCredentialsSummary({
         <div className="flex items-center gap-2">
           <span className="w-16 shrink-0 text-xs text-muted-foreground">Secret</span>
           <code className="min-w-0 truncate rounded border bg-background px-2 py-0.5 text-xs select-all">
-            {showSecret ? clientSecret : `${'•'.repeat(Math.min(clientSecret.length, 20))}${clientSecret.slice(-4)}`}
+            {showSecret
+              ? clientSecret
+              : `${'•'.repeat(Math.min(clientSecret.length, 20))}${clientSecret.slice(-4)}`}
           </code>
           <button
             type="button"
@@ -413,14 +412,18 @@ function CredentialsDisplay({
   if (!clientIdHint) {
     return (
       <div className="rounded-lg bg-muted p-3">
-        <Text size="xs" variant="muted">Credentials configured</Text>
+        <Text size="xs" variant="muted">
+          Credentials configured
+        </Text>
       </div>
     );
   }
 
   return (
     <div className="space-y-2 rounded-lg bg-muted p-3">
-      <Text size="xs" variant="muted" weight="medium">CURRENT CREDENTIALS</Text>
+      <Text size="xs" variant="muted" weight="medium">
+        CURRENT CREDENTIALS
+      </Text>
       <div className="grid gap-1.5 text-sm">
         <div className="flex items-center gap-2">
           <span className="w-20 shrink-0 text-xs text-muted-foreground">Client ID:</span>
@@ -430,9 +433,7 @@ function CredentialsDisplay({
         </div>
         <div className="flex items-center gap-2">
           <span className="w-20 shrink-0 text-xs text-muted-foreground">Secret:</span>
-          <code className="rounded border bg-background px-2 py-1 text-xs">
-            {clientSecretHint}
-          </code>
+          <code className="rounded border bg-background px-2 py-1 text-xs">{clientSecretHint}</code>
         </div>
         {existingCustomSettings &&
           Object.entries(existingCustomSettings).map(([key, value]) => (

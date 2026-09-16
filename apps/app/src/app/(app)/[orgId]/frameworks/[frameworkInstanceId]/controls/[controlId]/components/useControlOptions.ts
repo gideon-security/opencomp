@@ -30,10 +30,9 @@ interface ControlOptionsResponse {
 }
 
 export function useControlOptions(enabled: boolean) {
-  const { data, isLoading, mutate } = useApiSWR<ControlOptionsResponse>(
-    '/v1/controls/options',
-    { enabled },
-  );
+  const { data, isLoading, mutate } = useApiSWR<ControlOptionsResponse>('/v1/controls/options', {
+    enabled,
+  });
 
   const options = data?.data;
 

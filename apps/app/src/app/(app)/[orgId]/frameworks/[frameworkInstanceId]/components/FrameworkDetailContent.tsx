@@ -6,6 +6,12 @@ import { getFrameworkAggregatePercent } from '@/lib/control-compliance';
 import type { FrameworkUpdateStatus } from '@/types/framework-versioning';
 import { useFeatureFlag } from '@gideon-defender/analytics';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@gideon-defender/ui/dropdown-menu';
+import {
   Button,
   PageHeader,
   PageHeaderDescription,
@@ -16,12 +22,6 @@ import {
   TabsTrigger,
 } from '@trycompai/design-system';
 import { Edit, OverflowMenuVertical, TrashCan } from '@trycompai/design-system/icons';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@gideon-defender/ui/dropdown-menu';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -274,10 +274,7 @@ export function FrameworkDetailContent({
         </TabsContent>
 
         <TabsContent value="history">
-          <SyncHistorySection
-            frameworkInstanceId={frameworkInstanceId}
-            permissions={permissions}
-          />
+          <SyncHistorySection frameworkInstanceId={frameworkInstanceId} permissions={permissions} />
         </TabsContent>
       </PageLayout>
 

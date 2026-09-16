@@ -63,7 +63,12 @@ export function RoleNotificationSettings({ initialSettings }: Props) {
       title="Role Notification Settings"
       description="Configure which email notifications each role receives. Users with owner or admin roles can individually opt out. All other roles follow these settings."
       actions={
-        <Button size="lg" onClick={handleSave} disabled={saving || !hasChanges || !canUpdate} loading={saving}>
+        <Button
+          size="lg"
+          onClick={handleSave}
+          disabled={saving || !hasChanges || !canUpdate}
+          loading={saving}
+        >
           Save Changes
         </Button>
       }

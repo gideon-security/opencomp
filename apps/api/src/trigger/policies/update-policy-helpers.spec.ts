@@ -182,7 +182,10 @@ describe('updatePolicyInDatabase (published policy regeneration)', () => {
       id: 'pol_1',
       status: 'published',
       content: [
-        { type: 'paragraph', content: [{ type: 'text', text: 'Published v1' }] },
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Published v1' }],
+        },
       ],
       currentVersionId: 'pv_1',
       signedBy: ['mem_a', 'mem_b'],

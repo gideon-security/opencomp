@@ -42,18 +42,10 @@ export async function POST(request: Request) {
   const parsed = RequestSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: 'Invalid request body' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
-  const {
-    integrationName,
-    integrationDescription,
-    taskTemplates,
-    examplePrompts,
-  } = parsed.data;
+  const { integrationName, integrationDescription, taskTemplates, examplePrompts } = parsed.data;
 
   if (!taskTemplates || taskTemplates.length === 0) {
     return NextResponse.json({ tasks: [] });
@@ -86,7 +78,9 @@ Return JSON with an array of tasks. Each task must have: taskTemplateId (from th
     examplePrompts && examplePrompts.length > 0
       ? `\n\nExample prompts showing the style for ${integrationName}:\n${examplePrompts
           .map((prompt) => `- ${prompt}`)
-          .join('\n')}\n\nUse these as inspiration - generate similar prompts that mention ${integrationName} specifically.`
+          .join(
+            '\n',
+          )}\n\nUse these as inspiration - generate similar prompts that mention ${integrationName} specifically.`
       : '';
 
   const userPrompt = `Integration: ${integrationName}
@@ -115,9 +109,7 @@ Format: {"relevantTasks": [{"taskTemplateId": "...", "taskName": "...", "reason"
       }
     }
 
-    const validTasks = tasks.filter((task) =>
-      validTaskIds.has(task.taskTemplateId),
-    );
+    const validTasks = tasks.filter((task) => validTaskIds.has(task.taskTemplateId));
 
     return NextResponse.json({ tasks: validTasks });
   } catch (error) {

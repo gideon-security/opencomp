@@ -94,10 +94,7 @@ export interface Task<TID extends string = string, TInput = unknown, TOutput = u
     payloads: Array<{ payload: TInput }>,
     opts?: TaskTriggerOptions,
   ): Promise<TaskBatchHandle>;
-  triggerAndWait(
-    payload: TInput,
-    opts?: TaskTriggerOptions,
-  ): Promise<Run<TInput, TOutput>>;
+  triggerAndWait(payload: TInput, opts?: TaskTriggerOptions): Promise<Run<TInput, TOutput>>;
   batchTriggerAndWait(
     payloads: Array<{ payload: TInput }>,
     opts?: TaskTriggerOptions,
@@ -127,10 +124,7 @@ interface TaskDefinition<TID extends string, TInput, TOutput> {
 interface SchemaTaskDefinition<TID extends string, TSchema extends z.ZodTypeAny, TOutput> {
   id: TID;
   schema: TSchema;
-  run: (
-    payload: z.output<TSchema>,
-    ctx: RunContext,
-  ) => TOutput | Promise<TOutput>;
+  run: (payload: z.output<TSchema>, ctx: RunContext) => TOutput | Promise<TOutput>;
   queue?: Queue | string;
   retry?: RetryOptions;
   maxDuration?: number;
@@ -144,10 +138,7 @@ interface SchemaTaskDefinition<TID extends string, TSchema extends z.ZodTypeAny,
 interface ScheduleTaskDefinition<TID extends string, TOutput> {
   id: TID;
   cron: string;
-  run: (
-    payload: SchedulePayload,
-    ctx: RunContext,
-  ) => TOutput | Promise<TOutput>;
+  run: (payload: SchedulePayload, ctx: RunContext) => TOutput | Promise<TOutput>;
   timezone?: string;
   retry?: RetryOptions;
   maxDuration?: number;
@@ -160,11 +151,7 @@ export function task<TID extends string, TInput = unknown, TOutput = unknown>(
   opts: TaskDefinition<TID, TInput, TOutput>,
 ): Task<TID, TInput, TOutput>;
 
-export function schemaTask<
-  TID extends string,
-  TSchema extends z.ZodTypeAny,
-  TOutput = unknown,
->(
+export function schemaTask<TID extends string, TSchema extends z.ZodTypeAny, TOutput = unknown>(
   opts: SchemaTaskDefinition<TID, TSchema, TOutput>,
 ): Task<TID, z.input<TSchema>, TOutput>;
 
@@ -196,12 +183,8 @@ export const tasks: {
 };
 
 export const runs: {
-  retrieve<TInput = unknown, TOutput = unknown>(
-    runId: string,
-  ): Promise<Run<TInput, TOutput>>;
-  getRun<TInput = unknown, TOutput = unknown>(
-    runId: string,
-  ): Promise<Run<TInput, TOutput> | null>;
+  retrieve<TInput = unknown, TOutput = unknown>(runId: string): Promise<Run<TInput, TOutput>>;
+  getRun<TInput = unknown, TOutput = unknown>(runId: string): Promise<Run<TInput, TOutput> | null>;
   cancel(runId: string): Promise<Run | null>;
   list<TInput = unknown, TOutput = unknown>(opts?: {
     limit?: number;
@@ -238,10 +221,7 @@ export interface TriggerPublicTokenOptions {
 
 export const auth: {
   createPublicToken(opts?: PublicTokenOptions): Promise<string>;
-  createTriggerPublicToken(
-    taskId: string,
-    opts?: TriggerPublicTokenOptions,
-  ): Promise<string>;
+  createTriggerPublicToken(taskId: string, opts?: TriggerPublicTokenOptions): Promise<string>;
   getPayloadFromJWT<T = unknown>(token: string): Promise<T | null>;
 };
 
@@ -280,4 +260,5 @@ export function registerFromDirectory(
   dir: string,
   opts?: {
     ignore?: RegExp[];
-  }): void;
+  },
+): void;

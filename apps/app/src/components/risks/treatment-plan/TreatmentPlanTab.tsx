@@ -137,9 +137,7 @@ export function TreatmentPlanTab({
   }, [hasLinkedWork]);
 
   const showKickoff = isMitigate && !hasLinkedWork && !emptyDismissed;
-  const kickoffVariant: 'kickoff' | 'kickoff-with-plan' = hasPlan
-    ? 'kickoff-with-plan'
-    : 'kickoff';
+  const kickoffVariant: 'kickoff' | 'kickoff-with-plan' = hasPlan ? 'kickoff-with-plan' : 'kickoff';
   // Linked Work renders only for Mitigate. Accept "lives with the risk",
   // Transfer ships impact via insurance/contractual instruments, and Avoid
   // discontinues the activity — none of those are operational mitigations
@@ -173,16 +171,8 @@ export function TreatmentPlanTab({
       >
         {/* 01 · Strategy */}
         <div className="min-w-0 p-6">
-          <ColumnHeader
-            number="01"
-            title="Strategy"
-            subtitle="How is this risk being treated?"
-          />
-          <StrategyPicker
-            value={strategy}
-            onChange={handleStrategyChange}
-            disabled={!canUpdate}
-          />
+          <ColumnHeader number="01" title="Strategy" subtitle="How is this risk being treated?" />
+          <StrategyPicker value={strategy} onChange={handleStrategyChange} disabled={!canUpdate} />
         </div>
 
         {/* 02 · Kickoff CTA when linked work is empty (covers both "fully

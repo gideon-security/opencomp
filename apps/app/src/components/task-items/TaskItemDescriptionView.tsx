@@ -1,13 +1,17 @@
 'use client';
 
-import { EditorContent, useEditor } from '@tiptap/react';
-import type { JSONContent } from '@tiptap/react';
-import { useMemo, useEffect, useCallback } from 'react';
-import { defaultExtensions } from '@gideon-defender/ui/editor/extensions';
-import { createMentionExtension, type MentionUser, validateAndFixTipTapContent } from '@gideon-defender/ui/editor';
-import { FileAttachment } from '@gideon-defender/ui/editor/extensions/file-attachment';
-import { useOrganizationMembers } from '@/hooks/use-organization-members';
 import { useAttachments } from '@/hooks/use-attachments';
+import { useOrganizationMembers } from '@/hooks/use-organization-members';
+import {
+  createMentionExtension,
+  type MentionUser,
+  validateAndFixTipTapContent,
+} from '@gideon-defender/ui/editor';
+import { defaultExtensions } from '@gideon-defender/ui/editor/extensions';
+import { FileAttachment } from '@gideon-defender/ui/editor/extensions/file-attachment';
+import type { JSONContent } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 
 interface TaskItemDescriptionViewProps {
@@ -15,10 +19,7 @@ interface TaskItemDescriptionViewProps {
   className?: string;
 }
 
-export function TaskItemDescriptionView({
-  description,
-  className,
-}: TaskItemDescriptionViewProps) {
+export function TaskItemDescriptionView({ description, className }: TaskItemDescriptionViewProps) {
   const { members } = useOrganizationMembers();
   const { getDownloadUrl } = useAttachments();
   // Parse description - could be JSON string or plain string
@@ -28,15 +29,15 @@ export function TaskItemDescriptionView({
     try {
       // Try to parse as JSON first
       const parsed = typeof description === 'string' ? JSON.parse(description) : description;
-      
+
       // Validate and fix TipTap content (preserves fileAttachment nodes)
       const validated = validateAndFixTipTapContent(parsed);
-      
+
       // Check if it's a valid TipTap JSON structure
       if (validated && typeof validated === 'object' && validated.type === 'doc') {
         return validated as JSONContent;
       }
-      
+
       // If not valid JSON structure, return null to show as plain text
       return null;
     } catch {
@@ -112,7 +113,8 @@ export function TaskItemDescriptionView({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: 'prose prose-lg max-w-none focus:outline-none [&_p]:text-base [&_p]:leading-relaxed [&_li]:text-base [&_li]:leading-relaxed',
+        class:
+          'prose prose-lg max-w-none focus:outline-none [&_p]:text-base [&_p]:leading-relaxed [&_li]:text-base [&_li]:leading-relaxed',
       },
     },
   });
@@ -144,11 +146,14 @@ export function TaskItemDescriptionView({
   return (
     <div className={className}>
       {description ? (
-        <p className="whitespace-pre-wrap leading-relaxed text-foreground/90 text-base">{description}</p>
+        <p className="whitespace-pre-wrap leading-relaxed text-foreground/90 text-base">
+          {description}
+        </p>
       ) : (
-        <p className="text-muted-foreground italic leading-relaxed text-base">Add a description...</p>
+        <p className="text-muted-foreground italic leading-relaxed text-base">
+          Add a description...
+        </p>
       )}
     </div>
   );
 }
-

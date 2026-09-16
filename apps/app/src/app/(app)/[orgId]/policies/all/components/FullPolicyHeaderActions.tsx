@@ -1,5 +1,6 @@
 'use client';
 
+import { usePermissions } from '@/hooks/use-permissions';
 import { Button } from '@gideon-defender/ui/button';
 import {
   Dialog,
@@ -19,7 +20,6 @@ import { Icons } from '@gideon-defender/ui/icons';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { usePolicyActions } from '../hooks/usePolicyActions';
-import { usePermissions } from '@/hooks/use-permissions';
 
 export function FullPolicyHeaderActions() {
   const [isRegenerateConfirmOpen, setRegenerateConfirmOpen] = useState(false);

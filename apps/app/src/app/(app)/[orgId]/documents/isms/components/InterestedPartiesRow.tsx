@@ -14,16 +14,8 @@ import {
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import type { IsmsInterestedParty } from '../isms-types';
-import {
-  interestedPartySchema,
-  type InterestedPartyFormValues,
-} from './interested-party-schema';
-import {
-  IsmsCardActions,
-  IsmsFieldLabel,
-  IsmsRegisterCard,
-  IsmsRegisterField,
-} from './shared';
+import { interestedPartySchema, type InterestedPartyFormValues } from './interested-party-schema';
+import { IsmsCardActions, IsmsFieldLabel, IsmsRegisterCard, IsmsRegisterField } from './shared';
 
 interface InterestedPartiesRowProps {
   party: IsmsInterestedParty;

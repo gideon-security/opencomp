@@ -40,10 +40,10 @@ import {
   Unplug,
   XCircle,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { toast } from 'sonner';
 import type { StoredCheckRun, TaskIntegrationCheck } from '../hooks/useIntegrationChecks';
@@ -167,7 +167,7 @@ export function TaskIntegrationChecks({
       const url = new URL(window.location.href);
       url.searchParams.delete('success');
       url.searchParams.delete('provider');
-        window.history.replaceState({}, '', url.toString());
+      window.history.replaceState({}, '', url.toString());
     }
   }, [searchParams, checks, loading, t]);
 
@@ -220,17 +220,13 @@ export function TaskIntegrationChecks({
     setRevoking(true);
     try {
       await revokeException(revokeTarget.exceptionId);
-      toast.success(
-        t('integrationChecks.backInScopeToast', { resource: revokeTarget.resourceId }),
-      );
+      toast.success(t('integrationChecks.backInScopeToast', { resource: revokeTarget.resourceId }));
       const target = revokeTarget;
       setRevokeTarget(null);
       rerunAfterScopeChange(target);
     } catch (err) {
       console.error('Failed to revoke exception:', err);
-      toast.error(
-        err instanceof Error ? err.message : t('integrationChecks.revokeErrorFallback'),
-      );
+      toast.error(err instanceof Error ? err.message : t('integrationChecks.revokeErrorFallback'));
     } finally {
       setRevoking(false);
     }
@@ -258,7 +254,9 @@ export function TaskIntegrationChecks({
       setDisconnectTarget(null);
     } catch (err) {
       console.error('Failed to disconnect check:', err);
-      setDisconnectError(err instanceof Error ? err.message : t('integrationChecks.disconnectErrorFallback'));
+      setDisconnectError(
+        err instanceof Error ? err.message : t('integrationChecks.disconnectErrorFallback'),
+      );
     } finally {
       setTogglingCheck(null);
     }
@@ -273,7 +271,9 @@ export function TaskIntegrationChecks({
         toast.success(t('integrationChecks.reconnectedToast', { name: checkName }));
       } catch (err) {
         console.error('Failed to reconnect check:', err);
-        setError(err instanceof Error ? err.message : t('integrationChecks.reconnectErrorFallback'));
+        setError(
+          err instanceof Error ? err.message : t('integrationChecks.reconnectErrorFallback'),
+        );
       } finally {
         setTogglingCheck(null);
       }
@@ -421,9 +421,7 @@ export function TaskIntegrationChecks({
               <h3 className="text-sm font-semibold text-foreground">
                 {t('integrationChecks.title')}
               </h3>
-              <p className="text-xs text-muted-foreground">
-                {t('integrationChecks.description')}
-              </p>
+              <p className="text-xs text-muted-foreground">{t('integrationChecks.description')}</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -638,8 +636,7 @@ export function TaskIntegrationChecks({
                               • {t('integrationChecks.passedCount', { count: summary.passed })}
                               {summary.failed > 0 && (
                                 <span className="text-destructive">
-                                  ,{' '}
-                                  {t('integrationChecks.failedCount', { count: summary.failed })}
+                                  , {t('integrationChecks.failedCount', { count: summary.failed })}
                                 </span>
                               )}
                             </span>
@@ -981,9 +978,7 @@ export function TaskIntegrationChecks({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t('integrationChecks.disconnectDialogTitle')}
-            </AlertDialogTitle>
+            <AlertDialogTitle>{t('integrationChecks.disconnectDialogTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
               {disconnectTarget ? (
                 <>
@@ -1065,9 +1060,7 @@ export function TaskIntegrationChecks({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t('integrationChecks.moveBackTitle')}
-            </AlertDialogTitle>
+            <AlertDialogTitle>{t('integrationChecks.moveBackTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
               {revokeTarget
                 ? t.rich('integrationChecks.moveBackDescription', {
@@ -1260,9 +1253,7 @@ function IntegrationEmptyState({
   if (isManualTask) {
     return (
       <div className="py-6 px-6 text-center border-t border-border/40">
-        <p className="text-muted-foreground text-sm">
-          {t('integrationChecks.manualTaskMessage')}
-        </p>
+        <p className="text-muted-foreground text-sm">{t('integrationChecks.manualTaskMessage')}</p>
       </div>
     );
   }

@@ -1,10 +1,10 @@
+import { validateMemberAndOrg } from '@/app/api/download-agent/utils';
 import { auth } from '@/app/lib/auth';
 import { APP_AWS_ORG_ASSETS_BUCKET, s3Client } from '@/utils/s3';
-import { validateMemberAndOrg } from '@/app/api/download-agent/utils';
 import { DeleteObjectsCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { db } from '@db/server';
-import { Buffer } from 'node:buffer';
 import { type NextRequest, NextResponse } from 'next/server';
+import { Buffer } from 'node:buffer';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -74,7 +74,10 @@ export async function POST(req: NextRequest) {
 
     if (!fileEntry.type.startsWith('image/')) {
       await cleanupPartialUploads();
-      return NextResponse.json({ error: `Only image files are allowed (${fileEntry.name})` }, { status: 400 });
+      return NextResponse.json(
+        { error: `Only image files are allowed (${fileEntry.name})` },
+        { status: 400 },
+      );
     }
 
     const arrayBuffer = await fileEntry.arrayBuffer();
@@ -82,7 +85,10 @@ export async function POST(req: NextRequest) {
 
     if (buffer.length > MAX_FILE_SIZE_BYTES) {
       await cleanupPartialUploads();
-      return NextResponse.json({ error: `Image ${fileEntry.name} must be less than 5MB` }, { status: 400 });
+      return NextResponse.json(
+        { error: `Image ${fileEntry.name} must be less than 5MB` },
+        { status: 400 },
+      );
     }
 
     const timestamp = Date.now();
@@ -100,7 +106,11 @@ export async function POST(req: NextRequest) {
       await s3.send(putCommand);
     } catch (error) {
       await cleanupPartialUploads();
-      console.error('Failed to upload policy evidence to S3', { error, policyId, fileName: fileEntry.name });
+      console.error('Failed to upload policy evidence to S3', {
+        error,
+        policyId,
+        fileName: fileEntry.name,
+      });
       return NextResponse.json({ error: 'Failed to upload files' }, { status: 500 });
     }
     uploads.push({ fileName: fileEntry.name, key });
@@ -158,7 +168,12 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     await cleanupPartialUploads();
-    console.error('Failed to save fleet policy result', { error, policyId, organizationId, userId });
+    console.error('Failed to save fleet policy result', {
+      error,
+      policyId,
+      organizationId,
+      userId,
+    });
     return NextResponse.json({ error: 'Failed to save policy result' }, { status: 500 });
   }
 

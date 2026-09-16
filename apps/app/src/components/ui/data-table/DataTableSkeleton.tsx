@@ -1,5 +1,12 @@
 import { Skeleton } from '@gideon-defender/ui/skeleton';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@gideon-defender/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@gideon-defender/ui/table';
 
 interface DataTableSkeletonProps {
   columns?: number;

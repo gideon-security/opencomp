@@ -46,14 +46,8 @@ export function useTaskMutations() {
     await globalMutate(isTaskOrRiskCacheKey, undefined, { revalidate: true });
   };
 
-  const updateTask = async (
-    taskId: string,
-    data: UpdateTaskPayload,
-  ): Promise<void> => {
-    const response = await apiClient.patch<Task>(
-      `/v1/tasks/${taskId}`,
-      data,
-    );
+  const updateTask = async (taskId: string, data: UpdateTaskPayload): Promise<void> => {
+    const response = await apiClient.patch<Task>(`/v1/tasks/${taskId}`, data);
     if (response.error) throw new Error(response.error);
     await invalidateRelatedCaches();
   };

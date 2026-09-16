@@ -19,27 +19,28 @@ Generate a Model Context Protocol (MCP) server from an OpenAPI spec using Speake
 
 ## Inputs
 
-| Input | Required | Description |
-|-------|----------|-------------|
-| OpenAPI spec | Yes | Path or URL to the OpenAPI specification |
-| Package name | Yes | npm package name for the MCP server (e.g., `my-api-mcp`) |
-| Auth method | Yes | How the API authenticates (bearer token, API key, etc.) |
-| Env var prefix | No | Prefix for environment variables (e.g., `MYAPI`) |
-| Scope strategy | No | How to map operations to scopes (default: read/write by HTTP method) |
+| Input          | Required | Description                                                          |
+| -------------- | -------- | -------------------------------------------------------------------- |
+| OpenAPI spec   | Yes      | Path or URL to the OpenAPI specification                             |
+| Package name   | Yes      | npm package name for the MCP server (e.g., `my-api-mcp`)             |
+| Auth method    | Yes      | How the API authenticates (bearer token, API key, etc.)              |
+| Env var prefix | No       | Prefix for environment variables (e.g., `MYAPI`)                     |
+| Scope strategy | No       | How to map operations to scopes (default: read/write by HTTP method) |
 
 ## Outputs
 
-| Output | Description |
-|--------|-------------|
-| MCP server | TypeScript MCP server with one tool per API operation |
-| CLI entry point | Command-line interface with stdio and SSE transports |
-| Scope definitions | Scope-based access control for filtering tools |
-| Docker support | Dockerfile and compose config for containerized deployment |
-| Workflow config | `.speakeasy/workflow.yaml` configured for MCP generation |
+| Output            | Description                                                |
+| ----------------- | ---------------------------------------------------------- |
+| MCP server        | TypeScript MCP server with one tool per API operation      |
+| CLI entry point   | Command-line interface with stdio and SSE transports       |
+| Scope definitions | Scope-based access control for filtering tools             |
+| Docker support    | Dockerfile and compose config for containerized deployment |
+| Workflow config   | `.speakeasy/workflow.yaml` configured for MCP generation   |
 
 ## Prerequisites
 
 1. Speakeasy CLI installed and authenticated:
+
 ```bash
 speakeasy auth login
 # Or for CI/AI agents:
@@ -49,6 +50,7 @@ export SPEAKEASY_API_KEY="<your-api-key>"
 2. Node.js 20+ installed (for the generated MCP server).
 
 3. A valid OpenAPI spec (3.0 or 3.1). Validate first:
+
 ```bash
 speakeasy lint openapi --non-interactive -s ./openapi.yaml
 ```
@@ -144,6 +146,7 @@ typescript:
 ```
 
 Key settings:
+
 - `target: mcp-typescript` in `workflow.yaml` -- this is what triggers MCP server generation
 - `packageName` -- the npm package name users will `npx`
 - `envVarPrefix` -- prefix for auto-generated env var names
@@ -155,6 +158,7 @@ speakeasy run
 ```
 
 For AI-friendly output:
+
 ```bash
 speakeasy run --output console 2>&1 | tail -50
 ```
@@ -179,15 +183,15 @@ npx my-api-mcp mcp start --tool users-get-users --tool users-create-user --beare
 
 ### CLI Options
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--transport` | Transport type: `stdio` or `sse` | `stdio` |
-| `--port` | Port for SSE transport | `2718` |
-| `--bearer-auth` | API authentication token | Required |
-| `--server-url` | Override API base URL | From spec |
-| `--scope` | Filter by scope (repeatable) | All scopes |
-| `--tool` | Mount specific tools (repeatable) | All tools |
-| `--log-level` | Logging level | `info` |
+| Flag            | Description                       | Default    |
+| --------------- | --------------------------------- | ---------- |
+| `--transport`   | Transport type: `stdio` or `sse`  | `stdio`    |
+| `--port`        | Port for SSE transport            | `2718`     |
+| `--bearer-auth` | API authentication token          | Required   |
+| `--server-url`  | Override API base URL             | From spec  |
+| `--scope`       | Filter by scope (repeatable)      | All scopes |
+| `--tool`        | Mount specific tools (repeatable) | All tools  |
+| `--log-level`   | Logging level                     | `info`     |
 
 ### Claude Desktop Configuration
 
@@ -199,10 +203,14 @@ Add to `claude_desktop_config.json`:
     "my-api": {
       "command": "npx",
       "args": [
-        "-y", "--package", "my-api-mcp",
+        "-y",
+        "--package",
+        "my-api-mcp",
         "--",
-        "mcp", "start",
-        "--bearer-auth", "<API_TOKEN>"
+        "mcp",
+        "start",
+        "--bearer-auth",
+        "<API_TOKEN>"
       ]
     }
   }
@@ -219,10 +227,14 @@ Add to `.claude/settings.json` or use `claude mcp add`:
     "my-api": {
       "command": "npx",
       "args": [
-        "-y", "--package", "my-api-mcp",
+        "-y",
+        "--package",
+        "my-api-mcp",
         "--",
-        "mcp", "start",
-        "--bearer-auth", "<API_TOKEN>"
+        "mcp",
+        "start",
+        "--bearer-auth",
+        "<API_TOKEN>"
       ]
     }
   }
@@ -316,6 +328,7 @@ Generated TypeScript MCP server in ./
 ```
 
 The generated project contains:
+
 - `src/mcp-server/server.ts` -- Main MCP server factory
 - `src/mcp-server/tools/` -- One tool per API operation
 - `src/mcp-server/mcp-server.ts` -- CLI entry point
@@ -349,6 +362,7 @@ The generated project contains:
 **Cause:** Missing or invalid authentication flags.
 
 **Fix:**
+
 ```bash
 # Ensure auth flag matches your API's auth scheme
 npx my-api-mcp mcp start --bearer-auth "YOUR_TOKEN"
@@ -372,6 +386,7 @@ npx my-api-mcp mcp start --help
 **Cause:** Usually a spec validation issue, missing workflow config, or using the deprecated `enableMCPServer` flag instead of the `mcp-typescript` target.
 
 **Fix:**
+
 ```bash
 # Validate spec first
 speakeasy lint openapi --non-interactive -s ./openapi.yaml

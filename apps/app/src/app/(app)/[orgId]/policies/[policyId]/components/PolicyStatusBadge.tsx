@@ -1,8 +1,8 @@
 'use client';
 
 import { getStatusTranslation, type StatusType } from '@/components/status-indicator';
-import { Badge } from '@gideon-defender/ui/badge';
 import type { PolicyStatus } from '@db';
+import { Badge } from '@gideon-defender/ui/badge';
 import { useTranslations } from 'next-intl';
 
 interface PolicyStatusBadgeProps {

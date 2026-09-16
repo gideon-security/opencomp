@@ -4,9 +4,9 @@ import { Stack } from '@trycompai/design-system';
 import { Flag } from '@trycompai/design-system/icons';
 import type { IsmsObjective } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
-import { IsmsRegisterShell } from './shared';
 import { ObjectivesForm, type ObjectiveFormValues } from './ObjectivesForm';
 import { ObjectivesRow, type ObjectiveRowUpdate } from './ObjectivesRow';
+import { IsmsRegisterShell } from './shared';
 
 interface ObjectivesTableProps {
   objectives: IsmsObjective[];

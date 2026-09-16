@@ -74,7 +74,9 @@ export default async function InvitePage({ params }: InvitePageProps) {
       <OnboardingLayout variant="setup" currentOrganization={null}>
         <div className="flex min-h-[calc(100dvh-80px)] w-full items-center justify-center p-4">
           <InviteStatusCard
-            title={invitation.status === 'accepted' ? t('inviteAlreadyAccepted') : t('inviteExpired')}
+            title={
+              invitation.status === 'accepted' ? t('inviteAlreadyAccepted') : t('inviteExpired')
+            }
             description={
               invitation.status === 'accepted'
                 ? t('inviteAlreadyAcceptedDescription')

@@ -81,7 +81,9 @@ export async function handleBillingSetupSuccess(params: {
 
   const setupIntent = session.setup_intent;
   if (!setupIntent || typeof setupIntent === 'string') {
-    throw new BadRequestException('Checkout session is missing a setup intent.');
+    throw new BadRequestException(
+      'Checkout session is missing a setup intent.',
+    );
   }
 
   const paymentMethodId = extractStripeId(setupIntent.payment_method);

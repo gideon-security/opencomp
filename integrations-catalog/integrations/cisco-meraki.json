@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Meraki Dashboard at https://dashboard.meraki.com\n2. Go to Organization > API & Webhooks from the left nav\n3. Select API keys and access from the top tabs\n4. Generate a new API key\n5. Copy and paste it below\n\nNote: Treat your API key like a password. Store it securely."
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

@@ -2,8 +2,8 @@
 
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
-import { Table, TableBody, TableCell, TableRow } from '@gideon-defender/ui/table';
 import type { FrameworkEditorRequirement, Policy, Task } from '@db';
+import { Table, TableBody, TableCell, TableRow } from '@gideon-defender/ui/table';
 import { useTranslations } from 'next-intl';
 import { useParams, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -26,10 +26,7 @@ export function ControlRequirementsTable({ data }: DataTableProps) {
   const t = useTranslations('controls');
   const tCommon = useTranslations('overview');
 
-  const columns = useMemo(
-    () => getControlRequirementsColumns(t, tCommon),
-    [t, tCommon],
-  );
+  const columns = useMemo(() => getControlRequirementsColumns(t, tCommon), [t, tCommon]);
 
   const table = useReactTable({
     data,
@@ -77,10 +74,7 @@ export function ControlRequirementsTable({ data }: DataTableProps) {
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   {t('noRequirementsFound')}
                 </TableCell>
               </TableRow>

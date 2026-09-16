@@ -7,13 +7,18 @@ import {
   useIntegrationMutations,
   useIntegrationProviders,
 } from '@/hooks/use-integration-platform';
-import { api } from '@/lib/api-client';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useVendors } from '@/hooks/use-vendors';
+import { api } from '@/lib/api-client';
 import { Badge } from '@gideon-defender/ui/badge';
 import { Button } from '@gideon-defender/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@gideon-defender/ui/card';
-import { useTranslations } from 'next-intl';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@gideon-defender/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -22,7 +27,12 @@ import {
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
 import { Skeleton } from '@gideon-defender/ui/skeleton';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
 import {
   AlertCircle,
   AlertTriangle,
@@ -34,6 +44,7 @@ import {
   Sparkles,
   Zap,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';

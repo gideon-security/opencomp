@@ -30,8 +30,6 @@ export type {
   // Category type
   IntegrationCategory,
   IntegrationCheck,
-  // Service types
-  IntegrationService,
   // Handler types
   IntegrationCredentials,
   IntegrationFinding,
@@ -40,6 +38,8 @@ export type {
   IntegrationManifest,
   // Registry type
   IntegrationRegistry,
+  // Service types
+  IntegrationService,
   JwtConfig,
   OAuthConfig,
   RunJobType,
@@ -98,36 +98,36 @@ export {
 
 // DSL Engine (declarative check and sync definitions)
 export {
-  interpretDeclarativeCheck,
-  interpretDeclarativeSync,
-  interpretDeclarativeDeviceSync,
-  evaluateCondition,
-  evaluateOperator,
-  resolvePath,
-  interpolate,
-  interpolateTemplate,
-  validateIntegrationDefinition,
   CheckDefinitionSchema,
-  SyncEmployeeSchema,
-  SyncDeviceSchema,
-  SyncDefinitionSchema,
-  DynamicIntegrationDefinitionSchema,
+  CodeStepSchema,
   ConditionSchema,
   DSLStepSchema,
-  CodeStepSchema,
+  DynamicIntegrationDefinitionSchema,
+  SyncDefinitionSchema,
+  SyncDeviceSchema,
+  SyncEmployeeSchema,
+  evaluateCondition,
+  evaluateOperator,
+  interpolate,
+  interpolateTemplate,
+  interpretDeclarativeCheck,
+  interpretDeclarativeDeviceSync,
+  interpretDeclarativeSync,
+  resolvePath,
+  validateIntegrationDefinition,
 } from './dsl';
 
 export type {
-  DSLStep,
-  CodeStep,
   CheckDefinition,
-  SyncEmployee,
-  SyncDevice,
-  SyncDefinition,
+  CodeStep,
   Condition,
+  DSLStep,
   DynamicIntegrationDefinition,
-  ValidationResult,
   PaginationConfig,
+  SyncDefinition,
+  SyncDevice,
+  SyncEmployee,
+  ValidationResult,
 } from './dsl';
 
 // Individual manifests (for direct import if needed)
@@ -139,8 +139,8 @@ export { matchesSyncFilterTerms, parseSyncFilterTerms } from './sync-filter/emai
 // AWS credential helpers (used by frontend setup dialogs)
 export {
   awsRemediationScript,
-  getAwsCloudShellUrl,
   getAwsCloudShellScript,
+  getAwsCloudShellUrl,
   getAwsRemediationScript,
   normalizeAwsEnvironment,
 } from './manifests/aws/credentials';
@@ -148,11 +148,7 @@ export type { AwsEnvironment } from './manifests/aws/credentials';
 
 // Shared AWS STS AssumeRole retry (transient / IAM-eventual-consistency safe),
 // reused by the Cloud Tests scanner in apps/api.
-export {
-  retryAssume,
-  isRetryableAssumeError,
-} from './manifests/aws/checks/assume-retry';
-
+export { isRetryableAssumeError, retryAssume } from './manifests/aws/checks/assume-retry';
 
 // API Response types (for frontend and API type sharing)
 export type {

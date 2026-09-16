@@ -92,9 +92,7 @@ export const remediateSingle = task({
         progress.error = result.reason;
         progress.guidedSteps = result.guidedSteps;
         sync(progress);
-        logger.info(
-          `Single fix fell back to manual steps: ${result.guidedSteps.length} step(s)`,
-        );
+        logger.info(`Single fix fell back to manual steps: ${result.guidedSteps.length} step(s)`);
         return {
           success: false,
           manual: true,

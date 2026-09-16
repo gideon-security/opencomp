@@ -48,10 +48,7 @@ export default async function NoAccess() {
           <p>{t('selectAnotherOrg')}</p>
         </div>
         <div>
-          <OrganizationSwitcher
-            organizations={organizations}
-            organization={currentOrg}
-          />
+          <OrganizationSwitcher organizations={organizations} organization={currentOrg} />
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
-import { headers, cookies } from 'next/headers';
 import { getRequestConfig } from 'next-intl/server';
+import { cookies, headers } from 'next/headers';
 import { routing } from './routing';
 
 type Locale = (typeof routing)['locales'][number];

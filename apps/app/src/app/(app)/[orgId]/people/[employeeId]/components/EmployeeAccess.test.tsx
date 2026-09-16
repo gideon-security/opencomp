@@ -29,7 +29,15 @@ beforeEach(() => vi.clearAllMocks());
 describe('EmployeeAccess', () => {
   it('lists integrations with the member access summary and match state', async () => {
     mockGet.mockResolvedValue({
-      data: { data: { memberId: 'mem_1', sources: [source({}), source({ slug: 'okta', name: 'Okta', matchType: 'not-matched', entries: [] })] } },
+      data: {
+        data: {
+          memberId: 'mem_1',
+          sources: [
+            source({}),
+            source({ slug: 'okta', name: 'Okta', matchType: 'not-matched', entries: [] }),
+          ],
+        },
+      },
     });
 
     render(<EmployeeAccess memberId="mem_1" organizationId="org_1" />);
@@ -63,7 +71,12 @@ describe('EmployeeAccess', () => {
           sources: [
             source({
               entries: [
-                { id: 'run_1:0', summary: 'Editor seat', fields: { Role: 'Editor' }, raw: { role: 'editor' } },
+                {
+                  id: 'run_1:0',
+                  summary: 'Editor seat',
+                  fields: { Role: 'Editor' },
+                  raw: { role: 'editor' },
+                },
               ],
             }),
           ],

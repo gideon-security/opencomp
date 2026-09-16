@@ -18,9 +18,7 @@ describe('RelinkButton', () => {
   it('renders with the "Re-assess" label by default', () => {
     realtimeRunMock.mockReturnValue({ run: null });
     render(<RelinkButton onRelink={vi.fn()} />);
-    expect(
-      screen.getByRole('button', { name: /Re-assess/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Re-assess/i })).toBeInTheDocument();
   });
 
   it('opens a confirm dialog before triggering', async () => {

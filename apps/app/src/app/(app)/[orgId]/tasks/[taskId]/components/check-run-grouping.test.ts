@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { StoredCheckRun } from '../hooks/useIntegrationChecks';
-import {
-  groupRunsByConnection,
-  summarizeLatestPerAccount,
-} from './check-run-grouping';
+import { groupRunsByConnection, summarizeLatestPerAccount } from './check-run-grouping';
 
 const makeRun = (
   overrides: Partial<StoredCheckRun> & {
@@ -116,9 +113,7 @@ describe('summarizeLatestPerAccount', () => {
   });
 
   it('ignores attempts older than the latest visible run', () => {
-    const runs = [
-      makeRun({ id: 'a1', connectionId: 'A', createdAt: '2026-07-16T06:00:00Z' }),
-    ];
+    const runs = [makeRun({ id: 'a1', connectionId: 'A', createdAt: '2026-07-16T06:00:00Z' })];
     const summary = summarizeLatestPerAccount(runs, [
       { connectionId: 'A', checkId: 'aws-s3-encryption', lastAttemptAt: '2026-07-13T06:00:00Z' },
     ]);
@@ -128,9 +123,10 @@ describe('summarizeLatestPerAccount', () => {
   it('keeps "Not run yet" (null) when a check has only ever been held', () => {
     // Held-only checks have no visible runs; their outcomes stay hidden by
     // design, so the attempt timestamp alone must not fabricate a summary.
-    const summary = summarizeLatestPerAccount([], [
-      { connectionId: 'A', checkId: 'aws-s3-encryption', lastAttemptAt: '2026-07-16T06:00:00Z' },
-    ]);
+    const summary = summarizeLatestPerAccount(
+      [],
+      [{ connectionId: 'A', checkId: 'aws-s3-encryption', lastAttemptAt: '2026-07-16T06:00:00Z' }],
+    );
     expect(summary.lastRunAt).toBeNull();
     expect(summary.accountCount).toBe(0);
   });

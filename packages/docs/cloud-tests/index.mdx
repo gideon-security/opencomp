@@ -1,6 +1,6 @@
 ---
-title: "Cloud Tests"
-description: "Continuously assess your cloud posture by connecting AWS, Azure, and GCP to OpenComp."
+title: 'Cloud Tests'
+description: 'Continuously assess your cloud posture by connecting AWS, Azure, and GCP to OpenComp.'
 ---
 
 ## What Cloud Tests do
@@ -25,11 +25,11 @@ All connections are **read-only by default**. OpenComp only makes `GET` / `list`
 
 ## How connections are authorized
 
-| Provider | Connection method                           | What you provide                                             |
-| -------- | ------------------------------------------- | ------------------------------------------------------------ |
-| AWS      | Cross-account IAM role (STS AssumeRole)     | Role ARN + External ID (pre-filled in the UI)                |
-| Azure    | OAuth 2.0 (primary) or service principal    | Microsoft sign-in, or Tenant + Client ID + Secret + Sub ID   |
-| GCP      | OAuth 2.0                                   | Google sign-in; org + projects auto-detected after consent   |
+| Provider | Connection method                        | What you provide                                           |
+| -------- | ---------------------------------------- | ---------------------------------------------------------- |
+| AWS      | Cross-account IAM role (STS AssumeRole)  | Role ARN + External ID (pre-filled in the UI)              |
+| Azure    | OAuth 2.0 (primary) or service principal | Microsoft sign-in, or Tenant + Client ID + Secret + Sub ID |
+| GCP      | OAuth 2.0                                | Google sign-in; org + projects auto-detected after consent |
 
 ## Common capabilities
 

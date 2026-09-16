@@ -9,15 +9,7 @@ import {
 import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import type { Control, FrameworkEditorRequirement, Task } from '@db';
 import {
-  buildControlItems,
-  buildRequirementMap,
-  type ControlItem,
-  getStatusBadge,
-  PAGE_SIZE_OPTIONS,
-} from './framework-controls-shared';
-import {
   Badge,
-
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
@@ -34,6 +26,13 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import {
+  buildControlItems,
+  buildRequirementMap,
+  type ControlItem,
+  getStatusBadge,
+  PAGE_SIZE_OPTIONS,
+} from './framework-controls-shared';
 
 export function FrameworkControls({
   frameworkInstanceWithControls,
@@ -253,9 +252,7 @@ function RequirementCell({
     );
   }
 
-  const label = requirements
-    .map((r) => r.identifier || r.name)
-    .join(', ');
+  const label = requirements.map((r) => r.identifier || r.name).join(', ');
 
   return (
     <span className="block max-w-[200px] truncate text-sm" title={label}>

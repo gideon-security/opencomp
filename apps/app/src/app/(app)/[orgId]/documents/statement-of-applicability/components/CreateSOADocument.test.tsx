@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   NO_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -39,7 +39,9 @@ vi.mock('@gideon-defender/ui/button', () => ({
 
 vi.mock('@gideon-defender/ui', () => ({
   Card: ({ children, ...props }: any) => (
-    <div data-testid="card" {...props}>{children}</div>
+    <div data-testid="card" {...props}>
+      {children}
+    </div>
   ),
 }));
 
@@ -107,9 +109,7 @@ describe('CreateSOADocument', () => {
       render(<CreateSOADocument {...defaultProps} />);
 
       expect(screen.getByText('ISO 27001')).toBeInTheDocument();
-      expect(
-        screen.getByText('Create a new SOA document for this framework'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Create a new SOA document for this framework')).toBeInTheDocument();
     });
 
     it('renders inside a card component', () => {

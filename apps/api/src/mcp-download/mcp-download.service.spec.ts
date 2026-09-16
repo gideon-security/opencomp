@@ -151,7 +151,8 @@ describe('McpDownloadService', () => {
     await service.resolveDownloadUrl('claude-desktop'); // primes the cache
 
     // Force the cache to look expired, then make the refresh fail.
-    (service as unknown as { cache: { fetchedAt: number } }).cache.fetchedAt = 0;
+    (service as unknown as { cache: { fetchedAt: number } }).cache.fetchedAt =
+      0;
     fetchSpy.mockRejectedValueOnce(new Error('network down'));
 
     const url = await service.resolveDownloadUrl('claude-desktop');

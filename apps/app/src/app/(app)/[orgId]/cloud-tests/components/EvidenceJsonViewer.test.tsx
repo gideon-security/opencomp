@@ -14,24 +14,16 @@ import { EvidenceJsonViewer } from './EvidenceJsonViewer';
 describe('EvidenceJsonViewer', () => {
   it('renders the empty state when evidence is null', () => {
     render(<EvidenceJsonViewer evidence={null} />);
-    expect(
-      screen.getByText(/No evidence collected for this finding\./i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/No evidence collected for this finding\./i)).toBeInTheDocument();
   });
 
   it('renders the empty state when evidence is an empty object', () => {
     render(<EvidenceJsonViewer evidence={{}} />);
-    expect(
-      screen.getByText(/No evidence collected for this finding\./i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/No evidence collected for this finding\./i)).toBeInTheDocument();
   });
 
   it('renders the JSON view when evidence has content', () => {
-    render(
-      <EvidenceJsonViewer
-        evidence={{ bucketName: 'logs-archive', isPublic: true }}
-      />,
-    );
+    render(<EvidenceJsonViewer evidence={{ bucketName: 'logs-archive', isPublic: true }} />);
     const view = screen.getByTestId('json-view');
     expect(view.textContent).toContain('logs-archive');
     expect(view.textContent).toContain('true');

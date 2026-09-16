@@ -1,12 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { api } from '@/lib/api-client';
 import type { AdminOrgTimeline } from '@/hooks/use-admin-timelines';
+import { api } from '@/lib/api-client';
+import { Input } from '@gideon-defender/ui/input';
+import { Label } from '@gideon-defender/ui/label';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Badge,
   Button,
@@ -19,8 +17,10 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Checkmark, Locked } from '@trycompai/design-system/icons';
-import { Input } from '@gideon-defender/ui/input';
-import { Label } from '@gideon-defender/ui/label';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 const COMPLETION_OPTIONS = [
   { value: 'MANUAL', label: 'Manual' },
@@ -100,9 +100,8 @@ export function TimelinePhaseEditor({
   const watchedStart = watch('startDate');
   const watchedDuration = watch('durationWeeks');
   const watchedLock = watch('locksTimelineOnComplete');
-  const calculatedEnd = watchedStart && watchedDuration
-    ? addWeeks(watchedStart, watchedDuration)
-    : null;
+  const calculatedEnd =
+    watchedStart && watchedDuration ? addWeeks(watchedStart, watchedDuration) : null;
 
   const handleSave = async (values: PhaseUpdateValues) => {
     if (!phase) return;
@@ -114,9 +113,7 @@ export function TimelinePhaseEditor({
         description: values.description || undefined,
         durationWeeks: values.durationWeeks,
         completionType: values.completionType,
-        startDate: values.startDate
-          ? new Date(values.startDate).toISOString()
-          : undefined,
+        startDate: values.startDate ? new Date(values.startDate).toISOString() : undefined,
         locksTimelineOnComplete: values.locksTimelineOnComplete,
       },
     );
@@ -158,14 +155,18 @@ export function TimelinePhaseEditor({
           <form onSubmit={handleSubmit(handleSave)}>
             <Stack gap="md">
               <div className="flex items-center justify-between rounded-md border p-2">
-                <Text size="sm" variant="muted">Lock on completion</Text>
+                <Text size="sm" variant="muted">
+                  Lock on completion
+                </Text>
                 <Badge variant={watchedLock ? 'default' : 'outline'}>
                   {watchedLock ? (
                     <>
                       <Locked size={12} />
                       Enabled
                     </>
-                  ) : 'Disabled'}
+                  ) : (
+                    'Disabled'
+                  )}
                 </Badge>
               </div>
 
@@ -176,16 +177,16 @@ export function TimelinePhaseEditor({
                   className="h-4 w-4 rounded border-input"
                   {...register('locksTimelineOnComplete')}
                 />
-                <Label htmlFor="phase-lock-toggle">
-                  Lock timeline when this phase completes
-                </Label>
+                <Label htmlFor="phase-lock-toggle">Lock timeline when this phase completes</Label>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="phase-name">Name</Label>
                 <Input id="phase-name" {...register('name')} />
                 {errors.name && (
-                  <Text size="xs" variant="destructive">{errors.name.message}</Text>
+                  <Text size="xs" variant="destructive">
+                    {errors.name.message}
+                  </Text>
                 )}
               </div>
 
@@ -204,7 +205,9 @@ export function TimelinePhaseEditor({
                     {...register('durationWeeks', { valueAsNumber: true })}
                   />
                   {errors.durationWeeks && (
-                    <Text size="xs" variant="destructive">{errors.durationWeeks.message}</Text>
+                    <Text size="xs" variant="destructive">
+                      {errors.durationWeeks.message}
+                    </Text>
                   )}
                 </div>
                 <div className="flex flex-col gap-1.5">
@@ -229,7 +232,8 @@ export function TimelinePhaseEditor({
 
               {calculatedEnd && (
                 <div className="text-sm text-muted-foreground">
-                  Calculated end date: <span className="font-medium text-foreground">{calculatedEnd}</span>
+                  Calculated end date:{' '}
+                  <span className="font-medium text-foreground">{calculatedEnd}</span>
                 </div>
               )}
 

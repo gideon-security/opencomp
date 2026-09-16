@@ -25,7 +25,9 @@ export const refreshExpiringTokensSchedule = schedules.task({
 
     const apiUrl = process.env.API_URL;
     if (!apiUrl) {
-      logger.error('API_URL environment variable is not set — cannot refresh tokens');
+      logger.error(
+        'API_URL environment variable is not set — cannot refresh tokens',
+      );
       return { refreshed: 0, failed: 0, skipped: 0 };
     }
 
@@ -59,7 +61,9 @@ export const refreshExpiringTokensSchedule = schedules.task({
       );
     });
 
-    logger.info(`Found ${expiringConnections.length} connections with tokens expiring within ${REFRESH_LOOKAHEAD_HOURS}h`);
+    logger.info(
+      `Found ${expiringConnections.length} connections with tokens expiring within ${REFRESH_LOOKAHEAD_HOURS}h`,
+    );
 
     let refreshed = 0;
     let failed = 0;
@@ -86,7 +90,9 @@ export const refreshExpiringTokensSchedule = schedules.task({
 
       if (result.success) {
         refreshed++;
-        logger.info(`Successfully refreshed token for connection ${connection.id}`);
+        logger.info(
+          `Successfully refreshed token for connection ${connection.id}`,
+        );
       } else {
         failed++;
         logger.warn(`Failed to refresh token for connection ${connection.id}`, {

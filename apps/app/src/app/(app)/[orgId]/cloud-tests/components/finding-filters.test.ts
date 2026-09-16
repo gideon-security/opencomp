@@ -30,9 +30,7 @@ describe('filterFindingsByConnection', () => {
   });
 
   it('scopes to a single connection across providers', () => {
-    expect(filterFindingsByConnection(findings, 'gcp-conn-1').map((f) => f.title)).toEqual([
-      'g-1',
-    ]);
+    expect(filterFindingsByConnection(findings, 'gcp-conn-1').map((f) => f.title)).toEqual(['g-1']);
   });
 
   it('returns an empty array when no finding matches the connection', () => {

@@ -129,9 +129,7 @@ function buildManifestFromFramework(framework: FrameworkWithTemplates) {
       name: c.name,
       description: c.description,
       controlFamily: c.controlFamily ?? null,
-      requirementIds: c.requirements
-        .map((r) => r.id)
-        .filter((id) => ownRequirementIds.has(id)),
+      requirementIds: c.requirements.map((r) => r.id).filter((id) => ownRequirementIds.has(id)),
       policyIds: c.policyTemplates.map((p) => p.id),
       taskIds: c.taskTemplates.map((t) => t.id),
       documentTypes: [...c.documentTypes],

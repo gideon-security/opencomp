@@ -17,9 +17,7 @@ describe('sanitizeMarkdown', () => {
     const vt = String.fromCharCode(0x0b); // vertical tab = octal 013
     const dc3 = String.fromCharCode(0x13);
     const del = String.fromCharCode(0x7f);
-    expect(sanitizeMarkdown(`Access${vt}Control${dc3}Policy${del}`)).toBe(
-      'AccessControlPolicy',
-    );
+    expect(sanitizeMarkdown(`Access${vt}Control${dc3}Policy${del}`)).toBe('AccessControlPolicy');
   });
 
   it('preserves tabs and newlines', () => {
@@ -37,9 +35,7 @@ describe('sanitizeMarkdown', () => {
 
 describe('parseInline', () => {
   it('returns a plain text node for unformatted text', () => {
-    expect(parseInline('Just plain text.')).toEqual([
-      { type: 'text', text: 'Just plain text.' },
-    ]);
+    expect(parseInline('Just plain text.')).toEqual([{ type: 'text', text: 'Just plain text.' }]);
   });
 
   it('parses bold, italic, code and links', () => {
@@ -114,11 +110,7 @@ describe('serializeInline', () => {
   it('serializes a mid-sentence mark', () => {
     expect(
       serializeInline(
-        para(
-          schema.text('see the '),
-          schema.text('Security', [bold]),
-          schema.text(' section'),
-        ),
+        para(schema.text('see the '), schema.text('Security', [bold]), schema.text(' section')),
       ),
     ).toBe('see the **Security** section');
   });

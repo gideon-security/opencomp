@@ -10,7 +10,9 @@ jest.mock('@db', () => ({
       findMany: (...a: unknown[]) => mockMemberFindMany(...a),
       count: (...a: unknown[]) => mockMemberCount(...a),
     },
-    invitation: { findFirst: (...a: unknown[]) => mockInvitationFindFirst(...a) },
+    invitation: {
+      findFirst: (...a: unknown[]) => mockInvitationFindFirst(...a),
+    },
   },
 }));
 
@@ -101,5 +103,20 @@ describe('AuthController.getMe — hasInactiveMembership (CS-569)', () => {
 
     expect(res.organizations).toHaveLength(1);
     expect(res.hasInactiveMembership).toBe(false);
+  });
+
+  it('surfaces impersonation state from the auth context (Milestone 2)', async () => {
+    mockMemberFindMany.mockResolvedValue([]);
+    mockMemberCount.mockResolvedValue(0);
+
+    const impersonated = await controller.getMe({
+      ...sessionContext(),
+      impersonatedBy: 'admin_1',
+    });
+    expect(impersonated.impersonatedBy).toBe('admin_1');
+    expect(impersonated.authType).toBe('session');
+
+    const plain = await controller.getMe(sessionContext());
+    expect(plain.impersonatedBy).toBeNull();
   });
 });

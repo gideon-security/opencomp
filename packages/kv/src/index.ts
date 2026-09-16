@@ -1,10 +1,6 @@
 import 'server-only';
 
-export {
-  client,
-  type KvBackend,
-  type KvClient,
-} from './client';
+export { client, type KvBackend, type KvClient } from './client';
 
 export {
   createRateLimiter,

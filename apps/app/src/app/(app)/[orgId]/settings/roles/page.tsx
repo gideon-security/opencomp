@@ -7,11 +7,7 @@ export const metadata: Metadata = {
   title: 'Roles',
 };
 
-export default async function RolesPage({
-  params,
-}: {
-  params: Promise<{ orgId: string }>;
-}) {
+export default async function RolesPage({ params }: { params: Promise<{ orgId: string }> }) {
   const { orgId } = await params;
 
   const res = await serverApi.get<{

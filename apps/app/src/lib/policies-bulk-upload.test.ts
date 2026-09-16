@@ -1,9 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  bulkUploadFileKey,
-  bulkUploadPoliciesViaApi,
-} from './policies-bulk-upload';
+import { bulkUploadFileKey, bulkUploadPoliciesViaApi } from './policies-bulk-upload';
 
 /** Build a real File so name/size/type behave like the browser. */
 function file(name: string): File {
@@ -261,12 +258,7 @@ describe('bulkUploadPoliciesViaApi', () => {
     });
     post.mockResolvedValue({ data: { id: 'pol' }, status: 201 });
 
-    const files = [
-      file('a.pdf'),
-      file('b.pdf'),
-      file('c.pdf'),
-      file('d.pdf'),
-    ];
+    const files = [file('a.pdf'), file('b.pdf'), file('c.pdf'), file('d.pdf')];
     const promise = bulkUploadPoliciesViaApi({
       post,
       readFileAsBase64,

@@ -24,20 +24,14 @@ const APP_AWS_SECRET_ACCESS_KEY = process.env.APP_AWS_SECRET_ACCESS_KEY;
 const APP_AWS_ENDPOINT = process.env.APP_AWS_ENDPOINT;
 
 export const BUCKET_NAME = process.env.APP_AWS_BUCKET_NAME;
-export const APP_AWS_QUESTIONNAIRE_UPLOAD_BUCKET =
-  process.env.APP_AWS_QUESTIONNAIRE_UPLOAD_BUCKET;
+export const APP_AWS_QUESTIONNAIRE_UPLOAD_BUCKET = process.env.APP_AWS_QUESTIONNAIRE_UPLOAD_BUCKET;
 export const APP_AWS_KNOWLEDGE_BASE_BUCKET = process.env.APP_AWS_KNOWLEDGE_BASE_BUCKET;
 export const APP_AWS_ORG_ASSETS_BUCKET = process.env.APP_AWS_ORG_ASSETS_BUCKET;
 
 let s3ClientInstance: S3Client | null = null;
 
 try {
-  if (
-    !APP_AWS_ACCESS_KEY_ID ||
-    !APP_AWS_SECRET_ACCESS_KEY ||
-    !BUCKET_NAME ||
-    !APP_AWS_REGION
-  ) {
+  if (!APP_AWS_ACCESS_KEY_ID || !APP_AWS_SECRET_ACCESS_KEY || !BUCKET_NAME || !APP_AWS_REGION) {
     console.warn(
       '[S3] AWS S3 credentials or configuration missing. S3 operations will fail until credentials are configured.',
     );
@@ -55,7 +49,9 @@ try {
 } catch (error) {
   console.error('FAILED TO INITIALIZE S3 CLIENT', error instanceof Error ? error.stack : error);
   s3ClientInstance = null as unknown as S3Client;
-  console.error('[S3] Creating dummy S3 client - file uploads will fail until credentials are fixed');
+  console.error(
+    '[S3] Creating dummy S3 client - file uploads will fail until credentials are fixed',
+  );
 }
 
 export const s3Client = s3ClientInstance;

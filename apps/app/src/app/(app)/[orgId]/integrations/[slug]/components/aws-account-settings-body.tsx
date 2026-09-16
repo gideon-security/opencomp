@@ -7,13 +7,13 @@ import {
   useIntegrationConnection,
   useIntegrationMutations,
 } from '@/hooks/use-integration-platform';
-import { Button } from '@trycompai/design-system';
 import {
   getAwsCloudShellUrl,
   getAwsRemediationScript,
   normalizeAwsEnvironment,
 } from '@gideon-defender/integration-platform';
 import { Badge } from '@gideon-defender/ui/badge';
+import { Button } from '@trycompai/design-system';
 import { AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
@@ -126,9 +126,7 @@ export function AwsAccountSettingsBody({
       return;
     }
     const expectedPrefix =
-      awsEnvironment === 'aws-us-gov'
-        ? 'arn:aws-us-gov:iam::'
-        : 'arn:aws:iam::';
+      awsEnvironment === 'aws-us-gov' ? 'arn:aws-us-gov:iam::' : 'arn:aws:iam::';
     if (!roleArn.startsWith(expectedPrefix)) {
       toast.error(t('awsSettings.roleArnEnvMismatch'));
       return;
@@ -141,9 +139,7 @@ export function AwsAccountSettingsBody({
 
   const handleSaveRemediation = useCallback(async () => {
     const expectedPrefix =
-      awsEnvironment === 'aws-us-gov'
-        ? 'arn:aws-us-gov:iam::'
-        : 'arn:aws:iam::';
+      awsEnvironment === 'aws-us-gov' ? 'arn:aws-us-gov:iam::' : 'arn:aws:iam::';
     if (remediationRoleArn && !remediationRoleArn.startsWith(expectedPrefix)) {
       toast.error(t('awsSettings.remediationRoleArnEnvMismatch'));
       return;
@@ -225,7 +221,9 @@ export function AwsAccountSettingsBody({
             )
           }
         />
-        {accountId && <AccountSettingsInfoRow label={t('awsSettings.accountId')} value={accountId} mono />}
+        {accountId && (
+          <AccountSettingsInfoRow label={t('awsSettings.accountId')} value={accountId} mono />
+        )}
         {displayName && !accountId && (
           <AccountSettingsInfoRow label={t('awsSettings.account')} value={displayName} mono />
         )}
@@ -375,7 +373,9 @@ export function AwsAccountSettingsBody({
             <AlertTriangle className="h-3.5 w-3.5 text-destructive shrink-0" />
             <div>
               <p className="text-xs font-medium">{t('awsSettings.disconnect')}</p>
-              <p className="text-[10px] text-muted-foreground">{t('awsSettings.disconnectDescription')}</p>
+              <p className="text-[10px] text-muted-foreground">
+                {t('awsSettings.disconnectDescription')}
+              </p>
             </div>
           </div>
           <Button

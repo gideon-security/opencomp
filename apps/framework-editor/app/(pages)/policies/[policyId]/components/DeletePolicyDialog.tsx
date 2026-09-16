@@ -1,5 +1,6 @@
 'use client';
 
+import { apiClient } from '@/app/lib/api-client';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +13,6 @@ import {
 } from '@gideon-defender/ui';
 import { useTransition } from 'react';
 import { toast } from 'sonner';
-import { apiClient } from '@/app/lib/api-client';
 
 interface DeletePolicyDialogProps {
   policyId: string;

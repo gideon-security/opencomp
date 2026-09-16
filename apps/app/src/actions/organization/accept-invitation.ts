@@ -92,10 +92,7 @@ export const completeInvitation = authActionClientWithoutOrg
               },
             });
           } else {
-            const mergedRole = mergeRoleStrings(
-              existingMembership.role,
-              invitation.role,
-            );
+            const mergedRole = mergeRoleStrings(existingMembership.role, invitation.role);
             if (mergedRole !== normalizeRoleString(existingMembership.role)) {
               await db.member.update({
                 where: { id: existingMembership.id },

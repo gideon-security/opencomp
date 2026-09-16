@@ -1,7 +1,7 @@
+import { act, renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
-import { renderHook, act, waitFor } from '@testing-library/react';
 import { SWRConfig } from 'swr';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useDeviceSync } from './useDeviceSync';
 
 const getMock = vi.fn();
@@ -25,9 +25,7 @@ vi.mock('sonner', () => ({
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return (
-    <SWRConfig
-      value={{ provider: () => new Map(), dedupingInterval: 0, revalidateOnFocus: false }}
-    >
+    <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0, revalidateOnFocus: false }}>
       {children}
     </SWRConfig>
   );
@@ -79,9 +77,7 @@ describe('useDeviceSync', () => {
     });
 
     // setSyncProvider was attempted...
-    expect(
-      postMock.mock.calls.some(([url]) => url.includes('device-sync-provider')),
-    ).toBe(true);
+    expect(postMock.mock.calls.some(([url]) => url.includes('device-sync-provider'))).toBe(true);
     // ...but the device sync POST must NOT fire with a stale/unsaved provider.
     expect(postMock.mock.calls.some(([url]) => url.includes('/devices'))).toBe(false);
   });

@@ -31,11 +31,7 @@ function escapeForPromptTag(value: string): string {
 }
 
 export type SignInOutcome =
-  | 'logged_in'
-  | 'invalid_credentials'
-  | 'needs_2fa'
-  | 'challenge'
-  | 'unknown';
+  'logged_in' | 'invalid_credentials' | 'needs_2fa' | 'challenge' | 'unknown';
 
 /**
  * Reads the current page after a sign-in attempt and classifies the outcome, so

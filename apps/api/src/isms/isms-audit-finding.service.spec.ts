@@ -181,7 +181,9 @@ describe('IsmsAuditFindingService', () => {
       const { data } = (mockDb.ismsAuditFinding.update as jest.Mock).mock
         .calls[0][0];
       expect(data.status).toBe('closed');
-      expect(data.closureEvidence).toBe('Restore test evidenced in task ev_123.');
+      expect(data.closureEvidence).toBe(
+        'Restore test evidenced in task ev_123.',
+      );
       expect(data.dueDate).toBeNull();
       // The server-generated reference is never updatable.
       expect(data.reference).toBeUndefined();

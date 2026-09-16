@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to UpGuard at https://cyber-risk.upguard.com\n2. Click the Settings icon (top-right)\n3. Go to the API tab\n4. Create a new API key or copy your existing one\n5. Enter the API key above (no prefix needed)"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

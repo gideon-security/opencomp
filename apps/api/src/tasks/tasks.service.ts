@@ -664,7 +664,10 @@ export class TasksService {
         }
       }
       if (updateData.assigneeId !== undefined) {
-        await validateAssigneeNotPlatformAdmin(updateData.assigneeId, organizationId);
+        await validateAssigneeNotPlatformAdmin(
+          updateData.assigneeId,
+          organizationId,
+        );
         dataToUpdate.assigneeId =
           updateData.assigneeId === null ? null : updateData.assigneeId;
       }
@@ -1029,7 +1032,10 @@ export class TasksService {
       throw new BadRequestException('Task is already done');
     }
 
-    const approver = await validateApproverNotPlatformAdmin(approverId, organizationId);
+    const approver = await validateApproverNotPlatformAdmin(
+      approverId,
+      organizationId,
+    );
 
     const currentMember = await db.member.findFirst({
       where: { userId, organizationId, deactivated: false },
@@ -1094,7 +1100,10 @@ export class TasksService {
     userId: string,
     approverId: string,
   ): Promise<{ submittedCount: number }> {
-    const approver = await validateApproverNotPlatformAdmin(approverId, organizationId);
+    const approver = await validateApproverNotPlatformAdmin(
+      approverId,
+      organizationId,
+    );
 
     const tasks = await db.task.findMany({
       where: {

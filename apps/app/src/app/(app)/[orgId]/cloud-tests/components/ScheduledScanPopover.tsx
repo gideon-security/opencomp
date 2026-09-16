@@ -2,8 +2,8 @@
 
 import { useApi } from '@/hooks/use-api';
 import { useConnectionServices } from '@/hooks/use-integration-platform';
-import { Popover, PopoverContent, PopoverTrigger } from '@gideon-defender/ui/popover';
 import { Checkbox } from '@gideon-defender/ui/checkbox';
+import { Popover, PopoverContent, PopoverTrigger } from '@gideon-defender/ui/popover';
 import { Button, cn } from '@trycompai/design-system';
 import { EventSchedule } from '@trycompai/design-system/icons';
 import { Search } from 'lucide-react';
@@ -26,38 +26,37 @@ export function ScheduledScanPopover({ connectionId }: ScheduledScanPopoverProps
     const q = search.toLowerCase();
     return services
       .filter((s) => s.implemented !== false)
-      .filter(
-        (s) => s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q),
-      );
+      .filter((s) => s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q));
   }, [services, search]);
 
   const implementedServices = services.filter((s) => s.implemented !== false);
   const enabledCount = implementedServices.filter((s) => s.enabled).length;
 
-  const handleToggle = useCallback(async (serviceId: string, enabled: boolean) => {
-    setSaving(serviceId);
-    try {
-      const newEnabledIds = services
-        .filter((s) => (s.id === serviceId ? enabled : s.enabled))
-        .map((s) => s.id);
-      await apiClient.put(
-        `/v1/integrations/connections/${connectionId}/services`,
-        { services: newEnabledIds },
-      );
-      await refreshServices();
-    } finally {
-      setSaving(null);
-    }
-  }, [services, connectionId, apiClient, refreshServices]);
+  const handleToggle = useCallback(
+    async (serviceId: string, enabled: boolean) => {
+      setSaving(serviceId);
+      try {
+        const newEnabledIds = services
+          .filter((s) => (s.id === serviceId ? enabled : s.enabled))
+          .map((s) => s.id);
+        await apiClient.put(`/v1/integrations/connections/${connectionId}/services`, {
+          services: newEnabledIds,
+        });
+        await refreshServices();
+      } finally {
+        setSaving(null);
+      }
+    },
+    [services, connectionId, apiClient, refreshServices],
+  );
 
   const handleEnableAll = useCallback(async () => {
     setSaving('all');
     try {
       const allIds = implementedServices.map((s) => s.id);
-      await apiClient.put(
-        `/v1/integrations/connections/${connectionId}/services`,
-        { services: allIds },
-      );
+      await apiClient.put(`/v1/integrations/connections/${connectionId}/services`, {
+        services: allIds,
+      });
       await refreshServices();
       toast.success('All services enabled');
     } finally {
@@ -99,7 +98,11 @@ export function ScheduledScanPopover({ connectionId }: ScheduledScanPopoverProps
             <button
               type="button"
               onClick={handleEnableAll}
-              disabled={waitingForDetection || saving === 'all' || enabledCount === implementedServices.length}
+              disabled={
+                waitingForDetection ||
+                saving === 'all' ||
+                enabledCount === implementedServices.length
+              }
               className="text-[11px] font-medium text-primary hover:text-primary/80 disabled:text-muted-foreground transition-colors"
             >
               Enable all
@@ -131,22 +134,22 @@ export function ScheduledScanPopover({ connectionId }: ScheduledScanPopoverProps
             </p>
           ) : (
             filteredServices.map((service) => (
-            <label
-              key={service.id}
-              className={cn(
-                'flex items-center gap-2.5 rounded-md px-2 py-1.5 cursor-pointer transition-colors hover:bg-muted/40 text-xs',
-                saving === service.id && 'opacity-60 pointer-events-none',
-              )}
-            >
-              <Checkbox
-                checked={service.enabled}
-                onCheckedChange={(checked) => handleToggle(service.id, checked === true)}
-                disabled={saving !== null}
-                className="h-3.5 w-3.5"
-              />
-              <span className="truncate">{service.name}</span>
-            </label>
-          ))
+              <label
+                key={service.id}
+                className={cn(
+                  'flex items-center gap-2.5 rounded-md px-2 py-1.5 cursor-pointer transition-colors hover:bg-muted/40 text-xs',
+                  saving === service.id && 'opacity-60 pointer-events-none',
+                )}
+              >
+                <Checkbox
+                  checked={service.enabled}
+                  onCheckedChange={(checked) => handleToggle(service.id, checked === true)}
+                  disabled={saving !== null}
+                  className="h-3.5 w-3.5"
+                />
+                <span className="truncate">{service.name}</span>
+              </label>
+            ))
           )}
           {!waitingForDetection && filteredServices.length === 0 && search && (
             <p className="py-3 text-center text-xs text-muted-foreground">

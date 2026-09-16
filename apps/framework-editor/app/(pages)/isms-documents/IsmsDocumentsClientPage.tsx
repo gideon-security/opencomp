@@ -13,7 +13,7 @@ import { useMemo, useState } from 'react';
 import { IsmsControlsCell } from './IsmsControlsCell';
 import { IsmsRequirementsCell } from './IsmsRequirementsCell';
 import type { IsmsDocumentTemplate } from './types';
-import { type IsmsDocumentRow, useIsmsDocumentRows } from './useIsmsDocumentRows';
+import { useIsmsDocumentRows, type IsmsDocumentRow } from './useIsmsDocumentRows';
 
 interface IsmsDocumentsClientPageProps {
   templates: IsmsDocumentTemplate[];
@@ -22,10 +22,7 @@ interface IsmsDocumentsClientPageProps {
 
 const columnHelper = createColumnHelper<IsmsDocumentRow>();
 
-export function IsmsDocumentsClientPage({
-  templates,
-  frameworkId,
-}: IsmsDocumentsClientPageProps) {
+export function IsmsDocumentsClientPage({ templates, frameworkId }: IsmsDocumentsClientPageProps) {
   const {
     data,
     handleRequirementLinked,

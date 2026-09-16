@@ -1,10 +1,10 @@
 'use client';
 
 import { useApi } from '@/hooks/use-api';
-import { useDebouncedCallback } from '@gideon-defender/ui/hooks/use-debounced-callback';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
-import { Input } from '@gideon-defender/ui/input';
 import type { GlobalVendors } from '@db';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
+import { useDebouncedCallback } from '@gideon-defender/ui/hooks/use-debounced-callback';
+import { Input } from '@gideon-defender/ui/input';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
@@ -198,4 +198,3 @@ export function VendorNameAutocompleteField({ form }: Props) {
     />
   );
 }
-

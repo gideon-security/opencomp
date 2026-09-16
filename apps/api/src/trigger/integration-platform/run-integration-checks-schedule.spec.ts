@@ -228,9 +228,9 @@ describe('groupTasksByOrg (bundling key)', () => {
   });
 
   it('returns [] for no tasks', () => {
-    expect(
-      groupTasksByOrg({ tasksToRun: [], orgNameById: new Map() }),
-    ).toEqual([]);
+    expect(groupTasksByOrg({ tasksToRun: [], orgNameById: new Map() })).toEqual(
+      [],
+    );
   });
 });
 

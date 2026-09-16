@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -179,8 +179,7 @@ vi.mock('./TaskAutomationStatusBadge', () => ({
 }));
 
 vi.mock('./TaskDeleteDialog', () => ({
-  TaskDeleteDialog: ({ isOpen }: any) =>
-    isOpen ? <div data-testid="delete-dialog" /> : null,
+  TaskDeleteDialog: ({ isOpen }: any) => (isOpen ? <div data-testid="delete-dialog" /> : null),
 }));
 
 vi.mock('./TaskIntegrationChecks', () => ({

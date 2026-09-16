@@ -24,10 +24,7 @@ import { useForm } from 'react-hook-form';
 import type { IsmsAudit } from '../isms-types';
 import { AuditControlsTable } from './AuditControlsTable';
 import { AuditFields } from './AuditFields';
-import {
-  AuditFindingsSection,
-  type FindingPrefill,
-} from './AuditFindingsSection';
+import { AuditFindingsSection, type FindingPrefill } from './AuditFindingsSection';
 import { AuditSignoffCard } from './AuditSignoffCard';
 import type { ApproverOption } from './IsmsApprovalSection';
 import {
@@ -37,10 +34,7 @@ import {
   type FindingFormValues,
   type SignoffFormValues,
 } from './audit-schema';
-import {
-  auditStatusLabel,
-  conclusionSentence,
-} from './internal-audit-labels';
+import { auditStatusLabel, conclusionSentence } from './internal-audit-labels';
 import { IsmsRegisterCard, IsmsRegisterField } from './shared';
 
 /** All mutations an audit card (and its child sections) can perform. */
@@ -97,9 +91,7 @@ export function AuditCard({
   const [confirmOpen, setConfirmOpen] = useState(false);
   // Set when a Controls Tested row is marked non-conformity / observation:
   // the findings section opens a linked-finding form pre-filled from the row.
-  const [findingPrefill, setFindingPrefill] = useState<FindingPrefill | null>(
-    null,
-  );
+  const [findingPrefill, setFindingPrefill] = useState<FindingPrefill | null>(null);
 
   const {
     control,

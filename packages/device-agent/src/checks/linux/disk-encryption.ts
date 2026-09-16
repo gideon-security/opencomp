@@ -92,8 +92,7 @@ export class LinuxDiskEncryptionCheck implements ComplianceCheck {
         details: {
           method: 'lsblk + dmsetup',
           raw: error instanceof Error ? error.message : String(error),
-          message:
-            'Unable to determine disk encryption status. This check is not applicable.',
+          message: 'Unable to determine disk encryption status. This check is not applicable.',
           exception: 'Unable to check (not applicable)',
         },
         checkedAt: new Date().toISOString(),

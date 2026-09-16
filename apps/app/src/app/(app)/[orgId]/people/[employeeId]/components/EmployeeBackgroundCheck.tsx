@@ -222,9 +222,7 @@ export function EmployeeBackgroundCheck({
     }
 
     toast.success(
-      next
-        ? t('backgroundCheck.main.toggleExemptOn')
-        : t('backgroundCheck.main.toggleExemptOff'),
+      next ? t('backgroundCheck.main.toggleExemptOn') : t('backgroundCheck.main.toggleExemptOff'),
     );
   };
 

@@ -1,9 +1,8 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
-
 
 const mockGet = vi.fn();
 const mockPost = vi.fn();
@@ -74,9 +73,7 @@ describe('FrameworksTab', () => {
       expect(screen.getAllByText('SOC 2').length).toBeGreaterThan(0);
     });
     expect(screen.getAllByText('ISO 27001').length).toBeGreaterThan(0);
-    expect(
-      screen.getByText(/organizations\.frameworksTab\.activeFrameworks/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/organizations\.frameworksTab\.activeFrameworks/i)).toBeInTheDocument();
     expect(
       screen.getByText(/organizations\.frameworksTab\.availableFrameworks/i),
     ).toBeInTheDocument();

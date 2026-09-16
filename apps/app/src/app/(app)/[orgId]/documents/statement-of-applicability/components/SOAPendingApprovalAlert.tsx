@@ -1,9 +1,9 @@
 'use client';
 
+import type { Member, User } from '@db';
 import { Alert, AlertDescription, AlertTitle } from '@gideon-defender/ui/alert';
 import { Button } from '@trycompai/design-system';
 import { Checkmark, CloseOutline, WarningAlt } from '@trycompai/design-system/icons';
-import type { Member, User } from '@db';
 
 interface SOAPendingApprovalAlertProps {
   approver?: (Member & { user: User }) | null;
@@ -41,8 +41,7 @@ export function SOAPendingApprovalAlert({
           <div className="rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">
             <div className="font-semibold flex items-center gap-2">
               <CloseOutline className="h-4 w-4" />
-              Document was declined on{' '}
-              {new Date(lastDeclinedAt).toLocaleDateString()}
+              Document was declined on {new Date(lastDeclinedAt).toLocaleDateString()}
               {lastDeclinedBy
                 ? ` by ${lastDeclinedBy.user.name || lastDeclinedBy.user.email || 'an approver'}`
                 : ''}
@@ -63,8 +62,7 @@ export function SOAPendingApprovalAlert({
           </span>
           .
         </div>
-        {canCurrentUserApprove &&
-          ' Please review the details and approve or decline the document.'}
+        {canCurrentUserApprove && ' Please review the details and approve or decline the document.'}
         {canCurrentUserApprove && (
           <div className="flex items-center gap-2 mt-2">
             <Button

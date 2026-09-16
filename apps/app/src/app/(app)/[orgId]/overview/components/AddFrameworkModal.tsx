@@ -1,7 +1,9 @@
 'use client';
 
 import { FrameworkCard } from '@/components/framework-card';
-import { Alert, Button, Spinner } from '@trycompai/design-system';
+import { useFrameworks } from '@/hooks/use-frameworks';
+import { usePermissions } from '@/hooks/use-permissions';
+import type { FrameworkEditorFramework } from '@db';
 import {
   DialogContent,
   DialogDescription,
@@ -9,12 +11,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import type { FrameworkEditorFramework } from '@db';
+import { Alert, Button, Spinner } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useFrameworks } from '@/hooks/use-frameworks';
-import { usePermissions } from '@/hooks/use-permissions';
 
 type Props = {
   onOpenChange: (isOpen: boolean) => void;
@@ -25,10 +25,7 @@ type Props = {
   organizationId?: string;
 };
 
-export function AddFrameworkModal({
-  onOpenChange,
-  availableFrameworks,
-}: Props) {
+export function AddFrameworkModal({ onOpenChange, availableFrameworks }: Props) {
   const { addFrameworks } = useFrameworks();
   const t = useTranslations('overview');
   const { hasPermission } = usePermissions();
@@ -53,9 +50,7 @@ export function AddFrameworkModal({
       toast.success(t('frameworks.addedSuccess', { count }));
       onOpenChange(false);
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : t('frameworks.addFailed'),
-      );
+      toast.error(err instanceof Error ? err.message : t('frameworks.addFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -68,17 +63,13 @@ export function AddFrameworkModal({
 
   const toggleFramework = (id: string, checked: boolean) => {
     setShowContactMessage(false);
-    setSelectedIds((prev) =>
-      checked ? [...prev, id] : prev.filter((fid) => fid !== id),
-    );
+    setSelectedIds((prev) => (checked ? [...prev, id] : prev.filter((fid) => fid !== id)));
   };
 
   return (
     <DialogContent className="max-w-md">
       <DialogHeader className="space-y-2">
-        <DialogTitle className="text-base font-medium">
-          {t('frameworks.addTitle')}
-        </DialogTitle>
+        <DialogTitle className="text-base font-medium">{t('frameworks.addTitle')}</DialogTitle>
         <DialogDescription className="text-muted-foreground text-sm">
           {availableFrameworks.length > 0
             ? t('frameworks.addDescription')
@@ -96,9 +87,7 @@ export function AddFrameworkModal({
                   key={framework.id}
                   framework={framework}
                   isSelected={selectedIds.includes(framework.id)}
-                  onSelectionChange={(checked) =>
-                    toggleFramework(framework.id, checked)
-                  }
+                  onSelectionChange={(checked) => toggleFramework(framework.id, checked)}
                 />
               ))}
           </div>
@@ -134,15 +123,9 @@ export function AddFrameworkModal({
 
       {!isSubmitting && availableFrameworks.length === 0 && (
         <div className="py-6 text-center">
-          <div className="text-muted-foreground text-sm">
-            {t('frameworks.allEnabled')}
-          </div>
+          <div className="text-muted-foreground text-sm">{t('frameworks.allEnabled')}</div>
           <DialogFooter className="mt-6 border-t pt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleOpenChange(false)}
-            >
+            <Button variant="outline" size="sm" onClick={() => handleOpenChange(false)}>
               {t('common.close')}
             </Button>
           </DialogFooter>
@@ -152,9 +135,7 @@ export function AddFrameworkModal({
       {isSubmitting && (
         <div className="flex items-center justify-center py-8">
           <Spinner />
-          <span className="text-muted-foreground ml-3 text-sm">
-            {t('frameworks.adding')}
-          </span>
+          <span className="text-muted-foreground ml-3 text-sm">{t('frameworks.adding')}</span>
         </div>
       )}
     </DialogContent>

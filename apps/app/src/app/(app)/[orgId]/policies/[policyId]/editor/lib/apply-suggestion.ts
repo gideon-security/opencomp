@@ -57,9 +57,7 @@ export function buildReplacementNodes(
   proposedText: string,
   at: number,
 ): ProseMirrorNode[] {
-  const pmNodes = markdownToTipTapJSON(proposedText).map((json) =>
-    state.schema.nodeFromJSON(json),
-  );
+  const pmNodes = markdownToTipTapJSON(proposedText).map((json) => state.schema.nodeFromJSON(json));
 
   // Resolve the parent at the edit site. Guarded so a malformed/out-of-range
   // position can never throw mid-apply — fall back to the nodes as-is.

@@ -322,7 +322,12 @@ describe('PeopleController', () => {
       };
       mockPeopleService.deleteById.mockResolvedValue(deleteResult);
 
-      await controller.deleteMember('mem_1', 'org_123', mockAuthContext, 'true');
+      await controller.deleteMember(
+        'mem_1',
+        'org_123',
+        mockAuthContext,
+        'true',
+      );
 
       expect(peopleService.deleteById).toHaveBeenCalledWith(
         'mem_1',

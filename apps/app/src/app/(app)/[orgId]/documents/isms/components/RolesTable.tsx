@@ -1,18 +1,13 @@
 'use client';
 
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  Stack,
-} from '@trycompai/design-system';
+import { Alert, AlertDescription, AlertTitle, Stack } from '@trycompai/design-system';
 import { UserMultiple, WarningAlt } from '@trycompai/design-system/icons';
 import type { IsmsRole } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
 import type { RoleFormValues } from './role-schema';
+import { SPO_ROLE_KEY, type IsmsTeamSizeBand } from './roles-constants';
 import { RolesForm } from './RolesForm';
 import { RolesRow, type RolesRowHandlers } from './RolesRow';
-import { SPO_ROLE_KEY, type IsmsTeamSizeBand } from './roles-constants';
 import { IsmsRegisterShell } from './shared';
 
 interface RolesTableProps extends RolesRowHandlers {

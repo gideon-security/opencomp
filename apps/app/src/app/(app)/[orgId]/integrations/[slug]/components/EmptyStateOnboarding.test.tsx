@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EmptyStateOnboarding } from './EmptyStateOnboarding';
 
@@ -46,8 +46,7 @@ vi.mock('@gideon-defender/integration-platform', () => ({
   getAwsCloudShellUrl: () => 'https://console.aws.amazon.com/cloudshell',
   getAwsCloudShellScript: () => '',
   getAwsRemediationScript: () => '',
-  normalizeAwsEnvironment: (value: unknown) =>
-    value === 'aws-us-gov' ? 'aws-us-gov' : 'aws',
+  normalizeAwsEnvironment: (value: unknown) => (value === 'aws-us-gov' ? 'aws-us-gov' : 'aws'),
 }));
 
 vi.mock('sonner', () => ({
@@ -70,18 +69,20 @@ describe('EmptyStateOnboarding', () => {
 
     render(
       <EmptyStateOnboarding
-        provider={{
-          id: 'dynamic-security',
-          slug: 'dynamic-security',
-          name: 'Dynamic Security',
-          description: 'Dynamic integration',
-          category: 'Security',
-          logoUrl: '',
-          authType: 'custom',
-          capabilities: ['checks'],
-          isActive: true,
-          docsUrl: 'https://example.com/docs',
-        } as any}
+        provider={
+          {
+            id: 'dynamic-security',
+            slug: 'dynamic-security',
+            name: 'Dynamic Security',
+            description: 'Dynamic integration',
+            category: 'Security',
+            logoUrl: '',
+            authType: 'custom',
+            capabilities: ['checks'],
+            isActive: true,
+            docsUrl: 'https://example.com/docs',
+          } as any
+        }
         orgId="org_1"
         onConnected={onConnected}
       />,
@@ -93,9 +94,7 @@ describe('EmptyStateOnboarding', () => {
       expect(mockCreateConnection).toHaveBeenCalledWith('dynamic-security', {});
     });
     expect(onConnected).toHaveBeenCalled();
-    expect(mockToastSuccess).toHaveBeenCalledWith(
-        expect.stringContaining('onboarding.connected'),
-      );
+    expect(mockToastSuccess).toHaveBeenCalledWith(expect.stringContaining('onboarding.connected'));
   });
 
   it('uses API key fallback field when credential fields are missing', async () => {
@@ -103,17 +102,19 @@ describe('EmptyStateOnboarding', () => {
 
     render(
       <EmptyStateOnboarding
-        provider={{
-          id: 'dynamic-api',
-          slug: 'dynamic-api',
-          name: 'Dynamic API',
-          description: 'Dynamic API integration',
-          category: 'Security',
-          logoUrl: '',
-          authType: 'api_key',
-          capabilities: ['checks'],
-          isActive: true,
-        } as any}
+        provider={
+          {
+            id: 'dynamic-api',
+            slug: 'dynamic-api',
+            name: 'Dynamic API',
+            description: 'Dynamic API integration',
+            category: 'Security',
+            logoUrl: '',
+            authType: 'api_key',
+            capabilities: ['checks'],
+            isActive: true,
+          } as any
+        }
         orgId="org_1"
         onConnected={vi.fn()}
       />,
@@ -131,4 +132,3 @@ describe('EmptyStateOnboarding', () => {
     });
   });
 });
-

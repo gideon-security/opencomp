@@ -377,11 +377,10 @@ function renderRunToPDF(config: PDFConfig, run: NormalizedEvidenceRun): void {
         indent: 10,
       });
 
-      addText(
-        config,
-        `Resource: ${result.resourceType}/${result.resourceId}`,
-        { fontSize: 8, indent: 15 },
-      );
+      addText(config, `Resource: ${result.resourceType}/${result.resourceId}`, {
+        fontSize: 8,
+        indent: 15,
+      });
 
       if (result.description) {
         addText(config, result.description, { fontSize: 8, indent: 15 });

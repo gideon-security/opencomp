@@ -208,9 +208,9 @@ describe('ControlsService', () => {
       });
       mockDb.control.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.findOne(controlId, orgId, 'fi_1'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.findOne(controlId, orgId, 'fi_1')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

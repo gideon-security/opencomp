@@ -83,8 +83,9 @@ export class BrowserbaseService {
       targetUrl: input.targetUrl,
       profileId: input.profileId,
     });
-    const { sessionId, liveViewUrl } =
-      await this.createSessionWithContext(profile.contextId);
+    const { sessionId, liveViewUrl } = await this.createSessionWithContext(
+      profile.contextId,
+    );
     try {
       const handle = await tasks.trigger('test-vendor-instruction', {
         organizationId: input.organizationId,
@@ -155,7 +156,10 @@ export class BrowserbaseService {
     return this.profiles.updateProfile(input);
   }
 
-  async deleteAuthProfile(input: { organizationId: string; profileId: string }) {
+  async deleteAuthProfile(input: {
+    organizationId: string;
+    profileId: string;
+  }) {
     // Best-effort: remove the stored login from 1Password before dropping the
     // profile, so we don't leave orphaned secrets behind.
     const profile = await this.profiles.getProfile(input);
@@ -407,7 +411,12 @@ export class BrowserbaseService {
   }
 
   createAutomationDraft(
-    data: { taskId: string; name?: string; steps: unknown; createdById?: string | null },
+    data: {
+      taskId: string;
+      name?: string;
+      steps: unknown;
+      createdById?: string | null;
+    },
     organizationId: string,
   ) {
     return this.automationDrafts.createDraft(data, organizationId);

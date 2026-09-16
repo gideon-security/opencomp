@@ -79,9 +79,10 @@ export const runTests = async (integrationId?: string) => {
         // This ensures we don't continue polling after the run has completed
         return {
           success: false,
-          errors: run.isFailed || run.isCancelled 
-            ? ['Task failed or was canceled'] 
-            : ['Task completed with unexpected status'],
+          errors:
+            run.isFailed || run.isCancelled
+              ? ['Task failed or was canceled']
+              : ['Task completed with unexpected status'],
           taskId: run.id,
         };
       }

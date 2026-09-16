@@ -90,10 +90,11 @@ export function UpdateOrganizationWebsite({
             <div className="text-muted-foreground text-xs">
               {'Please enter a valid URL including https://'}
             </div>
-            <Button type="submit" disabled={isSubmitting || !hasPermission('organization', 'update')}>
-              {isSubmitting ? (
-                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-              ) : null}
+            <Button
+              type="submit"
+              disabled={isSubmitting || !hasPermission('organization', 'update')}
+            >
+              {isSubmitting ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
               {'Save'}
             </Button>
           </CardFooter>

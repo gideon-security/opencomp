@@ -30,10 +30,27 @@ describe('buildManifestForFramework', () => {
               description: 'desc',
               requirements: [{ id: 'frk_rq_cc61' }],
               frameworkPolicyLinks: [
-                { policyTemplate: { id: 'frk_pt_acc', name: 'Access Policy', description: null, content: [{}], frequency: 'yearly', department: 'it' } },
+                {
+                  policyTemplate: {
+                    id: 'frk_pt_acc',
+                    name: 'Access Policy',
+                    description: null,
+                    content: [{}],
+                    frequency: 'yearly',
+                    department: 'it',
+                  },
+                },
               ],
               frameworkTaskLinks: [
-                { taskTemplate: { id: 'frk_tt_rev', name: 'Review Access', description: 'Review quarterly', frequency: 'quarterly', department: 'it' } },
+                {
+                  taskTemplate: {
+                    id: 'frk_tt_rev',
+                    name: 'Review Access',
+                    description: 'Review quarterly',
+                    frequency: 'quarterly',
+                    department: 'it',
+                  },
+                },
               ],
               frameworkDocumentLinks: [{ formType: 'rbac_matrix' }],
             },
@@ -80,8 +97,8 @@ describe('buildManifestForFramework', () => {
 
     const manifest = await buildManifestForFramework('frk_csf');
 
-    const findUniqueArg = (db.frameworkEditorFramework.findUnique as jest.Mock).mock
-      .calls[0][0];
+    const findUniqueArg = (db.frameworkEditorFramework.findUnique as jest.Mock)
+      .mock.calls[0][0];
     expect(findUniqueArg.include.requirements.orderBy).toEqual([
       { sortOrder: { sort: 'asc', nulls: 'last' } },
       { identifier: 'asc' },
@@ -98,25 +115,77 @@ describe('buildManifestForFramework', () => {
       description: null,
       requirements: [
         {
-          id: 'rq_a', identifier: 'A', name: 'A', description: null,
+          id: 'rq_a',
+          identifier: 'A',
+          name: 'A',
+          description: null,
           controlTemplates: [
             {
-              id: 'ct_shared', name: 'Shared', description: 'd',
+              id: 'ct_shared',
+              name: 'Shared',
+              description: 'd',
               requirements: [{ id: 'rq_a' }, { id: 'rq_b' }],
-              frameworkPolicyLinks: [{ policyTemplate: { id: 'pt_shared', name: 'P', description: null, content: [], frequency: null, department: null } }],
-              frameworkTaskLinks: [{ taskTemplate: { id: 'tt_shared', name: 'T', description: '', frequency: null, department: null } }],
+              frameworkPolicyLinks: [
+                {
+                  policyTemplate: {
+                    id: 'pt_shared',
+                    name: 'P',
+                    description: null,
+                    content: [],
+                    frequency: null,
+                    department: null,
+                  },
+                },
+              ],
+              frameworkTaskLinks: [
+                {
+                  taskTemplate: {
+                    id: 'tt_shared',
+                    name: 'T',
+                    description: '',
+                    frequency: null,
+                    department: null,
+                  },
+                },
+              ],
               frameworkDocumentLinks: [],
             },
           ],
         },
         {
-          id: 'rq_b', identifier: 'B', name: 'B', description: null,
+          id: 'rq_b',
+          identifier: 'B',
+          name: 'B',
+          description: null,
           controlTemplates: [
             {
-              id: 'ct_shared', name: 'Shared', description: 'd',
+              id: 'ct_shared',
+              name: 'Shared',
+              description: 'd',
               requirements: [{ id: 'rq_a' }, { id: 'rq_b' }],
-              frameworkPolicyLinks: [{ policyTemplate: { id: 'pt_shared', name: 'P', description: null, content: [], frequency: null, department: null } }],
-              frameworkTaskLinks: [{ taskTemplate: { id: 'tt_shared', name: 'T', description: '', frequency: null, department: null } }],
+              frameworkPolicyLinks: [
+                {
+                  policyTemplate: {
+                    id: 'pt_shared',
+                    name: 'P',
+                    description: null,
+                    content: [],
+                    frequency: null,
+                    department: null,
+                  },
+                },
+              ],
+              frameworkTaskLinks: [
+                {
+                  taskTemplate: {
+                    id: 'tt_shared',
+                    name: 'T',
+                    description: '',
+                    frequency: null,
+                    department: null,
+                  },
+                },
+              ],
               frameworkDocumentLinks: [],
             },
           ],
@@ -127,14 +196,21 @@ describe('buildManifestForFramework', () => {
     const manifest = await buildManifestForFramework('frk_iso');
 
     expect(manifest.controls).toHaveLength(1);
-    expect(manifest.controls[0].requirementIds.sort()).toEqual(['rq_a', 'rq_b']);
+    expect(manifest.controls[0].requirementIds.sort()).toEqual([
+      'rq_a',
+      'rq_b',
+    ]);
     expect(manifest.policies).toHaveLength(1);
     expect(manifest.tasks).toHaveLength(1);
   });
 
   it('throws when framework not found', async () => {
-    (db.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue(null);
-    await expect(buildManifestForFramework('missing')).rejects.toThrow('Framework not found');
+    (db.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue(
+      null,
+    );
+    await expect(buildManifestForFramework('missing')).rejects.toThrow(
+      'Framework not found',
+    );
   });
 
   it('only includes policy task and document links scoped to the requested framework', async () => {
@@ -156,10 +232,27 @@ describe('buildManifestForFramework', () => {
               description: 'd',
               requirements: [{ id: 'rq_hipaa' }, { id: 'rq_pci' }],
               frameworkPolicyLinks: [
-                { policyTemplate: { id: 'pt_hipaa', name: 'HIPAA Policy', description: null, content: [], frequency: null, department: null } },
+                {
+                  policyTemplate: {
+                    id: 'pt_hipaa',
+                    name: 'HIPAA Policy',
+                    description: null,
+                    content: [],
+                    frequency: null,
+                    department: null,
+                  },
+                },
               ],
               frameworkTaskLinks: [
-                { taskTemplate: { id: 'tt_hipaa', name: 'HIPAA Task', description: '', frequency: null, department: null } },
+                {
+                  taskTemplate: {
+                    id: 'tt_hipaa',
+                    name: 'HIPAA Task',
+                    description: '',
+                    frequency: null,
+                    department: null,
+                  },
+                },
               ],
               frameworkDocumentLinks: [{ formType: 'access_request' }],
             },

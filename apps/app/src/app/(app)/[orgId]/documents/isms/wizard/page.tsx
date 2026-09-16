@@ -1,9 +1,9 @@
+import { serverApi } from '@/lib/api-server';
+import { auth } from '@/utils/auth';
 import { Breadcrumb, PageLayout, Text } from '@trycompai/design-system';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { serverApi } from '@/lib/api-server';
-import { auth } from '@/utils/auth';
 import { ISO27001_NAMES } from '../isms-types';
 import { WizardClient } from './WizardClient';
 import type { WizardProfileResponse } from './wizard-types';
@@ -12,11 +12,7 @@ interface FrameworkApiResponse {
   data: Array<{ id: string; frameworkId: string; framework: { id: string; name: string } }>;
 }
 
-export default async function IsmsWizardPage({
-  params,
-}: {
-  params: Promise<{ orgId: string }>;
-}) {
+export default async function IsmsWizardPage({ params }: { params: Promise<{ orgId: string }> }) {
   const { orgId } = await params;
 
   const breadcrumb = (

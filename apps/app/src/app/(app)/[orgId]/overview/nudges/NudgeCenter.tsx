@@ -1,7 +1,7 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { ChevronDown, ChevronUp } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 
 const MAX_PEEK_LAYERS = 2;
@@ -85,9 +85,7 @@ export function NudgeCenter({
           );
         })}
         <div className="relative z-10 rounded-lg shadow-lg">{children}</div>
-        {toggle(
-          'absolute bottom-0 left-1/2 z-20 -translate-x-1/2 translate-y-[65%]',
-        )}
+        {toggle('absolute bottom-0 left-1/2 z-20 -translate-x-1/2 translate-y-[65%]')}
       </div>
     </div>
   );

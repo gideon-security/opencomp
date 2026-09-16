@@ -7,9 +7,9 @@ import {
 } from '@trycompai/design-system';
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
-import { RequirementControls } from './components/RequirementControls';
 import { AddCustomControlSheet } from './components/AddCustomControlSheet';
 import { LinkExistingControlSheet } from './components/LinkExistingControlSheet';
+import { RequirementControls } from './components/RequirementControls';
 
 interface PageProps {
   params: Promise<{
@@ -20,16 +20,13 @@ interface PageProps {
 }
 
 export default async function RequirementPage({ params }: PageProps) {
-  const { orgId: organizationId, frameworkInstanceId, requirementKey } =
-    await params;
+  const { orgId: organizationId, frameworkInstanceId, requirementKey } = await params;
 
   const t = await getTranslations('frameworks');
 
   const [frameworkRes, requirementRes] = await Promise.all([
     serverApi.get<any>(`/v1/frameworks/${frameworkInstanceId}`),
-    serverApi.get<any>(
-      `/v1/frameworks/${frameworkInstanceId}/requirements/${requirementKey}`,
-    ),
+    serverApi.get<any>(`/v1/frameworks/${frameworkInstanceId}/requirements/${requirementKey}`),
   ]);
 
   if (!frameworkRes.data || !requirementRes.data) {
@@ -39,7 +36,9 @@ export default async function RequirementPage({ params }: PageProps) {
   const framework = frameworkRes.data;
   const reqData = requirementRes.data;
   const frameworkName =
-    framework.framework?.name ?? framework.customFramework?.name ?? t('requirements.frameworkFallback');
+    framework.framework?.name ??
+    framework.customFramework?.name ??
+    t('requirements.frameworkFallback');
   const requirement = reqData.requirement;
   // Whether this specific requirement is custom — NOT whether its framework is.
   // A platform framework (e.g. ISO 27001) can carry per-instance custom

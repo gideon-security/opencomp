@@ -26,8 +26,13 @@ export function parseOptionalDate(
     throw new BadRequestException('Invalid date; expected format YYYY-MM-DD');
   }
   const date = new Date(`${trimmed}T00:00:00.000Z`);
-  if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== trimmed) {
-    throw new BadRequestException('Invalid date; expected a real calendar date');
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.toISOString().slice(0, 10) !== trimmed
+  ) {
+    throw new BadRequestException(
+      'Invalid date; expected a real calendar date',
+    );
   }
   return date;
 }

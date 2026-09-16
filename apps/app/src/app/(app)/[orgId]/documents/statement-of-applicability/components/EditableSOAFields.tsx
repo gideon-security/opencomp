@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useTranslations } from 'next-intl';
 import {
   Button,
   Dialog,
@@ -18,6 +16,8 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { Close, Edit } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useSOADocument } from '../hooks/useSOADocument';
 import { ApplicableReadOnlyDisplay, ApplicableSwatchRow } from './ApplicableSwatch';
@@ -25,8 +25,8 @@ import type { SOAFieldSavePayload } from './soa-field-types';
 
 export type {
   SOAFieldSavePayload,
-  SOATableAnswerData,
   SOAProcessedResult,
+  SOATableAnswerData,
 } from './soa-field-types';
 
 interface EditableSOAFieldsProps {
@@ -268,9 +268,7 @@ export function EditableSOAFields({
             size="full"
             required={isApplicable === false}
           />
-          {error && (
-            <p className="text-xs text-destructive">{error}</p>
-          )}
+          {error && <p className="text-xs text-destructive">{error}</p>}
           <DialogFooter>
             <Button
               variant="ghost"
@@ -279,10 +277,7 @@ export function EditableSOAFields({
             >
               {t('soa.cancel')}
             </Button>
-            <Button
-              onClick={handleJustificationSave}
-              loading={isSaving}
-            >
+            <Button onClick={handleJustificationSave} loading={isSaving}>
               {isSaving ? t('soa.saving') : t('soa.saveJustification')}
             </Button>
           </DialogFooter>

@@ -1,12 +1,5 @@
-import {
-  createAccessControl,
-  type AccessControl,
-} from 'better-auth/plugins/access';
-import {
-  defaultStatements,
-  adminAc,
-  ownerAc,
-} from 'better-auth/plugins/organization/access';
+import { createAccessControl, type AccessControl } from 'better-auth/plugins/access';
+import { adminAc, defaultStatements, ownerAc } from 'better-auth/plugins/organization/access';
 
 /**
  * Permission statement extending better-auth's defaults with GRC resources.
@@ -196,13 +189,7 @@ export const allRoles = {
  * Role hierarchy for privilege checking
  * Higher index = higher privilege
  */
-export const ROLE_HIERARCHY = [
-  'contractor',
-  'employee',
-  'auditor',
-  'admin',
-  'owner',
-] as const;
+export const ROLE_HIERARCHY = ['contractor', 'employee', 'auditor', 'admin', 'owner'] as const;
 
 /**
  * Roles that require assignment-based filtering
@@ -224,18 +211,17 @@ export type RoleName = keyof typeof allRoles;
  * Built-in role permissions derived from the role definitions above.
  * Single source of truth — consumers should import this instead of hardcoding.
  */
-export const BUILT_IN_ROLE_PERMISSIONS: Record<string, Record<string, string[]>> =
-  Object.fromEntries(
-    Object.entries(allRoles).map(([name, role]) => [
-      name,
-      Object.fromEntries(
-        Object.entries(role.statements).map(([res, actions]) => [
-          res,
-          [...actions],
-        ]),
-      ),
-    ]),
-  );
+export const BUILT_IN_ROLE_PERMISSIONS: Record<
+  string,
+  Record<string, string[]>
+> = Object.fromEntries(
+  Object.entries(allRoles).map(([name, role]) => [
+    name,
+    Object.fromEntries(
+      Object.entries(role.statements).map(([res, actions]) => [res, [...actions]]),
+    ),
+  ]),
+);
 
 // ─── Obligations ─────────────────────────────────────────────────────
 // Obligations are separate from permissions. Permissions grant powers;

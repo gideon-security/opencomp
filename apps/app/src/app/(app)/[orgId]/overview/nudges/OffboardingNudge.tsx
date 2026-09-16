@@ -19,9 +19,7 @@ interface PendingResponse {
 
 export function useOffboardingNudge(): NudgeState {
   const { orgId } = useParams<{ orgId: string }>();
-  const { data, error } = useApiSWR<PendingResponse>(
-    '/v1/offboarding-checklist/pending',
-  );
+  const { data, error } = useApiSWR<PendingResponse>('/v1/offboarding-checklist/pending');
   const members = data?.data?.members ?? [];
 
   return {

@@ -101,21 +101,21 @@ describe('BrowserAuthTotpController', () => {
       reflector.get(PERMISSIONS_KEY, method as never);
 
     it('gates read routes with integration:read', () => {
-      expect(permsOf(BrowserAuthTotpController.prototype.getOrgTotpStatuses)).toEqual(
-        [{ resource: 'integration', actions: ['read'] }],
-      );
-      expect(permsOf(BrowserAuthTotpController.prototype.getProfileTotp)).toEqual([
-        { resource: 'integration', actions: ['read'] },
-      ]);
+      expect(
+        permsOf(BrowserAuthTotpController.prototype.getOrgTotpStatuses),
+      ).toEqual([{ resource: 'integration', actions: ['read'] }]);
+      expect(
+        permsOf(BrowserAuthTotpController.prototype.getProfileTotp),
+      ).toEqual([{ resource: 'integration', actions: ['read'] }]);
     });
 
     it('gates write routes with integration:update', () => {
-      expect(permsOf(BrowserAuthTotpController.prototype.setProfileTotp)).toEqual([
-        { resource: 'integration', actions: ['update'] },
-      ]);
-      expect(permsOf(BrowserAuthTotpController.prototype.clearProfileTotp)).toEqual(
-        [{ resource: 'integration', actions: ['update'] }],
-      );
+      expect(
+        permsOf(BrowserAuthTotpController.prototype.setProfileTotp),
+      ).toEqual([{ resource: 'integration', actions: ['update'] }]);
+      expect(
+        permsOf(BrowserAuthTotpController.prototype.clearProfileTotp),
+      ).toEqual([{ resource: 'integration', actions: ['update'] }]);
     });
   });
 });

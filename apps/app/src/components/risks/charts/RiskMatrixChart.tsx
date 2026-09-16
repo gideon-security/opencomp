@@ -91,8 +91,7 @@ export function RiskMatrixChart({
 
   const hasSuggestion = suggestedLikelihood !== undefined && suggestedImpact !== undefined;
   const suggestionDiffers =
-    hasSuggestion &&
-    (suggestedLikelihood !== activeLikelihood || suggestedImpact !== activeImpact);
+    hasSuggestion && (suggestedLikelihood !== activeLikelihood || suggestedImpact !== activeImpact);
 
   const handleAcceptSuggestion = () => {
     if (!hasSuggestion) return;

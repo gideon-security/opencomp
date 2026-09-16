@@ -185,8 +185,16 @@ describe('validateAndFixTipTapContent', () => {
   describe('stringified JSON nodes', () => {
     it('should parse stringified JSON nodes in an array', () => {
       const content = [
-        JSON.stringify({ type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Purpose' }] }),
-        JSON.stringify({ type: 'paragraph', attrs: { textAlign: null }, content: [{ type: 'text', text: 'Some policy text.' }] }),
+        JSON.stringify({
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Purpose' }],
+        }),
+        JSON.stringify({
+          type: 'paragraph',
+          attrs: { textAlign: null },
+          content: [{ type: 'text', text: 'Some policy text.' }],
+        }),
       ];
 
       const fixed = validateAndFixTipTapContent(content);
@@ -201,7 +209,11 @@ describe('validateAndFixTipTapContent', () => {
 
     it('should handle mixed stringified and object nodes', () => {
       const content = [
-        JSON.stringify({ type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Title' }] }),
+        JSON.stringify({
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: 'Title' }],
+        }),
         { type: 'paragraph', content: [{ type: 'text', text: 'Body text' }] },
       ];
 
@@ -229,8 +241,14 @@ describe('validateAndFixTipTapContent', () => {
     it('should wrap orphaned listItems in a bulletList', () => {
       const content = [
         { type: 'heading', attrs: { level: 2 }, content: [{ type: 'text', text: 'Title' }] },
-        { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Item 1' }] }] },
-        { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Item 2' }] }] },
+        {
+          type: 'listItem',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Item 1' }] }],
+        },
+        {
+          type: 'listItem',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Item 2' }] }],
+        },
       ];
 
       const fixed = validateAndFixTipTapContent(content);
@@ -245,11 +263,23 @@ describe('validateAndFixTipTapContent', () => {
 
     it('should append orphaned listItems to a preceding list', () => {
       const content = [
-        { type: 'bulletList', content: [
-          { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'First' }] }] },
-        ]},
-        { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Second' }] }] },
-        { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Third' }] }] },
+        {
+          type: 'bulletList',
+          content: [
+            {
+              type: 'listItem',
+              content: [{ type: 'paragraph', content: [{ type: 'text', text: 'First' }] }],
+            },
+          ],
+        },
+        {
+          type: 'listItem',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Second' }] }],
+        },
+        {
+          type: 'listItem',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Third' }] }],
+        },
       ];
 
       const fixed = validateAndFixTipTapContent(content);
@@ -263,9 +293,16 @@ describe('validateAndFixTipTapContent', () => {
   describe('list with non-listItem children', () => {
     it('should wrap bare paragraphs inside a bulletList in listItems', () => {
       const content = [
-        { type: 'bulletList', content: [
-          { type: 'paragraph', attrs: { textAlign: null }, content: [{ type: 'text', text: 'Bare paragraph' }] },
-        ]},
+        {
+          type: 'bulletList',
+          content: [
+            {
+              type: 'paragraph',
+              attrs: { textAlign: null },
+              content: [{ type: 'text', text: 'Bare paragraph' }],
+            },
+          ],
+        },
       ];
 
       const fixed = validateAndFixTipTapContent(content);
@@ -288,10 +325,7 @@ describe('validateAndFixTipTapContent', () => {
               {
                 type: 'text',
                 text: 'Styled text',
-                marks: [
-                  { type: 'textStyle', attrs: { color: 'red' } },
-                  { type: 'bold' },
-                ],
+                marks: [{ type: 'textStyle', attrs: { color: 'red' } }, { type: 'bold' }],
               },
             ],
           },
@@ -311,12 +345,51 @@ describe('validateAndFixTipTapContent', () => {
       // JSON string, the bulletList contains a bare paragraph, and
       // listItems are orphaned at the top level.
       const content = [
-        JSON.stringify({ type: 'heading', attrs: { level: 2, textAlign: null }, content: [{ text: 'Purpose', type: 'text' }] }),
-        JSON.stringify({ type: 'paragraph', attrs: { textAlign: null }, content: [{ text: 'Ensure all governance...', type: 'text' }] }),
-        JSON.stringify({ type: 'heading', attrs: { level: 2, textAlign: null }, content: [{ text: 'Version Control & Distribution', type: 'text' }] }),
-        JSON.stringify({ type: 'bulletList', content: [{ type: 'paragraph', attrs: { textAlign: null }, content: [{ text: 'Keep policies under version control.', type: 'text' }] }] }),
-        JSON.stringify({ type: 'listItem', content: [{ type: 'paragraph', attrs: { textAlign: null }, content: [{ text: 'Include a version number.', type: 'text' }] }] }),
-        JSON.stringify({ type: 'listItem', content: [{ type: 'paragraph', attrs: { textAlign: null }, content: [{ text: 'Notify personnel.', type: 'text' }] }] }),
+        JSON.stringify({
+          type: 'heading',
+          attrs: { level: 2, textAlign: null },
+          content: [{ text: 'Purpose', type: 'text' }],
+        }),
+        JSON.stringify({
+          type: 'paragraph',
+          attrs: { textAlign: null },
+          content: [{ text: 'Ensure all governance...', type: 'text' }],
+        }),
+        JSON.stringify({
+          type: 'heading',
+          attrs: { level: 2, textAlign: null },
+          content: [{ text: 'Version Control & Distribution', type: 'text' }],
+        }),
+        JSON.stringify({
+          type: 'bulletList',
+          content: [
+            {
+              type: 'paragraph',
+              attrs: { textAlign: null },
+              content: [{ text: 'Keep policies under version control.', type: 'text' }],
+            },
+          ],
+        }),
+        JSON.stringify({
+          type: 'listItem',
+          content: [
+            {
+              type: 'paragraph',
+              attrs: { textAlign: null },
+              content: [{ text: 'Include a version number.', type: 'text' }],
+            },
+          ],
+        }),
+        JSON.stringify({
+          type: 'listItem',
+          content: [
+            {
+              type: 'paragraph',
+              attrs: { textAlign: null },
+              content: [{ text: 'Notify personnel.', type: 'text' }],
+            },
+          ],
+        }),
       ];
 
       const fixed = validateAndFixTipTapContent(content);
@@ -348,15 +421,29 @@ describe('validateAndFixTipTapContent', () => {
               {
                 type: 'tableRow',
                 content: [
-                  { type: 'tableHeader', attrs: { colspan: 1, rowspan: 1 }, content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Name' }] }] },
-                  { type: 'tableHeader', attrs: { colspan: 1, rowspan: 1 }, content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Role' }] }] },
+                  {
+                    type: 'tableHeader',
+                    attrs: { colspan: 1, rowspan: 1 },
+                    content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Name' }] }],
+                  },
+                  {
+                    type: 'tableHeader',
+                    attrs: { colspan: 1, rowspan: 1 },
+                    content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Role' }] }],
+                  },
                 ],
               },
               {
                 type: 'tableRow',
                 content: [
-                  { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Alice' }] }] },
-                  { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Admin' }] }] },
+                  {
+                    type: 'tableCell',
+                    content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Alice' }] }],
+                  },
+                  {
+                    type: 'tableCell',
+                    content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Admin' }] }],
+                  },
                 ],
               },
             ],
@@ -394,8 +481,14 @@ describe('validateAndFixTipTapContent', () => {
               {
                 type: 'tableRow',
                 content: [
-                  { type: 'tableHeader', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Key' }] }] },
-                  { type: 'tableCell', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Value' }] }] },
+                  {
+                    type: 'tableHeader',
+                    content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Key' }] }],
+                  },
+                  {
+                    type: 'tableCell',
+                    content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Value' }] }],
+                  },
                 ],
               },
             ],

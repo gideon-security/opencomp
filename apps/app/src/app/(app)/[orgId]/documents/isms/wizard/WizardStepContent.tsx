@@ -7,11 +7,7 @@ import { WizardStepLeadership } from './WizardStepLeadership';
 import { WizardStepOutcomes } from './WizardStepOutcomes';
 import { WizardStepPrivacy } from './WizardStepPrivacy';
 import { WizardStepScope } from './WizardStepScope';
-import type {
-  WizardDefaults,
-  WizardFormValues,
-  WizardMemberOption,
-} from './wizard-types';
+import type { WizardDefaults, WizardFormValues, WizardMemberOption } from './wizard-types';
 
 interface WizardStepContentProps {
   stepId: string;

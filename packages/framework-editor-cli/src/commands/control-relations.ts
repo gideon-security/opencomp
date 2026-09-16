@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
 import { apiRequest } from '../lib/api-client.js';
-import { handleError, CliError } from '../lib/errors.js';
+import { CliError, handleError } from '../lib/errors.js';
 import { outputResult, outputSuccess } from '../lib/output.js';
 import type { ControlTemplate } from '../types.js';
 import { EVIDENCE_FORM_TYPE_VALUES } from '../types.js';
@@ -138,7 +138,9 @@ export function registerControlRelationCommands(ctl: Command): void {
         });
         const types = Array.isArray(current.documentTypes) ? current.documentTypes : [];
         if (types.includes(documentType)) {
-          outputSuccess(`Document type "${documentType}" already exists on control ${controlId}.`, { json });
+          outputSuccess(`Document type "${documentType}" already exists on control ${controlId}.`, {
+            json,
+          });
           return;
         }
         const data = await apiRequest<ControlTemplate>(`/control-template/${controlId}`, {
@@ -155,7 +157,10 @@ export function registerControlRelationCommands(ctl: Command): void {
   ctl
     .command('remove-document-type')
     .argument('<control-id>', 'Control template ID')
-    .argument('<document-type>', `Document type to remove (${EVIDENCE_FORM_TYPE_VALUES.join(', ')})`)
+    .argument(
+      '<document-type>',
+      `Document type to remove (${EVIDENCE_FORM_TYPE_VALUES.join(', ')})`,
+    )
     .description(
       'Remove an evidence document type from a control template. This is an atomic ' +
         'operation that removes only the specified type without affecting others.',
@@ -168,7 +173,9 @@ export function registerControlRelationCommands(ctl: Command): void {
         });
         const types = Array.isArray(current.documentTypes) ? current.documentTypes : [];
         if (!types.includes(documentType)) {
-          outputSuccess(`Document type "${documentType}" not found on control ${controlId}.`, { json });
+          outputSuccess(`Document type "${documentType}" not found on control ${controlId}.`, {
+            json,
+          });
           return;
         }
         const data = await apiRequest<ControlTemplate>(`/control-template/${controlId}`, {

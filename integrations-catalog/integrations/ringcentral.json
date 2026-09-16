@@ -8,17 +8,12 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "scopes": [
-        "ReadAccounts"
-      ],
+      "scopes": ["ReadAccounts"],
       "clientAuthMethod": "body",
       "supportsRefreshToken": true
     }
   },
-  "capabilities": [
-    "checks",
-    "sync"
-  ],
+  "capabilities": ["checks", "sync"],
   "supportsMultipleConnections": false,
   "syncSupported": true,
   "checks": [

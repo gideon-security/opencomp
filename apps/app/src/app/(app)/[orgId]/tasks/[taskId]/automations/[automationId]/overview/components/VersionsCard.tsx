@@ -1,5 +1,6 @@
 'use client';
 
+import { EvidenceAutomationVersion } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@gideon-defender/ui/card';
 import {
@@ -10,7 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import { EvidenceAutomationVersion } from '@db';
 import { formatDistanceToNow } from 'date-fns';
 import { History, RotateCcw } from 'lucide-react';
 import { useParams } from 'next/navigation';

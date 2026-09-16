@@ -7,6 +7,7 @@ disable-model-invocation: true
 Run a comprehensive production readiness check on $ARGUMENTS.
 
 Use parallel subagents to run all five audits simultaneously:
+
 1. audit-rbac on $ARGUMENTS
 2. audit-hooks on $ARGUMENTS
 3. audit-design-system on $ARGUMENTS
@@ -14,6 +15,7 @@ Use parallel subagents to run all five audits simultaneously:
 5. security-review on $ARGUMENTS
 
 Then run full monorepo verification:
+
 ```bash
 npx turbo run typecheck --filter=@gideon-defender/api --filter=@gideon-defender/app
 cd apps/app && npx vitest run

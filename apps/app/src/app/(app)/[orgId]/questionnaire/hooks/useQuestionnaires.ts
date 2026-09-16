@@ -1,7 +1,7 @@
 'use client';
 
-import useSWR from 'swr';
 import { api } from '@/lib/api-client';
+import useSWR from 'swr';
 import type { QuestionnaireListItem } from '../components/types';
 
 const QUESTIONNAIRES_KEY = '/v1/questionnaire';
@@ -29,9 +29,7 @@ export function useQuestionnaires({ fallbackData }: UseQuestionnairesOptions = {
   );
 
   const deleteQuestionnaire = async (questionnaireId: string): Promise<boolean> => {
-    const result = await api.delete<{ success: boolean }>(
-      `/v1/questionnaire/${questionnaireId}`,
-    );
+    const result = await api.delete<{ success: boolean }>(`/v1/questionnaire/${questionnaireId}`);
 
     if (result.data?.success) {
       const currentList = Array.isArray(data) ? data : [];

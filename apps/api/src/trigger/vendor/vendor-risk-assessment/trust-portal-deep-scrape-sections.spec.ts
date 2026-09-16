@@ -139,7 +139,10 @@ describe('discoverSectionUrls', () => {
   it('returns an empty array when links is undefined or empty', () => {
     expect(discoverSectionUrls({ sourceUrl, links: [] })).toEqual([]);
     expect(
-      discoverSectionUrls({ sourceUrl, links: undefined as unknown as string[] }),
+      discoverSectionUrls({
+        sourceUrl,
+        links: undefined as unknown as string[],
+      }),
     ).toEqual([]);
   });
 });

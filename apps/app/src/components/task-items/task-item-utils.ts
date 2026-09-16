@@ -1,15 +1,15 @@
+import type { TaskItemPriority, TaskItemStatus } from '@/hooks/use-task-items';
 import {
-  Time,
-  View,
-  CheckmarkOutline,
-  Misuse,
-  WarningAlt,
-  UpToTop,
-  Meter,
   ArrowDown,
+  CheckmarkOutline,
+  Meter,
+  Misuse,
   RadioButton,
+  Time,
+  UpToTop,
+  View,
+  WarningAlt,
 } from '@trycompai/design-system/icons';
-import type { TaskItemStatus, TaskItemPriority } from '@/hooks/use-task-items';
 
 export const STATUS_OPTIONS: { value: TaskItemStatus; label: string }[] = [
   { value: 'todo', label: 'Todo' },
@@ -91,4 +91,3 @@ export const getPriorityColor = (priority: TaskItemPriority) => {
 export const getTaskIdShort = (taskId: string): string => {
   return taskId.slice(-6).toUpperCase();
 };
-

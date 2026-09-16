@@ -1,9 +1,9 @@
 'use client';
 import { AssignedUser } from '@/components/assigned-user';
 import { StatusIndicator } from '@/components/status-indicator';
+import type { Departments, RiskStatus } from '@db';
 import { Badge } from '@gideon-defender/ui/badge';
 import { Button } from '@gideon-defender/ui/button';
-import type { Departments, RiskStatus } from '@db';
 import type { ColumnDef } from '@tanstack/react-table';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';

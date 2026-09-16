@@ -1,8 +1,8 @@
 'use client';
 
 import { usePermissions } from '@/hooks/use-permissions';
-import { Renew } from '@trycompai/design-system/icons';
 import { TaskFrequency } from '@db';
+import { Renew } from '@trycompai/design-system/icons';
 import { useEffect, useMemo, useState } from 'react';
 import type {
   BrowserAuthProfile,
@@ -128,76 +128,76 @@ export function BrowserAutomationsList({
 
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-card">
-        <BrowserEvidenceHeader
-          automations={automations}
-          currentCadence={currentCadence}
-          canUpdate={canUpdateAutomation}
-          canCreate={canCreateAutomation}
-          canConnect={canConnect}
-          onSetTaskSchedule={onSetTaskSchedule}
-          onConnectAnother={onConnectAnother}
-          onCreate={onCreate}
+      <BrowserEvidenceHeader
+        automations={automations}
+        currentCadence={currentCadence}
+        canUpdate={canUpdateAutomation}
+        canCreate={canCreateAutomation}
+        canConnect={canConnect}
+        onSetTaskSchedule={onSetTaskSchedule}
+        onConnectAnother={onConnectAnother}
+        onCreate={onCreate}
+      />
+
+      {drafts.length > 0 && onContinueDraft && onDeleteDraft && (
+        <DraftsStrip
+          nested
+          drafts={drafts}
+          profiles={profiles}
+          onContinue={onContinueDraft}
+          onDelete={onDeleteDraft}
         />
+      )}
 
-        {drafts.length > 0 && onContinueDraft && onDeleteDraft && (
-          <DraftsStrip
-            nested
-            drafts={drafts}
-            profiles={profiles}
-            onContinue={onContinueDraft}
-            onDelete={onDeleteDraft}
-          />
-        )}
-
-        <div className="flex flex-col gap-2 p-4">
-          {rows.slice(0, visible).map(({ automation, reconnectUrl }) => (
-            <div key={automation.id} className="flex flex-col gap-1.5">
-              <AutomationItem
-                automation={automation}
-                isRunning={runningAutomationId === automation.id}
-                isExpanded={expandedId === automation.id}
-                readOnly={!canUpdateAutomation}
-                canDelete={canDeleteAutomation}
-                onToggleExpand={() =>
-                  setExpandedId(expandedId === automation.id ? null : automation.id)
-                }
-                onRun={() => onRun(automation.id)}
-                onEdit={() => onEditClick(automation)}
-                onDelete={() => onDelete(automation.id)}
-                onToggleEnabled={(enabled) => onToggleEnabled(automation.id, enabled)}
-              />
-              {reconnectUrl && canConnect && (
-                <div
-                  className="flex items-center justify-between gap-2 rounded-md px-3 py-1.5 text-[11.5px]"
-                  style={{
-                    border: '1px solid color-mix(in oklab, var(--warning) 45%, transparent)',
-                    background: 'color-mix(in oklab, var(--warning) 10%, transparent)',
-                  }}
+      <div className="flex flex-col gap-2 p-4">
+        {rows.slice(0, visible).map(({ automation, reconnectUrl }) => (
+          <div key={automation.id} className="flex flex-col gap-1.5">
+            <AutomationItem
+              automation={automation}
+              isRunning={runningAutomationId === automation.id}
+              isExpanded={expandedId === automation.id}
+              readOnly={!canUpdateAutomation}
+              canDelete={canDeleteAutomation}
+              onToggleExpand={() =>
+                setExpandedId(expandedId === automation.id ? null : automation.id)
+              }
+              onRun={() => onRun(automation.id)}
+              onEdit={() => onEditClick(automation)}
+              onDelete={() => onDelete(automation.id)}
+              onToggleEnabled={(enabled) => onToggleEnabled(automation.id, enabled)}
+            />
+            {reconnectUrl && canConnect && (
+              <div
+                className="flex items-center justify-between gap-2 rounded-md px-3 py-1.5 text-[11.5px]"
+                style={{
+                  border: '1px solid color-mix(in oklab, var(--warning) 45%, transparent)',
+                  background: 'color-mix(in oklab, var(--warning) 10%, transparent)',
+                }}
+              >
+                <span className="text-foreground">
+                  A connection this automation uses needs to be reconnected.
+                </span>
+                <button
+                  onClick={() => onReconnect(reconnectUrl)}
+                  className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-xs text-foreground"
                 >
-                  <span className="text-foreground">
-                    A connection this automation uses needs to be reconnected.
-                  </span>
-                  <button
-                    onClick={() => onReconnect(reconnectUrl)}
-                    className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-xs text-foreground"
-                  >
-                    <Renew size={11} />
-                    Reconnect
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
+                  <Renew size={11} />
+                  Reconnect
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
 
-          {rows.length > visible && (
-            <button
-              onClick={() => setVisible((current) => current + PAGE_SIZE)}
-              className="mt-1 w-full rounded-md border border-dashed border-border py-2 text-xs text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground"
-            >
-              Load more ({rows.length - visible} more)
-            </button>
-          )}
-        </div>
+        {rows.length > visible && (
+          <button
+            onClick={() => setVisible((current) => current + PAGE_SIZE)}
+            className="mt-1 w-full rounded-md border border-dashed border-border py-2 text-xs text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground"
+          >
+            Load more ({rows.length - visible} more)
+          </button>
+        )}
       </div>
+    </div>
   );
 }

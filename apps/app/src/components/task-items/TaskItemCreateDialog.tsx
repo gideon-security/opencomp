@@ -1,7 +1,12 @@
 'use client';
 
-import type { TaskItemEntityType, TaskItemFilters, TaskItemSortBy, TaskItemSortOrder } from '@/hooks/use-task-items';
 import { usePermissions } from '@/hooks/use-permissions';
+import type {
+  TaskItemEntityType,
+  TaskItemFilters,
+  TaskItemSortBy,
+  TaskItemSortOrder,
+} from '@/hooks/use-task-items';
 import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import {
   Drawer,

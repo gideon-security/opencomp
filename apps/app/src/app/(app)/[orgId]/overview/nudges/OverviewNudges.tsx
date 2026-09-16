@@ -7,16 +7,9 @@ import { useOffboardingNudge } from './OffboardingNudge';
 import { useTrustPortalSetupNudge } from './TrustPortalSetupNudge';
 import type { NudgeState, ServerNudgeData } from './types';
 
-const dismissKey = (id: string, orgId: string) =>
-  `overview-nudge-dismissed:${id}:${orgId}`;
+const dismissKey = (id: string, orgId: string) => `overview-nudge-dismissed:${id}:${orgId}`;
 
-export function OverviewNudges({
-  orgId,
-  server,
-}: {
-  orgId: string;
-  server: ServerNudgeData;
-}) {
+export function OverviewNudges({ orgId, server }: { orgId: string; server: ServerNudgeData }) {
   // Hooks called unconditionally, in stable priority order.
   const offboarding = useOffboardingNudge();
   const frameworkUpdates = useFrameworkUpdatesNudge();

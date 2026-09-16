@@ -10,7 +10,9 @@ vi.mock('@trycompai/design-system/icons', () => ({
   Renew: () => <span />,
   Screen: () => <span />,
 }));
-vi.mock('./LiveActivityBorder', () => ({ LiveActivityBorder: () => <span data-testid="border" /> }));
+vi.mock('./LiveActivityBorder', () => ({
+  LiveActivityBorder: () => <span data-testid="border" />,
+}));
 vi.mock('./StepList', () => ({ StepList: () => <div data-testid="step-list" /> }));
 
 import { BrowserLiveView } from './BrowserLiveView';

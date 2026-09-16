@@ -69,7 +69,8 @@ export const TaskItemAssignedEmail = ({
 
             <Text className="text-[14px] leading-[24px] text-[#121212]">
               <strong>{assignedByName}</strong> assigned you to the task{' '}
-              <strong>"{taskTitle}"</strong> in <strong>{organizationName}</strong>.
+              <strong>"{taskTitle}"</strong> in{' '}
+              <strong>{organizationName}</strong>.
             </Text>
 
             <Section className="mt-[32px] mb-[32px] text-center">
@@ -91,7 +92,10 @@ export const TaskItemAssignedEmail = ({
             <Section className="mt-[30px] mb-[20px]">
               <Text className="text-[12px] leading-[20px] text-[#666666]">
                 Don't want to receive task assignment notifications?{' '}
-                <Link href={unsubscribeUrl} className="text-[#121212] underline">
+                <Link
+                  href={unsubscribeUrl}
+                  className="text-[#121212] underline"
+                >
                   Manage your email preferences
                 </Link>
                 .
@@ -109,4 +113,3 @@ export const TaskItemAssignedEmail = ({
 };
 
 export default TaskItemAssignedEmail;
-

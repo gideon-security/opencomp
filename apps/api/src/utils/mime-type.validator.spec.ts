@@ -54,10 +54,7 @@ describe('IsMimeTypeField', () => {
     });
 
     it('accepts application/pdf with charset parameter', async () => {
-      await expectValid(
-        'application/pdf;charset=utf-8',
-        'application/pdf',
-      );
+      await expectValid('application/pdf;charset=utf-8', 'application/pdf');
     });
 
     it('accepts xlsx with charset parameter', async () => {
@@ -80,10 +77,7 @@ describe('IsMimeTypeField', () => {
     });
 
     it('accepts structured syntax suffix (e.g. +json)', async () => {
-      await expectValid(
-        'application/vnd.api+json',
-        'application/vnd.api+json',
-      );
+      await expectValid('application/vnd.api+json', 'application/vnd.api+json');
     });
 
     it('accepts image/svg+xml', async () => {

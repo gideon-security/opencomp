@@ -75,9 +75,9 @@ describe('Penetration Tests page', () => {
   it('redirects when user is unauthenticated', async () => {
     authGetSessionMock.mockResolvedValue(null);
 
-    await expect(PenetrationTestsPage({ params: Promise.resolve({ orgId: 'org_1' }) })).rejects.toThrow(
-      'NEXT_REDIRECT',
-    );
+    await expect(
+      PenetrationTestsPage({ params: Promise.resolve({ orgId: 'org_1' }) }),
+    ).rejects.toThrow('NEXT_REDIRECT');
 
     expect(redirect).toHaveBeenCalledWith('/auth');
     expect(dbFindFirstMock).not.toHaveBeenCalled();
@@ -87,9 +87,9 @@ describe('Penetration Tests page', () => {
   it('redirects when member cannot be found', async () => {
     dbFindFirstMock.mockResolvedValue(null);
 
-    await expect(PenetrationTestsPage({ params: Promise.resolve({ orgId: 'org_1' }) })).rejects.toThrow(
-      'NEXT_REDIRECT',
-    );
+    await expect(
+      PenetrationTestsPage({ params: Promise.resolve({ orgId: 'org_1' }) }),
+    ).rejects.toThrow('NEXT_REDIRECT');
 
     expect(authGetSessionMock).toHaveBeenCalledWith({ headers: expect.any(Headers) });
     expect(redirect).toHaveBeenCalledWith('/');

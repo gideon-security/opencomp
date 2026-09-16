@@ -12,10 +12,7 @@ import {
 } from '@trycompai/design-system';
 import { Close } from '@trycompai/design-system/icons';
 import { useState } from 'react';
-import type {
-  IsmsManagementReview,
-  IsmsReviewAttendee,
-} from '../isms-types';
+import type { IsmsManagementReview, IsmsReviewAttendee } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
 import { parseAttendees } from './management-review-constants';
 import { IsmsFieldLabel } from './shared';
@@ -35,12 +32,7 @@ interface AttendeesFieldProps {
  * Names are frozen at selection: a former member stays on the historical
  * minutes even after leaving People.
  */
-export function AttendeesField({
-  review,
-  canEdit,
-  memberOptions,
-  onSave,
-}: AttendeesFieldProps) {
+export function AttendeesField({ review, canEdit, memberOptions, onSave }: AttendeesFieldProps) {
   // Controlled picker value so it reliably returns to its placeholder after
   // each selection (the RoleAssignments pattern).
   const [pendingMember, setPendingMember] = useState('');
@@ -51,9 +43,7 @@ export function AttendeesField({
 
   const attendees = parseAttendees(review.attendees);
   const attendingIds = new Set(attendees.map((attendee) => attendee.memberId));
-  const availableMembers = memberOptions.filter(
-    (option) => !attendingIds.has(option.id),
-  );
+  const availableMembers = memberOptions.filter((option) => !attendingIds.has(option.id));
 
   const save = async (next: IsmsReviewAttendee[]) => {
     setIsSaving(true);
@@ -85,8 +75,8 @@ export function AttendeesField({
       <Stack gap="2">
         {attendees.length === 0 ? (
           <Text size="sm" variant="muted">
-            No attendees yet — defaults to the Chair and the Security &amp; Privacy Owner from
-            ISMS &gt; Roles.
+            No attendees yet — defaults to the Chair and the Security &amp; Privacy Owner from ISMS
+            &gt; Roles.
           </Text>
         ) : (
           <div className="flex flex-wrap gap-2">

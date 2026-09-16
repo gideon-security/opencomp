@@ -136,9 +136,9 @@ describe('IsmsVersionService', () => {
         1,
       );
       // Empty draft narrative falls back to {}.
-      expect(tx.ismsDocumentVersion.create.mock.calls[0][0].data.narrative).toEqual(
-        {},
-      );
+      expect(
+        tx.ismsDocumentVersion.create.mock.calls[0][0].data.narrative,
+      ).toEqual({});
       expect(result.version).toBe(1);
     });
   });
@@ -148,7 +148,9 @@ describe('IsmsVersionService', () => {
 
     it('throws NotFoundException when the document is missing', async () => {
       (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue(null);
-      await expect(service.getVersions(args)).rejects.toThrow(NotFoundException);
+      await expect(service.getVersions(args)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('lists published versions, mapping name, flags and isCurrent', async () => {

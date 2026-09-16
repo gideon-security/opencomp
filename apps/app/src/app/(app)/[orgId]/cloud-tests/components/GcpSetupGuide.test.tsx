@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockPost = vi.fn();
 
@@ -89,14 +89,10 @@ describe('GcpSetupGuide', () => {
     );
 
     await waitFor(() =>
-      expect(
-        screen.getByText('cloudTests_manualActionRequired'),
-      ).toBeInTheDocument(),
+      expect(screen.getByText('cloudTests_manualActionRequired')).toBeInTheDocument(),
     );
 
-    expect(
-      screen.getAllByText('Enable Security Command Center API').length,
-    ).toBeGreaterThan(0);
+    expect(screen.getAllByText('Enable Security Command Center API').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Grant Findings Viewer role').length).toBeGreaterThan(0);
     expect(screen.getByRole('link', { name: /Open API/i })).toHaveAttribute(
       'href',

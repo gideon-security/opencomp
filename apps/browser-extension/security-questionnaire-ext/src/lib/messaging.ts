@@ -1,3 +1,6 @@
+import { isQuestionnaireSurface, isRecord, parseDetectedQuestion } from './message-utils';
+import { parseSheetMapping } from './sheet-mapping';
+import type { SheetPastePayload } from './sheets-paste-plan';
 import type {
   AuthState,
   DetectedQuestion,
@@ -10,13 +13,6 @@ import type {
   SheetMapping,
   TabQuestionQueue,
 } from './types';
-import type { SheetPastePayload } from './sheets-paste-plan';
-import {
-  isQuestionnaireSurface,
-  isRecord,
-  parseDetectedQuestion,
-} from './message-utils';
-import { parseSheetMapping } from './sheet-mapping';
 export {
   parseContentRequest,
   type ContentRequest,
@@ -90,18 +86,13 @@ export type BackgroundResponse =
   | { ok: false; confirmation: DomainConfirmationRequest }
   | { ok: false; error: string };
 
-export function parseBackgroundRequest(
-  value: unknown,
-): BackgroundRequest | null {
+export function parseBackgroundRequest(value: unknown): BackgroundRequest | null {
   if (!isRecord(value) || typeof value.type !== 'string') return null;
 
   if (value.type === 'comp:get-auth-state') return { type: value.type };
   if (value.type === 'comp:open-sign-in') return { type: value.type };
 
-  if (
-    value.type === 'comp:get-panel-state' &&
-    typeof value.tabId === 'number'
-  ) {
+  if (value.type === 'comp:get-panel-state' && typeof value.tabId === 'number') {
     return {
       type: value.type,
       tabId: value.tabId,
@@ -110,10 +101,7 @@ export function parseBackgroundRequest(
     };
   }
 
-  if (
-    value.type === 'comp:open-side-panel' &&
-    typeof value.tabId === 'number'
-  ) {
+  if (value.type === 'comp:open-side-panel' && typeof value.tabId === 'number') {
     return {
       type: value.type,
       tabId: value.tabId,
@@ -121,10 +109,7 @@ export function parseBackgroundRequest(
     };
   }
 
-  if (
-    value.type === 'comp:set-active-org' &&
-    typeof value.organizationId === 'string'
-  ) {
+  if (value.type === 'comp:set-active-org' && typeof value.organizationId === 'string') {
     if (typeof value.tabId === 'number') {
       return {
         type: value.type,
@@ -218,9 +203,7 @@ export function parseBackgroundRequest(
   return null;
 }
 
-function parseSyncQuestionsRequest(
-  value: Record<string, unknown>,
-): BackgroundRequest | null {
+function parseSyncQuestionsRequest(value: Record<string, unknown>): BackgroundRequest | null {
   if (
     typeof value.url !== 'string' ||
     typeof value.host !== 'string' ||
@@ -229,9 +212,7 @@ function parseSyncQuestionsRequest(
   ) {
     return null;
   }
-  const sheetMapping = 'sheetMapping' in value
-    ? parseSheetMapping(value.sheetMapping)
-    : undefined;
+  const sheetMapping = 'sheetMapping' in value ? parseSheetMapping(value.sheetMapping) : undefined;
 
   return {
     type: 'comp:sync-questions',
@@ -244,9 +225,7 @@ function parseSyncQuestionsRequest(
   };
 }
 
-function parseQueueAction(
-  value: Record<string, unknown>,
-): BackgroundRequest | null {
+function parseQueueAction(value: Record<string, unknown>): BackgroundRequest | null {
   if (typeof value.tabId !== 'number') return null;
 
   if (
@@ -268,10 +247,7 @@ function parseQueueAction(
     return { type: value.type, tabId: value.tabId };
   }
 
-  if (
-    value.type === 'comp:prepare-sheet-paste' ||
-    value.type === 'comp:insert-sheet-api'
-  ) {
+  if (value.type === 'comp:prepare-sheet-paste' || value.type === 'comp:insert-sheet-api') {
     return {
       type: value.type,
       tabId: value.tabId,

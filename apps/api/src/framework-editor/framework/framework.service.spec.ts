@@ -37,16 +37,18 @@ describe('FrameworkEditorFrameworkService.linkControl', () => {
   beforeEach(() => {
     service = new FrameworkEditorFrameworkService();
     jest.clearAllMocks();
-    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue({
-      id: 'frk_1',
-      requirements: [],
-    });
-    (mockDb.frameworkEditorRequirement.findMany as jest.Mock).mockResolvedValue([
-      { id: 'req_1' },
-      { id: 'req_2' },
-      { id: 'req_3' },
-    ]);
-    (mockDb.frameworkEditorControlTemplate.update as jest.Mock).mockResolvedValue({
+    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue(
+      {
+        id: 'frk_1',
+        requirements: [],
+      },
+    );
+    (mockDb.frameworkEditorRequirement.findMany as jest.Mock).mockResolvedValue(
+      [{ id: 'req_1' }, { id: 'req_2' }, { id: 'req_3' }],
+    );
+    (
+      mockDb.frameworkEditorControlTemplate.update as jest.Mock
+    ).mockResolvedValue({
       id: 'ct_1',
     });
   });
@@ -66,7 +68,9 @@ describe('FrameworkEditorFrameworkService.linkControl', () => {
     expect(mockDb.frameworkEditorControlTemplate.update).toHaveBeenCalledWith({
       where: { id: 'ct_1' },
       data: {
-        requirements: { connect: [{ id: 'req_1' }, { id: 'req_2' }, { id: 'req_3' }] },
+        requirements: {
+          connect: [{ id: 'req_1' }, { id: 'req_2' }, { id: 'req_3' }],
+        },
       },
     });
   });
@@ -78,7 +82,9 @@ describe('FrameworkEditorFrameworkService.linkControl', () => {
     expect(mockDb.frameworkEditorControlTemplate.update).toHaveBeenCalledWith({
       where: { id: 'ct_1' },
       data: {
-        requirements: { connect: [{ id: 'req_1' }, { id: 'req_2' }, { id: 'req_3' }] },
+        requirements: {
+          connect: [{ id: 'req_1' }, { id: 'req_2' }, { id: 'req_3' }],
+        },
       },
     });
   });
@@ -91,7 +97,9 @@ describe('FrameworkEditorFrameworkService.linkControl', () => {
   });
 
   it('throws when the framework has no requirements at all', async () => {
-    (mockDb.frameworkEditorRequirement.findMany as jest.Mock).mockResolvedValue([]);
+    (mockDb.frameworkEditorRequirement.findMany as jest.Mock).mockResolvedValue(
+      [],
+    );
 
     await expect(service.linkControl('frk_1', 'ct_1')).rejects.toBeInstanceOf(
       ConflictException,
@@ -106,9 +114,11 @@ describe('FrameworkEditorFrameworkService.delete (FRAME-13)', () => {
   beforeEach(() => {
     service = new FrameworkEditorFrameworkService();
     jest.clearAllMocks();
-    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue({
-      id: 'frk_1',
-    });
+    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue(
+      {
+        id: 'frk_1',
+      },
+    );
   });
 
   it('deletes instances, timeline templates, versions, requirements, then the framework — in that order', async () => {
@@ -136,20 +146,26 @@ describe('FrameworkEditorFrameworkService.delete (FRAME-13)', () => {
     // FrameworkInstance.currentVersionId -> FrameworkVersion); then timeline
     // templates and versions; requirements before the framework itself.
     const order = [
-      (mockDb.frameworkInstance.deleteMany as jest.Mock).mock.invocationCallOrder[0],
-      (mockDb.timelineTemplate.deleteMany as jest.Mock).mock.invocationCallOrder[0],
-      (mockDb.frameworkVersion.deleteMany as jest.Mock).mock.invocationCallOrder[0],
+      (mockDb.frameworkInstance.deleteMany as jest.Mock).mock
+        .invocationCallOrder[0],
+      (mockDb.timelineTemplate.deleteMany as jest.Mock).mock
+        .invocationCallOrder[0],
+      (mockDb.frameworkVersion.deleteMany as jest.Mock).mock
+        .invocationCallOrder[0],
       (mockDb.frameworkEditorRequirement.deleteMany as jest.Mock).mock
         .invocationCallOrder[0],
-      (mockDb.frameworkEditorFramework.delete as jest.Mock).mock.invocationCallOrder[0],
+      (mockDb.frameworkEditorFramework.delete as jest.Mock).mock
+        .invocationCallOrder[0],
     ];
     expect(order).toEqual([...order].sort((a, b) => a - b));
     // Timeline templates must be removed AFTER instances (their TimelineInstances
     // cascade-delete with the instance, freeing the templateId Restrict FK).
     expect(
-      (mockDb.timelineTemplate.deleteMany as jest.Mock).mock.invocationCallOrder[0],
+      (mockDb.timelineTemplate.deleteMany as jest.Mock).mock
+        .invocationCallOrder[0],
     ).toBeGreaterThan(
-      (mockDb.frameworkInstance.deleteMany as jest.Mock).mock.invocationCallOrder[0],
+      (mockDb.frameworkInstance.deleteMany as jest.Mock).mock
+        .invocationCallOrder[0],
     );
   });
 
@@ -165,6 +181,8 @@ describe('FrameworkEditorFrameworkService.delete (FRAME-13)', () => {
     );
     (mockDb.$transaction as jest.Mock).mockRejectedValueOnce(fkError);
 
-    await expect(service.delete('frk_1')).rejects.toBeInstanceOf(ConflictException);
+    await expect(service.delete('frk_1')).rejects.toBeInstanceOf(
+      ConflictException,
+    );
   });
 });

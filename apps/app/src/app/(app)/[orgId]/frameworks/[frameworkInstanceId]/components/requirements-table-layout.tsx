@@ -20,7 +20,12 @@ const REQUIREMENTS_TABLE_COLUMNS = [
   { id: 'controls', label: 'controlsTable.columnControls', width: '7%' },
   { id: 'policies', label: 'controlsTable.columnPolicies', width: '6.5%' },
   { id: 'tasks', label: 'controlsTable.columnTasks', width: '5.5%' },
-  { id: 'documents', label: 'controlsTable.columnDocs', title: 'controlsTable.columnDocuments', width: '6%' },
+  {
+    id: 'documents',
+    label: 'controlsTable.columnDocs',
+    title: 'controlsTable.columnDocuments',
+    width: '6%',
+  },
 ] as const satisfies readonly RequirementsTableColumn[];
 
 export const REQUIREMENTS_TABLE_COLUMN_COUNT = REQUIREMENTS_TABLE_COLUMNS.length;

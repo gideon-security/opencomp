@@ -27,13 +27,6 @@ export function parseDetectedQuestion(value: unknown): DetectedQuestion[] {
   ];
 }
 
-export function isQuestionnaireSurface(
-  value: unknown,
-): value is QuestionnaireSurface {
-  return (
-    value === 'generic' ||
-    value === 'docs' ||
-    value === 'sheets' ||
-    value === 'forms'
-  );
+export function isQuestionnaireSurface(value: unknown): value is QuestionnaireSurface {
+  return value === 'generic' || value === 'docs' || value === 'sheets' || value === 'forms';
 }

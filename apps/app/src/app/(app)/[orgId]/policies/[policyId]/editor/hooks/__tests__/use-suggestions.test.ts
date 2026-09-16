@@ -1,5 +1,5 @@
-import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { act, renderHook } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { SuggestionRange } from '../../lib/suggestion-types';
 
 // --- Module mocks ---
@@ -75,7 +75,17 @@ function makeMockEditor({ editable = true }: { editable?: boolean } = {}) {
       })),
     },
     // expose internals for inspection
-    _mocks: { dispatch, setMeta, deleteRange, replaceWith, insertFn, nodeFromJSON, on, off, setEditable },
+    _mocks: {
+      dispatch,
+      setMeta,
+      deleteRange,
+      replaceWith,
+      insertFn,
+      nodeFromJSON,
+      on,
+      off,
+      setEditable,
+    },
   };
 }
 
@@ -105,7 +115,10 @@ describe('useSuggestions', () => {
     // giveFeedback() fires a real `fetch` — stub it so tests that only assert
     // the synchronous "loading" checkpoint don't leave a rejected/settled
     // promise updating state after the test ends (unwrapped act warning).
-    vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {})));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => new Promise(() => {})),
+    );
   });
 
   describe('when proposedMarkdown is null', () => {
@@ -333,10 +346,7 @@ describe('useSuggestions', () => {
         result.current.accept('suggestion-1-1');
       });
 
-      expect(editor._mocks.insertFn).toHaveBeenCalledWith(
-        range.to,
-        expect.anything(),
-      );
+      expect(editor._mocks.insertFn).toHaveBeenCalledWith(range.to, expect.anything());
     });
 
     it('does not modify doc when range is not pending', () => {
@@ -599,8 +609,20 @@ describe('useSuggestions', () => {
 
     it('applies pending ranges in reverse doc order', () => {
       const ranges = [
-        makeSuggestionRange({ id: 'suggestion-1-1', type: 'delete', decision: 'pending', from: 1, to: 13 }),
-        makeSuggestionRange({ id: 'suggestion-2-2', type: 'delete', decision: 'pending', from: 20, to: 35 }),
+        makeSuggestionRange({
+          id: 'suggestion-1-1',
+          type: 'delete',
+          decision: 'pending',
+          from: 1,
+          to: 13,
+        }),
+        makeSuggestionRange({
+          id: 'suggestion-2-2',
+          type: 'delete',
+          decision: 'pending',
+          from: 20,
+          to: 35,
+        }),
       ];
       vi.mocked(computeSuggestionRanges).mockReturnValue(ranges);
       const editor = makeMockEditor();
@@ -622,7 +644,7 @@ describe('useSuggestions', () => {
       const calls = editor._mocks.deleteRange.mock.calls;
       expect(calls).toHaveLength(2);
       expect(calls[0][0]).toBe(20); // higher position first
-      expect(calls[1][0]).toBe(1);  // lower position second
+      expect(calls[1][0]).toBe(1); // lower position second
     });
   });
 
@@ -698,9 +720,7 @@ describe('useSuggestions', () => {
     });
 
     it('does not dispatch doc-modifying transactions', () => {
-      const ranges = [
-        makeSuggestionRange({ id: 'suggestion-1-1', decision: 'pending' }),
-      ];
+      const ranges = [makeSuggestionRange({ id: 'suggestion-1-1', decision: 'pending' })];
       vi.mocked(computeSuggestionRanges).mockReturnValue(ranges);
       const editor = makeMockEditor();
 
@@ -860,7 +880,6 @@ describe('useSuggestions', () => {
 
       expect(result.current.editingRangeId).toBeNull();
     });
-
   });
 
   describe('resetLoading()', () => {
@@ -1044,9 +1063,7 @@ describe('useSuggestions', () => {
     });
 
     it('becomes false when dismissAll clears all ranges', () => {
-      const ranges = [
-        makeSuggestionRange({ id: 'suggestion-1-1', decision: 'rejected' }),
-      ];
+      const ranges = [makeSuggestionRange({ id: 'suggestion-1-1', decision: 'rejected' })];
       vi.mocked(computeSuggestionRanges).mockReturnValue(ranges);
       const editor = makeMockEditor();
 

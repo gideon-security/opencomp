@@ -3,12 +3,12 @@
 import { useApi } from '@/hooks/use-api';
 import { usePermissions } from '@/hooks/use-permissions';
 import { Button } from '@gideon-defender/ui/button';
+import { Card } from '@gideon-defender/ui/card';
 import { Input } from '@gideon-defender/ui/input';
 import { Textarea } from '@gideon-defender/ui/textarea';
-import { Card } from '@gideon-defender/ui/card';
+import { ChevronDown, ChevronUp, Loader2, Plus, Save, Trash2 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
-import { Plus, Trash2, ChevronUp, ChevronDown, Save, Loader2 } from 'lucide-react';
 import type { FaqItem } from '../types/faq';
 
 const normalizeFaqs = (items: FaqItem[]): FaqItem[] => {
@@ -36,9 +36,7 @@ export function TrustPortalFaqBuilder({
   const { put } = useApi();
   const { hasPermission } = usePermissions();
   const canUpdate = hasPermission('trust', 'update');
-  const [faqs, setFaqs] = useState<FaqItem[]>(() =>
-    normalizeFaqs(initialFaqs ?? []),
-  );
+  const [faqs, setFaqs] = useState<FaqItem[]>(() => normalizeFaqs(initialFaqs ?? []));
   const [isDirty, setIsDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -56,60 +54,44 @@ export function TrustPortalFaqBuilder({
     setIsDirty(true);
   }, []);
 
-  const handleUpdateFaq = useCallback(
-    (id: string, field: 'question' | 'answer', value: string) => {
-      setFaqs((prev) =>
-        prev.map((faq) => (faq.id === id ? { ...faq, [field]: value } : faq)),
-      );
+  const handleUpdateFaq = useCallback((id: string, field: 'question' | 'answer', value: string) => {
+    setFaqs((prev) => prev.map((faq) => (faq.id === id ? { ...faq, [field]: value } : faq)));
+    setIsDirty(true);
+  }, []);
+
+  const handleDeleteFaq = useCallback((id: string) => {
+    setFaqs((prev) =>
+      prev.filter((faq) => faq.id !== id).map((faq, index) => ({ ...faq, order: index })),
+    );
+    setIsDirty(true);
+  }, []);
+
+  const handleMoveUp = useCallback((index: number) => {
+    if (index === 0) return;
+    setFaqs((prev) => {
+      const updated = [...prev];
+      [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
+      return updated.map((faq, i) => ({ ...faq, order: i }));
+    });
+    setIsDirty(true);
+  }, []);
+
+  const handleMoveDown = useCallback((index: number) => {
+    let didMove = false;
+
+    setFaqs((prev) => {
+      if (index === prev.length - 1) return prev;
+      didMove = true;
+      const updated = [...prev];
+      [updated[index], updated[index + 1]] = [updated[index + 1], updated[index]];
+      return updated.map((faq, i) => ({ ...faq, order: i }));
+    });
+
+    // Only mark dirty if something actually changed.
+    if (didMove) {
       setIsDirty(true);
-    },
-    [],
-  );
-
-  const handleDeleteFaq = useCallback(
-    (id: string) => {
-      setFaqs((prev) =>
-        prev
-          .filter((faq) => faq.id !== id)
-          .map((faq, index) => ({ ...faq, order: index })),
-      );
-      setIsDirty(true);
-    },
-    [],
-  );
-
-  const handleMoveUp = useCallback(
-    (index: number) => {
-      if (index === 0) return;
-      setFaqs((prev) => {
-        const updated = [...prev];
-        [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
-        return updated.map((faq, i) => ({ ...faq, order: i }));
-      });
-      setIsDirty(true);
-    },
-    [],
-  );
-
-  const handleMoveDown = useCallback(
-    (index: number) => {
-      let didMove = false;
-
-      setFaqs((prev) => {
-        if (index === prev.length - 1) return prev;
-        didMove = true;
-        const updated = [...prev];
-        [updated[index], updated[index + 1]] = [updated[index + 1], updated[index]];
-        return updated.map((faq, i) => ({ ...faq, order: i }));
-      });
-
-      // Only mark dirty if something actually changed.
-      if (didMove) {
-        setIsDirty(true);
-      }
-    },
-    [],
-  );
+    }
+  }, []);
 
   const handleSave = useCallback(async () => {
     // Filter out FAQs where both question and answer are empty (draft FAQs)
@@ -153,9 +135,7 @@ export function TrustPortalFaqBuilder({
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-medium">Frequently Asked Questions</h3>
           {faqs.length > 0 && (
-            <span className="text-xs text-muted-foreground">
-              ({faqs.length})
-            </span>
+            <span className="text-xs text-muted-foreground">({faqs.length})</span>
           )}
         </div>
         {canUpdate && (
@@ -252,9 +232,7 @@ export function TrustPortalFaqBuilder({
                     )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">
-                      Answer
-                    </label>
+                    <label className="text-xs font-medium text-muted-foreground">Answer</label>
                     <Textarea
                       value={faq.answer}
                       onChange={(e) => handleUpdateFaq(faq.id, 'answer', e.target.value)}
@@ -291,8 +269,6 @@ export function TrustPortalFaqBuilder({
           ))
         )}
       </div>
-
     </div>
   );
 }
-

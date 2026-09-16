@@ -1,7 +1,7 @@
 'use client';
 
-import { Badge } from '@gideon-defender/ui/badge';
 import { usePermissions } from '@/hooks/use-permissions';
+import { Badge } from '@gideon-defender/ui/badge';
 import { Button, HStack, Stack, Text } from '@trycompai/design-system';
 import { Add, Close } from '@trycompai/design-system/icons';
 import { Loader2 } from 'lucide-react';
@@ -39,18 +39,23 @@ export function TaskItemsHeader({
     <div className="flex items-start justify-between gap-4">
       <Stack gap="xs">
         <HStack gap="sm" align="center">
-          <Text size="lg" weight="semibold">{title}</Text>
+          <Text size="lg" weight="semibold">
+            {title}
+          </Text>
           {statsLoading ? (
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
           ) : (
-            stats && stats.total > 0 && (
+            stats &&
+            stats.total > 0 && (
               <Badge variant="secondary" className="tabular-nums">
                 {stats.total}
               </Badge>
             )
           )}
         </HStack>
-        <Text size="sm" variant="muted">{description}</Text>
+        <Text size="sm" variant="muted">
+          {description}
+        </Text>
         {!statsLoading && stats && stats.total > 0 && (
           <div className="flex items-center gap-3 mt-1 flex-wrap">
             {stats.byStatus.todo > 0 && (

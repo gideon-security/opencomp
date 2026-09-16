@@ -21,10 +21,16 @@ function adminTimelineUrl(orgId: string) {
  * syntax like `<url|text>` or rendering as unintended markup.
  */
 function escapeMrkdwn(text: string): string {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
-async function sendSlack(blocks: unknown[], fallbackText: string): Promise<void> {
+async function sendSlack(
+  blocks: unknown[],
+  fallbackText: string,
+): Promise<void> {
   const webhookUrl = process.env.SLACK_CX_WEBHOOK_URL;
   if (!webhookUrl) return;
   try {
@@ -79,9 +85,11 @@ export function notifyReadyForReview({
       section(`:bell:  *Ready for Review*`),
       section(
         `*<${link}|${safeOrg}>*  (\`${orgId}\`)\n` +
-        `Marked *${safePhase}* as ready  ·  _${safeFramework}_`,
+          `Marked *${safePhase}* as ready  ·  _${safeFramework}_`,
       ),
-      context(':arrow_right:  Customer is waiting for CX to begin the next phase'),
+      context(
+        ':arrow_right:  Customer is waiting for CX to begin the next phase',
+      ),
       divider(),
     ],
     `${orgName} - ${frameworkName}: ${phaseName} ready for review`,
@@ -102,12 +110,17 @@ export function notifyPhaseCompleted({
   completionType: string;
 }): Promise<void> {
   const typeLabel =
-    completionType === 'AUTO_TASKS' ? ':clipboard:  All evidence tasks completed' :
-    completionType === 'AUTO_POLICIES' ? ':page_facing_up:  All policies published' :
-    completionType === 'AUTO_PEOPLE' ? ':busts_in_silhouette:  All employees compliant' :
-    completionType === 'AUTO_FINDINGS' ? ':mag:  All auditor findings resolved' :
-    completionType === 'AUTO_UPLOAD' ? ':paperclip:  Document uploaded' :
-    ':pencil:  Manually completed';
+    completionType === 'AUTO_TASKS'
+      ? ':clipboard:  All evidence tasks completed'
+      : completionType === 'AUTO_POLICIES'
+        ? ':page_facing_up:  All policies published'
+        : completionType === 'AUTO_PEOPLE'
+          ? ':busts_in_silhouette:  All employees compliant'
+          : completionType === 'AUTO_FINDINGS'
+            ? ':mag:  All auditor findings resolved'
+            : completionType === 'AUTO_UPLOAD'
+              ? ':paperclip:  Document uploaded'
+              : ':pencil:  Manually completed';
 
   const link = adminTimelineUrl(orgId);
   const safeOrg = escapeMrkdwn(orgName);
@@ -118,7 +131,7 @@ export function notifyPhaseCompleted({
       section(`:white_check_mark:  *Phase Completed*`),
       section(
         `*<${link}|${safeOrg}>*  (\`${orgId}\`)\n` +
-        `Phase: *${safePhase}*  ·  _${safeFramework}_`,
+          `Phase: *${safePhase}*  ·  _${safeFramework}_`,
       ),
       context(typeLabel),
       divider(),

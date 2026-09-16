@@ -35,8 +35,7 @@ const initialData: EmployeeSyncConnectionsData = {
   ],
 };
 
-const ENDPOINT =
-  '/v1/integrations/sync/employee-sync-provider?organizationId=org_1';
+const ENDPOINT = '/v1/integrations/sync/employee-sync-provider?organizationId=org_1';
 
 describe('useEmployeeSync.setSyncProvider', () => {
   beforeEach(() => {
@@ -44,9 +43,7 @@ describe('useEmployeeSync.setSyncProvider', () => {
   });
 
   it('turns off auto-sync by POSTing provider: null and confirms to the user', async () => {
-    const { result } = renderHook(() =>
-      useEmployeeSync({ organizationId: 'org_1', initialData }),
-    );
+    const { result } = renderHook(() => useEmployeeSync({ organizationId: 'org_1', initialData }));
 
     await act(async () => {
       await result.current.setSyncProvider(null);
@@ -57,9 +54,7 @@ describe('useEmployeeSync.setSyncProvider', () => {
   });
 
   it('selects a provider by POSTing its slug', async () => {
-    const { result } = renderHook(() =>
-      useEmployeeSync({ organizationId: 'org_1', initialData }),
-    );
+    const { result } = renderHook(() => useEmployeeSync({ organizationId: 'org_1', initialData }));
 
     await act(async () => {
       await result.current.setSyncProvider('entra-id');

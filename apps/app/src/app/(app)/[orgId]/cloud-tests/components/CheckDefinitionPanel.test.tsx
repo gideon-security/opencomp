@@ -29,9 +29,7 @@ describe('CheckDefinitionPanel', () => {
       isLoading: true,
     });
     render(<CheckDefinitionPanel findingId="icx_abc" />);
-    expect(
-      screen.getByText(/Generating check description/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Generating check description/i)).toBeInTheDocument();
   });
 
   it('renders all Tier 3 fields when the AI/provider responds successfully', () => {
@@ -42,12 +40,9 @@ describe('CheckDefinitionPanel', () => {
             title: 'IAM password policy enforces 14+ character minimum',
             description:
               'Verifies that the AWS account password policy requires user passwords to be at least 14 characters long.',
-            passCriteria:
-              'Password policy exists AND MinimumPasswordLength >= 14',
-            failCriteria:
-              'No password policy OR MinimumPasswordLength < 14',
-            whyItMatters:
-              'Short passwords are vulnerable to brute force attacks.',
+            passCriteria: 'Password policy exists AND MinimumPasswordLength >= 14',
+            failCriteria: 'No password policy OR MinimumPasswordLength < 14',
+            whyItMatters: 'Short passwords are vulnerable to brute force attacks.',
             source: 'ai',
           },
         },
@@ -61,9 +56,7 @@ describe('CheckDefinitionPanel', () => {
     expect(screen.getByText('Pass criteria')).toBeInTheDocument();
     expect(screen.getByText('Fail criteria')).toBeInTheDocument();
     expect(screen.getByText('Why it matters')).toBeInTheDocument();
-    expect(
-      screen.getByText(/at least 14 characters long/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/at least 14 characters long/i)).toBeInTheDocument();
   });
 
   it('renders nothing when fetch errors (graceful degrade)', () => {

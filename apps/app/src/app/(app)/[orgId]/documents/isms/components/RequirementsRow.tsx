@@ -1,14 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Field,
-  FieldError,
-  Heading,
-  Input,
-  Stack,
-  Textarea,
-} from '@trycompai/design-system';
+import { Field, FieldError, Heading, Input, Stack, Textarea } from '@trycompai/design-system';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import type { IsmsInterestedPartyRequirement } from '../isms-types';
@@ -112,7 +105,9 @@ export function RequirementsRow({ requirement, canEdit, onSave, onDelete }: Requ
   if (isEditing) {
     return (
       <IsmsRegisterCard
-        header={<IsmsSourceBadge source={requirement.source} derivedFrom={requirement.derivedFrom} />}
+        header={
+          <IsmsSourceBadge source={requirement.source} derivedFrom={requirement.derivedFrom} />
+        }
         headerEnd={actions}
       >
         <Stack gap="3">

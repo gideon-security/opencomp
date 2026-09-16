@@ -26,9 +26,7 @@ const testStatus = {
 };
 
 export async function TestsByAssignee({ organizationId }: Props) {
-  const res = await serverApi.get<{ data: UserTestStats[] }>(
-    '/v1/people/test-stats/by-assignee',
-  );
+  const res = await serverApi.get<{ data: UserTestStats[] }>('/v1/people/test-stats/by-assignee');
   const stats = Array.isArray(res.data?.data) ? res.data.data : [];
   stats.sort((a, b) => b.totalTests - a.totalTests);
 
@@ -83,7 +81,14 @@ function TestBarChart({ stat }: { stat: UserTestStats }) {
       ? [{ key: 'failed', value: stat.failedTests, color: testStatus.failed, label: 'failed' }]
       : []),
     ...(stat.unsupportedTests > 0
-      ? [{ key: 'unsupported', value: stat.unsupportedTests, color: testStatus.unsupported, label: 'unsupported' }]
+      ? [
+          {
+            key: 'unsupported',
+            value: stat.unsupportedTests,
+            color: testStatus.unsupported,
+            label: 'unsupported',
+          },
+        ]
       : []),
   ];
 

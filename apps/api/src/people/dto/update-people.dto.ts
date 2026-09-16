@@ -70,7 +70,8 @@ export class UpdatePeopleDto extends PartialType(CreatePeopleDto) {
   @ApiProperty({
     description:
       'Free-text justification for the exemption, attached to the audit log. Cleared when the member becomes non-exempt.',
-    example: 'Contractor with existing background check on file from staffing agency.',
+    example:
+      'Contractor with existing background check on file from staffing agency.',
     required: false,
   })
   @IsOptional()

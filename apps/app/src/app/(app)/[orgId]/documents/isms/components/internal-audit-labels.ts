@@ -1,6 +1,6 @@
 import type { useTranslations } from 'next-intl';
-import type { IsmsAudit } from '../isms-types';
 import type {
+  IsmsAudit,
   IsmsAuditConclusionVerdict,
   IsmsAuditControlResult,
   IsmsAuditFindingStatus,
@@ -134,7 +134,5 @@ export function auditValidationMessages(
   }
   return audits
     .filter((audit) => audit.status === 'complete' && !audit.conclusionVerdict)
-    .map((audit) =>
-      t('internalAuditValidation.missingVerdict', { reference: audit.reference }),
-    );
+    .map((audit) => t('internalAuditValidation.missingVerdict', { reference: audit.reference }));
 }

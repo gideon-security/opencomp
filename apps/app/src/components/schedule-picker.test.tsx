@@ -43,13 +43,7 @@ vi.mock('@gideon-defender/ui/select', () => ({
     );
   },
   SelectContent: ({ children }: { children: ReactNode }) => <div>{children}</div>,
-  SelectValue: ({
-    placeholder,
-    children,
-  }: {
-    placeholder?: string;
-    children?: ReactNode;
-  }) => {
+  SelectValue: ({ placeholder, children }: { placeholder?: string; children?: ReactNode }) => {
     const { value } = useMockSelect();
     // Mirror the real Radix behavior: render `children` (the label) when
     // `value` is set, otherwise the placeholder.

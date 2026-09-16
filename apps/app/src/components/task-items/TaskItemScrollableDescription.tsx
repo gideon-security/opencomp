@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { TaskItemDescriptionView } from './TaskItemDescriptionView';
 
 interface TaskItemScrollableDescriptionProps {
@@ -92,5 +92,3 @@ export function TaskItemScrollableDescription({
     </div>
   );
 }
-
-

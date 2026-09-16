@@ -51,10 +51,7 @@ export function MoveFrameworkDialog({
     }
   }, [isOpen]);
 
-  const familyNameById = useMemo(
-    () => new Map(families.map((f) => [f.id, f.name])),
-    [families],
-  );
+  const familyNameById = useMemo(() => new Map(families.map((f) => [f.id, f.name])), [families]);
 
   const toggle = (id: string) =>
     setSelected((prev) => {
@@ -109,10 +106,7 @@ export function MoveFrameworkDialog({
                     key={fw.id}
                     className="hover:bg-muted/40 flex cursor-pointer items-center gap-2 border-b px-3 py-2 last:border-0"
                   >
-                    <Checkbox
-                      checked={selected.has(fw.id)}
-                      onCheckedChange={() => toggle(fw.id)}
-                    />
+                    <Checkbox checked={selected.has(fw.id)} onCheckedChange={() => toggle(fw.id)} />
                     <span className="text-sm">{fw.name}</span>
                     <span className="text-muted-foreground ml-auto text-xs">
                       {fw.familyId ? (familyNameById.get(fw.familyId) ?? 'Unknown') : '/'}

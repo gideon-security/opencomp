@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
 import { PolicyStatus } from '@db';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Override next/navigation to include useParams
 vi.mock('next/navigation', () => ({
@@ -130,9 +130,7 @@ describe('PolicyVersionsTab', () => {
         />,
       );
 
-      expect(
-        screen.getByRole('button', { name: /create version/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /create version/i })).toBeInTheDocument();
     });
 
     it('renders the Version History heading', () => {
@@ -194,9 +192,7 @@ describe('PolicyVersionsTab', () => {
         />,
       );
 
-      expect(
-        screen.queryByRole('button', { name: /create version/i }),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /create version/i })).not.toBeInTheDocument();
     });
 
     it('renders a View button instead of dropdown for read-only user', () => {
@@ -210,9 +206,7 @@ describe('PolicyVersionsTab', () => {
       );
 
       // The read-only path shows a plain "View" button
-      expect(
-        screen.getByRole('button', { name: /view/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /view/i })).toBeInTheDocument();
     });
 
     it('still renders the version list', () => {
@@ -247,9 +241,7 @@ describe('PolicyVersionsTab', () => {
         />,
       );
 
-      expect(
-        screen.getByRole('button', { name: /create version/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /create version/i })).toBeInTheDocument();
     });
 
     it('renders a dropdown (because canUpdatePolicy is true)', () => {

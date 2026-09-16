@@ -1,13 +1,13 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
   NO_PERMISSIONS,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // ─── Mock usePermissions ─────────────────────────────────────
 
@@ -44,7 +44,8 @@ vi.mock('@/lib/api-client', () => ({
 // ─── Mock design system ──────────────────────────────────────
 
 vi.mock('@trycompai/design-system', () => ({
-  AlertDialog: ({ children, open }: any) => (open ? <div data-testid="alert-dialog">{children}</div> : null),
+  AlertDialog: ({ children, open }: any) =>
+    open ? <div data-testid="alert-dialog">{children}</div> : null,
   AlertDialogCancel: ({ children }: any) => <button>{children}</button>,
   AlertDialogContent: ({ children }: any) => <div>{children}</div>,
   AlertDialogDescription: ({ children }: any) => <p>{children}</p>,
@@ -52,15 +53,23 @@ vi.mock('@trycompai/design-system', () => ({
   AlertDialogHeader: ({ children }: any) => <div>{children}</div>,
   AlertDialogTitle: ({ children }: any) => <h2>{children}</h2>,
   Badge: ({ children }: any) => <span>{children}</span>,
-  Button: ({ children, iconLeft, iconRight, loading, variant, size, width, asChild, ...props }: any) => (
-    <button {...props}>{children}</button>
-  ),
+  Button: ({
+    children,
+    iconLeft,
+    iconRight,
+    loading,
+    variant,
+    size,
+    width,
+    asChild,
+    ...props
+  }: any) => <button {...props}>{children}</button>,
   DropdownMenu: ({ children }: any) => <div>{children}</div>,
   DropdownMenuContent: ({ children }: any) => <div>{children}</div>,
-  DropdownMenuItem: ({ children, onClick }: any) => (
-    <button onClick={onClick}>{children}</button>
+  DropdownMenuItem: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
+  DropdownMenuTrigger: ({ children }: any) => (
+    <button data-testid="dropdown-trigger">{children}</button>
   ),
-  DropdownMenuTrigger: ({ children }: any) => <button data-testid="dropdown-trigger">{children}</button>,
   Empty: ({ children }: any) => <div>{children}</div>,
   EmptyDescription: ({ children }: any) => <p>{children}</p>,
   EmptyHeader: ({ children }: any) => <div>{children}</div>,
@@ -104,9 +113,7 @@ vi.mock('@trycompai/design-system/icons', () => ({
 // ─── Mock submission-utils ───────────────────────────────────
 
 vi.mock('./submission-utils', () => ({
-  StatusBadge: ({ status }: { status: string }) => (
-    <span data-testid="status-badge">{status}</span>
-  ),
+  StatusBadge: ({ status }: { status: string }) => <span data-testid="status-badge">{status}</span>,
   formatSubmissionDate: () => '01/01/2025',
 }));
 
@@ -142,34 +149,19 @@ describe('CompanyFormPageClient', () => {
     });
 
     it('renders the New Submission button when user has evidence:create', () => {
-      render(
-        <CompanyFormPageClient
-          organizationId="org-1"
-          formType="access-request"
-        />,
-      );
+      render(<CompanyFormPageClient organizationId="org-1" formType="access-request" />);
 
       expect(screen.getByText('companyForm.newSubmission')).toBeInTheDocument();
     });
 
     it('renders the Export CSV button when user has evidence:read', () => {
-      render(
-        <CompanyFormPageClient
-          organizationId="org-1"
-          formType="access-request"
-        />,
-      );
+      render(<CompanyFormPageClient organizationId="org-1" formType="access-request" />);
 
       expect(screen.getByText('companyForm.exportCsv')).toBeInTheDocument();
     });
 
     it('checks evidence:create and evidence:read permissions', () => {
-      render(
-        <CompanyFormPageClient
-          organizationId="org-1"
-          formType="access-request"
-        />,
-      );
+      render(<CompanyFormPageClient organizationId="org-1" formType="access-request" />);
 
       expect(mockHasPermission).toHaveBeenCalledWith('evidence', 'create');
       expect(mockHasPermission).toHaveBeenCalledWith('evidence', 'read');
@@ -182,28 +174,16 @@ describe('CompanyFormPageClient', () => {
     });
 
     it('hides New Submission button when user lacks evidence:create', () => {
-      render(
-        <CompanyFormPageClient
-          organizationId="org-1"
-          formType="access-request"
-        />,
-      );
+      render(<CompanyFormPageClient organizationId="org-1" formType="access-request" />);
 
       const hasCreate = mockHasPermission('evidence', 'create');
       if (!hasCreate) {
-        expect(
-          screen.queryByText('companyForm.newSubmission'),
-        ).not.toBeInTheDocument();
+        expect(screen.queryByText('companyForm.newSubmission')).not.toBeInTheDocument();
       }
     });
 
     it('shows Export CSV when auditor has evidence:read', () => {
-      render(
-        <CompanyFormPageClient
-          organizationId="org-1"
-          formType="access-request"
-        />,
-      );
+      render(<CompanyFormPageClient organizationId="org-1" formType="access-request" />);
 
       const hasRead = mockHasPermission('evidence', 'read');
       if (hasRead) {
@@ -218,36 +198,19 @@ describe('CompanyFormPageClient', () => {
     });
 
     it('hides New Submission button without evidence:create', () => {
-      render(
-        <CompanyFormPageClient
-          organizationId="org-1"
-          formType="access-request"
-        />,
-      );
+      render(<CompanyFormPageClient organizationId="org-1" formType="access-request" />);
 
-      expect(
-        screen.queryByText('companyForm.newSubmission'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText('companyForm.newSubmission')).not.toBeInTheDocument();
     });
 
     it('hides Export CSV button without evidence:read', () => {
-      render(
-        <CompanyFormPageClient
-          organizationId="org-1"
-          formType="access-request"
-        />,
-      );
+      render(<CompanyFormPageClient organizationId="org-1" formType="access-request" />);
 
       expect(screen.queryByText('companyForm.exportCsv')).not.toBeInTheDocument();
     });
 
     it('still renders the page header', () => {
-      render(
-        <CompanyFormPageClient
-          organizationId="org-1"
-          formType="access-request"
-        />,
-      );
+      render(<CompanyFormPageClient organizationId="org-1" formType="access-request" />);
 
       expect(screen.getByTestId('page-header')).toBeInTheDocument();
     });

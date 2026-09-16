@@ -1,14 +1,14 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
 
 vi.mock('@/hooks/use-permissions', () => ({
@@ -93,9 +93,7 @@ describe('EditSecretDialog permission gating', () => {
 
   it('enables Update Secret button when user has organization:update permission', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(
-      <EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />,
-    );
+    render(<EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />);
 
     const updateButton = screen.getByRole('button', {
       name: /secrets\.editDialog\.submit/i,
@@ -105,9 +103,7 @@ describe('EditSecretDialog permission gating', () => {
 
   it('disables Update Secret button when user lacks organization:update permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
-    render(
-      <EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />,
-    );
+    render(<EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />);
 
     const updateButton = screen.getByRole('button', {
       name: /secrets\.editDialog\.submit/i,
@@ -117,9 +113,7 @@ describe('EditSecretDialog permission gating', () => {
 
   it('disables Update Secret button when user has no permissions', () => {
     setMockPermissions({});
-    render(
-      <EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />,
-    );
+    render(<EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />);
 
     const updateButton = screen.getByRole('button', {
       name: /secrets\.editDialog\.submit/i,
@@ -138,9 +132,7 @@ describe('EditSecretDialog permission gating', () => {
 
   it('displays Edit Secret title and secret name in form', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(
-      <EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />,
-    );
+    render(<EditSecretDialog secret={sampleSecret} open={true} onOpenChange={vi.fn()} />);
 
     expect(screen.getByText('secrets.editDialog.title')).toBeInTheDocument();
   });

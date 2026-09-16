@@ -106,9 +106,7 @@ export default async function SecurityQuestionnairePage() {
 
   // Derive hasPublishedPolicies
   const allPolicies = policiesResult.data?.data ?? [];
-  const publishedPolicies = allPolicies.filter(
-    (p) => p.status === 'published' && !p.isArchived,
-  );
+  const publishedPolicies = allPolicies.filter((p) => p.status === 'published' && !p.isArchived);
   const hasPublishedPolicies = publishedPolicies.length > 0;
 
   // Questionnaires list
@@ -118,12 +116,8 @@ export default async function SecurityQuestionnairePage() {
   const contextEntries = contextResult.data?.data ?? [];
 
   // Knowledge base data — these endpoints return arrays directly (no data wrapper)
-  const manualAnswers = Array.isArray(manualAnswersResult.data)
-    ? manualAnswersResult.data
-    : [];
-  const documents = Array.isArray(kbDocumentsResult.data)
-    ? kbDocumentsResult.data
-    : [];
+  const manualAnswers = Array.isArray(manualAnswersResult.data) ? manualAnswersResult.data : [];
+  const documents = Array.isArray(kbDocumentsResult.data) ? kbDocumentsResult.data : [];
 
   return (
     <QuestionnaireTabs

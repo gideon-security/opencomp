@@ -10,9 +10,7 @@ export async function getSelectedOrganizationId(): Promise<string | null> {
   return typeof value === 'string' && value.length > 0 ? value : null;
 }
 
-export async function setSelectedOrganizationId(
-  organizationId: string,
-): Promise<void> {
+export async function setSelectedOrganizationId(organizationId: string): Promise<void> {
   const trimmed = organizationId.trim();
   if (trimmed.length === 0) return;
   await browser.storage.local.set({ [SELECTED_ORG_KEY]: trimmed });

@@ -7,7 +7,13 @@ import {
 } from '@db';
 import type { Prisma } from '@db';
 import type { Task } from '@gideon-defender/trigger-local';
-import { logger, metadata, queue, schemaTask, tags } from '@gideon-defender/trigger-local';
+import {
+  logger,
+  metadata,
+  queue,
+  schemaTask,
+  tags,
+} from '@gideon-defender/trigger-local';
 import { z } from 'zod';
 
 import { resolveTaskCreatorAndAssignee } from './vendor-risk-assessment/assignee';

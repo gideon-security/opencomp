@@ -46,25 +46,13 @@ describe('selectMitigationCitations', () => {
       policies: [pol('P1')],
       gapHint: 'governance',
     });
-    expect(cites.map((c) => c.kind)).toEqual([
-      'control',
-      'task',
-      'policy',
-      'gap',
-      'gap',
-    ]);
+    expect(cites.map((c) => c.kind)).toEqual(['control', 'task', 'policy', 'gap', 'gap']);
   });
 
   it('limits tasks to 2 even when many are available', () => {
     const cites = selectMitigationCitations({
       linkedControls: [],
-      linkedTasks: [
-        tsk('T1'),
-        tsk('T2'),
-        tsk('T3'),
-        tsk('T4'),
-        tsk('T5'),
-      ],
+      linkedTasks: [tsk('T1'), tsk('T2'), tsk('T3'), tsk('T4'), tsk('T5')],
       policies: [],
       gapHint: 'governance',
     });

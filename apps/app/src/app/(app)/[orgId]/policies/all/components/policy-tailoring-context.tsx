@@ -17,14 +17,8 @@ interface PolicyTailoringProviderProps {
   children: React.ReactNode;
 }
 
-export function PolicyTailoringProvider({
-  statuses,
-  children,
-}: PolicyTailoringProviderProps) {
-  const getStatus = React.useCallback(
-    (policyId: string) => statuses[policyId],
-    [statuses],
-  );
+export function PolicyTailoringProvider({ statuses, children }: PolicyTailoringProviderProps) {
+  const getStatus = React.useCallback((policyId: string) => statuses[policyId], [statuses]);
 
   return (
     <PolicyTailoringContext.Provider value={{ getStatus }}>
@@ -42,4 +36,3 @@ export function usePolicyTailoringStatus(policyId: string) {
 
   return context.getStatus(policyId);
 }
-

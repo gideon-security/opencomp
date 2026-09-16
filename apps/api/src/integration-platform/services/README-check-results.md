@@ -19,10 +19,20 @@ the data — that's the feature's job.
 await checkResults.listSourcesBoundToTask(orgId, TASK_TEMPLATES.twoFactorAuth);
 
 // full results of a check's latest real run for one connection
-await checkResults.getLatestResultsByCheck({ organizationId, connectionId, checkId, resourceType });
+await checkResults.getLatestResultsByCheck({
+  organizationId,
+  connectionId,
+  checkId,
+  resourceType,
+});
 
 // results for a task-bound check from a chosen source (resolves task->check, slug->connection)
-await checkResults.getLatestResultsForTask({ organizationId, taskTemplateId, sourceSlug, resourceType });
+await checkResults.getLatestResultsForTask({
+  organizationId,
+  taskTemplateId,
+  sourceSlug,
+  resourceType,
+});
 ```
 
 Each row is `{ resourceId, resourceType, passed, title, description, evidence, collectedAt,

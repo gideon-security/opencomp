@@ -166,7 +166,10 @@ export async function loadRiskTreatmentExtras({
     vendors: vendors.map((vendor) => ({
       name: vendor.name,
       category: humanizeEnum(vendor.category),
-      inherentLevel: levelLabel(vendor.inherentProbability, vendor.inherentImpact),
+      inherentLevel: levelLabel(
+        vendor.inherentProbability,
+        vendor.inherentImpact,
+      ),
       treatment: humanizeEnum(vendor.treatmentStrategy),
       controls: vendor.treatmentStrategyDescription?.trim() || '—',
       ownerName: ownerName(vendor.assignee),

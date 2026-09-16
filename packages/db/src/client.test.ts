@@ -1,6 +1,6 @@
-import { describe, it, expect, afterEach } from 'vitest';
-import { resolveSslConfig } from './ssl-config';
+import { afterEach, describe, expect, it } from 'vitest';
 import { resolveConnectionString } from './client';
+import { resolveSslConfig } from './ssl-config';
 
 describe('resolveSslConfig', () => {
   it('returns undefined for localhost', () => {
@@ -26,14 +26,20 @@ describe('resolveSslConfig', () => {
   it('returns checkServerIdentity-noop for remote URLs (verified TLS via Node defaults)', () => {
     const result = resolveSslConfig('postgresql://u:p@db.prod.example.com:5432/x', {});
     expect(result).toBeDefined();
-    expect(typeof (result as { checkServerIdentity: unknown }).checkServerIdentity).toBe('function');
-    expect((result as { checkServerIdentity: () => undefined }).checkServerIdentity()).toBeUndefined();
+    expect(typeof (result as { checkServerIdentity: unknown }).checkServerIdentity).toBe(
+      'function',
+    );
+    expect(
+      (result as { checkServerIdentity: () => undefined }).checkServerIdentity(),
+    ).toBeUndefined();
   });
 
   it('treats malformed URLs as remote (defensive)', () => {
     const result = resolveSslConfig('not-a-valid-url', {});
     expect(result).toBeDefined();
-    expect(typeof (result as { checkServerIdentity: () => undefined }).checkServerIdentity).toBe('function');
+    expect(typeof (result as { checkServerIdentity: () => undefined }).checkServerIdentity).toBe(
+      'function',
+    );
   });
 });
 
@@ -50,9 +56,7 @@ describe('resolveConnectionString', () => {
       DATABASE_URL: 'postgres://owner@db/main',
       DATABASE_URL_TENANT: 'postgres://comp_app@db/main',
     };
-    expect(resolveConnectionString('DATABASE_URL_TENANT')).toBe(
-      'postgres://comp_app@db/main',
-    );
+    expect(resolveConnectionString('DATABASE_URL_TENANT')).toBe('postgres://comp_app@db/main');
   });
 
   it('falls back to DATABASE_URL when the dedicated URL is unset', () => {
@@ -61,8 +65,6 @@ describe('resolveConnectionString', () => {
       DATABASE_URL: 'postgres://owner@db/main',
       DATABASE_URL_TENANT: undefined,
     };
-    expect(resolveConnectionString('DATABASE_URL_TENANT')).toBe(
-      'postgres://owner@db/main',
-    );
+    expect(resolveConnectionString('DATABASE_URL_TENANT')).toBe('postgres://owner@db/main');
   });
 });

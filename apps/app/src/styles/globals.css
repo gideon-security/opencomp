@@ -1,6 +1,6 @@
 @import 'tailwindcss';
-@plugin "@tailwindcss/typography";
-@config "../../tailwind.config.ts";
+@plugin '@tailwindcss/typography';
+@config '../../tailwind.config.ts';
 
 html,
 body {

@@ -12,8 +12,5 @@ export function filterCertifications(
     return [];
   }
 
-  return certifications.filter(
-    (cert) => cert.type && cert.type.trim().length > 0,
-  );
+  return certifications.filter((cert) => cert.type && cert.type.trim().length > 0);
 }
-

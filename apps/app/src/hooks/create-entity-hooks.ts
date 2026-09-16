@@ -1,9 +1,9 @@
 'use client';
 
+import type { ApiResponse } from '@/lib/api-client';
 import { useCallback } from 'react';
 import { useApi } from './use-api';
 import { useApiSWR, UseApiSWROptions } from './use-api-swr';
-import type { ApiResponse } from '@/lib/api-client';
 
 // Default polling intervals
 export const DEFAULT_POLLING_INTERVAL = 5000;
@@ -19,7 +19,13 @@ export type SingleEntityOptions<EntityResponse> = UseApiSWROptions<EntityRespons
   initialData?: EntityResponse;
 };
 
-type CreateEntityHooksConfig<Entity extends { id: string }, ListResponse, CreateData, UpdateData, EntityResponse = Entity> = {
+type CreateEntityHooksConfig<
+  Entity extends { id: string },
+  ListResponse,
+  CreateData,
+  UpdateData,
+  EntityResponse = Entity,
+> = {
   basePath: string;
   defaultListInterval?: number;
   defaultItemInterval?: number;
@@ -43,20 +49,38 @@ export function createEntityHooks<
   UpdateData,
   EntityResponse extends Entity = Entity,
 >(config: CreateEntityHooksConfig<Entity, ListResponse, CreateData, UpdateData, EntityResponse>) {
-  const { basePath, defaultListInterval = DEFAULT_LIST_INTERVAL, defaultItemInterval = DEFAULT_POLLING_INTERVAL } = config;
+  const {
+    basePath,
+    defaultListInterval = DEFAULT_LIST_INTERVAL,
+    defaultItemInterval = DEFAULT_POLLING_INTERVAL,
+  } = config;
 
-  function useList(options: EntityHooksOptions<ListResponse> & { initialData?: unknown; buildEndpoint?: (q: unknown) => string } = {}) {
-    const { initialData, buildEndpoint, ...restOptions } = options as Record<string, unknown> & { buildEndpoint?: (q: unknown) => string };
+  function useList(
+    options: EntityHooksOptions<ListResponse> & {
+      initialData?: unknown;
+      buildEndpoint?: (q: unknown) => string;
+    } = {},
+  ) {
+    const { initialData, buildEndpoint, ...restOptions } = options as Record<string, unknown> & {
+      buildEndpoint?: (q: unknown) => string;
+    };
     // For simple list without query, allow custom endpoint via buildEndpoint or default basePath
-    const endpoint = typeof buildEndpoint === 'function' ? (buildEndpoint as (q: unknown) => string)(options) : basePath;
+    const endpoint =
+      typeof buildEndpoint === 'function'
+        ? (buildEndpoint as (q: unknown) => string)(options)
+        : basePath;
 
     return useApiSWR<ListResponse>(endpoint, {
       ...restOptions,
-      refreshInterval: (restOptions as { refreshInterval?: number }).refreshInterval ?? defaultListInterval,
+      refreshInterval:
+        (restOptions as { refreshInterval?: number }).refreshInterval ?? defaultListInterval,
       ...(initialData
         ? {
             fallbackData: {
-              data: { data: initialData, count: Array.isArray(initialData) ? (initialData as unknown[]).length : 0 } as unknown as ListResponse,
+              data: {
+                data: initialData,
+                count: Array.isArray(initialData) ? (initialData as unknown[]).length : 0,
+              } as unknown as ListResponse,
               status: 200,
             } as ApiResponse<ListResponse>,
           }
@@ -68,7 +92,8 @@ export function createEntityHooks<
     const { initialData, ...restOptions } = options;
     const swrResult = useApiSWR<EntityResponse>(id ? `${basePath}/${id}` : null, {
       ...restOptions,
-      refreshInterval: (restOptions as { refreshInterval?: number }).refreshInterval ?? defaultItemInterval,
+      refreshInterval:
+        (restOptions as { refreshInterval?: number }).refreshInterval ?? defaultItemInterval,
       refreshWhenHidden: false,
       ...(initialData
         ? {
@@ -117,7 +142,14 @@ export function createEntityHooks<
       [api],
     );
 
-    return { create, update, remove, createEntity: create, updateEntity: update, deleteEntity: remove };
+    return {
+      create,
+      update,
+      remove,
+      createEntity: create,
+      updateEntity: update,
+      deleteEntity: remove,
+    };
   }
 
   return { useList, useOne, useActions, useEntityActions: useActions };
@@ -131,11 +163,19 @@ export function createEntityHooks<
  * Keeps the existing consumer contract (`{ data: T[], isLoading, error, mutate }`)
  * while single-sourcing the SWR boilerplate.
  */
-export function createSimpleListHook<ListItem, ListResponse extends { data: ListItem[] }>(endpoint: string, defaultInterval = DEFAULT_LIST_INTERVAL) {
-  return function useSimpleList(options?: { initialData?: ListItem[] } & UseApiSWROptions<ListResponse>) {
-    const { initialData, ...restOptions } = (options ?? {}) as { initialData?: ListItem[] } & UseApiSWROptions<ListResponse>;
+export function createSimpleListHook<ListItem, ListResponse extends { data: ListItem[] }>(
+  endpoint: string,
+  defaultInterval = DEFAULT_LIST_INTERVAL,
+) {
+  return function useSimpleList(
+    options?: { initialData?: ListItem[] } & UseApiSWROptions<ListResponse>,
+  ) {
+    const { initialData, ...restOptions } = (options ?? {}) as {
+      initialData?: ListItem[];
+    } & UseApiSWROptions<ListResponse>;
     const swr = useApiSWR<ListResponse>(endpoint, {
-      refreshInterval: (restOptions as { refreshInterval?: number }).refreshInterval ?? defaultInterval,
+      refreshInterval:
+        (restOptions as { refreshInterval?: number }).refreshInterval ?? defaultInterval,
       revalidateOnFocus: false,
       ...(restOptions as object),
       ...(initialData
@@ -178,7 +218,12 @@ export function createLinkageActions(resource: string) {
     const response = await fetch(`${base}${path}`, {
       method: 'POST',
       credentials: 'include',
-      ...(body ? { headers: { 'Content-Type': 'application/json' } as Record<string, string>, body: JSON.stringify(body) } : {}),
+      ...(body
+        ? {
+            headers: { 'Content-Type': 'application/json' } as Record<string, string>,
+            body: JSON.stringify(body),
+          }
+        : {}),
     });
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
@@ -207,11 +252,14 @@ export function createLinkageActions(resource: string) {
     fetchActiveRun: async (id: string) => {
       const response = await fetch(`${base}/${id}/auto-link/active`, { credentials: 'include' });
       if (!response.ok) return null;
-      const body = (await response.json()) as { runId: string; publicAccessToken: string } | { runId: null };
+      const body = (await response.json()) as
+        { runId: string; publicAccessToken: string } | { runId: null };
       if (!body.runId) return null;
       return body as { runId: string; publicAccessToken: string };
     },
     discardRun: (id: string) =>
-      fetch(`${base}/${id}/auto-link/active`, { method: 'DELETE', credentials: 'include' }).catch(() => {}),
+      fetch(`${base}/${id}/auto-link/active`, { method: 'DELETE', credentials: 'include' }).catch(
+        () => {},
+      ),
   };
 }

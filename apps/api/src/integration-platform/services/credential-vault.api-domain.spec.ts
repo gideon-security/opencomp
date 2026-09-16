@@ -50,7 +50,9 @@ const buildService = () => {
     .spyOn(credentialRepository, 'create')
     .mockResolvedValue(makeCredentialVersion());
   jest.spyOn(credentialRepository, 'deleteOldVersions').mockResolvedValue(0);
-  jest.spyOn(connectionRepository, 'update').mockResolvedValue(makeConnection());
+  jest
+    .spyOn(connectionRepository, 'update')
+    .mockResolvedValue(makeConnection());
   const service = new CredentialVaultService(
     credentialRepository,
     connectionRepository,
@@ -80,7 +82,8 @@ describe('CredentialVaultService multi-DC api_domain handling', () => {
     });
 
     const createInput = createSpy.mock.calls[0]?.[0];
-    if (!createInput) throw new Error('Expected credential version to be created');
+    if (!createInput)
+      throw new Error('Expected credential version to be created');
 
     // Stored as a plaintext string (not encrypted) so the check runtime can
     // read it as ctx.credentials.api_domain and route to the right region.
@@ -107,7 +110,8 @@ describe('CredentialVaultService multi-DC api_domain handling', () => {
     });
 
     const createInput = createSpy.mock.calls[0]?.[0];
-    if (!createInput) throw new Error('Expected credential version to be created');
+    if (!createInput)
+      throw new Error('Expected credential version to be created');
 
     const payload = createInput.encryptedPayload as Record<string, unknown>;
     expect(payload.api_domain).toBe('https://www.zohoapis.in');
@@ -126,7 +130,8 @@ describe('CredentialVaultService multi-DC api_domain handling', () => {
     });
 
     const createInput = createSpy.mock.calls[0]?.[0];
-    if (!createInput) throw new Error('Expected credential version to be created');
+    if (!createInput)
+      throw new Error('Expected credential version to be created');
 
     expect(createInput.encryptedPayload).not.toHaveProperty('api_domain');
   });
@@ -147,7 +152,8 @@ describe('CredentialVaultService multi-DC api_domain handling', () => {
     ).resolves.toBeUndefined();
 
     const createInput = createSpy.mock.calls[0]?.[0];
-    if (!createInput) throw new Error('Expected credential version to be created');
+    if (!createInput)
+      throw new Error('Expected credential version to be created');
     expect(createInput.encryptedPayload).not.toHaveProperty('api_domain');
   });
 });

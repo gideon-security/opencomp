@@ -9,10 +9,7 @@ import {
 } from './ai-remediation.service';
 import { GcpRemediationService } from './gcp-remediation.service';
 import { AzureRemediationService } from './azure-remediation.service';
-import {
-  executePlanSteps,
-  validatePlanSteps,
-} from './aws-command-executor';
+import { executePlanSteps, validatePlanSteps } from './aws-command-executor';
 import {
   getAwsDefaultRegion,
   normalizeAwsPartition,
@@ -636,8 +633,7 @@ export class RemediationService {
           plan: plannedFix,
           validationErrors: fixErrors,
           finding: findingCtx,
-          syntheticErrorPrefix:
-            'Pre-execution validator rejected this step:',
+          syntheticErrorPrefix: 'Pre-execution validator rejected this step:',
         });
         fixErrors = validatePlanSteps(plannedFix.fixSteps);
       }
@@ -654,7 +650,10 @@ export class RemediationService {
       // Deterministically pin the CloudTrail log group on any PutMetricFilter
       // step from the finding evidence — the AI must never be the source of
       // truth for it (this is what failed for the customer before).
-      applyResolvedMetricFilterLogGroup(plannedFix.fixSteps, findingCtx.evidence);
+      applyResolvedMetricFilterLogGroup(
+        plannedFix.fixSteps,
+        findingCtx.evidence,
+      );
 
       // Phase 3: Execute the refined fix steps (now with REAL values).
       // Pass rollback steps for automatic undo on partial failure.
@@ -691,7 +690,9 @@ export class RemediationService {
         // payload). For all OTHER unrecoverable execution errors fall
         // back to manual steps so the customer sees real instructions
         // rather than the raw AWS message.
-        if (parseAwsPermissionError(fixResult.error.message).isPermissionError) {
+        if (
+          parseAwsPermissionError(fixResult.error.message).isPermissionError
+        ) {
           throw new Error(fixResult.error.message);
         }
         return await this.respondWithManualSteps({
@@ -741,8 +742,7 @@ export class RemediationService {
       // If permission error, build script with ALL needed permissions (not just the one that failed)
       // This prevents overwriting OpenComp-AutoFix with a partial list
       let permissionError:
-        | { missingActions: string[]; fixScript?: string }
-        | undefined;
+        { missingActions: string[]; fixScript?: string } | undefined;
       if (permissionInfo.isPermissionError && plan.fixSteps.length > 0) {
         try {
           const suggestion =

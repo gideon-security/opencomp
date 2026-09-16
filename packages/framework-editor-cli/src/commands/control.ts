@@ -85,7 +85,9 @@ export function registerControlCommands(parent: Command): void {
           description: opts.description,
         };
         if (opts.documentTypes) {
-          body.documentTypes = (opts.documentTypes as string).split(',').map((s: string) => s.trim());
+          body.documentTypes = (opts.documentTypes as string)
+            .split(',')
+            .map((s: string) => s.trim());
         }
         const data = await apiRequest<ControlTemplate>('/control-template', {
           method: 'POST',
@@ -116,7 +118,9 @@ export function registerControlCommands(parent: Command): void {
         if (opts.name !== undefined) body.name = opts.name;
         if (opts.description !== undefined) body.description = opts.description;
         if (opts.documentTypes) {
-          body.documentTypes = (opts.documentTypes as string).split(',').map((s: string) => s.trim());
+          body.documentTypes = (opts.documentTypes as string)
+            .split(',')
+            .map((s: string) => s.trim());
         }
         const data = await apiRequest<ControlTemplate>(`/control-template/${id}`, {
           method: 'PATCH',

@@ -63,7 +63,9 @@ describe('deriveRequirements', () => {
         wizardAnswers: { sectorRegulators: ['FCA', 'custom:Local Authority'] },
       },
     });
-    const regulatorRows = rows.filter((r) => r.derivedFrom === 'wizard:regulator');
+    const regulatorRows = rows.filter(
+      (r) => r.derivedFrom === 'wizard:regulator',
+    );
     expect(regulatorRows).toHaveLength(2);
     expect(regulatorRows.map((r) => r.partyName)).toEqual([
       'Regulator (FCA)',

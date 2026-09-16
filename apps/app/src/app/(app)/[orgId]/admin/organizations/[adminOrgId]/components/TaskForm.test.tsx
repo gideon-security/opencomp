@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -26,7 +26,9 @@ describe('TaskForm', () => {
 
     expect(screen.getByLabelText(/title/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'organizations.taskForm.submit' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'organizations.taskForm.submit' }),
+    ).toBeInTheDocument();
   });
 
   it('disables submit when required fields are empty', () => {
@@ -56,7 +58,9 @@ describe('TaskForm', () => {
       target: { value: 'Task description' },
     });
 
-    expect(screen.getByRole('button', { name: 'organizations.taskForm.submit' })).not.toBeDisabled();
+    expect(
+      screen.getByRole('button', { name: 'organizations.taskForm.submit' }),
+    ).not.toBeDisabled();
   });
 
   it('calls the API and onCreated on successful submit', async () => {
@@ -72,10 +76,10 @@ describe('TaskForm', () => {
     fireEvent.click(screen.getByRole('button', { name: 'organizations.taskForm.submit' }));
 
     await waitFor(() => {
-      expect(mockPost).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_1/tasks',
-        { title: 'Review Controls', description: 'Review all access controls' },
-      );
+      expect(mockPost).toHaveBeenCalledWith('/v1/admin/organizations/org_1/tasks', {
+        title: 'Review Controls',
+        description: 'Review all access controls',
+      });
     });
 
     expect(onCreated).toHaveBeenCalled();

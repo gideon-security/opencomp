@@ -60,9 +60,7 @@ const baseMember = {
 
 const noop = vi.fn();
 
-function renderMemberRow(
-  deviceStatus?: 'compliant' | 'non-compliant' | 'stale' | 'not-installed',
-) {
+function renderMemberRow(deviceStatus?: 'compliant' | 'non-compliant' | 'stale' | 'not-installed') {
   return render(
     <table>
       <tbody>

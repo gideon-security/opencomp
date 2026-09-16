@@ -1,6 +1,6 @@
 import { logger, metadata, queue, schemaTask } from '@gideon-defender/trigger-local';
-import { runOrDeferOnboardingWork } from '../../lib/onboarding-deferred';
 import { z } from 'zod';
+import { runOrDeferOnboardingWork } from '../../lib/onboarding-deferred';
 import { processPolicyUpdate } from './update-policies-helpers';
 
 export const updatePolicyQueue = queue({ name: 'update-policy', concurrencyLimit: 15 });
@@ -50,18 +50,17 @@ export const updatePolicy = schemaTask({
 
         const result = await processPolicyUpdate(params);
 
+        // Update parent metadata to track progress
+        if (metadata.parent) {
+          // Update this policy's status to completed using individual key
+          metadata.parent.set(`policy_${params.policyId}_status`, 'completed');
 
-      // Update parent metadata to track progress
-      if (metadata.parent) {
-        // Update this policy's status to completed using individual key
-        metadata.parent.set(`policy_${params.policyId}_status`, 'completed');
+          // Increment completed count
+          metadata.parent.increment('policiesCompleted', 1);
 
-        // Increment completed count
-        metadata.parent.increment('policiesCompleted', 1);
-
-        // Decrement remaining count
-        metadata.parent.increment('policiesRemaining', -1);
-      }
+          // Decrement remaining count
+          metadata.parent.increment('policiesRemaining', -1);
+        }
 
         logger.info(`Successfully updated policy ${params.policyId}`);
         return result;

@@ -46,9 +46,7 @@ export function use2faSource({
     isLoading: isLoadingSource,
     mutate: mutateSource,
   } = useSWR<{ provider: string | null }>(
-    enabled
-      ? `/v1/integrations/sync/two-factor-source?organizationId=${organizationId}`
-      : null,
+    enabled ? `/v1/integrations/sync/two-factor-source?organizationId=${organizationId}` : null,
     async (url: string) => {
       const res = await apiClient.get<{ provider: string | null }>(url);
       if (res.error) throw new Error(res.error);
@@ -62,9 +60,7 @@ export function use2faSource({
     error: availableError,
     isLoading: isLoadingAvailable,
   } = useSWR<{ providers: TwoFactorSourceProviderInfo[] }>(
-    enabled
-      ? `/v1/integrations/sync/available-2fa-sources?organizationId=${organizationId}`
-      : null,
+    enabled ? `/v1/integrations/sync/available-2fa-sources?organizationId=${organizationId}` : null,
     async (url: string) => {
       const res = await apiClient.get<{
         providers: TwoFactorSourceProviderInfo[];
@@ -76,9 +72,7 @@ export function use2faSource({
   );
 
   const selectedSource = sourceData?.provider ?? null;
-  const availableSources = Array.isArray(availableData?.providers)
-    ? availableData.providers
-    : [];
+  const availableSources = Array.isArray(availableData?.providers) ? availableData.providers : [];
 
   const setSource = async (provider: string | null): Promise<boolean> => {
     try {
@@ -94,8 +88,7 @@ export function use2faSource({
       mutateSource({ provider }, false);
 
       if (provider) {
-        const name =
-          availableSources.find((p) => p.slug === provider)?.name ?? provider;
+        const name = availableSources.find((p) => p.slug === provider)?.name ?? provider;
         toast.success(`${name} set as your 2FA source`);
       }
       return true;

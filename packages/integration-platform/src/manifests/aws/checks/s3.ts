@@ -4,19 +4,14 @@ import {
 } from '@aws-sdk/client-s3-control';
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
-import {
-  gatherBuckets,
-  regionalS3Clients,
-  type BpaFlags,
-  type S3BucketInfo,
-} from './s3-buckets';
+import { gatherBuckets, regionalS3Clients, type BpaFlags, type S3BucketInfo } from './s3-buckets';
 import {
   awsAccountIdFromCtx,
+  emitOutcomes,
   remediationForReadFailure,
   resolveAwsSessionOrFail,
   toReadFailure,
   type CheckOutcome,
-  emitOutcomes,
 } from './shared';
 
 export type { BpaFlags, S3BucketInfo } from './s3-buckets';
@@ -126,7 +121,8 @@ export function evaluateS3PublicAccess(
           resourceType: 'aws-s3-bucket',
           resourceId: b.name,
           severity: 'high',
-          remediation: 'Enable all four S3 Block Public Access settings on the bucket (or account).',
+          remediation:
+            'Enable all four S3 Block Public Access settings on the bucket (or account).',
           evidence: { bucket: b.name, bucketBpa: b.bucketBpa, accountBpa },
         };
   });
@@ -180,7 +176,8 @@ export const s3EncryptionCheck: IntegrationCheck = {
 export const s3PublicAccessCheck: IntegrationCheck = {
   id: 'aws-s3-public-access',
   name: 'S3 — public access blocked',
-  description: 'Verify all S3 buckets have S3 Block Public Access fully enabled (account or bucket level).',
+  description:
+    'Verify all S3 buckets have S3 Block Public Access fully enabled (account or bucket level).',
   service: 's3',
   taskMapping: TASK_TEMPLATES.productionFirewallNopublicaccessControls,
   run: async (ctx: CheckContext) => {

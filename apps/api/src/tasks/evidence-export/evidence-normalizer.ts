@@ -145,12 +145,7 @@ function normalizeResult(result: {
     title: result.title,
     description: result.description,
     severity: result.severity as
-      | 'info'
-      | 'low'
-      | 'medium'
-      | 'high'
-      | 'critical'
-      | null,
+      'info' | 'low' | 'medium' | 'high' | 'critical' | null,
     remediation: result.remediation,
     evidence: result.evidence,
     collectedAt: result.collectedAt,

@@ -189,7 +189,8 @@ export function parseAndProcessSOAAnswer(
       ? llmJustification
       : llmJustification && !isInsufficientDataAnswer(llmJustification)
         ? llmJustification
-        : (getInclusionJustification(closure) ?? DEFAULT_INCLUSION_JUSTIFICATION);
+        : (getInclusionJustification(closure) ??
+          DEFAULT_INCLUSION_JUSTIFICATION);
 
   send({
     type: 'answer',

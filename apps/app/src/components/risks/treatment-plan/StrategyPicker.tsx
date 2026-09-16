@@ -1,8 +1,8 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { RiskTreatmentType } from '@db';
 import type { CarbonIconType } from '@carbon/icons-react';
+import { RiskTreatmentType } from '@db';
 import {
   ArrowsHorizontal,
   Checkmark,
@@ -59,16 +59,10 @@ interface StrategyPickerProps {
 
 export function StrategyPicker({ value, onChange, disabled }: StrategyPickerProps) {
   const options =
-    value === RiskTreatmentType.avoid
-      ? [...PRIMARY_OPTIONS, LEGACY_AVOID_OPTION]
-      : PRIMARY_OPTIONS;
+    value === RiskTreatmentType.avoid ? [...PRIMARY_OPTIONS, LEGACY_AVOID_OPTION] : PRIMARY_OPTIONS;
 
   return (
-    <div
-      role="radiogroup"
-      aria-label="Treatment strategy"
-      className="mt-3 border-t border-border"
-    >
+    <div role="radiogroup" aria-label="Treatment strategy" className="mt-3 border-t border-border">
       {options.map((opt) => {
         const isActive = value === opt.value;
         const Icon = opt.Icon;
@@ -90,17 +84,12 @@ export function StrategyPicker({ value, onChange, disabled }: StrategyPickerProp
           >
             <Icon
               size={18}
-              className={cn(
-                'mt-0.5 shrink-0',
-                isActive ? 'text-primary' : 'text-muted-foreground',
-              )}
+              className={cn('mt-0.5 shrink-0', isActive ? 'text-primary' : 'text-muted-foreground')}
               aria-hidden="true"
             />
             <div className="min-w-0 flex-1">
               <div className="text-sm font-normal">{opt.label}</div>
-              <div className="mt-0.5 text-xs leading-[1.4] text-muted-foreground">
-                {opt.blurb}
-              </div>
+              <div className="mt-0.5 text-xs leading-[1.4] text-muted-foreground">{opt.blurb}</div>
             </div>
             {isActive && (
               <Checkmark size={14} className="mt-1 shrink-0 text-primary" aria-hidden="true" />

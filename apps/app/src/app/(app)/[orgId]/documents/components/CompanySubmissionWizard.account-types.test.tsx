@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/navigation', () => ({
@@ -15,7 +15,8 @@ vi.mock('@trycompai/design-system', () => {
   const Passthrough = ({ children }: any) => <div>{children}</div>;
   return {
     Alert: Passthrough,
-    AlertDialog: ({ children, open }: any) => (open ? <div data-testid="alert-dialog">{children}</div> : null),
+    AlertDialog: ({ children, open }: any) =>
+      open ? <div data-testid="alert-dialog">{children}</div> : null,
     AlertDialogAction: ({ children, ...props }: any) => <button {...props}>{children}</button>,
     AlertDialogCancel: ({ children }: any) => <button>{children}</button>,
     AlertDialogContent: Passthrough,
@@ -64,7 +65,9 @@ describe('CompanySubmissionWizard — account-types rendering', () => {
       expect(screen.getAllByTestId('ds-select')).toHaveLength(10);
     });
     const selects = screen.getAllByTestId('ds-select') as HTMLSelectElement[];
-    const options = within(selects[0]).getAllByRole('option').map((o) => o.textContent);
+    const options = within(selects[0])
+      .getAllByRole('option')
+      .map((o) => o.textContent);
     expect(options).toEqual(['Allowed', 'Disallowed']);
 
     // First row is pre-filled per the spec.

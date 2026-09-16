@@ -1,9 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { api } from '@/lib/api-client';
 import { useAdminOrgTimelines } from '@/hooks/use-admin-timelines';
+import { api } from '@/lib/api-client';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +17,8 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Reset } from '@trycompai/design-system/icons';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { TimelineCard } from './TimelineCard';
 
 interface TimelineTabProps {
@@ -33,9 +33,7 @@ export function TimelineTab({ orgId }: TimelineTabProps) {
   const handleRecreate = async () => {
     setRecreateOpen(false);
     setRecreating(true);
-    const res = await api.post(
-      `/v1/admin/organizations/${orgId}/timelines/recreate`,
-    );
+    const res = await api.post(`/v1/admin/organizations/${orgId}/timelines/recreate`);
     setRecreating(false);
     if (res.error) {
       toast.error(res.error);
@@ -76,14 +74,13 @@ export function TimelineTab({ orgId }: TimelineTabProps) {
             <AlertDialogHeader>
               <AlertDialogTitle>Recreate All Timelines</AlertDialogTitle>
               <AlertDialogDescription>
-                This will delete all existing timelines for this organization and recreate them from the latest templates. All progress and customizations will be lost.
+                This will delete all existing timelines for this organization and recreate them from
+                the latest templates. All progress and customizations will be lost.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleRecreate}>
-                Recreate All
-              </AlertDialogAction>
+              <AlertDialogAction onClick={handleRecreate}>Recreate All</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -94,12 +91,7 @@ export function TimelineTab({ orgId }: TimelineTabProps) {
         </div>
       ) : (
         timelines.map((timeline) => (
-          <TimelineCard
-            key={timeline.id}
-            timeline={timeline}
-            orgId={orgId}
-            onMutate={mutate}
-          />
+          <TimelineCard key={timeline.id} timeline={timeline} orgId={orgId} onMutate={mutate} />
         ))
       )}
     </Stack>

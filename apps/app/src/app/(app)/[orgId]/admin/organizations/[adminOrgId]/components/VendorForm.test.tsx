@@ -69,10 +69,10 @@ describe('VendorForm', () => {
     fireEvent.click(screen.getByRole('button', { name: /create vendor/i }));
 
     await waitFor(() => {
-      expect(mockPost).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_1/vendors',
-        { name: 'CloudTech', description: 'Infrastructure provider' },
-      );
+      expect(mockPost).toHaveBeenCalledWith('/v1/admin/organizations/org_1/vendors', {
+        name: 'CloudTech',
+        description: 'Infrastructure provider',
+      });
     });
 
     expect(onCreated).toHaveBeenCalled();

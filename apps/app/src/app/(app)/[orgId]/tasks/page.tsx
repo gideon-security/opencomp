@@ -40,9 +40,7 @@ export default async function TasksPage({
   const { orgId } = await params;
 
   const [tasksRes, membersRes, optionsRes] = await Promise.all([
-    serverApi.get<{ data: TaskWithRelations[]; count: number }>(
-      '/v1/tasks?includeRelations=true',
-    ),
+    serverApi.get<{ data: TaskWithRelations[]; count: number }>('/v1/tasks?includeRelations=true'),
     serverApi.get<{
       data: (Member & { user: User })[];
       count: number;
@@ -75,10 +73,7 @@ export default async function TasksPage({
   // Read tab preference from cookie
   const cookieStore = await cookies();
   const savedView = cookieStore.get(`task-view-preference-${orgId}`)?.value;
-  const activeTab =
-    savedView === 'categories' || savedView === 'list'
-      ? savedView
-      : 'categories';
+  const activeTab = savedView === 'categories' || savedView === 'list' ? savedView : 'categories';
 
   return (
     <TasksPageClient

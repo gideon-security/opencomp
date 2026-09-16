@@ -180,9 +180,7 @@ export function EditableCell({
             autoFocus
             className="max-h-[80vh] max-w-[92vw] min-h-[260px] min-w-[320px] resize font-mono text-sm"
             style={
-              editorSize
-                ? { width: editorSize.width, height: editorSize.height }
-                : { width: 680 }
+              editorSize ? { width: editorSize.width, height: editorSize.height } : { width: 680 }
             }
           />
           <DialogFooter>

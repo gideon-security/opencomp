@@ -1,7 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
 import { BrowserCredentialStorageService } from './browser-credential-storage.service';
 import * as opClient from './onepassword-client';
-import { TOTP_FIELD_TITLE, buildItemReference } from './onepassword-credential-item';
+import {
+  TOTP_FIELD_TITLE,
+  buildItemReference,
+} from './onepassword-credential-item';
 
 jest.mock('@db', () => ({
   db: {
@@ -52,7 +55,9 @@ describe('BrowserCredentialStorageService — TOTP', () => {
     mockLoadModule.mockResolvedValue({ ItemFieldType: { Totp: 'Totp' } });
     itemsGet = jest.fn();
     itemsPut = jest.fn().mockResolvedValue(undefined);
-    mockGetClient.mockResolvedValue({ items: { get: itemsGet, put: itemsPut } });
+    mockGetClient.mockResolvedValue({
+      items: { get: itemsGet, put: itemsPut },
+    });
   });
 
   const profile = (overrides: Record<string, unknown> = {}) => ({
@@ -79,7 +84,9 @@ describe('BrowserCredentialStorageService — TOTP', () => {
 
     it('is not configured when there is no TOTP field', async () => {
       findFirst.mockResolvedValue(profile());
-      itemsGet.mockResolvedValue({ fields: [field('username'), field('password')] });
+      itemsGet.mockResolvedValue({
+        fields: [field('username'), field('password')],
+      });
 
       const result = await service.getProfileTotpStatus({
         organizationId: 'org_1',
@@ -163,7 +170,8 @@ describe('BrowserCredentialStorageService — TOTP', () => {
     it('accepts an otpauth:// URI verbatim', async () => {
       findFirst.mockResolvedValue(profile());
       itemsGet.mockResolvedValue({ fields: [field('username')] });
-      const uri = 'otpauth://totp/Acme:alice?secret=JBSWY3DPEHPK3PXP&issuer=Acme';
+      const uri =
+        'otpauth://totp/Acme:alice?secret=JBSWY3DPEHPK3PXP&issuer=Acme';
 
       await service.setProfileTotp({
         organizationId: 'org_1',
@@ -172,7 +180,9 @@ describe('BrowserCredentialStorageService — TOTP', () => {
       });
 
       const written = itemsPut.mock.calls[0][0];
-      const totp = written.fields.find((f: Field) => f.title === TOTP_FIELD_TITLE);
+      const totp = written.fields.find(
+        (f: Field) => f.title === TOTP_FIELD_TITLE,
+      );
       expect(totp.value).toBe(uri);
     });
 
@@ -411,7 +421,9 @@ describe('BrowserCredentialStorageService — TOTP', () => {
 
       expect(result).toEqual({ configured: false });
       const written = itemsPut.mock.calls[0][0];
-      expect(written.fields.some((f: Field) => f.title === TOTP_FIELD_TITLE)).toBe(false);
+      expect(
+        written.fields.some((f: Field) => f.title === TOTP_FIELD_TITLE),
+      ).toBe(false);
     });
 
     it('is a no-op when there is no TOTP field', async () => {

@@ -40,8 +40,7 @@ const { default: IsmsLayout } = await import('./layout');
 const ORG_ID = 'org_test123';
 const children = 'ISMS content';
 
-const renderLayout = () =>
-  IsmsLayout({ children, params: Promise.resolve({ orgId: ORG_ID }) });
+const renderLayout = () => IsmsLayout({ children, params: Promise.resolve({ orgId: ORG_ID }) });
 
 const isoFrameworksResponse = {
   data: {

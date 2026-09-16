@@ -11,9 +11,7 @@
       "setupInstructions": "## Setup Iru (formerly Kandji) Integration\n\n1. Sign in to your Iru (formerly Kandji) admin console\n2. Go to **Settings** then **Access** then **API Token**\n3. Click **Add token** and give it a name like \"CompAI Integration\"\n4. Grant the token the **Device List** permission\n5. Copy the API token (it is only shown once)\n6. Note your Iru (formerly Kandji) subdomain from your URL (e.g. \"mycompany\" from mycompany.clients.us-1.kandji.io)\n7. Paste the API token and subdomain into CompAI"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

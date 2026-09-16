@@ -120,7 +120,8 @@ export class AzureSecurityService {
       findings.push(...defender.findings);
       if (!defender.anySucceeded) {
         failedUnits++;
-        if (defender.firstError && !firstError) firstError = defender.firstError;
+        if (defender.firstError && !firstError)
+          firstError = defender.firstError;
       }
     }
 
@@ -138,7 +139,9 @@ export class AzureSecurityService {
           return { ok: true as const, findings: scanned };
         } catch (error) {
           const err = error instanceof Error ? error : new Error(String(error));
-          this.logger.warn(`Azure ${adapter.serviceId} scan failed: ${err.message}`);
+          this.logger.warn(
+            `Azure ${adapter.serviceId} scan failed: ${err.message}`,
+          );
           return { ok: false as const, error: err };
         }
       }),

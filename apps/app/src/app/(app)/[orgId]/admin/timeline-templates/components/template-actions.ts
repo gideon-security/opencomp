@@ -1,6 +1,6 @@
-import { toast } from 'sonner';
-import { api } from '@/lib/api-client';
 import type { AdminTimelineTemplate } from '@/hooks/use-admin-timelines';
+import { api } from '@/lib/api-client';
+import { toast } from 'sonner';
 import type { CompletionType } from './constants';
 
 interface TemplateFormValues {
@@ -17,9 +17,7 @@ interface TemplateFormValues {
   }[];
 }
 
-export function getDefaults(
-  template: AdminTimelineTemplate | null,
-): TemplateFormValues {
+export function getDefaults(template: AdminTimelineTemplate | null): TemplateFormValues {
   if (!template) {
     return { name: '', frameworkId: '', cycleNumber: 1, phases: [] };
   }
@@ -54,25 +52,20 @@ export async function createNewTemplate(values: TemplateFormValues) {
   // orphan with zero phases sitting in the framework's template list.
   try {
     for (const [index, phase] of values.phases.entries()) {
-      const phaseRes = await api.post(
-        `/v1/admin/timeline-templates/${created.id}/phases`,
-        {
-          name: phase.name,
-          description: phase.description || undefined,
-          orderIndex: index,
-          defaultDurationWeeks: phase.defaultDurationWeeks,
-          completionType: phase.completionType,
-          locksTimelineOnComplete: phase.locksTimelineOnComplete ?? false,
-        },
-      );
+      const phaseRes = await api.post(`/v1/admin/timeline-templates/${created.id}/phases`, {
+        name: phase.name,
+        description: phase.description || undefined,
+        orderIndex: index,
+        defaultDurationWeeks: phase.defaultDurationWeeks,
+        completionType: phase.completionType,
+        locksTimelineOnComplete: phase.locksTimelineOnComplete ?? false,
+      });
       if (phaseRes.error) throw new Error(phaseRes.error);
     }
   } catch (err) {
-    await api
-      .delete(`/v1/admin/timeline-templates/${created.id}`)
-      .catch(() => {
-        // Rollback best-effort; the original error is what matters.
-      });
+    await api.delete(`/v1/admin/timeline-templates/${created.id}`).catch(() => {
+      // Rollback best-effort; the original error is what matters.
+    });
     throw err;
   }
 
@@ -83,16 +76,14 @@ export async function saveExistingTemplate(
   template: AdminTimelineTemplate,
   values: TemplateFormValues,
 ) {
-  const res = await api.patch(
-    `/v1/admin/timeline-templates/${template.id}`,
-    { name: values.name, cycleNumber: values.cycleNumber },
-  );
+  const res = await api.patch(`/v1/admin/timeline-templates/${template.id}`, {
+    name: values.name,
+    cycleNumber: values.cycleNumber,
+  });
   if (res.error) throw new Error(res.error);
 
   const existingIds = new Set(template.phases.map((p) => p.id));
-  const formIds = new Set(
-    values.phases.filter((p) => p.id).map((p) => p.id),
-  );
+  const formIds = new Set(values.phases.filter((p) => p.id).map((p) => p.id));
 
   // Upsert phases first — if any of these fail we abort with the original
   // set still intact. Deletions happen only after all upserts succeed so a
@@ -112,17 +103,14 @@ export async function saveExistingTemplate(
       );
       if (patchRes.error) throw new Error(patchRes.error);
     } else {
-      const postRes = await api.post(
-        `/v1/admin/timeline-templates/${template.id}/phases`,
-        {
-          name: phase.name,
-          description: phase.description || undefined,
-          orderIndex: index,
-          defaultDurationWeeks: phase.defaultDurationWeeks,
-          completionType: phase.completionType,
-          locksTimelineOnComplete: phase.locksTimelineOnComplete ?? false,
-        },
-      );
+      const postRes = await api.post(`/v1/admin/timeline-templates/${template.id}/phases`, {
+        name: phase.name,
+        description: phase.description || undefined,
+        orderIndex: index,
+        defaultDurationWeeks: phase.defaultDurationWeeks,
+        completionType: phase.completionType,
+        locksTimelineOnComplete: phase.locksTimelineOnComplete ?? false,
+      });
       if (postRes.error) throw new Error(postRes.error);
     }
   }

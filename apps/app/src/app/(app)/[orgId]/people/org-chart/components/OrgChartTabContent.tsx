@@ -2,8 +2,8 @@
 
 import { useTeamMembers } from '../../all/hooks/useTeamMembers';
 import { useOrgChart } from '../hooks/useOrgChart';
-import { OrgChartContent } from './OrgChartContent';
 import type { OrgChartMember } from '../types';
+import { OrgChartContent } from './OrgChartContent';
 
 interface OrgChartTabContentProps {
   organizationId: string;
@@ -25,11 +25,5 @@ export function OrgChartTabContent({ organizationId }: OrgChartTabContentProps) 
       jobTitle: m.jobTitle ?? null,
     }));
 
-  return (
-    <OrgChartContent
-      chartData={orgChart}
-      members={chartMembers}
-      onChartChange={mutate}
-    />
-  );
+  return <OrgChartContent chartData={orgChart} members={chartMembers} onChartChange={mutate} />;
 }

@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  Badge,
-  Button,
-  Stack,
-  Text,
-} from '@trycompai/design-system';
+import { Badge, Button, Stack, Text } from '@trycompai/design-system';
 import {
   Attachment,
   Chat,
@@ -15,13 +10,8 @@ import {
   Integration,
   Pending,
 } from '@trycompai/design-system/icons';
-import type {
-  TaskAttachment,
-  AutomationRun,
-  IntegrationRun,
-  Comment,
-} from './TaskDetailSheet';
-import { formatDate, formatLabel, extractTextFromTipTap } from './TaskDetailSheet';
+import type { AutomationRun, Comment, IntegrationRun, TaskAttachment } from './TaskDetailSheet';
+import { extractTextFromTipTap, formatDate, formatLabel } from './TaskDetailSheet';
 
 function SectionHeading({
   icon,
@@ -51,7 +41,9 @@ export function AttachmentsSection({ attachments }: { attachments: TaskAttachmen
         count={attachments.length}
       />
       {attachments.length === 0 ? (
-        <Text size="sm" variant="muted">No files uploaded.</Text>
+        <Text size="sm" variant="muted">
+          No files uploaded.
+        </Text>
       ) : (
         <Stack gap="xs">
           {attachments.map((att) => (
@@ -96,7 +88,9 @@ export function AutomationRunsSection({ runs }: { runs: AutomationRun[] }) {
         count={runs.length}
       />
       {runs.length === 0 ? (
-        <Text size="sm" variant="muted">No automation runs.</Text>
+        <Text size="sm" variant="muted">
+          No automation runs.
+        </Text>
       ) : (
         <Stack gap="xs">
           {runs.map((run) => (
@@ -104,22 +98,16 @@ export function AutomationRunsSection({ runs }: { runs: AutomationRun[] }) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <RunStatusIcon status={run.status} success={run.success} />
-                  <span className="text-sm font-medium">
-                    {run.evidenceAutomation.name}
-                  </span>
+                  <span className="text-sm font-medium">{run.evidenceAutomation.name}</span>
                 </div>
-                <span className="text-xs text-muted-foreground">
-                  {formatDate(run.createdAt)}
-                </span>
+                <span className="text-xs text-muted-foreground">{formatDate(run.createdAt)}</span>
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-2">
                 <Badge variant={run.status === 'completed' ? 'default' : 'outline'}>
                   {formatLabel(run.status)}
                 </Badge>
                 {run.evaluationStatus && (
-                  <Badge
-                    variant={run.evaluationStatus === 'pass' ? 'default' : 'destructive'}
-                  >
+                  <Badge variant={run.evaluationStatus === 'pass' ? 'default' : 'destructive'}>
                     {formatLabel(run.evaluationStatus)}
                   </Badge>
                 )}
@@ -131,9 +119,7 @@ export function AutomationRunsSection({ runs }: { runs: AutomationRun[] }) {
                 )}
               </div>
               {run.evaluationReason && (
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {run.evaluationReason}
-                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{run.evaluationReason}</p>
               )}
             </div>
           ))}
@@ -162,7 +148,9 @@ export function IntegrationRunsSection({ runs }: { runs: IntegrationRun[] }) {
         count={runs.length}
       />
       {runs.length === 0 ? (
-        <Text size="sm" variant="muted">No integration check runs.</Text>
+        <Text size="sm" variant="muted">
+          No integration check runs.
+        </Text>
       ) : (
         <Stack gap="xs">
           {runs.map((run) => (
@@ -172,9 +160,7 @@ export function IntegrationRunsSection({ runs }: { runs: IntegrationRun[] }) {
                   <IntRunStatusIcon status={run.status} />
                   <span className="text-sm font-medium">{run.checkName}</span>
                 </div>
-                <span className="text-xs text-muted-foreground">
-                  {formatDate(run.createdAt)}
-                </span>
+                <span className="text-xs text-muted-foreground">{formatDate(run.createdAt)}</span>
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-2">
                 {run.connection?.provider && (
@@ -190,9 +176,7 @@ export function IntegrationRunsSection({ runs }: { runs: IntegrationRun[] }) {
                 )}
               </div>
               {run.errorMessage && (
-                <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                  {run.errorMessage}
-                </p>
+                <p className="mt-1 text-xs text-red-600 dark:text-red-400">{run.errorMessage}</p>
               )}
               {run.results.length > 0 && (
                 <div className="mt-2 space-y-1">
@@ -212,9 +196,7 @@ export function IntegrationRunsSection({ runs }: { runs: IntegrationRun[] }) {
                       <div className="min-w-0">
                         <span className="font-medium">{r.title}</span>
                         {r.description && (
-                          <span className="text-muted-foreground">
-                            {' '}&mdash; {r.description}
-                          </span>
+                          <span className="text-muted-foreground"> &mdash; {r.description}</span>
                         )}
                       </div>
                     </div>
@@ -237,13 +219,11 @@ export function IntegrationRunsSection({ runs }: { runs: IntegrationRun[] }) {
 export function CommentsSection({ comments }: { comments: Comment[] }) {
   return (
     <Stack gap="sm">
-      <SectionHeading
-        icon={<Chat size={16} />}
-        label="Comments"
-        count={comments.length}
-      />
+      <SectionHeading icon={<Chat size={16} />} label="Comments" count={comments.length} />
       {comments.length === 0 ? (
-        <Text size="sm" variant="muted">No comments yet.</Text>
+        <Text size="sm" variant="muted">
+          No comments yet.
+        </Text>
       ) : (
         <Stack gap="sm">
           {comments.map((comment) => (
@@ -260,7 +240,9 @@ export function CommentsSection({ comments }: { comments: Comment[] }) {
               {comment.attachments.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-1">
                   {comment.attachments.map((a) => (
-                    <Badge key={a.id} variant="outline">{a.name}</Badge>
+                    <Badge key={a.id} variant="outline">
+                      {a.name}
+                    </Badge>
                   ))}
                 </div>
               )}

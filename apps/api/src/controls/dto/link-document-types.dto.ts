@@ -1,10 +1,6 @@
 import { EvidenceFormType } from '@db';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  ArrayMinSize,
-  IsArray,
-  IsEnum,
-} from 'class-validator';
+import { ArrayMinSize, IsArray, IsEnum } from 'class-validator';
 
 export class LinkDocumentTypesDto {
   @ApiProperty({

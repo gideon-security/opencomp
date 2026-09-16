@@ -20,9 +20,10 @@ interface FilterMembersByOwnerOrAdminParams {
  * The built-in restricted roles (`employee`, `contractor`) and `auditor` remain
  * excluded.
  */
-export function filterMembersByOwnerOrAdmin(
-  { members, currentAssigneeId }: FilterMembersByOwnerOrAdminParams,
-): (Member & { user: User })[] {
+export function filterMembersByOwnerOrAdmin({
+  members,
+  currentAssigneeId,
+}: FilterMembersByOwnerOrAdminParams): (Member & { user: User })[] {
   return members.filter((member) => {
     // Always include current assignee to preserve existing assignments
     if (currentAssigneeId && member.id === currentAssigneeId) {

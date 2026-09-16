@@ -51,9 +51,7 @@ function ul(...items: string[]) {
     'bulletList',
     null,
     items.map((text) =>
-      schema.node('listItem', null, [
-        schema.node('paragraph', null, [schema.text(text)]),
-      ]),
+      schema.node('listItem', null, [schema.node('paragraph', null, [schema.text(text)])]),
     ),
   );
 }
@@ -76,18 +74,14 @@ describe('buildPositionMap', () => {
     });
 
     it('uses the correct number of # for each level', () => {
-      const result = buildPositionMap(
-        doc(h(1, 'H1'), h(3, 'H3')),
-      );
+      const result = buildPositionMap(doc(h(1, 'H1'), h(3, 'H3')));
 
       expect(result.markdown).toContain('# H1');
       expect(result.markdown).toContain('### H3');
     });
 
     it('adds a blank line before headings (except the first)', () => {
-      const result = buildPositionMap(
-        doc(h(2, 'First'), h(2, 'Second')),
-      );
+      const result = buildPositionMap(doc(h(2, 'First'), h(2, 'Second')));
       const lines = result.markdown.split('\n');
 
       // First heading on line 1, blank after, blank before second, second heading
@@ -98,9 +92,7 @@ describe('buildPositionMap', () => {
     });
 
     it('adds a blank line after headings', () => {
-      const result = buildPositionMap(
-        doc(h(2, 'Title'), p('Body')),
-      );
+      const result = buildPositionMap(doc(h(2, 'Title'), p('Body')));
       const lines = result.markdown.split('\n');
 
       expect(lines[0]).toBe('## Title');
@@ -109,9 +101,7 @@ describe('buildPositionMap', () => {
     });
 
     it('maps the heading content line, not blank lines around it', () => {
-      const result = buildPositionMap(
-        doc(p('Intro'), h(2, 'Section')),
-      );
+      const result = buildPositionMap(doc(p('Intro'), h(2, 'Section')));
 
       // Find which line maps to the heading position
       for (const [lineNum, pos] of result.lineToPos) {
@@ -136,9 +126,7 @@ describe('buildPositionMap', () => {
     });
 
     it('separates consecutive paragraphs with a blank line', () => {
-      const result = buildPositionMap(
-        doc(p('First'), p('Second')),
-      );
+      const result = buildPositionMap(doc(p('First'), p('Second')));
       const lines = result.markdown.split('\n');
 
       expect(lines[0]).toBe('First');
@@ -147,9 +135,7 @@ describe('buildPositionMap', () => {
     });
 
     it('maps each paragraph to increasing positions', () => {
-      const result = buildPositionMap(
-        doc(p('Alpha'), p('Beta')),
-      );
+      const result = buildPositionMap(doc(p('Alpha'), p('Beta')));
 
       const positions = Array.from(result.lineToPos.values());
       expect(positions.length).toBe(2);
@@ -167,9 +153,7 @@ describe('buildPositionMap', () => {
 
     it('consecutive single-item bullet lists have no blank lines between items', () => {
       // TipTap renders each bullet as a separate <ul> with one <li>
-      const result = buildPositionMap(
-        doc(ul('Item A'), ul('Item B'), ul('Item C')),
-      );
+      const result = buildPositionMap(doc(ul('Item A'), ul('Item B'), ul('Item C')));
       const lines = result.markdown.split('\n');
 
       const idxA = lines.indexOf('- Item A');
@@ -182,9 +166,7 @@ describe('buildPositionMap', () => {
     });
 
     it('multi-item bullet list renders items consecutively', () => {
-      const result = buildPositionMap(
-        doc(ul('One', 'Two', 'Three')),
-      );
+      const result = buildPositionMap(doc(ul('One', 'Two', 'Three')));
       const lines = result.markdown.split('\n');
 
       const idx1 = lines.indexOf('- One');
@@ -193,9 +175,7 @@ describe('buildPositionMap', () => {
     });
 
     it('adds a blank line before the first list item when preceded by a paragraph', () => {
-      const result = buildPositionMap(
-        doc(p('Before the list'), ul('Item')),
-      );
+      const result = buildPositionMap(doc(p('Before the list'), ul('Item')));
       const lines = result.markdown.split('\n');
 
       const listIdx = lines.indexOf('- Item');
@@ -204,9 +184,7 @@ describe('buildPositionMap', () => {
     });
 
     it('adds a blank line after the last list item in a group', () => {
-      const result = buildPositionMap(
-        doc(ul('Item'), p('After')),
-      );
+      const result = buildPositionMap(doc(ul('Item'), p('After')));
       const lines = result.markdown.split('\n');
 
       const itemIdx = lines.indexOf('- Item');
@@ -215,9 +193,7 @@ describe('buildPositionMap', () => {
     });
 
     it('maps each list item to its own ProseMirror position', () => {
-      const result = buildPositionMap(
-        doc(ul('Alpha', 'Beta')),
-      );
+      const result = buildPositionMap(doc(ul('Alpha', 'Beta')));
 
       const entries = Array.from(result.lineToPos.entries());
       expect(entries.length).toBeGreaterThanOrEqual(2);
@@ -270,26 +246,16 @@ describe('buildPositionMap', () => {
     });
 
     it('positions increase monotonically through the document', () => {
-      const result = buildPositionMap(
-        doc(
-          h(2, 'Title'),
-          p('Body text'),
-          ul('Item'),
-        ),
-      );
+      const result = buildPositionMap(doc(h(2, 'Title'), p('Body text'), ul('Item')));
 
-      const positions = Array.from(result.lineToPos.values()).map(
-        (pos) => pos.from,
-      );
+      const positions = Array.from(result.lineToPos.values()).map((pos) => pos.from);
       for (let i = 1; i < positions.length; i++) {
         expect(positions[i]).toBeGreaterThan(positions[i - 1]!);
       }
     });
 
     it('does not map blank lines in lineToPos', () => {
-      const result = buildPositionMap(
-        doc(h(2, 'Title'), p('Content')),
-      );
+      const result = buildPositionMap(doc(h(2, 'Title'), p('Content')));
       const lines = result.markdown.split('\n');
 
       for (const [lineNum] of result.lineToPos) {

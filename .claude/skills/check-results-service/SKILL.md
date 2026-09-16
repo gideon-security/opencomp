@@ -25,6 +25,7 @@ new feature — stop. Use this service instead.
 ## When to use it
 
 Use it whenever a feature needs the output of an integration check:
+
 - "Show each employee's 2FA status on the People tab" (the current consumer)
 - "Surface which S3 buckets failed encryption inside feature X"
 - "Show device compliance per user from the MDM check"
@@ -45,6 +46,7 @@ getLatestResultsForTask({ organizationId, taskTemplateId, sourceSlug, resourceTy
 ```
 
 Notes:
+
 - "Latest REAL run" = newest run that isn't `inconclusive`/held and whose connection isn't
   disconnected. Held runs (our-side self-heal) never leak to a feature.
 - No row cap — you get the full result set (unlike the 30-row task-history display).
@@ -72,7 +74,10 @@ So a feature joining check results to org members does exactly this — no parsi
 
 ```ts
 const rows = await checkResults.getLatestResultsForTask({
-  organizationId, taskTemplateId, sourceSlug, resourceType: 'user',
+  organizationId,
+  taskTemplateId,
+  sourceSlug,
+  resourceType: 'user',
 });
 const forMember = rows.filter((r) => r.resourceId === member.email.toLowerCase());
 ```
@@ -86,12 +91,12 @@ aggregate evidence in the feature.
 
 ```ts
 interface CheckResultRow {
-  resourceId: string;      // provider-native id: email (2FA), bucket ARN (S3), repo, …
-  resourceType: string;    // 'user' | 'bucket' | …
-  passed: boolean;         // did this resource pass the check
+  resourceId: string; // provider-native id: email (2FA), bucket ARN (S3), repo, …
+  resourceType: string; // 'user' | 'bucket' | …
+  passed: boolean; // did this resource pass the check
   title: string;
   description: string | null;
-  evidence: Prisma.JsonValue;  // ← check-SPECIFIC payload. The service does NOT interpret it.
+  evidence: Prisma.JsonValue; // ← check-SPECIFIC payload. The service does NOT interpret it.
   collectedAt: Date;
   runId: string;
   connectionId: string;
@@ -123,7 +128,7 @@ Say a feature wants "which AWS S3 buckets failed encryption":
    const rows = await this.checkResults.getLatestResultsByCheck({
      organizationId,
      connectionId,
-     checkId: 'aws-s3-encryption',   // the check's manifest id
+     checkId: 'aws-s3-encryption', // the check's manifest id
      resourceType: 'bucket',
    });
    ```
@@ -140,7 +145,7 @@ The People-tab 2FA column is consumer #1. Study it end to end:
 - `two-factor-source.controller.ts`
   - `available-2fa-sources` → `listSourcesBoundToTask(org, TASK_TEMPLATES.twoFactorAuth)`
   - `two-factor-statuses` → `getLatestResultsForTask({ org, taskTemplateId: twoFactorAuth,
-    sourceSlug: org.twoFactorSource, resourceType: 'user' })`, then maps `resourceId`→email
+sourceSlug: org.twoFactorSource, resourceType: 'user' })`, then maps `resourceId`→email
     (lowercased) and `passed`→`enabled`/`missing`. Emails with no row are resolved to
     "Not provided" on the client, never a false "missing".
 - The controller owns the 2FA-specific bits (the `Organization.twoFactorSource` column, the

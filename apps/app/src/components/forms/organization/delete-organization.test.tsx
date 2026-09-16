@@ -36,9 +36,7 @@ describe('DeleteOrganization', () => {
   });
 
   it('does not render for non-owners', () => {
-    const { container } = render(
-      <DeleteOrganization organizationId="org_123" isOwner={false} />,
-    );
+    const { container } = render(<DeleteOrganization organizationId="org_123" isOwner={false} />);
     expect(container.innerHTML).toBe('');
   });
 

@@ -588,7 +588,9 @@ describe('InternalIntegrationDebugService', () => {
         organizationId: 'org_1',
         provider: { slug: 'neon' },
       });
-      mockedDb.dynamicIntegration.findFirst.mockResolvedValue({ id: 'din_neon' });
+      mockedDb.dynamicIntegration.findFirst.mockResolvedValue({
+        id: 'din_neon',
+      });
       const runChecks = jest.fn().mockResolvedValue(runResult('success'));
       const loadDynamicManifests = jest.fn().mockResolvedValue(undefined);
 
@@ -613,7 +615,9 @@ describe('InternalIntegrationDebugService', () => {
         organizationId: 'org_1',
         provider: { slug: 'neon' },
       });
-      mockedDb.dynamicIntegration.findFirst.mockResolvedValue({ id: 'din_neon' });
+      mockedDb.dynamicIntegration.findFirst.mockResolvedValue({
+        id: 'din_neon',
+      });
       const runChecks = jest.fn().mockResolvedValue(runResult('success'));
       const loadDynamicManifests = jest
         .fn()

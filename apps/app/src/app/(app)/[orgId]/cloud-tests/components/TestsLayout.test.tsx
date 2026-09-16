@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -100,12 +100,8 @@ vi.mock('@trycompai/design-system', () => ({
       {children}
     </div>
   ),
-  PageHeaderDescription: ({ children }: { children: React.ReactNode }) => (
-    <p>{children}</p>
-  ),
-  PageLayout: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
+  PageHeaderDescription: ({ children }: { children: React.ReactNode }) => <p>{children}</p>,
+  PageLayout: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 vi.mock('@trycompai/design-system/icons', () => ({
@@ -148,7 +144,6 @@ const defaultProps = {
 };
 
 mockNextIntl();
-
 
 describe('TestsLayout permission gating', () => {
   beforeEach(() => {
@@ -228,13 +223,7 @@ describe('TestsLayout permission gating', () => {
       mutate: vi.fn(),
       isValidating: false,
     });
-    render(
-      <TestsLayout
-        initialFindings={[]}
-        initialProviders={[]}
-        orgId="org_123"
-      />,
-    );
+    render(<TestsLayout initialFindings={[]} initialProviders={[]} orgId="org_123" />);
     expect(screen.getByTestId('empty-state')).toBeInTheDocument();
   });
 });

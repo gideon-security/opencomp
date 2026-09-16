@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -114,9 +114,7 @@ describe('CreateApiKeySheet permission gating', () => {
 
   it('does not render anything when sheet is closed', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    const { container } = render(
-      <CreateApiKeySheet open={false} onOpenChange={vi.fn()} />,
-    );
+    const { container } = render(<CreateApiKeySheet open={false} onOpenChange={vi.fn()} />);
 
     expect(container.querySelector('h2')).toBeNull();
   });

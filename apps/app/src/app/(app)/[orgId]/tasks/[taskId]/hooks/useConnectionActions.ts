@@ -10,16 +10,10 @@ export function useConnectionActions(onChanged?: () => void) {
   const [isRemoving, setIsRemoving] = useState(false);
 
   const editConnection = useCallback(
-    async (
-      profileId: string,
-      data: { displayName?: string; url?: string },
-    ): Promise<boolean> => {
+    async (profileId: string, data: { displayName?: string; url?: string }): Promise<boolean> => {
       setIsSaving(true);
       try {
-        const res = await apiClient.patch(
-          `/v1/browserbase/profiles/${profileId}`,
-          data,
-        );
+        const res = await apiClient.patch(`/v1/browserbase/profiles/${profileId}`, data);
         if (res.error) {
           toast.error(res.error);
           return false;
@@ -38,9 +32,7 @@ export function useConnectionActions(onChanged?: () => void) {
     async (profileId: string): Promise<boolean> => {
       setIsRemoving(true);
       try {
-        const res = await apiClient.delete(
-          `/v1/browserbase/profiles/${profileId}`,
-        );
+        const res = await apiClient.delete(`/v1/browserbase/profiles/${profileId}`);
         if (res.error) {
           toast.error(res.error);
           return false;

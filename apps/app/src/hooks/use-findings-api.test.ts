@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { extractOrgFrameworkTypes } from './use-findings-api';
 
 // Mirrors the wrapped shape useApiSWR returns: { data: <API response> }.
@@ -17,9 +17,7 @@ describe('extractOrgFrameworkTypes', () => {
   });
 
   it('matches SOC 2 by canonical platform name', () => {
-    const result = extractOrgFrameworkTypes(
-      swrPayload([{ framework: { name: 'SOC 2' } }]),
-    );
+    const result = extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'SOC 2' } }]));
     expect(result).toEqual(['soc2']);
   });
 
@@ -45,40 +43,35 @@ describe('extractOrgFrameworkTypes', () => {
     // fix the dropdown only treated SOC 2 / ISO 27001 as detectable, so ISO
     // 42001 stayed greyed out even with the module enabled.
     const result = extractOrgFrameworkTypes(
-      swrPayload([
-        { framework: { name: 'SOC 2' } },
-        { framework: { name: 'ISO 42001' } },
-      ]),
+      swrPayload([{ framework: { name: 'SOC 2' } }, { framework: { name: 'ISO 42001' } }]),
     );
     expect(result.sort()).toEqual(['iso42001', 'soc2']);
   });
 
   it('does not confuse ISO 27001 / ISO 9001 / ISO 42001 with each other', () => {
-    expect(
-      extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'ISO 27001' } }])),
-    ).toEqual(['iso27001']);
-    expect(
-      extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'ISO 9001' } }])),
-    ).toEqual(['iso9001']);
-    expect(
-      extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'ISO 42001' } }])),
-    ).toEqual(['iso42001']);
+    expect(extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'ISO 27001' } }]))).toEqual([
+      'iso27001',
+    ]);
+    expect(extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'ISO 9001' } }]))).toEqual([
+      'iso9001',
+    ]);
+    expect(extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'ISO 42001' } }]))).toEqual([
+      'iso42001',
+    ]);
   });
 
   it('tolerates versioned / locale variants of the canonical name', () => {
     // FrameworkEditorFramework seeds may carry version suffixes — make sure
     // those still resolve to the same FindingType.
     expect(
-      extractOrgFrameworkTypes(
-        swrPayload([{ framework: { name: 'ISO/IEC 27001:2022' } }]),
-      ),
+      extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'ISO/IEC 27001:2022' } }])),
     ).toEqual(['iso27001']);
-    expect(
-      extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'SOC 2 v.1' } }])),
-    ).toEqual(['soc2']);
-    expect(
-      extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'PCI-DSS v4.0' } }])),
-    ).toEqual(['pci_dss']);
+    expect(extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'SOC 2 v.1' } }]))).toEqual([
+      'soc2',
+    ]);
+    expect(extractOrgFrameworkTypes(swrPayload([{ framework: { name: 'PCI-DSS v4.0' } }]))).toEqual(
+      ['pci_dss'],
+    );
   });
 
   it('falls back to root-level `name` when there is no nested framework', () => {
@@ -93,10 +86,7 @@ describe('extractOrgFrameworkTypes', () => {
 
   it('deduplicates when the same framework appears twice', () => {
     const result = extractOrgFrameworkTypes(
-      swrPayload([
-        { framework: { name: 'SOC 2' } },
-        { framework: { name: 'SOC 2' } },
-      ]),
+      swrPayload([{ framework: { name: 'SOC 2' } }, { framework: { name: 'SOC 2' } }]),
     );
     expect(result).toEqual(['soc2']);
   });

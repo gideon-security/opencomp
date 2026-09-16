@@ -89,7 +89,9 @@ export function EmployeeTrainingVideos({
                 <div
                   className={cn(
                     'flex h-10 w-10 items-center justify-center rounded-full',
-                    allTrainingComplete ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground',
+                    allTrainingComplete
+                      ? 'bg-primary/10 text-primary'
+                      : 'bg-muted text-muted-foreground',
                   )}
                 >
                   <Certificate size={20} />
@@ -152,7 +154,8 @@ export function EmployeeTrainingVideos({
                       </div>
                       {isCompleted && (
                         <Text size="xs" variant="muted">
-                          Completed - {video.completedAt && new Date(video.completedAt).toLocaleDateString()}
+                          Completed -{' '}
+                          {video.completedAt && new Date(video.completedAt).toLocaleDateString()}
                         </Text>
                       )}
                     </Stack>
@@ -178,7 +181,10 @@ export function EmployeeHipaaTraining({
       organizationId: organization.id,
     });
     if (result?.data) {
-      downloadBase64Pdf(result.data, `hipaa-training-certificate-${safeEmployeeName(employee)}.pdf`);
+      downloadBase64Pdf(
+        result.data,
+        `hipaa-training-certificate-${safeEmployeeName(employee)}.pdf`,
+      );
     }
   };
 
@@ -194,8 +200,8 @@ export function EmployeeHipaaTraining({
           className={cn(
             'flex h-10 w-10 items-center justify-center rounded-full',
             hipaaCompletedAt ? 'bg-primary/10 text-primary' : 'text-destructive',
-        )}
-      >
+          )}
+        >
           {hipaaCompletedAt ? <Certificate size={20} /> : <WarningAltFilled size={20} />}
         </span>
         <div>

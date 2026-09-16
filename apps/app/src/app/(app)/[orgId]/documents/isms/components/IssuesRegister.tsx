@@ -3,9 +3,9 @@
 import { Stack } from '@trycompai/design-system';
 import { WarningAlt } from '@trycompai/design-system/icons';
 import type { IsmsContextIssue, IsmsContextIssueKind } from '../isms-types';
-import { IsmsRegisterShell } from './shared';
 import { AddIssueForm } from './AddIssueForm';
 import { IssueRow } from './IssueRow';
+import { IsmsRegisterShell } from './shared';
 
 interface IssuesRegisterProps {
   issues: IsmsContextIssue[];

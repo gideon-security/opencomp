@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { db } from '../client';
 import { backfillFrameworkVersions } from './backfill-framework-versions';
 
@@ -46,7 +46,9 @@ describe.skipIf(!hasSafeDb)('backfillFrameworkVersions', () => {
   });
 
   it('backfills FrameworkInstance.currentVersionId', async () => {
-    const instance = await db.frameworkInstance.findFirst({ where: { frameworkId: { not: null } } });
+    const instance = await db.frameworkInstance.findFirst({
+      where: { frameworkId: { not: null } },
+    });
     if (!instance) throw new Error('no instance to test against');
     await db.frameworkInstance.update({
       where: { id: instance.id },

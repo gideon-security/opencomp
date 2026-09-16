@@ -1,10 +1,18 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RoleForm, type RoleFormValues, roleFormSchema } from './RoleForm';
 
 // Mock the PermissionMatrix component since it's tested separately
 vi.mock('./PermissionMatrix', () => ({
-  PermissionMatrix: ({ value, onChange, disabled }: { value: Record<string, string[]>; onChange: (v: Record<string, string[]>) => void; disabled?: boolean }) => (
+  PermissionMatrix: ({
+    value,
+    onChange,
+    disabled,
+  }: {
+    value: Record<string, string[]>;
+    onChange: (v: Record<string, string[]>) => void;
+    disabled?: boolean;
+  }) => (
     <div data-testid="permission-matrix">
       <button
         type="button"
@@ -56,7 +64,7 @@ describe('RoleForm', () => {
 
       expect(screen.getByDisplayValue('compliance-lead')).toBeInTheDocument();
       expect(screen.getByTestId('current-permissions')).toHaveTextContent(
-        JSON.stringify({ control: ['read'] })
+        JSON.stringify({ control: ['read'] }),
       );
     });
   });
@@ -91,7 +99,9 @@ describe('RoleForm', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(/Name must start with a letter and contain only letters, numbers, spaces, and hyphens/i)
+          screen.getByText(
+            /Name must start with a letter and contain only letters, numbers, spaces, and hyphens/i,
+          ),
         ).toBeInTheDocument();
       });
     });

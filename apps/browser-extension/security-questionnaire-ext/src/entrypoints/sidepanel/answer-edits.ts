@@ -28,9 +28,7 @@ export async function saveAnswerForItem(params: {
   tabId: number | null;
   itemId: string;
 }): Promise<void> {
-  const textarea = params.root.querySelector(
-    `[data-answer-for="${cssEscape(params.itemId)}"]`,
-  );
+  const textarea = params.root.querySelector(`[data-answer-for="${cssEscape(params.itemId)}"]`);
   if (!(textarea instanceof HTMLTextAreaElement)) return;
   await saveTextareaAnswer({ tabId: params.tabId, textarea });
 }
@@ -39,14 +37,11 @@ export async function saveAllVisibleAnswers(params: {
   root: ParentNode;
   tabId: number | null;
 }): Promise<void> {
-  const textareas = Array.from(params.root.querySelectorAll('[data-answer-for]'))
-    .filter((element): element is HTMLTextAreaElement =>
-      element instanceof HTMLTextAreaElement,
-    );
+  const textareas = Array.from(params.root.querySelectorAll('[data-answer-for]')).filter(
+    (element): element is HTMLTextAreaElement => element instanceof HTMLTextAreaElement,
+  );
   await Promise.all(
-    textareas.map((textarea) =>
-      saveTextareaAnswer({ tabId: params.tabId, textarea }),
-    ),
+    textareas.map((textarea) => saveTextareaAnswer({ tabId: params.tabId, textarea })),
   );
 }
 

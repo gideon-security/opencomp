@@ -1,6 +1,6 @@
 ---
 name: cleanup
-description: "MUST run after writing or modifying code — reviews changed files for verbose patterns, inconsistencies, and readability issues before considering work done"
+description: 'MUST run after writing or modifying code — reviews changed files for verbose patterns, inconsistencies, and readability issues before considering work done'
 ---
 
 # Post-Implementation Cleanup
@@ -39,11 +39,11 @@ The same check must use the same pattern everywhere.
 
 ```tsx
 // ❌ Inconsistent
-file1: perms?.portal?.length > 0
-file2: perms?.portal?.length
+file1: perms?.portal?.length > 0;
+file2: perms?.portal?.length;
 
 // ✅ Pick one
-perms?.portal?.length
+perms?.portal?.length;
 ```
 
 ### 3. No Redundant Type Casts

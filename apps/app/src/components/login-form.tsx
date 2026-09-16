@@ -7,7 +7,11 @@ import { MagicLinkSignIn } from '@/components/magic-link';
 import { MicrosoftSignIn } from '@/components/microsoft-sign-in';
 import { Button } from '@gideon-defender/ui/button';
 import { Card, CardContent, CardDescription, CardTitle } from '@gideon-defender/ui/card';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@gideon-defender/ui/collapsible';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@gideon-defender/ui/collapsible';
 import { CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';

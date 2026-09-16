@@ -98,11 +98,7 @@ describe('Google Sheets detection', () => {
       },
       fetcher: async () => ({
         ok: true,
-        text: async () => [
-          'Question,Answer',
-          ',',
-          'Do you encrypt production data?,',
-        ].join('\n'),
+        text: async () => ['Question,Answer', ',', 'Do you encrypt production data?,'].join('\n'),
       }),
     });
 
@@ -124,11 +120,12 @@ describe('Google Sheets detection', () => {
         }
         return {
           ok: true,
-          text: async () => [
-            '#,Question,Answer',
-            '1,Do you encrypt production data?,',
-            '2,Do you support SAML SSO?,Yes',
-          ].join('\n'),
+          text: async () =>
+            [
+              '#,Question,Answer',
+              '1,Do you encrypt production data?,',
+              '2,Do you support SAML SSO?,Yes',
+            ].join('\n'),
         };
       },
     });
@@ -136,10 +133,7 @@ describe('Google Sheets detection', () => {
     expect(requestedUrls).toHaveLength(2);
     expect(requestedUrls[0]).toContain('tqx=out:csv');
     expect(requestedUrls[1]).toContain('/export?format=csv&id=sheet_xyz&gid=456');
-    expect(questions.map((question) => question.tag)).toEqual([
-      'sheets:B2->C2',
-      'sheets:B3->C3',
-    ]);
+    expect(questions.map((question) => question.tag)).toEqual(['sheets:B2->C2', 'sheets:B3->C3']);
   });
 
   it('uses gviz csv before export csv', async () => {
@@ -178,12 +172,13 @@ describe('Google Sheets detection', () => {
         if (url.includes('tqx=out:json')) {
           return {
             ok: true,
-            text: async () => `google.visualization.Query.setResponse(${JSON.stringify({
-              table: {
-                cols: [{ label: 'Question' }, { label: 'Answer' }],
-                rows: [{ c: [{ v: 'Do you encrypt databases?' }, null] }],
-              },
-            })});`,
+            text: async () =>
+              `google.visualization.Query.setResponse(${JSON.stringify({
+                table: {
+                  cols: [{ label: 'Question' }, { label: 'Answer' }],
+                  rows: [{ c: [{ v: 'Do you encrypt databases?' }, null] }],
+                },
+              })});`,
           };
         }
         return {
@@ -212,5 +207,4 @@ describe('Google Sheets detection', () => {
     expect(questions[0]?.id).toBe('sheet:9:2:3');
     expect(questions[0]?.tag).toBe('sheets:B2->C2');
   });
-
 });

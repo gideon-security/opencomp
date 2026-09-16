@@ -37,12 +37,7 @@ export function TrustPortalAdditionalDocumentsSection({
 }: TrustPortalAdditionalDocumentsSectionProps) {
   const { hasPermission } = usePermissions();
   const canUpdatePortal = hasPermission('trust', 'update');
-  const {
-    documents,
-    uploadDocument,
-    downloadDocument,
-    deleteDocument,
-  } = useTrustPortalDocuments({
+  const { documents, uploadDocument, downloadDocument, deleteDocument } = useTrustPortalDocuments({
     organizationId,
     initialData: initialDocuments,
   });
@@ -96,11 +91,7 @@ export function TrustPortalAdditionalDocumentsSection({
             newProgress[file.name] = 50;
             setUploadProgress({ ...newProgress });
 
-            await uploadDocument(
-              file.name,
-              file.type || 'application/octet-stream',
-              fileData,
-            );
+            await uploadDocument(file.name, file.type || 'application/octet-stream', fileData);
 
             newProgress[file.name] = 100;
             setUploadProgress({ ...newProgress });
@@ -284,8 +275,8 @@ export function TrustPortalAdditionalDocumentsSection({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Document</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete &quot;{documentToDelete?.name}&quot;? This action cannot
-              be undone.
+              Are you sure you want to delete &quot;{documentToDelete?.name}&quot;? This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

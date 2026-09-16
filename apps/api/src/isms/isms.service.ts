@@ -7,7 +7,10 @@ import {
 import { db, Prisma } from '@db';
 import type { IsmsDocumentType } from '@db';
 import { SubmitIsmsForApprovalDto } from './dto/submit-isms-for-approval.dto';
-import { deriveControlLinks, resolveDocumentPlans } from './utils/ensure-setup-plan';
+import {
+  deriveControlLinks,
+  resolveDocumentPlans,
+} from './utils/ensure-setup-plan';
 import { collectPlatformData } from './documents/data-source';
 import { runDerivation } from './documents/generate';
 import { roleValidationMessages, seedRolesIfMissing } from './documents/roles';
@@ -730,9 +733,8 @@ export class IsmsService {
         hasMeetingDate: review.meetingDate != null,
         hasChair: Boolean(review.chairName?.trim()),
         attendeeCount: parseReviewAttendees(review.attendees).length,
-        undiscussedInputCount: review.inputs.filter(
-          (input) => !input.discussed,
-        ).length,
+        undiscussedInputCount: review.inputs.filter((input) => !input.discussed)
+          .length,
         signed: isReviewSigned(review),
       })),
     });

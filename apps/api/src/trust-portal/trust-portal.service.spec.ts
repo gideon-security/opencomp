@@ -197,7 +197,13 @@ describe('TrustPortalService getAllVendorsWithSync compliance badges', () => {
     ]);
 
     expect(badgeTypes).toEqual(
-      expect.arrayContaining(['soc2', 'iso27001', 'iso9001', 'iso42001', 'gdpr']),
+      expect.arrayContaining([
+        'soc2',
+        'iso27001',
+        'iso9001',
+        'iso42001',
+        'gdpr',
+      ]),
     );
   });
 });

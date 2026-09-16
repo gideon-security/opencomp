@@ -1,9 +1,9 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -11,7 +11,6 @@ import { useApi } from '@/hooks/use-api';
 import { usePeopleActions } from '@/hooks/use-people-api';
 import { parseRolesString } from '@/lib/permissions';
 import { authClient } from '@/utils/auth-client';
-import useSWR from 'swr';
 import type { Invitation } from '@db';
 import {
   Empty,
@@ -37,23 +36,24 @@ import {
   TableRow,
 } from '@trycompai/design-system';
 import { InProgress, Search, SettingsAdjust } from '@trycompai/design-system/icons';
+import useSWR from 'swr';
 
 import { apiClient } from '@/lib/api-client';
 import { useMemo } from 'react';
 import { useAgentDevices } from '../../devices/hooks/useAgentDevices';
 import { useFleetHosts } from '../../devices/hooks/useFleetHosts';
-import { buildDisplayItems, filterDisplayItems } from './filter-members';
 import { computeDeviceStatusMap } from './compute-device-status-map';
+import { buildDisplayItems, filterDisplayItems } from './filter-members';
 import { MemberRow, type RequirementColumnKey } from './MemberRow';
-import { PeopleFilters } from './PeopleFilters';
 import { PendingInvitationRow } from './PendingInvitationRow';
-import { TwoFactorSourceSelector } from './TwoFactorSourceSelector';
+import { PeopleFilters } from './PeopleFilters';
 import type {
   MemberWithUser,
   TaskCompletion,
   TeamMembersData,
   TwoFactorStatus,
 } from './TeamMembers';
+import { TwoFactorSourceSelector } from './TwoFactorSourceSelector';
 
 import type { EmployeeSyncConnectionsData } from '../data/queries';
 import { useEmployeeSync } from '../hooks/useEmployeeSync';
@@ -148,13 +148,12 @@ export function TeamMembersClient({
   const api = useApi();
 
   // Fetch custom roles for the role combobox
-  const { data: rolesData } = useSWR(
-    `/v1/roles`,
-    async (endpoint: string) => {
-      const res = await api.get<{ customRoles: Array<{ id: string; name: string; permissions: Record<string, string[]> }> }>(endpoint);
-      return res.data?.customRoles ?? [];
-    },
-  );
+  const { data: rolesData } = useSWR(`/v1/roles`, async (endpoint: string) => {
+    const res = await api.get<{
+      customRoles: Array<{ id: string; name: string; permissions: Record<string, string[]> }>;
+    }>(endpoint);
+    return res.data?.customRoles ?? [];
+  });
   const customRoles = (rolesData ?? []).map((r) => ({
     id: r.id,
     name: r.name,
@@ -180,9 +179,7 @@ export function TeamMembersClient({
   const nextSyncAt = employeeSyncData.nextSyncAt;
   const [isDisablingSync, setIsDisablingSync] = useState(false);
 
-  const handleEmployeeSync = async (
-    provider: string,
-  ) => {
+  const handleEmployeeSync = async (provider: string) => {
     const result = await syncEmployees(provider);
     if (result?.success) {
       router.refresh();
@@ -272,10 +269,7 @@ export function TeamMembersClient({
     }
   };
 
-  const handleRemoveMember = async (
-    memberId: string,
-    options: { skipOffboarding: boolean },
-  ) => {
+  const handleRemoveMember = async (memberId: string, options: { skipOffboarding: boolean }) => {
     try {
       await removeMember(memberId, options);
       toast.success(t('team.memberRemoved'));
@@ -349,39 +343,55 @@ export function TeamMembersClient({
           sources) — the Linear/Stripe toolbar convention. */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex min-w-0 flex-1 items-center gap-3">
-        <div className="w-full md:max-w-[300px]">
-          <InputGroup>
-            <InputGroupAddon>
-              <Search size={16} />
-            </InputGroupAddon>
-            <InputGroupInput
-              placeholder={t('team.searchPlaceholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </InputGroup>
-        </div>
-        <PeopleFilters
-          statusFilter={statusFilter}
-          hasOffboardFilter={hasOffboardFilter}
-          onStatusChange={(value) => {
-            setStatusFilter(value ?? '');
-            setPage(1);
-          }}
-          roleFilter={roleFilter}
-          onRoleChange={(value) => {
-            setRoleFilter(value === 'all' ? '' : (value ?? ''));
-            setPage(1);
-          }}
-          onboardFrom={onboardFrom}
-          onboardTo={onboardTo}
-          onOnboardApply={(from, to) => { setOnboardFrom(from); setOnboardTo(to); setPage(1); }}
-          onOnboardClear={() => { setOnboardFrom(undefined); setOnboardTo(undefined); setPage(1); }}
-          offboardFrom={offboardFrom}
-          offboardTo={offboardTo}
-          onOffboardApply={(from, to) => { setOffboardFrom(from); setOffboardTo(to); setPage(1); }}
-          onOffboardClear={() => { setOffboardFrom(undefined); setOffboardTo(undefined); setPage(1); }}
-        />
+          <div className="w-full md:max-w-[300px]">
+            <InputGroup>
+              <InputGroupAddon>
+                <Search size={16} />
+              </InputGroupAddon>
+              <InputGroupInput
+                placeholder={t('team.searchPlaceholder')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </InputGroup>
+          </div>
+          <PeopleFilters
+            statusFilter={statusFilter}
+            hasOffboardFilter={hasOffboardFilter}
+            onStatusChange={(value) => {
+              setStatusFilter(value ?? '');
+              setPage(1);
+            }}
+            roleFilter={roleFilter}
+            onRoleChange={(value) => {
+              setRoleFilter(value === 'all' ? '' : (value ?? ''));
+              setPage(1);
+            }}
+            onboardFrom={onboardFrom}
+            onboardTo={onboardTo}
+            onOnboardApply={(from, to) => {
+              setOnboardFrom(from);
+              setOnboardTo(to);
+              setPage(1);
+            }}
+            onOnboardClear={() => {
+              setOnboardFrom(undefined);
+              setOnboardTo(undefined);
+              setPage(1);
+            }}
+            offboardFrom={offboardFrom}
+            offboardTo={offboardTo}
+            onOffboardApply={(from, to) => {
+              setOffboardFrom(from);
+              setOffboardTo(to);
+              setPage(1);
+            }}
+            onOffboardClear={() => {
+              setOffboardFrom(undefined);
+              setOffboardTo(undefined);
+              setPage(1);
+            }}
+          />
         </div>
         {/* Source settings (sync / 2FA) — settings, not filters, so they get
             their own compact popover, symmetric with the Filters button. */}
@@ -394,173 +404,191 @@ export function TeamMembersClient({
           </PopoverTrigger>
           <PopoverContent align="end" style={{ width: 'auto' }}>
             <div className="flex w-[280px] flex-col gap-4 p-1.5">
-        {!hasAnyConnection && (
-          <div className="flex w-full flex-col gap-1">
-            <span className="text-xs text-muted-foreground">{t('team.people')}</span>
-            <Link
-              href={`/${organizationId}/integrations`}
-              className="border-border text-muted-foreground hover:bg-muted flex h-8 items-center justify-between rounded-md border border-dashed px-3 text-sm transition-colors"
-            >
-              {t('team.connectIntegration')}
-              <span aria-hidden>→</span>
-            </Link>
-          </div>
-        )}
-        {hasAnyConnection && (
-          <div className="flex w-full">
-            <div className="flex w-full flex-col gap-1">
-              <span id="employee-sync-source-label" className="text-xs text-muted-foreground">
-                {t('team.people')}
-              </span>
-              <Select
-                onValueChange={(value) => {
-                  const provider = String(value);
-                  if (!provider) return;
-                  if (provider === NO_SYNC_VALUE) {
-                    handleDisableSync();
-                    return;
-                  }
-                  handleEmployeeSync(provider);
-                }}
-                disabled={isSyncing || isDisablingSync || !canManageMembers}
-              >
-                <SelectTrigger aria-label={t('team.syncPeopleFrom')}>
-                  {isSyncing ? (
-                    <>
-                      <InProgress size={16} className="mr-2 animate-spin" />
-                      {t('team.syncing')}
-                    </>
-                  ) : selectedProvider ? (
-                    <div className="flex items-center gap-2">
-                      {getProviderLogo(selectedProvider) && (
-                        <Image
-                          src={getProviderLogo(selectedProvider)}
-                          alt=""
-                          width={16}
-                          height={16}
-                          className="rounded-sm"
-                          unoptimized
-                        />
-                      )}
-                      <span className="truncate">{getProviderName(selectedProvider)}</span>
-                    </div>
-                  ) : (
-                    <span className="text-muted-foreground">{t('team.notSyncing')}</span>
-                  )}
-                </SelectTrigger>
-              <SelectContent>
-                <div className="px-2 py-1.5 text-xs text-muted-foreground space-y-1">
-                  {selectedProvider ? (
-                    <>
-                      <div>{t('team.autoSyncSchedule')}</div>
-                      {lastSyncAt && (
-                        <div className="text-xs text-muted-foreground/80">
-                          {t('team.lastSync', { date: new Date(lastSyncAt).toLocaleString() })}
-                        </div>
-                      )}
-                      {nextSyncAt && (
-                        <div className="text-xs text-muted-foreground/80">
-                          {t('team.nextSync', { date: new Date(nextSyncAt).toLocaleString() })}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    t('team.selectProviderHint')
-                  )}
+              {!hasAnyConnection && (
+                <div className="flex w-full flex-col gap-1">
+                  <span className="text-xs text-muted-foreground">{t('team.people')}</span>
+                  <Link
+                    href={`/${organizationId}/integrations`}
+                    className="border-border text-muted-foreground hover:bg-muted flex h-8 items-center justify-between rounded-md border border-dashed px-3 text-sm transition-colors"
+                  >
+                    {t('team.connectIntegration')}
+                    <span aria-hidden>→</span>
+                  </Link>
                 </div>
-                <Separator />
-                {googleWorkspaceConnectionId && (
-                  <SelectItem value="google-workspace">
-                    <div className="flex items-center gap-2">
-                      <Image
-                        src={getProviderLogo('google-workspace')}
-                        alt="Google"
-                        width={16}
-                        height={16}
-                        className="rounded-sm"
-                        unoptimized
-                      />
-                      Google Workspace
-                      {selectedProvider === 'google-workspace' && (
-                        <span className="ml-auto text-xs text-muted-foreground">{t('team.active')}</span>
-                      )}
-                    </div>
-                  </SelectItem>
-                )}
-                {ripplingConnectionId && (
-                  <SelectItem value="rippling">
-                    <div className="flex items-center gap-2">
-                      <Image
-                        src={getProviderLogo('rippling')}
-                        alt="Rippling"
-                        width={16}
-                        height={16}
-                        className="rounded-sm"
-                        unoptimized
-                      />
-                      Rippling
-                      {selectedProvider === 'rippling' && (
-                        <span className="ml-auto text-xs text-muted-foreground">{t('team.active')}</span>
-                      )}
-                    </div>
-                  </SelectItem>
-                )}
-                {jumpcloudConnectionId && (
-                  <SelectItem value="jumpcloud">
-                    <div className="flex items-center gap-2">
-                      <Image
-                        src={getProviderLogo('jumpcloud')}
-                        alt="JumpCloud"
-                        width={16}
-                        height={16}
-                        className="rounded-sm"
-                        unoptimized
-                      />
-                      JumpCloud
-                      {selectedProvider === 'jumpcloud' && (
-                        <span className="ml-auto text-xs text-muted-foreground">{t('team.active')}</span>
-                      )}
-                    </div>
-                  </SelectItem>
-                )}
-                {/* Dynamic sync providers (from dynamic integrations) */}
-                {availableProviders
-                  .filter((p) => p.connected && !['google-workspace', 'rippling', 'jumpcloud'].includes(p.slug))
-                  .map((provider) => (
-                    <SelectItem key={provider.slug} value={provider.slug}>
-                      <div className="flex items-center gap-2">
-                        {provider.logoUrl && (
-                          <Image
-                            src={provider.logoUrl}
-                            alt={provider.name}
-                            width={16}
-                            height={16}
-                            className="rounded-sm"
-                            unoptimized
-                          />
+              )}
+              {hasAnyConnection && (
+                <div className="flex w-full">
+                  <div className="flex w-full flex-col gap-1">
+                    <span id="employee-sync-source-label" className="text-xs text-muted-foreground">
+                      {t('team.people')}
+                    </span>
+                    <Select
+                      onValueChange={(value) => {
+                        const provider = String(value);
+                        if (!provider) return;
+                        if (provider === NO_SYNC_VALUE) {
+                          handleDisableSync();
+                          return;
+                        }
+                        handleEmployeeSync(provider);
+                      }}
+                      disabled={isSyncing || isDisablingSync || !canManageMembers}
+                    >
+                      <SelectTrigger aria-label={t('team.syncPeopleFrom')}>
+                        {isSyncing ? (
+                          <>
+                            <InProgress size={16} className="mr-2 animate-spin" />
+                            {t('team.syncing')}
+                          </>
+                        ) : selectedProvider ? (
+                          <div className="flex items-center gap-2">
+                            {getProviderLogo(selectedProvider) && (
+                              <Image
+                                src={getProviderLogo(selectedProvider)}
+                                alt=""
+                                width={16}
+                                height={16}
+                                className="rounded-sm"
+                                unoptimized
+                              />
+                            )}
+                            <span className="truncate">{getProviderName(selectedProvider)}</span>
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">{t('team.notSyncing')}</span>
                         )}
-                        {provider.name}
-                        {selectedProvider === provider.slug && (
-                          <span className="ml-auto text-xs text-muted-foreground">{t('team.active')}</span>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <div className="px-2 py-1.5 text-xs text-muted-foreground space-y-1">
+                          {selectedProvider ? (
+                            <>
+                              <div>{t('team.autoSyncSchedule')}</div>
+                              {lastSyncAt && (
+                                <div className="text-xs text-muted-foreground/80">
+                                  {t('team.lastSync', {
+                                    date: new Date(lastSyncAt).toLocaleString(),
+                                  })}
+                                </div>
+                              )}
+                              {nextSyncAt && (
+                                <div className="text-xs text-muted-foreground/80">
+                                  {t('team.nextSync', {
+                                    date: new Date(nextSyncAt).toLocaleString(),
+                                  })}
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            t('team.selectProviderHint')
+                          )}
+                        </div>
+                        <Separator />
+                        {googleWorkspaceConnectionId && (
+                          <SelectItem value="google-workspace">
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src={getProviderLogo('google-workspace')}
+                                alt="Google"
+                                width={16}
+                                height={16}
+                                className="rounded-sm"
+                                unoptimized
+                              />
+                              Google Workspace
+                              {selectedProvider === 'google-workspace' && (
+                                <span className="ml-auto text-xs text-muted-foreground">
+                                  {t('team.active')}
+                                </span>
+                              )}
+                            </div>
+                          </SelectItem>
                         )}
-                      </div>
-                    </SelectItem>
-                  ))}
-                <Separator />
-                <SelectItem value={NO_SYNC_VALUE}>
-                  <div className="flex items-center gap-2">
-                    <span>{t('team.dontAutoSync')}</span>
-                    {!selectedProvider && (
-                      <span className="ml-auto text-xs text-muted-foreground">{t('team.active')}</span>
-                    )}
+                        {ripplingConnectionId && (
+                          <SelectItem value="rippling">
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src={getProviderLogo('rippling')}
+                                alt="Rippling"
+                                width={16}
+                                height={16}
+                                className="rounded-sm"
+                                unoptimized
+                              />
+                              Rippling
+                              {selectedProvider === 'rippling' && (
+                                <span className="ml-auto text-xs text-muted-foreground">
+                                  {t('team.active')}
+                                </span>
+                              )}
+                            </div>
+                          </SelectItem>
+                        )}
+                        {jumpcloudConnectionId && (
+                          <SelectItem value="jumpcloud">
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src={getProviderLogo('jumpcloud')}
+                                alt="JumpCloud"
+                                width={16}
+                                height={16}
+                                className="rounded-sm"
+                                unoptimized
+                              />
+                              JumpCloud
+                              {selectedProvider === 'jumpcloud' && (
+                                <span className="ml-auto text-xs text-muted-foreground">
+                                  {t('team.active')}
+                                </span>
+                              )}
+                            </div>
+                          </SelectItem>
+                        )}
+                        {/* Dynamic sync providers (from dynamic integrations) */}
+                        {availableProviders
+                          .filter(
+                            (p) =>
+                              p.connected &&
+                              !['google-workspace', 'rippling', 'jumpcloud'].includes(p.slug),
+                          )
+                          .map((provider) => (
+                            <SelectItem key={provider.slug} value={provider.slug}>
+                              <div className="flex items-center gap-2">
+                                {provider.logoUrl && (
+                                  <Image
+                                    src={provider.logoUrl}
+                                    alt={provider.name}
+                                    width={16}
+                                    height={16}
+                                    className="rounded-sm"
+                                    unoptimized
+                                  />
+                                )}
+                                {provider.name}
+                                {selectedProvider === provider.slug && (
+                                  <span className="ml-auto text-xs text-muted-foreground">
+                                    {t('team.active')}
+                                  </span>
+                                )}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        <Separator />
+                        <SelectItem value={NO_SYNC_VALUE}>
+                          <div className="flex items-center gap-2">
+                            <span>{t('team.dontAutoSync')}</span>
+                            {!selectedProvider && (
+                              <span className="ml-auto text-xs text-muted-foreground">
+                                {t('team.active')}
+                              </span>
+                            )}
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                </SelectItem>
-              </SelectContent>
-              </Select>
-            </div>
-          </div>
-        )}
-        <TwoFactorSourceSelector />
+                </div>
+              )}
+              <TwoFactorSourceSelector />
             </div>
           </PopoverContent>
         </Popover>
@@ -574,9 +602,7 @@ export function TeamMembersClient({
               {searchQuery ? t('team.noPeopleFound') : t('team.noEmployeesYet')}
             </EmptyTitle>
             <EmptyDescription>
-              {searchQuery
-                ? t('team.tryAdjustingSearch')
-                : t('team.getStartedInvite')}
+              {searchQuery ? t('team.tryAdjustingSearch') : t('team.getStartedInvite')}
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
@@ -650,4 +676,3 @@ export function TeamMembersClient({
     </Stack>
   );
 }
-

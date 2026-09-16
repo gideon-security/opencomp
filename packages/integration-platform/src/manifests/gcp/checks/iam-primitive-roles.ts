@@ -25,10 +25,9 @@ async function getBindings(
   onReadError?: (failure: ReadFailure) => void,
 ): Promise<IamBinding[] | null> {
   try {
-    const policy = await ctx.post<{ bindings?: IamBinding[] }>(
-      `/${resourcePath}:getIamPolicy`,
-      { options: { requestedPolicyVersion: 3 } },
-    );
+    const policy = await ctx.post<{ bindings?: IamBinding[] }>(`/${resourcePath}:getIamPolicy`, {
+      options: { requestedPolicyVersion: 3 },
+    });
     return policy.bindings ?? [];
   } catch (err) {
     const failure = toHttpReadFailure(err);
@@ -45,11 +44,7 @@ async function getBindings(
  * unreadable project is never silently skipped (which would leave the RBAC task
  * stale-passing on unverified data).
  */
-function failUnverifiedProject(
-  ctx: CheckContext,
-  projectId: string,
-  failure?: ReadFailure,
-): void {
+function failUnverifiedProject(ctx: CheckContext, projectId: string, failure?: ReadFailure): void {
   ctx.fail({
     title: `Could not verify IAM primitive roles: ${projectId}`,
     description: `IAM policy for project "${projectId}" could not be read${failure ? ` (${failure.error})` : ''}, so primitive-role usage is unverified.`,
@@ -154,7 +149,12 @@ export const iamPrimitiveRolesCheck: IntegrationCheck = {
                 resourceId: projectId,
                 severity,
                 remediation: `Replace "${binding.role}" bindings with least-privilege predefined or custom roles.`,
-                evidence: { projectId, scope: scope.label, role: binding.role, memberCount: members.length },
+                evidence: {
+                  projectId,
+                  scope: scope.label,
+                  role: binding.role,
+                  memberCount: members.length,
+                },
               });
             }
           }

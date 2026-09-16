@@ -98,9 +98,7 @@ describe('RequirementsRow', () => {
     });
 
     fireEvent.click(screen.getByLabelText('Edit requirement'));
-    expect(screen.getByLabelText('Requirement description')).toHaveValue(
-      'Revalidated requirement',
-    );
+    expect(screen.getByLabelText('Requirement description')).toHaveValue('Revalidated requirement');
   });
 
   it('blocks saving when a required field is cleared', async () => {
@@ -120,9 +118,7 @@ describe('RequirementsRow', () => {
     });
     fireEvent.click(screen.getByText('Save'));
 
-    await waitFor(() =>
-      expect(screen.getByLabelText('Requirement party')).toHaveValue(''),
-    );
+    await waitFor(() => expect(screen.getByLabelText('Requirement party')).toHaveValue(''));
     expect(onSave).not.toHaveBeenCalled();
   });
 

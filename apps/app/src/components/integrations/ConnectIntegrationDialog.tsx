@@ -7,23 +7,20 @@ import {
 } from '@/hooks/use-integration-platform';
 import { usePermissions } from '@/hooks/use-permissions';
 import {
+  getAwsCloudShellScript,
+  getAwsCloudShellUrl,
+  getAwsRemediationScript,
+  normalizeAwsEnvironment,
+} from '@gideon-defender/integration-platform';
+import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import {
-  Button,
-  Label,
-} from '@trycompai/design-system';
+import { Button, Label } from '@trycompai/design-system';
 import { ArrowLeft, Loader2, Plus, Settings, Trash2 } from 'lucide-react';
-import {
-  getAwsCloudShellUrl,
-  getAwsCloudShellScript,
-  getAwsRemediationScript,
-  normalizeAwsEnvironment,
-} from '@gideon-defender/integration-platform';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -109,9 +106,7 @@ export function ConnectIntegrationDialog({
         )
       : regionOptions;
   const setupScript =
-    integrationId === 'aws'
-      ? getAwsCloudShellScript(awsEnvironment)
-      : provider?.setupScript;
+    integrationId === 'aws' ? getAwsCloudShellScript(awsEnvironment) : provider?.setupScript;
   const remediationScript = getAwsRemediationScript(awsEnvironment);
   const cloudShellUrl = getAwsCloudShellUrl(awsEnvironment);
 
@@ -244,16 +239,15 @@ export function ConnectIntegrationDialog({
       if (!finalCredentials.connectionName) {
         // Extract account ID from Role ARN: arn:aws:iam::123456789012:role/Name
         const arnMatch = String(finalCredentials.roleArn ?? '').match(/:(\d{12}):/);
-        finalCredentials.connectionName = arnMatch
-          ? `AWS ${arnMatch[1]}`
-          : `AWS Account`;
+        finalCredentials.connectionName = arnMatch ? `AWS ${arnMatch[1]}` : `AWS Account`;
       }
     }
 
     const newErrors: Record<string, string> = {};
     for (const field of allFields) {
       // Skip validation for auto-filled fields
-      if (provider?.setupScript && (field.id === 'externalId' || field.id === 'connectionName')) continue;
+      if (provider?.setupScript && (field.id === 'externalId' || field.id === 'connectionName'))
+        continue;
 
       const value = finalCredentials[field.id];
       const isMissing =
@@ -466,7 +460,14 @@ export function ConnectIntegrationDialog({
     } finally {
       setSavingCredentials(false);
     }
-  }, [configureConnectionId, credentials, orgId, refreshConnections, updateConnectionCredentials, updateConnectionMetadata]);
+  }, [
+    configureConnectionId,
+    credentials,
+    orgId,
+    refreshConnections,
+    updateConnectionCredentials,
+    updateConnectionMetadata,
+  ]);
 
   const updateCredential = (fieldId: string, value: string | string[]) => {
     setCredentials((prev) => ({
@@ -506,7 +507,10 @@ export function ConnectIntegrationDialog({
                       </span>
                     )}
                   </div>
-                  {(conn.accountId || conn.regions?.length || conn.tenantId || conn.subscriptionId) && (
+                  {(conn.accountId ||
+                    conn.regions?.length ||
+                    conn.tenantId ||
+                    conn.subscriptionId) && (
                     <div className="text-xs text-muted-foreground">
                       {[
                         conn.accountId && `Account: ${conn.accountId}`,
@@ -535,7 +539,9 @@ export function ConnectIntegrationDialog({
                       onClick={() => handleDisconnect(conn.id)}
                       disabled={isDisconnecting === conn.id}
                       loading={isDisconnecting === conn.id}
-                      iconLeft={isDisconnecting !== conn.id ? <Trash2 className="h-4 w-4" /> : undefined}
+                      iconLeft={
+                        isDisconnecting !== conn.id ? <Trash2 className="h-4 w-4" /> : undefined
+                      }
                     />
                   )}
                 </div>
@@ -545,7 +551,11 @@ export function ConnectIntegrationDialog({
         )}
 
         {canCreate && (supportsMultipleConnections || existingConnections.length === 0) && (
-          <Button onClick={() => setView('form')} width="full" iconLeft={<Plus className="h-4 w-4" />}>
+          <Button
+            onClick={() => setView('form')}
+            width="full"
+            iconLeft={<Plus className="h-4 w-4" />}
+          >
             {existingConnections.length > 0 ? 'Add Account' : 'Add Connection'}
           </Button>
         )}
@@ -562,7 +572,12 @@ export function ConnectIntegrationDialog({
           <div className="space-y-3">
             {showBackButton && (
               <div className="mb-2">
-                <Button variant="ghost" size="sm" onClick={() => setView('list')} iconLeft={<ArrowLeft className="h-4 w-4" />}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setView('list')}
+                  iconLeft={<ArrowLeft className="h-4 w-4" />}
+                >
                   Back to connections
                 </Button>
               </div>
@@ -570,7 +585,12 @@ export function ConnectIntegrationDialog({
             <p className="text-sm text-muted-foreground">
               This integration uses OAuth to securely connect to your {integrationName} account.
             </p>
-            <Button onClick={handleOAuthConnect} disabled={connecting || !canCreate} width="full" loading={connecting}>
+            <Button
+              onClick={handleOAuthConnect}
+              disabled={connecting || !canCreate}
+              width="full"
+              loading={connecting}
+            >
               {connecting ? 'Connecting...' : `Continue with ${integrationName}`}
             </Button>
           </div>
@@ -592,7 +612,12 @@ export function ConnectIntegrationDialog({
         return (
           <div className="space-y-4">
             {showBackButton && (
-              <Button variant="ghost" size="sm" onClick={() => setView('list')} iconLeft={<ArrowLeft className="h-4 w-4" />}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setView('list')}
+                iconLeft={<ArrowLeft className="h-4 w-4" />}
+              >
                 Back to connections
               </Button>
             )}
@@ -606,7 +631,9 @@ export function ConnectIntegrationDialog({
             )}
             {!provider?.setupScript && provider?.setupInstructions && (
               <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-md max-h-32 overflow-y-auto overflow-x-hidden">
-                <p className="whitespace-pre-wrap text-xs break-words">{provider.setupInstructions}</p>
+                <p className="whitespace-pre-wrap text-xs break-words">
+                  {provider.setupInstructions}
+                </p>
               </div>
             )}
             {allFields
@@ -617,48 +644,55 @@ export function ConnectIntegrationDialog({
                 return true;
               })
               .map((field) => (
-              <div key={field.id}>
-                {/* Section divider + quick setup before remediationRoleArn */}
-                {field.id === 'remediationRoleArn' && integrationId === 'aws' && (
-                  <>
-                    <SectionDivider label="Auto-Remediation (Optional)" />
-                    <div className="mb-4 mt-4">
-                      <CloudShellSetup
-                        script={remediationScript}
-                        externalId={orgId}
-                        cloudShellUrl={cloudShellUrl}
-                        disabled={!hasSelectedAwsEnvironment}
-                        title="Remediation Role Setup"
-                        subtitle="Create a write-access role for auto-fix"
-                        footnote="The remediation role is separate from your audit role — your audit role stays read-only."
-                      />
-                    </div>
-                  </>
-                )}
-                {/* Section divider before regions */}
-                {field.id === 'regions' && integrationId === 'aws' && (
-                  <SectionDivider label="Scan Configuration" />
-                )}
-                <div className="space-y-1.5 mt-4">
-                  <Label htmlFor={field.id}>
-                    {field.label}
-                    {field.required && <span className="text-destructive ml-1">*</span>}
-                  </Label>
-                  <CredentialInput
-                    field={field}
-                    value={credentials[field.id] || (field.type === 'multi-select' ? [] : '')}
-                    onChange={(value) => updateCredential(field.id, value)}
-                    optionsOverride={field.id === 'regions' ? filteredRegionOptions : undefined}
-                    disabled={field.id === 'regions' && !hasSelectedAwsEnvironment}
-                  />
-                  {field.helpText && (
-                    <p className="text-[11px] text-muted-foreground/70">{field.helpText}</p>
+                <div key={field.id}>
+                  {/* Section divider + quick setup before remediationRoleArn */}
+                  {field.id === 'remediationRoleArn' && integrationId === 'aws' && (
+                    <>
+                      <SectionDivider label="Auto-Remediation (Optional)" />
+                      <div className="mb-4 mt-4">
+                        <CloudShellSetup
+                          script={remediationScript}
+                          externalId={orgId}
+                          cloudShellUrl={cloudShellUrl}
+                          disabled={!hasSelectedAwsEnvironment}
+                          title="Remediation Role Setup"
+                          subtitle="Create a write-access role for auto-fix"
+                          footnote="The remediation role is separate from your audit role — your audit role stays read-only."
+                        />
+                      </div>
+                    </>
                   )}
-                  {errors[field.id] && <p className="text-xs text-destructive">{errors[field.id]}</p>}
+                  {/* Section divider before regions */}
+                  {field.id === 'regions' && integrationId === 'aws' && (
+                    <SectionDivider label="Scan Configuration" />
+                  )}
+                  <div className="space-y-1.5 mt-4">
+                    <Label htmlFor={field.id}>
+                      {field.label}
+                      {field.required && <span className="text-destructive ml-1">*</span>}
+                    </Label>
+                    <CredentialInput
+                      field={field}
+                      value={credentials[field.id] || (field.type === 'multi-select' ? [] : '')}
+                      onChange={(value) => updateCredential(field.id, value)}
+                      optionsOverride={field.id === 'regions' ? filteredRegionOptions : undefined}
+                      disabled={field.id === 'regions' && !hasSelectedAwsEnvironment}
+                    />
+                    {field.helpText && (
+                      <p className="text-[11px] text-muted-foreground/70">{field.helpText}</p>
+                    )}
+                    {errors[field.id] && (
+                      <p className="text-xs text-destructive">{errors[field.id]}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-            <Button onClick={handleCredentialConnect} disabled={connecting || !canCreate} width="full" loading={connecting}>
+              ))}
+            <Button
+              onClick={handleCredentialConnect}
+              disabled={connecting || !canCreate}
+              width="full"
+              loading={connecting}
+            >
               {connecting ? 'Connecting...' : 'Connect'}
             </Button>
           </div>
@@ -678,7 +712,12 @@ export function ConnectIntegrationDialog({
 
     return (
       <div className="space-y-4">
-        <Button variant="ghost" size="sm" onClick={() => setView('list')} iconLeft={<ArrowLeft className="h-4 w-4" />}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setView('list')}
+          iconLeft={<ArrowLeft className="h-4 w-4" />}
+        >
           Back to connections
         </Button>
 
@@ -705,7 +744,12 @@ export function ConnectIntegrationDialog({
           </div>
         ))}
 
-        <Button onClick={handleSaveCredentials} disabled={savingCredentials || !canUpdate} width="full" loading={savingCredentials}>
+        <Button
+          onClick={handleSaveCredentials}
+          disabled={savingCredentials || !canUpdate}
+          width="full"
+          loading={savingCredentials}
+        >
           {savingCredentials ? 'Saving...' : 'Update Connection'}
         </Button>
       </div>

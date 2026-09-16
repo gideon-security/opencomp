@@ -1,6 +1,6 @@
-import { timingSafeEqual } from 'crypto';
 import { initializeOrganization } from '@/actions/organization/lib/initialize-organization';
 import { db } from '@db/server';
+import { timingSafeEqual } from 'crypto';
 import { type NextRequest, NextResponse } from 'next/server';
 
 // Configure this route to use Node.js runtime instead of Edge
@@ -46,7 +46,11 @@ export async function POST(request: NextRequest) {
 
   const token = authHeader?.split(' ')[1];
 
-  if (!token || token.length !== retoolApiSecret.length || !timingSafeEqual(Buffer.from(token), Buffer.from(retoolApiSecret))) {
+  if (
+    !token ||
+    token.length !== retoolApiSecret.length ||
+    !timingSafeEqual(Buffer.from(token), Buffer.from(retoolApiSecret))
+  ) {
     return NextResponse.json(
       {
         success: false,

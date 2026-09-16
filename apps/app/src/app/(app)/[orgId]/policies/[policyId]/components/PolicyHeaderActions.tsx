@@ -1,8 +1,10 @@
 'use client';
 
 import { useAuditLogs } from '@/hooks/use-audit-logs';
+import { usePermissions } from '@/hooks/use-permissions';
+import type { Member, Policy, PolicyVersion, User } from '@db';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { Button } from '@gideon-defender/ui/button';
-import { useSWRConfig } from 'swr';
 import {
   Dialog,
   DialogContent,
@@ -19,17 +21,15 @@ import {
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
 import { Icons } from '@gideon-defender/ui/icons';
-import type { Member, Policy, PolicyVersion, User } from '@db';
 import type { JSONContent } from '@tiptap/react';
-import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { useSWRConfig } from 'swr';
 import { auditLogsKey } from '../hooks/useAuditLogs';
-import { usePolicy, policyKey } from '../hooks/usePolicy';
+import { policyKey, usePolicy } from '../hooks/usePolicy';
 import { policyVersionsKey } from '../hooks/usePolicyVersions';
-import { usePermissions } from '@/hooks/use-permissions';
 
 type PolicyWithVersion = Policy & {
   approver: (Member & { user: User }) | null;
@@ -216,9 +216,7 @@ export function PolicyHeaderActions({
               disabled={isPendingApproval || isRegenerating}
             >
               <Icons.AI className="mr-2 h-4 w-4" />{' '}
-              {isRegenerating
-                ? t('headerActions.regenerating')
-                : t('headerActions.regenerate')}
+              {isRegenerating ? t('headerActions.regenerating') : t('headerActions.regenerate')}
             </DropdownMenuItem>
           )}
           {canUpdate && (
@@ -233,9 +231,7 @@ export function PolicyHeaderActions({
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => handleDownloadPDF()} disabled={isDownloading}>
             <Icons.Download className="mr-2 h-4 w-4" />{' '}
-            {isDownloading
-              ? t('headerActions.downloading')
-              : t('headerActions.downloadPdf')}
+            {isDownloading ? t('headerActions.downloading') : t('headerActions.downloadPdf')}
           </DropdownMenuItem>
           {canUpdate && (
             <DropdownMenuItem
@@ -243,8 +239,7 @@ export function PolicyHeaderActions({
                 updateQueryParam({ key: 'archive-policy-sheet', value: 'true' });
               }}
             >
-              <Icons.InboxCustomize className="mr-2 h-4 w-4" />{' '}
-              {t('headerActions.archiveRestore')}
+              <Icons.InboxCustomize className="mr-2 h-4 w-4" /> {t('headerActions.archiveRestore')}
             </DropdownMenuItem>
           )}
           {canDelete && (
@@ -265,18 +260,13 @@ export function PolicyHeaderActions({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('headerActions.regenerateTitle')}</DialogTitle>
-            <DialogDescription>
-              {t('headerActions.regenerateDescription')}
-            </DialogDescription>
+            <DialogDescription>{t('headerActions.regenerateDescription')}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setRegenerateConfirmOpen(false)}>
               {t('headerActions.cancel')}
             </Button>
-            <Button
-              onClick={handleRegenerate}
-              disabled={isRegenerating}
-            >
+            <Button onClick={handleRegenerate} disabled={isRegenerating}>
               {isRegenerating ? t('headerActions.working') : t('headerActions.confirm')}
             </Button>
           </DialogFooter>

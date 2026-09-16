@@ -42,9 +42,11 @@ describe('IsmsDocumentTemplateService', () => {
     (
       mockDb.frameworkEditorIsmsDocumentTemplate.findUnique as jest.Mock
     ).mockResolvedValue({ id: 'tpl_ctx' });
-    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue({
-      id: 'fw_1',
-    });
+    (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue(
+      {
+        id: 'fw_1',
+      },
+    );
     (
       mockDb.frameworkEditorRequirement.findUnique as jest.Mock
     ).mockResolvedValue({ frameworkId: 'fw_1' });

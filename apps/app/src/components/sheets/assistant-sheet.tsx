@@ -3,8 +3,8 @@
 import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import { Sheet, SheetContent } from '@gideon-defender/ui/sheet';
 
-import { Drawer, DrawerContent, DrawerTitle } from '@gideon-defender/ui/drawer';
 import '@/styles/editor.css';
+import { Drawer, DrawerContent, DrawerTitle } from '@gideon-defender/ui/drawer';
 import { useQueryState } from 'nuqs';
 import Chat from '../ai/chat';
 

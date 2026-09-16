@@ -1,8 +1,8 @@
 'use client';
 
-import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
 import type { UpdatePreview } from '@/types/framework-versioning';
+import useSWR from 'swr';
 
 interface UseFrameworkUpdatePreviewOptions {
   fallbackData?: UpdatePreview;

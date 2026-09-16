@@ -1,8 +1,8 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import '@testing-library/jest-dom/vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -34,13 +34,7 @@ describe('OrganizationDetail — background-check toggle', () => {
   });
 
   it('shows the toggle in its current state', async () => {
-    render(
-      <OrganizationDetail
-        org={baseOrg}
-        currentOrgId="org_1"
-        hasAccess={true}
-      />,
-    );
+    render(<OrganizationDetail org={baseOrg} currentOrgId="org_1" hasAccess={true} />);
 
     await screen.findByText(/activity will appear here when changes are made/i);
 
@@ -53,13 +47,7 @@ describe('OrganizationDetail — background-check toggle', () => {
   it('toggles off and PATCHes the new value', async () => {
     const user = userEvent.setup();
 
-    render(
-      <OrganizationDetail
-        org={baseOrg}
-        currentOrgId="org_1"
-        hasAccess={true}
-      />,
-    );
+    render(<OrganizationDetail org={baseOrg} currentOrgId="org_1" hasAccess={true} />);
 
     const toggle = screen.getByRole('switch', {
       name: /organizations\.detail\.requireBackgroundChecks/i,
@@ -68,10 +56,9 @@ describe('OrganizationDetail — background-check toggle', () => {
     await user.click(toggle);
 
     await waitFor(() => {
-      expect(patchMock).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_1',
-        { backgroundCheckStepEnabled: false },
-      );
+      expect(patchMock).toHaveBeenCalledWith('/v1/admin/organizations/org_1', {
+        backgroundCheckStepEnabled: false,
+      });
     });
   });
 
@@ -79,13 +66,7 @@ describe('OrganizationDetail — background-check toggle', () => {
     patchMock.mockResolvedValue({ error: 'server error' });
     const user = userEvent.setup();
 
-    render(
-      <OrganizationDetail
-        org={baseOrg}
-        currentOrgId="org_1"
-        hasAccess={true}
-      />,
-    );
+    render(<OrganizationDetail org={baseOrg} currentOrgId="org_1" hasAccess={true} />);
 
     const toggle = screen.getByRole('switch', {
       name: /organizations\.detail\.requireBackgroundChecks/i,
@@ -107,9 +88,7 @@ describe('OrganizationDetail — internal-organization toggle', () => {
   it('asks for confirmation before saving (no PATCH on the toggle click)', async () => {
     const user = userEvent.setup();
 
-    render(
-      <OrganizationDetail org={baseOrg} currentOrgId="org_1" hasAccess={true} />,
-    );
+    render(<OrganizationDetail org={baseOrg} currentOrgId="org_1" hasAccess={true} />);
 
     await user.click(
       screen.getByRole('switch', { name: /organizations\.detail\.internalOrganization/i }),
@@ -122,9 +101,7 @@ describe('OrganizationDetail — internal-organization toggle', () => {
   it('PATCHes isInternal only after the change is confirmed', async () => {
     const user = userEvent.setup();
 
-    render(
-      <OrganizationDetail org={baseOrg} currentOrgId="org_1" hasAccess={true} />,
-    );
+    render(<OrganizationDetail org={baseOrg} currentOrgId="org_1" hasAccess={true} />);
 
     await user.click(
       screen.getByRole('switch', { name: /organizations\.detail\.internalOrganization/i }),
@@ -145,16 +122,16 @@ describe('OrganizationDetail — internal-organization toggle', () => {
   it('does not PATCH when the confirmation is canceled', async () => {
     const user = userEvent.setup();
 
-    render(
-      <OrganizationDetail org={baseOrg} currentOrgId="org_1" hasAccess={true} />,
-    );
+    render(<OrganizationDetail org={baseOrg} currentOrgId="org_1" hasAccess={true} />);
 
     await user.click(
       screen.getByRole('switch', { name: /organizations\.detail\.internalOrganization/i }),
     );
-    await user.click(await screen.findByRole('button', {
+    await user.click(
+      await screen.findByRole('button', {
         name: /organizations\.detail\.cancel/i,
-      }));
+      }),
+    );
 
     await waitFor(() => {
       expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();

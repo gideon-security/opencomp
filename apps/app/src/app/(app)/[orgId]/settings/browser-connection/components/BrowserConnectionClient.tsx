@@ -3,12 +3,13 @@
 // Reuse the task flow's proven connect/reconnect experience here so org-level
 // connections use the same reliable path (method detection + automated
 // credential entry + a working live takeover) instead of a bespoke, flaky one.
-import { ConnectVendorLoginFlow } from '@/app/(app)/[orgId]/tasks/[taskId]/components/browser-automations/ConnectVendorLoginFlow';
 import { clearConnectState } from '@/app/(app)/[orgId]/tasks/[taskId]/components/browser-automations/connect-flow-storage';
+import { ConnectVendorLoginFlow } from '@/app/(app)/[orgId]/tasks/[taskId]/components/browser-automations/ConnectVendorLoginFlow';
 import { usePermissions } from '@/hooks/use-permissions';
 import { apiClient } from '@/lib/api-client';
 import { Button, Section } from '@trycompai/design-system';
 import { Add, Close, Locked } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useTotpStatuses } from '../../../tasks/[taskId]/hooks/useTotpStatuses';
@@ -16,7 +17,6 @@ import { methodOf, permanenceStateOf, type Connection } from './connection-forma
 import { ConnectionsTable } from './ConnectionsTable';
 import { MakePermanentSheet } from './MakePermanentSheet';
 import { ManageConnectionSheet } from './ManageConnectionSheet';
-import { useTranslations } from 'next-intl';
 
 interface BrowserConnectionClientProps {
   organizationId: string;
@@ -53,9 +53,7 @@ export function BrowserConnectionClient({
   const [manageConnection, setManageConnection] = useState<Connection | null>(null);
   const [manageOpen, setManageOpen] = useState(false);
 
-  const [permanentConnection, setPermanentConnection] = useState<Connection | null>(
-    null,
-  );
+  const [permanentConnection, setPermanentConnection] = useState<Connection | null>(null);
   const [permanentOpen, setPermanentOpen] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
@@ -82,8 +80,7 @@ export function BrowserConnectionClient({
       ),
     [profiles, totpStatuses],
   );
-  const showBanner =
-    canUpdate && !bannerDismissed && !totpStatusesLoading && atRisk.length > 0;
+  const showBanner = canUpdate && !bannerDismissed && !totpStatusesLoading && atRisk.length > 0;
 
   const fetchProfiles = useCallback(async () => {
     const res = await apiClient.get<Connection[]>('/v1/browserbase/profiles');
@@ -134,10 +131,9 @@ export function BrowserConnectionClient({
     async (connection: Connection, name: string) => {
       setBusy(true);
       try {
-        const res = await apiClient.patch(
-          `/v1/browserbase/profiles/${connection.id}`,
-          { displayName: name },
-        );
+        const res = await apiClient.patch(`/v1/browserbase/profiles/${connection.id}`, {
+          displayName: name,
+        });
         if (res.error) {
           toast.error(res.error || t('connections.renameFailed'));
           return;
@@ -178,44 +174,47 @@ export function BrowserConnectionClient({
     [fetchProfiles, t],
   );
 
-  const handleSetTotp = useCallback(async (connection: Connection, totpSeed: string) => {
-    setBusy(true);
-    try {
-      const res = await apiClient.post(
-        `/v1/browserbase/profiles/${connection.id}/totp`,
-        { totpSeed },
-      );
-      if (res.error) {
-        toast.error(res.error || t('connections.authenticatorKeyFailed'));
-        return;
+  const handleSetTotp = useCallback(
+    async (connection: Connection, totpSeed: string) => {
+      setBusy(true);
+      try {
+        const res = await apiClient.post(`/v1/browserbase/profiles/${connection.id}/totp`, {
+          totpSeed,
+        });
+        if (res.error) {
+          toast.error(res.error || t('connections.authenticatorKeyFailed'));
+          return;
+        }
+        await mutateTotpStatuses();
+        toast.success(t('connections.authenticatorKeyOn'));
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : t('connections.authenticatorKeyFailed'));
+      } finally {
+        setBusy(false);
       }
-      await mutateTotpStatuses();
-      toast.success(t('connections.authenticatorKeyOn'));
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : t('connections.authenticatorKeyFailed'));
-    } finally {
-      setBusy(false);
-    }
-  }, [mutateTotpStatuses, t]);
+    },
+    [mutateTotpStatuses, t],
+  );
 
-  const handleClearTotp = useCallback(async (connection: Connection) => {
-    setBusy(true);
-    try {
-      const res = await apiClient.delete(
-        `/v1/browserbase/profiles/${connection.id}/totp`,
-      );
-      if (res.error) {
-        toast.error(res.error || t('connections.totpSaveFailed'));
-        return;
+  const handleClearTotp = useCallback(
+    async (connection: Connection) => {
+      setBusy(true);
+      try {
+        const res = await apiClient.delete(`/v1/browserbase/profiles/${connection.id}/totp`);
+        if (res.error) {
+          toast.error(res.error || t('connections.totpSaveFailed'));
+          return;
+        }
+        await mutateTotpStatuses();
+        toast.success('Automatic 2FA turned off.');
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : t('connections.totpClearFailed'));
+      } finally {
+        setBusy(false);
       }
-      await mutateTotpStatuses();
-      toast.success('Automatic 2FA turned off.');
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : t('connections.totpClearFailed'));
-    } finally {
-      setBusy(false);
-    }
-  }, [mutateTotpStatuses, t]);
+    },
+    [mutateTotpStatuses, t],
+  );
 
   const handleMakePermanent = useCallback((connection: Connection) => {
     setManageOpen(false);
@@ -226,14 +225,10 @@ export function BrowserConnectionClient({
   // The Make-Permanent sheet drives its own success screen, so this returns
   // whether the key saved (no toast on success) and refreshes the row states.
   const handleSaveTotp = useCallback(
-    async (
-      connection: { id: string },
-      totpSeed: string,
-    ): Promise<boolean> => {
-      const res = await apiClient.post(
-        `/v1/browserbase/profiles/${connection.id}/totp`,
-        { totpSeed },
-      );
+    async (connection: { id: string }, totpSeed: string): Promise<boolean> => {
+      const res = await apiClient.post(`/v1/browserbase/profiles/${connection.id}/totp`, {
+        totpSeed,
+      });
       if (res.error) {
         toast.error(res.error || t('connections.authenticatorKeyFailed'));
         return false;
@@ -250,9 +245,7 @@ export function BrowserConnectionClient({
     async (connection: Connection) => {
       setBusy(true);
       try {
-        const res = await apiClient.delete(
-          `/v1/browserbase/profiles/${connection.id}`,
-        );
+        const res = await apiClient.delete(`/v1/browserbase/profiles/${connection.id}`);
         if (res.error) {
           toast.error(res.error || t('connections.removeFailed'));
           return;
@@ -314,23 +307,23 @@ export function BrowserConnectionClient({
             <li className="flex gap-1.5">
               <span className="shrink-0 text-foreground">1.</span>
               <span>
-                Connect a vendor login here — OpenComp signs in for you, including any
-                two-factor codes.
+                Connect a vendor login here — OpenComp signs in for you, including any two-factor
+                codes.
               </span>
             </li>
             <li className="flex gap-1.5">
               <span className="shrink-0 text-foreground">2.</span>
               <span>
-                On a schedule it signs in, screenshots the required page as audit evidence,
-                and re-signs in on its own when a session expires.
+                On a schedule it signs in, screenshots the required page as audit evidence, and
+                re-signs in on its own when a session expires.
               </span>
             </li>
             <li className="flex gap-1.5">
               <span className="shrink-0 text-foreground">3.</span>
               <span>
                 You add the automations that use these logins inside an{' '}
-                <span className="text-foreground">evidence task</span>, in its
-                &ldquo;Browser evidence&rdquo; section.
+                <span className="text-foreground">evidence task</span>, in its &ldquo;Browser
+                evidence&rdquo; section.
               </span>
             </li>
           </ol>
@@ -378,54 +371,54 @@ export function BrowserConnectionClient({
         )}
 
         {profiles.length === 0 ? (
-        <div className="grid place-items-center rounded-lg border border-dashed border-border py-16 text-center">
-          <div className="max-w-[320px]">
-            <div className="text-sm text-foreground">{t('connections.noConnectionsYet')}</div>
-            <p className="mt-1 text-[12.5px] text-muted-foreground">
-              {t('connections.noConnectionsDescription')}
-            </p>
-            {canConnect && (
-              <div className="mt-4">
-                <Button onClick={openConnect} iconLeft={<Add size={14} />}>
-                  {t('connections.connectVendor')}
-                </Button>
-              </div>
-            )}
+          <div className="grid place-items-center rounded-lg border border-dashed border-border py-16 text-center">
+            <div className="max-w-[320px]">
+              <div className="text-sm text-foreground">{t('connections.noConnectionsYet')}</div>
+              <p className="mt-1 text-[12.5px] text-muted-foreground">
+                {t('connections.noConnectionsDescription')}
+              </p>
+              {canConnect && (
+                <div className="mt-4">
+                  <Button onClick={openConnect} iconLeft={<Add size={14} />}>
+                    {t('connections.connectVendor')}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ) : (
-        <ConnectionsTable
-          connections={profiles}
+        ) : (
+          <ConnectionsTable
+            connections={profiles}
+            canManage={canUpdate}
+            totpStatuses={totpStatuses}
+            statusesLoading={totpStatusesLoading}
+            onReconnect={handleReconnect}
+            onManage={handleManage}
+            onMakePermanent={handleMakePermanent}
+          />
+        )}
+
+        <ManageConnectionSheet
+          connection={manageConnection}
+          open={manageOpen}
+          onOpenChange={setManageOpen}
           canManage={canUpdate}
-          totpStatuses={totpStatuses}
-          statusesLoading={totpStatusesLoading}
+          canRemove={canDelete}
+          busy={busy}
           onReconnect={handleReconnect}
-          onManage={handleManage}
-          onMakePermanent={handleMakePermanent}
+          onRename={handleRename}
+          onChangeLogin={handleChangeLogin}
+          onSetTotp={handleSetTotp}
+          onClearTotp={handleClearTotp}
+          onRemove={handleRemove}
         />
-      )}
 
-      <ManageConnectionSheet
-        connection={manageConnection}
-        open={manageOpen}
-        onOpenChange={setManageOpen}
-        canManage={canUpdate}
-        canRemove={canDelete}
-        busy={busy}
-        onReconnect={handleReconnect}
-        onRename={handleRename}
-        onChangeLogin={handleChangeLogin}
-        onSetTotp={handleSetTotp}
-        onClearTotp={handleClearTotp}
-        onRemove={handleRemove}
-      />
-
-      <MakePermanentSheet
-        connection={permanentConnection}
-        open={permanentOpen}
-        onOpenChange={setPermanentOpen}
-        onSave={handleSaveTotp}
-      />
+        <MakePermanentSheet
+          connection={permanentConnection}
+          open={permanentOpen}
+          onOpenChange={setPermanentOpen}
+          onSave={handleSaveTotp}
+        />
       </div>
     </Section>
   );

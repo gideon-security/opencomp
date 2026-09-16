@@ -41,9 +41,7 @@ describe('buildCitationsHeading', () => {
       citations: [ctrl('CC1.1', 'X'), ctrl('CC1.2', 'Y'), tsk('Z')],
       linkedTotals: { controls: 2, tasks: 1 },
     });
-    expect(heading).toBe(
-      'This plan addresses the risk through 2 controls and 1 task:',
-    );
+    expect(heading).toBe('This plan addresses the risk through 2 controls and 1 task:');
   });
 
   it('singularizes correctly', () => {
@@ -69,9 +67,7 @@ describe('buildCitationsHeading', () => {
       citations: [gap('technical'), gap('technical'), gap('compliance')],
       linkedTotals: { controls: 0, tasks: 0 },
     });
-    expect(heading).toBe(
-      'This plan addresses the risk through 3 recommended gaps:',
-    );
+    expect(heading).toBe('This plan addresses the risk through 3 recommended gaps:');
   });
 
   it('falls back to citation kinds when no work is linked (mixed policies + gaps)', () => {
@@ -79,14 +75,12 @@ describe('buildCitationsHeading', () => {
       citations: [pol('A'), pol('B'), gap('compliance')],
       linkedTotals: { controls: 0, tasks: 0 },
     });
-    expect(heading).toBe(
-      'This plan addresses the risk through 2 policies and 1 recommended gap:',
-    );
+    expect(heading).toBe('This plan addresses the risk through 2 policies and 1 recommended gap:');
   });
 
   it('handles the empty case', () => {
-    expect(
-      buildCitationsHeading({ citations: [], linkedTotals: { controls: 0, tasks: 0 } }),
-    ).toBe('This plan addresses the risk:');
+    expect(buildCitationsHeading({ citations: [], linkedTotals: { controls: 0, tasks: 0 } })).toBe(
+      'This plan addresses the risk:',
+    );
   });
 });

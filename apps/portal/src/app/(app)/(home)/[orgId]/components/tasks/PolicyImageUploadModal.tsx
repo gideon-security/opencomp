@@ -192,7 +192,12 @@ export function PolicyImageUploadModal({
               </Button>
             </>
           )}
-          <Button variant="ghost" type="button" onClick={() => handleClose(false)} disabled={isLoading}>
+          <Button
+            variant="ghost"
+            type="button"
+            onClick={() => handleClose(false)}
+            disabled={isLoading}
+          >
             Cancel
           </Button>
           <Button type="button" onClick={handleSubmit} disabled={files.length === 0 || isLoading}>

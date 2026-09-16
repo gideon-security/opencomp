@@ -75,14 +75,20 @@ export function SOAMobileRow({
       {/* Control objective */}
       {question.columnMapping.control_objective && (
         <div>
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Control Objective</p>
-          <p className="text-sm text-foreground mt-0.5 leading-relaxed">{question.columnMapping.control_objective}</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            Control Objective
+          </p>
+          <p className="text-sm text-foreground mt-0.5 leading-relaxed">
+            {question.columnMapping.control_objective}
+          </p>
         </div>
       )}
 
       {/* Applicable */}
       <div className="flex items-center justify-between">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Applicable</p>
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          Applicable
+        </p>
         {isProcessing ? (
           <div className="flex items-center gap-2">
             <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
@@ -104,7 +110,9 @@ export function SOAMobileRow({
       {/* Justification (shown for both Applicable and Not Applicable per ISO 27001) */}
       {!isProcessing && (
         <div>
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Justification</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            Justification
+          </p>
           <p className="text-sm text-foreground mt-0.5 leading-relaxed whitespace-pre-wrap">
             {justificationValue || '—'}
           </p>

@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to FOSSA at https://app.fossa.com\n2. Go to Settings > API Tokens (or Account Settings > API)\n3. Click 'Generate Token' or 'Add Token'\n4. Copy the generated token and paste it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

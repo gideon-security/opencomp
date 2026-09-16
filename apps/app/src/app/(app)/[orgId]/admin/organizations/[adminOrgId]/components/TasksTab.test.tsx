@@ -76,9 +76,7 @@ describe('TasksTab', () => {
     render(<TasksTab orgId="org_test" />);
 
     await waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_test/tasks',
-      );
+      expect(mockGet).toHaveBeenCalledWith('/v1/admin/organizations/org_test/tasks');
     });
   });
 });

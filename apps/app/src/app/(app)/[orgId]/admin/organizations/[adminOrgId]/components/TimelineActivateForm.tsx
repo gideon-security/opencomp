@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { toast } from 'sonner';
 import { api } from '@/lib/api-client';
+import { Input } from '@gideon-defender/ui/input';
 import { Button } from '@trycompai/design-system';
 import { Play } from '@trycompai/design-system/icons';
-import { Input } from '@gideon-defender/ui/input';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface TimelineActivateFormProps {
   orgId: string;
@@ -13,11 +13,7 @@ interface TimelineActivateFormProps {
   onMutate: () => void;
 }
 
-export function TimelineActivateForm({
-  orgId,
-  timelineId,
-  onMutate,
-}: TimelineActivateFormProps) {
+export function TimelineActivateForm({ orgId, timelineId, onMutate }: TimelineActivateFormProps) {
   const [startDate, setStartDate] = useState('');
   const [loading, setLoading] = useState(false);
 

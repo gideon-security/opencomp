@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDriftResult, IsmsMetric } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
 
@@ -192,18 +192,12 @@ describe('MonitoringClient', () => {
     render(<MonitoringClient {...baseProps} />);
 
     // Metric names render on the register card and again in the due view.
-    expect(
-      screen.getAllByText('Production availability / uptime').length,
-    ).toBeGreaterThan(0);
-    expect(
-      screen.getAllByText('Security awareness training completion').length,
-    ).toBeGreaterThan(0);
+    expect(screen.getAllByText('Production availability / uptime').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Security awareness training completion').length).toBeGreaterThan(0);
     // Seeded rows are labelled with their provenance.
     expect(screen.getAllByText('Auto-derived').length).toBeGreaterThan(0);
     // Null monitor resolves to the SPO default; explicit member to their name.
-    expect(
-      screen.getAllByText('Security & Privacy Owner (default)').length,
-    ).toBeGreaterThan(0);
+    expect(screen.getAllByText('Security & Privacy Owner (default)').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Approver Two').length).toBeGreaterThan(0);
     // The uptime metric's latest period is older than its cadence allows.
     expect(screen.getAllByText('Overdue').length).toBeGreaterThan(0);
@@ -220,9 +214,7 @@ describe('MonitoringClient', () => {
     const inputs = screen.getAllByLabelText(/^Value for /);
     expect(inputs).toHaveLength(8);
     // "Same as last period" carries the previous value for one-click entry.
-    expect(
-      screen.getAllByText(/Same as last period \(99\.90%\)/).length,
-    ).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Same as last period \(99\.90%\)/).length).toBeGreaterThan(0);
   });
 
   it('shows measurement history with honest recorded-on data and gap rows', () => {
@@ -286,8 +278,6 @@ describe('MonitoringClient', () => {
     render(<MonitoringClient {...baseProps} />);
 
     // Surfaced twice: the register warning and the submit-blocked reason.
-    expect(
-      screen.getAllByText(/At least one metric must be active\./).length,
-    ).toBeGreaterThan(0);
+    expect(screen.getAllByText(/At least one metric must be active\./).length).toBeGreaterThan(0);
   });
 });

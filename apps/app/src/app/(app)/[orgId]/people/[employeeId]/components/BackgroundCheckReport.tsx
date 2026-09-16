@@ -97,9 +97,9 @@ function MethodologyBanner() {
         <Stack gap="1">
           <Text weight="medium">How this check was performed</Text>
           <Text size="xs" variant="muted">
-            Every report combines biometric identity verification with direct employer and
-            reference confirmation, plus AI-augmented public-source research — all under an
-            FCRA-style adjudication workflow.
+            Every report combines biometric identity verification with direct employer and reference
+            confirmation, plus AI-augmented public-source research — all under an FCRA-style
+            adjudication workflow.
           </Text>
         </Stack>
         <div className="flex flex-wrap gap-1.5">

@@ -93,9 +93,7 @@ export const scoreVendorRisk = schemaTask({
       certifications.length > 0
         ? `Certifications / attestations (researched): ${certifications.join(', ')}`
         : 'Certifications / attestations: none reported',
-      subprocessors.length > 0
-        ? `Subprocessors (researched): ${subprocessors.join(', ')}`
-        : null,
+      subprocessors.length > 0 ? `Subprocessors (researched): ${subprocessors.join(', ')}` : null,
       hasTrustOrSecurityPage
         ? 'Vendor publishes a trust portal or security overview page (transparency signal).'
         : 'No public trust portal / security overview page found.',
@@ -116,20 +114,20 @@ export const scoreVendorRisk = schemaTask({
         '- likely: vendor with public knowledge of significant security incidents in the last 24 months, OR explicitly no transparency despite handling sensitive data.',
         '- very_likely: vendor with chronic / repeated security issues, or essentially unknown posture combined with sensitive-data exposure.',
         '',
-        'inherent_impact — business impact if the vendor is compromised, assuming average customer usage given the vendor\'s category:',
+        "inherent_impact — business impact if the vendor is compromised, assuming average customer usage given the vendor's category:",
         '- insignificant: no PII / no business data / purely cosmetic or public utility.',
         '- minor: anonymous metadata only, non-business utilities.',
         '- moderate: PII or internal business data, but NOT payments / health / source / auth. DEFAULT for typical SaaS.',
         '- major: vendor handles authentication, source code, payments, PHI, or production infrastructure that the customer depends on.',
-        '- severe: vendor IS the customer\'s production runtime / cloud / single source of truth — compromise means the customer is offline or fundamentally exposed.',
+        "- severe: vendor IS the customer's production runtime / cloud / single source of truth — compromise means the customer is offline or fundamentally exposed.",
         '',
         'Scoring rules:',
         '1. Read the certification list. ANY of {SOC 2 Type II, ISO 27001, ISO 42001, HIPAA, PCI DSS, FedRAMP, C5, CSA STAR Level 2+} counts as a strong attestation. Multiple of those, especially combined with FedRAMP / hyperscaler-tier scale, drop probability to very_unlikely. A single strong attestation drops probability to unlikely.',
         '2. If the certification list is empty, default probability is possible (NOT very_likely). "We don\'t know" is not "definitely bad".',
         '3. Use the type and description to set impact. Source-code, payments, auth, infrastructure providers → major. Generic CRM / analytics → moderate. Marketing widgets → minor.',
-        '4. Residual: default to inherent. Only LOWER residual when the customer has applied their OWN compensating controls (which we don\'t have visibility into here, so usually leave equal).',
+        "4. Residual: default to inherent. Only LOWER residual when the customer has applied their OWN compensating controls (which we don't have visibility into here, so usually leave equal).",
         '',
-        'Be specific in the rationale — name a certification, name an attribute. Don\'t recite the rubric.',
+        "Be specific in the rationale — name a certification, name an attribute. Don't recite the rubric.",
       ].join('\n'),
       prompt: promptBlock,
     });

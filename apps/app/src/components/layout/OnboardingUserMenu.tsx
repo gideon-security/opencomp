@@ -63,7 +63,11 @@ export function OnboardingUserMenu({ user }: OnboardingUserMenuProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut} disabled={isSigningOut} data-testid="onboarding-sign-out">
+        <DropdownMenuItem
+          onClick={handleSignOut}
+          disabled={isSigningOut}
+          data-testid="onboarding-sign-out"
+        >
           {isSigningOut ? 'Signing out...' : 'Sign out'}
         </DropdownMenuItem>
       </DropdownMenuContent>

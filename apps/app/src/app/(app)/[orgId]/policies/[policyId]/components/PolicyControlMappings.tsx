@@ -31,9 +31,9 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Add, Launch, Unlink } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import useSWR from 'swr';
@@ -72,9 +72,7 @@ export function PolicyControlMappings({
   const { data: controlsData, mutate: mutateControls } = useSWR(
     [`/v1/policies/${policyId}/controls`, orgId],
     async () => {
-      const res = await apiClient.get<ControlsResponse>(
-        `/v1/policies/${policyId}/controls`,
-      );
+      const res = await apiClient.get<ControlsResponse>(`/v1/policies/${policyId}/controls`);
       if (res.error) throw new Error(res.error);
       return res.data;
     },
@@ -159,11 +157,7 @@ export function PolicyControlMappings({
                 <CommandList>
                   <CommandEmpty>{t('controlMappings.noControlsFound')}</CommandEmpty>
                   {availableControls.map((c) => (
-                    <CommandItem
-                      key={c.id}
-                      value={c.name}
-                      onSelect={() => handleAdd(c.id)}
-                    >
+                    <CommandItem key={c.id} value={c.name} onSelect={() => handleAdd(c.id)}>
                       {c.name}
                     </CommandItem>
                   ))}
@@ -256,8 +250,8 @@ export function PolicyControlMappings({
             <AlertDialogDescription>
               {toRemove ? (
                 <>
-                  Unlink <strong>{toRemove.name}</strong> from this policy? You can link it
-                  again later.
+                  Unlink <strong>{toRemove.name}</strong> from this policy? You can link it again
+                  later.
                 </>
               ) : null}
             </AlertDialogDescription>

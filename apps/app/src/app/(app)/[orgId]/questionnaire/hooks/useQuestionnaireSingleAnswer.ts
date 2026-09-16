@@ -1,9 +1,9 @@
 'use client';
 
-import type { QuestionAnswer } from '../components/types';
-import { toast } from 'sonner';
-import { useRef } from 'react';
 import { api } from '@/lib/api-client';
+import { useRef } from 'react';
+import { toast } from 'sonner';
+import type { QuestionAnswer } from '../components/types';
 
 interface UseQuestionnaireSingleAnswerProps {
   results: QuestionAnswer[] | null;
@@ -65,16 +65,13 @@ export function useQuestionnaireSingleAnswer({
           error?: string;
         };
         error?: string;
-      }>(
-        '/v1/questionnaire/answer-single',
-        {
-          question: payload.question,
-          questionIndex: payload.questionIndex,
-          totalQuestions: payload.totalQuestions,
-          organizationId: payload.organizationId,
-          questionnaireId: payload.questionnaireId,
-        },
-      );
+      }>('/v1/questionnaire/answer-single', {
+        question: payload.question,
+        questionIndex: payload.questionIndex,
+        totalQuestions: payload.totalQuestions,
+        organizationId: payload.organizationId,
+        questionnaireId: payload.questionnaireId,
+      });
 
       if (response.error || !response.data) {
         throw new Error(response.error || 'Failed to generate answer');
@@ -166,7 +163,9 @@ export function useQuestionnaireSingleAnswer({
         return newStatuses;
       });
 
-      toast.error(`Failed to generate answer: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      toast.error(
+        `Failed to generate answer: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
     } finally {
       // Remove from active requests and answering indices
       activeRequestsRef.current.delete(questionIndex);

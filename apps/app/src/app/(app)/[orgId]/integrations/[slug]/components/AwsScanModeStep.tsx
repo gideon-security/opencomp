@@ -44,11 +44,7 @@ interface AwsScanModeStepProps {
  * passes the choice into the createConnection payload via the
  * `awsScanMode` variable.
  */
-export function AwsScanModeStep({
-  value,
-  onChange,
-  disabled,
-}: AwsScanModeStepProps) {
+export function AwsScanModeStep({ value, onChange, disabled }: AwsScanModeStepProps) {
   return (
     <fieldset className="space-y-3" disabled={disabled}>
       <legend className="sr-only">AWS scan engine</legend>
@@ -79,10 +75,7 @@ export function AwsScanModeStep({
           'Requires Security Hub to be enabled in your AWS account ' +
           '(AWS bills per finding ingested + per control checked).'
         }
-        badges={[
-          'Native NIST / CIS / PCI mapping',
-          'Requires Security Hub subscription',
-        ]}
+        badges={['Native NIST / CIS / PCI mapping', 'Requires Security Hub subscription']}
       />
     </fieldset>
   );
@@ -129,9 +122,7 @@ function ScanModeCard({
           <span className="text-sm font-semibold">{title}</span>
           <span className="text-xs text-muted-foreground">{subtitle}</span>
         </div>
-        <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
-          {description}
-        </p>
+        <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{description}</p>
         {badges.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {badges.map((badge) => (

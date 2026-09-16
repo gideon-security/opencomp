@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -52,12 +52,8 @@ describe('InstructionComposer', () => {
   it('renders the create heading and multi-step actions', () => {
     render(<InstructionComposer {...baseProps} mode="create" />);
     expect(screen.getByText('instructionComposer.titleCreate')).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'instructionComposer.save' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'instructionComposer.addStep' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'instructionComposer.save' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'instructionComposer.addStep' })).toBeInTheDocument();
   });
 
   it('tests the active step against its connection URL', async () => {

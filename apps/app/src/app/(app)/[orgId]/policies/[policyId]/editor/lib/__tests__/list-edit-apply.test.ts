@@ -1,20 +1,16 @@
-import { describe, expect, it } from 'vitest';
-import { EditorState } from '@tiptap/pm/state';
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
-import { buildPositionMap } from '../build-position-map';
+import { EditorState } from '@tiptap/pm/state';
+import { describe, expect, it } from 'vitest';
 import { buildReplacementNodes } from '../apply-suggestion';
+import { buildPositionMap } from '../build-position-map';
 import { schema } from '../test-helpers/editor-schema';
 
 function listItem(text: string) {
-  return schema.node('listItem', null, [
-    schema.node('paragraph', null, [schema.text(text)]),
-  ]);
+  return schema.node('listItem', null, [schema.node('paragraph', null, [schema.text(text)])]);
 }
 
 function bulletDoc(items: string[]) {
-  return schema.node('doc', null, [
-    schema.node('bulletList', null, items.map(listItem)),
-  ]);
+  return schema.node('doc', null, [schema.node('bulletList', null, items.map(listItem))]);
 }
 
 // Real ProseMirror [before, after) boundaries for every listItem in the doc.

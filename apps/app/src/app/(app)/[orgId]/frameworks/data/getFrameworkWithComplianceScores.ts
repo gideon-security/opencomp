@@ -1,9 +1,11 @@
 'use server';
 
+import type {
+  FrameworkInstanceWithComplianceScore,
+  FrameworkInstanceWithControls,
+} from '@/lib/types/framework';
 import { Control, type Task } from '@db';
-import type { FrameworkInstanceWithComplianceScore } from '@/lib/types/framework';
 import { computeFrameworkStats } from '../lib/compute';
-import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 
 /**
  * Gets all framework instances for an organization with compliance calculations

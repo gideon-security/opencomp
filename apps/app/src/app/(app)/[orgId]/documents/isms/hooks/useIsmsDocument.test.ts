@@ -1,6 +1,6 @@
+import { api } from '@/lib/api-client';
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { api } from '@/lib/api-client';
 import type { IsmsDocument } from '../isms-types';
 
 // ─── Mock the api client (the unit under test is the hook, not the client) ───
@@ -35,8 +35,8 @@ vi.mock('sonner', () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));
 
-import { useIsmsDocument } from './useIsmsDocument';
 import { exportIsmsDocument } from './exportIsmsDocument';
+import { useIsmsDocument } from './useIsmsDocument';
 
 const getMock = vi.mocked(api.get);
 const postMock = vi.mocked(api.post);
@@ -119,10 +119,9 @@ describe('useIsmsDocument', () => {
 
     await result.current.submitForApproval('mem_approver');
 
-    expect(postMock).toHaveBeenCalledWith(
-      `/v1/isms/documents/${DOC_ID}/submit-for-approval`,
-      { approverId: 'mem_approver' },
-    );
+    expect(postMock).toHaveBeenCalledWith(`/v1/isms/documents/${DOC_ID}/submit-for-approval`, {
+      approverId: 'mem_approver',
+    });
   });
 
   it('approve POSTs to the approve endpoint with an empty body', async () => {

@@ -83,7 +83,11 @@ async function syncSinglePolicy(
   }
 
   // Delete old embeddings if they exist
-  await deleteOldEmbeddings(existingEmbeddings, { policyId: policy.id }, organizationId);
+  await deleteOldEmbeddings(
+    existingEmbeddings,
+    { policyId: policy.id },
+    organizationId,
+  );
 
   // Create new embeddings
   const policyText = extractTextFromPolicy(

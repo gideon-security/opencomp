@@ -15,7 +15,10 @@ jest.mock('@db', () => ({
     document: 'document',
     other: 'other',
   },
-  AttachmentEntityType: { task: 'task', offboarding_checklist: 'offboarding_checklist' },
+  AttachmentEntityType: {
+    task: 'task',
+    offboarding_checklist: 'offboarding_checklist',
+  },
 }));
 
 jest.mock('../utils/file-type-validation', () => ({

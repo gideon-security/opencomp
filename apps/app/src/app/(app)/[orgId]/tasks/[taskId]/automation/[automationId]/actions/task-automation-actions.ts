@@ -197,10 +197,13 @@ export async function executeAutomationScript(data: {
   version?: number; // Optional: test specific version
 }) {
   try {
-    const result = await callEnterpriseApi<{ runId: string }>('/api/tasks-automations/trigger/execute', {
-      method: 'POST',
-      body: data,
-    });
+    const result = await callEnterpriseApi<{ runId: string }>(
+      '/api/tasks-automations/trigger/execute',
+      {
+        method: 'POST',
+        body: data,
+      },
+    );
 
     // Don't revalidate - causes page refresh. Test results are handled via polling/state.
     return { success: true, data: result };
@@ -372,7 +375,8 @@ export async function publishAutomation(
       },
     );
 
-    const versionData = versionRes.data as { success: boolean; version: { version: number } } | undefined;
+    const versionData = versionRes.data as
+      { success: boolean; version: { version: number } } | undefined;
     return {
       success: true,
       version: versionData?.version,
@@ -436,10 +440,9 @@ export async function updateEvaluationCriteria(
 ) {
   try {
     const { serverApi } = await import('@/lib/api-server');
-    const response = await serverApi.patch(
-      `/v1/tasks/${taskId}/automations/${automationId}`,
-      { evaluationCriteria },
-    );
+    const response = await serverApi.patch(`/v1/tasks/${taskId}/automations/${automationId}`, {
+      evaluationCriteria,
+    });
     if (response.error) throw new Error(response.error);
     return { success: true };
   } catch (error) {
@@ -462,10 +465,9 @@ export async function toggleAutomationEnabled(
 ) {
   try {
     const { serverApi } = await import('@/lib/api-server');
-    const response = await serverApi.patch(
-      `/v1/tasks/${taskId}/automations/${automationId}`,
-      { isEnabled },
-    );
+    const response = await serverApi.patch(`/v1/tasks/${taskId}/automations/${automationId}`, {
+      isEnabled,
+    });
     if (response.error) throw new Error(response.error);
     return { success: true };
   } catch (error) {

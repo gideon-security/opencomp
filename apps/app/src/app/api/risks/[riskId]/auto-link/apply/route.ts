@@ -23,10 +23,7 @@ const ApplyBodySchema = z.object({
  * apply alongside avoids a round trip and stays consistent with the existing
  * unlink endpoint.
  */
-export async function POST(
-  req: NextRequest,
-  { params }: { params: Promise<{ riskId: string }> },
-) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ riskId: string }> }) {
   try {
     const ctx = await requireApiPermission(req, 'risk', 'update');
     if (ctx instanceof NextResponse) return ctx;
@@ -84,9 +81,7 @@ export async function POST(
       await db.risk.update({
         where: { id: riskId },
         data: {
-          ...(taskIds.length > 0
-            ? { tasks: { connect: taskIds.map((id) => ({ id })) } }
-            : {}),
+          ...(taskIds.length > 0 ? { tasks: { connect: taskIds.map((id) => ({ id })) } } : {}),
           autoLinkRunId: null,
           autoLinkRunStartedAt: null,
         },

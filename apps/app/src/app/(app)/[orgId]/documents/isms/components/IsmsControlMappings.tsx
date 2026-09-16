@@ -15,8 +15,8 @@ import {
   Command,
   CommandEmpty,
   CommandInput,
-  CommandList,
   CommandItem,
+  CommandList,
   Item,
   ItemActions,
   ItemContent,
@@ -243,9 +243,7 @@ export function IsmsControlMappings({
           <AlertDialogHeader>
             <AlertDialogTitle>{t('controlMappings.dialogTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              {toRemove
-                ? t('controlMappings.dialogDescription', { name: toRemove.name })
-                : null}
+              {toRemove ? t('controlMappings.dialogDescription', { name: toRemove.name }) : null}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

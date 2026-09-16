@@ -93,7 +93,11 @@ export function RevokeDialog({
             </Button>
             <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
               {([canSubmit, isSubmitting]) => (
-                <Button variant="destructive" type="submit" disabled={!canSubmit || isSubmitting || !canUpdate}>
+                <Button
+                  variant="destructive"
+                  type="submit"
+                  disabled={!canSubmit || isSubmitting || !canUpdate}
+                >
                   {isSubmitting ? 'Revoking...' : 'Revoke Grant'}
                 </Button>
               )}

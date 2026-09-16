@@ -1,26 +1,26 @@
 export * from '@prisma/client';
-export { db, tenantDb, serviceDb, withTenant, withService } from './client';
+export { db, serviceDb, tenantDb, withService, withTenant } from './client';
 export type { SslConfig } from './client';
-export { EMBEDDING_MODEL, EMBEDDING_DIMENSIONS, embedTexts } from './embedding-client';
+export { EMBEDDING_DIMENSIONS, EMBEDDING_MODEL, embedTexts } from './embedding-client';
 export {
-  vectorIndex,
+  countVectorsByOrganization,
   deleteVectorsByOrganization,
   findVectorsByFilter,
   listVectorsByOrganization,
   listVectorsByOrganizationAndType,
-  countVectorsByOrganization,
+  vectorIndex,
 } from './vector-index';
 export type {
-  VectorMetadata,
-  VectorMetadataInput,
-  VectorRecord,
-  VectorRecordInput,
-  VectorQueryOptions,
-  VectorQueryResult,
   VectorFetchOptions,
   VectorFetchResult,
+  VectorIndex,
+  VectorInfoResult,
+  VectorMetadata,
+  VectorMetadataInput,
+  VectorQueryOptions,
+  VectorQueryResult,
   VectorRangeOptions,
   VectorRangeResult,
-  VectorInfoResult,
-  VectorIndex,
+  VectorRecord,
+  VectorRecordInput,
 } from './vector-index';

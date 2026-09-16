@@ -2,6 +2,8 @@
 
 import { api } from '@/lib/api-client';
 import { authClient } from '@/utils/auth-client';
+import { Input } from '@gideon-defender/ui/input';
+import { Label } from '@gideon-defender/ui/label';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,11 +28,9 @@ import {
   Stack,
 } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
-import { Input } from '@gideon-defender/ui/input';
-import { Label } from '@gideon-defender/ui/label';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import { InvitationsSection } from './InvitationsSection';
 import { MembersTable } from './MembersTable';
 import type { OrgMember, PendingInvitation } from './MembersTabTypes';
@@ -71,19 +71,13 @@ export function MembersTab({
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('employee');
   const [inviting, setInviting] = useState(false);
-  const [impersonatingUserId, setImpersonatingUserId] = useState<string | null>(
-    null,
-  );
-  const [impersonateTarget, setImpersonateTarget] = useState<OrgMember | null>(
-    null,
-  );
+  const [impersonatingUserId, setImpersonatingUserId] = useState<string | null>(null);
+  const [impersonateTarget, setImpersonateTarget] = useState<OrgMember | null>(null);
   const [revokingId, setRevokingId] = useState<string | null>(null);
 
   const fetchInvitations = useCallback(async () => {
     setLoadingInvitations(true);
-    const res = await api.get<PendingInvitation[]>(
-      `/v1/admin/organizations/${orgId}/invitations`,
-    );
+    const res = await api.get<PendingInvitation[]>(`/v1/admin/organizations/${orgId}/invitations`);
     if (res.data) setInvitations(res.data);
     setLoadingInvitations(false);
   }, [orgId]);
@@ -95,10 +89,10 @@ export function MembersTab({
   const handleInvite = async () => {
     if (!inviteEmail.trim()) return;
     setInviting(true);
-    const res = await api.post(
-      `/v1/admin/organizations/${orgId}/invite`,
-      { email: inviteEmail.trim(), role: inviteRole },
-    );
+    const res = await api.post(`/v1/admin/organizations/${orgId}/invite`, {
+      email: inviteEmail.trim(),
+      role: inviteRole,
+    });
     if (!res.error) {
       setInviteEmail('');
       setInviteRole('employee');
@@ -110,9 +104,7 @@ export function MembersTab({
 
   const handleRevokeInvitation = async (invitationId: string) => {
     setRevokingId(invitationId);
-    const res = await api.delete(
-      `/v1/admin/organizations/${orgId}/invitations/${invitationId}`,
-    );
+    const res = await api.delete(`/v1/admin/organizations/${orgId}/invitations/${invitationId}`);
     if (!res.error) {
       setInvitations((prev) => prev.filter((inv) => inv.id !== invitationId));
     }
@@ -152,11 +144,7 @@ export function MembersTab({
         <Section
           title={t('organizations.membersTab.members', { count: members.length })}
           actions={
-            <Button
-              size="sm"
-              iconLeft={<Add size={16} />}
-              onClick={() => setShowInviteForm(true)}
-            >
+            <Button size="sm" iconLeft={<Add size={16} />} onClick={() => setShowInviteForm(true)}>
               {t('organizations.membersTab.inviteMember')}
             </Button>
           }
@@ -179,9 +167,7 @@ export function MembersTab({
       <Sheet open={showInviteForm} onOpenChange={handleSheetChange}>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>
-              {t('organizations.membersTab.inviteSheetTitle', { orgName })}
-            </SheetTitle>
+            <SheetTitle>{t('organizations.membersTab.inviteSheetTitle', { orgName })}</SheetTitle>
           </SheetHeader>
           <SheetBody>
             <form
@@ -192,9 +178,7 @@ export function MembersTab({
             >
               <Stack gap="md">
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="invite-email">
-                    {t('organizations.membersTab.email')}
-                  </Label>
+                  <Label htmlFor="invite-email">{t('organizations.membersTab.email')}</Label>
                   <Input
                     id="invite-email"
                     type="email"
@@ -205,9 +189,7 @@ export function MembersTab({
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Label htmlFor="invite-role">
-                    {t('organizations.membersTab.role')}
-                  </Label>
+                  <Label htmlFor="invite-role">{t('organizations.membersTab.role')}</Label>
                   <Select
                     value={inviteRole}
                     onValueChange={(v) => {
@@ -226,11 +208,7 @@ export function MembersTab({
                     </SelectContent>
                   </Select>
                 </div>
-                <Button
-                  type="submit"
-                  loading={inviting}
-                  disabled={!inviteEmail.trim()}
-                >
+                <Button type="submit" loading={inviting} disabled={!inviteEmail.trim()}>
                   {t('organizations.membersTab.sendInvitation')}
                 </Button>
               </Stack>
@@ -247,25 +225,16 @@ export function MembersTab({
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {t('organizations.membersTab.impersonate.title')}
-            </AlertDialogTitle>
+            <AlertDialogTitle>{t('organizations.membersTab.impersonate.title')}</AlertDialogTitle>
             <AlertDialogDescription>
               {t('organizations.membersTab.impersonate.descriptionPrefix')}{' '}
-              <strong>{impersonateTarget?.user.name}</strong> (
-              {impersonateTarget?.user.email}).{' '}
-              {t('organizations.membersTab.impersonate.descriptionSuffix')}{' '}
-              <em>impersonatedBy</em>.
+              <strong>{impersonateTarget?.user.name}</strong> ({impersonateTarget?.user.email}).{' '}
+              {t('organizations.membersTab.impersonate.descriptionSuffix')} <em>impersonatedBy</em>.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>
-              {t('organizations.membersTab.cancel')}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={handleConfirmImpersonate}
-            >
+            <AlertDialogCancel>{t('organizations.membersTab.cancel')}</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={handleConfirmImpersonate}>
               {t('organizations.membersTab.impersonate.confirm')}
             </AlertDialogAction>
           </AlertDialogFooter>

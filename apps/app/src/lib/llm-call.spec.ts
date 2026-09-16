@@ -123,7 +123,9 @@ describe('generateObjectWithRetry', () => {
   it('retries a TLS/network reset error', async () => {
     generateObjectMock
       .mockRejectedValueOnce(
-        new Error('Client network socket disconnected before secure TLS connection was established'),
+        new Error(
+          'Client network socket disconnected before secure TLS connection was established',
+        ),
       )
       .mockResolvedValueOnce({ object: { ok: true } });
 
@@ -132,7 +134,6 @@ describe('generateObjectWithRetry', () => {
     expect(generateObjectMock).toHaveBeenCalledTimes(2);
     expect(result.object).toEqual({ ok: true });
   });
-
 
   it('fails fast on the Gemini free-tier DAILY quota cap (no retries)', async () => {
     generateObjectMock.mockRejectedValue(
@@ -144,9 +145,7 @@ describe('generateObjectWithRetry', () => {
       }),
     );
 
-    await expect(callWithSchema()).rejects.toThrow(
-      /daily request quota exhausted/i,
-    );
+    await expect(callWithSchema()).rejects.toThrow(/daily request quota exhausted/i);
     expect(generateObjectMock).toHaveBeenCalledTimes(1);
   });
 
@@ -166,7 +165,8 @@ describe('generateObjectWithRetry', () => {
     expect(generateObjectMock).toHaveBeenCalledTimes(2);
   });
 
-  it('throws immediately on non-retryable errors (4xx)', async () => {    const badRequest = new FakeAPICallError({
+  it('throws immediately on non-retryable errors (4xx)', async () => {
+    const badRequest = new FakeAPICallError({
       message: 'Bad request',
       statusCode: 400,
     });
@@ -200,12 +200,7 @@ describe('generateObjectWithRetry', () => {
       return { object: { ok: true } };
     });
 
-    await Promise.all([
-      callWithSchema(),
-      callWithSchema(),
-      callWithSchema(),
-      callWithSchema(),
-    ]);
+    await Promise.all([callWithSchema(), callWithSchema(), callWithSchema(), callWithSchema()]);
 
     expect(maxInFlight).toBeLessThanOrEqual(2);
     expect(generateObjectMock).toHaveBeenCalledTimes(4);

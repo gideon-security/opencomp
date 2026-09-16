@@ -1,11 +1,7 @@
-import {
-  normalizeColumnName,
-} from '../../lib/sheet-columns';
+import { normalizeColumnName } from '../../lib/sheet-columns';
 import type { SheetMappingDraft } from '../../lib/sheet-mapping';
 
-export function showSheetMappingDialog(
-  html: string,
-): Promise<SheetMappingDraft | null> {
+export function showSheetMappingDialog(html: string): Promise<SheetMappingDraft | null> {
   return new Promise((resolve) => {
     const container = document.createElement('div');
     container.innerHTML = html;
@@ -23,9 +19,7 @@ export function showSheetMappingDialog(
       resolve(value);
     };
 
-    container
-      .querySelector('[data-dialog="cancel"]')
-      ?.addEventListener('click', () => close(null));
+    container.querySelector('[data-dialog="cancel"]')?.addEventListener('click', () => close(null));
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       const draft = readDraft(form);

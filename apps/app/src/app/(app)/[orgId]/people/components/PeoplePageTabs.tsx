@@ -1,5 +1,6 @@
 'use client';
 
+import type { Role } from '@db';
 import {
   Button,
   DropdownMenu,
@@ -15,7 +16,6 @@ import {
   TabsTrigger,
 } from '@trycompai/design-system';
 import { Add, Download, OverflowMenuVertical } from '@trycompai/design-system/icons';
-import type { Role } from '@db';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useCallback, useState } from 'react';
@@ -154,15 +154,17 @@ export function PeoplePageTabs({
                   </Button>
                 </div>
                 <DropdownMenu>
-                  <DropdownMenuTrigger
-                    render={<Button variant="outline" size="icon" />}
-                  >
+                  <DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>
                     <OverflowMenuVertical size={16} />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
                       onClick={() => {
-                        window.open('/api/offboarding-export?all=true', '_blank', 'noopener,noreferrer');
+                        window.open(
+                          '/api/offboarding-export?all=true',
+                          '_blank',
+                          'noopener,noreferrer',
+                        );
                       }}
                     >
                       <Download size={14} className="mr-2" />
@@ -181,12 +183,8 @@ export function PeoplePageTabs({
         )}
         <TabsContent value="devices">{devicesContent}</TabsContent>
         <TabsContent value="org-chart">{orgChartContent}</TabsContent>
-        {showRoleMapping && (
-          <TabsContent value="role-mapping">{roleMappingContent}</TabsContent>
-        )}
-        {showSettings && (
-          <TabsContent value="settings">{settingsContent}</TabsContent>
-        )}
+        {showRoleMapping && <TabsContent value="role-mapping">{roleMappingContent}</TabsContent>}
+        {showSettings && <TabsContent value="settings">{settingsContent}</TabsContent>}
       </PageLayout>
 
       <InviteMembersModal

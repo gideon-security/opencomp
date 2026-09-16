@@ -12,11 +12,11 @@ const { mockServerApiGet, mockCreateSetupSession } = vi.hoisted(() => ({
 vi.mock('@/lib/api-server', () => ({ serverApi: { get: mockServerApiGet } }));
 vi.mock('./lib/setup-session', () => ({ createSetupSession: mockCreateSetupSession }));
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { NextRequest } from 'next/server';
+import { createMockSession, createMockUser, mockAuthApi } from '@/test-utils/mocks/auth';
 import { redirect } from 'next/navigation';
+import { NextRequest } from 'next/server';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { GET } from './route';
-import { mockAuthApi, createMockSession, createMockUser } from '@/test-utils/mocks/auth';
 
 const mockRedirect = vi.mocked(redirect);
 

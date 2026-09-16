@@ -30,7 +30,7 @@ permissions:
   pull-requests: write
   statuses: write
   id-token: write
-"on":
+'on':
   push:
     branches:
       - release

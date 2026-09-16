@@ -32,10 +32,7 @@ export function areAllFamiliesExpanded({
   expandedFamilies,
   familyNames,
 }: FamilyExpansionListParams): boolean {
-  return (
-    familyNames.length > 0 &&
-    familyNames.every((family) => expandedFamilies.has(family))
-  );
+  return familyNames.length > 0 && familyNames.every((family) => expandedFamilies.has(family));
 }
 
 export function toggleFamilyExpansion({

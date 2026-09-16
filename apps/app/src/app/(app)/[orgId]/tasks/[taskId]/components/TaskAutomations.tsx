@@ -1,19 +1,15 @@
 'use client';
 
+import { ScheduleSummary } from '@/components/schedule-summary';
 import { downloadAutomationPDF } from '@/lib/evidence-download';
 import { EvidenceAutomation, EvidenceAutomationRun } from '@db';
+import { Button, Section, Stack, Text } from '@trycompai/design-system';
 import { formatDistanceToNow } from 'date-fns';
-import {
-  ArrowRight,
-  Download,
-  Plus,
-} from 'lucide-react';
-import type React from 'react';
+import { ArrowRight, Download, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
+import type React from 'react';
 import { toast } from 'sonner';
-import { Button, Section, Stack, Text } from '@trycompai/design-system';
-import { ScheduleSummary } from '@/components/schedule-summary';
 import { useTaskAutomations } from '../hooks/use-task-automations';
 
 type AutomationWithLatestRun = EvidenceAutomation & {
@@ -57,10 +53,12 @@ export const TaskAutomations = ({ automations, isManualTask = false }: TaskAutom
           const lastRan = latestVersionRun?.createdAt
             ? formatDistanceToNow(new Date(latestVersionRun.createdAt), { addSuffix: true })
             : null;
-          const isPassing = latestVersionRun &&
+          const isPassing =
+            latestVersionRun &&
             latestVersionRun.status === 'completed' &&
             latestVersionRun.evaluationStatus !== 'fail';
-          const isFailing = latestVersionRun &&
+          const isFailing =
+            latestVersionRun &&
             (latestVersionRun.status === 'failed' || latestVersionRun.evaluationStatus === 'fail');
 
           const borderColor = isFailing
@@ -83,7 +81,9 @@ export const TaskAutomations = ({ automations, isManualTask = false }: TaskAutom
               <div className={`h-2 w-2 rounded-full shrink-0 ${dotColor}`} />
 
               <Stack gap="none" as="div" style={{ flex: 1, minWidth: 0 }}>
-                <Text size="sm" weight="medium">{automation.name}</Text>
+                <Text size="sm" weight="medium">
+                  {automation.name}
+                </Text>
                 <Text size="xs" variant="muted">
                   {latestVersionRun && lastRan
                     ? `Last ran ${lastRan} • v${latestVersionRun.version}`

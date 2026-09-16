@@ -1,22 +1,12 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Button,
-  Heading,
-  HStack,
-  Stack,
-  Text,
-  Textarea,
-} from '@trycompai/design-system';
+import { Button, Heading, HStack, Stack, Text, Textarea } from '@trycompai/design-system';
 import { Edit } from '@trycompai/design-system/icons';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import type { IsmsManagementReview } from '../isms-types';
-import {
-  reviewOutputsSchema,
-  type ReviewOutputsFormValues,
-} from './management-review-schema';
+import { reviewOutputsSchema, type ReviewOutputsFormValues } from './management-review-schema';
 import { IsmsFieldLabel, IsmsRegisterField } from './shared';
 
 interface ReviewOutputsSectionProps {
@@ -37,11 +27,7 @@ function toFormValues(review: IsmsManagementReview): ReviewOutputsFormValues {
  * changes required. Both ship with template text the customer edits or
  * overwrites; the actions arising table follows as its own section.
  */
-export function ReviewOutputsSection({
-  review,
-  canEdit,
-  onSave,
-}: ReviewOutputsSectionProps) {
+export function ReviewOutputsSection({ review, canEdit, onSave }: ReviewOutputsSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   const {

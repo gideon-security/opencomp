@@ -1,6 +1,13 @@
 'use client';
 
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@trycompai/design-system';
+import {
+  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@trycompai/design-system';
 import { AlertCircle, CheckCircle2, Loader2, RefreshCw, Settings, ShieldCheck } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FindingsTable } from './FindingsTable';
@@ -45,8 +52,7 @@ export function ResultsView({
     new Set(findings.map((f) => f.severity).filter(Boolean) as string[]),
   );
 
-  const allPassed =
-    findings.length > 0 && findings.every((f) => f.status === 'passed');
+  const allPassed = findings.length > 0 && findings.every((f) => f.status === 'passed');
 
   const filteredFindings = findings.filter((finding) => {
     const matchesStatus = selectedStatus === 'all' || finding.status === selectedStatus;
@@ -93,7 +99,12 @@ export function ResultsView({
             </div>
           </div>
           <div className="mt-3 ml-8">
-            <Button size="sm" variant="outline" onClick={onConfigure} iconLeft={<Settings className="h-4 w-4" />}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onConfigure}
+              iconLeft={<Settings className="h-4 w-4" />}
+            >
               Configure
             </Button>
           </div>
@@ -130,7 +141,8 @@ export function ResultsView({
               All checks passed
             </p>
             <p className="text-xs text-green-700/80 dark:text-green-400/80">
-              No security issues found across {findings.length} check{findings.length !== 1 ? 's' : ''}
+              No security issues found across {findings.length} check
+              {findings.length !== 1 ? 's' : ''}
             </p>
           </div>
         </div>
@@ -140,7 +152,12 @@ export function ResultsView({
         {findings.length > 0 ? (
           <div className="flex flex-wrap items-center gap-2">
             <div className="w-[160px]">
-              <Select value={selectedSeverity} onValueChange={(v) => { if (v) setSelectedSeverity(v); }}>
+              <Select
+                value={selectedSeverity}
+                onValueChange={(v) => {
+                  if (v) setSelectedSeverity(v);
+                }}
+              >
                 <SelectTrigger size="sm">
                   <SelectValue placeholder="All Severities" />
                 </SelectTrigger>
@@ -156,7 +173,12 @@ export function ResultsView({
             </div>
 
             <div className="w-[160px]">
-              <Select value={selectedStatus} onValueChange={(v) => { if (v) setSelectedStatus(v); }}>
+              <Select
+                value={selectedStatus}
+                onValueChange={(v) => {
+                  if (v) setSelectedStatus(v);
+                }}
+              >
                 <SelectTrigger size="sm">
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>

@@ -1,11 +1,11 @@
-import { auth } from "@/app/lib/auth";
-import { NextRequest, NextResponse } from "next/server";
-import { db } from "@db/server";
-import { validateMemberAndOrg } from "../download-agent/utils";
-import { getFleetInstance } from "@/utils/fleet";
-import { FleetPolicy, Host } from "@/app/(app)/(home)/[orgId]/types";
-import { APP_AWS_ORG_ASSETS_BUCKET, s3Client, getSignedUrl } from "@/utils/s3";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { FleetPolicy, Host } from '@/app/(app)/(home)/[orgId]/types';
+import { auth } from '@/app/lib/auth';
+import { getFleetInstance } from '@/utils/fleet';
+import { APP_AWS_ORG_ASSETS_BUCKET, getSignedUrl, s3Client } from '@/utils/s3';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { db } from '@db/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { validateMemberAndOrg } from '../download-agent/utils';
 
 const MDM_POLICY_ID = -9999;
 
@@ -91,23 +91,28 @@ export async function GET(req: NextRequest) {
             }
           }),
         );
-  
+
         return {
           ...result,
           attachments: signedAttachments,
         };
       }),
     );
-    
+
     return NextResponse.json({
       device,
       fleetPolicies: fleetPolicies.map((policy) => {
-        const policyResult = fleetPolicyResults.find((result) => result.fleetPolicyId === policy.id);
+        const policyResult = fleetPolicyResults.find(
+          (result) => result.fleetPolicyId === policy.id,
+        );
         return {
           ...policy,
-          response: policy.response === 'pass' || policyResult?.fleetPolicyResponse === 'pass' ? 'pass' : 'fail',
+          response:
+            policy.response === 'pass' || policyResult?.fleetPolicyResponse === 'pass'
+              ? 'pass'
+              : 'fail',
           attachments: policyResult?.attachments || [],
-        }
+        };
       }),
     });
   } catch (error) {

@@ -35,9 +35,20 @@ interface UseTasksReturn {
   isError: boolean;
   mutate: () => Promise<TaskWithRelations[] | undefined>;
   bulkDelete: (taskIds: string[]) => Promise<{ deletedCount: number }>;
-  bulkUpdateStatus: (taskIds: string[], status: TaskStatus, reviewDate?: string, notRelevantJustification?: string) => Promise<{ updatedCount: number }>;
-  bulkUpdateAssignee: (taskIds: string[], assigneeId: string | null) => Promise<{ updatedCount: number }>;
-  bulkSubmitForReview: (taskIds: string[], approverId: string) => Promise<{ submittedCount: number }>;
+  bulkUpdateStatus: (
+    taskIds: string[],
+    status: TaskStatus,
+    reviewDate?: string,
+    notRelevantJustification?: string,
+  ) => Promise<{ updatedCount: number }>;
+  bulkUpdateAssignee: (
+    taskIds: string[],
+    assigneeId: string | null,
+  ) => Promise<{ updatedCount: number }>;
+  bulkSubmitForReview: (
+    taskIds: string[],
+    approverId: string,
+  ) => Promise<{ submittedCount: number }>;
   createTask: (data: CreateTaskPayload) => Promise<void>;
   reorderTasks: (updates: ReorderUpdate[]) => Promise<void>;
 }
@@ -64,9 +75,7 @@ export function useTasks({ initialData }: UseTasksOptions = {}): UseTasksReturn 
   const { data, error, isLoading, mutate } = useSWR<TaskWithRelations[]>(
     orgId ? [`tasks-list`, orgId] : null,
     async () => {
-      const response = await apiClient.get<TasksResponse>(
-        '/v1/tasks?includeRelations=true',
-      );
+      const response = await apiClient.get<TasksResponse>('/v1/tasks?includeRelations=true');
 
       if (response.error) {
         throw new Error(response.error);
@@ -87,11 +96,9 @@ export function useTasks({ initialData }: UseTasksOptions = {}): UseTasksReturn 
   );
 
   const bulkDelete = async (taskIds: string[]): Promise<{ deletedCount: number }> => {
-    const response = await apiClient.delete<{ deletedCount: number }>(
-      '/v1/tasks/bulk',
-      undefined,
-      { taskIds },
-    );
+    const response = await apiClient.delete<{ deletedCount: number }>('/v1/tasks/bulk', undefined, {
+      taskIds,
+    });
     if (response.error) throw new Error(response.error);
     await mutate();
     return { deletedCount: response.data?.deletedCount ?? taskIds.length };
@@ -105,13 +112,9 @@ export function useTasks({ initialData }: UseTasksOptions = {}): UseTasksReturn 
   ): Promise<{ updatedCount: number }> => {
     const payload: Record<string, unknown> = { taskIds, status };
     if (reviewDate) payload.reviewDate = reviewDate;
-    if (notRelevantJustification)
-      payload.notRelevantJustification = notRelevantJustification;
+    if (notRelevantJustification) payload.notRelevantJustification = notRelevantJustification;
 
-    const response = await apiClient.patch<{ updatedCount: number }>(
-      '/v1/tasks/bulk',
-      payload,
-    );
+    const response = await apiClient.patch<{ updatedCount: number }>('/v1/tasks/bulk', payload);
     if (response.error) throw new Error(response.error);
     await mutate();
     return { updatedCount: response.data?.updatedCount ?? taskIds.length };
@@ -121,10 +124,10 @@ export function useTasks({ initialData }: UseTasksOptions = {}): UseTasksReturn 
     taskIds: string[],
     assigneeId: string | null,
   ): Promise<{ updatedCount: number }> => {
-    const response = await apiClient.patch<{ updatedCount: number }>(
-      '/v1/tasks/bulk/assignee',
-      { taskIds, assigneeId },
-    );
+    const response = await apiClient.patch<{ updatedCount: number }>('/v1/tasks/bulk/assignee', {
+      taskIds,
+      assigneeId,
+    });
     if (response.error) throw new Error(response.error);
     await mutate();
     return { updatedCount: response.data?.updatedCount ?? taskIds.length };

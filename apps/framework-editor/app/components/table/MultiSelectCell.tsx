@@ -53,20 +53,20 @@ export function MultiSelectCell({
     const lower = search.toLowerCase();
     return options.filter(
       (opt) =>
-        opt.label.toLowerCase().includes(lower) ||
-        opt.category?.toLowerCase().includes(lower),
+        opt.label.toLowerCase().includes(lower) || opt.category?.toLowerCase().includes(lower),
     );
   }, [options, search]);
 
   const handleToggle = (value: string) => {
-    const next = values.includes(value)
-      ? values.filter((v) => v !== value)
-      : [...values, value];
+    const next = values.includes(value) ? values.filter((v) => v !== value) : [...values, value];
     onUpdate(rowId, next);
   };
 
   const handleRemove = (value: string) => {
-    onUpdate(rowId, values.filter((v) => v !== value));
+    onUpdate(
+      rowId,
+      values.filter((v) => v !== value),
+    );
   };
 
   if (!isExpanded) {

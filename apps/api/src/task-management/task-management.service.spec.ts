@@ -105,8 +105,14 @@ describe('TaskManagementService — API key actor fallback', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TaskManagementService,
-        { provide: TaskItemAssignmentNotifierService, useValue: { notifyAssignee: jest.fn() } },
-        { provide: TaskItemMentionNotifierService, useValue: { notifyMentioned: jest.fn() } },
+        {
+          provide: TaskItemAssignmentNotifierService,
+          useValue: { notifyAssignee: jest.fn() },
+        },
+        {
+          provide: TaskItemMentionNotifierService,
+          useValue: { notifyMentioned: jest.fn() },
+        },
         { provide: TaskItemAuditService, useValue: auditMock },
       ],
     }).compile();
@@ -120,7 +126,10 @@ describe('TaskManagementService — API key actor fallback', () => {
         userId: 'usr_owner',
       }); // owner fallback
       db.taskItem.findFirst.mockResolvedValueOnce({ ...builtTaskItem });
-      db.taskItem.update.mockResolvedValueOnce({ ...builtTaskItem, status: 'done' });
+      db.taskItem.update.mockResolvedValueOnce({
+        ...builtTaskItem,
+        status: 'done',
+      });
 
       await service.updateTaskItem(taskItemId, orgId, apiKeyAuth, {
         status: 'done',
@@ -157,7 +166,10 @@ describe('TaskManagementService — API key actor fallback', () => {
         userId: 'usr_session',
       });
       db.taskItem.findFirst.mockResolvedValueOnce({ ...builtTaskItem });
-      db.taskItem.update.mockResolvedValueOnce({ ...builtTaskItem, status: 'done' });
+      db.taskItem.update.mockResolvedValueOnce({
+        ...builtTaskItem,
+        status: 'done',
+      });
 
       await service.updateTaskItem(taskItemId, orgId, sessionAuth, {
         status: 'done',

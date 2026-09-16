@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to monday.com as an admin\n2. Click your profile picture > Developers\n3. Click API token > Show\n4. Copy your personal API token\n5. Paste it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

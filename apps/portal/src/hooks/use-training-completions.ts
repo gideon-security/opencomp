@@ -1,9 +1,9 @@
-import type { EmployeeTrainingVideoCompletion } from '@db';
 import { env } from '@/env.mjs';
-import useSWR from 'swr';
-import { toast } from 'sonner';
-import { useCallback } from 'react';
+import type { EmployeeTrainingVideoCompletion } from '@db';
 import { useParams } from 'next/navigation';
+import { useCallback } from 'react';
+import { toast } from 'sonner';
+import useSWR from 'swr';
 
 const API_URL = env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
 
@@ -22,19 +22,20 @@ export function useTrainingCompletions({
 }: {
   fallbackData?: EmployeeTrainingVideoCompletion[];
 } = {}) {
-  const { data, error, isLoading, mutate } = useSWR<
-    EmployeeTrainingVideoCompletion[]
-  >(SWR_KEY, fetcher, {
-    fallbackData,
-    revalidateOnMount: !fallbackData,
-    revalidateOnFocus: false,
-  });
+  const { data, error, isLoading, mutate } = useSWR<EmployeeTrainingVideoCompletion[]>(
+    SWR_KEY,
+    fetcher,
+    {
+      fallbackData,
+      revalidateOnMount: !fallbackData,
+      revalidateOnFocus: false,
+    },
+  );
 
   const completions = Array.isArray(data) ? data : [];
 
   const params = useParams();
-  const organizationId =
-    typeof params?.orgId === 'string' ? params.orgId : '';
+  const organizationId = typeof params?.orgId === 'string' ? params.orgId : '';
 
   const markVideoComplete = useCallback(
     async (videoId: string) => {
@@ -55,7 +56,9 @@ export function useTrainingCompletions({
               throw new Error('Failed to mark video as completed');
             }
 
-            const { data: updatedRecord }: {
+            const {
+              data: updatedRecord,
+            }: {
               data: EmployeeTrainingVideoCompletion;
             } = await res.json();
 
@@ -63,9 +66,7 @@ export function useTrainingCompletions({
 
             const exists = current.some((c) => c.videoId === videoId);
             if (exists) {
-              return current.map((c) =>
-                c.videoId === videoId ? updatedRecord : c,
-              );
+              return current.map((c) => (c.videoId === videoId ? updatedRecord : c));
             }
             return [...current, updatedRecord];
           },

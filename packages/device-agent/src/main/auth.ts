@@ -1,6 +1,6 @@
-import { createServer, type Server } from 'node:http';
-import { randomBytes } from 'node:crypto';
 import { dialog, shell } from 'electron';
+import { randomBytes } from 'node:crypto';
+import { createServer, type Server } from 'node:http';
 import { AGENT_VERSION, API_ROUTES } from '../shared/constants';
 import type {
   DeviceInfo,

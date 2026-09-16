@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -62,13 +62,14 @@ vi.mock('@dnd-kit/utilities', () => ({
 // Mock design system
 vi.mock('@trycompai/design-system', () => ({
   Button: ({ children, onClick, iconLeft, ...props }: any) => (
-    <button onClick={onClick} {...props}>{iconLeft}{children}</button>
+    <button onClick={onClick} {...props}>
+      {iconLeft}
+      {children}
+    </button>
   ),
   DropdownMenu: ({ children }: any) => <div>{children}</div>,
   DropdownMenuContent: ({ children }: any) => <div>{children}</div>,
-  DropdownMenuItem: ({ children, onClick }: any) => (
-    <button onClick={onClick}>{children}</button>
-  ),
+  DropdownMenuItem: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
   DropdownMenuTrigger: ({ children }: any) => <button>{children}</button>,
   Input: (props: any) => <input {...props} />,
   Textarea: (props: any) => <textarea {...props} />,

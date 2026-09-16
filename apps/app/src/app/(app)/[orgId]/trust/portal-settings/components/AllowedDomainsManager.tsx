@@ -2,25 +2,6 @@
 
 import { usePermissions } from '@/hooks/use-permissions';
 import { useTrustPortalSettings } from '@/hooks/use-trust-portal-settings';
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { Plus, X, Info } from 'lucide-react';
-import { Button } from '@gideon-defender/ui/button';
-import { Input } from '@gideon-defender/ui/input';
-import { Badge } from '@gideon-defender/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@gideon-defender/ui/card';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@gideon-defender/ui/tooltip';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +12,25 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@gideon-defender/ui/alert-dialog';
+import { Badge } from '@gideon-defender/ui/badge';
+import { Button } from '@gideon-defender/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@gideon-defender/ui/card';
+import { Input } from '@gideon-defender/ui/input';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
+import { Info, Plus, X } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface AllowedDomainsManagerProps {
   initialDomains: string[];
@@ -39,16 +39,12 @@ interface AllowedDomainsManagerProps {
 
 const domainRegex = /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}$/i;
 
-export function AllowedDomainsManager({
-  initialDomains,
-  orgId,
-}: AllowedDomainsManagerProps) {
+export function AllowedDomainsManager({ initialDomains, orgId }: AllowedDomainsManagerProps) {
   const { hasPermission } = usePermissions();
   const canUpdate = hasPermission('trust', 'update');
   const { updateAllowedDomains } = useTrustPortalSettings();
   const [domains, setDomains] = useState<string[]>(initialDomains);
-  const [lastSavedDomains, setLastSavedDomains] =
-    useState<string[]>(initialDomains);
+  const [lastSavedDomains, setLastSavedDomains] = useState<string[]>(initialDomains);
   const [newDomain, setNewDomain] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [domainToDelete, setDomainToDelete] = useState<string | null>(null);
@@ -136,9 +132,8 @@ export function AllowedDomainsManager({
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
                 <p>
-                  Users with email addresses from these domains will receive
-                  direct access to the trust portal without needing to sign an
-                  NDA when their request is approved.
+                  Users with email addresses from these domains will receive direct access to the
+                  trust portal without needing to sign an NDA when their request is approved.
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -177,11 +172,7 @@ export function AllowedDomainsManager({
         {domains.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {domains.map((domain) => (
-              <Badge
-                key={domain}
-                variant="secondary"
-                className="flex items-center gap-1 pr-1"
-              >
+              <Badge key={domain} variant="secondary" className="flex items-center gap-1 pr-1">
                 {domain}
                 <button
                   type="button"
@@ -205,16 +196,13 @@ export function AllowedDomainsManager({
           <AlertDialogHeader>
             <AlertDialogTitle>Remove Domain</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to remove <strong>{domainToDelete}</strong>{' '}
-              from the allowed domains list? Users from this domain will need to
-              sign an NDA when requesting access.
+              Are you sure you want to remove <strong>{domainToDelete}</strong> from the allowed
+              domains list? Users from this domain will need to sign an NDA when requesting access.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDelete}>
-              Remove
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleConfirmDelete}>Remove</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

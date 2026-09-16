@@ -13,19 +13,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import {
-  Button,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  cn,
-} from '@trycompai/design-system';
+import { Button, Tabs, TabsList, TabsTrigger, cn } from '@trycompai/design-system';
 import { TrashCan } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { ScanModeSwitchDialog } from './ScanModeSwitchDialog';
 import type { AwsScanModeChoice } from '../../integrations/[slug]/components/AwsScanModeStep';
+import { ScanModeSwitchDialog } from './ScanModeSwitchDialog';
 
 interface CloudProvider {
   id: string;
@@ -71,11 +65,14 @@ export function CloudSettingsModal({
   // canDelete here would silently block valid update users from seeing
   // the "Switch" button even though the API would accept their request.
   const canUpdate = hasPermission('integration', 'update');
-  const [activeProvider, setActiveProvider] = useState<string>(connectedProviders[0]?.connectionId || '');
+  const [activeProvider, setActiveProvider] = useState<string>(
+    connectedProviders[0]?.connectionId || '',
+  );
   const [isDeleting, setIsDeleting] = useState(false);
   const { deleteConnection } = useIntegrationMutations();
 
-  const currentProvider = connectedProviders.find((p) => p.connectionId === activeProvider) ?? connectedProviders[0];
+  const currentProvider =
+    connectedProviders.find((p) => p.connectionId === activeProvider) ?? connectedProviders[0];
 
   const handleDisconnect = async (provider: CloudProvider) => {
     if (!confirm(t('cloudTests_confirmDisconnectScanResults'))) return;
@@ -115,9 +112,7 @@ export function CloudSettingsModal({
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle>{t('cloudTests_connectionSettings')}</DialogTitle>
-          <DialogDescription>
-            {t('cloudTests_connectionSettingsDescription')}
-          </DialogDescription>
+          <DialogDescription>{t('cloudTests_connectionSettingsDescription')}</DialogDescription>
         </DialogHeader>
 
         {/* Provider selector (if multiple) */}
@@ -156,7 +151,10 @@ export function CloudSettingsModal({
 
 // ─── Connection Tab ─────────────────────────────────────────────────────
 
-const UPDATE_CREDENTIALS_HINT_KEY: Record<string, 'cloudTests_updateCredsAws' | 'cloudTests_updateCredsGcp' | 'cloudTests_updateCredsAzure'> = {
+const UPDATE_CREDENTIALS_HINT_KEY: Record<
+  string,
+  'cloudTests_updateCredsAws' | 'cloudTests_updateCredsGcp' | 'cloudTests_updateCredsAzure'
+> = {
   aws: 'cloudTests_updateCredsAws',
   gcp: 'cloudTests_updateCredsGcp',
   azure: 'cloudTests_updateCredsAzure',
@@ -181,7 +179,9 @@ function ConnectionTab({
       <div className="rounded-lg border p-4 space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">{t('cloudTests_status')}</span>
-          <span className={cn('text-sm capitalize font-medium', getStatusColorClass(provider.status))}>
+          <span
+            className={cn('text-sm capitalize font-medium', getStatusColorClass(provider.status))}
+          >
             {provider.status}
           </span>
         </div>
@@ -194,7 +194,9 @@ function ConnectionTab({
         {provider.regions && provider.regions.length > 0 && (
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">{t('cloudTests_regions')}</span>
-            <span className="text-sm">{t('cloudTests_regionCount', { count: provider.regions.length })}</span>
+            <span className="text-sm">
+              {t('cloudTests_regionCount', { count: provider.regions.length })}
+            </span>
           </div>
         )}
       </div>
@@ -239,13 +241,7 @@ function ConnectionTab({
  * `variables.awsScanMode` to determine the current mode, falling back
  * to 'comp_scanners' when the field is missing (pre-feature connections).
  */
-function AwsScanModeSection({
-  connectionId,
-  canEdit,
-}: {
-  connectionId: string;
-  canEdit: boolean;
-}) {
+function AwsScanModeSection({ connectionId, canEdit }: { connectionId: string; canEdit: boolean }) {
   const t = useTranslations('integrations.list');
   const { connection, isLoading, refresh } = useIntegrationConnection(connectionId);
   const [switchDialogOpen, setSwitchDialogOpen] = useState(false);
@@ -277,16 +273,10 @@ function AwsScanModeSection({
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium">{t('cloudTests_scanEngine')}</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              {currentLabel}
-            </p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{currentLabel}</p>
           </div>
           {canEdit && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setSwitchDialogOpen(true)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setSwitchDialogOpen(true)}>
               {t('cloudTests_switchTo', { mode: targetLabel })}
             </Button>
           )}

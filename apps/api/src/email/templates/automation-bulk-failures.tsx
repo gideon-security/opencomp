@@ -63,9 +63,7 @@ export const AutomationBulkFailuresEmail = ({
             fontStyle="normal"
           />
         </head>
-        <Preview>
-          {`${taskCount} ${taskText} with automation failures`}
-        </Preview>
+        <Preview>{`${taskCount} ${taskText} with automation failures`}</Preview>
 
         <Body className="mx-auto my-auto bg-[#fff] font-sans">
           <Container
@@ -89,12 +87,15 @@ export const AutomationBulkFailuresEmail = ({
 
             <Section className="mt-[16px] mb-[16px]">
               {displayedTasks.map((task, index) => (
-                <Text key={index} className="my-[4px] text-[14px] leading-[24px] text-[#121212]">
+                <Text
+                  key={index}
+                  className="my-[4px] text-[14px] leading-[24px] text-[#121212]"
+                >
                   {'• '}
                   <Link href={task.url} className="text-[#121212] underline">
                     {task.title}
-                  </Link>
-                  {' '}({task.failedCount}/{task.totalCount} failed)
+                  </Link>{' '}
+                  ({task.failedCount}/{task.totalCount} failed)
                 </Text>
               ))}
               {remainingCount > 0 && (
@@ -123,7 +124,10 @@ export const AutomationBulkFailuresEmail = ({
             <Section className="mt-[30px] mb-[20px]">
               <Text className="text-[12px] leading-[20px] text-[#666666]">
                 Don't want to receive task assignment notifications?{' '}
-                <Link href={unsubscribeUrl} className="text-[#121212] underline">
+                <Link
+                  href={unsubscribeUrl}
+                  className="text-[#121212] underline"
+                >
                   Manage your email preferences
                 </Link>
                 .

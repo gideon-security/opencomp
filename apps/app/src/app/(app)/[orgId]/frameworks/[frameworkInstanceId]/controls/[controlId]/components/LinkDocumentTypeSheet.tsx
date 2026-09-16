@@ -1,7 +1,7 @@
 'use client';
 
-import { apiClient } from '@/lib/api-client';
 import { usePermissions } from '@/hooks/use-permissions';
+import { apiClient } from '@/lib/api-client';
 import {
   Button,
   Checkbox,
@@ -17,10 +17,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import {
-  ALL_DOCUMENT_TYPES,
-  getDocumentTypeLabel,
-} from './documentTypeLabels';
+import { ALL_DOCUMENT_TYPES, getDocumentTypeLabel } from './documentTypeLabels';
 
 export function LinkDocumentTypeSheet({
   controlId,
@@ -38,14 +35,8 @@ export function LinkDocumentTypeSheet({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
-  const linked = useMemo(
-    () => new Set(alreadyLinkedFormTypes),
-    [alreadyLinkedFormTypes],
-  );
-  const options = useMemo(
-    () => ALL_DOCUMENT_TYPES.filter((t) => !linked.has(t)),
-    [linked],
-  );
+  const linked = useMemo(() => new Set(alreadyLinkedFormTypes), [alreadyLinkedFormTypes]);
+  const options = useMemo(() => ALL_DOCUMENT_TYPES.filter((t) => !linked.has(t)), [linked]);
 
   useEffect(() => {
     if (!isOpen) setSelected(new Set());
@@ -75,9 +66,7 @@ export function LinkDocumentTypeSheet({
       setIsOpen(false);
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('controls.failedToLinkDocuments'),
-      );
+      toast.error(error instanceof Error ? error.message : t('controls.failedToLinkDocuments'));
     } finally {
       setIsSubmitting(false);
     }
@@ -85,11 +74,7 @@ export function LinkDocumentTypeSheet({
 
   return (
     <>
-      <Button
-        size="sm"
-        iconLeft={<LinkIcon size={16} />}
-        onClick={() => setIsOpen(true)}
-      >
+      <Button size="sm" iconLeft={<LinkIcon size={16} />} onClick={() => setIsOpen(true)}>
         {t('controls.linkDocument')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -114,17 +99,12 @@ export function LinkDocumentTypeSheet({
                       onCheckedChange={() => toggle(formType)}
                     />
                     <div className="flex-1">
-                      <div className="font-medium text-sm">
-                        {getDocumentTypeLabel(formType)}
-                      </div>
+                      <div className="font-medium text-sm">{getDocumentTypeLabel(formType)}</div>
                     </div>
                   </label>
                 ))}
                 <div className="flex justify-end pt-2">
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={selected.size === 0 || isSubmitting}
-                  >
+                  <Button onClick={handleSubmit} disabled={selected.size === 0 || isSubmitting}>
                     {t('controls.linkDocumentCount', {
                       count: selected.size,
                     })}

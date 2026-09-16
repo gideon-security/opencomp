@@ -1,7 +1,7 @@
 'use client';
 
-import { authClient } from '@/utils/auth-client';
 import { buildAuthCallbackUrl } from '@/utils/auth-callback';
+import { authClient } from '@/utils/auth-client';
 import { Button } from '@gideon-defender/ui/button';
 import { cn } from '@gideon-defender/ui/cn';
 import { Form, FormControl, FormField, FormItem } from '@gideon-defender/ui/form';

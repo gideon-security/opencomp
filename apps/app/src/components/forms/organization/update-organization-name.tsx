@@ -87,10 +87,11 @@ export function UpdateOrganizationName({ organizationName }: { organizationName:
             <div className="text-muted-foreground text-xs">
               {'Please use 32 characters at maximum.'}
             </div>
-            <Button type="submit" disabled={isSubmitting || !hasPermission('organization', 'update')}>
-              {isSubmitting ? (
-                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-              ) : null}
+            <Button
+              type="submit"
+              disabled={isSubmitting || !hasPermission('organization', 'update')}
+            >
+              {isSubmitting ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
               {'Save'}
             </Button>
           </CardFooter>

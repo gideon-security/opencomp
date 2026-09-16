@@ -42,9 +42,7 @@ export default async function AdminOrganizationsPage({
   });
   if (search) qs.set('search', search);
 
-  const res = await serverApi.get<AdminOrgsResponse>(
-    `/v1/admin/organizations?${qs}`,
-  );
+  const res = await serverApi.get<AdminOrgsResponse>(`/v1/admin/organizations?${qs}`);
 
   return (
     <PageLayout header={<PageHeader title="Organizations" />}>

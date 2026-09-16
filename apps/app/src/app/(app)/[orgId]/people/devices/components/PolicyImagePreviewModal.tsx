@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@gideon-defender/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@gideon-defender/ui/dialog';
 import { CarouselControls } from './CarouselControls';
 import { PolicyImagePreview } from './PolicyImagePreview';
 
@@ -17,7 +12,11 @@ interface PolicyImagePreviewModalProps {
   images: string[];
 }
 
-export function PolicyImagePreviewModal({ open, images, onOpenChange }: PolicyImagePreviewModalProps) {
+export function PolicyImagePreviewModal({
+  open,
+  images,
+  onOpenChange,
+}: PolicyImagePreviewModalProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {

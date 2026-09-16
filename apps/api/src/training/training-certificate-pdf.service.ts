@@ -244,7 +244,9 @@ export class TrainingCertificatePdfService {
     doc.text('AI-powered compliance platform', pageWidth / 2, 178, {
       align: 'center',
     });
-    doc.text('https://gideondefender.com', pageWidth / 2, 183, { align: 'center' });
+    doc.text('https://gideondefender.com', pageWidth / 2, 183, {
+      align: 'center',
+    });
 
     // Get the PDF as a buffer
     const pdfOutput = doc.output('arraybuffer');

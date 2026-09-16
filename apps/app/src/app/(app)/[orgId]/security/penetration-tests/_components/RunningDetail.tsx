@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useTranslations } from 'next-intl';
 import type {
   PentestAgentEvent,
   PentestIssue,
   PentestRun,
 } from '@/lib/security/penetration-tests-client';
+import { useTranslations } from 'next-intl';
+import { useEffect, useRef, useState } from 'react';
 import { formatReportDate } from '../lib';
 import { AgentActivityLog } from './AgentActivityLog';
 import { AgentProgressGrid } from './AgentProgressGrid';
@@ -22,12 +22,7 @@ interface RunningDetailProps {
   onOpenFinding: (issue: PentestIssue) => void;
 }
 
-export function RunningDetail({
-  run,
-  issues,
-  events,
-  onOpenFinding,
-}: RunningDetailProps) {
+export function RunningDetail({ run, issues, events, onOpenFinding }: RunningDetailProps) {
   const t = useTranslations('security');
   const counts = tallySeverities(issues);
   // Pass the run id so the highlights hook resets its `seenRef` when
@@ -46,9 +41,7 @@ export function RunningDetail({
   // multi-hour run.
   const startedMs = new Date(run.createdAt).getTime();
   const elapsedMs =
-    Number.isFinite(startedMs) && startedMs > 0
-      ? Math.max(0, Date.now() - startedMs)
-      : 0;
+    Number.isFinite(startedMs) && startedMs > 0 ? Math.max(0, Date.now() - startedMs) : 0;
   const elapsedLabel = formatElapsed(elapsedMs);
 
   return (
@@ -57,13 +50,9 @@ export function RunningDetail({
         <header className="space-y-3">
           <div className="flex items-center gap-3">
             <StatusPill status={run.status} />
-            <span className="font-mono text-xs text-muted-foreground">
-              {run.id}
-            </span>
+            <span className="font-mono text-xs text-muted-foreground">{run.id}</span>
           </div>
-          <h1 className="truncate text-[26px] font-medium tracking-[-0.02em]">
-            {run.targetUrl}
-          </h1>
+          <h1 className="truncate text-[26px] font-medium tracking-[-0.02em]">{run.targetUrl}</h1>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
             <span>
               {t('penTest.running.started', {
@@ -77,9 +66,7 @@ export function RunningDetail({
                 })}
               </span>
             ) : null}
-            {run.repoUrl ? (
-              <span>{t('penTest.running.repo', { url: run.repoUrl })}</span>
-            ) : null}
+            {run.repoUrl ? <span>{t('penTest.running.repo', { url: run.repoUrl })}</span> : null}
           </div>
         </header>
 
@@ -137,10 +124,7 @@ function formatElapsed(ms: number): string {
  * Keyed on `runId` — when the user navigates between scans, the seen-set
  * resets so we don't carry over IDs from the previous run.
  */
-function useNewFindingHighlights(
-  runId: string,
-  issues: PentestIssue[],
-): Set<string> {
+function useNewFindingHighlights(runId: string, issues: PentestIssue[]): Set<string> {
   const seenRef = useRef<Set<string>>(new Set());
   const lastRunIdRef = useRef<string | null>(null);
   const [highlighted, setHighlighted] = useState<Set<string>>(new Set());

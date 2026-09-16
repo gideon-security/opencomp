@@ -189,8 +189,7 @@ export class AdminOrganizationsService {
       const lastActivity = [lastSession, lastAuditLog]
         .filter(Boolean)
         .sort((a, b) => (b as Date).getTime() - (a as Date).getTime())[0] as
-        | Date
-        | undefined;
+        Date | undefined;
 
       const isActive = lastActivity ? lastActivity >= cutoff : false;
 

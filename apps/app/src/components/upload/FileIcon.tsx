@@ -1,7 +1,7 @@
 'use client';
 
-import { File, FileImage, FileText } from 'lucide-react';
 import { getFileKind } from '@gideon-defender/utils/file';
+import { File, FileImage, FileText } from 'lucide-react';
 
 interface FileIconProps {
   fileName: string;

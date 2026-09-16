@@ -103,7 +103,9 @@ export class BrowserAutomationStepRunnerService {
             });
       // Mark each vendor boundary so the combined timeline reads GH → AWS → …
       if (multiStep) {
-        timeline.step(`Step ${index + 1}${hostSuffix(input.steps[index].targetUrl)}`);
+        timeline.step(
+          `Step ${index + 1}${hostSuffix(input.steps[index].targetUrl)}`,
+        );
       }
       results.push(
         await this.runStep({

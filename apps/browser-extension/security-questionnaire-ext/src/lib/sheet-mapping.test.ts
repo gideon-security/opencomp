@@ -9,10 +9,12 @@ import type { DetectedQuestion } from './types';
 
 describe('sheet mapping helpers', () => {
   it('parses a spreadsheet identity from a Google Sheets URL shape', () => {
-    expect(parseSheetIdentity({
-      pathname: '/spreadsheets/d/sheet_123/edit',
-      hash: '#gid=456',
-    })).toEqual({
+    expect(
+      parseSheetIdentity({
+        pathname: '/spreadsheets/d/sheet_123/edit',
+        hash: '#gid=456',
+      }),
+    ).toEqual({
       spreadsheetId: 'sheet_123',
       gid: '456',
     });
@@ -24,10 +26,12 @@ describe('sheet mapping helpers', () => {
       question({ tag: 'sheets:D14->H14' }),
     ];
 
-    expect(inferSheetMappingFromQuestions({
-      identity: { spreadsheetId: 'sheet_abc', gid: '7' },
-      questions,
-    })).toMatchObject({
+    expect(
+      inferSheetMappingFromQuestions({
+        identity: { spreadsheetId: 'sheet_abc', gid: '7' },
+        questions,
+      }),
+    ).toMatchObject({
       spreadsheetId: 'sheet_abc',
       gid: '7',
       questionColumn: 'D',
@@ -40,32 +44,36 @@ describe('sheet mapping helpers', () => {
   });
 
   it('normalizes and validates stored mapping objects', () => {
-    expect(parseSheetMapping({
-      spreadsheetId: 'sheet_abc',
-      gid: '0',
-      questionColumn: 'aa',
-      answerColumn: 'ab',
-      startRow: 5,
-      endRow: null,
-      source: 'manual',
-      confirmed: true,
-      updatedAt: 1,
-    })).toMatchObject({
+    expect(
+      parseSheetMapping({
+        spreadsheetId: 'sheet_abc',
+        gid: '0',
+        questionColumn: 'aa',
+        answerColumn: 'ab',
+        startRow: 5,
+        endRow: null,
+        source: 'manual',
+        confirmed: true,
+        updatedAt: 1,
+      }),
+    ).toMatchObject({
       questionColumn: 'AA',
       answerColumn: 'AB',
     });
 
-    expect(parseSheetMapping({
-      spreadsheetId: 'sheet_abc',
-      gid: '0',
-      questionColumn: 'B',
-      answerColumn: 'C',
-      startRow: 8,
-      endRow: 2,
-      source: 'manual',
-      confirmed: true,
-      updatedAt: 1,
-    })).toBeNull();
+    expect(
+      parseSheetMapping({
+        spreadsheetId: 'sheet_abc',
+        gid: '0',
+        questionColumn: 'B',
+        answerColumn: 'C',
+        startRow: 8,
+        endRow: 2,
+        source: 'manual',
+        confirmed: true,
+        updatedAt: 1,
+      }),
+    ).toBeNull();
   });
 
   it('aligns a saved mapping to the first detected question row', () => {
@@ -81,10 +89,7 @@ describe('sheet mapping helpers', () => {
         confirmed: true,
         updatedAt: 1,
       },
-      questions: [
-        question({ tag: 'sheets:B3->C3' }),
-        question({ tag: 'sheets:B4->C4' }),
-      ],
+      questions: [question({ tag: 'sheets:B3->C3' }), question({ tag: 'sheets:B4->C4' })],
     });
 
     expect(aligned).toMatchObject({

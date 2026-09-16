@@ -92,8 +92,8 @@ describe('parseExceptionExpiry', () => {
     expect(() => parseExceptionExpiry('2026-08-13T23:59')).toThrow(
       BadRequestException,
     );
-    expect(() =>
-      parseExceptionExpiry('2026-08-13T23:59:59.999'),
-    ).toThrow(BadRequestException);
+    expect(() => parseExceptionExpiry('2026-08-13T23:59:59.999')).toThrow(
+      BadRequestException,
+    );
   });
 });

@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { exportIsmsDocument } from './exportIsmsDocument';
 import { api } from '@/lib/api-client';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { exportIsmsDocument } from './exportIsmsDocument';
 
 vi.mock('@/lib/api-client', () => ({
   api: { raw: vi.fn() },
@@ -24,8 +24,7 @@ function mockResponse({
   return {
     ok,
     headers: {
-      get: (name: string) =>
-        name === 'Content-Disposition' ? (contentDisposition ?? null) : null,
+      get: (name: string) => (name === 'Content-Disposition' ? (contentDisposition ?? null) : null),
     },
     blob: async () => new Blob(['data']),
     json: async () => body ?? {},
@@ -92,8 +91,8 @@ describe('exportIsmsDocument', () => {
   it('throws the API error message when the response is not ok', async () => {
     rawMock.mockResolvedValue(mockResponse({ ok: false, body: { message: 'boom' } }));
 
-    await expect(
-      exportIsmsDocument({ documentId: 'doc_123', format: 'pdf' }),
-    ).rejects.toThrow('boom');
+    await expect(exportIsmsDocument({ documentId: 'doc_123', format: 'pdf' })).rejects.toThrow(
+      'boom',
+    );
   });
 });

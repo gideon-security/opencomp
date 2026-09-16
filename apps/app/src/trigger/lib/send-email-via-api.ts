@@ -1,11 +1,9 @@
-import { render } from '@react-email/render';
 import { logger } from '@gideon-defender/trigger-local';
+import { render } from '@react-email/render';
 import type { ReactElement } from 'react';
 
 const getApiBaseUrl = () =>
-  process.env.NEXT_PUBLIC_API_URL ||
-  process.env.API_BASE_URL ||
-  'http://localhost:3333';
+  process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || 'http://localhost:3333';
 
 interface SendEmailViaApiParams {
   to: string;
@@ -35,9 +33,7 @@ interface SendBatchEmailViaApiParams {
  * API's centralized send-email Trigger task.
  * Used by app-side Trigger tasks to avoid calling Resend directly.
  */
-export async function sendEmailViaApi(
-  params: SendEmailViaApiParams,
-): Promise<{ taskId: string }> {
+export async function sendEmailViaApi(params: SendEmailViaApiParams): Promise<{ taskId: string }> {
   const html = await render(params.react);
   const apiBaseUrl = getApiBaseUrl();
   const token = process.env.SERVICE_TOKEN_TRIGGER;
@@ -65,9 +61,7 @@ export async function sendEmailViaApi(
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(
-      `Failed to send email via API (${response.status}): ${text}`,
-    );
+    throw new Error(`Failed to send email via API (${response.status}): ${text}`);
   }
 
   const data = (await response.json()) as { taskId: string };
@@ -104,9 +98,7 @@ export async function sendBatchEmailViaApi(
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(
-      `Failed to send batch email via API (${response.status}): ${text}`,
-    );
+    throw new Error(`Failed to send batch email via API (${response.status}): ${text}`);
   }
 
   const data = (await response.json()) as { taskId: string };

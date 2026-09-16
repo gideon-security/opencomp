@@ -29,7 +29,10 @@ export interface RiskTreatmentTableRow {
   status: string;
 }
 
-const ACCEPTANCE_BADGE: Record<IsmsAcceptanceState, { variant: 'accent' | 'secondary' | 'destructive' }> = {
+const ACCEPTANCE_BADGE: Record<
+  IsmsAcceptanceState,
+  { variant: 'accent' | 'secondary' | 'destructive' }
+> = {
   accepted: { variant: 'accent' },
   awaiting: { variant: 'secondary' },
   stale: { variant: 'destructive' },
@@ -100,17 +103,13 @@ export function RiskTreatmentTable({
                 <TableCell>{row.inherentLevel}</TableCell>
                 <TableCell>{row.treatment}</TableCell>
                 <TableCell>
-                  <span className="block min-w-48 max-w-md whitespace-normal">
-                    {row.controls}
-                  </span>
+                  <span className="block min-w-48 max-w-md whitespace-normal">{row.controls}</span>
                 </TableCell>
                 <TableCell>{row.ownerName}</TableCell>
                 <TableCell>{row.residualLevel}</TableCell>
                 <TableCell>
                   <span className="flex min-w-40 flex-col items-start gap-1">
-                    <Badge variant={badge.variant}>
-                      {acceptanceLabels[row.acceptanceState]}
-                    </Badge>
+                    <Badge variant={badge.variant}>{acceptanceLabels[row.acceptanceState]}</Badge>
                     {row.acceptanceState !== 'awaiting' && (
                       <span className="whitespace-normal text-xs text-muted-foreground">
                         {row.acceptance}

@@ -15,7 +15,9 @@ export function mergeWizardAnswers({
 }): PartialWizardAnswers {
   const merged: PartialWizardAnswers = { ...stored };
 
-  for (const key of Object.keys(incoming) as Array<keyof PartialWizardAnswers>) {
+  for (const key of Object.keys(incoming) as Array<
+    keyof PartialWizardAnswers
+  >) {
     const value = incoming[key];
     if (value === undefined) continue;
 
@@ -35,7 +37,5 @@ export function mergeWizardAnswers({
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
-  return (
-    typeof value === 'object' && value !== null && !Array.isArray(value)
-  );
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }

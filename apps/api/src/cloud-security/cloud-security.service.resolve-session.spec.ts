@@ -11,9 +11,11 @@ import {
 
 type Ctor = ConstructorParameters<typeof CloudSecurityService>;
 
-const findFirst = (db as unknown as {
-  integrationConnection: { findFirst: jest.Mock };
-}).integrationConnection.findFirst;
+const findFirst = (
+  db as unknown as {
+    integrationConnection: { findFirst: jest.Mock };
+  }
+).integrationConnection.findFirst;
 
 describe('CloudSecurityService.resolveAwsSession', () => {
   let credentialVault: { getDecryptedCredentials: jest.Mock };

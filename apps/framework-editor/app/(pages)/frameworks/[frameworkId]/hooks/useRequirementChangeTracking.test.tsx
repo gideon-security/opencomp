@@ -90,10 +90,9 @@ describe('useRequirementChangeTracking handleCommit', () => {
       await result.current.handleCommit();
     });
 
-    expect(apiClientMock).toHaveBeenCalledWith(
-      '/control-template/ct_1/requirements/frk_rq_new',
-      { method: 'POST' },
-    );
+    expect(apiClientMock).toHaveBeenCalledWith('/control-template/ct_1/requirements/frk_rq_new', {
+      method: 'POST',
+    });
     expect(toastMock.error).not.toHaveBeenCalled();
     expect(refreshMock).toHaveBeenCalled();
   });

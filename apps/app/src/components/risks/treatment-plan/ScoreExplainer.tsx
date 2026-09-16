@@ -17,63 +17,56 @@ export function ScoreExplainer() {
       <div className="text-sm font-medium">How this score is calculated</div>
 
       <Section title="1 · Inherent score (1–10)">
-        We rate likelihood (Very Unlikely → Very Likely) and impact
-        (Insignificant → Severe) on a standard 5×5 matrix, each axis indexed
-        1 to 5.
+        We rate likelihood (Very Unlikely → Very Likely) and impact (Insignificant → Severe) on a
+        standard 5×5 matrix, each axis indexed 1 to 5.
         <Formula
           lines={[
             'raw = likelihood × impact   →   1..25',
             'score = ⌈raw ÷ 2.5⌉          →   1..10',
           ]}
         />
-        Risk levels (Negligible · Low · Medium · High · Critical) map from
-        bands of the raw score.
+        Risk levels (Negligible · Low · Medium · High · Critical) map from bands of the raw score.
       </Section>
 
       <Section title="2 · Treatment target">
         Each strategy projects a residual along defined axes:
         <ul className="mt-1 list-disc pl-4 text-muted-foreground">
           <li>
-            <span className="font-medium text-foreground">Mitigate</span> —
-            linked controls and tasks reduce <em>both</em> likelihood and
-            impact. The target re-runs the matrix math on the reduced inputs
-            and re-normalizes to 1–10.
+            <span className="font-medium text-foreground">Mitigate</span> — linked controls and
+            tasks reduce <em>both</em> likelihood and impact. The target re-runs the matrix math on
+            the reduced inputs and re-normalizes to 1–10.
           </li>
           <li>
-            <span className="font-medium text-foreground">Transfer</span> —
-            insurance or contractual indemnity shifts financial impact but
-            doesn't change the probability of an event. The target reduces
-            impact only; likelihood stays at inherent.
+            <span className="font-medium text-foreground">Transfer</span> — insurance or contractual
+            indemnity shifts financial impact but doesn't change the probability of an event. The
+            target reduces impact only; likelihood stays at inherent.
           </li>
           <li>
-            <span className="font-medium text-foreground">Accept</span> —
-            residual equals inherent. No reduction; rationale is documented
-            on the plan.
+            <span className="font-medium text-foreground">Accept</span> — residual equals inherent.
+            No reduction; rationale is documented on the plan.
           </li>
         </ul>
       </Section>
 
       <Section title="3 · Coverage gate">
-        Strategies that require operational evidence (Mitigate, Transfer)
-        only project a target reduction when at least one task is linked
-        to the risk. Without linked work, the target collapses back to
-        inherent — the strategy alone isn't audit evidence. Accept is
-        unaffected (its target is inherent by definition).
+        Strategies that require operational evidence (Mitigate, Transfer) only project a target
+        reduction when at least one task is linked to the risk. Without linked work, the target
+        collapses back to inherent — the strategy alone isn't audit evidence. Accept is unaffected
+        (its target is inherent by definition).
       </Section>
 
       <Section title="4 · Current vs. target">
-        For Mitigate, the displayed score interpolates linearly between
-        inherent and target by task completion:
+        For Mitigate, the displayed score interpolates linearly between inherent and target by task
+        completion:
         <Formula
           lines={[
             'completion = (tasks done OR not_relevant) ÷ total linked tasks',
             'current = inherent − (inherent − target) × completion',
           ]}
         />
-        At 0% complete the score equals inherent; at 100% it equals the
-        target. Non-Mitigate strategies are treated as fully executed by
-        definition (the strategy itself <em>is</em> the action), so their
-        current and target are the same.
+        At 0% complete the score equals inherent; at 100% it equals the target. Non-Mitigate
+        strategies are treated as fully executed by definition (the strategy itself <em>is</em> the
+        action), so their current and target are the same.
       </Section>
 
       <div className="border-t border-border pt-2 text-[11px] text-muted-foreground">
@@ -88,8 +81,8 @@ export function ScoreExplainer() {
             >
               NIST SP 800-30 Rev. 1
             </a>{' '}
-            — recognizes 5×5 matrices as a valid semi-quantitative risk
-            assessment approach (Appendix I).
+            — recognizes 5×5 matrices as a valid semi-quantitative risk assessment approach
+            (Appendix I).
           </li>
           <li>
             <a
@@ -100,15 +93,13 @@ export function ScoreExplainer() {
             >
               ISO/IEC 27005:2022
             </a>{' '}
-            — defines our treatment categories: <em>risk modification</em>{' '}
-            (Mitigate), <em>risk sharing</em> (Transfer), <em>risk
-            retention</em> (Accept).
+            — defines our treatment categories: <em>risk modification</em> (Mitigate),{' '}
+            <em>risk sharing</em> (Transfer), <em>risk retention</em> (Accept).
           </li>
         </ul>
         <div className="mt-1.5 italic">
-          The matrix structure and treatment categories align with these
-          standards; the specific 1–10 normalization and step-down magnitudes
-          are OpenComp's calibration.
+          The matrix structure and treatment categories align with these standards; the specific
+          1–10 normalization and step-down magnitudes are OpenComp's calibration.
         </div>
       </div>
     </div>

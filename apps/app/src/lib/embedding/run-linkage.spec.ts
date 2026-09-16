@@ -2,18 +2,19 @@ import { Departments } from '@db';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { LinkagePhase } from './run-linkage';
 
-const { dbMock, upsertMock, findSimilarTasksMock, waitForIndexedMock, pruneMock, rerankMock } = vi.hoisted(() => ({
-  dbMock: {
-    risk: { findMany: vi.fn(), update: vi.fn() },
-    vendor: { findMany: vi.fn(), update: vi.fn() },
-    task: { findMany: vi.fn(), update: vi.fn(), updateMany: vi.fn() },
-  },
-  upsertMock: vi.fn(),
-  findSimilarTasksMock: vi.fn(),
-  waitForIndexedMock: vi.fn(),
-  pruneMock: vi.fn(),
-  rerankMock: vi.fn(),
-}));
+const { dbMock, upsertMock, findSimilarTasksMock, waitForIndexedMock, pruneMock, rerankMock } =
+  vi.hoisted(() => ({
+    dbMock: {
+      risk: { findMany: vi.fn(), update: vi.fn() },
+      vendor: { findMany: vi.fn(), update: vi.fn() },
+      task: { findMany: vi.fn(), update: vi.fn(), updateMany: vi.fn() },
+    },
+    upsertMock: vi.fn(),
+    findSimilarTasksMock: vi.fn(),
+    waitForIndexedMock: vi.fn(),
+    pruneMock: vi.fn(),
+    rerankMock: vi.fn(),
+  }));
 
 function emptyControls() {
   // Default `task.findMany` shape for the suggestions-enrichment lookup.
@@ -56,10 +57,11 @@ beforeEach(() => {
   rerankMock.mockReset();
   // Default reranker pass-through: scale cosine 0-1 → 0-10 so existing tests
   // that don't explicitly mock the reranker still get a deterministic order.
-  rerankMock.mockImplementation(async ({ candidates }: { candidates: Array<{ id: string; cosineScore: number }> }) =>
-    candidates
-      .map((c) => ({ id: c.id, cosineScore: c.cosineScore, rerankScore: c.cosineScore * 10 }))
-      .sort((a, b) => b.rerankScore - a.rerankScore),
+  rerankMock.mockImplementation(
+    async ({ candidates }: { candidates: Array<{ id: string; cosineScore: number }> }) =>
+      candidates
+        .map((c) => ({ id: c.id, cosineScore: c.cosineScore, rerankScore: c.cosineScore * 10 }))
+        .sort((a, b) => b.rerankScore - a.rerankScore),
   );
   Object.values(dbMock).forEach((m) =>
     Object.values(m as Record<string, ReturnType<typeof vi.fn>>).forEach((fn) => fn.mockReset()),
@@ -331,9 +333,7 @@ describe('runLinkage onPhase', () => {
       .mockResolvedValueOnce([
         { id: 'tsk_a', title: 'b', description: '', department: Departments.hr },
       ])
-      .mockResolvedValueOnce([
-        { id: 'tsk_a', title: 'b', status: 'todo', controls: [] },
-      ]);
+      .mockResolvedValueOnce([{ id: 'tsk_a', title: 'b', status: 'todo', controls: [] }]);
     findSimilarTasksMock.mockResolvedValueOnce([
       { id: 'tsk_a', score: 0.9, department: Departments.hr },
     ]);
@@ -369,8 +369,18 @@ describe('runLinkage onPhase', () => {
     dbMock.vendor.findMany.mockResolvedValueOnce([]);
     dbMock.task.findMany
       .mockResolvedValueOnce([
-        { id: 'tsk_real', title: 'Secure Devices', description: 'BitLocker, FileVault, MDM', department: Departments.it },
-        { id: 'tsk_noise', title: 'Office Door Monitoring', description: 'Physical access', department: Departments.it },
+        {
+          id: 'tsk_real',
+          title: 'Secure Devices',
+          description: 'BitLocker, FileVault, MDM',
+          department: Departments.it,
+        },
+        {
+          id: 'tsk_noise',
+          title: 'Office Door Monitoring',
+          description: 'Physical access',
+          department: Departments.it,
+        },
       ])
       // Enrichment lookup for buildSuggestions.
       .mockResolvedValueOnce([
@@ -651,18 +661,20 @@ describe('runLinkage waits for the vector index to drain before matching', () =>
       { id: 'tsk_a', score: 0.9, department: Departments.hr },
     ]);
     // Tasks: tsk_a is re-embedded with new hash, tsk_b is cached.
-    upsertMock.mockImplementation(async ({ kind, entities }: { kind: string; entities: Array<{ id: string }> }) => {
-      if (kind === 'task') {
+    upsertMock.mockImplementation(
+      async ({ kind, entities }: { kind: string; entities: Array<{ id: string }> }) => {
+        if (kind === 'task') {
+          return {
+            appliedHashes: [{ id: 'tsk_a', hash: 'new_hash_a' }],
+            skippedCount: 1,
+          };
+        }
         return {
-          appliedHashes: [{ id: 'tsk_a', hash: 'new_hash_a' }],
-          skippedCount: 1,
+          appliedHashes: entities.map((e) => ({ id: e.id, hash: `hash_${e.id}` })),
+          skippedCount: 0,
         };
-      }
-      return {
-        appliedHashes: entities.map((e) => ({ id: e.id, hash: `hash_${e.id}` })),
-        skippedCount: 0,
-      };
-    });
+      },
+    );
 
     await runLinkage({ organizationId: 'org_1', riskId: 'rsk_1' });
 

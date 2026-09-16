@@ -14,10 +14,6 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import useSWR from 'swr';
 import {
-  getPentestAllowance,
-  type PentestBillingStatusInput,
-} from './pentest-allowance';
-import {
   useCreatePenetrationTest,
   usePenetrationTest,
   usePenetrationTestEvents,
@@ -29,8 +25,9 @@ import { DetailPane } from './DetailPane';
 import { EmptyState } from './EmptyState';
 import { OverviewPane } from './OverviewPane';
 import { PenTestMarketingEmptyState } from './pen-test-marketing/PenTestMarketingEmptyState';
-import { RunList } from './RunList';
+import { getPentestAllowance, type PentestBillingStatusInput } from './pentest-allowance';
 import './pentest-tokens.css';
+import { RunList } from './RunList';
 
 interface SplitViewProps {
   orgId: string;
@@ -61,10 +58,7 @@ export function SplitView({ orgId, selectedRunId, mode = 'default' }: SplitViewP
   const { data: billingStatus } = useSWR<PentestBillingStatusInput>(
     orgId ? (['/v1/billing/status', orgId] as const) : null,
     async ([endpoint, organizationId]: readonly [string, string]) => {
-      const response = await api.get<PentestBillingStatusInput>(
-        endpoint,
-        organizationId,
-      );
+      const response = await api.get<PentestBillingStatusInput>(endpoint, organizationId);
       if (response.status < 200 || response.status >= 300) {
         throw new Error(response.error ?? 'Failed to load billing status');
       }

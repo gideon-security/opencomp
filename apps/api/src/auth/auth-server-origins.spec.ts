@@ -26,10 +26,7 @@ beforeEach(() => {
 
 afterAll(() => {
   restoreEnv('AUTH_TRUSTED_ORIGINS', originalAuthTrustedOrigins);
-  restoreEnv(
-    'COMP_EXTENSION_TRUSTED_ORIGINS',
-    originalExtensionTrustedOrigins,
-  );
+  restoreEnv('COMP_EXTENSION_TRUSTED_ORIGINS', originalExtensionTrustedOrigins);
 });
 
 describe('getTrustedOrigins', () => {
@@ -52,16 +49,14 @@ describe('getTrustedOrigins', () => {
   });
 
   it('should trim whitespace from comma-separated origins', () => {
-    process.env.AUTH_TRUSTED_ORIGINS =
-      '  https://a.com  ,  https://b.com  ';
+    process.env.AUTH_TRUSTED_ORIGINS = '  https://a.com  ,  https://b.com  ';
 
     expect(getTrustedOrigins()).toEqual(['https://a.com', 'https://b.com']);
   });
 });
 
 describe('COMP_EXTENSION_TRUSTED_ORIGINS', () => {
-  const extensionOrigin =
-    'chrome-extension://abcdefghijklmnopabcdefghijklmnop';
+  const extensionOrigin = 'chrome-extension://abcdefghijklmnopabcdefghijklmnop';
 
   beforeEach(() => {
     process.env.COMP_EXTENSION_TRUSTED_ORIGINS = extensionOrigin;
@@ -115,7 +110,9 @@ describe('COMP_EXTENSION_TRUSTED_ORIGINS', () => {
 
   it('should identify Chrome extension origins', () => {
     expect(isChromeExtensionOrigin(extensionOrigin)).toBe(true);
-    expect(isChromeExtensionOrigin('https://app.gideondefender.com')).toBe(false);
+    expect(isChromeExtensionOrigin('https://app.gideondefender.com')).toBe(
+      false,
+    );
   });
 });
 
@@ -125,7 +122,9 @@ describe('isStaticTrustedOrigin', () => {
   });
 
   it('should allow trust portal subdomains of gideondefender.com', () => {
-    expect(isStaticTrustedOrigin('https://security.gideondefender.com')).toBe(true);
+    expect(isStaticTrustedOrigin('https://security.gideondefender.com')).toBe(
+      true,
+    );
     expect(isStaticTrustedOrigin('https://acme.gideondefender.com')).toBe(true);
   });
 

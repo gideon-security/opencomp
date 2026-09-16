@@ -60,9 +60,13 @@ export function AuditorView({
                 <div>
                   <div className="flex items-baseline gap-2">
                     <span className="font-medium">{reportSignatory.fullName}</span>
-                    <span className="text-muted-foreground text-xs">{reportSignatory.jobTitle}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {reportSignatory.jobTitle}
+                    </span>
                   </div>
-                  <div className="text-muted-foreground text-xs mt-0.5">{reportSignatory.email}</div>
+                  <div className="text-muted-foreground text-xs mt-0.5">
+                    {reportSignatory.email}
+                  </div>
                 </div>
               ) : (
                 '—'
@@ -146,7 +150,9 @@ function ContentRow({ title, content }: { title: string; content?: string }) {
     <div className="space-y-1.5">
       <h3 className="text-sm font-medium text-foreground">{title}</h3>
       {hasContent ? (
-        <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">{content}</p>
+        <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
+          {content}
+        </p>
       ) : (
         <p className="text-xs text-muted-foreground/50">Not yet available</p>
       )}

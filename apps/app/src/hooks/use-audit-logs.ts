@@ -1,11 +1,11 @@
 'use client';
 
-import { apiClient } from '@/lib/api-client';
 import {
   useOffsetAuditLogs,
   type AuditLogsPage,
   type OffsetAuditLogsResult,
 } from '@/hooks/use-offset-audit-logs';
+import { apiClient } from '@/lib/api-client';
 import type { AuditLog, Member, Organization, User } from '@db';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';

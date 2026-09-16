@@ -18,7 +18,7 @@ vi.mock('next/navigation', () => ({
   },
 }));
 
-import { setupAuthMocks, createMockUser, createMockSession } from '@/test-utils/mocks/auth';
+import { createMockSession, createMockUser, setupAuthMocks } from '@/test-utils/mocks/auth';
 
 const { default: AdminLayout } = await import('./layout');
 

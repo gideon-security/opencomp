@@ -5,20 +5,9 @@ import {
   parseSheetIdentity,
   type SheetIdentity,
 } from '../sheet-mapping';
-import type {
-  DetectedQuestion,
-  ScanDebug,
-  ScanDebugStep,
-  SheetMapping,
-} from '../types';
-import {
-  tableToQuestions,
-} from './sheets-detection';
-import {
-  csvToTable,
-  parseGvizTable,
-  type GvizTable,
-} from './sheets-table';
+import type { DetectedQuestion, ScanDebug, ScanDebugStep, SheetMapping } from '../types';
+import { tableToQuestions } from './sheets-detection';
+import { csvToTable, parseGvizTable, type GvizTable } from './sheets-table';
 
 interface SheetLocation {
   hash: string;
@@ -114,21 +103,18 @@ export async function detectSheetQuestionsWithDebug(params: {
   });
 }
 
-function identityFailureFallbackSteps(
-  steps: ScanDebugStep[],
-): ScanDebugStep[] {
+function identityFailureFallbackSteps(steps: ScanDebugStep[]): ScanDebugStep[] {
   if (steps.length > 0) return steps;
-  return [{
-    name: 'sheet-url',
-    status: 'fail',
-    detail: 'Could not parse spreadsheet id from the current URL.',
-  }];
+  return [
+    {
+      name: 'sheet-url',
+      status: 'fail',
+      detail: 'Could not parse spreadsheet id from the current URL.',
+    },
+  ];
 }
 
-function getEndpoints(params: {
-  identity: SheetIdentity;
-  preferCsv: boolean;
-}): Endpoint[] {
+function getEndpoints(params: { identity: SheetIdentity; preferCsv: boolean }): Endpoint[] {
   const encodedId = encodeURIComponent(params.identity.spreadsheetId);
   const encodedGid = encodeURIComponent(params.identity.gid);
   const base = `https://docs.google.com/spreadsheets/d/${encodedId}`;

@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { toast } from 'sonner';
+import type { TaskItemEntityType } from '@/hooks/use-task-items';
 import { api } from '@/lib/api-client';
 import { useParams } from 'next/navigation';
-import type { TaskItemEntityType } from '@/hooks/use-task-items';
+import { useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface UploadResult {
   id: string;
@@ -42,13 +42,33 @@ export function useTaskItemAttachmentUpload({
 
       // Block dangerous file types
       const BLOCKED_EXTENSIONS = [
-        'exe', 'bat', 'cmd', 'com', 'scr', 'msi',
-        'js', 'vbs', 'vbe', 'wsf', 'wsh', 'ps1',
-        'sh', 'bash', 'zsh',
-        'dll', 'sys', 'drv',
-        'app', 'deb', 'rpm', 'jar',
-        'pif', 'lnk', 'cpl',
-        'hta', 'reg',
+        'exe',
+        'bat',
+        'cmd',
+        'com',
+        'scr',
+        'msi',
+        'js',
+        'vbs',
+        'vbe',
+        'wsf',
+        'wsh',
+        'ps1',
+        'sh',
+        'bash',
+        'zsh',
+        'dll',
+        'sys',
+        'drv',
+        'app',
+        'deb',
+        'rpm',
+        'jar',
+        'pif',
+        'lnk',
+        'cpl',
+        'hta',
+        'reg',
       ];
 
       const fileExt = file.name.split('.').pop()?.toLowerCase();
@@ -71,16 +91,13 @@ export function useTaskItemAttachmentUpload({
           downloadUrl: string;
           createdAt: string;
           size: number;
-        }>(
-          '/v1/task-management/attachments',
-          {
-            fileName: file.name,
-            fileType: file.type || 'application/octet-stream',
-            fileData,
-            entityId,
-            entityType,
-          },
-        );
+        }>('/v1/task-management/attachments', {
+          fileName: file.name,
+          fileType: file.type || 'application/octet-stream',
+          fileData,
+          entityId,
+          entityType,
+        });
 
         if (response.error) {
           throw new Error(response.error || 'Failed to upload attachment');
@@ -100,9 +117,7 @@ export function useTaskItemAttachmentUpload({
       } catch (error) {
         console.error('Failed to upload attachment:', error);
         toast.error(
-          `Failed to upload file: ${
-            error instanceof Error ? error.message : 'Unknown error'
-          }`,
+          `Failed to upload file: ${error instanceof Error ? error.message : 'Unknown error'}`,
         );
         return null;
       } finally {
@@ -132,4 +147,3 @@ function fileToBase64(file: File): Promise<string> {
     reader.readAsDataURL(file);
   });
 }
-

@@ -1,5 +1,6 @@
 'use client';
 
+import type { SyncHistoryItem } from '@/types/framework-versioning';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +13,6 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
-import type { SyncHistoryItem } from '@/types/framework-versioning';
 
 interface RollbackConfirmDialogProps {
   open: boolean;
@@ -55,9 +55,7 @@ export function RollbackConfirmDialog({
         </Text>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isRollingBack}>
-            {tCommon('common.cancel')}
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={isRollingBack}>{tCommon('common.cancel')}</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} disabled={isRollingBack}>
             {isRollingBack ? t('instance.rollingBack') : t('instance.confirmRollback')}
           </AlertDialogAction>

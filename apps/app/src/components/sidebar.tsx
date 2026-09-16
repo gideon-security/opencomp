@@ -1,12 +1,12 @@
 import { getFeatureFlags } from '@/app/posthog';
 import { APP_AWS_ORG_ASSETS_BUCKET, s3Client } from '@/app/s3';
 import { serverApi } from '@/lib/api-server';
+import { getSignedUrl } from '@/lib/s3-presigner';
 import type { OrganizationFromMe } from '@/types';
 import { auth } from '@/utils/auth';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@/lib/s3-presigner';
-import { cn } from '@gideon-defender/ui/cn';
 import { db, type Organization, Role } from '@db/server';
+import { cn } from '@gideon-defender/ui/cn';
 import { cookies, headers } from 'next/headers';
 import { MainMenu } from './main-menu';
 import { OrganizationSwitcher } from './organization-switcher';

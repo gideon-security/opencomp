@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -55,9 +55,7 @@ describe('TransferOwnership permission gating', () => {
   it('renders nothing when user is not the owner', () => {
     setMockPermissions(OWNER_PERMISSIONS);
 
-    const { container } = render(
-      <TransferOwnership members={mockMembers} isOwner={false} />,
-    );
+    const { container } = render(<TransferOwnership members={mockMembers} isOwner={false} />);
 
     expect(container.innerHTML).toBe('');
   });
@@ -65,9 +63,7 @@ describe('TransferOwnership permission gating', () => {
   it('renders nothing when user lacks organization:delete permission (admin role)', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
 
-    const { container } = render(
-      <TransferOwnership members={mockMembers} isOwner={true} />,
-    );
+    const { container } = render(<TransferOwnership members={mockMembers} isOwner={true} />);
 
     expect(container.innerHTML).toBe('');
   });
@@ -75,9 +71,7 @@ describe('TransferOwnership permission gating', () => {
   it('renders nothing when user lacks organization:delete permission (auditor role)', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
 
-    const { container } = render(
-      <TransferOwnership members={mockMembers} isOwner={true} />,
-    );
+    const { container } = render(<TransferOwnership members={mockMembers} isOwner={true} />);
 
     expect(container.innerHTML).toBe('');
   });
@@ -85,9 +79,7 @@ describe('TransferOwnership permission gating', () => {
   it('renders nothing when user has no permissions at all', () => {
     setMockPermissions({});
 
-    const { container } = render(
-      <TransferOwnership members={mockMembers} isOwner={true} />,
-    );
+    const { container } = render(<TransferOwnership members={mockMembers} isOwner={true} />);
 
     expect(container.innerHTML).toBe('');
   });
@@ -106,9 +98,7 @@ describe('TransferOwnership permission gating', () => {
 
     render(<TransferOwnership members={[]} isOwner={true} />);
 
-    expect(
-      screen.getByText(/You need to add other members/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/You need to add other members/)).toBeInTheDocument();
   });
 
   it('renders the card content when owner has permission and members exist', () => {
@@ -116,8 +106,6 @@ describe('TransferOwnership permission gating', () => {
 
     render(<TransferOwnership members={mockMembers} isOwner={true} />);
 
-    expect(
-      screen.getByText(/This action cannot be undone/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/This action cannot be undone/)).toBeInTheDocument();
   });
 });

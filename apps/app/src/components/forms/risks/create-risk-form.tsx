@@ -3,9 +3,9 @@
 import { DepartmentSelect } from '@/components/DepartmentSelect';
 import { SelectAssignee } from '@/components/SelectAssignee';
 import { useRiskActions } from '@/hooks/use-risks';
-import { Button } from '@gideon-defender/ui/button';
 import type { Member, User } from '@db';
 import { Departments, RiskCategory } from '@db';
+import { Button } from '@gideon-defender/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Field,

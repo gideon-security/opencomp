@@ -25,6 +25,7 @@ export const AuthContext = createParamDecorator(
       userRoles,
       memberId,
       memberDepartment,
+      impersonatedBy,
     } = request;
 
     if (organizationId === undefined || !authType) {
@@ -45,6 +46,9 @@ export const AuthContext = createParamDecorator(
       userRoles,
       memberId,
       memberDepartment,
+      // Surfaced so GET /v1/auth/me can report impersonation state without
+      // touching better-auth session resolution (Milestone 2).
+      impersonatedBy,
     };
   },
 );

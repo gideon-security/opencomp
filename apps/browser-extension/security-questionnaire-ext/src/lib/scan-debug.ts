@@ -1,5 +1,5 @@
-import type { ScanDebug, ScanDebugStep } from './types';
 import { isQuestionnaireSurface, isRecord } from './message-utils';
+import type { ScanDebug, ScanDebugStep } from './types';
 
 export function getScanDebug(value: unknown): ScanDebug | null {
   if (!isRecord(value) || !isRecord(value.debug)) return null;
@@ -45,13 +45,15 @@ function parseStep(value: unknown): ScanDebugStep[] {
   ) {
     return [];
   }
-  return [{
-    name: value.name,
-    status: value.status,
-    detail: value.detail,
-    count: typeof value.count === 'number' ? value.count : undefined,
-    sample: typeof value.sample === 'string' ? value.sample : undefined,
-  }];
+  return [
+    {
+      name: value.name,
+      status: value.status,
+      detail: value.detail,
+      count: typeof value.count === 'number' ? value.count : undefined,
+      sample: typeof value.sample === 'string' ? value.sample : undefined,
+    },
+  ];
 }
 
 function isStepStatus(value: unknown): value is ScanDebugStep['status'] {

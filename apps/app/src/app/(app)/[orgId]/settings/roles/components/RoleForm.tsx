@@ -30,24 +30,20 @@ const roleFormSchema = z.object({
     .max(50, 'Name must be less than 50 characters')
     .regex(
       /^[a-zA-Z][a-zA-Z0-9\s-]*$/,
-      'Name must start with a letter and contain only letters, numbers, spaces, and hyphens'
+      'Name must start with a letter and contain only letters, numbers, spaces, and hyphens',
     ),
-  permissions: z
-    .record(z.string(), z.array(z.string()))
-    .check((ctx) => {
-      const permissions = ctx.value;
-      const hasPermissions = Object.values(permissions).some(
-        (actions) => actions.length > 0
-      );
-      if (!hasPermissions) {
-        ctx.issues.push({
-          code: 'custom',
-          message: 'At least one permission must be granted',
-          path: [],
-          input: permissions,
-        });
-      }
-    }),
+  permissions: z.record(z.string(), z.array(z.string())).check((ctx) => {
+    const permissions = ctx.value;
+    const hasPermissions = Object.values(permissions).some((actions) => actions.length > 0);
+    if (!hasPermissions) {
+      ctx.issues.push({
+        code: 'custom',
+        message: 'At least one permission must be granted',
+        path: [],
+        input: permissions,
+      });
+    }
+  }),
   obligations: z.record(z.string(), z.boolean()),
 });
 
@@ -92,11 +88,7 @@ export function RoleForm({
               <FormItem>
                 <FormLabel>Role Name</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="e.g., Compliance Lead"
-                    {...field}
-                    disabled={isSubmitting}
-                  />
+                  <Input placeholder="e.g., Compliance Lead" {...field} disabled={isSubmitting} />
                 </FormControl>
                 <FormDescription>
                   Must start with a letter. Can contain letters, numbers, spaces, and hyphens.
@@ -113,8 +105,8 @@ export function RoleForm({
               <FormItem>
                 <FormLabel>Permissions & Obligations</FormLabel>
                 <FormDescription>
-                  Select the access level for each resource. Read allows read-only access,
-                  Write allows full management. Obligations are requirements the role must fulfill.
+                  Select the access level for each resource. Read allows read-only access, Write
+                  allows full management. Obligations are requirements the role must fulfill.
                 </FormDescription>
                 <FormControl>
                   <PermissionMatrix
@@ -131,12 +123,7 @@ export function RoleForm({
           />
 
           <div className="flex justify-end gap-3 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={isSubmitting}
-            >
+            <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>

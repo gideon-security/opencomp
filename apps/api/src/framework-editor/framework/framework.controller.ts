@@ -113,7 +113,11 @@ export class FrameworkEditorFrameworkController {
     @Param('controlId') controlId: string,
     @Body() body: LinkControlDto = {},
   ) {
-    return this.frameworkService.linkControl(id, controlId, body.requirementIds);
+    return this.frameworkService.linkControl(
+      id,
+      controlId,
+      body.requirementIds,
+    );
   }
 
   @Post(':id/link-task/:taskId')

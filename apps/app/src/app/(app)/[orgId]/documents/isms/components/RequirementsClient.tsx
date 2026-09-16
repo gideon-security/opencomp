@@ -3,11 +3,11 @@
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
-import { IsmsDocumentShell } from './IsmsDocumentShell';
 import type { ApproverOption } from './IsmsApprovalSection';
-import { RequirementsTable } from './RequirementsTable';
+import { IsmsDocumentShell } from './IsmsDocumentShell';
 import type { RequirementFormValues } from './RequirementsForm';
 import type { RequirementRowValues } from './RequirementsRow';
+import { RequirementsTable } from './RequirementsTable';
 
 interface RequirementsClientProps {
   organizationId: string;
@@ -48,24 +48,26 @@ export function RequirementsClient(props: RequirementsClientProps) {
             toast.success(t('requirements.requirementAdded'));
           } catch (caught) {
             toast.error(
-              caught instanceof Error
-                ? caught.message
-                : t('requirements.requirementAddFailed'),
+              caught instanceof Error ? caught.message : t('requirements.requirementAddFailed'),
             );
             // Re-throw so the form keeps the user's input and stays open on failure.
             throw caught;
           }
         };
 
-        const handleUpdate = async ({ id, values }: { id: string; values: RequirementRowValues }) => {
+        const handleUpdate = async ({
+          id,
+          values,
+        }: {
+          id: string;
+          values: RequirementRowValues;
+        }) => {
           try {
             await hook.updateRow({ register: REGISTER, id, data: toPayload(values) });
             toast.success(t('requirements.requirementUpdated'));
           } catch (caught) {
             toast.error(
-              caught instanceof Error
-                ? caught.message
-                : t('requirements.requirementUpdateFailed'),
+              caught instanceof Error ? caught.message : t('requirements.requirementUpdateFailed'),
             );
             // Re-throw so the row stays in edit mode with the user's changes on failure.
             throw caught;
@@ -78,9 +80,7 @@ export function RequirementsClient(props: RequirementsClientProps) {
             toast.success(t('requirements.requirementDeleted'));
           } catch (caught) {
             toast.error(
-              caught instanceof Error
-                ? caught.message
-                : t('requirements.requirementDeleteFailed'),
+              caught instanceof Error ? caught.message : t('requirements.requirementDeleteFailed'),
             );
             // Re-throw so the row's delete state resets only after a real outcome.
             throw caught;

@@ -31,10 +31,7 @@ export function useEmployee({ employeeId, initialData }: UseEmployeeOptions) {
   const { data, error, isLoading, mutate } = useSWR<EmployeeData>(
     employeeId ? ['employee', employeeId] : null,
     async () => {
-      const response =
-        await apiClient.get<EmployeeApiResponse>(
-          `/v1/people/${employeeId}`,
-        );
+      const response = await apiClient.get<EmployeeApiResponse>(`/v1/people/${employeeId}`);
       if (response.error || !response.data) {
         throw new Error(response.error || 'Failed to fetch employee');
       }
@@ -49,10 +46,7 @@ export function useEmployee({ employeeId, initialData }: UseEmployeeOptions) {
 
   const updateEmployee = useCallback(
     async (updateData: UpdateEmployeeData) => {
-      const response = await apiClient.patch<EmployeeData>(
-        `/v1/people/${employeeId}`,
-        updateData,
-      );
+      const response = await apiClient.patch<EmployeeData>(`/v1/people/${employeeId}`, updateData);
       if (response.error) {
         throw new Error(response.error);
       }

@@ -2,8 +2,6 @@
 
 import { useApiSWR, UseApiSWROptions } from '@/hooks/use-api-swr';
 import { ApiResponse } from '@/lib/api-client';
-import { createEntityHooks, createLinkageActions, DEFAULT_POLLING_INTERVAL } from './create-entity-hooks';
-import { useApi } from '@/hooks/use-api';
 import type {
   Impact,
   Likelihood,
@@ -12,7 +10,8 @@ import type {
   RiskTreatmentType,
   TaskStatus,
 } from '@db';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
+import { createEntityHooks, createLinkageActions } from './create-entity-hooks';
 
 export interface RiskLinkedTask {
   id: string;
@@ -184,12 +183,17 @@ export function useRisks(options: UseRisksOptions = {}) {
  * const { data, isLoading, mutate } = useRisk(riskId);
  */
 export function useRisk(riskId: string | null, options: UseRiskOptions = {}) {
-  const result = riskHooks.useOne(riskId, options as never) as unknown as ReturnType<typeof riskHooks.useOne> & {
+  const result = riskHooks.useOne(riskId, options as never) as unknown as ReturnType<
+    typeof riskHooks.useOne
+  > & {
     risk?: RiskResponse | null;
     entity: RiskResponse | null;
     data: RiskResponse | null;
   };
-  return { ...result, risk: (result as { entity: unknown }).entity ?? (result as { data: unknown }).data ?? null } as unknown as ReturnType<typeof riskHooks.useOne> & { risk: RiskResponse | null };
+  return {
+    ...result,
+    risk: (result as { entity: unknown }).entity ?? (result as { data: unknown }).data ?? null,
+  } as unknown as ReturnType<typeof riskHooks.useOne> & { risk: RiskResponse | null };
 }
 
 /**

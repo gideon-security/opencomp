@@ -1,8 +1,11 @@
 'use client';
 
-import { useOptimisticTaskItems } from '@/hooks/use-task-items';
+import { RecentAuditLogs } from '@/components/RecentAuditLogs';
+import { SelectAssignee } from '@/components/SelectAssignee';
+import { StatusIndicator, type StatusType } from '@/components/status-indicator';
+import { useAuditLogs } from '@/hooks/use-audit-logs';
 import { useAssignableMembers } from '@/hooks/use-organization-members';
-import { filterMembersByOwnerOrAdmin } from '@/utils/filter-members-by-role';
+import { usePermissions } from '@/hooks/use-permissions';
 import type {
   TaskItem,
   TaskItemEntityType,
@@ -12,9 +15,9 @@ import type {
   TaskItemSortOrder,
   TaskItemStatus,
 } from '@/hooks/use-task-items';
-import { useMemo, useRef, useState } from 'react';
-import { toast } from 'sonner';
-import { usePathname } from 'next/navigation';
+import { useOptimisticTaskItems } from '@/hooks/use-task-items';
+import { filterMembersByOwnerOrAdmin } from '@/utils/filter-members-by-role';
+import { CommentEntityType } from '@db';
 import {
   Dialog,
   DialogContent,
@@ -23,14 +26,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import { RecentAuditLogs } from '@/components/RecentAuditLogs';
-import { useAuditLogs } from '@/hooks/use-audit-logs';
-import { Comments } from '../comments/Comments';
-import { CommentEntityType } from '@db';
-import { usePermissions } from '@/hooks/use-permissions';
-import { SelectAssignee } from '@/components/SelectAssignee';
-import { StatusIndicator, type StatusType } from '@/components/status-indicator';
-import { STATUS_OPTIONS, PRIORITY_OPTIONS } from './task-item-utils';
 import {
   Button,
   Grid,
@@ -48,6 +43,11 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Loader2 } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { useMemo, useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { Comments } from '../comments/Comments';
+import { PRIORITY_OPTIONS, STATUS_OPTIONS } from './task-item-utils';
 
 /** Extract plain text from a description that may be TipTap JSON or plain text */
 function getDescriptionText(description: string | null): string {
@@ -121,7 +121,13 @@ export function TaskItemFocusView({
   });
 
   const { optimisticUpdate, optimisticDelete } = useOptimisticTaskItems(
-    entityId, entityType, page, limit, sortBy, sortOrder, filters,
+    entityId,
+    entityType,
+    page,
+    limit,
+    sortBy,
+    sortOrder,
+    filters,
   );
   const { members } = useAssignableMembers();
 
@@ -247,7 +253,9 @@ export function TaskItemFocusView({
             }}
             onBlur={saveDescription}
             onKeyDown={(e) => {
-              if (e.key === 'Escape') { setIsEditingDescription(false); }
+              if (e.key === 'Escape') {
+                setIsEditingDescription(false);
+              }
             }}
             className="w-full text-sm text-muted-foreground bg-transparent border-b border-primary outline-none resize-none overflow-hidden"
             rows={1}
@@ -335,10 +343,7 @@ export function TaskItemFocusView({
           </TabsContent>
 
           <TabsContent value="comments">
-            <Comments
-              entityId={taskItem.id}
-              entityType={CommentEntityType.task}
-            />
+            <Comments entityId={taskItem.id} entityType={CommentEntityType.task} />
           </TabsContent>
 
           <TabsContent value="activity">
@@ -349,7 +354,9 @@ export function TaskItemFocusView({
             <Stack gap="lg">
               <HStack justify="between" align="center">
                 <Stack gap="none">
-                  <Text size="sm" weight="medium">Copy Link</Text>
+                  <Text size="sm" weight="medium">
+                    Copy Link
+                  </Text>
                   <Text size="xs" variant="muted">
                     Copy a direct link to this task to share with your team
                   </Text>
@@ -364,7 +371,9 @@ export function TaskItemFocusView({
                   <div className="border-t" />
                   <HStack justify="between" align="center">
                     <Stack gap="none">
-                      <Text size="sm" weight="medium">Delete Task</Text>
+                      <Text size="sm" weight="medium">
+                        Delete Task
+                      </Text>
                       <Text size="xs" variant="muted">
                         Permanently delete this task. This action cannot be undone
                       </Text>
@@ -388,11 +397,18 @@ export function TaskItemFocusView({
             <DialogDescription>Are you sure? This cannot be undone.</DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={isDeleting}>Cancel</Button>
+            <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={isDeleting}>
+              Cancel
+            </Button>
             <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Deleting…</>
-              ) : 'Delete'}
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting…
+                </>
+              ) : (
+                'Delete'
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

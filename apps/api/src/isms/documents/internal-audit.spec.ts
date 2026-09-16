@@ -6,14 +6,20 @@ import {
   seedAuditControlsIfMissing,
 } from './internal-audit';
 import { SEED_AUDIT_CONTROL_DEFINITIONS } from './internal-audit-defaults';
-import type { AuditExportRow, DocumentExportInput, IsmsPlatformData } from './types';
+import type {
+  AuditExportRow,
+  DocumentExportInput,
+  IsmsPlatformData,
+} from './types';
 
 const baseInput: DocumentExportInput = {
   contextIssues: [],
   interestedParties: [],
   requirements: [],
   objectives: [],
-  narrative: { programme: 'Acme runs an annual internal audit of the whole ISMS.' },
+  narrative: {
+    programme: 'Acme runs an annual internal audit of the whole ISMS.',
+  },
 };
 
 const audit: AuditExportRow = {
@@ -65,8 +71,16 @@ describe('auditValidationMessages (clause 9.2 submit gate)', () => {
   it('requires a conclusion verdict on completed audits only', () => {
     const messages = auditValidationMessages({
       audits: [
-        { reference: 'IA-2026-01', status: 'complete', conclusionVerdict: null },
-        { reference: 'IA-2026-02', status: 'in_progress', conclusionVerdict: null },
+        {
+          reference: 'IA-2026-01',
+          status: 'complete',
+          conclusionVerdict: null,
+        },
+        {
+          reference: 'IA-2026-02',
+          status: 'in_progress',
+          conclusionVerdict: null,
+        },
       ],
     });
     expect(messages).toEqual([
@@ -78,7 +92,11 @@ describe('auditValidationMessages (clause 9.2 submit gate)', () => {
     expect(
       auditValidationMessages({
         audits: [
-          { reference: 'IA-2026-01', status: 'planned', conclusionVerdict: null },
+          {
+            reference: 'IA-2026-01',
+            status: 'planned',
+            conclusionVerdict: null,
+          },
         ],
       }),
     ).toEqual([]);
@@ -101,7 +119,9 @@ describe('deriveInternalAuditNarrative', () => {
     const narrative = deriveInternalAuditNarrative({
       organizationName: 'Acme Corp',
     } as IsmsPlatformData);
-    expect(narrative.programme).toContain('Acme Corp runs an annual internal audit');
+    expect(narrative.programme).toContain(
+      'Acme Corp runs an annual internal audit',
+    );
     expect(narrative.programme).toContain('ISO/IEC 27001:2022');
   });
 });
@@ -325,10 +345,9 @@ describe('buildInternalAuditSections', () => {
       ...baseInput,
       audits: [{ ...audit, conclusionNotes: 'Ready for Stage 2.' }],
     });
-    expect(withNotes[5].paragraphs?.map((paragraph) => paragraph.text)).toEqual([
-      audit.conclusion,
-      'Ready for Stage 2.',
-    ]);
+    expect(withNotes[5].paragraphs?.map((paragraph) => paragraph.text)).toEqual(
+      [audit.conclusion, 'Ready for Stage 2.'],
+    );
 
     const noVerdict = buildInternalAuditSections({
       ...baseInput,

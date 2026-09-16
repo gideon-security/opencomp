@@ -9,8 +9,8 @@ import {
 } from '@gideon-defender/ui/chart';
 import * as React from 'react';
 import { Cell, Label, Pie, PieChart } from 'recharts';
-import type { DeviceWithChecks, Host } from '../types';
 import { computeSourceComplianceVerdict } from '../lib/device-source';
+import type { DeviceWithChecks, Host } from '../types';
 
 interface DeviceComplianceChartProps {
   fleetDevices: Host[];
@@ -95,9 +95,7 @@ export function DeviceComplianceChart({ fleetDevices, agentDevices }: DeviceComp
       pieDisplayData: allItems.filter((item) => item.value > 0),
       // "Unverified" only appears in the legend when it exists — orgs with no
       // partially-verified imported devices keep the familiar two-entry legend.
-      legendDisplayData: allItems.filter(
-        (item) => item.name !== 'Unverified' || item.value > 0,
-      ),
+      legendDisplayData: allItems.filter((item) => item.name !== 'Unverified' || item.value > 0),
     };
   }, [agentDevices, fleetDevices]);
 

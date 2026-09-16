@@ -1,7 +1,7 @@
 'use client';
 
-import { trainingVideos } from '@/lib/data/training-videos';
 import { useTrainingCompletions } from '@/hooks/use-training-completions';
+import { trainingVideos } from '@/lib/data/training-videos';
 import { useState } from 'react';
 import { CarouselControls } from './CarouselControls';
 import { YoutubeEmbed } from './YoutubeEmbed';
@@ -10,9 +10,7 @@ export function VideoCarousel() {
   const { completions, markVideoComplete } = useTrainingCompletions();
   const [isExecuting, setIsExecuting] = useState(false);
 
-  const completionRecordsMap = new Map(
-    completions.map((record) => [record.videoId, record]),
-  );
+  const completionRecordsMap = new Map(completions.map((record) => [record.videoId, record]));
 
   const mergedVideos = trainingVideos.map((metadata) => {
     const completionRecord = completionRecordsMap.get(metadata.id);
@@ -23,18 +21,14 @@ export function VideoCarousel() {
     };
   });
 
-  const completedVideoIds = new Set(
-    mergedVideos.filter((v) => v.isCompleted).map((v) => v.id),
-  );
+  const completedVideoIds = new Set(mergedVideos.filter((v) => v.isCompleted).map((v) => v.id));
 
   const lastCompletedIndex = (() => {
     const completedIndices = mergedVideos
       .map((video, index) => ({ index, completed: video.isCompleted }))
       .filter((item) => item.completed)
       .map((item) => item.index);
-    return completedIndices.length > 0
-      ? completedIndices[completedIndices.length - 1]
-      : 0;
+    return completedIndices.length > 0 ? completedIndices[completedIndices.length - 1] : 0;
   })();
 
   const [currentIndex, setCurrentIndex] = useState(lastCompletedIndex);
@@ -63,21 +57,15 @@ export function VideoCarousel() {
     }
   };
 
-  const isCurrentVideoCompleted = completedVideoIds.has(
-    mergedVideos[currentIndex].id,
-  );
+  const isCurrentVideoCompleted = completedVideoIds.has(mergedVideos[currentIndex].id);
   const hasNextVideo = currentIndex < mergedVideos.length - 1;
-  const allVideosCompleted = trainingVideos.every((metadata) =>
-    completedVideoIds.has(metadata.id),
-  );
+  const allVideosCompleted = trainingVideos.every((metadata) => completedVideoIds.has(metadata.id));
 
   return (
     <div className="space-y-4">
       {allVideosCompleted && (
         <div className="flex w-full flex-col items-center justify-center space-y-2 py-8">
-          <h2 className="text-2xl font-semibold">
-            All Training Videos Completed!
-          </h2>
+          <h2 className="text-2xl font-semibold">All Training Videos Completed!</h2>
           <p className="text-muted-foreground text-center">
             You're all done, now your manager won't pester you!
           </p>
@@ -90,18 +78,14 @@ export function VideoCarousel() {
             isCompleted={isCurrentVideoCompleted}
             onComplete={handleVideoComplete}
             isMarkingComplete={isExecuting}
-            onNext={
-              isCurrentVideoCompleted && hasNextVideo ? goToNext : undefined
-            }
+            onNext={isCurrentVideoCompleted && hasNextVideo ? goToNext : undefined}
             allVideosCompleted={allVideosCompleted}
           />
           <CarouselControls
             currentIndex={currentIndex}
             total={mergedVideos.length}
             onPrevious={goToPrevious}
-            onNext={
-              isCurrentVideoCompleted && hasNextVideo ? goToNext : undefined
-            }
+            onNext={isCurrentVideoCompleted && hasNextVideo ? goToNext : undefined}
           />
         </>
       )}

@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
 import {
   evidenceFormDefinitions,
   evidenceFormSubmissionSchemaMap,
 } from '@/app/(app)/[orgId]/documents/forms';
+import { describe, expect, it } from 'vitest';
 
 const schema = evidenceFormSubmissionSchemaMap['account-types'];
 const definition = evidenceFormDefinitions['account-types'];

@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { sectionText, feedback } = await req.json() as {
+    const { sectionText, feedback } = (await req.json()) as {
       sectionText: string;
       feedback: string;
     };

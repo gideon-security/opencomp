@@ -1,8 +1,8 @@
 'use client';
 
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { Button, Stack, Text } from '@trycompai/design-system';
 import { Link as LinkIcon } from '@trycompai/design-system/icons';
-import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -14,9 +14,7 @@ interface AutoLinkButtonProps {
   onAfterLink?: () => Promise<void>;
 }
 
-type RunState =
-  | { kind: 'idle' }
-  | { kind: 'running'; runId: string; publicAccessToken: string };
+type RunState = { kind: 'idle' } | { kind: 'running'; runId: string; publicAccessToken: string };
 
 const PHASE_LABEL: Record<string, string> = {
   starting: 'Starting…',

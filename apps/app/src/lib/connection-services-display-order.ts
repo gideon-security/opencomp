@@ -4,9 +4,7 @@
  * - Enabled: manifest order for items not in `tailEnabledIds`, then tail ids in order.
  * - Disabled: manifest order.
  */
-export function orderServicesForConnectionGrid<
-  T extends { id: string; name: string },
->(params: {
+export function orderServicesForConnectionGrid<T extends { id: string; name: string }>(params: {
   manifestServices: T[] | undefined;
   connectionServices: Array<{ id: string; enabled: boolean }> | undefined;
   search: string;
@@ -22,8 +20,7 @@ export function orderServicesForConnectionGrid<
 
   const enabledFromServer = new Set(conn.filter((s) => s.enabled).map((s) => s.id));
 
-  const isEnabledForSort = (id: string) =>
-    enabledFromServer.has(id) || tailSet.has(id);
+  const isEnabledForSort = (id: string) => enabledFromServer.has(id) || tailSet.has(id);
 
   const manifestIndexById = new Map(manifest.map((s, i) => [s.id, i] as const));
 

@@ -1,4 +1,7 @@
-import { getManifest, runAllChecks } from '@gideon-defender/integration-platform';
+import {
+  getManifest,
+  runAllChecks,
+} from '@gideon-defender/integration-platform';
 import { db } from '@db';
 import { logger, tags, task } from '@gideon-defender/trigger-local';
 import {
@@ -10,10 +13,7 @@ import {
   runChecksOnServer,
   type RunAllChecksResult,
 } from './run-checks-on-server';
-import {
-  isActiveDynamicProvider,
-  shouldRunOnServer,
-} from './dynamic-provider';
+import { isActiveDynamicProvider, shouldRunOnServer } from './dynamic-provider';
 
 /**
  * Trigger task that runs all checks for a connection.

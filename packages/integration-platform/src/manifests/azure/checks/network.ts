@@ -72,74 +72,76 @@ function rulePorts(r: SecurityRule): string[] {
 
 /** NSG inbound rules open to the internet on sensitive ports → Production Firewall / no public access. */
 async function runNsgNoOpenPortsForSubscription(ctx: CheckContext, sub: string): Promise<void> {
-    const nsgs = await armListAllOrFail<Nsg>(
-      ctx,
-      `${ARM_BASE}/subscriptions/${sub}/providers/Microsoft.Network/networkSecurityGroups?api-version=2023-11-01`,
-      { what: 'network security groups', resourceType: 'azure-nsg', subscriptionId: sub },
+  const nsgs = await armListAllOrFail<Nsg>(
+    ctx,
+    `${ARM_BASE}/subscriptions/${sub}/providers/Microsoft.Network/networkSecurityGroups?api-version=2023-11-01`,
+    { what: 'network security groups', resourceType: 'azure-nsg', subscriptionId: sub },
+  );
+  if (!nsgs) return;
+  if (nsgs.length === 0) return;
+
+  for (const nsg of nsgs) {
+    let violations = 0;
+    const inbound = (nsg.properties.securityRules ?? []).filter(
+      (r) => r.properties.direction === 'Inbound' && r.properties.access === 'Allow',
     );
-    if (!nsgs) return;
-    if (nsgs.length === 0) return;
 
-    for (const nsg of nsgs) {
-      let violations = 0;
-      const inbound = (nsg.properties.securityRules ?? []).filter(
-        (r) =>
-          r.properties.direction === 'Inbound' &&
-          r.properties.access === 'Allow',
-      );
-
-      for (const rule of inbound) {
-        if (!ruleSources(rule).some((s) => WILDCARD_SOURCES.has(s))) continue;
-        const ports = rulePorts(rule);
-        // SSH/RDP/DB are TCP services — only flag them on TCP or any-protocol
-        // rules. "All ports" exposure applies to any protocol.
-        const proto = (rule.properties.protocol ?? '*').toLowerCase();
-        const tcpish = proto === '*' || proto === 'tcp';
-        const conditions: Array<{ when: boolean; label: string; severity: FindingSeverity }> = [
-          { when: portsCoverAllPorts(ports), label: 'all ports', severity: 'critical' },
-          { when: tcpish && portsCoverAny(ports, [3389]), label: 'RDP (3389)', severity: 'critical' },
-          { when: tcpish && portsCoverAny(ports, DB_PORTS), label: 'database ports', severity: 'critical' },
-          { when: tcpish && portsCoverAny(ports, [22]), label: 'SSH (22)', severity: 'high' },
-        ];
-        for (const c of conditions) {
-          if (c.when) {
-            violations++;
-            ctx.fail({
-              title: `${c.label} open to internet: ${nsg.name}/${rule.name}`,
-              description: `NSG "${nsg.name}" rule "${rule.name}" allows ${c.label} from the internet.`,
-              resourceType: 'azure-nsg',
-              resourceId: nsg.id,
-              severity: c.severity,
-              remediation:
-                'Restrict the source to specific IP ranges, or use Azure Bastion / Private Link.',
-              evidence: {
-                nsg: nsg.name,
-                rule: rule.name,
-                priority: rule.properties.priority,
-                exposure: c.label,
-                sources: ruleSources(rule),
-                ports,
-                protocol: rule.properties.protocol ?? '*',
-              },
-            });
-          }
+    for (const rule of inbound) {
+      if (!ruleSources(rule).some((s) => WILDCARD_SOURCES.has(s))) continue;
+      const ports = rulePorts(rule);
+      // SSH/RDP/DB are TCP services — only flag them on TCP or any-protocol
+      // rules. "All ports" exposure applies to any protocol.
+      const proto = (rule.properties.protocol ?? '*').toLowerCase();
+      const tcpish = proto === '*' || proto === 'tcp';
+      const conditions: Array<{ when: boolean; label: string; severity: FindingSeverity }> = [
+        { when: portsCoverAllPorts(ports), label: 'all ports', severity: 'critical' },
+        { when: tcpish && portsCoverAny(ports, [3389]), label: 'RDP (3389)', severity: 'critical' },
+        {
+          when: tcpish && portsCoverAny(ports, DB_PORTS),
+          label: 'database ports',
+          severity: 'critical',
+        },
+        { when: tcpish && portsCoverAny(ports, [22]), label: 'SSH (22)', severity: 'high' },
+      ];
+      for (const c of conditions) {
+        if (c.when) {
+          violations++;
+          ctx.fail({
+            title: `${c.label} open to internet: ${nsg.name}/${rule.name}`,
+            description: `NSG "${nsg.name}" rule "${rule.name}" allows ${c.label} from the internet.`,
+            resourceType: 'azure-nsg',
+            resourceId: nsg.id,
+            severity: c.severity,
+            remediation:
+              'Restrict the source to specific IP ranges, or use Azure Bastion / Private Link.',
+            evidence: {
+              nsg: nsg.name,
+              rule: rule.name,
+              priority: rule.properties.priority,
+              exposure: c.label,
+              sources: ruleSources(rule),
+              ports,
+              protocol: rule.properties.protocol ?? '*',
+            },
+          });
         }
       }
-
-      if (violations === 0) {
-        ctx.pass({
-          title: `No open ports: ${nsg.name}`,
-          description: `NSG "${nsg.name}" has no overly permissive inbound rules.`,
-          resourceType: 'azure-nsg',
-          resourceId: nsg.id,
-          evidence: {
-            nsg: nsg.name,
-            inboundAllowRulesEvaluated: inbound.length,
-            totalRules: (nsg.properties.securityRules ?? []).length,
-          },
-        });
-      }
     }
+
+    if (violations === 0) {
+      ctx.pass({
+        title: `No open ports: ${nsg.name}`,
+        description: `NSG "${nsg.name}" has no overly permissive inbound rules.`,
+        resourceType: 'azure-nsg',
+        resourceId: nsg.id,
+        evidence: {
+          nsg: nsg.name,
+          inboundAllowRulesEvaluated: inbound.length,
+          totalRules: (nsg.properties.securityRules ?? []).length,
+        },
+      });
+    }
+  }
 }
 
 export const nsgNoOpenPortsCheck: IntegrationCheck = {

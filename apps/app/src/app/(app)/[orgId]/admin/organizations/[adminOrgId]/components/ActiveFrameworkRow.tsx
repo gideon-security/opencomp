@@ -1,8 +1,8 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { Badge, Button, TableCell, TableRow, Text } from '@trycompai/design-system';
 import { TrashCan } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { getActiveFrameworkDetails, type ActiveFramework } from './FrameworksTabTypes';
 
 export function ActiveFrameworkRow({

@@ -45,12 +45,7 @@ const PHP_VALIDATION_PACKAGES = [
   'vlucas/valitron',
 ];
 
-const TARGET_FILES = [
-  'package.json',
-  'requirements.txt',
-  'pyproject.toml',
-  'composer.json',
-];
+const TARGET_FILES = ['package.json', 'requirements.txt', 'pyproject.toml', 'composer.json'];
 
 interface GitHubFileResponse {
   content: string;
@@ -155,8 +150,7 @@ export const sanitizedInputsCheck: IntegrationCheck = {
       return null;
     };
 
-    const escapeRegex = (s: string): string =>
-      s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escapeRegex = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
     const checkPythonFile = (
       content: string,
@@ -182,9 +176,7 @@ export const sanitizedInputsCheck: IntegrationCheck = {
           // Trailing context: end of line or a separator that can follow a
           // package name (whitespace, version operator, bracket, quote, comma,
           // semicolon).
-          const pattern = new RegExp(
-            `(?:^|[\\s"'\\[,;=])${escaped}(?:$|[\\s=<>!~\\[\\]"',;])`,
-          );
+          const pattern = new RegExp(`(?:^|[\\s"'\\[,;=])${escaped}(?:$|[\\s=<>!~\\[\\]"',;])`);
           if (pattern.test(line)) {
             return { library: candidate, file: filePath };
           }

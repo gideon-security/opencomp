@@ -214,27 +214,29 @@ export class FrameworkEditorFrameworkService {
   async getTasks(frameworkId: string) {
     await this.findById(frameworkId);
 
-    return db.frameworkEditorTaskTemplate.findMany({
-      where: {
-        frameworkControlLinks: {
-          some: { frameworkId },
+    return db.frameworkEditorTaskTemplate
+      .findMany({
+        where: {
+          frameworkControlLinks: {
+            some: { frameworkId },
+          },
         },
-      },
-      include: {
-        frameworkControlLinks: {
-          where: { frameworkId },
-          select: { controlTemplate: { select: { id: true, name: true } } },
+        include: {
+          frameworkControlLinks: {
+            where: { frameworkId },
+            select: { controlTemplate: { select: { id: true, name: true } } },
+          },
         },
-      },
-      orderBy: { name: 'asc' },
-    }).then((tasks) =>
-      tasks.map(({ frameworkControlLinks, ...task }) => ({
-        ...task,
-        controlTemplates: frameworkControlLinks.map(
-          (link) => link.controlTemplate,
-        ),
-      })),
-    );
+        orderBy: { name: 'asc' },
+      })
+      .then((tasks) =>
+        tasks.map(({ frameworkControlLinks, ...task }) => ({
+          ...task,
+          controlTemplates: frameworkControlLinks.map(
+            (link) => link.controlTemplate,
+          ),
+        })),
+      );
   }
 
   async getDocuments(frameworkId: string) {

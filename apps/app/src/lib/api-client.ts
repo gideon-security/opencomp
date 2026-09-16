@@ -139,3 +139,15 @@ export const api = {
     options?: Omit<ApiCallOptions, 'organizationId'> & { organizationId?: string },
   ) => apiClient.raw(endpoint, options),
 };
+
+/**
+ * Unwrap an ApiResponse envelope or throw. Shared by SWR fetchers so error
+ * mapping stays in one place instead of being reimplemented per hook.
+ */
+export function unwrapApiData<T>(options: { response: ApiResponse<T>; fallbackError?: string }): T {
+  const { response, fallbackError = 'Request failed' } = options;
+  if (response.error || !response.data) {
+    throw new Error(response.error ?? fallbackError);
+  }
+  return response.data;
+}

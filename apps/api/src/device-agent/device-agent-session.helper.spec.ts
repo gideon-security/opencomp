@@ -1,4 +1,7 @@
-import { createDeviceAgentSession, DEVICE_AGENT_SESSION_TTL_MS } from './device-agent-session.helper';
+import {
+  createDeviceAgentSession,
+  DEVICE_AGENT_SESSION_TTL_MS,
+} from './device-agent-session.helper';
 
 const createSessionMock = jest.fn();
 
@@ -35,11 +38,14 @@ describe('createDeviceAgentSession', () => {
     const result = await createDeviceAgentSession({ userId: 'usr_1' });
 
     expect(createSessionMock).toHaveBeenCalledTimes(1);
-    const [userId, dontRememberMe, override, overrideAll] = createSessionMock.mock.calls[0];
+    const [userId, dontRememberMe, override, overrideAll] =
+      createSessionMock.mock.calls[0];
     expect(userId).toBe('usr_1');
     expect(dontRememberMe).toBe(false);
     expect(override).toMatchObject({ deviceAgent: true });
-    expect(override.expiresAt).toEqual(new Date(FIXED_NOW.getTime() + DEVICE_AGENT_SESSION_TTL_MS));
+    expect(override.expiresAt).toEqual(
+      new Date(FIXED_NOW.getTime() + DEVICE_AGENT_SESSION_TTL_MS),
+    );
     expect(overrideAll).toBe(true);
     expect(result).toEqual({
       sessionId: 'ses_123',

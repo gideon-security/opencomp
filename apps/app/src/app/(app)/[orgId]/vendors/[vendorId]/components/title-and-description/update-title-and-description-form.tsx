@@ -1,9 +1,16 @@
 'use client';
 
 import { useVendorActions } from '@/hooks/use-vendors';
-import { Button } from '@gideon-defender/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
 import { VendorCategory, VendorStatus, type Vendor } from '@db';
+import { Button } from '@gideon-defender/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input, Stack, Textarea } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
@@ -35,9 +42,7 @@ export function UpdateTitleAndDescriptionForm({
     category: z.nativeEnum(VendorCategory),
     status: z.nativeEnum(VendorStatus),
     assigneeId: z.string().nullable(),
-    website: z
-      .union([z.string().url(t('create.urlInvalid')), z.literal('')])
-      .optional(),
+    website: z.union([z.string().url(t('create.urlInvalid')), z.literal('')]).optional(),
     isSubProcessor: z.boolean().optional(),
   });
 

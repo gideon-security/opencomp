@@ -17,17 +17,15 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 
 // RecentAuditLogs / the pager only key off `id`, so a trimmed shape is enough.
-const makeLogs = (ids: string[]) =>
-  ids.map((id) => ({ id })) as unknown as AuditLogWithRelations[];
+const makeLogs = (ids: string[]) => ids.map((id) => ({ id })) as unknown as AuditLogWithRelations[];
 
 describe('useOffsetAuditLogs', () => {
   it('loads the first batch and derives hasMore from the server total', async () => {
     const fetchPage = vi.fn(async () => ({ data: makeLogs(['a', 'b']), total: 5 }));
 
-    const { result } = renderHook(
-      () => useOffsetAuditLogs({ cacheKey: ['k'], fetchPage }),
-      { wrapper },
-    );
+    const { result } = renderHook(() => useOffsetAuditLogs({ cacheKey: ['k'], fetchPage }), {
+      wrapper,
+    });
 
     await waitFor(() => expect(result.current.logs).toHaveLength(2));
     expect(result.current.total).toBe(5);
@@ -42,10 +40,9 @@ describe('useOffsetAuditLogs', () => {
       // 'b' overlaps a shifted window — it must not be duplicated.
       .mockResolvedValueOnce({ data: makeLogs(['b', 'c', 'd']), total: 4 });
 
-    const { result } = renderHook(
-      () => useOffsetAuditLogs({ cacheKey: ['k'], fetchPage }),
-      { wrapper },
-    );
+    const { result } = renderHook(() => useOffsetAuditLogs({ cacheKey: ['k'], fetchPage }), {
+      wrapper,
+    });
 
     await waitFor(() => expect(result.current.logs).toHaveLength(2));
 
@@ -66,10 +63,9 @@ describe('useOffsetAuditLogs', () => {
       .mockResolvedValueOnce({ data: makeLogs(['a', 'b']), total: 10 }) // offset 0 ok
       .mockRejectedValueOnce(new Error('boom')); // offset 100 fails
 
-    const { result } = renderHook(
-      () => useOffsetAuditLogs({ cacheKey: ['k'], fetchPage }),
-      { wrapper },
-    );
+    const { result } = renderHook(() => useOffsetAuditLogs({ cacheKey: ['k'], fetchPage }), {
+      wrapper,
+    });
 
     await waitFor(() => expect(result.current.logs).toHaveLength(2));
 

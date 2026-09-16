@@ -3,15 +3,27 @@
 import { SelectAssignee } from '@/components/SelectAssignee';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useTaskMutations } from '@/hooks/use-task-mutations';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@gideon-defender/ui/accordion';
+import { Member, User } from '@db';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@gideon-defender/ui/accordion';
 import { Button } from '@gideon-defender/ui/button';
 import { Calendar } from '@gideon-defender/ui/calendar';
 import { cn } from '@gideon-defender/ui/cn';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
 import { Input } from '@gideon-defender/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@gideon-defender/ui/popover';
 import { Textarea } from '@gideon-defender/ui/textarea';
-import { Member, User } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { ArrowRightIcon, CalendarIcon } from 'lucide-react';
@@ -180,7 +192,11 @@ export function CreateVendorTaskForm({ assignees }: { assignees: (Member & { use
           </div>
 
           <div className="mt-4 flex justify-end">
-            <Button type="submit" variant="default" disabled={isSubmitting || !hasPermission('task', 'create')}>
+            <Button
+              type="submit"
+              variant="default"
+              disabled={isSubmitting || !hasPermission('task', 'create')}
+            >
               <div className="flex items-center justify-center">
                 {t('task.create')}
                 <ArrowRightIcon className="ml-2 h-4 w-4" />

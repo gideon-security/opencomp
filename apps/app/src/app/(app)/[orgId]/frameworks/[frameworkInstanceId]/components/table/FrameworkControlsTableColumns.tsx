@@ -1,8 +1,13 @@
 'use client';
 
 import { StatusIndicator, StatusType } from '@/components/status-indicator';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
 import type { Policy } from '@db';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
 import type { ColumnDef } from '@tanstack/react-table';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -86,7 +91,11 @@ export function FrameworkControlsTableColumns(): ColumnDef<OrganizationControlTy
               </TooltipTrigger>
               <TooltipContent>
                 <div className="text-sm">
-                  <p>{t('controlsTable.progress', { percent: Math.round((completedPolicies / totalPolicies) * 100) || 0 })}</p>
+                  <p>
+                    {t('controlsTable.progress', {
+                      percent: Math.round((completedPolicies / totalPolicies) * 100) || 0,
+                    })}
+                  </p>
                   <p>
                     {t('controlsTable.completedPolicies', {
                       completed: completedPolicies,

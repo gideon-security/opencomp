@@ -1,36 +1,28 @@
 'use client';
 
-import { env } from '@/env.mjs';
-import { useSession } from '@/utils/auth-client';
-import { useChat } from '@ai-sdk/react';
-import { Button } from '@gideon-defender/ui/button';
-import {
-  DefaultChatTransport,
-  isToolUIPart,
-  lastAssistantMessageIsCompleteWithToolCalls,
-} from 'ai';
-import type { UIMessage } from 'ai';
-import { useActiveOrganization } from '@/utils/auth-client';
-import { apiClient } from '@/lib/api-client';
-import { useParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
 import {
   Conversation,
   ConversationContent,
   ConversationEmptyState,
   ConversationScrollButton,
 } from '@/components/ai-elements/conversation';
+import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message';
+import { Reasoning, ReasoningContent, ReasoningTrigger } from '@/components/ai-elements/reasoning';
+import { Tool, ToolContent, ToolHeader } from '@/components/ai-elements/tool';
+import { env } from '@/env.mjs';
+import { useAuthMe } from '@/hooks/use-auth-me';
+import { apiClient } from '@/lib/api-client';
+import { useActiveOrganization } from '@/utils/auth-client';
+import { useChat } from '@ai-sdk/react';
+import { Button } from '@gideon-defender/ui/button';
+import type { UIMessage } from 'ai';
 import {
-  Message,
-  MessageContent,
-  MessageResponse,
-} from '@/components/ai-elements/message';
-import {
-  Reasoning,
-  ReasoningContent,
-  ReasoningTrigger,
-} from '@/components/ai-elements/reasoning';
-import { Tool, ToolHeader, ToolContent } from '@/components/ai-elements/tool';
+  DefaultChatTransport,
+  isToolUIPart,
+  lastAssistantMessageIsCompleteWithToolCalls,
+} from 'ai';
+import { useParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { LogoSpinner } from '../logo-spinner';
 
 const API_URL = env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
@@ -55,8 +47,7 @@ function MessageParts({
   const reasoningText = reasoningParts.map((p) => p.text).join('\n\n');
   const hasReasoning = reasoningParts.length > 0;
   const lastPart = message.parts.at(-1);
-  const isReasoningStreaming =
-    isLastMessage && isStreaming && lastPart?.type === 'reasoning';
+  const isReasoningStreaming = isLastMessage && isStreaming && lastPart?.type === 'reasoning';
 
   return (
     <>
@@ -68,11 +59,7 @@ function MessageParts({
       )}
       {message.parts.map((part, i) => {
         if (part.type === 'text') {
-          return (
-            <MessageResponse key={`${message.id}-${i}`}>
-              {part.text}
-            </MessageResponse>
-          );
+          return <MessageResponse key={`${message.id}-${i}`}>{part.text}</MessageResponse>;
         }
         if (isToolUIPart(part)) {
           if (part.state === 'output-available') return null;
@@ -81,7 +68,10 @@ function MessageParts({
             <Tool key={`${message.id}-tool-${i}`}>
               <ToolHeader
                 type={toolType}
-                state={part.state as "input-streaming" | "input-available" | "output-available" | "output-error"}
+                state={
+                  part.state as
+                    'input-streaming' | 'input-available' | 'output-available' | 'output-error'
+                }
               />
               <ToolContent />
             </Tool>
@@ -94,13 +84,13 @@ function MessageParts({
 }
 
 export default function Chat() {
-  const { data: session } = useSession();
+  const { user } = useAuthMe();
   const { data: activeOrganization } = useActiveOrganization();
   const params = useParams();
 
   const [input, setInput] = useState('');
 
-  const userId = session?.user?.id;
+  const userId = user?.id;
   const orgIdFromUrl =
     typeof params?.orgId === 'string'
       ? params.orgId
@@ -235,14 +225,11 @@ export default function Chat() {
     const delayMs = isLoading ? 300 : 0;
     const orgForSave = resolvedOrganizationId;
     const timeout = window.setTimeout(() => {
-      void apiClient.call(
-        '/v1/assistant-chat/history',
-        {
-          method: 'PUT',
-          body: JSON.stringify({ messages: storedMessages }),
-          organizationId: orgForSave,
-        },
-      );
+      void apiClient.call('/v1/assistant-chat/history', {
+        method: 'PUT',
+        body: JSON.stringify({ messages: storedMessages }),
+        organizationId: orgForSave,
+      });
     }, delayMs);
 
     return () => window.clearTimeout(timeout);
@@ -260,15 +247,12 @@ export default function Chat() {
       // On an org switch this cleanup fires after the URL/active org has already
       // moved on, so keying by the snapshot's org prevents one org's chat from
       // being written into another org's history.
-      void apiClient.call(
-        '/v1/assistant-chat/history',
-        {
-          method: 'PUT',
-          body: JSON.stringify({ messages: snapshot.messages }),
-          organizationId: snapshot.organizationId,
-          keepalive: true,
-        },
-      );
+      void apiClient.call('/v1/assistant-chat/history', {
+        method: 'PUT',
+        body: JSON.stringify({ messages: snapshot.messages }),
+        organizationId: snapshot.organizationId,
+        keepalive: true,
+      });
     };
   }, [resolvedOrganizationId, userId]);
 
@@ -284,10 +268,7 @@ export default function Chat() {
           disabled={isLoading || messages.length === 0 || !resolvedOrganizationId || !userId}
           onClick={() => {
             if (!resolvedOrganizationId || !userId) return;
-            void apiClient.delete(
-              '/v1/assistant-chat/history',
-              resolvedOrganizationId,
-            );
+            void apiClient.delete('/v1/assistant-chat/history', resolvedOrganizationId);
             setMessages([]);
             setInput('');
           }}
@@ -308,7 +289,7 @@ export default function Chat() {
           {messages.length === 0 && !error ? (
             <ConversationEmptyState
               icon={<LogoSpinner />}
-              title={`Hi ${session?.user?.name?.split(' ').at(0) ?? ''}, how can I help you today?`}
+              title={`Hi ${user?.name?.split(' ').at(0) ?? ''}, how can I help you today?`}
             />
           ) : (
             messages.map((message, index) => (
@@ -331,9 +312,7 @@ export default function Chat() {
                       <div className="flex h-5 w-5 shrink-0 items-center justify-center text-foreground">
                         <LogoSpinner size={16} isDisabled={false} />
                       </div>
-                      <span className="text-xs font-semibold text-foreground">
-                        OpenComp
-                      </span>
+                      <span className="text-xs font-semibold text-foreground">OpenComp</span>
                     </div>
                     <MessageContent className="pl-7">
                       <MessageParts

@@ -3,9 +3,9 @@
 import { Stack } from '@trycompai/design-system';
 import { UserMultiple } from '@trycompai/design-system/icons';
 import type { IsmsInterestedParty } from '../isms-types';
-import { IsmsRegisterShell } from './shared';
 import { InterestedPartiesForm } from './InterestedPartiesForm';
 import { InterestedPartiesRow } from './InterestedPartiesRow';
+import { IsmsRegisterShell } from './shared';
 
 interface InterestedPartiesTableProps {
   parties: IsmsInterestedParty[];

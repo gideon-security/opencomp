@@ -4,8 +4,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const API_BASE =
-  env.BACKEND_API_URL || env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
+const API_BASE = env.BACKEND_API_URL || env.NEXT_PUBLIC_API_URL || 'http://localhost:3333';
 
 /**
  * Backwards-compat alias for device-agent installs (pre-PR #2222) that call

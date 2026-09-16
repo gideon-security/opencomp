@@ -110,9 +110,13 @@ vi.mock('@trycompai/design-system', () => ({
       {children}
     </div>
   ),
-  RadioGroupItem: ({ value, 'aria-label': ariaLabel }: { value: string; 'aria-label'?: string }) => (
-    <span data-value={value} aria-label={ariaLabel} />
-  ),
+  RadioGroupItem: ({
+    value,
+    'aria-label': ariaLabel,
+  }: {
+    value: string;
+    'aria-label'?: string;
+  }) => <span data-value={value} aria-label={ariaLabel} />,
   Select: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   SelectContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   SelectItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -262,7 +266,7 @@ describe('WizardClient', () => {
     // Walk through to the final step.
     for (let i = 0; i < 5; i += 1) {
       fireEvent.click(screen.getByText('Next'));
-       
+
       await waitFor(() => expect(screen.getByText(`Step ${i + 2} of 6`)).toBeInTheDocument());
     }
 

@@ -1,9 +1,9 @@
 'use client';
 
-import { useCallback } from 'react';
-import type { Impact, Likelihood } from '@db';
 import { useApi } from '@/hooks/use-api';
 import { useApiSWR } from '@/hooks/use-api-swr';
+import type { Impact, Likelihood } from '@db';
+import { useCallback } from 'react';
 
 /** Which register the acceptance subject lives in. */
 export type AcceptanceSubjectKind = 'risk' | 'vendor';

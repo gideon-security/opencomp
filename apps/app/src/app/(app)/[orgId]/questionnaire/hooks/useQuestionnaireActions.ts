@@ -1,11 +1,11 @@
 'use client';
 
+import { env } from '@/env.mjs';
+import { api } from '@/lib/api-client';
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import type { FileRejection } from 'react-dropzone';
 import { toast } from 'sonner';
 import type { QuestionAnswer } from '../components/types';
-import { api } from '@/lib/api-client';
-import { env } from '@/env.mjs';
 
 interface UseQuestionnaireActionsProps {
   orgId: string;
@@ -83,16 +83,19 @@ export function useQuestionnaireActions({
   const [isPending, startTransition] = useTransition();
   const [isExporting, setIsExporting] = useState(false);
 
-  const handleFileSelect = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-    if (rejectedFiles.length > 0) {
-      toast.error(`File rejected: ${rejectedFiles[0].errors[0].message}`);
-      return;
-    }
+  const handleFileSelect = useCallback(
+    (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+      if (rejectedFiles.length > 0) {
+        toast.error(`File rejected: ${rejectedFiles[0].errors[0].message}`);
+        return;
+      }
 
-    if (acceptedFiles.length > 0) {
-      setSelectedFile(acceptedFiles[0]);
-    }
-  }, [setSelectedFile]);
+      if (acceptedFiles.length > 0) {
+        setSelectedFile(acceptedFiles[0]);
+      }
+    },
+    [setSelectedFile],
+  );
 
   // ✅ Double-click protection using useRef
   const isParsingRef = useRef(false);
@@ -170,7 +173,9 @@ export function useQuestionnaireActions({
   const handleAutoAnswer = () => {
     // Prevent "Auto Answer All" if a single question is currently being answered
     if (answeringQuestionIndex !== null) {
-      toast.warning('Please wait for the current question to finish before answering all questions');
+      toast.warning(
+        'Please wait for the current question to finish before answering all questions',
+      );
       return;
     }
 
@@ -264,16 +269,13 @@ export function useQuestionnaireActions({
 
     // Save to database (use startTransition to avoid rendering issues)
     startTransition(async () => {
-      const response = await api.post(
-        '/v1/questionnaire/save-answer',
-        {
-          questionnaireId,
-          questionIndex: index,
-          answer: answerText,
-          status: 'manual',
-          organizationId: orgId,
-        },
-      );
+      const response = await api.post('/v1/questionnaire/save-answer', {
+        questionnaireId,
+        questionIndex: index,
+        answer: answerText,
+        status: 'manual',
+        organizationId: orgId,
+      });
 
       if (response.error) {
         console.error('Error saving answer:', response.error);
@@ -384,4 +386,3 @@ export function useQuestionnaireActions({
     handleToggleSource,
   };
 }
-

@@ -13,4 +13,3 @@ export class UnlockTimelineDto {
   @MaxLength(2000)
   unlockReason: string;
 }
-

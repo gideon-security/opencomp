@@ -14,9 +14,7 @@ export function secureStoreToken(token: string): SecureTokenBlob {
   return { encrypted: false, value: token };
 }
 
-export function secureReadToken(
-  blob: SecureTokenBlob | null | undefined,
-): string | null {
+export function secureReadToken(blob: SecureTokenBlob | null | undefined): string | null {
   if (!blob) return null;
   if (!blob.encrypted) return blob.value;
   try {

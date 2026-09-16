@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  Skeleton,
-  Text,
-} from '@trycompai/design-system';
+import { Card, CardContent, Skeleton, Text } from '@trycompai/design-system';
 import { useState } from 'react';
 import { AUTOMATION_EXAMPLES, AutomationExample } from '../../constants/automation-examples';
 
@@ -127,13 +122,14 @@ export function EmptyState({
   isLoadingSuggestions = false,
 }: EmptyStateProps) {
   // Use dynamic suggestions if provided, otherwise fall back to static examples
-  const examplesToShow: AutomationExample[] = suggestions && suggestions.length > 0
-    ? suggestions.map((s) => ({
-        title: s.title,
-        prompt: s.prompt,
-        url: getVendorLogoUrl(s.vendorName, s.vendorWebsite),
-      }))
-    : AUTOMATION_EXAMPLES;
+  const examplesToShow: AutomationExample[] =
+    suggestions && suggestions.length > 0
+      ? suggestions.map((s) => ({
+          title: s.title,
+          prompt: s.prompt,
+          url: getVendorLogoUrl(s.vendorName, s.vendorWebsite),
+        }))
+      : AUTOMATION_EXAMPLES;
 
   // Show skeleton loaders when loading suggestions for new automations
   const showSkeletons = isLoadingSuggestions && suggestions?.length === 0;

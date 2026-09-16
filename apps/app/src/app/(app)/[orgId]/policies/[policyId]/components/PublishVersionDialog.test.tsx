@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -104,9 +104,7 @@ describe('PublishVersionDialog', () => {
           onSuccess={onSuccess}
         />,
       );
-      expect(
-        screen.getByText(/based on the published version \(v3\)/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/based on the published version \(v3\)/i)).toBeInTheDocument();
     });
   });
 
@@ -142,9 +140,7 @@ describe('PublishVersionDialog', () => {
         />,
       );
       expect(screen.getByText('Create New Version')).toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: /cancel/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
     });
   });
 
@@ -154,16 +150,8 @@ describe('PublishVersionDialog', () => {
     });
 
     it('does not render dialog content when closed', () => {
-      render(
-        <PublishVersionDialog
-          policyId="policy-1"
-          isOpen={false}
-          onClose={onClose}
-        />,
-      );
-      expect(
-        screen.queryByText('Create New Version'),
-      ).not.toBeInTheDocument();
+      render(<PublishVersionDialog policyId="policy-1" isOpen={false} onClose={onClose} />);
+      expect(screen.queryByText('Create New Version')).not.toBeInTheDocument();
     });
   });
 });

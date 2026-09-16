@@ -78,7 +78,8 @@ function IntegrationCard({
   const [error, setError] = useState<string | null>(null);
 
   const handleDecryptCredentials = useCallback(async () => {
-    if (decryptedClientId || !integration.encryptedClientId || !integration.encryptedClientSecret) return;
+    if (decryptedClientId || !integration.encryptedClientId || !integration.encryptedClientSecret)
+      return;
     setIsDecrypting(true);
     try {
       const [id, secret] = await Promise.all([
@@ -245,23 +246,27 @@ function IntegrationCard({
                       </h4>
                       {isDecrypting ? (
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <div className="h-3 w-3 animate-spin"><InProgress /></div>
+                          <div className="h-3 w-3 animate-spin">
+                            <InProgress />
+                          </div>
                           Decrypting...
                         </div>
                       ) : decryptedClientId ? (
                         <div className="grid gap-1.5 text-sm">
                           <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground text-xs w-20 shrink-0">Client ID:</span>
+                            <span className="text-muted-foreground text-xs w-20 shrink-0">
+                              Client ID:
+                            </span>
                             <code className="text-xs bg-background px-2 py-1 rounded border truncate select-all">
                               {decryptedClientId}
                             </code>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground text-xs w-20 shrink-0">Secret:</span>
+                            <span className="text-muted-foreground text-xs w-20 shrink-0">
+                              Secret:
+                            </span>
                             <code className="text-xs bg-background px-2 py-1 rounded border select-all">
-                              {showSecret
-                                ? decryptedClientSecret
-                                : '••••••••••••••••'}
+                              {showSecret ? decryptedClientSecret : '••••••••••••••••'}
                             </code>
                             <Button
                               size="icon-xs"
@@ -286,9 +291,7 @@ function IntegrationCard({
                             )}
                         </div>
                       ) : (
-                        <p className="text-xs text-muted-foreground">
-                          Failed to load credentials
-                        </p>
+                        <p className="text-xs text-muted-foreground">Failed to load credentials</p>
                       )}
                     </div>
                   )}
@@ -469,7 +472,9 @@ export default function AdminIntegrationsPage() {
       {/* Search and Refresh */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"><Search /></div>
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground">
+            <Search />
+          </div>
           <Input
             placeholder="Search integrations..."
             value={searchQuery}
@@ -490,7 +495,9 @@ export default function AdminIntegrationsPage() {
 
       {isLoading && (
         <div className="flex items-center justify-center py-12">
-          <div className="h-8 w-8 animate-spin text-muted-foreground"><InProgress /></div>
+          <div className="h-8 w-8 animate-spin text-muted-foreground">
+            <InProgress />
+          </div>
         </div>
       )}
 

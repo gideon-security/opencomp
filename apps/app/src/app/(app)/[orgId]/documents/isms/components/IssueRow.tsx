@@ -18,12 +18,7 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { categoriesForKind, type IsmsContextIssue } from '../isms-types';
 import { issueSchema, type IssueFormValues } from './issue-schema';
-import {
-  IsmsCardActions,
-  IsmsFieldLabel,
-  IsmsRegisterCard,
-  IsmsSourceBadge,
-} from './shared';
+import { IsmsCardActions, IsmsFieldLabel, IsmsRegisterCard, IsmsSourceBadge } from './shared';
 
 interface IssueRowProps {
   issue: IsmsContextIssue;

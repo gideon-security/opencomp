@@ -2,9 +2,13 @@
 
 import { Badge } from '@gideon-defender/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@gideon-defender/ui/card';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@gideon-defender/ui/collapsible';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@gideon-defender/ui/collapsible';
 import { format, isValid } from 'date-fns';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type { VendorRiskAssessmentNewsItem } from './vendor-risk-assessment-types';
 
@@ -19,7 +23,9 @@ function NewsRow({ item }: { item: VendorRiskAssessmentNewsItem }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <Badge variant="outline" className="rounded-xl bg-muted font-normal">{formatLongDate(item.date)}</Badge>
+        <Badge variant="outline" className="rounded-xl bg-muted font-normal">
+          {formatLongDate(item.date)}
+        </Badge>
       </div>
 
       <div className="text-sm text-foreground leading-relaxed">
@@ -37,8 +43,8 @@ function NewsRow({ item }: { item: VendorRiskAssessmentNewsItem }) {
         )}
         {item.summary && (
           <>
-            {' '}—{' '}
-            <span className="text-muted-foreground">{item.summary}</span>
+            {' '}
+            — <span className="text-muted-foreground">{item.summary}</span>
           </>
         )}
         {item.source && (
@@ -67,9 +73,7 @@ export function VendorRiskAssessmentTimelineCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm font-semibold">
-          Timeline
-        </CardTitle>
+        <CardTitle className="text-sm font-semibold">Timeline</CardTitle>
       </CardHeader>
       <CardContent>
         {news.length === 0 ? (
@@ -84,10 +88,7 @@ export function VendorRiskAssessmentTimelineCard({
 
               <div className="space-y-5">
                 {preview.map((item, index) => (
-                  <div
-                    key={`${item.date}-${item.title}-${index}`}
-                    className="relative pl-6"
-                  >
+                  <div key={`${item.date}-${item.title}-${index}`} className="relative pl-6">
                     <div className="absolute left-[calc(0.5rem-6px)] top-[0.375rem] z-10 h-3 w-3 rounded-full border-2 border-foreground bg-background" />
                     <NewsRow item={item} />
                   </div>
@@ -137,5 +138,3 @@ export function VendorRiskAssessmentTimelineCard({
     </Card>
   );
 }
-
-

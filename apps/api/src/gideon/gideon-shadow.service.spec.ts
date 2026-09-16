@@ -5,7 +5,9 @@ const mockMemberFindFirst = jest.fn();
 
 jest.mock('@db', () => ({
   db: {
-    organization: { findUnique: (...args: unknown[]) => mockOrgFindUnique(...args) },
+    organization: {
+      findUnique: (...args: unknown[]) => mockOrgFindUnique(...args),
+    },
     member: { findFirst: (...args: unknown[]) => mockMemberFindFirst(...args) },
   },
 }));
@@ -56,13 +58,17 @@ describe('GideonShadowService', () => {
     } as never);
     mockOrgFindUnique.mockResolvedValue(null);
 
-    const warn = jest.spyOn(service['logger'], 'warn').mockImplementation(() => undefined as never);
+    const warn = jest
+      .spyOn(service['logger'], 'warn')
+      .mockImplementation(() => undefined as never);
 
     await service.logTenantOperationsMismatch('org_1', 'tok');
 
     expect(fetchMock).toHaveBeenCalledWith(
       'https://auth.example.com/v1/platform/tenants/org_1/operations',
-      expect.objectContaining({ headers: expect.objectContaining({ Authorization: 'Bearer tok' }) }),
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: 'Bearer tok' }),
+      }),
     );
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('mismatch'));
   });
@@ -72,10 +78,16 @@ describe('GideonShadowService', () => {
       ok: true,
       json: async () => ({ name: 'Gideon Acme' }),
     } as never);
-    mockOrgFindUnique.mockResolvedValue({ id: 'org_1', name: 'OpenComp Acme', createdAt: new Date() } as never);
+    mockOrgFindUnique.mockResolvedValue({
+      id: 'org_1',
+      name: 'OpenComp Acme',
+      createdAt: new Date(),
+    } as never);
     mockMemberFindFirst.mockResolvedValue({ id: 'mem_1' } as never);
 
-    const warn = jest.spyOn(service['logger'], 'warn').mockImplementation(() => undefined as never);
+    const warn = jest
+      .spyOn(service['logger'], 'warn')
+      .mockImplementation(() => undefined as never);
 
     await service.logTenantOperationsMismatch('org_1', 'tok');
 
@@ -87,10 +99,16 @@ describe('GideonShadowService', () => {
       ok: true,
       json: async () => ({ name: 'Acme' }),
     } as never);
-    mockOrgFindUnique.mockResolvedValue({ id: 'org_1', name: 'Acme', createdAt: new Date() } as never);
+    mockOrgFindUnique.mockResolvedValue({
+      id: 'org_1',
+      name: 'Acme',
+      createdAt: new Date(),
+    } as never);
     mockMemberFindFirst.mockResolvedValue({ id: 'mem_1' } as never);
 
-    const debug = jest.spyOn(service['logger'], 'debug').mockImplementation(() => undefined as never);
+    const debug = jest
+      .spyOn(service['logger'], 'debug')
+      .mockImplementation(() => undefined as never);
 
     await service.logTenantOperationsMismatch('org_1', 'tok');
 
@@ -102,7 +120,11 @@ describe('GideonShadowService', () => {
       ok: true,
       json: async () => ({ tenant: { name: 'Acme' } }),
     } as never);
-    mockOrgFindUnique.mockResolvedValue({ id: 'org_1', name: 'Acme', createdAt: new Date() } as never);
+    mockOrgFindUnique.mockResolvedValue({
+      id: 'org_1',
+      name: 'Acme',
+      createdAt: new Date(),
+    } as never);
     mockMemberFindFirst.mockResolvedValue(null);
 
     await service.logTenantOperationsMismatch('org_1', 'tok');
@@ -120,29 +142,43 @@ describe('GideonShadowService', () => {
   it('falls back to internalToken when gideonToken empty', async () => {
     process.env.GIDEON_INTERNAL_SERVICE_TOKEN = 'internal_123';
     fetchMock.mockResolvedValue({ ok: true, json: async () => ({}) } as never);
-    mockOrgFindUnique.mockResolvedValue({ id: 'org_1', name: 'Acme', createdAt: new Date() } as never);
+    mockOrgFindUnique.mockResolvedValue({
+      id: 'org_1',
+      name: 'Acme',
+      createdAt: new Date(),
+    } as never);
     mockMemberFindFirst.mockResolvedValue({ id: 'mem_1' } as never);
 
     await service.logTenantOperationsMismatch('org_1', '');
 
     expect(fetchMock).toHaveBeenCalledWith(
       expect.any(String),
-      expect.objectContaining({ headers: expect.objectContaining({ Authorization: 'Bearer internal_123' }) }),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: 'Bearer internal_123',
+        }),
+      }),
     );
   });
 
   it('does not throw on fetch non-ok or network error', async () => {
     fetchMock.mockResolvedValue({ ok: false, status: 403 } as never);
-    await expect(service.logTenantOperationsMismatch('org_1', 'tok')).resolves.toBeUndefined();
+    await expect(
+      service.logTenantOperationsMismatch('org_1', 'tok'),
+    ).resolves.toBeUndefined();
 
     fetchMock.mockRejectedValue(new Error('network'));
-    await expect(service.logTenantOperationsMismatch('org_1', 'tok')).resolves.toBeUndefined();
+    await expect(
+      service.logTenantOperationsMismatch('org_1', 'tok'),
+    ).resolves.toBeUndefined();
   });
 
   it('logMismatch respects enabled flag', () => {
     process.env.GIDEON_SHADOW_ENABLED = 'false';
     const s = new GideonShadowService();
-    const warn = jest.spyOn(s['logger'], 'warn').mockImplementation(() => undefined as never);
+    const warn = jest
+      .spyOn(s['logger'], 'warn')
+      .mockImplementation(() => undefined as never);
     s.logMismatch('ctx', { a: 1 });
     expect(warn).not.toHaveBeenCalled();
   });

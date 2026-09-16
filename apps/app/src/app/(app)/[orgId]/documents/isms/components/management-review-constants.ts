@@ -21,17 +21,10 @@ export const REVIEW_STATUS_LABELS: Record<IsmsReviewStatus, string> = {
   complete: 'Complete',
 };
 
-export const REVIEW_CONCLUSION_VERDICTS = [
-  'suitable',
-  'adequate',
-  'effective',
-] as const;
+export const REVIEW_CONCLUSION_VERDICTS = ['suitable', 'adequate', 'effective'] as const;
 
 /** The bracketed choices in the conclusion template, verbatim per the ticket. */
-export const REVIEW_CONCLUSION_VERDICT_LABELS: Record<
-  IsmsReviewConclusionVerdict,
-  string
-> = {
+export const REVIEW_CONCLUSION_VERDICT_LABELS: Record<IsmsReviewConclusionVerdict, string> = {
   suitable: 'Suitable',
   adequate: 'Adequate',
   effective: 'Effective',
@@ -52,26 +45,16 @@ export function reviewConclusionSentence({
   return `${reviewed} Overall, the ISMS was found to be ${choice} and no changes are required except those recorded in the outputs section below.`;
 }
 
-export const REVIEW_ACTION_STATUSES = [
-  'open',
-  'in_progress',
-  'closed',
-] as const;
+export const REVIEW_ACTION_STATUSES = ['open', 'in_progress', 'closed'] as const;
 
-export const REVIEW_ACTION_STATUS_LABELS: Record<
-  IsmsReviewActionStatus,
-  string
-> = {
+export const REVIEW_ACTION_STATUS_LABELS: Record<IsmsReviewActionStatus, string> = {
   open: 'Open',
   in_progress: 'In progress',
   closed: 'Closed',
 };
 
 /** Full display reference for an action: "MR-YYYY-NN-A01". */
-export function fullActionReference(
-  reviewReference: string,
-  actionReference: string,
-): string {
+export function fullActionReference(reviewReference: string, actionReference: string): string {
   return `${reviewReference}-${actionReference}`;
 }
 
@@ -109,9 +92,7 @@ export function parseAttendees(value: unknown): IsmsReviewAttendee[] {
 export function isReviewSigned(
   review: Pick<IsmsManagementReview, 'signoffChairName' | 'signoffChairDate'>,
 ): boolean {
-  return Boolean(
-    review.signoffChairName?.trim() && review.signoffChairDate,
-  );
+  return Boolean(review.signoffChairName?.trim() && review.signoffChairDate);
 }
 
 /**
@@ -125,11 +106,13 @@ export function carriedForwardActions(
 ): Array<{ review: IsmsManagementReview; action: IsmsManagementReview['actions'][number] }> {
   const index = reviews.findIndex((row) => row.id === review.id);
   if (index <= 0) return [];
-  return reviews.slice(0, index).flatMap((prior) =>
-    prior.actions
-      .filter((action) => action.status !== 'closed')
-      .map((action) => ({ review: prior, action })),
-  );
+  return reviews
+    .slice(0, index)
+    .flatMap((prior) =>
+      prior.actions
+        .filter((action) => action.status !== 'closed')
+        .map((action) => ({ review: prior, action })),
+    );
 }
 
 /**
@@ -155,17 +138,13 @@ export function reviewValidationMessages({
   for (const review of reviews) {
     if (review.status !== 'complete') continue;
     if (!review.meetingDate) {
-      messages.push(
-        `Review ${review.reference} is complete but has no meeting date.`,
-      );
+      messages.push(`Review ${review.reference} is complete but has no meeting date.`);
     }
     if (!review.chairName?.trim()) {
       messages.push(`Review ${review.reference} is complete but has no chair.`);
     }
     if (parseAttendees(review.attendees).length === 0) {
-      messages.push(
-        `Review ${review.reference} is complete but has no attendees.`,
-      );
+      messages.push(`Review ${review.reference} is complete but has no attendees.`);
     }
     const undiscussed = review.inputs.filter((input) => !input.discussed).length;
     if (undiscussed > 0) {
@@ -174,9 +153,7 @@ export function reviewValidationMessages({
       );
     }
     if (!isReviewSigned(review)) {
-      messages.push(
-        `Review ${review.reference} is complete but has not been signed by the chair.`,
-      );
+      messages.push(`Review ${review.reference} is complete but has not been signed by the chair.`);
     }
   }
   return messages;

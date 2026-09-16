@@ -1,10 +1,10 @@
 'use client';
 
 import type { TaskItem, TaskItemEntityType } from '@/hooks/use-task-items';
-import { TaskItemEditableTitle } from '../TaskItemEditableTitle';
-import { TaskItemEditableDescription } from '../TaskItemEditableDescription';
-import { Document, TextAlignLeft } from '@trycompai/design-system/icons';
 import { Text } from '@trycompai/design-system';
+import { Document, TextAlignLeft } from '@trycompai/design-system/icons';
+import { TaskItemEditableDescription } from '../TaskItemEditableDescription';
+import { TaskItemEditableTitle } from '../TaskItemEditableTitle';
 
 interface CustomTaskItemMainContentProps {
   taskItem: TaskItem;
@@ -44,7 +44,9 @@ export function CustomTaskItemMainContent({
       <div>
         <div className="flex items-center gap-2 mb-2">
           <TextAlignLeft className="h-4 w-4" />
-          <Text size="sm" weight="semibold">Description</Text>
+          <Text size="sm" weight="semibold">
+            Description
+          </Text>
         </div>
         <TaskItemEditableDescription
           taskItem={taskItem}

@@ -3,10 +3,10 @@
 import { usePermissions } from '@/hooks/use-permissions';
 import type { TrustCustomFrameworkItem } from '@/hooks/use-trust-portal-settings';
 import { useTrustPortalSettings } from '@/hooks/use-trust-portal-settings';
+import { Form } from '@gideon-defender/ui/form';
 import { useDebounce } from '@gideon-defender/ui/hooks/use-debounce';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@trycompai/design-system';
-import { Form } from '@gideon-defender/ui/form';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -499,9 +499,7 @@ export function TrustPortalSwitch({
             <div className="pt-6">
               <div className="mb-4">
                 <h3 className="text-lg font-medium">{t('portal.complianceTitle')}</h3>
-                <p className="text-muted-foreground text-sm">
-                  {t('portal.complianceDescription')}
-                </p>
+                <p className="text-muted-foreground text-sm">{t('portal.complianceDescription')}</p>
               </div>
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
                 {/* ISO 27001 */}

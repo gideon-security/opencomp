@@ -8,7 +8,11 @@ export interface ApiRedisClient {
   set<T>(key: string, value: T, options?: { ex?: number }): Promise<'OK'>;
   del(...keys: string[]): Promise<number>;
   getdel<T = unknown>(key: string): Promise<T | null>;
-  eval(script: string, keys: string[], args: Array<string | number>): Promise<unknown>;
+  eval(
+    script: string,
+    keys: string[],
+    args: Array<string | number>,
+  ): Promise<unknown>;
 }
 
 // In-memory fallback for local development / tests without a REDIS_URL. Uses
@@ -33,7 +37,11 @@ class InMemoryRedis implements ApiRedisClient {
     return record.value as T;
   }
 
-  async set<T>(key: string, value: T, options?: { ex?: number }): Promise<'OK'> {
+  async set<T>(
+    key: string,
+    value: T,
+    options?: { ex?: number },
+  ): Promise<'OK'> {
     const expiresAt = options?.ex ? Date.now() + options.ex * 1000 : undefined;
     this.storage.set(key, { value, expiresAt });
     return 'OK';
@@ -100,7 +108,11 @@ class IoredisRedis implements ApiRedisClient {
     return this.deserialize(value) as T | null;
   }
 
-  async set<T>(key: string, value: T, options?: { ex?: number }): Promise<'OK'> {
+  async set<T>(
+    key: string,
+    value: T,
+    options?: { ex?: number },
+  ): Promise<'OK'> {
     if (options?.ex) {
       await this.client.set(key, this.serialize(value), 'EX', options.ex);
     } else {
@@ -118,7 +130,11 @@ class IoredisRedis implements ApiRedisClient {
     return this.deserialize(value) as T | null;
   }
 
-  async eval(script: string, keys: string[], args: Array<string | number>): Promise<unknown> {
+  async eval(
+    script: string,
+    keys: string[],
+    args: Array<string | number>,
+  ): Promise<unknown> {
     return this.client.eval(script, keys.length, ...keys, ...args.map(String));
   }
 }

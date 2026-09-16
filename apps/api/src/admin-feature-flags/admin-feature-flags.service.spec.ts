@@ -60,9 +60,7 @@ describe('AdminFeatureFlagsService', () => {
           return Promise.resolve(
             new Response(
               JSON.stringify({
-                results: [
-                  { id: 1, key: 'flag_a', name: '', active: true },
-                ],
+                results: [{ id: 1, key: 'flag_a', name: '', active: true }],
                 next: 'https://evil.example.com/api/feature_flags/?cursor=abc',
               }),
               { status: 200 },

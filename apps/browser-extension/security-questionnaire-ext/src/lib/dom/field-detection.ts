@@ -1,9 +1,6 @@
 import type { DetectedQuestion } from '../types';
 
-export type WritableField =
-  | HTMLInputElement
-  | HTMLTextAreaElement
-  | HTMLElement;
+export type WritableField = HTMLInputElement | HTMLTextAreaElement | HTMLElement;
 
 export interface FieldCandidate extends Omit<DetectedQuestion, 'id'> {
   element: WritableField;
@@ -212,14 +209,16 @@ function normalizeHint(value: string): string {
 }
 
 function isChatPromptText(value: string): boolean {
-  return /\b(how can i help|ask (claude|chatgpt|gemini|copilot|assistant|ai|anything)|message (claude|chatgpt|gemini|copilot|assistant|ai)|send a message|write a message|new message|reply to|chat with)\b/i
-    .test(value);
+  return /\b(how can i help|ask (claude|chatgpt|gemini|copilot|assistant|ai|anything)|message (claude|chatgpt|gemini|copilot|assistant|ai)|send a message|write a message|new message|reply to|chat with)\b/i.test(
+    value,
+  );
 }
 
 function isChatComposerHint(value: string): boolean {
   const hasAssistantHint = /\b(assistant|claude|chatgpt|gemini|copilot)\b/i.test(value);
-  const hasComposerHint = /\b(chat|composer|compose|conversation|message|prompt|reply)\b/i
-    .test(value);
+  const hasComposerHint = /\b(chat|composer|compose|conversation|message|prompt|reply)\b/i.test(
+    value,
+  );
   const hasInputHint = /\b(box|editor|field|form|input|textarea|textbox)\b/i.test(value);
   return (hasAssistantHint && hasComposerHint) || (hasComposerHint && hasInputHint);
 }
@@ -274,11 +273,13 @@ function isQuestionnairePrompt(value: string): boolean {
   if (value.includes('?')) return true;
   if (STATEMENT_OPENERS.test(value)) return false;
   if (
-    /^(are|can|confirm|describe|detail|do|does|explain|have|has|how|identify|is|list|outline|provide|what|where|which|who|will)\b/i
-      .test(value)
+    /^(are|can|confirm|describe|detail|do|does|explain|have|has|how|identify|is|list|outline|provide|what|where|which|who|will)\b/i.test(
+      value,
+    )
   ) {
     return true;
   }
-  return /\b(access|audit|availability|backup|business continuity|compliance|control|data|disaster recovery|encryption|incident|information security|mfa|password|policy|privacy|risk|soc 2|security|subprocessor|vendor)\b/i
-    .test(value);
+  return /\b(access|audit|availability|backup|business continuity|compliance|control|data|disaster recovery|encryption|incident|information security|mfa|password|policy|privacy|risk|soc 2|security|subprocessor|vendor)\b/i.test(
+    value,
+  );
 }

@@ -1,23 +1,20 @@
 'use client';
 
+import type { AuditLogWithRelations } from '@/hooks/use-audit-logs';
+import { usePermissions } from '@/hooks/use-permissions';
 import type { Member, Policy, PolicyVersion, User } from '@db';
 import type { JSONContent } from '@tiptap/react';
 import { Stack, Tabs, TabsContent, TabsList, TabsTrigger } from '@trycompai/design-system';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { usePermissions } from '@/hooks/use-permissions';
 import { Comments } from '../../../../../../components/comments/Comments';
-import type { AuditLogWithRelations } from '@/hooks/use-audit-logs';
 import { PolicyContentManager } from '../editor/components/PolicyDetails';
 import { useAuditLogs } from '../hooks/useAuditLogs';
 import { usePolicy } from '../hooks/usePolicy';
 import { usePolicyVersions } from '../hooks/usePolicyVersions';
 import { PolicyAlerts } from './PolicyAlerts';
 import { PolicyArchiveSheet } from './PolicyArchiveSheet';
-import {
-  PolicyControlMappings,
-  type MappedControl,
-} from './PolicyControlMappings';
+import { PolicyControlMappings, type MappedControl } from './PolicyControlMappings';
 import { PolicyDeleteDialog } from './PolicyDeleteDialog';
 import { PolicyEvidenceTasks } from './PolicyEvidenceTasks';
 import { PolicyOverviewSheet } from './PolicyOverviewSheet';
@@ -117,11 +114,9 @@ export function PolicyPageTabs({
     mutateVersions(
       (currentVersions) => {
         if (!currentVersions || !Array.isArray(currentVersions)) return currentVersions;
-        return currentVersions.map((v) =>
-          v.id === versionId ? { ...v, content: newContent } : v
-        );
+        return currentVersions.map((v) => (v.id === versionId ? { ...v, content: newContent } : v));
       },
-      false // Don't revalidate - this is an optimistic update
+      false, // Don't revalidate - this is an optimistic update
     );
   };
 
@@ -224,7 +219,9 @@ export function PolicyPageTabs({
                 // Priority: 1) Published version content, 2) legacy policy.content, 3) empty array
                 (() => {
                   const versionsArray = Array.isArray(versions) ? versions : [];
-                  const currentVersion = versionsArray.find((v) => v.id === policy?.currentVersionId);
+                  const currentVersion = versionsArray.find(
+                    (v) => v.id === policy?.currentVersionId,
+                  );
                   const raw = currentVersion?.content ?? policy?.content ?? [];
                   return sanitizePolicyContent(raw);
                 })()
@@ -232,12 +229,16 @@ export function PolicyPageTabs({
               displayFormat={policy?.displayFormat}
               pdfUrl={
                 // Use version PDF if available, otherwise fallback to policy PDF
-                (Array.isArray(versions) ? versions : []).find((v) => v.id === policy?.currentVersionId)?.pdfUrl ?? policy?.pdfUrl
+                (Array.isArray(versions) ? versions : []).find(
+                  (v) => v.id === policy?.currentVersionId,
+                )?.pdfUrl ?? policy?.pdfUrl
               }
               aiAssistantEnabled={showAiAssistant}
               hasUnpublishedChanges={hasDraftChanges}
               currentVersionNumber={
-                (Array.isArray(versions) ? versions : []).find((v) => v.id === policy?.currentVersionId)?.version ?? null
+                (Array.isArray(versions) ? versions : []).find(
+                  (v) => v.id === policy?.currentVersionId,
+                )?.version ?? null
               }
               currentVersionId={policy?.currentVersionId ?? null}
               pendingVersionId={policy?.pendingVersionId ?? null}
@@ -268,7 +269,12 @@ export function PolicyPageTabs({
           </TabsContent>
 
           <TabsContent value="comments">
-            <Comments entityId={policyId} entityType="policy" organizationId={organizationId} readOnly={!hasPermission('policy', 'update')} />
+            <Comments
+              entityId={policyId}
+              entityType="policy"
+              organizationId={organizationId}
+              readOnly={!hasPermission('policy', 'update')}
+            />
           </TabsContent>
         </Stack>
       </Tabs>

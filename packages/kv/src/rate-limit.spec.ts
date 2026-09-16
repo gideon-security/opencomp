@@ -39,7 +39,9 @@ class FakeRedisBackend implements RateLimitBackend {
     const resetMs = Math.floor(now / windowMs) * windowMs + windowMs;
     if (!existing || existing.expireAt <= now) {
       this.counters.set(key, { count: 1, expireAt: resetMs });
-      return 1 > limit ? [0, 1, limit, Math.floor(resetMs / 1000)] : [1, 1, limit, Math.floor(resetMs / 1000)];
+      return 1 > limit
+        ? [0, 1, limit, Math.floor(resetMs / 1000)]
+        : [1, 1, limit, Math.floor(resetMs / 1000)];
     }
     existing.count += 1;
     return existing.count > limit

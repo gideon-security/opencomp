@@ -1,16 +1,25 @@
 import { browser } from 'wxt/browser';
 import { sendWithDomainConfirmation } from '../lib/dom/content-messaging';
 import { contentStyles } from '../lib/dom/content-styles';
-import { detectQuestionFields, type FieldCandidate, type WritableField } from '../lib/dom/field-detection';
 import { insertAnswerIntoField } from '../lib/dom/field-actions';
+import {
+  detectQuestionFields,
+  type FieldCandidate,
+  type WritableField,
+} from '../lib/dom/field-detection';
 import { createInlineButtonHost, setInlineButtonState } from '../lib/dom/inline-button';
 import { InlinePreview } from '../lib/dom/inline-preview';
 import { getPageSurface, shouldSkipQuestionnaireInjection } from '../lib/dom/page-surface';
-import { detectSheetQuestionsForPage } from '../lib/dom/sheets-runtime';
-import { prepareSheetPaste } from '../lib/dom/sheets-insert';
 import { sendRuntimeMessage } from '../lib/dom/safe-runtime';
+import { prepareSheetPaste } from '../lib/dom/sheets-insert';
+import { detectSheetQuestionsForPage } from '../lib/dom/sheets-runtime';
 import { parseContentRequest } from '../lib/messaging';
-import { getResponseError, isCountResponse, isItemResponse, isQueueResponse } from '../lib/response-guards';
+import {
+  getResponseError,
+  isCountResponse,
+  isItemResponse,
+  isQueueResponse,
+} from '../lib/response-guards';
 import type { DetectedQuestion, QuestionQueueItem, TabQuestionQueue } from '../lib/types';
 
 const FIELD_ID_ATTR = 'data-comp-sq-field-id';
@@ -45,18 +54,13 @@ export default defineContentScript({
   },
 });
 
-async function handleContentRequest(
-  request: NonNullable<ReturnType<typeof parseContentRequest>>,
-) {
+async function handleContentRequest(request: NonNullable<ReturnType<typeof parseContentRequest>>) {
   if (request.type === 'comp:set-detection-enabled') {
     detectionEnabled = request.enabled;
     refreshInlineButtons();
     return { ok: true, count: (await collectDetectedQuestions()).length };
   }
-  if (
-    request.type === 'comp:collect-questions' ||
-    request.type === 'comp:scan-visible-questions'
-  ) {
+  if (request.type === 'comp:collect-questions' || request.type === 'comp:scan-visible-questions') {
     refreshInlineButtons();
     const queue = await syncDetectedQuestions();
     return { ok: true, count: queue.items.length };
@@ -150,11 +154,12 @@ async function handleSingleGenerate(fieldId: string): Promise<void> {
       onDismiss: () => setInlineButtonState(button, 'idle'),
       onRegenerate: () => void handleSingleGenerate(fieldId),
       onInsert: (answer) => {
-        void insertInlineAnswer({ queue, item: response.item, answer, button, preview })
-          .catch((error: unknown) => {
+        void insertInlineAnswer({ queue, item: response.item, answer, button, preview }).catch(
+          (error: unknown) => {
             window.alert(error instanceof Error ? error.message : 'Unable to insert answer');
             setInlineButtonState(button, 'idle');
-          });
+          },
+        );
       },
     });
   } catch (error) {
@@ -177,7 +182,8 @@ async function insertInlineAnswer(params: {
     itemId: params.item.id,
     answer: params.answer,
   });
-  if (editResponse === null) throw new Error('Extension was reloaded. Refresh this page and try again.');
+  if (editResponse === null)
+    throw new Error('Extension was reloaded. Refresh this page and try again.');
   const response = await sendWithDomainConfirmation({
     type: 'comp:insert-queue-item',
     tabId: params.queue.tabId,

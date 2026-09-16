@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to ClickUp as a Workspace Admin or Owner\n2. Click your avatar (top-right) > Settings > Apps\n3. Under API Token, click Generate and copy the token (starts with pk_)\n4. For the Team/Workspace ID, go to Settings > Workspace Settings — the ID is in the URL\n\nNote: Use an admin account's personal token. It gives workspace-wide access to members and spaces. Personal tokens never expire."
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

@@ -1,13 +1,13 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   NO_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -76,7 +76,9 @@ vi.mock('@gideon-defender/ui/alert-dialog', () => ({
   AlertDialog: ({ children, open }: any) =>
     open ? <div data-testid="alert-dialog">{children}</div> : null,
   AlertDialogAction: ({ children, onClick }: any) => (
-    <button data-testid="alert-dialog-action" onClick={onClick}>{children}</button>
+    <button data-testid="alert-dialog-action" onClick={onClick}>
+      {children}
+    </button>
   ),
   AlertDialogCancel: ({ children }: any) => <button>{children}</button>,
   AlertDialogContent: ({ children }: any) => <div>{children}</div>,
@@ -95,7 +97,11 @@ vi.mock('@gideon-defender/ui/button', () => ({
 }));
 
 vi.mock('@gideon-defender/ui', () => ({
-  Card: ({ children, ...props }: any) => <div data-testid="card" {...props}>{children}</div>,
+  Card: ({ children, ...props }: any) => (
+    <div data-testid="card" {...props}>
+      {children}
+    </div>
+  ),
 }));
 
 // Mock lucide-react
@@ -209,9 +215,7 @@ describe('AdditionalDocumentsSection', () => {
     it('does not render document list when there are no documents', () => {
       setMockPermissions(ADMIN_PERMISSIONS);
 
-      render(
-        <AdditionalDocumentsSection organizationId="org-1" documents={[]} />,
-      );
+      render(<AdditionalDocumentsSection organizationId="org-1" documents={[]} />);
 
       expect(screen.queryByText('test-document.pdf')).not.toBeInTheDocument();
     });
@@ -219,9 +223,7 @@ describe('AdditionalDocumentsSection', () => {
     it('still renders file uploader when there are no documents and user has permission', () => {
       setMockPermissions(ADMIN_PERMISSIONS);
 
-      render(
-        <AdditionalDocumentsSection organizationId="org-1" documents={[]} />,
-      );
+      render(<AdditionalDocumentsSection organizationId="org-1" documents={[]} />);
 
       expect(screen.getByTestId('file-uploader')).toBeInTheDocument();
     });

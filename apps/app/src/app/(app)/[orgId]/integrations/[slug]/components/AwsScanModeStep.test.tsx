@@ -1,23 +1,16 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import {
-  AwsScanModeStep,
-  DEFAULT_AWS_SCAN_MODE_CHOICE,
-} from './AwsScanModeStep';
+import { AwsScanModeStep, DEFAULT_AWS_SCAN_MODE_CHOICE } from './AwsScanModeStep';
 
 describe('AwsScanModeStep', () => {
   it('renders both scan engine options', () => {
-    render(
-      <AwsScanModeStep value={DEFAULT_AWS_SCAN_MODE_CHOICE} onChange={() => {}} />,
-    );
+    render(<AwsScanModeStep value={DEFAULT_AWS_SCAN_MODE_CHOICE} onChange={() => {}} />);
     expect(screen.getByText('OpenComp Scanners')).toBeInTheDocument();
     expect(screen.getByText('AWS Security Hub')).toBeInTheDocument();
   });
 
   it('marks the value prop as selected (controlled component)', () => {
-    const { rerender } = render(
-      <AwsScanModeStep value="comp_scanners" onChange={() => {}} />,
-    );
+    const { rerender } = render(<AwsScanModeStep value="comp_scanners" onChange={() => {}} />);
 
     const compRadio = screen.getByRole('radio', { name: /OpenComp scanners/i });
     const sechubRadio = screen.getByRole('radio', { name: /aws security hub/i });
@@ -33,9 +26,7 @@ describe('AwsScanModeStep', () => {
     const onChange = vi.fn();
     render(<AwsScanModeStep value="comp_scanners" onChange={onChange} />);
 
-    fireEvent.click(
-      screen.getByRole('radio', { name: /aws security hub/i }),
-    );
+    fireEvent.click(screen.getByRole('radio', { name: /aws security hub/i }));
     expect(onChange).toHaveBeenCalledWith('security_hub');
   });
 
@@ -47,20 +38,12 @@ describe('AwsScanModeStep', () => {
 
     // Click on the already-selected one — radio onChange does NOT fire
     // when re-selecting the checked option, so onChange stays at 0.
-    fireEvent.click(
-      screen.getByRole('radio', { name: /OpenComp scanners/i }),
-    );
+    fireEvent.click(screen.getByRole('radio', { name: /OpenComp scanners/i }));
     expect(onChange).not.toHaveBeenCalled();
   });
 
   it('disables all radios when the disabled prop is true', () => {
-    render(
-      <AwsScanModeStep
-        value="comp_scanners"
-        onChange={() => {}}
-        disabled
-      />,
-    );
+    render(<AwsScanModeStep value="comp_scanners" onChange={() => {}} disabled />);
     const radios = screen.getAllByRole('radio');
     radios.forEach((radio) => expect(radio).toBeDisabled());
   });

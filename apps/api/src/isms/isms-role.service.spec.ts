@@ -4,7 +4,11 @@ import { IsmsRoleService } from './isms-role.service';
 
 jest.mock('@db', () => {
   const db = {
-    ismsDocument: { findFirst: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
+    ismsDocument: {
+      findFirst: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
     member: { findFirst: jest.fn() },
     ismsRole: {
       findFirst: jest.fn(),
@@ -26,7 +30,9 @@ describe('IsmsRoleService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (mockDb.ismsDocument.findUnique as jest.Mock).mockResolvedValue({ status: 'draft' });
+    (mockDb.ismsDocument.findUnique as jest.Mock).mockResolvedValue({
+      status: 'draft',
+    });
     service = new IsmsRoleService();
   });
 
@@ -43,8 +49,12 @@ describe('IsmsRoleService', () => {
     });
 
     it('creates a custom (manual, roleKey null) role', async () => {
-      (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue({ id: 'doc_1' });
-      (mockDb.ismsRole.findFirst as jest.Mock).mockResolvedValue({ position: 1 });
+      (mockDb.ismsDocument.findFirst as jest.Mock).mockResolvedValue({
+        id: 'doc_1',
+      });
+      (mockDb.ismsRole.findFirst as jest.Mock).mockResolvedValue({
+        position: 1,
+      });
       (mockDb.ismsRole.create as jest.Mock).mockResolvedValue({ id: 'role_1' });
 
       await service.create(args);
@@ -131,9 +141,14 @@ describe('IsmsRoleService', () => {
         documentId: 'doc_1',
       });
       (mockDb.ismsRole.delete as jest.Mock).mockResolvedValue({});
-      const result = await service.remove({ roleId: 'role_1', organizationId: 'org_1' });
+      const result = await service.remove({
+        roleId: 'role_1',
+        organizationId: 'org_1',
+      });
       expect(result).toEqual({ success: true });
-      expect(mockDb.ismsRole.delete).toHaveBeenCalledWith({ where: { id: 'role_1' } });
+      expect(mockDb.ismsRole.delete).toHaveBeenCalledWith({
+        where: { id: 'role_1' },
+      });
     });
   });
 });

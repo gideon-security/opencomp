@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const encryptStringMock = vi.fn();
 const decryptStringMock = vi.fn();
@@ -57,7 +57,9 @@ describe('secureStoreToken / secureReadToken', () => {
   });
 
   it('returns null when decryption fails (corrupted blob)', async () => {
-    decryptStringMock.mockImplementation(() => { throw new Error('decrypt failed'); });
+    decryptStringMock.mockImplementation(() => {
+      throw new Error('decrypt failed');
+    });
     const { secureReadToken } = await import('./secure-storage');
     const value = secureReadToken({ encrypted: true, value: 'YmFk' });
     expect(value).toBeNull();

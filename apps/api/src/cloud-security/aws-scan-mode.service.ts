@@ -5,10 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { db, Prisma } from '@db';
-import {
-  type AwsScanMode,
-  resolveAwsScanMode,
-} from './aws-scan-mode';
+import { type AwsScanMode, resolveAwsScanMode } from './aws-scan-mode';
 import { logCloudSecurityActivity } from './cloud-security-audit';
 
 /**

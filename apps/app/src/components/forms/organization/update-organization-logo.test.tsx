@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -72,9 +72,7 @@ describe('UpdateOrganizationLogo permission gating', () => {
   it('shows remove button when logo exists and disables it without permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
 
-    render(
-      <UpdateOrganizationLogo currentLogoUrl="https://example.com/logo.png" />,
-    );
+    render(<UpdateOrganizationLogo currentLogoUrl="https://example.com/logo.png" />);
 
     const removeButton = screen.getByRole('button', { name: /remove/i });
     expect(removeButton).toBeDisabled();
@@ -83,9 +81,7 @@ describe('UpdateOrganizationLogo permission gating', () => {
   it('shows remove button when logo exists and enables it with permission', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
 
-    render(
-      <UpdateOrganizationLogo currentLogoUrl="https://example.com/logo.png" />,
-    );
+    render(<UpdateOrganizationLogo currentLogoUrl="https://example.com/logo.png" />);
 
     const removeButton = screen.getByRole('button', { name: /remove/i });
     expect(removeButton).not.toBeDisabled();

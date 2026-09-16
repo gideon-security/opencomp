@@ -79,21 +79,29 @@ describe('shouldMarkTaskDoneAfterBrowserRun', () => {
 
 describe('shouldMarkTaskFailedAfterBrowserRun', () => {
   it('fails the task when the control regressed (verdict fail)', () => {
-    expect(shouldMarkTaskFailedAfterBrowserRun({ evaluationStatus: 'fail' })).toBe(true);
+    expect(
+      shouldMarkTaskFailedAfterBrowserRun({ evaluationStatus: 'fail' }),
+    ).toBe(true);
   });
 
   it('fails the task when the connection needs reconnect', () => {
-    expect(shouldMarkTaskFailedAfterBrowserRun({ needsReauth: true })).toBe(true);
+    expect(shouldMarkTaskFailedAfterBrowserRun({ needsReauth: true })).toBe(
+      true,
+    );
   });
 
   it('leaves the task alone on an infra-only failure (could not verify)', () => {
     // No verdict and not a reauth issue → timeout / model unavailable / etc.
     expect(shouldMarkTaskFailedAfterBrowserRun({})).toBe(false);
-    expect(shouldMarkTaskFailedAfterBrowserRun({ needsReauth: false })).toBe(false);
+    expect(shouldMarkTaskFailedAfterBrowserRun({ needsReauth: false })).toBe(
+      false,
+    );
   });
 
   it('does not fail the task on a passing verdict', () => {
-    expect(shouldMarkTaskFailedAfterBrowserRun({ evaluationStatus: 'pass' })).toBe(false);
+    expect(
+      shouldMarkTaskFailedAfterBrowserRun({ evaluationStatus: 'pass' }),
+    ).toBe(false);
   });
 });
 
@@ -104,7 +112,13 @@ describe('isTaskStatusProtectedFromAutomation', () => {
   });
 
   it('does not protect the normal automatable statuses', () => {
-    for (const status of ['todo', 'in_progress', 'in_review', 'done', 'failed']) {
+    for (const status of [
+      'todo',
+      'in_progress',
+      'in_review',
+      'done',
+      'failed',
+    ]) {
       expect(isTaskStatusProtectedFromAutomation(status)).toBe(false);
     }
   });

@@ -27,20 +27,19 @@ export async function prepareSheetPaste(params: {
 
 async function copyText(text: string, root: Document): Promise<void> {
   if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text).catch(() => copyTextWithSelection({
-      root,
-      text,
-    }));
+    await navigator.clipboard.writeText(text).catch(() =>
+      copyTextWithSelection({
+        root,
+        text,
+      }),
+    );
     return;
   }
 
   await copyTextWithSelection({ root, text });
 }
 
-async function copyTextWithSelection(params: {
-  root: Document;
-  text: string;
-}): Promise<void> {
+async function copyTextWithSelection(params: { root: Document; text: string }): Promise<void> {
   const textarea = params.root.createElement('textarea');
   textarea.value = params.text;
   textarea.style.position = 'fixed';

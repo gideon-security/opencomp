@@ -1,7 +1,7 @@
 import { TaskOverview } from '@/components/risks/tasks/task-overview';
 import { serverApi } from '@/lib/api-server';
-import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 
 interface PageProps {

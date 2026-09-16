@@ -1,9 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  ControlRequirementSelect,
-  type RequirementOption,
-} from './ControlRequirementSelect';
+import { ControlRequirementSelect, type RequirementOption } from './ControlRequirementSelect';
 
 vi.mock('@gideon-defender/ui', () => ({
   Button: ({

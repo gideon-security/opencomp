@@ -1,12 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import {
-  approveGeneratedItems,
-  approveHighConfidenceItems,
-} from './queue-approval';
-import {
-  applyGeneratedAnswer,
-  syncDetectedQuestions,
-} from './queue';
+import { applyGeneratedAnswer, syncDetectedQuestions } from './queue';
+import { approveGeneratedItems, approveHighConfidenceItems } from './queue-approval';
 import type { DetectedQuestion, TabQuestionQueue } from './types';
 
 const firstQuestion: DetectedQuestion = {
@@ -55,10 +49,7 @@ describe('queue approval reducers', () => {
 
     const approved = approveGeneratedItems(queue);
 
-    expect(approved.items.map((item) => item.status)).toEqual([
-      'approved',
-      'approved',
-    ]);
+    expect(approved.items.map((item) => item.status)).toEqual(['approved', 'approved']);
   });
 
   it('keeps high-confidence approval scoped to high-confidence answers', () => {
@@ -66,10 +57,7 @@ describe('queue approval reducers', () => {
 
     const approved = approveHighConfidenceItems(queue);
 
-    expect(approved.items.map((item) => item.status)).toEqual([
-      'approved',
-      'generated',
-    ]);
+    expect(approved.items.map((item) => item.status)).toEqual(['approved', 'generated']);
   });
 });
 

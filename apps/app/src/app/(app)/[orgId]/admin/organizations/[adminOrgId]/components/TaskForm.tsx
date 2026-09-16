@@ -1,6 +1,8 @@
 'use client';
 
 import { api } from '@/lib/api-client';
+import { Label } from '@gideon-defender/ui/label';
+import { Textarea } from '@gideon-defender/ui/textarea';
 import {
   Button,
   Input,
@@ -11,8 +13,6 @@ import {
   Stack,
   Text,
 } from '@trycompai/design-system';
-import { Label } from '@gideon-defender/ui/label';
-import { Textarea } from '@gideon-defender/ui/textarea';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
@@ -107,10 +107,7 @@ export function TaskForm({ orgId, onCreated }: TaskFormProps) {
     if (department && department !== 'none') body.department = department;
     if (frequency) body.frequency = frequency;
 
-    const res = await api.post(
-      `/v1/admin/organizations/${orgId}/tasks`,
-      body,
-    );
+    const res = await api.post(`/v1/admin/organizations/${orgId}/tasks`, body);
 
     if (res.error) {
       setError(res.error);
@@ -134,9 +131,7 @@ export function TaskForm({ orgId, onCreated }: TaskFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="task-description">
-            {t('organizations.taskForm.descriptionLabel')}
-          </Label>
+          <Label htmlFor="task-description">{t('organizations.taskForm.descriptionLabel')}</Label>
           <Textarea
             id="task-description"
             value={description}
@@ -148,12 +143,15 @@ export function TaskForm({ orgId, onCreated }: TaskFormProps) {
 
         <div>
           <Label>{t('organizations.taskForm.statusLabel')}</Label>
-          <Select value={status} onValueChange={(val) => { if (val) setStatus(val); }}>
+          <Select
+            value={status}
+            onValueChange={(val) => {
+              if (val) setStatus(val);
+            }}
+          >
             <SelectTrigger>
               <span className="text-sm">
-                {status
-                  ? statusLabel(t, status)
-                  : t('organizations.taskForm.statusDefault')}
+                {status ? statusLabel(t, status) : t('organizations.taskForm.statusDefault')}
               </span>
             </SelectTrigger>
             <SelectContent>
@@ -168,7 +166,12 @@ export function TaskForm({ orgId, onCreated }: TaskFormProps) {
 
         <div>
           <Label>{t('organizations.taskForm.departmentLabel')}</Label>
-          <Select value={department} onValueChange={(val) => { if (val) setDepartment(val); }}>
+          <Select
+            value={department}
+            onValueChange={(val) => {
+              if (val) setDepartment(val);
+            }}
+          >
             <SelectTrigger>
               <span className="text-sm">
                 {department
@@ -188,7 +191,12 @@ export function TaskForm({ orgId, onCreated }: TaskFormProps) {
 
         <div>
           <Label>{t('organizations.taskForm.frequencyLabel')}</Label>
-          <Select value={frequency} onValueChange={(val) => { if (val) setFrequency(val); }}>
+          <Select
+            value={frequency}
+            onValueChange={(val) => {
+              if (val) setFrequency(val);
+            }}
+          >
             <SelectTrigger>
               <span className="text-sm">
                 {frequency

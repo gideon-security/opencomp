@@ -1,5 +1,6 @@
 'use client';
 
+import type { Role } from '@db'; // Assuming Role is from prisma
 import {
   Command,
   CommandEmpty,
@@ -9,7 +10,6 @@ import {
   CommandList,
   CommandSeparator,
 } from '@gideon-defender/ui/command';
-import type { Role } from '@db'; // Assuming Role is from prisma
 import { Check } from 'lucide-react';
 
 import { cn } from '@gideon-defender/ui/cn';

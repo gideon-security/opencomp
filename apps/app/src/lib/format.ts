@@ -3,9 +3,9 @@
 export {
   formatDate,
   formatDateLocale,
+  formatDateNumeric,
   formatDateShort,
+  formatDateSlash,
   formatDateTime,
   formatDateYmd,
-  formatDateSlash,
-  formatDateNumeric,
 } from '@gideon-defender/utils/format';

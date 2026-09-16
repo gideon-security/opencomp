@@ -9,4 +9,3 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   const { vendorId, orgId } = await params;
   redirect(`/${orgId}/vendors/${vendorId}`);
 }
-

@@ -3,10 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import type { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { HybridAuthGuard } from '../../auth/hybrid-auth.guard';
-import {
-  PermissionGuard,
-  PERMISSIONS_KEY,
-} from '../../auth/permission.guard';
+import { PermissionGuard, PERMISSIONS_KEY } from '../../auth/permission.guard';
 import { IsmsProfileController } from './isms-profile.controller';
 import { IsmsProfileService } from './isms-profile.service';
 
@@ -57,9 +54,9 @@ describe('IsmsProfileController', () => {
 
   describe('getProfile', () => {
     it('requires a frameworkId', async () => {
-      await expect(
-        controller.getProfile('', 'org_1'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(controller.getProfile('', 'org_1')).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('delegates to the service with framework + org', async () => {

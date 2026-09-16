@@ -29,7 +29,10 @@ import { UploadAttachmentDto } from '../attachments/upload-attachment.dto';
 import { AuthContext, OrganizationId } from '../auth/auth-context.decorator';
 import { HybridAuthGuard } from '../auth/hybrid-auth.guard';
 import { PermissionGuard } from '../auth/permission.guard';
-import { RequirePermission, RequirePermissions } from '../auth/require-permission.decorator';
+import {
+  RequirePermission,
+  RequirePermissions,
+} from '../auth/require-permission.decorator';
 import type { AuthContext as AuthContextType } from '../auth/types';
 import {
   buildTaskAssignmentFilter,
@@ -57,7 +60,9 @@ function normalizeDepartment(
   }
   const trimmed = value.trim();
   if (trimmed.length === 0) {
-    throw new BadRequestException('department must not be empty (use null to clear)');
+    throw new BadRequestException(
+      'department must not be empty (use null to clear)',
+    );
   }
   if (trimmed.length > DEPARTMENT_MAX_LENGTH) {
     throw new BadRequestException(
@@ -926,8 +931,7 @@ export class TasksController {
         approverId: body.approverId,
         frequency: body.frequency as TaskFrequency | undefined,
         integrationScheduleFrequency: body.integrationScheduleFrequency as
-          | TaskFrequency
-          | undefined,
+          TaskFrequency | undefined,
         department: normalizedDepartment,
         reviewDate: parsedReviewDate,
         notRelevantJustification: body.notRelevantJustification,

@@ -133,7 +133,13 @@ describe('SyncController - getAvailableSyncProviders connection status', () => {
 
   it('reports connectionStatus error (not connected) when the latest connection is broken', async () => {
     mockConnectionFindMany.mockResolvedValue([
-      { id: 'icn_broken', status: 'error', lastSyncAt: null, nextSyncAt: null, provider: { slug: 'intune' } },
+      {
+        id: 'icn_broken',
+        status: 'error',
+        lastSyncAt: null,
+        nextSyncAt: null,
+        provider: { slug: 'intune' },
+      },
     ]);
 
     const result = await controller.getAvailableSyncProviders(orgId, 'device');
@@ -152,8 +158,20 @@ describe('SyncController - getAvailableSyncProviders connection status', () => {
     // Rows arrive newest-first (orderBy updatedAt desc): the user reconnected
     // and later disconnected, leaving an older row stuck in 'error'.
     mockConnectionFindMany.mockResolvedValue([
-      { id: 'icn_new', status: 'disconnected', lastSyncAt: null, nextSyncAt: null, provider: { slug: 'intune' } },
-      { id: 'icn_old', status: 'error', lastSyncAt: null, nextSyncAt: null, provider: { slug: 'intune' } },
+      {
+        id: 'icn_new',
+        status: 'disconnected',
+        lastSyncAt: null,
+        nextSyncAt: null,
+        provider: { slug: 'intune' },
+      },
+      {
+        id: 'icn_old',
+        status: 'error',
+        lastSyncAt: null,
+        nextSyncAt: null,
+        provider: { slug: 'intune' },
+      },
     ]);
 
     const result = await controller.getAvailableSyncProviders(orgId, 'device');
@@ -170,8 +188,20 @@ describe('SyncController - getAvailableSyncProviders connection status', () => {
 
   it('prefers an active connection even when a newer non-active row exists', async () => {
     mockConnectionFindMany.mockResolvedValue([
-      { id: 'icn_new_err', status: 'error', lastSyncAt: null, nextSyncAt: null, provider: { slug: 'intune' } },
-      { id: 'icn_active', status: 'active', lastSyncAt: null, nextSyncAt: null, provider: { slug: 'intune' } },
+      {
+        id: 'icn_new_err',
+        status: 'error',
+        lastSyncAt: null,
+        nextSyncAt: null,
+        provider: { slug: 'intune' },
+      },
+      {
+        id: 'icn_active',
+        status: 'active',
+        lastSyncAt: null,
+        nextSyncAt: null,
+        provider: { slug: 'intune' },
+      },
     ]);
 
     const result = await controller.getAvailableSyncProviders(orgId, 'device');

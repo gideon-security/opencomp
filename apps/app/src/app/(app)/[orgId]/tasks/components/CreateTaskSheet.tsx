@@ -3,12 +3,18 @@
 import { DepartmentSelect } from '@/components/DepartmentSelect';
 import { SelectAssignee } from '@/components/SelectAssignee';
 import { useTaskTemplates } from '@/hooks/use-task-template-api';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
+import { Member, TaskFrequency, User } from '@db';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
 import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import MultipleSelector, { Option } from '@gideon-defender/ui/multiple-selector';
-import { Member, TaskFrequency, User } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslations } from 'next-intl';
 import {
   Button,
   Drawer,
@@ -28,6 +34,7 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { ArrowRight } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -74,7 +81,13 @@ interface CreateTaskSheetProps {
   createTask: (data: CreateTaskPayload) => Promise<void>;
 }
 
-export function CreateTaskSheet({ members, controls, open, onOpenChange, createTask }: CreateTaskSheetProps) {
+export function CreateTaskSheet({
+  members,
+  controls,
+  open,
+  onOpenChange,
+  createTask,
+}: CreateTaskSheetProps) {
   const t = useTranslations('tasks');
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -206,7 +219,9 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
                   value={field.value || 'none'}
                   onValueChange={(value) => handleTaskTemplateChange(value, field.onChange)}
                 >
-                  <SelectTrigger>{selectedTemplate?.name || t('createSheet.selectTemplate')}</SelectTrigger>
+                  <SelectTrigger>
+                    {selectedTemplate?.name || t('createSheet.selectTemplate')}
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">{t('createSheet.none')}</SelectItem>
                     {frameworkEditorTaskTemplates.map((template) => (
@@ -283,7 +298,9 @@ export function CreateTaskSheet({ members, controls, open, onOpenChange, createT
           control={form.control}
           name="frequency"
           render={({ field }) => {
-            const displayValue = field.value ? field.value.replace('_', ' ') : t('createSheet.selectFrequency');
+            const displayValue = field.value
+              ? field.value.replace('_', ' ')
+              : t('createSheet.selectFrequency');
             return (
               <FormItem className="w-full">
                 <FormLabel>{t('createSheet.frequencyLabel')}</FormLabel>

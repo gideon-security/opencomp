@@ -6,11 +6,7 @@ export async function generateMetadata() {
   return { title: 'Framework Versions' };
 }
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ frameworkId: string }>;
-}) {
+export default async function Page({ params }: { params: Promise<{ frameworkId: string }> }) {
   const isAllowed = await isAuthorized();
   if (!isAllowed) redirect('/auth');
 

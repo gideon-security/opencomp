@@ -13,11 +13,11 @@ import {
   SheetTitle,
 } from '@trycompai/design-system';
 import { Close, Locked } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { MfaSetupHelp } from '../../../tasks/[taskId]/components/browser-automations/MfaSetupHelp';
 import { useTotpStatus } from '../../../tasks/[taskId]/hooks/useTotpStatus';
 import { methodOf, statusMeta, type Connection } from './connection-format';
-import { useTranslations } from 'next-intl';
 
 interface ManageConnectionSheetProps {
   connection: Connection | null;
@@ -167,8 +167,12 @@ export function ManageConnectionSheet({
           <div className="flex flex-col gap-5">
             {/* Facts */}
             <div className="divide-y divide-border rounded-md border border-border">
-              <FactRow label={t('connections.method')}>{method === 'password' ? t('connections.password') : 'SSO'}</FactRow>
-              <FactRow label={t('connections.connectedAs')}>{connection.loginIdentity || '—'}</FactRow>
+              <FactRow label={t('connections.method')}>
+                {method === 'password' ? t('connections.password') : 'SSO'}
+              </FactRow>
+              <FactRow label={t('connections.connectedAs')}>
+                {connection.loginIdentity || '—'}
+              </FactRow>
               <FactRow label={t('connections.automations')}>{automationCount}</FactRow>
               <FactRow label={t('connections.statusLabel')}>
                 <span style={{ color: meta.color }}>{meta.label}</span>
@@ -206,7 +210,9 @@ export function ManageConnectionSheet({
                   <SectionLabel>{t('connections.details')}</SectionLabel>
 
                   <div className="flex flex-col gap-1.5">
-                    <span className="text-[11px] text-muted-foreground">{t('connections.nameLabel')}</span>
+                    <span className="text-[11px] text-muted-foreground">
+                      {t('connections.nameLabel')}
+                    </span>
                     <div className="flex gap-2">
                       <div className="flex-1">
                         <Input
@@ -228,7 +234,9 @@ export function ManageConnectionSheet({
                   {/* Login — password connections only (SSO has no stored password). */}
                   {method === 'password' && (
                     <div className="flex flex-col gap-1.5">
-                      <span className="text-[11px] text-muted-foreground">{t('connections.loginLabel')}</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {t('connections.loginLabel')}
+                      </span>
                       {!showCredForm ? (
                         <>
                           <div>
@@ -282,7 +290,9 @@ export function ManageConnectionSheet({
                     <div className="flex flex-col gap-2 border-t border-border pt-3">
                       <div className="flex items-start justify-between gap-2.5">
                         <div className="min-w-0">
-                          <div className="text-[12px] text-foreground">{t('connections.automatic2fa')}</div>
+                          <div className="text-[12px] text-foreground">
+                            {t('connections.automatic2fa')}
+                          </div>
                           <div className="mt-px text-[10.5px] leading-relaxed text-muted-foreground">
                             {totpError
                               ? t('connections.totpError')
@@ -316,16 +326,13 @@ export function ManageConnectionSheet({
                         )}
                       </div>
 
-                      {!totpAdding &&
-                        !totpConfigured &&
-                        !totpLoading &&
-                        !totpError && (
-                          <div>
-                            <Button variant="outline" onClick={() => setTotpAdding(true)}>
-                              {t('connections.addAuthenticatorKey')}
-                            </Button>
-                          </div>
-                        )}
+                      {!totpAdding && !totpConfigured && !totpLoading && !totpError && (
+                        <div>
+                          <Button variant="outline" onClick={() => setTotpAdding(true)}>
+                            {t('connections.addAuthenticatorKey')}
+                          </Button>
+                        </div>
+                      )}
 
                       {!totpAdding && totpConfigured && (
                         <div className="flex items-center gap-3">
@@ -357,10 +364,7 @@ export function ManageConnectionSheet({
                           </p>
                           <MfaSetupHelp hostname={connection.hostname} />
                           <div className="flex gap-2">
-                            <Button
-                              disabled={!totpSeed.trim() || busy}
-                              onClick={handleSaveTotp}
-                            >
+                            <Button disabled={!totpSeed.trim() || busy} onClick={handleSaveTotp}>
                               {t('connections.saveKey')}
                             </Button>
                             <Button
@@ -391,19 +395,20 @@ export function ManageConnectionSheet({
             {!confirmingRemove ? (
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="text-[12px] text-foreground">{t('connections.removeConnection')}</div>
+                  <div className="text-[12px] text-foreground">
+                    {t('connections.removeConnection')}
+                  </div>
                   {automationCount > 0 && (
                     <div className="mt-0.5 text-[10.5px] text-muted-foreground">
-                      {automationCount} {automationCount === 1 ? t('connections.automationRelies') : t('connections.automationsRely')}{' '}
+                      {automationCount}{' '}
+                      {automationCount === 1
+                        ? t('connections.automationRelies')
+                        : t('connections.automationsRely')}{' '}
                       {t('connections.onIt')}
                     </div>
                   )}
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => setConfirmingRemove(true)}
-                >
+                <Button variant="destructive" size="sm" onClick={() => setConfirmingRemove(true)}>
                   {t('connections.removeEllipsis')}
                 </Button>
               </div>
@@ -415,7 +420,11 @@ export function ManageConnectionSheet({
                     : t('connections.removeConfirmWithoutAutomations')}
                 </p>
                 <div className="flex gap-2">
-                  <Button variant="destructive" disabled={busy} onClick={() => onRemove(connection)}>
+                  <Button
+                    variant="destructive"
+                    disabled={busy}
+                    onClick={() => onRemove(connection)}
+                  >
                     {t('connections.removeButton')}
                   </Button>
                   <Button variant="ghost" onClick={() => setConfirmingRemove(false)}>

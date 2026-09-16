@@ -18,10 +18,7 @@ export function createInlineButtonHost(params: {
   return host;
 }
 
-export function setInlineButtonState(
-  host: HTMLElement | null,
-  state: InlineButtonState,
-): void {
+export function setInlineButtonState(host: HTMLElement | null, state: InlineButtonState): void {
   if (!host?.shadowRoot) return;
   const label =
     state === 'busy'

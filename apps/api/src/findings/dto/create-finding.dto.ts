@@ -53,7 +53,10 @@ export class CreateFindingDto {
   @IsOptional()
   riskId?: string;
 
-  @ApiProperty({ description: 'Member ID (person this finding targets)', required: false })
+  @ApiProperty({
+    description: 'Member ID (person this finding targets)',
+    required: false,
+  })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
@@ -75,7 +78,15 @@ export class CreateFindingDto {
   // before `prisma generate` picked up new enum values will keep rejecting
   // them (e.g. "area must be one of the following values: people, documents,
   // compliance" even though `risks`/`vendors`/`policies` are now valid).
-  @IsIn(['people', 'documents', 'compliance', 'risks', 'vendors', 'policies', 'other'])
+  @IsIn([
+    'people',
+    'documents',
+    'compliance',
+    'risks',
+    'vendors',
+    'policies',
+    'other',
+  ])
   @IsOptional()
   area?: FindingArea;
 

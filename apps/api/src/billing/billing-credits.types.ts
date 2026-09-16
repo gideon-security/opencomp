@@ -6,11 +6,7 @@ import {
 } from '@gideon-defender/billing';
 
 export type BillingCreditEventType =
-  | 'grant'
-  | 'consume'
-  | 'refund'
-  | 'adjustment'
-  | 'migration';
+  'grant' | 'consume' | 'refund' | 'adjustment' | 'migration';
 
 export function assertCreditEventType(value: string): BillingCreditEventType {
   if (

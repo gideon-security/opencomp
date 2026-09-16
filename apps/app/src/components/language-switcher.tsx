@@ -2,7 +2,6 @@
 
 import { Language } from '@carbon/icons-react';
 import { useLocale } from 'next-intl';
-import * as React from 'react';
 
 const LOCALE_COOKIE = 'NEXT_LOCALE';
 const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;

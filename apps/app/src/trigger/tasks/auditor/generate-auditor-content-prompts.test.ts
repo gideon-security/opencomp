@@ -17,8 +17,18 @@ const VENDORS: VendorTabEntry[] = [
   { name: 'AWS', description: 'Cloud hosting', category: 'cloud', website: 'https://aws.example' },
   { name: 'Vercel', description: 'App hosting', category: 'infrastructure', website: null },
   { name: 'Slack', description: 'Team chat', category: 'software_as_a_service', website: null },
-  { name: 'Okta', description: 'Identity provider', category: 'software_as_a_service', website: null },
-  { name: 'GitHub', description: 'Source control', category: 'software_as_a_service', website: null },
+  {
+    name: 'Okta',
+    description: 'Identity provider',
+    category: 'software_as_a_service',
+    website: null,
+  },
+  {
+    name: 'GitHub',
+    description: 'Source control',
+    category: 'software_as_a_service',
+    website: null,
+  },
   { name: 'Stripe', description: 'Payments', category: 'finance', website: null },
 ];
 

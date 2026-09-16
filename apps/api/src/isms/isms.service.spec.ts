@@ -52,7 +52,11 @@ describe('IsmsService ensureSetup', () => {
   });
 
   describe('ensureSetup', () => {
-    const dto = { organizationId: 'org_1', frameworkId: 'fw_1', canWrite: true };
+    const dto = {
+      organizationId: 'org_1',
+      frameworkId: 'fw_1',
+      canWrite: true,
+    };
 
     const mockTemplates = mockDb.frameworkEditorIsmsDocumentTemplate
       .findMany as jest.Mock;
@@ -96,17 +100,37 @@ describe('IsmsService ensureSetup', () => {
       });
 
       it('reports hasApprovedVersion from a published version OR an approved status', async () => {
-        (mockDb.frameworkEditorFramework.findUnique as jest.Mock).mockResolvedValue({
+        (
+          mockDb.frameworkEditorFramework.findUnique as jest.Mock
+        ).mockResolvedValue({
           id: 'fw_1',
           requirements: [],
         });
         (mockDb.ismsDocument.findMany as jest.Mock).mockResolvedValueOnce([
           // Published version exists.
-          { id: 'd1', type: 'isms_scope', status: 'draft', requirementId: null, currentVersionId: 'isms_ver_1' },
+          {
+            id: 'd1',
+            type: 'isms_scope',
+            status: 'draft',
+            requirementId: null,
+            currentVersionId: 'isms_ver_1',
+          },
           // Approved before versioning existed: no version row, but still approved.
-          { id: 'd2', type: 'leadership_commitment', status: 'approved', requirementId: null, currentVersionId: null },
+          {
+            id: 'd2',
+            type: 'leadership_commitment',
+            status: 'approved',
+            requirementId: null,
+            currentVersionId: null,
+          },
           // Never approved.
-          { id: 'd3', type: 'objectives_plan', status: 'draft', requirementId: null, currentVersionId: null },
+          {
+            id: 'd3',
+            type: 'objectives_plan',
+            status: 'draft',
+            requirementId: null,
+            currentVersionId: null,
+          },
         ]);
 
         const result = await service.ensureSetup({ ...dto, canWrite: false });
@@ -260,7 +284,9 @@ describe('IsmsService ensureSetup', () => {
         {
           // Latest measurement three periods back → overdue.
           cadence: 'monthly',
-          createdAt: new Date(`${addPeriods('monthly', current, -6)}T00:00:00Z`),
+          createdAt: new Date(
+            `${addPeriods('monthly', current, -6)}T00:00:00Z`,
+          ),
           measurements: [
             {
               periodStart: new Date(
@@ -272,7 +298,9 @@ describe('IsmsService ensureSetup', () => {
         {
           // Previous period recorded → within cadence.
           cadence: 'monthly',
-          createdAt: new Date(`${addPeriods('monthly', current, -6)}T00:00:00Z`),
+          createdAt: new Date(
+            `${addPeriods('monthly', current, -6)}T00:00:00Z`,
+          ),
           measurements: [
             {
               periodStart: new Date(

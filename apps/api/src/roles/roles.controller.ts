@@ -180,7 +180,11 @@ export class RolesController {
     description:
       'Returns the effective obligations for a built-in role (owner, admin, auditor, employee, contractor) — DB override if present, else the hardcoded default.',
   })
-  @ApiParam({ name: 'name', description: 'Built-in role name', example: 'owner' })
+  @ApiParam({
+    name: 'name',
+    description: 'Built-in role name',
+    example: 'owner',
+  })
   @ApiResponse({
     status: 200,
     description: 'Effective obligations for the built-in role',
@@ -213,7 +217,11 @@ export class RolesController {
     description:
       'Override the obligations for a built-in role (e.g., turn off the compliance obligation for owners). Permissions stay sourced from the hardcoded defaults.',
   })
-  @ApiParam({ name: 'name', description: 'Built-in role name', example: 'owner' })
+  @ApiParam({
+    name: 'name',
+    description: 'Built-in role name',
+    example: 'owner',
+  })
   @ApiBody({ type: UpdateBuiltInObligationsDto })
   @ApiResponse({
     status: 200,
@@ -306,7 +314,8 @@ export class RolesController {
   @ApiResponse({ status: 404, description: 'Role not found' })
   @ApiResponse({
     status: 409,
-    description: 'Role was modified by another request since it was read. Retry the update.',
+    description:
+      'Role was modified by another request since it was read. Retry the update.',
   })
   async updateRole(
     @OrganizationId() organizationId: string,

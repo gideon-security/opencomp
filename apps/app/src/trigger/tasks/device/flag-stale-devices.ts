@@ -14,9 +14,7 @@ export const flagStaleDevices = schedules.task({
     threshold: Date;
     error?: string;
   }> => {
-    const threshold = new Date(
-      Date.now() - STALE_DEVICE_THRESHOLD_DAYS * MS_PER_DAY,
-    );
+    const threshold = new Date(Date.now() - STALE_DEVICE_THRESHOLD_DAYS * MS_PER_DAY);
 
     try {
       const result = await db.device.updateMany({

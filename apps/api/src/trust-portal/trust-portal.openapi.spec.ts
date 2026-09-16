@@ -121,8 +121,7 @@ describe('TrustPortalController OpenAPI request bodies (MCP contract)', () => {
     method: 'post' | 'put',
   ): JsonSchema | undefined => {
     const op = document.paths[routePath]?.[method] as
-      | OperationWithBody
-      | undefined;
+      OperationWithBody | undefined;
     return op?.requestBody?.content?.['application/json']?.schema;
   };
 

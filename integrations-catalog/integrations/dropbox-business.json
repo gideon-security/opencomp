@@ -8,20 +8,12 @@
   "authConfig": {
     "type": "oauth2",
     "config": {
-      "scopes": [
-        "team_info.read",
-        "members.read",
-        "sessions.list",
-        "events.read"
-      ],
+      "scopes": ["team_info.read", "members.read", "sessions.list", "events.read"],
       "clientAuthMethod": "body",
       "supportsRefreshToken": true
     }
   },
-  "capabilities": [
-    "checks",
-    "sync"
-  ],
+  "capabilities": ["checks", "sync"],
   "supportsMultipleConnections": false,
   "syncSupported": true,
   "checks": [

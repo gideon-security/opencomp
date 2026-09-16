@@ -122,9 +122,7 @@ export function OffboardingChecklist({
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-normal">{t('offboardingChecklist.title')}</h3>
-            <p className="text-sm text-muted-foreground">
-              {t('offboardingChecklist.description')}
-            </p>
+            <p className="text-sm text-muted-foreground">{t('offboardingChecklist.description')}</p>
           </div>
           <HStack gap="2" align="center">
             <Label htmlFor="show-remaining">
@@ -155,9 +153,7 @@ export function OffboardingChecklist({
           ))}
           {filteredItems.length === 0 && showOnlyRemaining && (
             <div className="rounded-lg border px-4 py-8 text-center">
-              <Text variant="muted">
-                {t('offboardingChecklist.allCompleted')}
-              </Text>
+              <Text variant="muted">{t('offboardingChecklist.allCompleted')}</Text>
             </div>
           )}
         </div>

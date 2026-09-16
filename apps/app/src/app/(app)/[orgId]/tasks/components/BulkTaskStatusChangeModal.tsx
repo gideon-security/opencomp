@@ -1,7 +1,7 @@
 'use client';
 
 import { SelectAssignee } from '@/components/SelectAssignee';
-import { Label, Textarea } from '@trycompai/design-system';
+import { Member, TaskStatus, User } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import {
   Dialog,
@@ -11,8 +11,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
-import { Member, TaskStatus, User } from '@db';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
+import { Label, Textarea } from '@trycompai/design-system';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -81,7 +87,9 @@ export function BulkTaskStatusChangeModal({
       if (needsApproval) {
         // Submit all tasks for review in a single bulk request
         const { submittedCount } = await bulkSubmitForReview(selectedTaskIds, approverId!);
-        toast.success(`${submittedCount} task${submittedCount === 1 ? '' : 's'} submitted for review`);
+        toast.success(
+          `${submittedCount} task${submittedCount === 1 ? '' : 's'} submitted for review`,
+        );
       } else {
         // Normal bulk status change using hook
         const reviewDate = status === TaskStatus.done ? new Date().toISOString() : undefined;
@@ -140,7 +148,8 @@ export function BulkTaskStatusChangeModal({
           {needsApproval && (
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                Evidence approval is enabled. Select an approver to review these tasks before they can be marked as done.
+                Evidence approval is enabled. Select an approver to review these tasks before they
+                can be marked as done.
               </p>
               <SelectAssignee
                 assigneeId={approverId}

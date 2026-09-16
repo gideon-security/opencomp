@@ -31,7 +31,10 @@ import { PermissionGuard } from '../auth/permission.guard';
 import { Public } from '../auth/public.decorator';
 import { RequirePermission } from '../auth/require-permission.decorator';
 import { SkipOrgCheck } from '../auth/skip-org-check.decorator';
-import type { AuthContext as AuthContextType, AuthenticatedRequest } from '../auth/types';
+import type {
+  AuthContext as AuthContextType,
+  AuthenticatedRequest,
+} from '../auth/types';
 import { DeviceAgentAuthService } from './device-agent-auth.service';
 import { DeviceAgentService } from './device-agent.service';
 import { AuthCodeDto } from './dto/auth-code.dto';
@@ -154,7 +157,11 @@ export class DeviceAgentController {
     if (!sessionId) {
       throw new UnauthorizedException('Session ID missing from request');
     }
-    return this.deviceAgentAuthService.registerDevice({ userId, sessionId, dto });
+    return this.deviceAgentAuthService.registerDevice({
+      userId,
+      sessionId,
+      dto,
+    });
   }
 
   @Post('check-in')

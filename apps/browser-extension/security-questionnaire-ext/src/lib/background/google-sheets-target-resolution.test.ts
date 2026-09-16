@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import {
-  parseSheetTargets,
-  resolveSheetTargets,
-} from './google-sheets-target-resolution';
 import type { QuestionQueueItem, TabQuestionQueue } from '../types';
+import { parseSheetTargets, resolveSheetTargets } from './google-sheets-target-resolution';
 
 describe('Google Sheets target resolution', () => {
   it('retargets a stale row by matching the selected question text', async () => {
@@ -19,10 +16,12 @@ describe('Google Sheets target resolution', () => {
         tag: 'sheets:B3->C3',
       }),
     ]);
-    const targets = parseSheetTargets([{
-      fieldId: 'sheet:7:3:3',
-      answer: 'Scoped and documented.',
-    }]);
+    const targets = parseSheetTargets([
+      {
+        fieldId: 'sheet:7:3:3',
+        answer: 'Scoped and documented.',
+      },
+    ]);
 
     const resolved = await resolveSheetTargets({
       queue,
@@ -33,13 +32,15 @@ describe('Google Sheets target resolution', () => {
       ],
     });
 
-    expect(resolved).toEqual([{
-      fieldId: 'sheet:7:3:3',
-      answer: 'Scoped and documented.',
-      gid: '7',
-      row: 4,
-      col: 3,
-    }]);
+    expect(resolved).toEqual([
+      {
+        fieldId: 'sheet:7:3:3',
+        answer: 'Scoped and documented.',
+        gid: '7',
+        row: 4,
+        col: 3,
+      },
+    ]);
   });
 
   it('throws when a question cannot be uniquely verified', async () => {
@@ -52,11 +53,17 @@ describe('Google Sheets target resolution', () => {
     ]);
     const targets = parseSheetTargets([{ fieldId: 'sheet:7:3:3', answer: 'Yes.' }]);
 
-    await expect(resolveSheetTargets({
-      queue,
-      targets,
-      readColumn: async () => ['Different question', 'Do you support SSO?', 'Do you support SSO?'],
-    })).rejects.toThrow('multiple times');
+    await expect(
+      resolveSheetTargets({
+        queue,
+        targets,
+        readColumn: async () => [
+          'Different question',
+          'Do you support SSO?',
+          'Do you support SSO?',
+        ],
+      }),
+    ).rejects.toThrow('multiple times');
   });
 });
 

@@ -212,9 +212,9 @@ describe('FrameworksService', () => {
     });
 
     it('should throw BadRequestException when no fields are provided', async () => {
-      await expect(
-        service.updateCustom('fi1', 'org_1', {}),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.updateCustom('fi1', 'org_1', {})).rejects.toThrow(
+        BadRequestException,
+      );
       expect(mockDb.frameworkInstance.findUnique).not.toHaveBeenCalled();
       expect(mockDb.customFramework.update).not.toHaveBeenCalled();
     });
@@ -299,7 +299,7 @@ describe('FrameworksService', () => {
       });
     });
 
-    it('orders an org\'s custom frameworks deterministically by name', async () => {
+    it("orders an org's custom frameworks deterministically by name", async () => {
       await service.findAvailable('org_1');
 
       expect(mockDb.customFramework.findMany).toHaveBeenCalledWith({
@@ -318,7 +318,7 @@ describe('FrameworksService', () => {
   // (which is always org-scoped) and a platform framework instance reads from
   // the global `frameworkEditorRequirement`. There is no shared table to leak.
   describe('custom-framework isolation', () => {
-    it('findOne on a custom FI reads only that org\'s custom requirements', async () => {
+    it("findOne on a custom FI reads only that org's custom requirements", async () => {
       (mockDb.frameworkInstance.findUnique as jest.Mock).mockResolvedValue({
         id: 'fi_custom',
         organizationId: 'org_A',
@@ -341,9 +341,7 @@ describe('FrameworksService', () => {
         where: { customFrameworkId: 'cfrm_A' },
         orderBy: { name: 'asc' },
       });
-      expect(
-        mockDb.frameworkEditorRequirement.findMany,
-      ).not.toHaveBeenCalled();
+      expect(mockDb.frameworkEditorRequirement.findMany).not.toHaveBeenCalled();
       expect(result.requirementDefinitions).toHaveLength(1);
     });
 

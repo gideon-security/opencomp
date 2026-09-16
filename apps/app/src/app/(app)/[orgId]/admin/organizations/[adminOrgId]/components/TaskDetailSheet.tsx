@@ -104,10 +104,7 @@ interface TaskDetails {
   integrationRuns: IntegrationRun[];
 }
 
-const STATUS_VARIANT: Record<
-  string,
-  'default' | 'secondary' | 'destructive' | 'outline'
-> = {
+const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
   todo: 'outline',
   in_progress: 'secondary',
   done: 'default',
@@ -115,9 +112,7 @@ const STATUS_VARIANT: Record<
 };
 
 export function formatLabel(value: string) {
-  return value
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return value.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export function formatDate(dateString: string): string {
@@ -189,9 +184,7 @@ export function TaskDetailSheet({
     <Sheet open={!!taskId} onOpenChange={handleOpenChange}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>
-            {loading ? 'Loading...' : (details?.title ?? 'Task Details')}
-          </SheetTitle>
+          <SheetTitle>{loading ? 'Loading...' : (details?.title ?? 'Task Details')}</SheetTitle>
         </SheetHeader>
         <SheetBody>
           {loading ? (
@@ -233,9 +226,7 @@ function TaskOverview({ details }: { details: TaskDetails }) {
         {details.department && details.department !== 'none' && (
           <Badge variant="outline">{formatLabel(details.department)}</Badge>
         )}
-        {details.frequency && (
-          <Badge variant="outline">{formatLabel(details.frequency)}</Badge>
-        )}
+        {details.frequency && <Badge variant="outline">{formatLabel(details.frequency)}</Badge>}
       </div>
 
       {details.description && (
@@ -260,9 +251,7 @@ function TaskOverview({ details }: { details: TaskDetails }) {
         {details.controls.length > 0 && (
           <div className="col-span-2">
             <span className="text-muted-foreground">Controls: </span>
-            <span className="font-medium">
-              {details.controls.map((c) => c.name).join(', ')}
-            </span>
+            <span className="font-medium">{details.controls.map((c) => c.name).join(', ')}</span>
           </div>
         )}
       </div>

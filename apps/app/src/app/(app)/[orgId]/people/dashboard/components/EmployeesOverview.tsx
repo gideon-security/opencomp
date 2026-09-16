@@ -1,6 +1,6 @@
 import { filterComplianceMembers } from '@/lib/compliance';
-import { trainingVideos as trainingVideosData } from '@/lib/data/training-videos';
 import { HIPAA_TRAINING_ID } from '@/lib/data/hipaa-training-content';
+import { trainingVideos as trainingVideosData } from '@/lib/data/training-videos';
 import { auth } from '@/utils/auth';
 import type { EmployeeTrainingVideoCompletion, Member, Organization, Policy, User } from '@db';
 import { db } from '@db/server';

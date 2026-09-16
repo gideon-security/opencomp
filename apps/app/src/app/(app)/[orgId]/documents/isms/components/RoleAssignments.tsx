@@ -12,10 +12,7 @@ import {
 import { useMemo, useState } from 'react';
 import type { IsmsRole } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
-import {
-  RoleAssignmentRow,
-  type AssignmentCompetenceUpdate,
-} from './RoleAssignmentRow';
+import { RoleAssignmentRow, type AssignmentCompetenceUpdate } from './RoleAssignmentRow';
 import { IsmsFieldLabel } from './shared';
 
 interface RoleAssignmentsProps {
@@ -23,10 +20,7 @@ interface RoleAssignmentsProps {
   canEdit: boolean;
   memberOptions: ApproverOption[];
   onAddAssignment: (memberId: string) => Promise<void>;
-  onUpdateAssignment: (
-    assignmentId: string,
-    update: AssignmentCompetenceUpdate,
-  ) => Promise<void>;
+  onUpdateAssignment: (assignmentId: string, update: AssignmentCompetenceUpdate) => Promise<void>;
   onRemoveAssignment: (assignmentId: string) => Promise<void>;
 }
 
@@ -47,9 +41,7 @@ export function RoleAssignments({
   }, [memberOptions]);
 
   const assignedIds = new Set(role.assignments.map((a) => a.memberId));
-  const availableMembers = memberOptions.filter(
-    (option) => !assignedIds.has(option.id),
-  );
+  const availableMembers = memberOptions.filter((option) => !assignedIds.has(option.id));
 
   const handleAdd = (memberId: string | null | undefined) => {
     if (!memberId) return;
@@ -73,9 +65,7 @@ export function RoleAssignments({
               <RoleAssignmentRow
                 key={assignment.id}
                 assignment={assignment}
-                memberName={
-                  memberNameById[assignment.memberId] ?? assignment.memberId
-                }
+                memberName={memberNameById[assignment.memberId] ?? assignment.memberId}
                 canEdit={canEdit}
                 onUpdate={(update) => onUpdateAssignment(assignment.id, update)}
                 onRemove={() => onRemoveAssignment(assignment.id)}

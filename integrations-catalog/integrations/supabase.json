@@ -11,9 +11,7 @@
       "setupInstructions": "1. Go to https://supabase.com/dashboard/account/tokens\n2. Click Generate New Token\n3. Give it a name (e.g. CompAI)\n4. Copy the token and paste it below\n\nImportant: Use a Management API access token, not your project anon or service key."
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

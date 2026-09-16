@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -119,12 +119,7 @@ vi.mock('@gideon-defender/ui/button', () => ({
     size?: string;
     className?: string;
   }) => (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      data-variant={variant}
-      {...props}
-    >
+    <button onClick={onClick} disabled={disabled} data-variant={variant} {...props}>
       {children}
     </button>
   ),
@@ -135,31 +130,16 @@ vi.mock('@gideon-defender/ui/combobox-dropdown', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/dialog', () => ({
-  Dialog: ({
-    children,
-    open,
-  }: {
-    children: React.ReactNode;
-    open: boolean;
-  }) => (open ? <div data-testid="dialog">{children}</div> : null),
-  DialogContent: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => <div>{children}</div>,
-  DialogDescription: ({ children }: { children: React.ReactNode }) => (
-    <p>{children}</p>
-  ),
-  DialogHeader: ({ children }: { children: React.ReactNode }) => (
+  Dialog: ({ children, open }: { children: React.ReactNode; open: boolean }) =>
+    open ? <div data-testid="dialog">{children}</div> : null,
+  DialogContent: ({ children }: { children: React.ReactNode; className?: string }) => (
     <div>{children}</div>
   ),
-  DialogTitle: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => <h2>{children}</h2>,
+  DialogDescription: ({ children }: { children: React.ReactNode }) => <p>{children}</p>,
+  DialogHeader: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogTitle: ({ children }: { children: React.ReactNode; className?: string }) => (
+    <h2>{children}</h2>
+  ),
 }));
 
 vi.mock('@gideon-defender/ui/input', () => ({
@@ -167,12 +147,9 @@ vi.mock('@gideon-defender/ui/input', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/label', () => ({
-  Label: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    htmlFor?: string;
-  }) => <label>{children}</label>,
+  Label: ({ children }: { children: React.ReactNode; htmlFor?: string }) => (
+    <label>{children}</label>
+  ),
 }));
 
 vi.mock('@gideon-defender/ui/multiple-selector', () => ({
@@ -180,18 +157,10 @@ vi.mock('@gideon-defender/ui/multiple-selector', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/select', () => ({
-  Select: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  SelectContent: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  SelectItem: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  SelectTrigger: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
+  Select: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SelectContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SelectItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SelectTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   SelectValue: () => <span />,
 }));
 
@@ -276,9 +245,7 @@ describe('ConnectIntegrationDialog permission gating', () => {
   it('always shows connection info regardless of permissions', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<ConnectIntegrationDialog {...defaultProps} />);
-    expect(
-      screen.getByText('Amazon Web Services Connections'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Amazon Web Services Connections')).toBeInTheDocument();
     expect(screen.getByText('AWS Production')).toBeInTheDocument();
   });
 

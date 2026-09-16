@@ -10,10 +10,7 @@ import { resolvePath } from './expression-evaluator';
  *
  * Unresolved variables are left as empty strings.
  */
-export function interpolate(
-  template: string,
-  scope: Record<string, unknown>,
-): string {
+export function interpolate(template: string, scope: Record<string, unknown>): string {
   // [^{}] (not [^}]) keeps the quantifier unambiguous — CodeQL
   // js/polynomial-redos: `{{{{…` runs would backtrack quadratically with
   // [^}]+. Placeholder paths never contain braces.

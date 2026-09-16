@@ -12,8 +12,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@trycompai/design-system';
-import { useQueryState } from 'nuqs';
 import { useTranslations } from 'next-intl';
+import { useQueryState } from 'nuqs';
 import { useCallback, useEffect, useState } from 'react';
 
 export function CreateVendorTaskSheet() {
@@ -41,7 +41,9 @@ export function CreateVendorTaskSheet() {
           <SheetHeader>
             <SheetTitle>{t('task.createVendorTask')}</SheetTitle>
           </SheetHeader>
-          <SheetBody>{/* <CreateVendorTaskForm assignees={assignees} onSuccess={handleSuccess} /> */}</SheetBody>
+          <SheetBody>
+            {/* <CreateVendorTaskForm assignees={assignees} onSuccess={handleSuccess} /> */}
+          </SheetBody>
         </SheetContent>
       </Sheet>
     );
@@ -53,7 +55,9 @@ export function CreateVendorTaskSheet() {
         <DrawerHeader>
           <DrawerTitle>{t('task.createVendorTask')}</DrawerTitle>
         </DrawerHeader>
-        <div className="p-4">{/* <CreateVendorTaskForm assignees={assignees} onSuccess={handleSuccess} /> */}</div>
+        <div className="p-4">
+          {/* <CreateVendorTaskForm assignees={assignees} onSuccess={handleSuccess} /> */}
+        </div>
       </DrawerContent>
     </Drawer>
   );

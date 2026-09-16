@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { detectSheetQuestions, tableToQuestions } from './sheets-detection';
 import type { SheetMapping } from '../types';
+import { detectSheetQuestions, tableToQuestions } from './sheets-detection';
 
 describe('Google Sheets mapped detection', () => {
   it('rescans saved sheet columns when the stored start row skips contiguous rows', () => {
@@ -52,10 +52,7 @@ describe('Google Sheets mapped detection', () => {
       },
     });
 
-    expect(questions.map((question) => question.tag)).toEqual([
-      'sheets:B4->C4',
-      'sheets:B5->C5',
-    ]);
+    expect(questions.map((question) => question.tag)).toEqual(['sheets:B4->C4', 'sheets:B5->C5']);
   });
 
   it('accepts short statement-style rows under a saved open-ended mapping', () => {
@@ -79,10 +76,7 @@ describe('Google Sheets mapped detection', () => {
     });
 
     expect(questions.map((question) => question.question)).toEqual(['MFA', 'SCIM']);
-    expect(questions.map((question) => question.tag)).toEqual([
-      'sheets:B3->C3',
-      'sheets:B4->C4',
-    ]);
+    expect(questions.map((question) => question.tag)).toEqual(['sheets:B3->C3', 'sheets:B4->C4']);
   });
 
   it('uses explicit finite sheet mapping for custom columns and rows', () => {

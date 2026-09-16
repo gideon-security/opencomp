@@ -1,10 +1,10 @@
 'use client';
 
-import { apiClient } from '@/lib/api-client';
 import { usePermissions } from '@/hooks/use-permissions';
+import { apiClient } from '@/lib/api-client';
 import { isJSON } from '@/lib/utils';
-import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import type { Context } from '@db';
+import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -494,13 +494,7 @@ function CreateContextSheetLocal({
   );
 }
 
-export const ContextTable = ({
-  entries,
-  pageCount,
-}: {
-  entries: Context[];
-  pageCount: number;
-}) => {
+export const ContextTable = ({ entries, pageCount }: { entries: Context[]; pageCount: number }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -566,8 +560,7 @@ export const ContextTable = ({
           onPageChange: (page) => updateSearchParams({ page: String(page) }),
           pageSize: perPage,
           pageSizeOptions: [25, 50, 100],
-          onPageSizeChange: (size) =>
-            updateSearchParams({ perPage: String(size), page: '1' }),
+          onPageSizeChange: (size) => updateSearchParams({ perPage: String(size), page: '1' }),
         }}
       >
         <TableHeader>

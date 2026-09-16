@@ -34,9 +34,7 @@ export function RemediationSection({ remediation }: RemediationSectionProps) {
       </div>
       <div className="space-y-2.5 px-3 py-3 text-xs">
         {parsed.steps && (
-          <p className="text-foreground/80 leading-relaxed whitespace-pre-line">
-            {parsed.steps}
-          </p>
+          <p className="text-foreground/80 leading-relaxed whitespace-pre-line">{parsed.steps}</p>
         )}
         {safeReferenceUrl && (
           <a

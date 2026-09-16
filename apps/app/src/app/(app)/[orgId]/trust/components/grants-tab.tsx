@@ -27,7 +27,8 @@ export function GrantsTab({ orgId }: { orgId: string }) {
     { value: 'expired', label: 'Expired' },
   ];
 
-  const selectedStatusLabel = statusOptions.find((opt) => opt.value === status)?.label ?? 'Filter status';
+  const selectedStatusLabel =
+    statusOptions.find((opt) => opt.value === status)?.label ?? 'Filter status';
 
   const handleResendAccess = (grantId: string) => {
     toast.promise(resendAccessEmail(grantId), {
@@ -57,9 +58,7 @@ export function GrantsTab({ orgId }: { orgId: string }) {
         </div>
         <div className="w-[200px]">
           <Select value={status} onValueChange={(value) => setStatus(value ?? 'all')}>
-            <SelectTrigger>
-              {selectedStatusLabel}
-            </SelectTrigger>
+            <SelectTrigger>{selectedStatusLabel}</SelectTrigger>
             <SelectContent>
               {statusOptions.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
@@ -84,4 +83,3 @@ export function GrantsTab({ orgId }: { orgId: string }) {
     </Stack>
   );
 }
-

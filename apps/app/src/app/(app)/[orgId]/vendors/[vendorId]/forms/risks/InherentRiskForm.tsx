@@ -2,14 +2,21 @@
 
 import { usePermissions } from '@/hooks/use-permissions';
 import { useVendorActions } from '@/hooks/use-vendors';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
 import { Impact, Likelihood } from '@db';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@gideon-defender/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Select, SelectItem, Stack } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
 import { useQueryState } from 'nuqs';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
@@ -85,11 +92,19 @@ export function InherentRiskForm({
                 <FormLabel>{t('risk.inherentProbability')}</FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectItem value={Likelihood.very_likely}>{t('risk.likelihoodVeryLikely')}</SelectItem>
+                    <SelectItem value={Likelihood.very_likely}>
+                      {t('risk.likelihoodVeryLikely')}
+                    </SelectItem>
                     <SelectItem value={Likelihood.likely}>{t('risk.likelihoodLikely')}</SelectItem>
-                    <SelectItem value={Likelihood.possible}>{t('risk.likelihoodPossible')}</SelectItem>
-                    <SelectItem value={Likelihood.unlikely}>{t('risk.likelihoodUnlikely')}</SelectItem>
-                    <SelectItem value={Likelihood.very_unlikely}>{t('risk.likelihoodVeryUnlikely')}</SelectItem>
+                    <SelectItem value={Likelihood.possible}>
+                      {t('risk.likelihoodPossible')}
+                    </SelectItem>
+                    <SelectItem value={Likelihood.unlikely}>
+                      {t('risk.likelihoodUnlikely')}
+                    </SelectItem>
+                    <SelectItem value={Likelihood.very_unlikely}>
+                      {t('risk.likelihoodVeryUnlikely')}
+                    </SelectItem>
                   </Select>
                 </FormControl>
                 <FormMessage />
@@ -105,7 +120,9 @@ export function InherentRiskForm({
                 <FormLabel>{t('risk.inherentImpact')}</FormLabel>
                 <FormControl>
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectItem value={Impact.insignificant}>{t('risk.impactInsignificant')}</SelectItem>
+                    <SelectItem value={Impact.insignificant}>
+                      {t('risk.impactInsignificant')}
+                    </SelectItem>
                     <SelectItem value={Impact.minor}>{t('risk.impactMinor')}</SelectItem>
                     <SelectItem value={Impact.moderate}>{t('risk.impactModerate')}</SelectItem>
                     <SelectItem value={Impact.major}>{t('risk.impactMajor')}</SelectItem>
@@ -118,7 +135,9 @@ export function InherentRiskForm({
           />
 
           <div className="flex justify-end pt-4">
-            <Button type="submit" disabled={isSubmitting || !hasPermission('vendor', 'update')}>{tCommon('common.save')}</Button>
+            <Button type="submit" disabled={isSubmitting || !hasPermission('vendor', 'update')}>
+              {tCommon('common.save')}
+            </Button>
           </div>
         </Stack>
       </form>

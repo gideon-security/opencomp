@@ -1,17 +1,17 @@
 'use client';
 
-import { Badge, Button, Spinner, Text } from '@trycompai/design-system';
-import { CheckmarkOutline } from '@trycompai/design-system/icons';
-import type { Impact, Likelihood } from '@db';
-import { useState } from 'react';
-import { toast } from 'sonner';
 import {
   useAcceptances,
   type AcceptanceSubjectKind,
   type RiskAcceptanceEvent,
 } from '@/hooks/use-risk-acceptances';
-import { getRiskLevelFromScore, getRiskScore, LEVEL_LABEL } from '@/lib/risk-score';
 import { formatDateShort as formatDate } from '@/lib/format';
+import { getRiskLevelFromScore, getRiskScore, LEVEL_LABEL } from '@/lib/risk-score';
+import type { Impact, Likelihood } from '@db';
+import { Badge, Button, Spinner, Text } from '@trycompai/design-system';
+import { CheckmarkOutline } from '@trycompai/design-system/icons';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { RecordAcceptanceDialog, type AcceptorOption } from './RecordAcceptanceDialog';
 
 interface ResidualAcceptanceCardProps {
@@ -27,8 +27,6 @@ interface ResidualAcceptanceCardProps {
   /** Gate: risk:update / vendor:update. */
   canUpdate: boolean;
 }
-
-
 
 function AcceptanceHistoryRow({ event, stale }: { event: RiskAcceptanceEvent; stale: boolean }) {
   return (
@@ -67,17 +65,14 @@ export function ResidualAcceptanceCard({
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const currentLevelLabel =
-    LEVEL_LABEL[
-      getRiskLevelFromScore(getRiskScore(residualLikelihood, residualImpact).score)
-    ];
+    LEVEL_LABEL[getRiskLevelFromScore(getRiskScore(residualLikelihood, residualImpact).score)];
   const subjectLabel = kind === 'risk' ? 'risk' : "vendor's risk";
   // Stale is derived CLIENT-side from the frozen rating on each event vs the
   // live residual props (which the risk/vendor SWR keeps fresh) — the cached
   // acceptance list can't go stale-blind when the residual changes while the
   // page is open. The server computes the same flag for other consumers.
   const isEventStale = (event: RiskAcceptanceEvent) =>
-    event.residualLikelihood !== residualLikelihood ||
-    event.residualImpact !== residualImpact;
+    event.residualLikelihood !== residualLikelihood || event.residualImpact !== residualImpact;
   const latestStale = latest ? isEventStale(latest) : false;
 
   const handleRecord = async (input: Parameters<typeof recordAcceptance>[0]) => {
@@ -140,8 +135,8 @@ export function ResidualAcceptanceCard({
           </Text>
           {latestStale && (
             <Text variant="muted">
-              The residual level has changed to {currentLevelLabel} since this acceptance — record
-              a fresh acceptance. Previous acceptances are kept in the history below.
+              The residual level has changed to {currentLevelLabel} since this acceptance — record a
+              fresh acceptance. Previous acceptances are kept in the history below.
             </Text>
           )}
         </div>

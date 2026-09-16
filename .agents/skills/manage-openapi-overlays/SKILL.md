@@ -10,10 +10,10 @@ Overlays let you customize an OpenAPI spec for SDK generation without modifying 
 
 ## Content Guides
 
-| Topic | Guide |
-|-------|-------|
-| OpenAPI Validation | [content/validation.md](content/validation.md) |
-| Security Schemes | [content/security-schemes.md](content/security-schemes.md) |
+| Topic              | Guide                                                      |
+| ------------------ | ---------------------------------------------------------- |
+| OpenAPI Validation | [content/validation.md](content/validation.md)             |
+| Security Schemes   | [content/security-schemes.md](content/security-schemes.md) |
 
 These guides cover validating specs, fixing common issues, and configuring authentication methods.
 
@@ -37,18 +37,18 @@ Use this skill when you need to **manually work with overlay files**:
 
 ## Inputs
 
-| Input | Required | Description |
-|-------|----------|-------------|
-| Target spec | Yes | OpenAPI spec to customize or fix |
-| Customizations | Depends | Changes to apply (groups, names, retries, descriptions) |
-| Overlay file | Depends | Existing overlay to apply (for apply workflow) |
-| Lint output | Helpful | Validation errors to fix (for fix workflow) |
+| Input          | Required | Description                                             |
+| -------------- | -------- | ------------------------------------------------------- |
+| Target spec    | Yes      | OpenAPI spec to customize or fix                        |
+| Customizations | Depends  | Changes to apply (groups, names, retries, descriptions) |
+| Overlay file   | Depends  | Existing overlay to apply (for apply workflow)          |
+| Lint output    | Helpful  | Validation errors to fix (for fix workflow)             |
 
 ## Outputs
 
-| Output | Description |
-|--------|-------------|
-| Overlay file | YAML file with JSONPath-targeted changes |
+| Output        | Description                              |
+| ------------- | ---------------------------------------- |
+| Overlay file  | YAML file with JSONPath-targeted changes |
 | Modified spec | Transformed OpenAPI spec (when applying) |
 
 ## Commands
@@ -150,15 +150,15 @@ Overlays are applied in order. Later overlays can override earlier ones. This ap
 
 Use overlays to fix validation issues when you cannot edit the source spec.
 
-| Issue | Overlay Fix |
-|-------|-------------|
-| Poor operation names | Add `x-speakeasy-name-override` to the operation |
-| Missing descriptions | Add `summary` or `description` to the operation |
-| Missing tags | Add `tags` array to the operation |
-| Need operation grouping | Add `x-speakeasy-group` to operations |
-| Need retry config | Add `x-speakeasy-retries` to operations or globally |
-| Deprecate an endpoint | Add `deprecated: true` to the operation |
-| Add SDK-specific metadata | Add any `x-speakeasy-*` extension |
+| Issue                     | Overlay Fix                                         |
+| ------------------------- | --------------------------------------------------- |
+| Poor operation names      | Add `x-speakeasy-name-override` to the operation    |
+| Missing descriptions      | Add `summary` or `description` to the operation     |
+| Missing tags              | Add `tags` array to the operation                   |
+| Need operation grouping   | Add `x-speakeasy-group` to operations               |
+| Need retry config         | Add `x-speakeasy-retries` to operations or globally |
+| Deprecate an endpoint     | Add `deprecated: true` to the operation             |
+| Add SDK-specific metadata | Add any `x-speakeasy-*` extension                   |
 
 ### Fix Workflow
 
@@ -178,36 +178,37 @@ speakeasy run --output console
 
 Extensions (`x-speakeasy-*`) customize SDK generation. Apply them via overlays.
 
-| Extension | Applies To | Purpose |
-|-----------|-----------|---------|
-| `x-speakeasy-retries` | Operation or root | Configure retry behavior |
-| `x-speakeasy-pagination` | Operation | Enable automatic pagination |
-| `x-speakeasy-name-override` | Operation | Override SDK method name |
-| `x-speakeasy-group` | Operation | Group methods under namespace |
-| `x-speakeasy-unknown-values` | Schema with enum | Allow unknown enum values |
-| `x-speakeasy-globals` | Root | Define SDK-wide parameters |
-| `x-speakeasy-custom-security-scheme` | Security scheme | Multi-part custom auth |
+| Extension                            | Applies To        | Purpose                       |
+| ------------------------------------ | ----------------- | ----------------------------- |
+| `x-speakeasy-retries`                | Operation or root | Configure retry behavior      |
+| `x-speakeasy-pagination`             | Operation         | Enable automatic pagination   |
+| `x-speakeasy-name-override`          | Operation         | Override SDK method name      |
+| `x-speakeasy-group`                  | Operation         | Group methods under namespace |
+| `x-speakeasy-unknown-values`         | Schema with enum  | Allow unknown enum values     |
+| `x-speakeasy-globals`                | Root              | Define SDK-wide parameters    |
+| `x-speakeasy-custom-security-scheme` | Security scheme   | Multi-part custom auth        |
 
 ### Retries
 
 ```yaml
 actions:
-  - target: "$.paths['/resources'].get"  # Or "$" for global
+  - target: "$.paths['/resources'].get" # Or "$" for global
     update:
       x-speakeasy-retries:
         strategy: backoff
         backoff:
-          initialInterval: 500      # ms
-          maxInterval: 60000        # ms
-          maxElapsedTime: 3600000   # ms
+          initialInterval: 500 # ms
+          maxInterval: 60000 # ms
+          maxElapsedTime: 3600000 # ms
           exponent: 1.5
-        statusCodes: ["5XX", "429"]
+        statusCodes: ['5XX', '429']
         retryConnectionErrors: true
 ```
 
 ### Pagination
 
 **Offset/Limit:**
+
 ```yaml
 actions:
   - target: "$.paths['/users'].get"
@@ -227,6 +228,7 @@ actions:
 ```
 
 **Cursor:**
+
 ```yaml
 actions:
   - target: "$.paths['/events'].get"
@@ -248,12 +250,13 @@ Prevent SDK breakage when APIs return new enum values:
 
 ```yaml
 actions:
-  - target: "$.components.schemas.Status"
+  - target: '$.components.schemas.Status'
     update:
       x-speakeasy-unknown-values: allow
 ```
 
 For all enums (add `x-speakeasy-jsonpath: rfc9535` at overlay root):
+
 ```yaml
 actions:
   - target: $..[?length(@.enum) > 1]
@@ -271,7 +274,7 @@ actions:
     update:
       x-speakeasy-globals:
         parameters:
-          - $ref: "#/components/parameters/TenantId"
+          - $ref: '#/components/parameters/TenantId'
   - target: $.components
     update:
       parameters:
@@ -314,16 +317,16 @@ With `envVarPrefix: MYAPI` in gen.yaml, generates env var support for `MYAPI_KEY
 
 ## JSONPath Targeting Reference
 
-| Target | Selects |
-|--------|---------|
-| `$.paths['/users'].get` | GET /users operation |
-| `$.paths['/users/{id}'].*` | All operations on /users/{id} |
-| `$.paths['/users'].get.parameters[0]` | First parameter of GET /users |
-| `$.components.schemas.User` | User schema definition |
-| `$.components.schemas.User.properties.name` | Name property of User schema |
-| `$.info` | API info object |
-| `$.info.title` | API title |
-| `$.servers[0]` | First server entry |
+| Target                                      | Selects                       |
+| ------------------------------------------- | ----------------------------- |
+| `$.paths['/users'].get`                     | GET /users operation          |
+| `$.paths['/users/{id}'].*`                  | All operations on /users/{id} |
+| `$.paths['/users'].get.parameters[0]`       | First parameter of GET /users |
+| `$.components.schemas.User`                 | User schema definition        |
+| `$.components.schemas.User.properties.name` | Name property of User schema  |
+| `$.info`                                    | API info object               |
+| `$.info.title`                              | API title                     |
+| `$.servers[0]`                              | First server entry            |
 
 ## What NOT to Do
 
@@ -337,15 +340,15 @@ With `envVarPrefix: MYAPI` in gen.yaml, generates env var support for `MYAPI_KEY
 
 ## Troubleshooting
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| "target not found" | JSONPath does not match spec structure | Verify exact path and casing by inspecting the spec |
-| Changes not applied | Overlay not in workflow | Add overlay to `sources.overlays` in `workflow.yaml` |
-| "invalid overlay" | Malformed YAML | Check overlay structure: needs `overlay`, `info`, `actions` |
-| YAML parse error | Invalid overlay syntax | Check YAML indentation and quoting |
-| No changes visible | Wrong target path | Use `$.paths['/exact-path']` with exact casing |
-| Errors persist after overlay | Issue not overlay-appropriate | Check if the issue requires a source spec fix instead |
-| Overlay order conflict | Later overlay overrides earlier | Reorder overlays in `workflow.yaml` or merge into one file |
+| Error                        | Cause                                  | Solution                                                    |
+| ---------------------------- | -------------------------------------- | ----------------------------------------------------------- |
+| "target not found"           | JSONPath does not match spec structure | Verify exact path and casing by inspecting the spec         |
+| Changes not applied          | Overlay not in workflow                | Add overlay to `sources.overlays` in `workflow.yaml`        |
+| "invalid overlay"            | Malformed YAML                         | Check overlay structure: needs `overlay`, `info`, `actions` |
+| YAML parse error             | Invalid overlay syntax                 | Check YAML indentation and quoting                          |
+| No changes visible           | Wrong target path                      | Use `$.paths['/exact-path']` with exact casing              |
+| Errors persist after overlay | Issue not overlay-appropriate          | Check if the issue requires a source spec fix instead       |
+| Overlay order conflict       | Later overlay overrides earlier        | Reorder overlays in `workflow.yaml` or merge into one file  |
 
 ## After Making Changes
 

@@ -29,9 +29,9 @@ import {
 } from 'nuqs';
 import * as React from 'react';
 
-import { useDebouncedCallback } from '@gideon-defender/ui/hooks/use-debounced-callback';
 import { getSortingStateParser } from '@/lib/parsers';
 import type { ExtendedColumnSort } from '@/types/data-table';
+import { useDebouncedCallback } from '@gideon-defender/ui/hooks/use-debounced-callback';
 
 const PAGE_KEY = 'page';
 const PER_PAGE_KEY = 'perPage';
@@ -41,7 +41,8 @@ const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
 
 interface UseDataTableProps<TData>
-  extends Omit<
+  extends
+    Omit<
       TableOptions<TData>,
       | 'state'
       | 'pageCount'

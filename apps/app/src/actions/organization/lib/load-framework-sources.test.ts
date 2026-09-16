@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { loadFrameworkSources } from './load-framework-sources';
 
 // loadFrameworkSources operates purely on the injected `tx`; its only @db/server
@@ -52,7 +52,14 @@ function fullManifest(): TestManifest {
       },
     ],
     policies: [
-      { id: 'pt_live', name: 'Policy', description: null, content: [], frequency: null, department: null },
+      {
+        id: 'pt_live',
+        name: 'Policy',
+        description: null,
+        content: [],
+        frequency: null,
+        department: null,
+      },
     ],
     tasks: [{ id: 'tt_live', name: 'Task', description: 'd', frequency: null, department: null }],
   };
@@ -96,7 +103,13 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
   it('drops a manifest TASK whose live template was hard-deleted (the reported Task_taskTemplateId_fkey bug)', async () => {
     const m = fullManifest();
     m.controls[0].taskIds = ['tt_live', 'tt_dead'];
-    m.tasks.push({ id: 'tt_dead', name: 'Deleted Task', description: 'd', frequency: null, department: null });
+    m.tasks.push({
+      id: 'tt_dead',
+      name: 'Deleted Task',
+      description: 'd',
+      frequency: null,
+      department: null,
+    });
 
     const tx = mockTx({
       versions: [{ id: 'fv_1', frameworkId: 'frk_pci', manifest: m }],
@@ -106,7 +119,11 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
       liveRequirementIds: ['req_live'],
     });
 
-    const result = await loadFrameworkSources({ frameworkEditorIds, frameworkEditorFrameworks: [], tx });
+    const result = await loadFrameworkSources({
+      frameworkEditorIds,
+      frameworkEditorFrameworks: [],
+      tx,
+    });
 
     expect(ids(result.taskTemplates)).toEqual(['tt_live']);
   });
@@ -131,7 +148,11 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
       liveRequirementIds: ['req_live'],
     });
 
-    const result = await loadFrameworkSources({ frameworkEditorIds, frameworkEditorFrameworks: [], tx });
+    const result = await loadFrameworkSources({
+      frameworkEditorIds,
+      frameworkEditorFrameworks: [],
+      tx,
+    });
 
     expect(ids(result.controlTemplates)).toEqual(['ct_live']);
   });
@@ -156,7 +177,11 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
       liveRequirementIds: ['req_live'],
     });
 
-    const result = await loadFrameworkSources({ frameworkEditorIds, frameworkEditorFrameworks: [], tx });
+    const result = await loadFrameworkSources({
+      frameworkEditorIds,
+      frameworkEditorFrameworks: [],
+      tx,
+    });
 
     expect(ids(result.policyTemplates)).toEqual(['pt_live']);
   });
@@ -164,7 +189,12 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
   it('drops a dead REQUIREMENT from groupedRelations (RequirementMap.requirementId has no downstream guard)', async () => {
     const m = fullManifest();
     m.controls[0].requirementIds = ['req_live', 'req_dead'];
-    m.requirements.push({ id: 'req_dead', identifier: 'R2', name: 'Deleted Req', description: null });
+    m.requirements.push({
+      id: 'req_dead',
+      identifier: 'R2',
+      name: 'Deleted Req',
+      description: null,
+    });
 
     const tx = mockTx({
       versions: [{ id: 'fv_1', frameworkId: 'frk_pci', manifest: m }],
@@ -174,7 +204,11 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
       liveRequirementIds: ['req_live'], // req_dead absent
     });
 
-    const result = await loadFrameworkSources({ frameworkEditorIds, frameworkEditorFrameworks: [], tx });
+    const result = await loadFrameworkSources({
+      frameworkEditorIds,
+      frameworkEditorFrameworks: [],
+      tx,
+    });
 
     const rel = result.groupedRelations.find((r) => r.controlTemplateId === 'ct_live');
     expect(rel?.requirementTemplateIds).toEqual(['req_live']);
@@ -189,7 +223,11 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
       liveRequirementIds: ['req_live'],
     });
 
-    const result = await loadFrameworkSources({ frameworkEditorIds, frameworkEditorFrameworks: [], tx });
+    const result = await loadFrameworkSources({
+      frameworkEditorIds,
+      frameworkEditorFrameworks: [],
+      tx,
+    });
 
     expect(ids(result.controlTemplates)).toEqual(['ct_live']);
     expect(ids(result.policyTemplates)).toEqual(['pt_live']);

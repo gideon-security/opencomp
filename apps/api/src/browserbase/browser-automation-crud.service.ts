@@ -192,7 +192,9 @@ export class BrowserAutomationCrudService {
     // first step so the two representations stay consistent.
     const stepPatch = {
       ...(rest.targetUrl !== undefined ? { targetUrl: rest.targetUrl } : {}),
-      ...(rest.instruction !== undefined ? { instruction: rest.instruction } : {}),
+      ...(rest.instruction !== undefined
+        ? { instruction: rest.instruction }
+        : {}),
       ...(evaluationCriteria !== undefined
         ? { evaluationCriteria: normalizeCriteria(evaluationCriteria) }
         : {}),
@@ -287,18 +289,29 @@ export class BrowserAutomationCrudService {
       },
     });
     if (!run) return null;
-    if (organizationId && run.automation.task.organizationId !== organizationId) {
+    if (
+      organizationId &&
+      run.automation.task.organizationId !== organizationId
+    ) {
       return null;
     }
     return this.presignRun(run);
   }
 
-  async getAutomationsWithPresignedUrls(taskId: string, organizationId?: string) {
-    const automations = await this.getBrowserAutomationsForTask(taskId, organizationId);
+  async getAutomationsWithPresignedUrls(
+    taskId: string,
+    organizationId?: string,
+  ) {
+    const automations = await this.getBrowserAutomationsForTask(
+      taskId,
+      organizationId,
+    );
     return Promise.all(
       automations.map(async (automation) => ({
         ...automation,
-        runs: await Promise.all(automation.runs.map((run) => this.presignRun(run))),
+        runs: await Promise.all(
+          automation.runs.map((run) => this.presignRun(run)),
+        ),
       })),
     );
   }
@@ -322,7 +335,9 @@ export class BrowserAutomationCrudService {
     return this.getRunWithPresignedUrl(runId, organizationId);
   }
 
-  private hideCrossOrgAutomation<T extends { task: { organizationId: string } }>({
+  private hideCrossOrgAutomation<
+    T extends { task: { organizationId: string } },
+  >({
     automation,
     organizationId,
   }: {

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { api } from '@/lib/api-client';
 import type { AdminTimelinePhaseTemplate } from '@/hooks/use-admin-timelines';
+import { api } from '@/lib/api-client';
 import { Button, Section, Text } from '@trycompai/design-system';
 import { Add, GroupObjects } from '@trycompai/design-system/icons';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { PhaseCard } from './PhaseCard';
 import { PhaseGroupCard } from './PhaseGroupCard';
 
@@ -17,9 +17,7 @@ const GROUP_COLORS = [
   'var(--chart-5)',
 ];
 
-function getGroupColorMap(
-  phases: AdminTimelinePhaseTemplate[],
-): Record<string, string> {
+function getGroupColorMap(phases: AdminTimelinePhaseTemplate[]): Record<string, string> {
   const labels = new Set<string>();
   for (const p of phases) {
     if (p.groupLabel) labels.add(p.groupLabel);
@@ -37,9 +35,7 @@ type PhaseListEntry =
   | { type: 'ungrouped'; phase: AdminTimelinePhaseTemplate }
   | { type: 'group'; label: string; phases: AdminTimelinePhaseTemplate[] };
 
-function buildPhaseEntries(
-  phases: AdminTimelinePhaseTemplate[],
-): PhaseListEntry[] {
+function buildPhaseEntries(phases: AdminTimelinePhaseTemplate[]): PhaseListEntry[] {
   const sorted = [...phases].sort((a, b) => a.orderIndex - b.orderIndex);
   const entries: PhaseListEntry[] = [];
   const seenGroups = new Set<string>();
@@ -51,9 +47,7 @@ function buildPhaseEntries(
     }
     if (seenGroups.has(phase.groupLabel)) continue;
     seenGroups.add(phase.groupLabel);
-    const groupPhases = sorted.filter(
-      (p) => p.groupLabel === phase.groupLabel,
-    );
+    const groupPhases = sorted.filter((p) => p.groupLabel === phase.groupLabel);
     entries.push({ type: 'group', label: phase.groupLabel, phases: groupPhases });
   }
 
@@ -76,16 +70,13 @@ export function PhaseList({ phases, templateId, onMutate }: PhaseListProps) {
 
   const handleAddPhase = async () => {
     setAddingPhase(true);
-    const res = await api.post(
-      `/v1/admin/timeline-templates/${templateId}/phases`,
-      {
-        name: 'New Phase',
-        orderIndex: sorted.length,
-        defaultDurationWeeks: 2,
-        completionType: 'MANUAL',
-        locksTimelineOnComplete: false,
-      },
-    );
+    const res = await api.post(`/v1/admin/timeline-templates/${templateId}/phases`, {
+      name: 'New Phase',
+      orderIndex: sorted.length,
+      defaultDurationWeeks: 2,
+      completionType: 'MANUAL',
+      locksTimelineOnComplete: false,
+    });
     setAddingPhase(false);
     if (res.error) {
       toast.error(res.error);
@@ -97,17 +88,14 @@ export function PhaseList({ phases, templateId, onMutate }: PhaseListProps) {
 
   const handleAddGroup = async () => {
     setAddingGroup(true);
-    const res = await api.post(
-      `/v1/admin/timeline-templates/${templateId}/phases`,
-      {
-        name: 'New Sub-phase',
-        orderIndex: sorted.length,
-        defaultDurationWeeks: 2,
-        completionType: 'MANUAL',
-        locksTimelineOnComplete: false,
-        groupLabel: 'New Group',
-      },
-    );
+    const res = await api.post(`/v1/admin/timeline-templates/${templateId}/phases`, {
+      name: 'New Sub-phase',
+      orderIndex: sorted.length,
+      defaultDurationWeeks: 2,
+      completionType: 'MANUAL',
+      locksTimelineOnComplete: false,
+      groupLabel: 'New Group',
+    });
     setAddingGroup(false);
     if (res.error) {
       toast.error(res.error);
@@ -124,14 +112,12 @@ export function PhaseList({ phases, templateId, onMutate }: PhaseListProps) {
     orderB: number,
   ) => {
     const [resA, resB] = await Promise.all([
-      api.patch(
-        `/v1/admin/timeline-templates/${templateId}/phases/${phaseIdA}`,
-        { orderIndex: orderA },
-      ),
-      api.patch(
-        `/v1/admin/timeline-templates/${templateId}/phases/${phaseIdB}`,
-        { orderIndex: orderB },
-      ),
+      api.patch(`/v1/admin/timeline-templates/${templateId}/phases/${phaseIdA}`, {
+        orderIndex: orderA,
+      }),
+      api.patch(`/v1/admin/timeline-templates/${templateId}/phases/${phaseIdB}`, {
+        orderIndex: orderB,
+      }),
     ]);
     if (resA.error || resB.error) {
       toast.error('Failed to reorder phases');
@@ -140,14 +126,10 @@ export function PhaseList({ phases, templateId, onMutate }: PhaseListProps) {
     onMutate();
   };
 
-  const handleMoveUngrouped = async (
-    phaseId: string,
-    direction: 'up' | 'down',
-  ) => {
+  const handleMoveUngrouped = async (phaseId: string, direction: 'up' | 'down') => {
     const currentIndex = sorted.findIndex((p) => p.id === phaseId);
     if (currentIndex < 0) return;
-    const targetIndex =
-      direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
     if (targetIndex < 0 || targetIndex >= sorted.length) return;
 
     await handleSwapPhases(

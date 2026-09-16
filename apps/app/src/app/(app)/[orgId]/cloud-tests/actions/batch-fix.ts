@@ -161,8 +161,7 @@ export async function retryFinding(
     if (preview.error) return { status: 'failed', error: String(preview.error) };
 
     const data = preview.data as
-      | { guidedOnly?: boolean; missingPermissions?: string[] }
-      | undefined;
+      { guidedOnly?: boolean; missingPermissions?: string[] } | undefined;
     const previewDecision = classifyRetryPreview(data);
     if (previewDecision.type === 'needs_permissions') {
       return {

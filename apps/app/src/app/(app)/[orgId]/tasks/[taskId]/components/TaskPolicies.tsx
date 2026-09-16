@@ -90,9 +90,7 @@ export function TaskPolicies() {
   if (rows.length === 0) {
     return (
       <Section title={SECTION_TITLE} description={SECTION_DESCRIPTION}>
-        <Text variant="muted">
-          No policies reference this task through its mapped controls.
-        </Text>
+        <Text variant="muted">No policies reference this task through its mapped controls.</Text>
       </Section>
     );
   }

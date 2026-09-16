@@ -33,9 +33,7 @@ export async function resolveGcpProjectIds(ctx: CheckContext): Promise<string[]>
     let pageToken: string | undefined;
     let pages = 0;
     do {
-      const tokenParam = pageToken
-        ? `&pageToken=${encodeURIComponent(pageToken)}`
-        : '';
+      const tokenParam = pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : '';
       const data: {
         projects?: Array<{ projectId: string }>;
         nextPageToken?: string;
@@ -43,8 +41,7 @@ export async function resolveGcpProjectIds(ctx: CheckContext): Promise<string[]>
         `/v1/projects?filter=${encodeURIComponent(filter)}&pageSize=100${tokenParam}`,
       );
       for (const p of data.projects ?? []) projectIds.push(p.projectId);
-      pageToken =
-        typeof data.nextPageToken === 'string' ? data.nextPageToken : undefined;
+      pageToken = typeof data.nextPageToken === 'string' ? data.nextPageToken : undefined;
       pages++;
     } while (pageToken && pages < 20);
     if (pageToken) {
@@ -89,14 +86,11 @@ export async function gcpListItems<T>(
   let pages = 0;
   do {
     const sep = url.includes('?') ? '&' : '?';
-    const pageUrl = pageToken
-      ? `${url}${sep}pageToken=${encodeURIComponent(pageToken)}`
-      : url;
+    const pageUrl = pageToken ? `${url}${sep}pageToken=${encodeURIComponent(pageToken)}` : url;
     const data = await ctx.fetch<Record<string, unknown>>(pageUrl);
     const items = data[itemsKey];
     if (Array.isArray(items)) out.push(...(items as T[]));
-    pageToken =
-      typeof data.nextPageToken === 'string' ? data.nextPageToken : undefined;
+    pageToken = typeof data.nextPageToken === 'string' ? data.nextPageToken : undefined;
     pages++;
   } while (pageToken && pages < 50);
   if (pageToken) {
@@ -112,17 +106,12 @@ export async function gcpListItems<T>(
  * True if a GCP firewall `ports` spec covers `target` (single port or "a-b"
  * range). An empty/absent spec means "all ports".
  */
-export function portsCover(
-  ports: string[] | undefined,
-  target: number,
-): boolean {
+export function portsCover(ports: string[] | undefined, target: number): boolean {
   if (!ports || ports.length === 0) return true;
   return ports.some((spec) => {
     if (spec.includes('-')) {
       const [lo, hi] = spec.split('-').map((n) => Number(n));
-      return (
-        Number.isFinite(lo) && Number.isFinite(hi) && target >= lo && target <= hi
-      );
+      return Number.isFinite(lo) && Number.isFinite(hi) && target >= lo && target <= hi;
     }
     return Number(spec) === target;
   });

@@ -1,5 +1,6 @@
 'use client';
 
+import { usePermissions } from '@/hooks/use-permissions';
 import { Button } from '@gideon-defender/ui/button';
 import {
   Dialog,
@@ -12,12 +13,17 @@ import {
 } from '@gideon-defender/ui/dialog';
 import { Input } from '@gideon-defender/ui/input';
 import { Label } from '@gideon-defender/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
 import { Textarea } from '@gideon-defender/ui/textarea';
-import { usePermissions } from '@/hooks/use-permissions';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslations } from 'next-intl';
 import { Loader2, Plus } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -76,9 +82,7 @@ export function AddSecretDialog() {
       setOpen(false);
       reset();
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : t('secrets.addDialog.failedToast'),
-      );
+      toast.error(err instanceof Error ? err.message : t('secrets.addDialog.failedToast'));
       console.error('Error creating secret:', err);
     }
   });
@@ -95,9 +99,7 @@ export function AddSecretDialog() {
         <form onSubmit={onSubmit}>
           <DialogHeader>
             <DialogTitle>{t('secrets.addDialog.title')}</DialogTitle>
-            <DialogDescription>
-              {t('secrets.addDialog.description')}
-            </DialogDescription>
+            <DialogDescription>{t('secrets.addDialog.description')}</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
@@ -110,9 +112,7 @@ export function AddSecretDialog() {
               {errors.name?.message ? (
                 <p className="text-xs text-destructive mt-1">{errors.name.message}</p>
               ) : null}
-              <p className="text-xs text-muted-foreground">
-                {t('secrets.addDialog.namingHint')}
-              </p>
+              <p className="text-xs text-muted-foreground">{t('secrets.addDialog.namingHint')}</p>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="value">{t('secrets.addDialog.valueLabel')}</Label>

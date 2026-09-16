@@ -32,11 +32,13 @@ The API uses a hybrid RBAC system:
 - **Multiple roles**: Users can have multiple roles (comma-separated in `member.role`)
 
 ### Permission Resources
+
 `organization`, `member`, `control`, `evidence`, `policy`, `risk`, `vendor`, `task`, `framework`, `audit`, `finding`, `questionnaire`, `integration`, `apiKey`, `trust`, `pentest`, `app`, `compliance`
 
 ### Endpoint Protection
 
 Every customer-facing endpoint MUST have:
+
 ```typescript
 @UseGuards(HybridAuthGuard, PermissionGuard)  // at controller or endpoint level
 @RequirePermission('resource', 'action')       // on every endpoint
@@ -48,6 +50,7 @@ Every customer-facing endpoint MUST have:
 - `AuditLogInterceptor` only logs mutations when `@RequirePermission` metadata is present — without it, changes are silently untracked
 
 ### Multi-Product Architecture
+
 - Products (compliance, pen testing) are org-level subscription concerns — NOT RBAC
 - RBAC controls user access within products
 - `pentest` is its own resource: `['create', 'read', 'delete']`
@@ -104,13 +107,13 @@ const module = await Test.createTestingModule({
 
 ### What to Test
 
-| Component | Test Coverage |
-|-----------|---------------|
-| Services | All public methods, validation logic, error handling |
-| Controllers | Parameter passing to services, response mapping |
-| Guards | Authorization decisions, edge cases |
-| DTOs | Validation decorators (via e2e or integration tests) |
-| Utils | All functions, edge cases, error conditions |
+| Component   | Test Coverage                                        |
+| ----------- | ---------------------------------------------------- |
+| Services    | All public methods, validation logic, error handling |
+| Controllers | Parameter passing to services, response mapping      |
+| Guards      | Authorization decisions, edge cases                  |
+| DTOs        | Validation decorators (via e2e or integration tests) |
+| Utils       | All functions, edge cases, error conditions          |
 
 ## Code Style
 

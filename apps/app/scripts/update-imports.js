@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import fs from 'node:fs';
 import { globSync } from 'glob';
+import fs from 'node:fs';
 
 console.log('🔄 Updating database imports to use local client...');
 
@@ -26,7 +26,8 @@ files.forEach((filePath) => {
   }
 
   // Pattern 2: Replace type-only imports to use @prisma/client
-  const typeImportPattern = /import\s*(?:type\s*)?\s*{([^}]+)}\s*from\s*['"]@gideon-defender\/db['"];?/g;
+  const typeImportPattern =
+    /import\s*(?:type\s*)?\s*{([^}]+)}\s*from\s*['"]@gideon-defender\/db['"];?/g;
   newContent = newContent.replace(typeImportPattern, (match, types) => {
     // Skip if it includes 'db' (non-type import)
     if (types.includes(' db') || types.startsWith('db') || types.endsWith('db ')) {
@@ -37,7 +38,8 @@ files.forEach((filePath) => {
   });
 
   // Pattern 3: Handle mixed imports (db + types)
-  const mixedImportPattern = /import\s*{\s*([^}]*db[^}]*)\s*}\s*from\s*['"]@gideon-defender\/db['"];?/g;
+  const mixedImportPattern =
+    /import\s*{\s*([^}]*db[^}]*)\s*}\s*from\s*['"]@gideon-defender\/db['"];?/g;
   newContent = newContent.replace(mixedImportPattern, (match, imports) => {
     const parts = imports.split(',').map((part) => part.trim());
     const dbImports = parts.filter((part) => part === 'db');

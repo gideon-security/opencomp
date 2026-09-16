@@ -7,10 +7,7 @@ import { db } from '@db';
  */
 @Injectable()
 export class CloudHistoryService {
-  async getHistory(params: {
-    organizationId: string;
-    connectionId: string;
-  }) {
+  async getHistory(params: { organizationId: string; connectionId: string }) {
     // Cap rows returned to keep payload bounded; pull true totals from
     // separate count queries so the UI can show "showing 200 of 432"
     // instead of pretending the truncated set is the full picture.
@@ -22,10 +19,9 @@ export class CloudHistoryService {
       organizationId: params.organizationId,
       connectionId: params.connectionId,
       revokedAt: null,
-      OR: [
-        { expiresAt: null },
-        { expiresAt: { gt: new Date() } },
-      ] as Array<{ expiresAt: null } | { expiresAt: { gt: Date } }>,
+      OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] as Array<
+        { expiresAt: null } | { expiresAt: { gt: Date } }
+      >,
     };
     const regressionsWhere = {
       organizationId: params.organizationId,

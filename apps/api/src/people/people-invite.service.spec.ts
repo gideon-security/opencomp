@@ -177,7 +177,9 @@ describe('PeopleInviteService', () => {
       (mockDb.organization.findUnique as jest.Mock).mockResolvedValue({
         name: 'Test Org',
       });
-      (mockDb.invitation.create as jest.Mock).mockResolvedValue({ id: 'inv_1' });
+      (mockDb.invitation.create as jest.Mock).mockResolvedValue({
+        id: 'inv_1',
+      });
 
       const results = await service.inviteMembers({
         ...baseParams,
@@ -227,7 +229,9 @@ describe('PeopleInviteService', () => {
       (mockDb.organization.findUnique as jest.Mock).mockResolvedValue({
         name: 'Test Org',
       });
-      (mockDb.invitation.create as jest.Mock).mockResolvedValue({ id: 'inv_2' });
+      (mockDb.invitation.create as jest.Mock).mockResolvedValue({
+        id: 'inv_2',
+      });
 
       const results = await service.inviteMembers({
         ...baseParams,
@@ -251,7 +255,12 @@ describe('PeopleInviteService', () => {
         callerUserId: '',
         callerRole: '',
         isApiKey: true,
-        apiKeyScopes: ['member:create', 'member:read', 'member:update', 'member:delete'],
+        apiKeyScopes: [
+          'member:create',
+          'member:read',
+          'member:update',
+          'member:delete',
+        ],
         invites: [{ email: 'admin@example.com', roles: ['admin'] }],
       });
 
@@ -653,7 +662,11 @@ describe('PeopleInviteService', () => {
       const results = await service.inviteMembers({
         ...baseParams,
         invites: [
-          { email: 'emp@example.com', roles: ['employee'], sendPortalEmail: true },
+          {
+            email: 'emp@example.com',
+            roles: ['employee'],
+            sendPortalEmail: true,
+          },
         ],
       });
 
@@ -777,7 +790,9 @@ describe('PeopleInviteService', () => {
           email: 'emp@example.com',
         });
         (mockDb.member.findFirst as jest.Mock).mockResolvedValue(null);
-        (mockDb.member.create as jest.Mock).mockResolvedValue({ id: 'mem_emp' });
+        (mockDb.member.create as jest.Mock).mockResolvedValue({
+          id: 'mem_emp',
+        });
         (
           mockDb.employeeTrainingVideoCompletion.createMany as jest.Mock
         ).mockResolvedValue({ count: 5 });

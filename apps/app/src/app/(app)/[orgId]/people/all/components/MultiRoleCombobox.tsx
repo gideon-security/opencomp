@@ -94,8 +94,7 @@ export function MultiRoleCombobox({
   // Filter out owner role for non-owners
   const availableBuiltInRoles = React.useMemo(() => {
     return selectableRoles.filter(
-      (role) =>
-        normalizedAllowedRoles.includes(role.value) && (role.value !== 'owner' || isOwner),
+      (role) => normalizedAllowedRoles.includes(role.value) && (role.value !== 'owner' || isOwner),
     );
   }, [isOwner, normalizedAllowedRoles]);
 

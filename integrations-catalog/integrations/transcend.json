@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Transcend at https://app.transcend.io\n2. Go to Infrastructure > Developer Tools > API Keys\n3. Click Add API Key and assign required scopes\n4. Copy the API key and paste it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

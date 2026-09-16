@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -24,93 +20,35 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@db": [
-        "./prisma"
-      ],
-      "@db/server": [
-        "./prisma/server"
-      ],
-      "@/trigger": [
-        "./src/trigger"
-      ],
-      "@/trigger/*": [
-        "./src/trigger/*"
-      ],
-      "@gideon-defender/email": [
-        "../../packages/email/index.ts"
-      ],
-      "@gideon-defender/email/*": [
-        "../../packages/email/*"
-      ],
-      "@gideon-defender/utils": [
-        "../../packages/utils/src/index.ts"
-      ],
-      "@gideon-defender/utils/*": [
-        "../../packages/utils/src/*"
-      ],
-      "@gideon-defender/integrations": [
-        "../../packages/integrations/src/index.ts"
-      ],
-      "@gideon-defender/integrations/*": [
-        "../../packages/integrations/src/*"
-      ],
-      "@gideon-defender/integration-platform": [
-        "../../packages/integration-platform/src/index.ts"
-      ],
-      "@gideon-defender/integration-platform/*": [
-        "../../packages/integration-platform/src/*"
-      ],
-      "@gideon-defender/analytics": [
-        "../../packages/analytics/src/index.ts"
-      ],
-      "@gideon-defender/analytics/*": [
-        "../../packages/analytics/src/*"
-      ],
-      "@gideon-defender/ui": [
-        "../../packages/ui/src/components/index.ts"
-      ],
-      "@gideon-defender/ui/*": [
-        "../../packages/ui/src/components/*"
-      ],
-      "@gideon-defender/ui/hooks": [
-        "../../packages/ui/src/hooks/index.ts"
-      ],
-      "@gideon-defender/ui/hooks/*": [
-        "../../packages/ui/src/hooks/*"
-      ],
-      "@gideon-defender/ui/utils/*": [
-        "../../packages/ui/src/utils/*"
-      ],
-      "@gideon-defender/ui/cn": [
-        "../../packages/ui/src/utils/cn.ts"
-      ],
-      "@gideon-defender/ui/truncate": [
-        "../../packages/ui/src/utils/truncate.ts"
-      ],
-      "@gideon-defender/ui/globals.css": [
-        "../../packages/ui/src/globals.css"
-      ],
-      "@gideon-defender/ui/editor.css": [
-        "../../packages/ui/src/editor.css"
-      ],
-      "@gideon-defender/ui/tailwind.config": [
-        "../../packages/ui/tailwind.config.ts"
-      ],
-      "@gideon-defender/kv": [
-        "../../packages/kv/src/index.ts"
-      ],
-      "@gideon-defender/kv/*": [
-        "../../packages/kv/src/*"
-      ],
-      "@gideon-defender/tsconfig": [
-        "../../packages/tsconfig/index.ts"
-      ],
-      "@gideon-defender/tsconfig/*": [
-        "../../packages/tsconfig/*"
-      ]
+      "@/*": ["./src/*"],
+      "@db": ["./prisma"],
+      "@db/server": ["./prisma/server"],
+      "@/trigger": ["./src/trigger"],
+      "@/trigger/*": ["./src/trigger/*"],
+      "@gideon-defender/email": ["../../packages/email/index.ts"],
+      "@gideon-defender/email/*": ["../../packages/email/*"],
+      "@gideon-defender/utils": ["../../packages/utils/src/index.ts"],
+      "@gideon-defender/utils/*": ["../../packages/utils/src/*"],
+      "@gideon-defender/integrations": ["../../packages/integrations/src/index.ts"],
+      "@gideon-defender/integrations/*": ["../../packages/integrations/src/*"],
+      "@gideon-defender/integration-platform": ["../../packages/integration-platform/src/index.ts"],
+      "@gideon-defender/integration-platform/*": ["../../packages/integration-platform/src/*"],
+      "@gideon-defender/analytics": ["../../packages/analytics/src/index.ts"],
+      "@gideon-defender/analytics/*": ["../../packages/analytics/src/*"],
+      "@gideon-defender/ui": ["../../packages/ui/src/components/index.ts"],
+      "@gideon-defender/ui/*": ["../../packages/ui/src/components/*"],
+      "@gideon-defender/ui/hooks": ["../../packages/ui/src/hooks/index.ts"],
+      "@gideon-defender/ui/hooks/*": ["../../packages/ui/src/hooks/*"],
+      "@gideon-defender/ui/utils/*": ["../../packages/ui/src/utils/*"],
+      "@gideon-defender/ui/cn": ["../../packages/ui/src/utils/cn.ts"],
+      "@gideon-defender/ui/truncate": ["../../packages/ui/src/utils/truncate.ts"],
+      "@gideon-defender/ui/globals.css": ["../../packages/ui/src/globals.css"],
+      "@gideon-defender/ui/editor.css": ["../../packages/ui/src/editor.css"],
+      "@gideon-defender/ui/tailwind.config": ["../../packages/ui/tailwind.config.ts"],
+      "@gideon-defender/kv": ["../../packages/kv/src/index.ts"],
+      "@gideon-defender/kv/*": ["../../packages/kv/src/*"],
+      "@gideon-defender/tsconfig": ["../../packages/tsconfig/index.ts"],
+      "@gideon-defender/tsconfig/*": ["../../packages/tsconfig/*"]
     }
   },
   "include": [
@@ -121,8 +59,5 @@
     "trigger.config.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    ".next"
-  ]
+  "exclude": ["node_modules", ".next"]
 }

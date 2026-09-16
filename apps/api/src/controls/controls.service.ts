@@ -103,7 +103,11 @@ export class ControlsService {
     frameworkInstanceId?: string,
   ) {
     if (frameworkInstanceId) {
-      return this.findOneForFramework(controlId, organizationId, frameworkInstanceId);
+      return this.findOneForFramework(
+        controlId,
+        organizationId,
+        frameworkInstanceId,
+      );
     }
 
     const control = await db.control.findUnique({
@@ -133,9 +137,7 @@ export class ControlsService {
     const tasks = control.tasks || [];
     const controlDocumentTypes = control.controlDocumentTypes || [];
 
-    const formTypes = controlDocumentTypes.map(
-      (d) => d.formType,
-    );
+    const formTypes = controlDocumentTypes.map((d) => d.formType);
     const notRelevantSettings =
       formTypes.length > 0
         ? await db.evidenceFormSetting.findMany({
@@ -184,12 +186,10 @@ export class ControlsService {
       ...control,
       policies,
       tasks,
-      controlDocumentTypes: controlDocumentTypes.map(
-        (documentType) => ({
-          ...documentType,
-          isNotRelevant: notRelevantFormTypes.has(documentType.formType),
-        }),
-      ),
+      controlDocumentTypes: controlDocumentTypes.map((documentType) => ({
+        ...documentType,
+        isNotRelevant: notRelevantFormTypes.has(documentType.formType),
+      })),
       submissionCountsByFormType,
       progress: {
         total: totalItems,
@@ -209,7 +209,10 @@ export class ControlsService {
     organizationId: string,
     frameworkInstanceId: string,
   ) {
-    const fi = await this.ensureFrameworkInstance(frameworkInstanceId, organizationId);
+    const fi = await this.ensureFrameworkInstance(
+      frameworkInstanceId,
+      organizationId,
+    );
     const isCustomFramework = fi.customFrameworkId !== null;
     const control = await db.control.findUnique({
       where: { id: controlId, organizationId },
@@ -251,13 +254,17 @@ export class ControlsService {
       throw new NotFoundException('Control not found');
     }
 
-    const frameworkPolicies = control.frameworkPolicyLinks.map((link) => link.policy);
+    const frameworkPolicies = control.frameworkPolicyLinks.map(
+      (link) => link.policy,
+    );
     const frameworkTasks = control.frameworkTaskLinks.map((link) => link.task);
     const directPolicies = isCustomFramework ? (control.policies ?? []) : [];
     const directTasks = isCustomFramework ? (control.tasks ?? []) : [];
     const policies = deduplicateById([...frameworkPolicies, ...directPolicies]);
     const tasks = deduplicateById([...frameworkTasks, ...directTasks]);
-    const directDocTypes = isCustomFramework ? control.controlDocumentTypes : [];
+    const directDocTypes = isCustomFramework
+      ? control.controlDocumentTypes
+      : [];
     const controlDocumentTypes = deduplicateByFormType([
       ...control.frameworkDocumentLinks,
       ...directDocTypes,
@@ -292,7 +299,9 @@ export class ControlsService {
       }
     }
 
-    const policyCompleted = policies.filter((p) => p.status === 'published').length;
+    const policyCompleted = policies.filter(
+      (p) => p.status === 'published',
+    ).length;
     const taskCompleted = tasks.filter(
       (t) => t.status === 'done' || t.status === 'not_relevant',
     ).length;

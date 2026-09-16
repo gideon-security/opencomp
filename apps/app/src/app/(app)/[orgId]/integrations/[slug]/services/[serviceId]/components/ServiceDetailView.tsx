@@ -2,11 +2,11 @@
 
 import { useConnectionServices } from '@/hooks/use-integration-platform';
 import { usePermissions } from '@/hooks/use-permissions';
-import { Breadcrumb, Stack } from '@trycompai/design-system';
 import type {
   ConnectionListItemResponse,
   IntegrationProviderResponse,
 } from '@gideon-defender/integration-platform';
+import { Breadcrumb, Stack } from '@trycompai/design-system';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -57,9 +57,7 @@ export function ServiceDetailView({
     if (connectionId && connections.some((c) => c.id === connectionId)) {
       return connectionId;
     }
-    const active = connections.find(
-      (c) => c.status === 'active' || c.status === 'pending',
-    );
+    const active = connections.find((c) => c.status === 'active' || c.status === 'pending');
     return active?.id ?? null;
   }, [connectionId, connections]);
 
@@ -102,9 +100,7 @@ export function ServiceDetailView({
     const next = !isEnabled;
     try {
       await updateServices(service.id, next);
-      toast.success(
-        `${service.name} scanning ${next ? 'enabled' : 'disabled'} in Cloud Tests`,
-      );
+      toast.success(`${service.name} scanning ${next ? 'enabled' : 'disabled'} in Cloud Tests`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to update');
     } finally {
@@ -142,8 +138,8 @@ export function ServiceDetailView({
           <div className="min-w-0">
             <h2 className="text-sm font-semibold">Cloud Tests scanning</h2>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              Whether Cloud Tests scans this service for security findings. This
-              controls scanning only — it&apos;s separate from the evidence below.
+              Whether Cloud Tests scans this service for security findings. This controls scanning
+              only — it&apos;s separate from the evidence below.
             </p>
           </div>
           {connectionsErrored ? (

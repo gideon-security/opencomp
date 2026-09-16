@@ -31,9 +31,7 @@ describe('GenericDeviceSyncService', () => {
   const ORG_ID = 'org_1';
   const CONN_ID = 'conn_1';
 
-  const baseDevice = (
-    overrides: Partial<SyncDevice> = {},
-  ): SyncDevice => ({
+  const baseDevice = (overrides: Partial<SyncDevice> = {}): SyncDevice => ({
     name: 'Test MacBook',
     platform: 'macos',
     serialNumber: 'SN-001',
@@ -169,14 +167,12 @@ describe('GenericDeviceSyncService', () => {
     it('refreshes memberId on the P2002 unique-constraint fallback update', async () => {
       // existingDevice lookup → null (forces a create), then the create hits a
       // unique constraint and the conflicting-row lookup returns the existing device.
-      mockDeviceFindFirst
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce({
-          id: 'dev_conflict',
-          source: 'integration',
-          serialNumber: 'SN-001',
-          organizationId: ORG_ID,
-        });
+      mockDeviceFindFirst.mockResolvedValueOnce(null).mockResolvedValueOnce({
+        id: 'dev_conflict',
+        source: 'integration',
+        serialNumber: 'SN-001',
+        organizationId: ORG_ID,
+      });
       mockMemberFindFirst.mockResolvedValue({ id: 'mem_new_owner' });
       mockDeviceCreate.mockRejectedValue(
         new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
@@ -219,7 +215,9 @@ describe('GenericDeviceSyncService', () => {
       const result = await service.processDevices({
         organizationId: ORG_ID,
         connectionId: CONN_ID,
-        devices: [baseDevice({ serialNumber: undefined, externalId: 'ext-123' })],
+        devices: [
+          baseDevice({ serialNumber: undefined, externalId: 'ext-123' }),
+        ],
       });
 
       expect(mockDeviceUpdate).toHaveBeenCalledWith(
@@ -436,7 +434,9 @@ describe('GenericDeviceSyncService', () => {
       const result = await service.processDevices({
         organizationId: ORG_ID,
         connectionId: CONN_ID,
-        devices: [baseDevice({ status: 'inactive', serialNumber: 'SN-INACTIVE' })],
+        devices: [
+          baseDevice({ status: 'inactive', serialNumber: 'SN-INACTIVE' }),
+        ],
         options: { isDirectorySource: true },
       });
 
@@ -494,7 +494,11 @@ describe('GenericDeviceSyncService', () => {
             sourceCompliance: {
               isCompliant: true,
               checks: [
-                { id: 'disk_encryption', label: 'Disk Encryption', passed: true },
+                {
+                  id: 'disk_encryption',
+                  label: 'Disk Encryption',
+                  passed: true,
+                },
                 { id: 'firewall', label: 'Firewall', passed: false },
               ],
             },
@@ -510,7 +514,9 @@ describe('GenericDeviceSyncService', () => {
         connectionId: CONN_ID,
         devices: [
           baseDevice({
-            checks: [{ id: 'os_up_to_date', label: 'OS up to date', passed: true }],
+            checks: [
+              { id: 'os_up_to_date', label: 'OS up to date', passed: true },
+            ],
           }),
         ],
       });
@@ -524,7 +530,10 @@ describe('GenericDeviceSyncService', () => {
 
     it('writes JsonNull when the provider reports no compliance (clears stale values on update)', async () => {
       // Existing integration device — update path.
-      mockDeviceFindFirst.mockResolvedValue({ id: 'dev_1', source: 'integration' });
+      mockDeviceFindFirst.mockResolvedValue({
+        id: 'dev_1',
+        source: 'integration',
+      });
 
       await service.processDevices({
         organizationId: ORG_ID,
@@ -553,7 +562,9 @@ describe('GenericDeviceSyncService', () => {
     });
 
     it('clamps a future lastSeenAt to now (provider clock skew must not pin the device Online)', async () => {
-      const future = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+      const future = new Date(
+        Date.now() + 3 * 24 * 60 * 60 * 1000,
+      ).toISOString();
       const before = Date.now();
       await service.processDevices({
         organizationId: ORG_ID,

@@ -1,7 +1,7 @@
+import type { Invitation } from '@db';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { DisplayItem } from './filter-members';
 import type { MemberWithUser } from './TeamMembers';
-import type { Invitation } from '@db';
 
 // Mock @/lib/permissions to avoid resolving @gideon-defender/auth
 vi.mock('@/lib/permissions', () => ({
@@ -18,7 +18,9 @@ vi.mock('@/lib/permissions', () => ({
 const { buildDisplayItems, filterDisplayItems } = await import('./filter-members');
 
 // Minimal member factory for testing
-function makeMember(overrides: Partial<MemberWithUser> & { id: string; role: string }): MemberWithUser {
+function makeMember(
+  overrides: Partial<MemberWithUser> & { id: string; role: string },
+): MemberWithUser {
   return {
     organizationId: 'org_1',
     userId: `usr_${overrides.id}`,
@@ -49,7 +51,9 @@ function makeMember(overrides: Partial<MemberWithUser> & { id: string; role: str
   } as MemberWithUser;
 }
 
-function makeInvitation(overrides: Partial<Invitation> & { id: string; email: string; role: string }): Invitation {
+function makeInvitation(
+  overrides: Partial<Invitation> & { id: string; email: string; role: string },
+): Invitation {
   return {
     organizationId: 'org_1',
     inviterId: 'usr_inv',
@@ -60,9 +64,24 @@ function makeInvitation(overrides: Partial<Invitation> & { id: string; email: st
   } as Invitation;
 }
 
-const activeMember = makeMember({ id: 'mem_1', role: 'employee', isActive: true, deactivated: false });
-const deactivatedMember = makeMember({ id: 'mem_2', role: 'admin', isActive: false, deactivated: true });
-const inactiveMember = makeMember({ id: 'mem_3', role: 'employee', isActive: false, deactivated: false });
+const activeMember = makeMember({
+  id: 'mem_1',
+  role: 'employee',
+  isActive: true,
+  deactivated: false,
+});
+const deactivatedMember = makeMember({
+  id: 'mem_2',
+  role: 'admin',
+  isActive: false,
+  deactivated: true,
+});
+const inactiveMember = makeMember({
+  id: 'mem_3',
+  role: 'employee',
+  isActive: false,
+  deactivated: false,
+});
 const pendingInvite = makeInvitation({ id: 'inv_1', email: 'pending@test.com', role: 'employee' });
 
 describe('buildDisplayItems', () => {

@@ -1,12 +1,12 @@
 'use client';
 
-import { ErrorFilled, InProgress } from '@trycompai/design-system/icons';
-import { useTranslations } from 'next-intl';
 import type {
   PentestAgentEvent,
   PentestIssue,
   PentestRun,
 } from '@/lib/security/penetration-tests-client';
+import { ErrorFilled, InProgress } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import { CompletedDetail } from './CompletedDetail';
 import { FailedDetail } from './FailedDetail';
 import { FindingDetail } from './FindingDetail';
@@ -71,9 +71,7 @@ export function DetailPane({
       <div className="flex h-full items-center justify-center px-8 text-center">
         <div className="max-w-md space-y-2 text-sm text-muted-foreground">
           <ErrorFilled className="mx-auto h-8 w-8 text-destructive" />
-          <p className="font-medium text-foreground">
-            {t('penTest.detail.unableToLoadScan')}
-          </p>
+          <p className="font-medium text-foreground">{t('penTest.detail.unableToLoadScan')}</p>
           <p>{error?.message ?? t('penTest.detail.noScanFound')}</p>
         </div>
       </div>
@@ -103,12 +101,7 @@ export function DetailPane({
 
   if (isRunInProgress(run.status)) {
     return (
-      <RunningDetail
-        run={run}
-        issues={issues}
-        events={events}
-        onOpenFinding={onOpenFinding}
-      />
+      <RunningDetail run={run} issues={issues} events={events} onOpenFinding={onOpenFinding} />
     );
   }
 

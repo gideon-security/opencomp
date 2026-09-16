@@ -1,3 +1,5 @@
+import type { NavMessageKey } from '@/i18n/keys';
+import { canAccessRoute, type UserPermissions } from '@/lib/permissions';
 import {
   Catalog,
   Chemistry,
@@ -14,8 +16,6 @@ import {
   TaskComplete,
   Warning,
 } from '@carbon/icons-react';
-import { canAccessRoute, type UserPermissions } from '@/lib/permissions';
-import type { NavMessageKey } from '@/i18n/keys';
 import type { CommandSearchGroup } from '@trycompai/design-system';
 import type { ReactNode } from 'react';
 

@@ -76,9 +76,7 @@ export async function POST(
       await db.vendor.update({
         where: { id: vendorId },
         data: {
-          ...(taskIds.length > 0
-            ? { tasks: { connect: taskIds.map((id) => ({ id })) } }
-            : {}),
+          ...(taskIds.length > 0 ? { tasks: { connect: taskIds.map((id) => ({ id })) } } : {}),
           autoLinkRunId: null,
           autoLinkRunStartedAt: null,
         },

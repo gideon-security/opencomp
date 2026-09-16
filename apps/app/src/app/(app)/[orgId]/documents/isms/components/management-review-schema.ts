@@ -15,10 +15,7 @@ export const reviewDetailsSchema = z.object({
   meetingDate: z.string(),
   chairName: z.string(),
   status: z.enum(REVIEW_STATUSES),
-  conclusionVerdict: z.union([
-    z.enum(REVIEW_CONCLUSION_VERDICTS),
-    z.literal(''),
-  ]),
+  conclusionVerdict: z.union([z.enum(REVIEW_CONCLUSION_VERDICTS), z.literal('')]),
   conclusionNotes: z.string(),
 });
 

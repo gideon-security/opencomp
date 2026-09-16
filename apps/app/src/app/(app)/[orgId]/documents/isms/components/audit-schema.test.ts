@@ -41,9 +41,8 @@ describe('auditDetailsSchema planned-date order', () => {
       }).success,
     ).toBe(true);
     // Either date may be left unset while planning.
-    expect(
-      auditDetailsSchema.safeParse({ ...base, plannedEndDate: '2026-05-20' })
-        .success,
-    ).toBe(true);
+    expect(auditDetailsSchema.safeParse({ ...base, plannedEndDate: '2026-05-20' }).success).toBe(
+      true,
+    );
   });
 });

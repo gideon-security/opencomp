@@ -118,13 +118,7 @@ function StatusIcon({ done }: { done: boolean }) {
       />
     );
   }
-  return (
-    <Close
-      size={11}
-      className="shrink-0 text-red-600 dark:text-red-400"
-      aria-hidden="true"
-    />
-  );
+  return <Close size={11} className="shrink-0 text-red-600 dark:text-red-400" aria-hidden="true" />;
 }
 
 export function LinkedWork({ orgId, tasks, onUnlinkTask }: LinkedWorkProps) {
@@ -260,10 +254,7 @@ export function LinkedWork({ orgId, tasks, onUnlinkTask }: LinkedWorkProps) {
           <>
             <ul className="flex list-none flex-col pl-0">
               {visibleControls.map((c, i) => (
-                <li
-                  key={c.id}
-                  className={cn(i > 0 && 'border-t border-border')}
-                >
+                <li key={c.id} className={cn(i > 0 && 'border-t border-border')}>
                   <Link
                     href={`/${orgId}/controls/${c.id}`}
                     target="_blank"

@@ -143,9 +143,7 @@ async function withConcurrencyKeyLock(taskId, key, fn) {
   if (!redis) return fn();
   const lockKey = `local-trigger:concurrency:${taskId}:${key}`;
   for (;;) {
-    const ok = await redis
-      .set(lockKey, '1', 'PX', 1000 * 60 * 60 * 4, 'NX')
-      .catch(() => 'OK');
+    const ok = await redis.set(lockKey, '1', 'PX', 1000 * 60 * 60 * 4, 'NX').catch(() => 'OK');
     if (ok === 'OK' || ok === true || ok === 1) {
       try {
         return await fn();
@@ -160,13 +158,8 @@ async function withConcurrencyKeyLock(taskId, key, fn) {
 function retryConfig(def) {
   const retry = def.retry || {};
   return {
-    attempts: Math.max(
-      1,
-      Number.isFinite(retry.maxAttempts) ? retry.maxAttempts : 1,
-    ),
-    minDelay: Number.isFinite(retry.minTimeoutInMs)
-      ? retry.minTimeoutInMs
-      : 1000,
+    attempts: Math.max(1, Number.isFinite(retry.maxAttempts) ? retry.maxAttempts : 1),
+    minDelay: Number.isFinite(retry.minTimeoutInMs) ? retry.minTimeoutInMs : 1000,
   };
 }
 
@@ -180,9 +173,7 @@ async function processJob(job) {
 
   const def = registry.get(job.name);
   if (!def) {
-    throw new Error(
-      `[local-trigger] Task "${job.name}" is not registered in this process.`,
-    );
+    throw new Error(`[local-trigger] Task "${job.name}" is not registered in this process.`);
   }
 
   const data = job.data || {};
@@ -196,9 +187,7 @@ async function processJob(job) {
     error: null,
     metadata: data.metadata || {},
     tags: Array.isArray(data.tags) ? data.tags : [],
-    createdAt: job.timestamp
-      ? new Date(job.timestamp).toISOString()
-      : startedAt.toISOString(),
+    createdAt: job.timestamp ? new Date(job.timestamp).toISOString() : startedAt.toISOString(),
     startedAt: null,
     finishedAt: null,
     attempt: (job.attemptsMade || 0) + 1,
@@ -303,9 +292,7 @@ async function createRun(taskId, payload, opts) {
     idempotencyTtlMs = parseTtl(options.idempotencyKeyTTL) || 1000 * 60 * 60;
     const redis = getRedis();
     const setRes = redis
-      ? await redis
-          .set(idempotencyKey, runId, 'PX', idempotencyTtlMs, 'NX')
-          .catch(() => null)
+      ? await redis.set(idempotencyKey, runId, 'PX', idempotencyTtlMs, 'NX').catch(() => null)
       : null;
     claimed = setRes === 'OK' || setRes === true || setRes === 1;
     if (!claimed) {
@@ -359,13 +346,18 @@ async function createRun(taskId, payload, opts) {
     });
   }
 
-  await queues.addRunJob(taskId, runId, {
-    payload,
-    metadata: {},
-    tags: run.tags,
-    concurrencyKey: options.concurrencyKey || null,
-    lastError: null,
-  }, addOpts);
+  await queues.addRunJob(
+    taskId,
+    runId,
+    {
+      payload,
+      metadata: {},
+      tags: run.tags,
+      concurrencyKey: options.concurrencyKey || null,
+      lastError: null,
+    },
+    addOpts,
+  );
 
   queues.ensureWorker().catch(() => {});
   return run;
@@ -480,8 +472,7 @@ async function batchTrigger(taskId, items, opts) {
   assertRegistered(taskId);
   const runs = [];
   for (const item of items) {
-    const payload =
-      item && typeof item === 'object' && 'payload' in item ? item.payload : item;
+    const payload = item && typeof item === 'object' && 'payload' in item ? item.payload : item;
     runs.push(await createRun(taskId, payload, opts));
   }
   return {

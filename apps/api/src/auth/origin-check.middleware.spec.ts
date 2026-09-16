@@ -44,8 +44,7 @@ function createMockRes(): Partial<Response> & {
   statusCode?: number;
   body?: unknown;
 } {
-  const res: Partial<Response> & { statusCode?: number; body?: unknown } =
-    {};
+  const res: Partial<Response> & { statusCode?: number; body?: unknown } = {};
   res.status = jest.fn().mockImplementation((code: number) => {
     res.statusCode = code;
     return res;
@@ -71,8 +70,7 @@ function runOriginCheck(params: {
 
 describe('originCheckMiddleware', () => {
   const originalExtensionOrigins = process.env.COMP_EXTENSION_TRUSTED_ORIGINS;
-  const extensionOrigin =
-    'chrome-extension://abcdefghijklmnopabcdefghijklmnop';
+  const extensionOrigin = 'chrome-extension://abcdefghijklmnopabcdefghijklmnop';
 
   beforeEach(() => {
     process.env.COMP_EXTENSION_TRUSTED_ORIGINS = extensionOrigin;
@@ -87,7 +85,11 @@ describe('originCheckMiddleware', () => {
   });
 
   it('should allow GET requests regardless of origin', () => {
-    const req = createMockReq('GET', '/v1/controls', 'http://untrusted.example');
+    const req = createMockReq(
+      'GET',
+      '/v1/controls',
+      'http://untrusted.example',
+    );
     const res = createMockRes();
     const next = jest.fn();
 
@@ -107,7 +109,11 @@ describe('originCheckMiddleware', () => {
   });
 
   it('should allow OPTIONS requests regardless of origin', () => {
-    const req = createMockReq('OPTIONS', '/v1/controls', 'http://untrusted.example');
+    const req = createMockReq(
+      'OPTIONS',
+      '/v1/controls',
+      'http://untrusted.example',
+    );
     const res = createMockRes();
     const next = jest.fn();
 
@@ -148,7 +154,11 @@ describe('originCheckMiddleware', () => {
   });
 
   it('should block DELETE from untrusted origin', async () => {
-    const req = createMockReq('DELETE', '/v1/organization', 'http://untrusted.example');
+    const req = createMockReq(
+      'DELETE',
+      '/v1/organization',
+      'http://untrusted.example',
+    );
     const res = createMockRes();
     const next = jest.fn();
 
@@ -186,7 +196,11 @@ describe('originCheckMiddleware', () => {
   });
 
   it('should allow POST to /api/auth routes (better-auth exempt)', () => {
-    const req = createMockReq('POST', '/api/auth/sign-in', 'http://untrusted.example');
+    const req = createMockReq(
+      'POST',
+      '/api/auth/sign-in',
+      'http://untrusted.example',
+    );
     const res = createMockRes();
     const next = jest.fn();
 

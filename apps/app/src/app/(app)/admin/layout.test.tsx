@@ -25,7 +25,7 @@ vi.mock('next/navigation', () => ({
   },
 }));
 
-import { setupAuthMocks, createMockUser, createMockSession } from '@/test-utils/mocks/auth';
+import { createMockSession, createMockUser, setupAuthMocks } from '@/test-utils/mocks/auth';
 
 const { default: AdminRedirectLayout } = await import('./layout');
 
@@ -37,9 +37,7 @@ describe('(app)/admin/layout - redirect gate', () => {
   it('redirects to /auth when user has no session', async () => {
     setupAuthMocks({ session: null, user: null });
 
-    await expect(
-      AdminRedirectLayout({ children: null }),
-    ).rejects.toThrow('NEXT_REDIRECT');
+    await expect(AdminRedirectLayout({ children: null })).rejects.toThrow('NEXT_REDIRECT');
 
     expect(mockRedirect).toHaveBeenCalledWith('/auth');
   });
@@ -50,9 +48,7 @@ describe('(app)/admin/layout - redirect gate', () => {
       user: createMockUser({ role: 'user' }),
     });
 
-    await expect(
-      AdminRedirectLayout({ children: null }),
-    ).rejects.toThrow('NEXT_REDIRECT');
+    await expect(AdminRedirectLayout({ children: null })).rejects.toThrow('NEXT_REDIRECT');
 
     expect(mockRedirect).toHaveBeenCalledWith('/');
   });
@@ -63,9 +59,7 @@ describe('(app)/admin/layout - redirect gate', () => {
       user: createMockUser({ role: 'user' }),
     });
 
-    await expect(
-      AdminRedirectLayout({ children: null }),
-    ).rejects.toThrow('NEXT_REDIRECT');
+    await expect(AdminRedirectLayout({ children: null })).rejects.toThrow('NEXT_REDIRECT');
 
     expect(mockServerApiGet).not.toHaveBeenCalled();
   });
@@ -79,9 +73,7 @@ describe('(app)/admin/layout - redirect gate', () => {
       data: { organizations: [{ id: 'org_first' }] },
     });
 
-    await expect(
-      AdminRedirectLayout({ children: null }),
-    ).rejects.toThrow('NEXT_REDIRECT');
+    await expect(AdminRedirectLayout({ children: null })).rejects.toThrow('NEXT_REDIRECT');
 
     expect(mockServerApiGet).toHaveBeenCalledWith('/v1/auth/me');
     expect(mockRedirect).toHaveBeenCalledWith('/org_first/admin');
@@ -96,9 +88,7 @@ describe('(app)/admin/layout - redirect gate', () => {
       data: { organizations: [] },
     });
 
-    await expect(
-      AdminRedirectLayout({ children: null }),
-    ).rejects.toThrow('NEXT_REDIRECT');
+    await expect(AdminRedirectLayout({ children: null })).rejects.toThrow('NEXT_REDIRECT');
 
     expect(mockRedirect).toHaveBeenCalledWith('/');
   });

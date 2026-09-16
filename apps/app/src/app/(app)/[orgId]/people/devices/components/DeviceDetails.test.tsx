@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { DeviceWithChecks } from '../types';
@@ -102,9 +102,7 @@ describe('DeviceDetails compliance badge', () => {
         onClose={vi.fn()}
       />,
     );
-    expect(
-      screen.getByRole('button', { name: 'devices.whatDoesStaleMean' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'devices.whatDoesStaleMean' })).toBeInTheDocument();
   });
 
   it('renders the stale-explainer tooltip trigger when daysSinceLastCheckIn is null (never reported)', () => {
@@ -118,9 +116,7 @@ describe('DeviceDetails compliance badge', () => {
         onClose={vi.fn()}
       />,
     );
-    expect(
-      screen.getByRole('button', { name: 'devices.whatDoesStaleMean' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'devices.whatDoesStaleMean' })).toBeInTheDocument();
   });
 
   it('does not render the stale-explainer tooltip trigger for a compliant device', () => {
@@ -157,10 +153,7 @@ describe('DeviceDetails revoke action', () => {
 
   it('does not render when hasActiveAgentSession is false', () => {
     render(
-      <DeviceDetails
-        device={makeDevice({ hasActiveAgentSession: false })}
-        onClose={vi.fn()}
-      />,
+      <DeviceDetails device={makeDevice({ hasActiveAgentSession: false })} onClose={vi.fn()} />,
     );
     expect(screen.queryByTestId('revoke-dialog')).toBeNull();
   });

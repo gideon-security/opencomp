@@ -5,12 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 
 import { usePermissions } from '@/hooks/use-permissions';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from '@trycompai/design-system';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@trycompai/design-system';
 
 import { use2faSource } from '../hooks/use2faSource';
 
@@ -28,13 +23,9 @@ export function TwoFactorSourceSelector() {
   // Selecting a source is an integration:update action. Gate the hook itself so
   // users without the permission never hit any 2FA-source API.
   const canManage = hasPermission('integration', 'update');
-  const {
-    selectedSource,
-    availableSources,
-    setSource,
-    hasAnyConnection,
-    isLoading,
-  } = use2faSource({ organizationId: orgId, enabled: canManage });
+  const { selectedSource, availableSources, setSource, hasAnyConnection, isLoading } = use2faSource(
+    { organizationId: orgId, enabled: canManage },
+  );
 
   // Wait for BOTH the available sources and the current selection before
   // rendering, so the trigger never flashes the placeholder while the saved

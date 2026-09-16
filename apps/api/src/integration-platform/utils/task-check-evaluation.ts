@@ -17,7 +17,9 @@ export function countEffectiveFailures(
   exceptions: ActiveExceptionSet,
 ): number {
   if (exceptions.size === 0) return failing.length;
-  return failing.filter((f) => !exceptions.has(f.connectionId, f.checkId, f.resourceId)).length;
+  return failing.filter(
+    (f) => !exceptions.has(f.connectionId, f.checkId, f.resourceId),
+  ).length;
 }
 
 /**

@@ -46,7 +46,9 @@ describe('toRunErrorMessage', () => {
 
 describe('isNoPageError', () => {
   it('returns true for awaitActivePage', () => {
-    expect(isNoPageError(new Error('awaitActivePage: no page available'))).toBe(true);
+    expect(isNoPageError(new Error('awaitActivePage: no page available'))).toBe(
+      true,
+    );
   });
 
   it('returns true for No page found', () => {

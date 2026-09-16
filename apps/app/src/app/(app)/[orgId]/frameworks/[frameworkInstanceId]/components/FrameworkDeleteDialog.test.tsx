@@ -1,13 +1,13 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   NO_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -54,11 +54,8 @@ vi.mock('@gideon-defender/ui/button', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/dialog', () => ({
-  Dialog: ({ children, open }: any) =>
-    open ? <div data-testid="dialog">{children}</div> : null,
-  DialogContent: ({ children }: any) => (
-    <div data-testid="dialog-content">{children}</div>
-  ),
+  Dialog: ({ children, open }: any) => (open ? <div data-testid="dialog">{children}</div> : null),
+  DialogContent: ({ children }: any) => <div data-testid="dialog-content">{children}</div>,
   DialogDescription: ({ children }: any) => <p>{children}</p>,
   DialogFooter: ({ children }: any) => <div>{children}</div>,
   DialogHeader: ({ children }: any) => <div>{children}</div>,
@@ -68,9 +65,7 @@ vi.mock('@gideon-defender/ui/dialog', () => ({
 vi.mock('@gideon-defender/ui/form', () => ({
   // The real Form is react-hook-form's FormProvider: it consumes the whole
   // useForm() return via context and renders no DOM props. Spread nothing.
-  Form: ({ children }: any) => (
-    <div data-testid="form-provider">{children}</div>
-  ),
+  Form: ({ children }: any) => <div data-testid="form-provider">{children}</div>,
 }));
 
 // Mock lucide-react
@@ -149,9 +144,7 @@ describe('FrameworkDeleteDialog', () => {
       render(<FrameworkDeleteDialog {...defaultProps} />);
 
       expect(screen.getByText('instance.deleteDialogTitle')).toBeInTheDocument();
-      expect(
-        screen.getByText('instance.deleteDialogDescription'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('instance.deleteDialogDescription')).toBeInTheDocument();
     });
 
     it('renders the cancel button that is always enabled', () => {
@@ -166,9 +159,7 @@ describe('FrameworkDeleteDialog', () => {
     it('does not render when isOpen is false', () => {
       setMockPermissions(ADMIN_PERMISSIONS);
 
-      render(
-        <FrameworkDeleteDialog {...defaultProps} isOpen={false} />,
-      );
+      render(<FrameworkDeleteDialog {...defaultProps} isOpen={false} />);
 
       expect(screen.queryByText('instance.deleteDialogTitle')).not.toBeInTheDocument();
     });

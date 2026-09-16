@@ -21,7 +21,9 @@ const mockStagehandClass = ({
   init: jest.Mock;
   close: jest.Mock;
 }): StagehandClass =>
-  jest.fn().mockImplementation(() => ({ init, close })) as unknown as StagehandClass;
+  jest
+    .fn()
+    .mockImplementation(() => ({ init, close })) as unknown as StagehandClass;
 
 type BrowserbaseClient = ReturnType<
   BrowserbaseSessionService['getBrowserbase']
@@ -206,7 +208,12 @@ describe('BrowserbaseSessionService', () => {
       .mockReturnValue(mockBrowserbaseClient({ createSession, debugSession }));
 
     // Interactive flow: the generous timeout is forwarded to Browserbase.
-    const interactive = service.createSessionWithContext('ctx_1', undefined, true, 900);
+    const interactive = service.createSessionWithContext(
+      'ctx_1',
+      undefined,
+      true,
+      900,
+    );
     await jest.advanceTimersByTimeAsync(250);
     await interactive;
     expect(createSession).toHaveBeenLastCalledWith(
@@ -228,7 +235,9 @@ describe('BrowserbaseSessionService', () => {
     const retrieveSession = jest
       .fn()
       .mockRejectedValueOnce(prematureCloseError())
-      .mockResolvedValueOnce({ connectUrl: 'wss://connect.browserbase.test/s1' });
+      .mockResolvedValueOnce({
+        connectUrl: 'wss://connect.browserbase.test/s1',
+      });
     jest
       .spyOn(service, 'getBrowserbase')
       .mockReturnValue(mockBrowserbaseClient({ retrieveSession }));
@@ -327,7 +336,9 @@ describe('BrowserbaseSessionService', () => {
     expect(StagehandCtor).toHaveBeenCalledWith(
       expect.objectContaining({
         env: 'LOCAL',
-        localBrowserLaunchOptions: { cdpUrl: 'wss://connect.browserbase.test/s1' },
+        localBrowserLaunchOptions: {
+          cdpUrl: 'wss://connect.browserbase.test/s1',
+        },
       }),
     );
   });
@@ -342,7 +353,8 @@ describe('BrowserbaseSessionService', () => {
       service.navigateToUrl('session_1', 'https://github.com'),
     ).resolves.toEqual({
       success: false,
-      error: 'Browserbase is temporarily unavailable. Please retry in a moment.',
+      error:
+        'Browserbase is temporarily unavailable. Please retry in a moment.',
     });
   });
 });

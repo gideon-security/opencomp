@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to UptimeRobot at https://dashboard.uptimerobot.com\n2. Navigate to Integrations & API in the left sidebar\n3. Under the API section, create or copy your Main API Key or Read-Only API Key\n4. Paste the API key below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

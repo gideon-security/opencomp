@@ -118,10 +118,7 @@ export function FrameworksClientPage({
               <MoveRight className="mr-2 h-4 w-4" />
               Move Framework
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => setFamilyDialog({ open: true, family: null })}
-            >
+            <Button variant="outline" onClick={() => setFamilyDialog({ open: true, family: null })}>
               <FolderPlus className="mr-2 h-4 w-4" />
               Create New Framework Family
             </Button>

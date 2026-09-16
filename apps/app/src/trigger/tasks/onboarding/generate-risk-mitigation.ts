@@ -1,7 +1,7 @@
 import { Prisma, RiskStatus, db } from '@db/server';
 import { logger, metadata, queue, tags, task, tasks } from '@gideon-defender/trigger-local';
-import { runOrDeferOnboardingWork } from '../../lib/onboarding-deferred';
 import axios from 'axios';
+import { runOrDeferOnboardingWork } from '../../lib/onboarding-deferred';
 import {
   createRiskMitigationComment,
   findCommentAuthor,
@@ -77,62 +77,61 @@ export const generateRiskMitigation = task({
       dedupeKey: `risk-mitigation:${riskId}`,
       payload,
       run: async () => {
+        const risk = await db.risk.findFirst({ where: { id: riskId, organizationId } });
 
-    const risk = await db.risk.findFirst({ where: { id: riskId, organizationId } });
+        if (!risk) {
+          logger.warn(`Risk ${riskId} not found in org ${organizationId}`);
+          return;
+        }
 
-    if (!risk) {
-      logger.warn(`Risk ${riskId} not found in org ${organizationId}`);
-      return;
-    }
+        // Mark as processing before generating mitigation
+        // Update root onboarding task metadata if available (when triggered from onboarding)
+        // Try root first (onboarding task), then parent (fanout task), then own metadata
+        const metadataHandle = metadata.root ?? metadata.parent ?? metadata;
+        metadataHandle.set(`risk_${riskId}_status`, 'processing');
 
-    // Mark as processing before generating mitigation
-    // Update root onboarding task metadata if available (when triggered from onboarding)
-    // Try root first (onboarding task), then parent (fanout task), then own metadata
-    const metadataHandle = metadata.root ?? metadata.parent ?? metadata;
-    metadataHandle.set(`risk_${riskId}_status`, 'processing');
+        await createRiskMitigationComment(risk, policies, organizationId, authorId ?? '');
 
-    await createRiskMitigationComment(risk, policies, organizationId, authorId ?? '');
+        // Apply onboarding defaults without clobbering a user-managed risk — the
+        // AI drafted a plan, but the user owns the status/assignee. See
+        // buildMitigationDefaultWrites for why each write is scoped.
+        for (const write of buildMitigationDefaultWrites({
+          riskId: risk.id,
+          organizationId,
+          authorId,
+        })) {
+          await db.risk.updateMany(write);
+        }
 
-    // Apply onboarding defaults without clobbering a user-managed risk — the
-    // AI drafted a plan, but the user owns the status/assignee. See
-    // buildMitigationDefaultWrites for why each write is scoped.
-    for (const write of buildMitigationDefaultWrites({
-      riskId: risk.id,
-      organizationId,
-      authorId,
-    })) {
-      await db.risk.updateMany(write);
-    }
+        // Mark as completed after mitigation is done
+        // Update root onboarding task metadata if available
+        metadataHandle.set(`risk_${riskId}_status`, 'completed');
+        metadataHandle.increment('risksCompleted', 1);
+        metadataHandle.decrement('risksRemaining', 1);
 
-    // Mark as completed after mitigation is done
-    // Update root onboarding task metadata if available
-    metadataHandle.set(`risk_${riskId}_status`, 'completed');
-    metadataHandle.increment('risksCompleted', 1);
-    metadataHandle.decrement('risksRemaining', 1);
-
-    // Revalidate only the risk detail page in the individual job
-    try {
-      const detailPath = `/${organizationId}/risk/${riskId}`;
-      const url = `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/revalidate/path`;
-      logger.info('url', { url });
-      await axios.post(
-        url,
-        {
-          path: detailPath,
-          secret: process.env.REVALIDATION_SECRET,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-      logger.info(`Revalidated risk path: ${detailPath}`);
-    } catch (e) {
-      logger.error('Failed to revalidate risk paths after mitigation', { e });
-    }
-        },
-      });
+        // Revalidate only the risk detail page in the individual job
+        try {
+          const detailPath = `/${organizationId}/risk/${riskId}`;
+          const url = `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/revalidate/path`;
+          logger.info('url', { url });
+          await axios.post(
+            url,
+            {
+              path: detailPath,
+              secret: process.env.REVALIDATION_SECRET,
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          );
+          logger.info(`Revalidated risk path: ${detailPath}`);
+        } catch (e) {
+          logger.error('Failed to revalidate risk paths after mitigation', { e });
+        }
+      },
+    });
   },
 });
 

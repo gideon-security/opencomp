@@ -7,7 +7,10 @@ export function Footer() {
 
       <Text className="font-regular text-[14px]">
         AI that handles compliance for you -{' '}
-        <Link href="https://gideondefender.com?utm_source=email&utm_medium=footer">OpenComp</Link>.
+        <Link href="https://gideondefender.com?utm_source=email&utm_medium=footer">
+          OpenComp
+        </Link>
+        .
       </Text>
 
       <Text className="text-xs text-[#B8B8B8]">

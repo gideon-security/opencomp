@@ -7,9 +7,7 @@ describe('isArchivedPolicy', () => {
   });
 
   it('treats framework-sync-archived policies as archived', () => {
-    expect(isArchivedPolicy({ isArchived: false, archivedAt: '2026-05-30T12:00:00Z' })).toBe(
-      true,
-    );
+    expect(isArchivedPolicy({ isArchived: false, archivedAt: '2026-05-30T12:00:00Z' })).toBe(true);
   });
 
   it('treats active policies as not archived', () => {

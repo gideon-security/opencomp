@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { appAvailabilityCheck } from '../checks/app-availability';
 import type { CheckContext, CheckVariableValues } from '../../../types';
+import { appAvailabilityCheck } from '../checks/app-availability';
 import type {
   VercelDeployment,
   VercelDeploymentsResponse,
@@ -55,7 +55,7 @@ async function runWithVariables(
     fail: (result) => {
       failed.push(result.resourceId);
     },
-    fetch: (async <T,>(path: string): Promise<T> => {
+    fetch: (async <T>(path: string): Promise<T> => {
       if (path === '/v9/projects?teamId=team_1' || path === '/v9/projects') {
         return { projects } satisfies VercelProjectsResponse as unknown as T;
       }

@@ -66,10 +66,7 @@ describe('buildFrameworkTreeRows', () => {
 
   it('shows an expanded family’s frameworks indented beneath it, sorted', () => {
     const families = [fam('g', 'Govern', 2)];
-    const { frameworksByFamilyId, ungrouped } = group([
-      fw('b', 'GV.B', 'g'),
-      fw('a', 'GV.A', 'g'),
-    ]);
+    const { frameworksByFamilyId, ungrouped } = group([fw('b', 'GV.B', 'g'), fw('a', 'GV.A', 'g')]);
     const rows = buildFrameworkTreeRows({
       families,
       frameworksByFamilyId,

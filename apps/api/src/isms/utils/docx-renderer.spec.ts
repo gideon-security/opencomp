@@ -1,8 +1,5 @@
 import { renderIsmsDocx } from './docx-renderer';
-import type {
-  IsmsExportMetadata,
-  IsmsExportSection,
-} from './export-shared';
+import type { IsmsExportMetadata, IsmsExportSection } from './export-shared';
 
 // Exercises the REAL renderer (no mock). docx exposes a CommonJS `require`
 // entry, so jest resolves it without transforming node_modules.

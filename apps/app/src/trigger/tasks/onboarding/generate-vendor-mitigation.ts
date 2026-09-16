@@ -1,8 +1,8 @@
 import { isOrgParticipant } from '@/lib/org-participation-rule';
 import { VendorStatus, db } from '@db/server';
 import { logger, metadata, queue, tags, task, tasks } from '@gideon-defender/trigger-local';
-import { runOrDeferOnboardingWork } from '../../lib/onboarding-deferred';
 import axios from 'axios';
+import { runOrDeferOnboardingWork } from '../../lib/onboarding-deferred';
 import {
   createVendorRiskComment,
   findCommentAuthor,
@@ -39,77 +39,76 @@ export const generateVendorMitigation = task({
       dedupeKey: `vendor-mitigation:${vendorId}`,
       payload,
       run: async () => {
+        const vendor = await db.vendor.findFirst({ where: { id: vendorId, organizationId } });
 
-    const vendor = await db.vendor.findFirst({ where: { id: vendorId, organizationId } });
+        if (!vendor) {
+          logger.warn(`Vendor ${vendorId} not found in org ${organizationId}`);
+          return;
+        }
 
-    if (!vendor) {
-      logger.warn(`Vendor ${vendorId} not found in org ${organizationId}`);
-      return;
-    }
+        // Mark as processing before generating mitigation
+        // Update root onboarding task metadata if available (when triggered from onboarding)
+        // Try root first (onboarding task), then parent (fanout task), then own metadata
+        const metadataHandle = metadata.root ?? metadata.parent ?? metadata;
+        metadataHandle.set(`vendor_${vendorId}_status`, 'processing');
 
-    // Mark as processing before generating mitigation
-    // Update root onboarding task metadata if available (when triggered from onboarding)
-    // Try root first (onboarding task), then parent (fanout task), then own metadata
-    const metadataHandle = metadata.root ?? metadata.parent ?? metadata;
-    metadataHandle.set(`vendor_${vendorId}_status`, 'processing');
+        await createVendorRiskComment(vendor, policies, organizationId, authorId ?? '');
 
-    await createVendorRiskComment(vendor, policies, organizationId, authorId ?? '');
+        // Mark vendor as assessed. Only reassign if we have an author;
+        // platform admins are hidden from the assignee UI, so skip them too.
+        let assigneeUpdate: { assigneeId: string | null } | Record<string, never> = {};
+        if (authorId) {
+          const [author, org] = await Promise.all([
+            db.member.findFirst({
+              where: { id: authorId, organizationId, deactivated: false },
+              include: { user: { select: { role: true } } },
+            }),
+            db.organization.findUnique({
+              where: { id: organizationId },
+              select: { isInternal: true },
+            }),
+          ]);
+          // Only assign when the author is a real member of THIS org and is a
+          // participant (fail closed if the lookup missed — never write an unknown
+          // or cross-org member id).
+          assigneeUpdate = {
+            assigneeId:
+              author &&
+              isOrgParticipant(author.user.role, {
+                orgIsInternal: org?.isInternal ?? false,
+              })
+                ? authorId
+                : null,
+          };
+        }
 
-    // Mark vendor as assessed. Only reassign if we have an author;
-    // platform admins are hidden from the assignee UI, so skip them too.
-    let assigneeUpdate: { assigneeId: string | null } | Record<string, never> = {};
-    if (authorId) {
-      const [author, org] = await Promise.all([
-        db.member.findFirst({
-          where: { id: authorId, organizationId, deactivated: false },
-          include: { user: { select: { role: true } } },
-        }),
-        db.organization.findUnique({
-          where: { id: organizationId },
-          select: { isInternal: true },
-        }),
-      ]);
-      // Only assign when the author is a real member of THIS org and is a
-      // participant (fail closed if the lookup missed — never write an unknown
-      // or cross-org member id).
-      assigneeUpdate = {
-        assigneeId:
-          author &&
-          isOrgParticipant(author.user.role, {
-            orgIsInternal: org?.isInternal ?? false,
-          })
-            ? authorId
-            : null,
-      };
-    }
+        await db.vendor.update({
+          where: { id: vendor.id, organizationId },
+          data: {
+            status: VendorStatus.assessed,
+            ...assigneeUpdate,
+          },
+        });
 
-    await db.vendor.update({
-      where: { id: vendor.id, organizationId },
-      data: {
-        status: VendorStatus.assessed,
-        ...assigneeUpdate,
+        // Mark as completed after mitigation is done
+        // Update root onboarding task metadata if available
+        metadataHandle.set(`vendor_${vendorId}_status`, 'completed');
+        metadataHandle.increment('vendorsCompleted', 1);
+        metadataHandle.decrement('vendorsRemaining', 1);
+
+        // Revalidate the vendor detail page so the new comment shows up
+        try {
+          const detailPath = `/${organizationId}/vendors/${vendorId}`;
+          await axios.post(`${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/revalidate/path`, {
+            path: detailPath,
+            secret: process.env.REVALIDATION_SECRET,
+          });
+          logger.info(`Revalidated vendor path: ${detailPath}`);
+        } catch (e) {
+          logger.error('Failed to revalidate vendor paths after mitigation', { e });
+        }
       },
     });
-
-    // Mark as completed after mitigation is done
-    // Update root onboarding task metadata if available
-    metadataHandle.set(`vendor_${vendorId}_status`, 'completed');
-    metadataHandle.increment('vendorsCompleted', 1);
-    metadataHandle.decrement('vendorsRemaining', 1);
-
-    // Revalidate the vendor detail page so the new comment shows up
-    try {
-      const detailPath = `/${organizationId}/vendors/${vendorId}`;
-      await axios.post(`${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/api/revalidate/path`, {
-        path: detailPath,
-        secret: process.env.REVALIDATION_SECRET,
-      });
-      logger.info(`Revalidated vendor path: ${detailPath}`);
-    } catch (e) {
-      logger.error('Failed to revalidate vendor paths after mitigation', { e });
-    }
-        },
-      });
   },
 });
 

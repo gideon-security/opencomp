@@ -66,7 +66,10 @@ export function StepCard({
           </span>
         )}
         {needsFix && (
-          <span className="h-1.5 w-1.5 flex-none rounded-full" style={{ background: 'var(--warning)' }} />
+          <span
+            className="h-1.5 w-1.5 flex-none rounded-full"
+            style={{ background: 'var(--warning)' }}
+          />
         )}
       </button>
     );

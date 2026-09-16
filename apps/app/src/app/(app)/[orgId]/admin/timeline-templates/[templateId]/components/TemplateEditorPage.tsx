@@ -1,5 +1,6 @@
 'use client';
 
+import { TimelinePhaseBar } from '@/app/(app)/[orgId]/overview/components/TimelinePhaseBar';
 import { useAdminTimelineTemplate } from '@/hooks/use-admin-timelines';
 import {
   PageHeader,
@@ -10,21 +11,16 @@ import {
 } from '@trycompai/design-system';
 import { ArrowLeft } from '@trycompai/design-system/icons';
 import Link from 'next/link';
-import { TimelinePhaseBar } from '@/app/(app)/[orgId]/overview/components/TimelinePhaseBar';
-import { TemplateMetadataForm } from './TemplateMetadataForm';
 import { PhaseList } from './PhaseList';
+import { TemplateMetadataForm } from './TemplateMetadataForm';
 
 interface TemplateEditorPageProps {
   orgId: string;
   templateId: string;
 }
 
-export function TemplateEditorPage({
-  orgId,
-  templateId,
-}: TemplateEditorPageProps) {
-  const { template, isLoading, error, mutate } =
-    useAdminTimelineTemplate(templateId);
+export function TemplateEditorPage({ orgId, templateId }: TemplateEditorPageProps) {
+  const { template, isLoading, error, mutate } = useAdminTimelineTemplate(templateId);
 
   const phasesForBar =
     template?.phases
@@ -39,10 +35,7 @@ export function TemplateEditorPage({
         orderIndex: p.orderIndex,
       })) ?? [];
 
-  const totalWeeks = phasesForBar.reduce(
-    (sum, p) => sum + p.durationWeeks,
-    0,
-  );
+  const totalWeeks = phasesForBar.reduce((sum, p) => sum + p.durationWeeks, 0);
 
   if (isLoading) {
     return (
@@ -59,8 +52,7 @@ export function TemplateEditorPage({
       <PageLayout header={<PageHeader title="Error" />}>
         <div className="flex flex-col items-center gap-4 py-12">
           <Text variant="muted">
-            Failed to load template:{' '}
-            {error instanceof Error ? error.message : 'Unknown error'}
+            Failed to load template: {error instanceof Error ? error.message : 'Unknown error'}
           </Text>
           <Link
             href={`/${orgId}/admin/timeline-templates`}
@@ -105,8 +97,8 @@ export function TemplateEditorPage({
           }
         >
           <PageHeaderDescription>
-            {template.framework?.name ?? 'Unknown Framework'} &middot; Cycle{' '}
-            {template.cycleNumber} &middot; {totalWeeks} weeks total
+            {template.framework?.name ?? 'Unknown Framework'} &middot; Cycle {template.cycleNumber}{' '}
+            &middot; {totalWeeks} weeks total
           </PageHeaderDescription>
         </PageHeader>
       }
@@ -126,11 +118,7 @@ export function TemplateEditorPage({
         </Section>
       )}
 
-      <PhaseList
-        phases={template.phases}
-        templateId={template.id}
-        onMutate={mutate}
-      />
+      <PhaseList phases={template.phases} templateId={template.id} onMutate={mutate} />
     </PageLayout>
   );
 }

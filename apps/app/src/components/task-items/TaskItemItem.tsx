@@ -1,23 +1,7 @@
 'use client';
 
-import { useOptimisticTaskItems } from '@/hooks/use-task-items';
 import { useAssignableMembers } from '@/hooks/use-organization-members';
-import { filterMembersByOwnerOrAdmin } from '@/utils/filter-members-by-role';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@gideon-defender/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@gideon-defender/ui/dialog';
+import { usePermissions } from '@/hooks/use-permissions';
 import type {
   TaskItem,
   TaskItemEntityType,
@@ -27,19 +11,29 @@ import type {
   TaskItemSortOrder,
   TaskItemStatus,
 } from '@/hooks/use-task-items';
+import { useOptimisticTaskItems } from '@/hooks/use-task-items';
+import { filterMembersByOwnerOrAdmin } from '@/utils/filter-members-by-role';
+import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
 import {
-  WarningAlt,
-  UpToTop,
-  Meter,
-  ArrowDown,
-  TrashCan,
-} from '@trycompai/design-system/icons';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@gideon-defender/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@gideon-defender/ui/dropdown-menu';
 import { Button, Text } from '@trycompai/design-system';
+import { ArrowDown, Meter, TrashCan, UpToTop, WarningAlt } from '@trycompai/design-system/icons';
+import { format } from 'date-fns';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { usePermissions } from '@/hooks/use-permissions';
-import { STATUS_OPTIONS, PRIORITY_OPTIONS } from './task-item-utils';
+import { PRIORITY_OPTIONS, STATUS_OPTIONS } from './task-item-utils';
 
 const formatShortDate = (date: string | Date): string => {
   try {
@@ -103,7 +97,13 @@ export function TaskItemItem({
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { optimisticUpdate, optimisticDelete } = useOptimisticTaskItems(
-    entityId, entityType, page, limit, sortBy, sortOrder, filters,
+    entityId,
+    entityType,
+    page,
+    limit,
+    sortBy,
+    sortOrder,
+    filters,
   );
   const { members } = useAssignableMembers();
 
@@ -175,14 +175,21 @@ export function TaskItemItem({
           onSelect?.();
         }}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect?.(); }
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSelect?.();
+          }
         }}
       >
         {/* Priority icon — clickable */}
         <div data-stop onClick={(e) => e.stopPropagation()}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild disabled={!canUpdate}>
-              <button type="button" className={`flex items-center focus:outline-none ${PRIORITY_COLOR[taskItem.priority]} ${canUpdate ? 'hover:opacity-70' : ''}`} title={`Priority: ${taskItem.priority}`}>
+              <button
+                type="button"
+                className={`flex items-center focus:outline-none ${PRIORITY_COLOR[taskItem.priority]} ${canUpdate ? 'hover:opacity-70' : ''}`}
+                title={`Priority: ${taskItem.priority}`}
+              >
                 <PriorityIcon className="h-4 w-4" />
               </button>
             </DropdownMenuTrigger>
@@ -210,7 +217,11 @@ export function TaskItemItem({
         <div data-stop onClick={(e) => e.stopPropagation()}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild disabled={!canUpdate}>
-              <button type="button" className={`h-3.5 w-3.5 rounded-full shrink-0 ${canUpdate ? 'hover:ring-2 hover:ring-offset-1 hover:ring-muted-foreground/20' : ''} ${STATUS_DOT[taskItem.status]}`} title={`Status: ${STATUS_OPTIONS.find(o => o.value === taskItem.status)?.label}`} />
+              <button
+                type="button"
+                className={`h-3.5 w-3.5 rounded-full shrink-0 ${canUpdate ? 'hover:ring-2 hover:ring-offset-1 hover:ring-muted-foreground/20' : ''} ${STATUS_DOT[taskItem.status]}`}
+                title={`Status: ${STATUS_OPTIONS.find((o) => o.value === taskItem.status)?.label}`}
+              />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-40">
               {STATUS_OPTIONS.map((opt) => (
@@ -240,8 +251,14 @@ export function TaskItemItem({
           <div data-stop onClick={(e) => e.stopPropagation()}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild disabled={!canUpdate}>
-                <button type="button" className={`focus:outline-none ${canUpdate ? 'cursor-pointer' : ''}`} title={assignee ? (assignee.name || assignee.email) : 'Unassigned'}>
-                  <Avatar className={`h-5 w-5 ${canUpdate ? 'hover:ring-2 hover:ring-offset-1 hover:ring-muted-foreground/20' : ''}`}>
+                <button
+                  type="button"
+                  className={`focus:outline-none ${canUpdate ? 'cursor-pointer' : ''}`}
+                  title={assignee ? assignee.name || assignee.email : 'Unassigned'}
+                >
+                  <Avatar
+                    className={`h-5 w-5 ${canUpdate ? 'hover:ring-2 hover:ring-offset-1 hover:ring-muted-foreground/20' : ''}`}
+                  >
                     <AvatarImage src={assignee?.image || ''} alt={assignee?.name || ''} />
                     <AvatarFallback className="text-[9px]">
                       {assignee?.name ? assignee.name.charAt(0).toUpperCase() : '?'}
@@ -265,7 +282,9 @@ export function TaskItemItem({
                     <div className="flex items-center gap-2">
                       <Avatar className="h-4 w-4">
                         <AvatarImage src={member.user.image || ''} alt={member.user.name || ''} />
-                        <AvatarFallback className="text-[8px]">{member.user.name?.charAt(0).toUpperCase() || '?'}</AvatarFallback>
+                        <AvatarFallback className="text-[8px]">
+                          {member.user.name?.charAt(0).toUpperCase() || '?'}
+                        </AvatarFallback>
                       </Avatar>
                       <span className="truncate">{member.user.name || member.user.email}</span>
                     </div>
@@ -276,7 +295,9 @@ export function TaskItemItem({
           </div>
 
           {/* Date */}
-          <Text size="xs" variant="muted" as="span">{formatShortDate(taskItem.createdAt)}</Text>
+          <Text size="xs" variant="muted" as="span">
+            {formatShortDate(taskItem.createdAt)}
+          </Text>
 
           {/* Delete — hover only */}
           {canDelete && (
@@ -305,7 +326,9 @@ export function TaskItemItem({
             <DialogDescription>Are you sure? This cannot be undone.</DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={isDeleting}>Cancel</Button>
+            <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={isDeleting}>
+              Cancel
+            </Button>
             <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? 'Deleting…' : 'Delete'}
             </Button>

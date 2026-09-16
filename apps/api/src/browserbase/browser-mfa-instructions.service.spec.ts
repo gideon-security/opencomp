@@ -4,7 +4,9 @@ import { BrowserMfaInstructionsService } from './browser-mfa-instructions.servic
 jest.mock('ai', () => ({ generateObject: jest.fn() }));
 jest.mock('@ai-sdk/anthropic', () => ({ anthropic: () => 'mock-model' }));
 
-const mockGenerate = generateObject as jest.MockedFunction<typeof generateObject>;
+const mockGenerate = generateObject as jest.MockedFunction<
+  typeof generateObject
+>;
 
 // Minimal shape the service reads from generateObject's result.
 const asResult = (object: { steps: string[]; confident: boolean }) =>
@@ -15,7 +17,9 @@ const firecrawlOk = (markdown: string) =>
     ok: true,
     json: async () => ({
       success: true,
-      data: { web: [{ url: 'https://docs.vendor.com/2fa', title: '2FA', markdown }] },
+      data: {
+        web: [{ url: 'https://docs.vendor.com/2fa', title: '2FA', markdown }],
+      },
     }),
   }) as unknown as Response;
 
@@ -42,7 +46,10 @@ describe('BrowserMfaInstructionsService', () => {
 
   it('returns generated steps when the model is confident', async () => {
     mockGenerate.mockResolvedValueOnce(
-      asResult({ steps: ['Open Security', 'Add authenticator'], confident: true }),
+      asResult({
+        steps: ['Open Security', 'Add authenticator'],
+        confident: true,
+      }),
     );
 
     const result = await service.getInstructions('https://github.com/login');
@@ -114,7 +121,9 @@ describe('BrowserMfaInstructionsService', () => {
       asResult({ steps: ['Open Security'], confident: true }),
     );
 
-    const first = await service.getInstructions('https://console.aws.amazon.com/iam');
+    const first = await service.getInstructions(
+      'https://console.aws.amazon.com/iam',
+    );
     const second = await service.getInstructions('console.aws.amazon.com');
 
     expect(first.hostname).toBe('console.aws.amazon.com');
@@ -126,10 +135,15 @@ describe('BrowserMfaInstructionsService', () => {
   it('grounds the prompt in vendor docs when Firecrawl returns results', async () => {
     process.env.FIRECRAWL_API_KEY = 'test-key';
     mockFetch.mockResolvedValueOnce(
-      firecrawlOk('Go to Settings > Security > Add authenticator app and click "setup key".'),
+      firecrawlOk(
+        'Go to Settings > Security > Add authenticator app and click "setup key".',
+      ),
     );
     mockGenerate.mockResolvedValueOnce(
-      asResult({ steps: ['Open Settings', 'Add authenticator app'], confident: true }),
+      asResult({
+        steps: ['Open Settings', 'Add authenticator app'],
+        confident: true,
+      }),
     );
 
     const result = await service.getInstructions('github.com');

@@ -8,7 +8,13 @@ import { useParams } from 'next/navigation';
 import type { FleetPolicy, Host } from '../types';
 import { DeviceDropdownMenu } from './DeviceDropdownMenu';
 
-function UserNameCell({ userName, memberId }: { userName: string | null | undefined; memberId: string | undefined }) {
+function UserNameCell({
+  userName,
+  memberId,
+}: {
+  userName: string | null | undefined;
+  memberId: string | undefined;
+}) {
   const params = useParams();
   const orgId = params?.orgId as string;
 
@@ -79,8 +85,8 @@ export function getEmployeeDevicesColumns(isCurrentUserOwner: boolean): ColumnDe
       enableColumnFilter: false,
       enableSorting: false,
       cell: ({ row }) => (
-          <DeviceDropdownMenu host={row.original} isCurrentUserOwner={isCurrentUserOwner} />
-        ),
-    }
+        <DeviceDropdownMenu host={row.original} isCurrentUserOwner={isCurrentUserOwner} />
+      ),
+    },
   ];
 }

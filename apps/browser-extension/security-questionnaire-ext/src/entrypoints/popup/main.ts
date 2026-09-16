@@ -1,12 +1,8 @@
 import { browser } from 'wxt/browser';
 import { compMarkSvg } from '../../lib/brand';
-import { getHost } from '../sidepanel/active-tab';
-import {
-  getResponseError,
-  isOkResponse,
-  isPanelStateResponse,
-} from '../../lib/response-guards';
+import { getResponseError, isOkResponse, isPanelStateResponse } from '../../lib/response-guards';
 import type { PanelState } from '../../lib/types';
+import { getHost } from '../sidepanel/active-tab';
 
 const app = document.getElementById('app');
 if (!app) throw new Error('Popup root not found');
@@ -146,7 +142,9 @@ async function handleOrgChange(organizationId: string): Promise<void> {
     tabId: activeTab?.id,
   });
   if (!isOkResponse(response)) {
-    appRoot.innerHTML = shell(`<div class="status">${escapeHtml(getResponseError(response))}</div>`);
+    appRoot.innerHTML = shell(
+      `<div class="status">${escapeHtml(getResponseError(response))}</div>`,
+    );
     return;
   }
   await render('Workspace updated.');
@@ -170,10 +168,12 @@ async function handleDetectionToggle(): Promise<void> {
     host: panelState.queue.host,
     enabled,
   });
-  await browser.tabs.sendMessage(activeTab.id, {
-    type: 'comp:set-detection-enabled',
-    enabled,
-  }).catch(() => undefined);
+  await browser.tabs
+    .sendMessage(activeTab.id, {
+      type: 'comp:set-detection-enabled',
+      enabled,
+    })
+    .catch(() => undefined);
   await render(enabled ? 'Detection enabled.' : 'Detection disabled.');
 }
 
@@ -196,5 +196,10 @@ function escapeHtml(value: string): string {
 }
 
 function isAuthUpdate(value: unknown): value is { type: 'comp:auth-updated' } {
-  return typeof value === 'object' && value !== null && 'type' in value && value.type === 'comp:auth-updated';
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'type' in value &&
+    value.type === 'comp:auth-updated'
+  );
 }

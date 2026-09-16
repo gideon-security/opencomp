@@ -86,7 +86,11 @@ describe('collectPlatformData', () => {
       vendors: [
         { name: 'AWS', category: 'cloud', isSubProcessor: true },
         { name: 'GCP', category: 'infrastructure', isSubProcessor: false },
-        { name: 'Stripe', category: 'software_as_a_service', isSubProcessor: true },
+        {
+          name: 'Stripe',
+          category: 'software_as_a_service',
+          isSubProcessor: true,
+        },
         { name: 'Acme HR', category: 'hr', isSubProcessor: false },
       ],
     });

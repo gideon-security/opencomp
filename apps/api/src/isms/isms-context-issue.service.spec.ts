@@ -4,7 +4,11 @@ import { IsmsContextIssueService } from './isms-context-issue.service';
 
 jest.mock('@db', () => {
   const db = {
-    ismsDocument: { findFirst: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
+    ismsDocument: {
+      findFirst: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
     ismsContextIssue: {
       findFirst: jest.fn(),
       count: jest.fn(),

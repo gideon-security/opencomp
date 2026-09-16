@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  Button,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from '@trycompai/design-system';
+import { Button, InputGroup, InputGroupAddon, InputGroupInput } from '@trycompai/design-system';
 import type { LoginAnalysis } from '../../hooks/types';
 import type { Step } from './connect-flow-constants';
 import { stripScheme } from './connect-url';
@@ -86,18 +81,14 @@ export function ConnectFlowStage({
             Finding the sign-in page and checking how it works
           </div>
           <div className="text-xs text-muted-foreground">
-            This runs in the background — usually under a minute. You can switch pages
-            and come back; we&apos;ll pick up where you left off.
+            This runs in the background — usually under a minute. You can switch pages and come
+            back; we&apos;ll pick up where you left off.
           </div>
         </div>
       )}
 
       {step === 'choose' && analysis && (
-        <ConnectMethodChooser
-          analysis={analysis}
-          onChoose={onChoose}
-          onCancel={onCancel}
-        />
+        <ConnectMethodChooser analysis={analysis} onChoose={onChoose} onCancel={onCancel} />
       )}
 
       {step === 'capture' && (
@@ -114,8 +105,8 @@ export function ConnectFlowStage({
         <div className="flex w-full max-w-md flex-col gap-3 text-center animate-in fade-in-0 duration-500">
           <div className="text-base text-foreground">{host} is connected</div>
           <div className="text-sm text-muted-foreground leading-relaxed">
-            We saved the session — OpenComp will sign in on its own for scheduled runs.
-            Next, tell it what to capture as evidence.
+            We saved the session — OpenComp will sign in on its own for scheduled runs. Next, tell
+            it what to capture as evidence.
           </div>
           <div className="mt-1 flex justify-center">
             <Button onClick={onConnected}>Add an instruction</Button>

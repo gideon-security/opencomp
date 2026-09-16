@@ -1,27 +1,28 @@
 'use client';
 
-import { EditorContent, useEditor } from '@tiptap/react';
+import { useOrganizationMembers } from '@/hooks/use-organization-members';
+import {
+  createMentionExtension,
+  type MentionUser,
+  validateAndFixTipTapContent,
+} from '@gideon-defender/ui/editor';
+import { defaultExtensions } from '@gideon-defender/ui/editor/extensions';
 import type { JSONContent } from '@tiptap/react';
-import { useMemo, useEffect } from 'react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import type { CSSProperties } from 'react';
+import { useEffect, useMemo } from 'react';
 
 type EditorSizeStyle = CSSProperties & {
   '--editor-min-height': string;
   '--editor-height': string;
 };
-import { defaultExtensions } from '@gideon-defender/ui/editor/extensions';
-import { createMentionExtension, type MentionUser, validateAndFixTipTapContent } from '@gideon-defender/ui/editor';
-import { useOrganizationMembers } from '@/hooks/use-organization-members';
 
 interface CommentContentViewProps {
   content: string;
   className?: string;
 }
 
-export function CommentContentView({
-  content,
-  className,
-}: CommentContentViewProps) {
+export function CommentContentView({ content, className }: CommentContentViewProps) {
   const { members } = useOrganizationMembers();
   const editorSizeStyles: EditorSizeStyle = useMemo(
     () => ({
@@ -38,15 +39,15 @@ export function CommentContentView({
     try {
       // Try to parse as JSON first
       const parsed = typeof content === 'string' ? JSON.parse(content) : content;
-      
+
       // Validate and fix TipTap content
       const validated = validateAndFixTipTapContent(parsed);
-      
+
       // Check if it's a valid TipTap JSON structure
       if (validated && typeof validated === 'object' && validated.type === 'doc') {
         return validated as JSONContent;
       }
-      
+
       // If not valid JSON structure, return null to show as plain text
       return null;
     } catch {
@@ -80,10 +81,7 @@ export function CommentContentView({
 
   // Memoize extensions array to prevent recreation
   const extensions = useMemo(
-    () => [
-      ...defaultExtensions({ placeholder: '', openLinksOnClick: true }),
-      mentionExtension,
-    ],
+    () => [...defaultExtensions({ placeholder: '', openLinksOnClick: true }), mentionExtension],
     [mentionExtension],
   );
 
@@ -95,7 +93,8 @@ export function CommentContentView({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: 'prose-sm max-w-none focus:outline-none text-sm [&_p]:m-0 [&_p]:p-0 [&_p]:text-sm [&_p]:leading-normal [&_li]:text-sm [&_li]:leading-normal',
+        class:
+          'prose-sm max-w-none focus:outline-none text-sm [&_p]:m-0 [&_p]:p-0 [&_p]:text-sm [&_p]:leading-normal [&_li]:text-sm [&_li]:leading-normal',
       },
     },
   });
@@ -152,4 +151,3 @@ export function CommentContentView({
     </div>
   );
 }
-

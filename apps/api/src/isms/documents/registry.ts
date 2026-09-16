@@ -101,7 +101,8 @@ export function deriveNarrativeForType({
   if (type === 'isms_scope') return deriveScopeNarrative(data);
   if (type === 'leadership_commitment') return deriveLeadershipNarrative(data);
   if (type === 'internal_audit') return deriveInternalAuditNarrative(data);
-  if (type === 'management_review') return deriveManagementReviewNarrative(data);
+  if (type === 'management_review')
+    return deriveManagementReviewNarrative(data);
   if (type === 'risk_assessment_methodology') {
     return deriveRiskMethodologyNarrative(data);
   }

@@ -1,8 +1,6 @@
 'use client';
 
 import { useApi } from '@/hooks/use-api';
-import { Section, Stack, Text } from '@trycompai/design-system';
-import { RecentlyViewed } from '@trycompai/design-system/icons';
 import {
   Dialog,
   DialogContent,
@@ -10,6 +8,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
+import { Section, Stack, Text } from '@trycompai/design-system';
+import { RecentlyViewed } from '@trycompai/design-system/icons';
 import { formatDistanceToNow } from 'date-fns';
 import { Copy, ExternalLink, Loader2 } from 'lucide-react';
 import { useState } from 'react';
@@ -30,7 +30,10 @@ interface RemediationActionItem {
   createdAt: string;
 }
 
-const STATUS_BADGE: Record<string, { variant: 'default' | 'destructive' | 'outline' | 'secondary'; label: string }> = {
+const STATUS_BADGE: Record<
+  string,
+  { variant: 'default' | 'destructive' | 'outline' | 'secondary'; label: string }
+> = {
   success: { variant: 'default', label: 'Success' },
   failed: { variant: 'destructive', label: 'Failed' },
   rolled_back: { variant: 'outline', label: 'Rolled Back' },
@@ -52,14 +55,17 @@ function formatRemediationKey(key: string): string {
     return true;
   });
   if (meaningful.length === 0) return key;
-  return meaningful
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
+  return meaningful.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
 const getInitials = (name: string | null) =>
   name
-    ? name.split(' ').map((p) => p[0]).join('').toUpperCase().slice(0, 2)
+    ? name
+        .split(' ')
+        .map((p) => p[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
     : 'S';
 
 function RemediationRow({
@@ -76,17 +82,19 @@ function RemediationRow({
   const badge = STATUS_BADGE[action.status] ?? STATUS_BADGE.executing;
   const canRollback = action.status === 'success';
   const hasError =
-    action.errorMessage &&
-    (action.status === 'failed' || action.status === 'rollback_failed');
+    action.errorMessage && (action.status === 'failed' || action.status === 'rollback_failed');
 
   return (
     <div className="flex items-center gap-2">
-      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${badge.variant === 'default' ? 'bg-emerald-500' : badge.variant === 'destructive' ? 'bg-red-500' : 'bg-gray-400'}`} />
+      <span
+        className={`h-1.5 w-1.5 shrink-0 rounded-full ${badge.variant === 'default' ? 'bg-emerald-500' : badge.variant === 'destructive' ? 'bg-red-500' : 'bg-gray-400'}`}
+      />
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm">
-          <span className="font-medium">{displayName}</span>
-          {' '}
-          <span className="text-muted-foreground">applied {formatRemediationKey(action.remediationKey)}</span>
+          <span className="font-medium">{displayName}</span>{' '}
+          <span className="text-muted-foreground">
+            applied {formatRemediationKey(action.remediationKey)}
+          </span>
         </p>
         <p className="text-xs text-muted-foreground mt-0.5">{timeAgo}</p>
       </div>
@@ -133,15 +141,15 @@ function RollbackConfirmDialog({
         <DialogHeader>
           <DialogTitle>Rollback</DialogTitle>
           <DialogDescription>
-            This will undo the fix and revert your {providerSlug === 'azure' ? 'Azure' : providerSlug === 'gcp' ? 'GCP' : 'AWS'} infrastructure to its previous state.
+            This will undo the fix and revert your{' '}
+            {providerSlug === 'azure' ? 'Azure' : providerSlug === 'gcp' ? 'GCP' : 'AWS'}{' '}
+            infrastructure to its previous state.
           </DialogDescription>
         </DialogHeader>
 
         <div className="rounded-lg border bg-muted/20 p-3 space-y-1.5">
           <p className="text-sm font-medium">{friendlyKey}</p>
-          {appliedAt && (
-            <p className="text-xs text-muted-foreground">Applied {appliedAt}</p>
-          )}
+          {appliedAt && <p className="text-xs text-muted-foreground">Applied {appliedAt}</p>}
         </div>
 
         {/* Permission error for rollback */}
@@ -150,7 +158,12 @@ function RollbackConfirmDialog({
             <p className="text-xs font-medium">Missing permissions for rollback</p>
             <div className="flex flex-wrap gap-1">
               {permError.missingActions.map((a) => (
-                <span key={a} className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-mono text-foreground/70">{a}</span>
+                <span
+                  key={a}
+                  className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-mono text-foreground/70"
+                >
+                  {a}
+                </span>
               ))}
             </div>
             <div className="flex gap-1.5">
@@ -166,13 +179,23 @@ function RollbackConfirmDialog({
                 Copy Script
               </button>
               <a
-                href={providerSlug === 'azure' ? 'https://portal.azure.com/#cloudshell/' : providerSlug === 'gcp' ? 'https://console.cloud.google.com/cloudshell' : 'https://console.aws.amazon.com/cloudshell'}
+                href={
+                  providerSlug === 'azure'
+                    ? 'https://portal.azure.com/#cloudshell/'
+                    : providerSlug === 'gcp'
+                      ? 'https://console.cloud.google.com/cloudshell'
+                      : 'https://console.aws.amazon.com/cloudshell'
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 rounded border bg-background px-2 py-0.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ExternalLink className="h-2.5 w-2.5" />
-                {providerSlug === 'azure' ? 'Azure Shell' : providerSlug === 'gcp' ? 'Cloud Shell' : 'CloudShell'}
+                {providerSlug === 'azure'
+                  ? 'Azure Shell'
+                  : providerSlug === 'gcp'
+                    ? 'Cloud Shell'
+                    : 'CloudShell'}
               </a>
             </div>
           </div>
@@ -201,7 +224,13 @@ function RollbackConfirmDialog({
   );
 }
 
-export function RemediationHistorySection({ connectionId, providerSlug }: { connectionId: string; providerSlug?: string }) {
+export function RemediationHistorySection({
+  connectionId,
+  providerSlug,
+}: {
+  connectionId: string;
+  providerSlug?: string;
+}) {
   const api = useApi();
   const [rollbackTarget, setRollbackTarget] = useState<RemediationActionItem | null>(null);
   const [isRollingBack, setIsRollingBack] = useState(false);
@@ -215,7 +244,11 @@ export function RemediationHistorySection({ connectionId, providerSlug }: { conn
     { revalidateOnFocus: false },
   );
 
-  const allActions = Array.isArray(data?.data?.data) ? data.data.data : (Array.isArray(data?.data) ? data.data : []);
+  const allActions = Array.isArray(data?.data?.data)
+    ? data.data.data
+    : Array.isArray(data?.data)
+      ? data.data
+      : [];
   const actions = allActions.filter((a) => a.status !== 'failed' && a.status !== 'executing');
 
   const handleRollback = async () => {
@@ -228,10 +261,7 @@ export function RemediationHistorySection({ connectionId, providerSlug }: { conn
         message?: string;
         missingActions?: string[];
         script?: string;
-      }>(
-        `/v1/cloud-security/remediation/${rollbackTarget.id}/rollback`,
-        {},
-      );
+      }>(`/v1/cloud-security/remediation/${rollbackTarget.id}/rollback`, {});
       if (response.error) {
         // Check for structured permission error
         const errData = response.data;
@@ -283,11 +313,7 @@ export function RemediationHistorySection({ connectionId, providerSlug }: { conn
       <Section title="Remediations">
         <div className="divide-y [&>*]:py-2.5">
           {actions.map((action) => (
-            <RemediationRow
-              key={action.id}
-              action={action}
-              onRollback={setRollbackTarget}
-            />
+            <RemediationRow key={action.id} action={action} onRollback={setRollbackTarget} />
           ))}
         </div>
       </Section>

@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type {
-  CheckContext,
-  CheckVariableValues,
-  IntegrationCheck,
-} from '../../../../types';
+import type { CheckContext, CheckVariableValues, IntegrationCheck } from '../../../../types';
 import { azureManifest } from '../../index';
 import { rbacLeastPrivilegeCheck } from '../entra-id';
 import { environmentSeparationCheck } from '../environment-separation';
@@ -21,11 +17,7 @@ import {
   postgresqlFlexibleTlsCheck,
 } from '../postgresql-flexible';
 import { sqlAuditingCheck, sqlPublicAccessCheck, sqlTlsCheck } from '../sql';
-import {
-  storageEncryptionCheck,
-  storageHttpsTlsCheck,
-  storagePublicAccessCheck,
-} from '../storage';
+import { storageEncryptionCheck, storageHttpsTlsCheck, storagePublicAccessCheck } from '../storage';
 
 interface Captured {
   passed: string[];
@@ -62,7 +54,7 @@ async function run(
         remediation: r.remediation,
         evidence: r.evidence,
       }),
-    fetch: (async <T,>(url: string): Promise<T> => fetchFn(url) as T) as CheckContext['fetch'],
+    fetch: (async <T>(url: string): Promise<T> => fetchFn(url) as T) as CheckContext['fetch'],
     post: (async () => ({})) as CheckContext['post'],
     put: (async () => ({})) as CheckContext['put'],
     patch: (async () => ({})) as CheckContext['patch'],
@@ -156,35 +148,51 @@ describe('Azure storage checks', () => {
   it('encryption fails when a service is disabled, passes when enabled', async () => {
     const bad = await run(
       storageEncryptionCheck,
-      storageList({ encryption: { services: { blob: { enabled: false }, file: { enabled: true } } } }),
+      storageList({
+        encryption: { services: { blob: { enabled: false }, file: { enabled: true } } },
+      }),
     );
     expect(bad.failed).toHaveLength(1);
 
     const ok = await run(
       storageEncryptionCheck,
-      storageList({ encryption: { services: { blob: { enabled: true }, file: { enabled: true } } } }),
+      storageList({
+        encryption: { services: { blob: { enabled: true }, file: { enabled: true } } },
+      }),
     );
     expect(ok.passed).toHaveLength(1);
   });
 });
 
 describe('Azure SQL checks', () => {
-  const server = { id: '/subscriptions/sub-1/srv1', name: 'srv1', properties: {} as Record<string, unknown> };
+  const server = {
+    id: '/subscriptions/sub-1/srv1',
+    name: 'srv1',
+    properties: {} as Record<string, unknown>,
+  };
 
   it('tls fails below 1.2 and on None, passes at 1.2', async () => {
-    const bad = await run(sqlTlsCheck, () => ({ value: [{ ...server, properties: { minimalTlsVersion: '1.0' } }] }));
+    const bad = await run(sqlTlsCheck, () => ({
+      value: [{ ...server, properties: { minimalTlsVersion: '1.0' } }],
+    }));
     expect(bad.failed).toHaveLength(1);
     // 'None' is lexically > '1.2' but means no TLS floor → must fail
-    const none = await run(sqlTlsCheck, () => ({ value: [{ ...server, properties: { minimalTlsVersion: 'None' } }] }));
+    const none = await run(sqlTlsCheck, () => ({
+      value: [{ ...server, properties: { minimalTlsVersion: 'None' } }],
+    }));
     expect(none.failed).toHaveLength(1);
-    const ok = await run(sqlTlsCheck, () => ({ value: [{ ...server, properties: { minimalTlsVersion: '1.2' } }] }));
+    const ok = await run(sqlTlsCheck, () => ({
+      value: [{ ...server, properties: { minimalTlsVersion: '1.2' } }],
+    }));
     expect(ok.passed).toHaveLength(1);
   });
 
   it('public-access flags wide-open firewall as critical', async () => {
     const { failed } = await run(sqlPublicAccessCheck, (url) =>
       url.includes('/firewallRules')
-        ? { value: [{ properties: { startIpAddress: '0.0.0.0', endIpAddress: '255.255.255.255' } }] }
+        ? {
+            value: [{ properties: { startIpAddress: '0.0.0.0', endIpAddress: '255.255.255.255' } }],
+          }
         : { value: [{ ...server, properties: { publicNetworkAccess: 'Disabled' } }] },
     );
     expect(failed).toHaveLength(1);
@@ -209,9 +217,7 @@ describe('Azure SQL checks', () => {
     });
     expect(passed).toHaveLength(0);
     expect(
-      failed.some(
-        (f) => /Could not read SQL firewall/.test(f.title) && f.severity === 'medium',
-      ),
+      failed.some((f) => /Could not read SQL firewall/.test(f.title) && f.severity === 'medium'),
     ).toBe(true);
   });
 
@@ -237,11 +243,25 @@ describe('Azure Key Vault checks', () => {
   });
 
   it('protection fails when soft delete off, passes when hardened', async () => {
-    const bad = await run(keyVaultProtectionCheck, vaultList({ enableSoftDelete: false, enablePurgeProtection: true, publicNetworkAccess: 'Disabled' }));
+    const bad = await run(
+      keyVaultProtectionCheck,
+      vaultList({
+        enableSoftDelete: false,
+        enablePurgeProtection: true,
+        publicNetworkAccess: 'Disabled',
+      }),
+    );
     expect(bad.failed).toHaveLength(1);
     expect(bad.failed[0]!.severity).toBe('high');
 
-    const ok = await run(keyVaultProtectionCheck, vaultList({ enableSoftDelete: true, enablePurgeProtection: true, publicNetworkAccess: 'Disabled' }));
+    const ok = await run(
+      keyVaultProtectionCheck,
+      vaultList({
+        enableSoftDelete: true,
+        enablePurgeProtection: true,
+        publicNetworkAccess: 'Disabled',
+      }),
+    );
     expect(ok.passed).toHaveLength(1);
   });
 
@@ -261,7 +281,17 @@ describe('Azure NSG check', () => {
   it('flags RDP open to internet as critical', async () => {
     const { failed } = await run(
       nsgNoOpenPortsCheck,
-      nsg({ name: 'r1', properties: { direction: 'Inbound', access: 'Allow', protocol: 'Tcp', sourceAddressPrefix: '*', destinationPortRange: '3389', priority: 100 } }),
+      nsg({
+        name: 'r1',
+        properties: {
+          direction: 'Inbound',
+          access: 'Allow',
+          protocol: 'Tcp',
+          sourceAddressPrefix: '*',
+          destinationPortRange: '3389',
+          priority: 100,
+        },
+      }),
     );
     expect(failed.some((f) => f.severity === 'critical')).toBe(true);
   });
@@ -269,7 +299,17 @@ describe('Azure NSG check', () => {
   it('passes when no internet-open sensitive ports', async () => {
     const { passed } = await run(
       nsgNoOpenPortsCheck,
-      nsg({ name: 'r1', properties: { direction: 'Inbound', access: 'Allow', protocol: 'Tcp', sourceAddressPrefix: '10.0.0.0/8', destinationPortRange: '22', priority: 100 } }),
+      nsg({
+        name: 'r1',
+        properties: {
+          direction: 'Inbound',
+          access: 'Allow',
+          protocol: 'Tcp',
+          sourceAddressPrefix: '10.0.0.0/8',
+          destinationPortRange: '22',
+          priority: 100,
+        },
+      }),
     );
     expect(passed).toHaveLength(1);
   });
@@ -277,13 +317,33 @@ describe('Azure NSG check', () => {
   it('flags IPv6 ::/0 source and port ranges covering sensitive ports', async () => {
     const ipv6 = await run(
       nsgNoOpenPortsCheck,
-      nsg({ name: 'r6', properties: { direction: 'Inbound', access: 'Allow', protocol: 'Tcp', sourceAddressPrefix: '::/0', destinationPortRange: '3389', priority: 100 } }),
+      nsg({
+        name: 'r6',
+        properties: {
+          direction: 'Inbound',
+          access: 'Allow',
+          protocol: 'Tcp',
+          sourceAddressPrefix: '::/0',
+          destinationPortRange: '3389',
+          priority: 100,
+        },
+      }),
     );
     expect(ipv6.failed.some((f) => f.severity === 'critical')).toBe(true);
 
     const range = await run(
       nsgNoOpenPortsCheck,
-      nsg({ name: 'rr', properties: { direction: 'Inbound', access: 'Allow', protocol: 'Tcp', sourceAddressPrefix: '*', destinationPortRange: '20-30', priority: 100 } }),
+      nsg({
+        name: 'rr',
+        properties: {
+          direction: 'Inbound',
+          access: 'Allow',
+          protocol: 'Tcp',
+          sourceAddressPrefix: '*',
+          destinationPortRange: '20-30',
+          priority: 100,
+        },
+      }),
     );
     expect(range.failed.some((f) => f.title.match(/SSH/))).toBe(true);
   });
@@ -291,7 +351,17 @@ describe('Azure NSG check', () => {
   it('treats an explicit all-ports range (0-65535) as wide open', async () => {
     const { failed } = await run(
       nsgNoOpenPortsCheck,
-      nsg({ name: 'rall', properties: { direction: 'Inbound', access: 'Allow', protocol: 'Tcp', sourceAddressPrefix: '*', destinationPortRange: '0-65535', priority: 100 } }),
+      nsg({
+        name: 'rall',
+        properties: {
+          direction: 'Inbound',
+          access: 'Allow',
+          protocol: 'Tcp',
+          sourceAddressPrefix: '*',
+          destinationPortRange: '0-65535',
+          priority: 100,
+        },
+      }),
     );
     // covers SSH + RDP just like '*'
     expect(failed.some((f) => f.severity === 'critical')).toBe(true);
@@ -300,7 +370,17 @@ describe('Azure NSG check', () => {
   it('does not flag a UDP rule on a TCP-only sensitive port', async () => {
     const { passed, failed } = await run(
       nsgNoOpenPortsCheck,
-      nsg({ name: 'rudp', properties: { direction: 'Inbound', access: 'Allow', protocol: 'Udp', sourceAddressPrefix: '*', destinationPortRange: '22', priority: 100 } }),
+      nsg({
+        name: 'rudp',
+        properties: {
+          direction: 'Inbound',
+          access: 'Allow',
+          protocol: 'Udp',
+          sourceAddressPrefix: '*',
+          destinationPortRange: '22',
+          priority: 100,
+        },
+      }),
     );
     expect(failed).toHaveLength(0);
     expect(passed).toHaveLength(1);
@@ -311,7 +391,14 @@ describe('Azure RBAC (entra) check', () => {
   it('fails on >5 privileged assignments', async () => {
     const { failed } = await run(rbacLeastPrivilegeCheck, (url) => {
       if (url.includes('roleDefinitions')) {
-        return { value: [{ id: 'owner', properties: { roleName: 'Owner', type: 'BuiltInRole', permissions: [] } }] };
+        return {
+          value: [
+            {
+              id: 'owner',
+              properties: { roleName: 'Owner', type: 'BuiltInRole', permissions: [] },
+            },
+          ],
+        };
       }
       return {
         value: Array.from({ length: 6 }, () => ({
@@ -327,7 +414,14 @@ describe('Azure RBAC (entra) check', () => {
       if (url.includes('roleDefinitions')) {
         return {
           value: [
-            { id: 'cr', properties: { roleName: 'Custom', type: 'CustomRole', permissions: [{ actions: [], dataActions: ['*'] }] } },
+            {
+              id: 'cr',
+              properties: {
+                roleName: 'Custom',
+                type: 'CustomRole',
+                permissions: [{ actions: [], dataActions: ['*'] }],
+              },
+            },
           ],
         };
       }
@@ -339,9 +433,20 @@ describe('Azure RBAC (entra) check', () => {
   it('passes with few privileged, no wildcard roles', async () => {
     const { passed } = await run(rbacLeastPrivilegeCheck, (url) => {
       if (url.includes('roleDefinitions')) {
-        return { value: [{ id: 'reader', properties: { roleName: 'Reader', type: 'BuiltInRole', permissions: [] } }] };
+        return {
+          value: [
+            {
+              id: 'reader',
+              properties: { roleName: 'Reader', type: 'BuiltInRole', permissions: [] },
+            },
+          ],
+        };
       }
-      return { value: [{ properties: { roleDefinitionId: 'reader', principalId: 'p', principalType: 'User' } }] };
+      return {
+        value: [
+          { properties: { roleDefinitionId: 'reader', principalId: 'p', principalType: 'User' } },
+        ],
+      };
     });
     expect(passed).toHaveLength(1);
   });
@@ -366,7 +471,9 @@ describe('Azure RBAC (entra) check', () => {
       }
       if (url.includes('roleDefinitions')) return { value: [] };
       return {
-        value: [{ properties: { roleDefinitionId: mgRoleId, principalId: 'p', principalType: 'User' } }],
+        value: [
+          { properties: { roleDefinitionId: mgRoleId, principalId: 'p', principalType: 'User' } },
+        ],
       };
     });
     expect(failed.some((f) => /Custom role with wildcard/.test(f.title))).toBe(true);
@@ -503,10 +610,7 @@ describe('Azure MySQL Flexible Server TLS check', () => {
   });
 
   it('no-ops when there are no MySQL flexible servers (0 passed, 0 failed)', async () => {
-    const { passed, failed } = await run(
-      mysqlFlexibleTlsCheck,
-      mysqlFetch('ON', 'TLSv1.2', []),
-    );
+    const { passed, failed } = await run(mysqlFlexibleTlsCheck, mysqlFetch('ON', 'TLSv1.2', []));
     expect(passed).toHaveLength(0);
     expect(failed).toHaveLength(0);
   });
@@ -639,10 +743,13 @@ describe('Azure read-failure remediation gating', () => {
   it('sql auditing: transient read says re-run; denied keeps the grant hint', async () => {
     const transient = await run(sqlAuditingCheck, (url: string) => {
       if (url.includes('/providers/Microsoft.Sql/servers?')) return { value: [SERVER] };
-      if (url.includes('/auditingSettings/')) throw httpError(500, 'HTTP 500: Internal Server Error');
+      if (url.includes('/auditingSettings/'))
+        throw httpError(500, 'HTTP 500: Internal Server Error');
       return {};
     });
-    const f = transient.failed.find((x) => x.title.includes('Could not read SQL auditing settings'));
+    const f = transient.failed.find((x) =>
+      x.title.includes('Could not read SQL auditing settings'),
+    );
     expect(f).toBeDefined();
     expect(f!.remediation).toMatch(/re-run/i);
     expect(f!.remediation).not.toContain('auditingSettings/read');
@@ -650,7 +757,8 @@ describe('Azure read-failure remediation gating', () => {
 
     const denied = await run(sqlAuditingCheck, (url: string) => {
       if (url.includes('/providers/Microsoft.Sql/servers?')) return { value: [SERVER] };
-      if (url.includes('/auditingSettings/')) throw httpError(403, 'HTTP 403: Forbidden - AuthorizationFailed');
+      if (url.includes('/auditingSettings/'))
+        throw httpError(403, 'HTTP 403: Forbidden - AuthorizationFailed');
       return {};
     });
     const fd = denied.failed.find((x) => x.title.includes('Could not read SQL auditing settings'));
@@ -814,7 +922,8 @@ describe('Azure subscription cap', () => {
 
 describe('entra-id multi-subscription wildcard isolation (cubic finding on #3090)', () => {
   it('an MG wildcard role referenced only by one subscription is reported exactly once', async () => {
-    const MG_DEF_ID = '/providers/Microsoft.Management/managementGroups/mg1/providers/Microsoft.Authorization/roleDefinitions/wild';
+    const MG_DEF_ID =
+      '/providers/Microsoft.Management/managementGroups/mg1/providers/Microsoft.Authorization/roleDefinitions/wild';
     let mgDefFetches = 0;
     const { failed } = await run(
       rbacLeastPrivilegeCheck,
@@ -831,12 +940,29 @@ describe('entra-id multi-subscription wildcard isolation (cubic finding on #3090
           };
         }
         if (url.includes('roleDefinitions')) {
-          return { value: [{ id: 'reader', properties: { roleName: 'Reader', type: 'BuiltInRole', permissions: [] } }] };
+          return {
+            value: [
+              {
+                id: 'reader',
+                properties: { roleName: 'Reader', type: 'BuiltInRole', permissions: [] },
+              },
+            ],
+          };
         }
         if (url.includes('roleAssignments')) {
           // only sub-a has an assignment referencing the MG wildcard role
           return url.includes('sub-a')
-            ? { value: [{ properties: { roleDefinitionId: MG_DEF_ID, principalId: 'p1', principalType: 'User' } }] }
+            ? {
+                value: [
+                  {
+                    properties: {
+                      roleDefinitionId: MG_DEF_ID,
+                      principalId: 'p1',
+                      principalType: 'User',
+                    },
+                  },
+                ],
+              }
             : { value: [] };
         }
         return { value: [] };
@@ -931,7 +1057,12 @@ describe('Azure environment separation', () => {
       environmentSeparationCheck,
       azFetch({
         names: { 'sub-1': 'MyCompany' },
-        rgs: { 'sub-1': [{ id: 'a', name: 'rg-prod' }, { id: 'b', name: 'rg-dev' }] },
+        rgs: {
+          'sub-1': [
+            { id: 'a', name: 'rg-prod' },
+            { id: 'b', name: 'rg-dev' },
+          ],
+        },
       }),
     );
     expect(failed).toHaveLength(0);
@@ -960,7 +1091,10 @@ describe('Azure environment separation', () => {
       azFetch({
         names: { 'sub-1': 'Company' },
         rgs: {
-          'sub-1': [{ id: 'a', name: 'app-release' }, { id: 'b', name: 'app-preview' }],
+          'sub-1': [
+            { id: 'a', name: 'app-release' },
+            { id: 'b', name: 'app-preview' },
+          ],
         },
       }),
       {
@@ -977,7 +1111,12 @@ describe('Azure environment separation', () => {
       environmentSeparationCheck,
       azFetch({
         names: { 'sub-1': 'Company' },
-        rgs: { 'sub-1': [{ id: 'a', name: 'rg-dev' }, { id: 'b', name: 'rg-staging' }] },
+        rgs: {
+          'sub-1': [
+            { id: 'a', name: 'rg-dev' },
+            { id: 'b', name: 'rg-staging' },
+          ],
+        },
       }),
     );
     expect(passed).toHaveLength(0);
@@ -1005,7 +1144,12 @@ describe('Azure environment separation', () => {
         const subM = url.match(/\/subscriptions\/([^/?]+)\?api-version/);
         if (subM) return { displayName: 'Company' };
         if (url.includes('/resourcegroups')) {
-          return { value: [{ id: 'a', name: 'rg-prod' }, { id: 'b', name: 'rg-dev' }] };
+          return {
+            value: [
+              { id: 'a', name: 'rg-prod' },
+              { id: 'b', name: 'rg-dev' },
+            ],
+          };
         }
         return {};
       },
@@ -1054,7 +1198,9 @@ describe('Azure environment separation', () => {
     );
     expect(passed).toHaveLength(0);
     expect(failed.some((f) => /Could not verify environment separation/.test(f.title))).toBe(true);
-    expect(failed.some((f) => /Could not confirm environment separation/.test(f.title))).toBe(false);
+    expect(failed.some((f) => /Could not confirm environment separation/.test(f.title))).toBe(
+      false,
+    );
   });
 
   it('defers to the scope resolver when no subscription is in scope', async () => {
@@ -1071,6 +1217,8 @@ describe('Azure environment separation', () => {
       {},
     );
     expect(passed).toHaveLength(0);
-    expect(failed.some((f) => /Could not verify Azure subscription scope/.test(f.title))).toBe(true);
+    expect(failed.some((f) => /Could not verify Azure subscription scope/.test(f.title))).toBe(
+      true,
+    );
   });
 });

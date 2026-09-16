@@ -1,13 +1,13 @@
 'use client';
 
-import { trainingVideos } from '@/lib/data/training-videos';
 import { useTrainingCompletions } from '@/hooks/use-training-completions';
+import { HIPAA_TRAINING_ID } from '@/lib/data/hipaa-training-content';
+import { trainingVideos } from '@/lib/data/training-videos';
 import type { Device, EmployeeTrainingVideoCompletion, Member, Policy, PolicyVersion } from '@db';
 import { Accordion, Button } from '@trycompai/design-system';
 import Link from 'next/link';
 import useSWR from 'swr';
 import type { FleetPolicy, Host } from '../types';
-import { HIPAA_TRAINING_ID } from '@/lib/data/hipaa-training-content';
 import { DeviceAgentAccordionItem } from './tasks/DeviceAgentAccordionItem';
 import { GeneralTrainingAccordionItem } from './tasks/GeneralTrainingAccordionItem';
 import { HipaaTrainingAccordionItem } from './tasks/HipaaTrainingAccordionItem';
@@ -79,9 +79,7 @@ export const EmployeeTasksList = ({
 
   // Poll agent device status so compliance updates appear without full reload
   const { data: agentDeviceResponse } = useSWR<{ devices: Device[] }>(
-    deviceAgentStepEnabled
-      ? `/api/device-agent/status?organizationId=${organizationId}`
-      : null,
+    deviceAgentStepEnabled ? `/api/device-agent/status?organizationId=${organizationId}` : null,
     async (url) => {
       const res = await fetch(url, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to fetch');
@@ -99,14 +97,12 @@ export const EmployeeTasksList = ({
     return null;
   }
 
-  const sortedAgentDevices = [...(agentDeviceResponse?.devices ?? [])].sort(
-    (a, b) => {
-      if (!a.lastCheckIn && !b.lastCheckIn) return 0;
-      if (!a.lastCheckIn) return 1;
-      if (!b.lastCheckIn) return -1;
-      return new Date(b.lastCheckIn).getTime() - new Date(a.lastCheckIn).getTime();
-    },
-  );
+  const sortedAgentDevices = [...(agentDeviceResponse?.devices ?? [])].sort((a, b) => {
+    if (!a.lastCheckIn && !b.lastCheckIn) return 0;
+    if (!a.lastCheckIn) return 1;
+    if (!b.lastCheckIn) return -1;
+    return new Date(b.lastCheckIn).getTime() - new Date(a.lastCheckIn).getTime();
+  });
 
   // Check completion status
   const hasAcceptedPolicies =
@@ -128,8 +124,7 @@ export const EmployeeTasksList = ({
 
   const completedGeneralTrainingCount = trainingCompletions.filter(
     (completion) =>
-      generalTrainingVideoIds.includes(completion.videoId) &&
-      completion.completedAt !== null,
+      generalTrainingVideoIds.includes(completion.videoId) && completion.completedAt !== null,
   ).length;
 
   const hasCompletedGeneralTraining =
@@ -172,9 +167,7 @@ export const EmployeeTasksList = ({
       ? [
           {
             title: 'Complete general security awareness training',
-            content: (
-              <GeneralTrainingAccordionItem />
-            ),
+            content: <GeneralTrainingAccordionItem />,
           },
         ]
       : []),

@@ -26,19 +26,23 @@ export class GideonShadowService {
     if (process.env.GIDEON_SHADOW_ENABLED === 'true') return true;
     if (process.env.GIDEON_SHADOW_ENABLED === 'false') return false;
     // Phase 0 default: shadow when Gideon is configured
-    return !!(process.env.GIDEON_IDENTITY_URL || process.env.AUTH__IDENTITY_URL);
+    return !!(
+      process.env.GIDEON_IDENTITY_URL || process.env.AUTH__IDENTITY_URL
+    );
   }
 
   private get identityUrl(): string | null {
     return (
-      process.env.GIDEON_IDENTITY_URL ||
-      process.env.AUTH__IDENTITY_URL ||
-      null
+      process.env.GIDEON_IDENTITY_URL || process.env.AUTH__IDENTITY_URL || null
     );
   }
 
   private get internalToken(): string | null {
-    return process.env.GIDEON_INTERNAL_SERVICE_TOKEN || process.env.INTERNAL_SERVICE_TOKEN || null;
+    return (
+      process.env.GIDEON_INTERNAL_SERVICE_TOKEN ||
+      process.env.INTERNAL_SERVICE_TOKEN ||
+      null
+    );
   }
 
   /**
@@ -88,14 +92,16 @@ export class GideonShadowService {
       }
 
       // OpenComp local projection for same tenant
-      const opencompOrg = await db.organization.findUnique({
-        where: { id: tenantId },
-        select: {
-          id: true,
-          name: true,
-          createdAt: true,
-        },
-      }).catch(() => null);
+      const opencompOrg = await db.organization
+        .findUnique({
+          where: { id: tenantId },
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+          },
+        })
+        .catch(() => null);
 
       const hasMembers = opencompOrg
         ? await db.member

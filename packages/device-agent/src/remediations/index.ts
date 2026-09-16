@@ -84,9 +84,7 @@ export async function runRemediation(checkType: DeviceCheckType): Promise<Remedi
   try {
     log(`Running remediation: ${checkType}`);
     const result = await remediation.remediate();
-    log(
-      `  Remediation ${checkType}: ${result.success ? 'SUCCESS' : 'FAILED'} - ${result.message}`,
-    );
+    log(`  Remediation ${checkType}: ${result.success ? 'SUCCESS' : 'FAILED'} - ${result.message}`);
     return result;
   } catch (error) {
     log(`Remediation failed: ${checkType} - ${error}`, 'ERROR');

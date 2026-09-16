@@ -50,12 +50,22 @@ export function CloudShellSetup({
       {/* Instructions */}
       <ol className="space-y-1.5 text-sm text-muted-foreground list-none">
         <li className="flex items-start gap-2.5">
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-muted text-[10px] font-semibold text-muted-foreground mt-0.5">1</span>
-          <span>Copy the setup script and run it in <span className="font-medium text-foreground">AWS CloudShell</span></span>
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-muted text-[10px] font-semibold text-muted-foreground mt-0.5">
+            1
+          </span>
+          <span>
+            Copy the setup script and run it in{' '}
+            <span className="font-medium text-foreground">AWS CloudShell</span>
+          </span>
         </li>
         <li className="flex items-start gap-2.5">
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-muted text-[10px] font-semibold text-muted-foreground mt-0.5">2</span>
-          <span>Paste the <span className="font-medium text-foreground">Role ARN</span> from the output into the form</span>
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded bg-muted text-[10px] font-semibold text-muted-foreground mt-0.5">
+            2
+          </span>
+          <span>
+            Paste the <span className="font-medium text-foreground">Role ARN</span> from the output
+            into the form
+          </span>
         </li>
       </ol>
 
@@ -70,7 +80,11 @@ export function CloudShellSetup({
               disabled={disabled}
               className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-[10px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+              {copied ? (
+                <Check className="h-3 w-3 text-emerald-500" />
+              ) : (
+                <Copy className="h-3 w-3" />
+              )}
               {copied ? 'Copied' : 'Copy'}
             </button>
             <a
@@ -109,9 +123,7 @@ export function CloudShellSetup({
         </div>
       </div>
 
-      {footnote && (
-        <p className="text-[10px] text-muted-foreground/60">{footnote}</p>
-      )}
+      {footnote && <p className="text-[10px] text-muted-foreground/60">{footnote}</p>}
     </div>
   );
 }

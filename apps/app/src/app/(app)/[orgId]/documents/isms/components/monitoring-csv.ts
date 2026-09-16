@@ -1,5 +1,5 @@
-import type { IsmsMetric } from '../isms-types';
 import { formatDateYmd } from '@/lib/format';
+import type { IsmsMetric } from '../isms-types';
 import { periodLabel, toPeriodKey } from './monitoring-periods';
 
 /**
@@ -41,8 +41,7 @@ export function buildMeasurementsCsv({
 
   const rows = metric.measurements.map((measurement) => {
     const key = toPeriodKey(measurement.periodStart);
-    const period =
-      key && metric.cadence ? periodLabel(metric.cadence, key) : (key ?? '');
+    const period = key && metric.cadence ? periodLabel(metric.cadence, key) : (key ?? '');
     return [
       metric.name,
       period,

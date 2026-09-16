@@ -194,9 +194,7 @@ export function UnsubscribePreferencesClient({ email, token, initialPreferences 
                 className="mt-1 shrink-0"
               />
               <div className="flex-1 min-w-0">
-                <div className="font-medium text-foreground">
-                  Unsubscribe from Task Mentions
-                </div>
+                <div className="font-medium text-foreground">Unsubscribe from Task Mentions</div>
                 <div className="text-sm text-muted-foreground">
                   Stop receiving notifications when someone mentions you in a task
                 </div>
@@ -210,9 +208,7 @@ export function UnsubscribePreferencesClient({ email, token, initialPreferences 
                 className="mt-1 shrink-0"
               />
               <div className="flex-1 min-w-0">
-                <div className="font-medium text-foreground">
-                  Unsubscribe from Task Assignments
-                </div>
+                <div className="font-medium text-foreground">Unsubscribe from Task Assignments</div>
                 <div className="text-sm text-muted-foreground">
                   Stop receiving notifications when someone assigns a task to you
                 </div>

@@ -247,4 +247,3 @@ export const completeOnboarding = authActionClientWithoutOrg
       };
     }
   });
-

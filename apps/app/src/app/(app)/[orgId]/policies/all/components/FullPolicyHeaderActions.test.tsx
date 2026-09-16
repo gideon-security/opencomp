@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -48,9 +48,7 @@ describe('FullPolicyHeaderActions', () => {
 
       // The component renders a dropdown trigger button
       expect(container.innerHTML).not.toBe('');
-      expect(
-        screen.getByRole('button'),
-      ).toBeInTheDocument();
+      expect(screen.getByRole('button')).toBeInTheDocument();
     });
   });
 

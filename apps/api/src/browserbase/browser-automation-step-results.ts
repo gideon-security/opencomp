@@ -52,7 +52,8 @@ export function profileMissingResult(): BrowserEvidenceRunResult {
   return {
     success: false,
     status: 'blocked',
-    error: 'This step has no connected vendor login. Connect one, then run again.',
+    error:
+      'This step has no connected vendor login. Connect one, then run again.',
     needsReauth: true,
     failureCode: 'needs_reauth',
     failureStage: 'auth',

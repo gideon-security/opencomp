@@ -24,7 +24,9 @@ describe('resolveStrategyDescriptionUpdate', () => {
   it('returns empty when neither strategy nor description is changing', () => {
     expect(resolveStrategyDescriptionUpdate(baseExisting, {})).toEqual({});
     expect(
-      resolveStrategyDescriptionUpdate(baseExisting, { assigneeId: 'mbr_1' } as never),
+      resolveStrategyDescriptionUpdate(baseExisting, {
+        assigneeId: 'mbr_1',
+      } as never),
     ).toEqual({});
   });
 
@@ -85,7 +87,9 @@ describe('resolveStrategyDescriptionUpdate', () => {
       },
     );
     expect(result.treatmentStrategy).toBe(RiskTreatmentType.accept);
-    expect(result.treatmentStrategyDescription).toBe('Brand-new accept rationale');
+    expect(result.treatmentStrategyDescription).toBe(
+      'Brand-new accept rationale',
+    );
     expect(result.strategyDescriptions).toEqual({
       mitigate: 'Current mitigate plan',
       accept: 'Brand-new accept rationale',

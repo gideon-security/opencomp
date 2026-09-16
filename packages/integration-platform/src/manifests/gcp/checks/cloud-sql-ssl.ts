@@ -1,10 +1,7 @@
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
-import {
-  remediationForReadFailure,
-  toHttpReadFailure,
-} from '../../http-read-failure';
-import { gcpListItems, resolveGcpProjectIds, isGcpApiDisabled } from './shared';
+import { remediationForReadFailure, toHttpReadFailure } from '../../http-read-failure';
+import { gcpListItems, isGcpApiDisabled, resolveGcpProjectIds } from './shared';
 
 interface SqlInstance {
   name: string;
@@ -14,10 +11,7 @@ interface SqlInstance {
   };
 }
 
-const SECURE_SSL_MODES = new Set([
-  'ENCRYPTED_ONLY',
-  'TRUSTED_CLIENT_CERTIFICATE_REQUIRED',
-]);
+const SECURE_SSL_MODES = new Set(['ENCRYPTED_ONLY', 'TRUSTED_CLIENT_CERTIFICATE_REQUIRED']);
 
 /**
  * Cloud SQL SSL/TLS check (direct API, no SCC). Verifies each Cloud SQL
@@ -91,7 +85,9 @@ export const cloudSqlSslCheck: IntegrationCheck = {
         // so skip it like a zero-resource project instead of emitting a
         // false "grant permission" finding.
         if (isGcpApiDisabled(err)) {
-          ctx.log(`GCP Cloud SQL: API not enabled in project "${projectId}" — no Cloud SQL instances to evaluate; skipping`);
+          ctx.log(
+            `GCP Cloud SQL: API not enabled in project "${projectId}" — no Cloud SQL instances to evaluate; skipping`,
+          );
           continue;
         }
         const failure = toHttpReadFailure(err);

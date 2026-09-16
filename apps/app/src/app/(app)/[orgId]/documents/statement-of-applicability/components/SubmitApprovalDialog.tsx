@@ -1,6 +1,7 @@
 'use client';
 
-import { Button } from '@trycompai/design-system';
+import { SelectAssignee } from '@/components/SelectAssignee';
+import type { Member, User } from '@db';
 import {
   Dialog,
   DialogContent,
@@ -9,8 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@gideon-defender/ui/dialog';
-import { SelectAssignee } from '@/components/SelectAssignee';
-import type { Member, User } from '@db';
+import { Button } from '@trycompai/design-system';
 
 interface SubmitApprovalDialogProps {
   open: boolean;

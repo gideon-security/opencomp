@@ -106,7 +106,8 @@ export class IsmsAuditFindingService {
         where: { id: findingId },
         data: {
           type: dto.type ?? undefined,
-          controlId: dto.controlId === undefined ? undefined : (control?.id ?? null),
+          controlId:
+            dto.controlId === undefined ? undefined : (control?.id ?? null),
           clauseOrControl:
             dto.clauseOrControl === undefined && control === undefined
               ? undefined

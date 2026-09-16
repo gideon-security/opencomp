@@ -11,8 +11,8 @@ import {
   Textarea,
 } from '@trycompai/design-system';
 import { Certificate } from '@trycompai/design-system/icons';
-import { Controller, type Control } from 'react-hook-form';
 import type { FieldErrors } from 'react-hook-form';
+import { Controller, type Control } from 'react-hook-form';
 import type { WizardFormValues } from './wizard-types';
 
 interface WizardStepCertificateProps {

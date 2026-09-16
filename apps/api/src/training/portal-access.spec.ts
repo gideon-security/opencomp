@@ -105,12 +105,9 @@ describe('Portal access matrix', () => {
   });
 
   describe('roles that should NOT have portal access', () => {
-    it.each([['auditor'], ['member'], ['']])(
-      '%s → DENY',
-      (roleString) => {
-        expect(hasPortalAccessForBuiltInRoles(roleString)).toBe(false);
-      },
-    );
+    it.each([['auditor'], ['member'], ['']])('%s → DENY', (roleString) => {
+      expect(hasPortalAccessForBuiltInRoles(roleString)).toBe(false);
+    });
   });
 
   describe('portal access relies on RBAC, not role names', () => {

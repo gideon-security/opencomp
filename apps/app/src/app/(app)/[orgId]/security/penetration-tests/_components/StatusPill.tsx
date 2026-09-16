@@ -1,13 +1,7 @@
 import { cn } from '@trycompai/design-system/cn';
 import { useTranslations } from 'next-intl';
 
-type StatusKind =
-  | 'provisioning'
-  | 'cloning'
-  | 'running'
-  | 'completed'
-  | 'failed'
-  | 'cancelled';
+type StatusKind = 'provisioning' | 'cloning' | 'running' | 'completed' | 'failed' | 'cancelled';
 
 interface StatusPillProps {
   status: StatusKind | string;

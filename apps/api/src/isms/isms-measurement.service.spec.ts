@@ -93,8 +93,8 @@ describe('IsmsMeasurementService', () => {
         args({ metricId: 'met_1', periodStart: '2026-02-01', value: '98%' }),
       );
 
-      const data = (mockDb.ismsMeasurement.create as jest.Mock).mock
-        .calls[0][0].data;
+      const data = (mockDb.ismsMeasurement.create as jest.Mock).mock.calls[0][0]
+        .data;
       // recordedAt is not client-writable: absent here, the DB default (now())
       // stamps the honest recording date.
       expect(data.recordedAt).toBeUndefined();

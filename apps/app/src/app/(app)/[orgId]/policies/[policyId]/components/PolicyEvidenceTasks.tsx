@@ -94,9 +94,7 @@ export function PolicyEvidenceTasks() {
   if (rows.length === 0) {
     return (
       <Section title={SECTION_TITLE} description={SECTION_DESCRIPTION}>
-        <Text variant="muted">
-          No evidence tasks yet. Map a control with tasks attached above.
-        </Text>
+        <Text variant="muted">No evidence tasks yet. Map a control with tasks attached above.</Text>
       </Section>
     );
   }

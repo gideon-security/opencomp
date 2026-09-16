@@ -1,17 +1,17 @@
 'use client';
 
+import type { Member, User } from '@db';
 import { Card } from '@gideon-defender/ui';
-import { useState, useMemo, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useSOAAutoFill } from '../hooks/useSOAAutoFill';
 import { useSOADocument } from '../hooks/useSOADocument';
-import type { Member, User } from '@db';
+import type { FrameworkWithLatestDocument } from '../types';
+import type { SOAFieldSavePayload, SOATableAnswerData } from './EditableSOAFields';
 import { SOADocumentInfo } from './SOADocumentInfo';
 import { SOAPendingApprovalAlert } from './SOAPendingApprovalAlert';
-import { SubmitApprovalDialog } from './SubmitApprovalDialog';
 import { SOATable } from './SOATable';
-import type { SOAFieldSavePayload, SOATableAnswerData } from './EditableSOAFields';
-import type { FrameworkWithLatestDocument } from '../types';
+import { SubmitApprovalDialog } from './SubmitApprovalDialog';
 
 type Framework = FrameworkWithLatestDocument['framework'];
 type Configuration = FrameworkWithLatestDocument['configuration'];
@@ -106,12 +106,14 @@ export function SOAFrameworkTable({
   const derivedIsPendingApproval = resolvedDocument
     ? resolvedDocument.status === 'needs_review'
     : isPendingApproval;
-  const derivedApproverId = (resolvedDocument?.approverId ?? document?.approverId) as string | null | undefined;
+  const derivedApproverId = (resolvedDocument?.approverId ?? document?.approverId) as
+    string | null | undefined;
   // Resolve the approver member from the list using the derived approverId
   const derivedApprover = derivedApproverId
-    ? ownerAdminMembers.find((m) => m.id === derivedApproverId) ?? approver
+    ? (ownerAdminMembers.find((m) => m.id === derivedApproverId) ?? approver)
     : null;
-  const derivedCanCurrentUserApprove = derivedIsPendingApproval && derivedApproverId === currentMemberId;
+  const derivedCanCurrentUserApprove =
+    derivedIsPendingApproval && derivedApproverId === currentMemberId;
 
   const columns = configuration.columns as SOAColumn[];
   const questions = configuration.questions as SOAQuestion[];
@@ -124,7 +126,7 @@ export function SOAFrameworkTable({
       (document?.answers || []).map((answer: SOAAnswerRecord) => [
         answer.questionId,
         toAnswerData(answer),
-      ])
+      ]),
     );
   });
 
@@ -138,8 +140,8 @@ export function SOAFrameworkTable({
         resolvedDocument.answers.map((answer: SOAAnswerRecord) => [
           answer.questionId,
           toAnswerData(answer),
-        ])
-      )
+        ]),
+      ),
     );
   }, [resolvedDocument?.answers]);
 
@@ -168,10 +170,7 @@ export function SOAFrameworkTable({
       const totalQuestions = current.totalQuestions as number | undefined;
       const currentAnsweredQuestions = current.answeredQuestions as number | undefined;
 
-      if (
-        typeof totalQuestions !== 'number' ||
-        typeof currentAnsweredQuestions !== 'number'
-      ) {
+      if (typeof totalQuestions !== 'number' || typeof currentAnsweredQuestions !== 'number') {
         return current;
       }
 
@@ -214,7 +213,12 @@ export function SOAFrameworkTable({
     }));
   }, [questions]);
 
-  const { isAutoFilling: isAutoFillingSSE, questionStatuses, processedResults, triggerAutoFill } = useSOAAutoFill({
+  const {
+    isAutoFilling: isAutoFillingSSE,
+    questionStatuses,
+    processedResults,
+    triggerAutoFill,
+  } = useSOAAutoFill({
     questions: questionsForHook,
     documentId: document?.id || '',
     organizationId,
@@ -237,8 +241,7 @@ export function SOAFrameworkTable({
           ...current,
           totalQuestions,
           answeredQuestions,
-          status:
-            answeredQuestions === totalQuestions ? 'completed' : 'in_progress',
+          status: answeredQuestions === totalQuestions ? 'completed' : 'in_progress',
           approverId: null,
           approvedAt: null,
           declinedAt: null,
@@ -301,7 +304,9 @@ export function SOAFrameworkTable({
       setIsSubmitApprovalDialogOpen(false);
       setSelectedApproverId(null);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to submit SOA document for approval');
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to submit SOA document for approval',
+      );
     } finally {
       setIsSubmitting(false);
     }

@@ -36,7 +36,7 @@ export function OnboardingFormActions({
       hostname === 'localhost' ||
         hostname === '127.0.0.1' ||
         hostname.startsWith('192.168.') ||
-        hostname.startsWith('10.0.')
+        hostname.startsWith('10.0.'),
     );
   }, []);
 
@@ -47,7 +47,9 @@ export function OnboardingFormActions({
           type="button"
           variant="ghost"
           className="text-muted-foreground"
-          onClick={() => { window.location.assign('/'); }}
+          onClick={() => {
+            window.location.assign('/');
+          }}
           disabled={isSubmitting}
         >
           {t('cancel')}

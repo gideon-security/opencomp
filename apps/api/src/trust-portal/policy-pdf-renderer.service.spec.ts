@@ -706,9 +706,7 @@ describe('PolicyPdfRendererService', () => {
                                   content: [
                                     {
                                       type: 'paragraph',
-                                      content: [
-                                        { type: 'text', text: 'Beta' },
-                                      ],
+                                      content: [{ type: 'text', text: 'Beta' }],
                                     },
                                   ],
                                 },
@@ -1016,7 +1014,10 @@ describe('PolicyPdfRendererService', () => {
       }
 
       const result = service.renderPoliciesPdfBuffer([
-        { name: 'Keep Together Policy', content: { type: 'doc', content: nodes } },
+        {
+          name: 'Keep Together Policy',
+          content: { type: 'doc', content: nodes },
+        },
       ]);
 
       const pages = pageTextsFrom(result);
@@ -1046,7 +1047,9 @@ describe('PolicyPdfRendererService', () => {
             content: [
               {
                 type: 'paragraph',
-                content: [{ type: 'text', text: 'INTROBODY opening paragraph' }],
+                content: [
+                  { type: 'text', text: 'INTROBODY opening paragraph' },
+                ],
               },
               {
                 type: 'heading',
@@ -1075,7 +1078,10 @@ describe('PolicyPdfRendererService', () => {
         nodes.push({
           type: 'paragraph',
           content: [
-            { type: 'text', text: `filler line ${f} to consume vertical space` },
+            {
+              type: 'text',
+              text: `filler line ${f} to consume vertical space`,
+            },
           ],
         });
       }
@@ -1089,7 +1095,10 @@ describe('PolicyPdfRendererService', () => {
       nodes.push({ type: 'paragraph', content: [{ type: 'hardBreak' }] });
 
       const result = service.renderPoliciesPdfBuffer([
-        { name: 'Empty Trailing Policy', content: { type: 'doc', content: nodes } },
+        {
+          name: 'Empty Trailing Policy',
+          content: { type: 'doc', content: nodes },
+        },
       ]);
 
       const pages = pageTextsFrom(result);
@@ -1147,7 +1156,10 @@ describe('PolicyPdfRendererService', () => {
       }
 
       const result = service.renderPoliciesPdfBuffer([
-        { name: 'Heading Table Policy', content: { type: 'doc', content: nodes } },
+        {
+          name: 'Heading Table Policy',
+          content: { type: 'doc', content: nodes },
+        },
       ]);
 
       const pages = pageTextsFrom(result);

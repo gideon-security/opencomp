@@ -15,12 +15,7 @@ import type { IsmsDocumentStatus } from '../../isms-types';
  * register, and the Statement of Applicability MUST render status through
  * this component so the colour language is identical everywhere.
  */
-export type IsmsDisplayStatus =
-  | 'not_started'
-  | 'draft'
-  | 'pending'
-  | 'approved'
-  | 'declined';
+export type IsmsDisplayStatus = 'not_started' | 'draft' | 'pending' | 'approved' | 'declined';
 
 type BadgeVariant = 'secondary' | 'accent' | 'destructive';
 

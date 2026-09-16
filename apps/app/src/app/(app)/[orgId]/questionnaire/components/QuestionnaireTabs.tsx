@@ -9,13 +9,13 @@ import {
   TabsList,
   TabsTrigger,
 } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { AdditionalDocumentsSection } from '../knowledge-base/additional-documents/components';
 import { KnowledgeBaseHeader } from '../knowledge-base/components/KnowledgeBaseHeader';
 import { ContextSection } from '../knowledge-base/context/components';
 import { ManualAnswersSection } from '../knowledge-base/manual-answers/components';
 import { PublishedPoliciesSection } from '../knowledge-base/published-policies/components';
 import { QuestionnaireOverview } from '../start_page/components';
-import { useTranslations } from 'next-intl';
 import type {
   ContextEntry,
   KBDocument,

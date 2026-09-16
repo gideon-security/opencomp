@@ -21,8 +21,7 @@ function getPool() {
   const s = getState();
   if (!s) return null;
   if (s.pool) return s.pool;
-  const url =
-    process.env.LOCAL_TRIGGER_DATABASE_URL || process.env.DATABASE_URL;
+  const url = process.env.LOCAL_TRIGGER_DATABASE_URL || process.env.DATABASE_URL;
   if (!url) return null;
   // Lazy require so bundlers that accidentally include this module on the
   // client never fail at import time — pg is only loaded when actually used.
@@ -49,7 +48,8 @@ function init() {
     return s.initPromise;
   }
   s.initPromise = p
-    .query(`
+    .query(
+      `
       CREATE TABLE IF NOT EXISTS local_trigger_runs (
         id TEXT PRIMARY KEY,
         task_identifier TEXT NOT NULL,
@@ -70,7 +70,8 @@ function init() {
       ALTER TABLE local_trigger_runs
         ADD COLUMN IF NOT EXISTS tags JSONB NOT NULL DEFAULT '[]'::jsonb,
         ADD COLUMN IF NOT EXISTS attempt INTEGER NOT NULL DEFAULT 0;
-    `)
+    `,
+    )
     .then(() => {
       s.ready = true;
       return true;
@@ -131,18 +132,15 @@ async function updateRun(run) {
 
 async function setMetadata(runId, metadata) {
   const p = getPool();
-  await p.query(
-    `UPDATE local_trigger_runs SET metadata = $2 WHERE id = $1`,
-    [runId, JSON.stringify(metadata)],
-  );
+  await p.query(`UPDATE local_trigger_runs SET metadata = $2 WHERE id = $1`, [
+    runId,
+    JSON.stringify(metadata),
+  ]);
 }
 
 async function getRun(runId) {
   const p = getPool();
-  const res = await p.query(
-    `SELECT * FROM local_trigger_runs WHERE id = $1`,
-    [runId],
-  );
+  const res = await p.query(`SELECT * FROM local_trigger_runs WHERE id = $1`, [runId]);
   const row = res.rows[0];
   if (!row) return null;
   return rowToRun(row);
@@ -150,10 +148,9 @@ async function getRun(runId) {
 
 async function listRuns(limit) {
   const p = getPool();
-  const res = await p.query(
-    `SELECT * FROM local_trigger_runs ORDER BY created_at DESC LIMIT $1`,
-    [Math.max(1, Math.min(limit ?? 100, 1000))],
-  );
+  const res = await p.query(`SELECT * FROM local_trigger_runs ORDER BY created_at DESC LIMIT $1`, [
+    Math.max(1, Math.min(limit ?? 100, 1000)),
+  ]);
   return res.rows.map(rowToRun);
 }
 
@@ -168,10 +165,7 @@ async function insertToken(token, scopes, expiresAt) {
 
 async function getToken(token) {
   const p = getPool();
-  const res = await p.query(
-    `SELECT * FROM local_trigger_tokens WHERE token = $1`,
-    [token],
-  );
+  const res = await p.query(`SELECT * FROM local_trigger_tokens WHERE token = $1`, [token]);
   const row = res.rows[0];
   if (!row) return null;
   if (row.expires_at && new Date(row.expires_at).getTime() < Date.now()) {

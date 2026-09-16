@@ -22,10 +22,7 @@ export async function POST(req: NextRequest) {
     const taskId = body?.taskId;
 
     if (!taskId || !ALLOWED_TASK_IDS.includes(taskId)) {
-      return NextResponse.json(
-        { error: 'Invalid taskId' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Invalid taskId' }, { status: 400 });
     }
 
     const token = await auth.createTriggerPublicToken(taskId, {
@@ -38,10 +35,7 @@ export async function POST(req: NextRequest) {
     console.error('Error creating trigger token:', error);
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to create trigger token',
+        error: error instanceof Error ? error.message : 'Failed to create trigger token',
       },
       { status: 500 },
     );

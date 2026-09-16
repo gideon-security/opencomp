@@ -1,7 +1,7 @@
 import type { DetectedQuestion } from '../types';
 import { sendRuntimeMessage } from './safe-runtime';
-import { detectVisibleSheetQuestions } from './sheets-dom';
 import { detectSheetQuestions } from './sheets-detection';
+import { detectVisibleSheetQuestions } from './sheets-dom';
 
 export async function detectSheetQuestionsForPage(params: {
   location: Location;

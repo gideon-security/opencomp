@@ -12,7 +12,9 @@ import { PrismaPg } from '@prisma/adapter-pg';
  * back to `DATABASE_URL` when unset.
  */
 
-const globalForPrisma = global as unknown as { prismaClients?: Map<string, PrismaClient> };
+const globalForPrisma = global as unknown as {
+  prismaClients?: Map<string, PrismaClient>;
+};
 
 const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 

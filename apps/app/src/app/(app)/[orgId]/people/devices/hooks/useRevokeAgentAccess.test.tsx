@@ -1,7 +1,7 @@
+import { act, renderHook } from '@testing-library/react';
 import React from 'react';
-import { renderHook, act } from '@testing-library/react';
 import { SWRConfig } from 'swr';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useRevokeAgentAccess } from './useRevokeAgentAccess';
 
 const deleteMock = vi.fn();

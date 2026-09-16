@@ -43,9 +43,13 @@ function compareRequirementDefs(a: RequirementDef, b: RequirementDef): number {
     if (bo === null) return -1;
     return ao - bo;
   }
-  const byIdentifier = (a.identifier ?? '').localeCompare(b.identifier ?? '', undefined, {
-    numeric: true,
-  });
+  const byIdentifier = (a.identifier ?? '').localeCompare(
+    b.identifier ?? '',
+    undefined,
+    {
+      numeric: true,
+    },
+  );
   if (byIdentifier !== 0) return byIdentifier;
   return a.name.localeCompare(b.name);
 }
@@ -235,8 +239,9 @@ export class FrameworksService {
             ...controlData,
             controlFamily: familyEntry?.controlFamily ?? null,
             policies: policyLinks.map(
-              (link: { policy: { id: string; name: string; status: string } }) =>
-                link.policy,
+              (link: {
+                policy: { id: string; name: string; status: string };
+              }) => link.policy,
             ),
             controlDocumentTypes: documentLinks.map(
               (documentType: { formType: EvidenceFormType }) => ({
@@ -821,7 +826,10 @@ export class FrameworksService {
       (result): result is PromiseRejectedResult => result.status === 'rejected',
     );
     if (failedTrigger) {
-      this.logger.error('Failed to trigger policy update', failedTrigger.reason);
+      this.logger.error(
+        'Failed to trigger policy update',
+        failedTrigger.reason,
+      );
       throw new Error('Failed to trigger policy update');
     }
   }
@@ -1006,9 +1014,7 @@ export class FrameworksService {
     );
 
     const latestByFramework = new Map(
-      latestVersions
-        .filter(Boolean)
-        .map((v) => [v!.frameworkId, v!]),
+      latestVersions.filter(Boolean).map((v) => [v!.frameworkId, v!]),
     );
 
     return instances

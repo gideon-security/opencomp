@@ -1,16 +1,12 @@
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
+import type { VercelDeploymentsResponse, VercelProject, VercelProjectsResponse } from '../types';
 import {
   applyVercelProjectFilter,
   filteredProjectsVariable,
   parseVercelProjectFilter,
   projectFilterModeVariable,
 } from '../variables';
-import type {
-  VercelDeploymentsResponse,
-  VercelProject,
-  VercelProjectsResponse,
-} from '../types';
 
 /**
  * Vercel App Availability Check
@@ -82,7 +78,8 @@ export const appAvailabilityCheck: IntegrationCheck = {
         resourceId: 'project-filter',
         severity: 'medium',
         description: `Filter mode "${filter.mode}" with ${filter.selectedIds.size} selected project(s) resolved to zero projects in scope. This may indicate deleted or renamed projects.`,
-        remediation: 'Open the Configure sheet for this automation and review the selected projects.',
+        remediation:
+          'Open the Configure sheet for this automation and review the selected projects.',
         evidence: {
           filterMode: filter.mode,
           selectedProjectIds: Array.from(filter.selectedIds),
@@ -112,7 +109,11 @@ export const appAvailabilityCheck: IntegrationCheck = {
 
     for (const project of scopedProjects.slice(0, 10)) {
       try {
-        const params = new URLSearchParams({ projectId: project.id, limit: '1', target: 'production' });
+        const params = new URLSearchParams({
+          projectId: project.id,
+          limit: '1',
+          target: 'production',
+        });
         if (teamId) params.set('teamId', teamId);
 
         const response = await ctx.fetch<VercelDeploymentsResponse>(
@@ -122,7 +123,6 @@ export const appAvailabilityCheck: IntegrationCheck = {
         const latestDeploy = deployments[0];
 
         if (latestDeploy && latestDeploy.state === 'READY') {
-
           ctx.pass({
             title: `Available: ${project.name}`,
             resourceType: 'project',
@@ -136,7 +136,6 @@ export const appAvailabilityCheck: IntegrationCheck = {
             },
           });
         } else if (latestDeploy && transitionalStates.has(latestDeploy.state)) {
-
           ctx.pass({
             title: `Deploying: ${project.name}`,
             resourceType: 'project',
@@ -172,7 +171,6 @@ export const appAvailabilityCheck: IntegrationCheck = {
             },
           });
         } else {
-
           ctx.fail({
             title: `No production deployment: ${project.name}`,
             resourceType: 'project',

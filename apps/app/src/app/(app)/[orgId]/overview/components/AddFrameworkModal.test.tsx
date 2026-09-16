@@ -1,12 +1,12 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -42,9 +42,7 @@ vi.mock('@gideon-defender/ui/button', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/dialog', () => ({
-  DialogContent: ({ children }: any) => (
-    <div data-testid="dialog-content">{children}</div>
-  ),
+  DialogContent: ({ children }: any) => <div data-testid="dialog-content">{children}</div>,
   DialogDescription: ({ children }: any) => <p>{children}</p>,
   DialogFooter: ({ children }: any) => <div>{children}</div>,
   DialogHeader: ({ children }: any) => <div>{children}</div>,
@@ -136,9 +134,7 @@ describe('AddFrameworkModal', () => {
       fireEvent.click(screen.getByTestId('framework-checkbox-fw-1'));
       fireEvent.click(screen.getByRole('button', { name: 'frameworks.addSelected' }));
 
-      expect(
-        await screen.findByText('frameworks.contactManagerTitle'),
-      ).toBeInTheDocument();
+      expect(await screen.findByText('frameworks.contactManagerTitle')).toBeInTheDocument();
       expect(mockAddFrameworks).not.toHaveBeenCalled();
     });
 
@@ -158,17 +154,13 @@ describe('AddFrameworkModal', () => {
 
   describe('Rendering', () => {
     it('renders modal title and description', () => {
-
       render(<AddFrameworkModal {...defaultProps} />);
 
       expect(screen.getByText('frameworks.addTitle')).toBeInTheDocument();
-      expect(
-        screen.getByText('frameworks.addDescription'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('frameworks.addDescription')).toBeInTheDocument();
     });
 
     it('renders available framework cards', () => {
-
       render(<AddFrameworkModal {...defaultProps} />);
 
       expect(screen.getByText('SOC 2')).toBeInTheDocument();
@@ -176,21 +168,12 @@ describe('AddFrameworkModal', () => {
     });
 
     it('shows empty state when no frameworks available', () => {
+      render(<AddFrameworkModal {...defaultProps} availableFrameworks={[]} />);
 
-      render(
-        <AddFrameworkModal
-          {...defaultProps}
-          availableFrameworks={[]}
-        />,
-      );
-
-      expect(
-        screen.getByText('frameworks.allEnabled'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('frameworks.allEnabled')).toBeInTheDocument();
     });
 
     it('disables "Add Selected" button when nothing is selected even with permissions', () => {
-
       render(<AddFrameworkModal {...defaultProps} />);
 
       const addButton = screen.getByRole('button', { name: 'frameworks.addSelected' });

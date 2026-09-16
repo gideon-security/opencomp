@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { IsmsManagementReview, IsmsReviewAction } from '../isms-types';
 import { ismsDesignSystemMock } from './__test-helpers__/dsMocks';
@@ -98,10 +98,7 @@ describe('CarriedForwardActions', () => {
   it('shows "Unknown member" instead of guessing when the roster failed to load', () => {
     const review = makeReview('MR-2025-01');
     render(
-      <CarriedForwardActions
-        entries={[{ review, action: makeAction() }]}
-        memberOptions={[]}
-      />,
+      <CarriedForwardActions entries={[{ review, action: makeAction() }]} memberOptions={[]} />,
     );
 
     expect(screen.getByText('carriedForward.unknownMember')).toBeInTheDocument();

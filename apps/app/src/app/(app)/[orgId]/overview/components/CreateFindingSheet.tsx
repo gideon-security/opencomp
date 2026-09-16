@@ -13,9 +13,6 @@ import {
 } from '@/hooks/use-findings-api';
 import { usePermissions } from '@/hooks/use-permissions';
 import { FindingArea, FindingSeverity, FindingType } from '@db';
-import { useMediaQuery } from '@gideon-defender/ui/hooks';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslations } from 'next-intl';
 import {
   Form,
   FormControl,
@@ -24,6 +21,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@gideon-defender/ui/form';
+import { useMediaQuery } from '@gideon-defender/ui/hooks';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Button,
   Drawer,
@@ -43,20 +42,14 @@ import {
   SheetTitle,
   Textarea,
 } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
 type TargetKind =
-  | 'task'
-  | 'policy'
-  | 'vendor'
-  | 'risk'
-  | 'member'
-  | 'device'
-  | 'evidenceFormType'
-  | 'area';
+  'task' | 'policy' | 'vendor' | 'risk' | 'member' | 'device' | 'evidenceFormType' | 'area';
 
 type TargetKindKey =
   | 'findings.targetKindTask'
@@ -161,10 +154,9 @@ export function CreateFindingSheet({
   // Detect which frameworks the org has enabled. Used to (a) gate the Framework
   // dropdown so an auditor can only attribute a finding to a framework the org
   // actually subscribes to, and (b) auto-select sensible defaults below.
-  const { data: frameworksData } = useApiSWR<unknown>(
-    '/v1/frameworks?includeScores=false',
-    { refreshInterval: 0 },
-  );
+  const { data: frameworksData } = useApiSWR<unknown>('/v1/frameworks?includeScores=false', {
+    refreshInterval: 0,
+  });
   const frameworksLoaded = frameworksData !== undefined;
   const orgFrameworkTypes = useMemo<FindingType[]>(
     () => extractOrgFrameworkTypes(frameworksData),
@@ -239,7 +231,7 @@ export function CreateFindingSheet({
           content: values.content,
           templateId: values.templateId?.startsWith('default_')
             ? undefined
-            : values.templateId ?? undefined,
+            : (values.templateId ?? undefined),
         };
 
         const targetId = values.targetId?.trim();
@@ -279,9 +271,7 @@ export function CreateFindingSheet({
         form.reset();
         onSuccess?.();
       } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : t('findings.createError'),
-        );
+        toast.error(error instanceof Error ? error.message : t('findings.createError'));
       } finally {
         setIsSubmitting(false);
       }
@@ -346,9 +336,7 @@ export function CreateFindingSheet({
                 value={field.value}
                 onValueChange={(v) => field.onChange(v as FindingSeverity)}
               >
-                <SelectTrigger>
-                  {t(SEVERITY_LABEL_KEYS[field.value])}
-                </SelectTrigger>
+                <SelectTrigger>{t(SEVERITY_LABEL_KEYS[field.value])}</SelectTrigger>
                 <SelectContent>
                   {(['low', 'medium', 'high', 'critical'] as FindingSeverity[]).map((s) => (
                     <SelectItem key={s} value={s}>
@@ -380,8 +368,7 @@ export function CreateFindingSheet({
                       // leave everything enabled so the dropdown doesn't
                       // flicker into a fully-disabled state on first paint.
                       disabled={
-                        frameworksLoaded &&
-                        !orgFrameworkTypes.includes(value as FindingType)
+                        frameworksLoaded && !orgFrameworkTypes.includes(value as FindingType)
                       }
                     >
                       {label}
@@ -446,11 +433,7 @@ export function CreateFindingSheet({
             <FormItem className="w-full">
               <FormLabel>{t('findings.details')}</FormLabel>
               <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder={t('findings.detailsPlaceholder')}
-                  rows={6}
-                />
+                <Textarea {...field} placeholder={t('findings.detailsPlaceholder')} rows={6} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -521,10 +504,7 @@ function TargetPicker({
     return (
       <div className="w-full">
         <label className="text-sm font-medium">{t('findings.targetKindArea')}</label>
-        <Select
-          value={value || FindingArea.people}
-          onValueChange={(v) => onChange(v ?? '')}
-        >
+        <Select value={value || FindingArea.people} onValueChange={(v) => onChange(v ?? '')}>
           <SelectTrigger>
             {areaOptions.find((a) => a.value === (value || FindingArea.people))?.label}
           </SelectTrigger>
@@ -571,10 +551,7 @@ function EntityPicker({
     return endpointForKind(kind);
   }, [kind, endpointOverrides]);
   const { data } = useApiSWR<unknown>(endpoint, { refreshInterval: 0 });
-  const options = useMemo<Option[]>(
-    () => extractOptions(kind, data),
-    [kind, data],
-  );
+  const options = useMemo<Option[]>(() => extractOptions(kind, data), [kind, data]);
 
   return (
     <div className="w-full">
@@ -625,10 +602,7 @@ function endpointForKind(kind: Exclude<TargetKind, 'area'>): string | null {
   }
 }
 
-function extractOptions(
-  kind: Exclude<TargetKind, 'area'>,
-  data: unknown,
-): Option[] {
+function extractOptions(kind: Exclude<TargetKind, 'area'>, data: unknown): Option[] {
   if (!data) return [];
   // `useApiSWR` wraps responses as { data: T }. Different endpoints return
   // T as either an array, a { data: [...] } envelope, or a { data: { data: [...] } }
@@ -637,13 +611,11 @@ function extractOptions(
   const list = Array.isArray(payload)
     ? payload
     : Array.isArray((payload as { data?: unknown })?.data)
-      ? ((payload as { data: unknown[] }).data)
+      ? (payload as { data: unknown[] }).data
       : Array.isArray(
             ((payload as { data?: { data?: unknown } })?.data as { data?: unknown })?.data,
           )
-        ? (
-            (payload as { data: { data: unknown[] } }).data.data
-          )
+        ? (payload as { data: { data: unknown[] } }).data.data
         : [];
 
   return list
@@ -654,8 +626,7 @@ function extractOptions(
       if (kind === 'evidenceFormType') {
         const type = typeof item.type === 'string' ? item.type : null;
         if (!type) return null;
-        const title =
-          (typeof item.title === 'string' && item.title) || type;
+        const title = (typeof item.title === 'string' && item.title) || type;
         return { id: type, label: title };
       }
 
@@ -663,9 +634,7 @@ function extractOptions(
       if (!id) return null;
 
       if (kind === 'member') {
-        const user = item.user as
-          | { name?: string; email?: string }
-          | undefined;
+        const user = item.user as { name?: string; email?: string } | undefined;
         return { id, label: user?.name || user?.email || id };
       }
 

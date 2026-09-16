@@ -1,5 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { processContentArray, buildFlags, buildVariables, processTemplate } from './process-policy-template';
+import { describe, expect, it } from 'vitest';
+import {
+  buildFlags,
+  buildVariables,
+  processContentArray,
+  processTemplate,
+} from './process-policy-template';
 
 const vars = { COMPANY: 'Acme Inc', EMPLOYEES: '50', DATA: 'PII' };
 
@@ -20,7 +25,9 @@ describe('processContentArray', () => {
     });
 
     it('replaces multiple placeholders', () => {
-      const nodes = [paragraph(textNode('{{COMPANY}} has {{EMPLOYEES}} employees handling {{DATA}}'))];
+      const nodes = [
+        paragraph(textNode('{{COMPANY}} has {{EMPLOYEES}} employees handling {{DATA}}')),
+      ];
       const result = processContentArray(nodes, vars, {});
       expect((result[0] as any).content[0].text).toBe('Acme Inc has 50 employees handling PII');
     });
@@ -231,15 +238,19 @@ describe('processContentArray', () => {
     });
 
     it('preserves node attributes and marks', () => {
-      const nodes = [{
-        type: 'paragraph',
-        attrs: { textAlign: 'center' },
-        content: [{
-          type: 'text',
-          text: '{{COMPANY}} policy',
-          marks: [{ type: 'bold' }],
-        }],
-      }];
+      const nodes = [
+        {
+          type: 'paragraph',
+          attrs: { textAlign: 'center' },
+          content: [
+            {
+              type: 'text',
+              text: '{{COMPANY}} policy',
+              marks: [{ type: 'bold' }],
+            },
+          ],
+        },
+      ];
       const result = processContentArray(nodes, vars, {});
       const node = result[0] as any;
       expect(node.attrs.textAlign).toBe('center');
@@ -256,7 +267,8 @@ describe('buildVariables', () => {
   });
 
   it('extracts answers from contextHub Q&A format', () => {
-    const contextHub = 'What industry is your company in?\nSaaS\nHow many employees do you have?\n50';
+    const contextHub =
+      'What industry is your company in?\nSaaS\nHow many employees do you have?\n50';
     const vars = buildVariables({ companyName: 'X', contextHub });
     expect(vars.INDUSTRY).toBe('SaaS');
     expect(vars.EMPLOYEES).toBe('50');
@@ -317,8 +329,14 @@ describe('processTemplate', () => {
   });
 
   it('returns empty for invalid content', () => {
-    expect(processTemplate({ content: null, companyName: '', contextHub: '', frameworks: [] })).toEqual([]);
-    expect(processTemplate({ content: 'string', companyName: '', contextHub: '', frameworks: [] })).toEqual([]);
-    expect(processTemplate({ content: 42, companyName: '', contextHub: '', frameworks: [] })).toEqual([]);
+    expect(
+      processTemplate({ content: null, companyName: '', contextHub: '', frameworks: [] }),
+    ).toEqual([]);
+    expect(
+      processTemplate({ content: 'string', companyName: '', contextHub: '', frameworks: [] }),
+    ).toEqual([]);
+    expect(
+      processTemplate({ content: 42, companyName: '', contextHub: '', frameworks: [] }),
+    ).toEqual([]);
   });
 });

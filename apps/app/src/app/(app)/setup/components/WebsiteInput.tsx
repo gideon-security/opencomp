@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from '@trycompai/design-system';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@trycompai/design-system';
 import { type InputHTMLAttributes, forwardRef, useCallback, useEffect, useState } from 'react';
 
 interface WebsiteInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'prefix'> {

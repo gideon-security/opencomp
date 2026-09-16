@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Add useParams to the global next/navigation mock
 vi.mock('next/navigation', async (importOriginal) => {
@@ -88,7 +88,15 @@ vi.mock('@trycompai/design-system', () => ({
   Stack: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Grid: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Label: ({ children }: { children: React.ReactNode }) => <label>{children}</label>,
-  Select: ({ children, disabled, value }: { children: React.ReactNode; disabled?: boolean; value?: string }) => (
+  Select: ({
+    children,
+    disabled,
+    value,
+  }: {
+    children: React.ReactNode;
+    disabled?: boolean;
+    value?: string;
+  }) => (
     <div data-testid="select" data-disabled={disabled ? 'true' : 'false'} data-value={value}>
       {children}
     </div>

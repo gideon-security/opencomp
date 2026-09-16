@@ -26,10 +26,10 @@ vi.mock('@/lib/permissions', () => ({
   resolveBuiltInPermissions: vi.fn(() => ({ permissions: {}, customRoleNames: [] })),
 }));
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { createMockSession, createMockUser, mockAuthApi } from '@/test-utils/mocks/auth';
 import { redirect } from 'next/navigation';
+import { beforeEach, describe, expect, it } from 'vitest';
 import Page from './page';
-import { mockAuthApi, createMockSession, createMockUser } from '@/test-utils/mocks/auth';
 
 const mockRedirect = vi.mocked(redirect);
 

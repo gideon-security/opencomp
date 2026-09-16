@@ -500,7 +500,11 @@ export class InternalIntegrationDebugService {
     if (!connection) {
       throw new NotFoundException(`Connection ${connectionId} not found`);
     }
-    await this.assertTaskBelongsToOrg(taskId, connection.organizationId, connectionId);
+    await this.assertTaskBelongsToOrg(
+      taskId,
+      connection.organizationId,
+      connectionId,
+    );
 
     // The runner resolves dynamic check code from the in-memory manifest
     // registry, which only refreshes from the DB every ~60s. A self-heal re-run
@@ -630,7 +634,11 @@ export class InternalIntegrationDebugService {
     if (!connection) {
       throw new NotFoundException(`Connection ${connectionId} not found`);
     }
-    await this.assertTaskBelongsToOrg(taskId, connection.organizationId, connectionId);
+    await this.assertTaskBelongsToOrg(
+      taskId,
+      connection.organizationId,
+      connectionId,
+    );
 
     const result = await this.runner.runChecks({
       connectionId,

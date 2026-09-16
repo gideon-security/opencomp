@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Clockify at https://clockify.me\n2. Click your profile icon (top right) and select Profile Settings\n3. Scroll down to API section\n4. Click Generate to create an API key\n5. Copy and paste it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

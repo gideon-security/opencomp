@@ -1,7 +1,4 @@
-import {
-  defaultFromAddress,
-  resolveFromAddress,
-} from './from-address';
+import { defaultFromAddress, resolveFromAddress } from './from-address';
 
 describe('resolveFromAddress', () => {
   const originalEnv = { ...process.env };

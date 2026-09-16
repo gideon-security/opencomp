@@ -1,142 +1,145 @@
 ---
-title: "Environment Reference"
-description: "Complete environment variable reference for Docker self-hosting"
+title: 'Environment Reference'
+description: 'Complete environment variable reference for Docker self-hosting'
 ---
 
 ## Legend
 
-| Column | Description |
-|--------|-------------|
-| **Service** | Which service(s) use this variable: `migrator`, `seeder`, `app`, `portal` |
-| **Phase** | `build` = Docker build arg, `runtime` = loaded from env file at startup |
+| Column       | Description                                                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| **Service**  | Which service(s) use this variable: `migrator`, `seeder`, `app`, `portal`                                                 |
+| **Phase**    | `build` = Docker build arg, `runtime` = loaded from env file at startup                                                   |
 | **Required** | `required-minimal` = needed for basic deployment, `conditional` = needed for specific features, `optional` = safe to omit |
 
 ## Minimal Required Variables
 
 These variables are required for a functional Docker deployment:
 
-| Name | Service(s) | Phase | Notes |
-|------|-----------|-------|-------|
-| `DATABASE_URL` | migrator, seeder, app, portal | runtime | PostgreSQL connection string with `?sslmode=require` |
-| `AUTH_SECRET` | app | runtime | 32-byte base64 secret for auth. Generate: `openssl rand -base64 32` |
-| `SECRET_KEY` | app | runtime | Encryption key for sensitive data. Generate: `openssl rand -base64 32` |
-| `BETTER_AUTH_URL` | app, portal | runtime | Base URL for Better Auth (app or portal's public URL) |
-| `NEXT_PUBLIC_BETTER_AUTH_URL` | app, portal | build | Public auth URL (same as `BETTER_AUTH_URL`) |
-| `BETTER_AUTH_SECRET` | portal | runtime | Portal-specific auth secret. Generate: `openssl rand -base64 32` |
-| `REVALIDATION_SECRET` | app | runtime | Random string for revalidation. Generate: `openssl rand -base64 16` |
-| `NEXT_PUBLIC_PORTAL_URL` | app | build | Public URL of the portal (e.g., `https://portal.yourdomain.com`) |
+| Name                          | Service(s)                    | Phase   | Notes                                                                  |
+| ----------------------------- | ----------------------------- | ------- | ---------------------------------------------------------------------- |
+| `DATABASE_URL`                | migrator, seeder, app, portal | runtime | PostgreSQL connection string with `?sslmode=require`                   |
+| `AUTH_SECRET`                 | app                           | runtime | 32-byte base64 secret for auth. Generate: `openssl rand -base64 32`    |
+| `SECRET_KEY`                  | app                           | runtime | Encryption key for sensitive data. Generate: `openssl rand -base64 32` |
+| `BETTER_AUTH_URL`             | app, portal                   | runtime | Base URL for Better Auth (app or portal's public URL)                  |
+| `NEXT_PUBLIC_BETTER_AUTH_URL` | app, portal                   | build   | Public auth URL (same as `BETTER_AUTH_URL`)                            |
+| `BETTER_AUTH_SECRET`          | portal                        | runtime | Portal-specific auth secret. Generate: `openssl rand -base64 32`       |
+| `REVALIDATION_SECRET`         | app                           | runtime | Random string for revalidation. Generate: `openssl rand -base64 16`    |
+| `NEXT_PUBLIC_PORTAL_URL`      | app                           | build   | Public URL of the portal (e.g., `https://portal.yourdomain.com`)       |
 
 ## All Variables by Category
 
 ### Database
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
+| Name           | Service(s)                    | Phase   | Required         | Notes                                                         |
+| -------------- | ----------------------------- | ------- | ---------------- | ------------------------------------------------------------- |
 | `DATABASE_URL` | migrator, seeder, app, portal | runtime | required-minimal | Format: `postgresql://user:pass@host:5432/db?sslmode=require` |
 
 ### Authentication
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
-| `AUTH_SECRET` | app | runtime | required-minimal | Main app auth secret |
-| `SECRET_KEY` | app | runtime | required-minimal | Encryption key for sensitive data |
-| `BETTER_AUTH_URL` | app, portal | runtime | required-minimal | Base URL for auth |
-| `BETTER_AUTH_SECRET` | portal | runtime | required-minimal | Portal auth secret |
-| `NEXT_PUBLIC_BETTER_AUTH_URL` | app, portal | build | required-minimal | Public auth URL for client code |
-| `AUTH_GOOGLE_ID` | app | runtime | conditional | Google OAuth client ID |
-| `AUTH_GOOGLE_SECRET` | app | runtime | conditional | Google OAuth client secret |
-| `AUTH_GITHUB_ID` | app | runtime | optional | GitHub OAuth client ID |
-| `AUTH_GITHUB_SECRET` | app | runtime | optional | GitHub OAuth client secret |
-| `AUTH_MICROSOFT_CLIENT_ID` | app | runtime | conditional | Microsoft/Entra OAuth client ID |
-| `AUTH_MICROSOFT_CLIENT_SECRET` | app | runtime | conditional | Microsoft/Entra OAuth client secret |
-| `AUTH_MICROSOFT_TENANT_ID` | app | runtime | optional | `common` (default), `organizations`, or tenant GUID to restrict login |
+| Name                           | Service(s)  | Phase   | Required         | Notes                                                                 |
+| ------------------------------ | ----------- | ------- | ---------------- | --------------------------------------------------------------------- |
+| `AUTH_SECRET`                  | app         | runtime | required-minimal | Main app auth secret                                                  |
+| `SECRET_KEY`                   | app         | runtime | required-minimal | Encryption key for sensitive data                                     |
+| `BETTER_AUTH_URL`              | app, portal | runtime | required-minimal | Base URL for auth                                                     |
+| `BETTER_AUTH_SECRET`           | portal      | runtime | required-minimal | Portal auth secret                                                    |
+| `NEXT_PUBLIC_BETTER_AUTH_URL`  | app, portal | build   | required-minimal | Public auth URL for client code                                       |
+| `AUTH_GOOGLE_ID`               | app         | runtime | conditional      | Google OAuth client ID                                                |
+| `AUTH_GOOGLE_SECRET`           | app         | runtime | conditional      | Google OAuth client secret                                            |
+| `AUTH_GITHUB_ID`               | app         | runtime | optional         | GitHub OAuth client ID                                                |
+| `AUTH_GITHUB_SECRET`           | app         | runtime | optional         | GitHub OAuth client secret                                            |
+| `AUTH_MICROSOFT_CLIENT_ID`     | app         | runtime | conditional      | Microsoft/Entra OAuth client ID                                       |
+| `AUTH_MICROSOFT_CLIENT_SECRET` | app         | runtime | conditional      | Microsoft/Entra OAuth client secret                                   |
+| `AUTH_MICROSOFT_TENANT_ID`     | app         | runtime | optional         | `common` (default), `organizations`, or tenant GUID to restrict login |
 
 ### Email (SES + SQS, apps/api)
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
-| `EMAIL_SQS_QUEUE_URL` | api | runtime | required | SQS queue consumed by the email-worker; emails are enqueued by the API and sent via SES |
-| `EMAIL_FROM_SYSTEM` | api | runtime | required | System sender address (transactional emails) |
-| `EMAIL_FROM_DEFAULT` | api | runtime | optional | Default sender address fallback |
-| `EMAIL_FROM_MARKETING` | api | runtime | optional | Marketing sender address |
-| `EMAIL_FROM_TRUST_PORTAL` | api | runtime | optional | Trust Portal sender address (falls back to `EMAIL_FROM_SYSTEM`) |
-| `EMAIL_TO_TEST` | api | runtime | optional | Overrides every recipient (test mode) |
-| `EMAIL_REPLY_TO_MARKETING` | api | runtime | optional | Reply-To for the marketing channel |
+| Name                       | Service(s) | Phase   | Required | Notes                                                                                   |
+| -------------------------- | ---------- | ------- | -------- | --------------------------------------------------------------------------------------- |
+| `EMAIL_SQS_QUEUE_URL`      | api        | runtime | required | SQS queue consumed by the email-worker; emails are enqueued by the API and sent via SES |
+| `EMAIL_FROM_SYSTEM`        | api        | runtime | required | System sender address (transactional emails)                                            |
+| `EMAIL_FROM_DEFAULT`       | api        | runtime | optional | Default sender address fallback                                                         |
+| `EMAIL_FROM_MARKETING`     | api        | runtime | optional | Marketing sender address                                                                |
+| `EMAIL_FROM_TRUST_PORTAL`  | api        | runtime | optional | Trust Portal sender address (falls back to `EMAIL_FROM_SYSTEM`)                         |
+| `EMAIL_TO_TEST`            | api        | runtime | optional | Overrides every recipient (test mode)                                                   |
+| `EMAIL_REPLY_TO_MARKETING` | api        | runtime | optional | Reply-To for the marketing channel                                                      |
 
 <Note>
-Email delivery uses AWS SES (the email-worker process polls the SQS queue and calls SES `SendEmail`). The sender address must be a verified SES identity. AWS credentials are shared with S3 (`APP_AWS_*`).
+  Email delivery uses AWS SES (the email-worker process polls the SQS queue and calls SES
+  `SendEmail`). The sender address must be a verified SES identity. AWS credentials are shared with
+  S3 (`APP_AWS_*`).
 </Note>
 
 ### Workflows
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
-| `REVALIDATION_SECRET` | app | runtime | required-minimal | Server-side revalidation secret |
+| Name                  | Service(s) | Phase   | Required         | Notes                           |
+| --------------------- | ---------- | ------- | ---------------- | ------------------------------- |
+| `REVALIDATION_SECRET` | app        | runtime | required-minimal | Server-side revalidation secret |
 
 ### AWS S3 Storage
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
-| `APP_AWS_ACCESS_KEY_ID` | app, portal | runtime | conditional | AWS access key |
-| `APP_AWS_SECRET_ACCESS_KEY` | app, portal | runtime | conditional | AWS secret key |
-| `APP_AWS_REGION` | app, portal | runtime | conditional | AWS region (e.g., `us-east-1`) |
-| `APP_AWS_BUCKET_NAME` | app, portal | runtime | conditional | General file storage bucket |
-| `APP_AWS_ORG_ASSETS_BUCKET` | app | runtime | conditional | Organization logos, compliance certs |
-| `APP_AWS_QUESTIONNAIRE_UPLOAD_BUCKET` | app | runtime | conditional | Security questionnaire uploads |
-| `APP_AWS_KNOWLEDGE_BASE_BUCKET` | app | runtime | conditional | Knowledge base documents |
-| `APP_AWS_ENDPOINT` | app, portal | runtime | optional | URL for alternative S3-compatible providers |
+| Name                                  | Service(s)  | Phase   | Required    | Notes                                       |
+| ------------------------------------- | ----------- | ------- | ----------- | ------------------------------------------- |
+| `APP_AWS_ACCESS_KEY_ID`               | app, portal | runtime | conditional | AWS access key                              |
+| `APP_AWS_SECRET_ACCESS_KEY`           | app, portal | runtime | conditional | AWS secret key                              |
+| `APP_AWS_REGION`                      | app, portal | runtime | conditional | AWS region (e.g., `us-east-1`)              |
+| `APP_AWS_BUCKET_NAME`                 | app, portal | runtime | conditional | General file storage bucket                 |
+| `APP_AWS_ORG_ASSETS_BUCKET`           | app         | runtime | conditional | Organization logos, compliance certs        |
+| `APP_AWS_QUESTIONNAIRE_UPLOAD_BUCKET` | app         | runtime | conditional | Security questionnaire uploads              |
+| `APP_AWS_KNOWLEDGE_BASE_BUCKET`       | app         | runtime | conditional | Knowledge base documents                    |
+| `APP_AWS_ENDPOINT`                    | app, portal | runtime | optional    | URL for alternative S3-compatible providers |
 
 <Note>
-AWS S3 variables are required for file upload features (attachments, logos, questionnaires). Without them, these features will fail.
+  AWS S3 variables are required for file upload features (attachments, logos, questionnaires).
+  Without them, these features will fail.
 </Note>
 
 ### AI Providers
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
-| `OPENAI_API_KEY` | app | runtime | conditional | OpenAI API key for AI features |
-| `ANTHROPIC_API_KEY` | app | runtime | optional | Anthropic API key (alternative models) |
-| `GROQ_API_KEY` | app | runtime | optional | Groq API key for dashboard chat |
-| `FIRECRAWL_API_KEY` | app | runtime | conditional | Firecrawl for vendor research |
+| Name                | Service(s) | Phase   | Required    | Notes                                  |
+| ------------------- | ---------- | ------- | ----------- | -------------------------------------- |
+| `OPENAI_API_KEY`    | app        | runtime | conditional | OpenAI API key for AI features         |
+| `ANTHROPIC_API_KEY` | app        | runtime | optional    | Anthropic API key (alternative models) |
+| `GROQ_API_KEY`      | app        | runtime | optional    | Groq API key for dashboard chat        |
+| `FIRECRAWL_API_KEY` | app        | runtime | conditional | Firecrawl for vendor research          |
 
 ### Rate Limiting & Caching
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
+| Name        | Service(s)       | Phase   | Required | Notes                                                                                                         |
+| ----------- | ---------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------- |
 | `REDIS_URL` | app, portal, api | runtime | optional | Redis connection string (e.g. `redis://localhost:6379`) for rate limiting. Falls back to in-memory when unset |
 
 ### Analytics & Tracking
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
-| `NEXT_PUBLIC_POSTHOG_KEY` | app, portal | build | optional | PostHog project key |
+| Name                       | Service(s)  | Phase | Required | Notes                          |
+| -------------------------- | ----------- | ----- | -------- | ------------------------------ |
+| `NEXT_PUBLIC_POSTHOG_KEY`  | app, portal | build | optional | PostHog project key            |
 | `NEXT_PUBLIC_POSTHOG_HOST` | app, portal | build | optional | PostHog host (e.g., `/ingest`) |
 
 ### Vercel (Trust Portal Domains)
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
-| `VERCEL_ACCESS_TOKEN` | app | runtime | conditional | Vercel API token for portal domains |
-| `VERCEL_TEAM_ID` | app | runtime | conditional | Vercel team ID |
-| `VERCEL_PROJECT_ID` | app | runtime | conditional | Vercel project ID |
-| `NEXT_PUBLIC_VERCEL_URL` | app | build | optional | Vercel deployment URL |
+| Name                     | Service(s) | Phase   | Required    | Notes                               |
+| ------------------------ | ---------- | ------- | ----------- | ----------------------------------- |
+| `VERCEL_ACCESS_TOKEN`    | app        | runtime | conditional | Vercel API token for portal domains |
+| `VERCEL_TEAM_ID`         | app        | runtime | conditional | Vercel team ID                      |
+| `VERCEL_PROJECT_ID`      | app        | runtime | conditional | Vercel project ID                   |
+| `NEXT_PUBLIC_VERCEL_URL` | app        | build   | optional    | Vercel deployment URL               |
 
 ### MDM (Fleet)
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
-| `FLEET_URL` | app | runtime | conditional | Fleet MDM server URL |
-| `FLEET_TOKEN` | app | runtime | conditional | Fleet API token |
+| Name          | Service(s) | Phase   | Required    | Notes                |
+| ------------- | ---------- | ------- | ----------- | -------------------- |
+| `FLEET_URL`   | app        | runtime | conditional | Fleet MDM server URL |
+| `FLEET_TOKEN` | app        | runtime | conditional | Fleet API token      |
 
 ### Miscellaneous
 
-| Name | Service(s) | Phase | Required | Notes |
-|------|-----------|-------|----------|-------|
-| `NEXT_PUBLIC_API_URL` | app | build | optional | Override API base URL |
-| `NEXT_OUTPUT_STANDALONE` | app | runtime | optional | Set `true` for AWS/Docker deployments |
-| `SLACK_SALES_WEBHOOK` | app | runtime | optional | Slack webhook for sales notifications |
-| `DUB_API_KEY` | app | runtime | optional | Dub.co link shortener API key |
-| `DUB_REFER_URL` | app | runtime | optional | Dub.co referral URL |
+| Name                     | Service(s) | Phase   | Required | Notes                                 |
+| ------------------------ | ---------- | ------- | -------- | ------------------------------------- |
+| `NEXT_PUBLIC_API_URL`    | app        | build   | optional | Override API base URL                 |
+| `NEXT_OUTPUT_STANDALONE` | app        | runtime | optional | Set `true` for AWS/Docker deployments |
+| `SLACK_SALES_WEBHOOK`    | app        | runtime | optional | Slack webhook for sales notifications |
+| `DUB_API_KEY`            | app        | runtime | optional | Dub.co link shortener API key         |
+| `DUB_REFER_URL`          | app        | runtime | optional | Dub.co referral URL                   |
 
 ## Example Minimal Configuration
 
@@ -161,4 +164,5 @@ BETTER_AUTH_SECRET="your-32-byte-portal-secret"
 BETTER_AUTH_URL="https://portal.yourdomain.com"
 NEXT_PUBLIC_BETTER_AUTH_URL="https://portal.yourdomain.com"
 ```
+
 </CodeGroup>

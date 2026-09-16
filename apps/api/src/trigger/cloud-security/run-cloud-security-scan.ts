@@ -47,8 +47,7 @@ export const runCloudSecurityScan = task({
         };
       }
 
-      const resolvedProviderSlug =
-        connection.provider?.slug ?? providerSlug;
+      const resolvedProviderSlug = connection.provider?.slug ?? providerSlug;
 
       logger.info(
         `Starting cloud security scan for connection: ${connectionName}`,

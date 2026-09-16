@@ -1,13 +1,23 @@
+import { ActivitySection } from '@/app/(app)/[orgId]/integrations/[slug]/components/ActivitySection';
+import { RemediationHistorySection } from '@/app/(app)/[orgId]/integrations/[slug]/components/RemediationHistorySection';
 import { useApi } from '@/hooks/use-api';
 import { useConnectionServices } from '@/hooks/use-integration-platform';
 import { CLOUD_RECONNECT_CUTOFF_LABEL } from '@/lib/cloud-reconnect-policy';
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, Tabs, TabsContent, TabsList, TabsTrigger } from '@trycompai/design-system';
+import {
+  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import type { Finding, Provider } from '../types';
-import { ActivitySection } from '@/app/(app)/[orgId]/integrations/[slug]/components/ActivitySection';
-import { RemediationHistorySection } from '@/app/(app)/[orgId]/integrations/[slug]/components/RemediationHistorySection';
 import { CloudTestsSection } from './CloudTestsSection';
 import { HistoryTab } from './HistoryTab';
 import { ResultsView } from './ResultsView';
@@ -47,7 +57,6 @@ const formatProviderLabel = (providerType: string): string => {
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
 };
-
 
 function ConnectionDetails({ connection }: { connection: Provider }) {
   const details: string[] = [];
@@ -141,7 +150,8 @@ function CloudConnectionContent({
   }));
 
   const enabledCount = services.filter((s) => s.enabled).length;
-  const waitingForDetection = connection.integrationId === 'gcp' && servicesMeta.detectionReady === false;
+  const waitingForDetection =
+    connection.integrationId === 'gcp' && servicesMeta.detectionReady === false;
   const showEnabledCount = !waitingForDetection;
 
   return (
@@ -194,14 +204,20 @@ function CloudConnectionContent({
             <div>
               <h3 className="text-sm font-semibold">Scan Configuration</h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Toggle which services to include in scans.{connection.integrationId === 'aws' ? ' New services are auto-detected from your AWS usage.' : ''}
+                Toggle which services to include in scans.
+                {connection.integrationId === 'aws'
+                  ? ' New services are auto-detected from your AWS usage.'
+                  : ''}
               </p>
             </div>
             <div className="flex items-center justify-between rounded-lg border bg-background px-4 py-3">
               <div>
                 <p className="text-sm font-medium">Daily automated scan</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Runs every day at 5:00 AM UTC{enabledCount > 0 ? ` across ${enabledCount} service${enabledCount !== 1 ? 's' : ''} + security baseline` : ' on security baseline checks'}
+                  Runs every day at 5:00 AM UTC
+                  {enabledCount > 0
+                    ? ` across ${enabledCount} service${enabledCount !== 1 ? 's' : ''} + security baseline`
+                    : ' on security baseline checks'}
                 </p>
               </div>
               <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
@@ -226,7 +242,10 @@ function CloudConnectionContent({
             />
           ) : (
             <p className="text-sm text-muted-foreground py-8 text-center">
-              No services detected yet.{connection.integrationId === 'aws' ? ' Services are auto-detected from your AWS billing data.' : ' Run a scan to detect services.'}
+              No services detected yet.
+              {connection.integrationId === 'aws'
+                ? ' Services are auto-detected from your AWS billing data.'
+                : ' Run a scan to detect services.'}
             </p>
           )}
         </div>
@@ -313,9 +332,9 @@ export function ProviderTabs({
                     >
                       <div className="w-[240px]">
                         <SelectTrigger size="sm">
-                          {connections.find((c) => c.id === activeConnId)?.displayName
-                            || connections.find((c) => c.id === activeConnId)?.name
-                            || `Select ${connectionNoun.toLowerCase()}`}
+                          {connections.find((c) => c.id === activeConnId)?.displayName ||
+                            connections.find((c) => c.id === activeConnId)?.name ||
+                            `Select ${connectionNoun.toLowerCase()}`}
                         </SelectTrigger>
                       </div>
                       <SelectContent>
@@ -328,15 +347,16 @@ export function ProviderTabs({
                     </Select>
                   </div>
                   {/* Only show "Add connection" button for providers that support multiple connections */}
-                  {canAddConnection !== false && connections.some((c) => c.supportsMultipleConnections) && (
-                    <Button
-                      size="lg"
-                      iconLeft={<Add size={16} />}
-                      onClick={() => onAddConnection(providerType)}
-                    >
-                      Add connection
-                    </Button>
-                  )}
+                  {canAddConnection !== false &&
+                    connections.some((c) => c.supportsMultipleConnections) && (
+                      <Button
+                        size="lg"
+                        iconLeft={<Add size={16} />}
+                        onClick={() => onAddConnection(providerType)}
+                      >
+                        Add connection
+                      </Button>
+                    )}
                 </div>
 
                 {connections.map((connection) => {
@@ -351,7 +371,8 @@ export function ProviderTabs({
                               <div>
                                 <p className="text-sm font-medium">Reconnect this account</p>
                                 <p className="text-xs text-muted-foreground mt-0.5">
-                                  This connection was created before {CLOUD_RECONNECT_CUTOFF_LABEL}. Reconnect it to keep scans and remediation fully reliable.
+                                  This connection was created before {CLOUD_RECONNECT_CUTOFF_LABEL}.
+                                  Reconnect it to keep scans and remediation fully reliable.
                                 </p>
                               </div>
                               {canAddConnection !== false && (
@@ -388,7 +409,8 @@ export function ProviderTabs({
                                 <div className="space-y-0.5">
                                   <p className="text-sm font-medium">Auto-fix is available</p>
                                   <p className="text-xs text-muted-foreground">
-                                    Upgrade to the new connection to enable one-click fixes, batch remediation, and rollback for all findings.
+                                    Upgrade to the new connection to enable one-click fixes, batch
+                                    remediation, and rollback for all findings.
                                   </p>
                                 </div>
                                 <span className="text-xs font-medium text-primary shrink-0 ml-4 group-hover:underline">
@@ -396,14 +418,14 @@ export function ProviderTabs({
                                 </span>
                               </a>
                             )}
-                          <ResultsView
-                            findings={findingsByProvider[connection.id] ?? []}
-                            onRunScan={() => onRunScan(connection.id)}
-                            isScanning={isScanning}
-                            needsConfiguration={needsConfiguration(connection)}
-                            onConfigure={() => onConfigure(connection)}
-                            canRunScan={canRunScan}
-                          />
+                            <ResultsView
+                              findings={findingsByProvider[connection.id] ?? []}
+                              onRunScan={() => onRunScan(connection.id)}
+                              isScanning={isScanning}
+                              needsConfiguration={needsConfiguration(connection)}
+                              onConfigure={() => onConfigure(connection)}
+                              canRunScan={canRunScan}
+                            />
                           </>
                         )}
                       </div>

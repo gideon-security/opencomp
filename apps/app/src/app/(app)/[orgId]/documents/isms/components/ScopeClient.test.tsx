@@ -1,12 +1,12 @@
-import { render, screen, waitFor } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDriftResult, IsmsScopeNarrative } from '../isms-types';
 
 // ─── Mock usePermissions ─────────────────────────────────────
@@ -61,7 +61,13 @@ vi.mock('@trycompai/design-system', () => ({
   AlertTitle: ({ children }: { children: React.ReactNode }) => <strong>{children}</strong>,
   AlertDescription: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Badge: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
-  Button: ({ children, onClick, disabled, type, 'aria-label': ariaLabel }: {
+  Button: ({
+    children,
+    onClick,
+    disabled,
+    type,
+    'aria-label': ariaLabel,
+  }: {
     children?: React.ReactNode;
     onClick?: () => void;
     disabled?: boolean;
@@ -143,7 +149,8 @@ vi.mock('./shared', () => ({
 import { ScopeClient } from './ScopeClient';
 
 const NARRATIVE: IsmsScopeNarrative = {
-  certificateScopeSentence: 'The provision of SaaS compliance tooling operating from AWS us-east-1.',
+  certificateScopeSentence:
+    'The provision of SaaS compliance tooling operating from AWS us-east-1.',
   inScope: 'All production services and supporting corporate systems.',
   interfaces: ['Customer support portal', 'Payment processor'],
   dependencies: ['AWS', 'Stripe'],

@@ -1,7 +1,7 @@
 'use client';
 
-import { apiClient } from '@/lib/api-client';
 import { usePermissions } from '@/hooks/use-permissions';
+import { apiClient } from '@/lib/api-client';
 import {
   Button,
   Checkbox,
@@ -34,10 +34,7 @@ export function LinkRequirementForControlSheet({
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const { requirements, isLoading } = useControlOptions(isOpen);
-  const linked = useMemo(
-    () => new Set(alreadyLinkedRequirementIds),
-    [alreadyLinkedRequirementIds],
-  );
+  const linked = useMemo(() => new Set(alreadyLinkedRequirementIds), [alreadyLinkedRequirementIds]);
   const options = useMemo(
     () => requirements.filter((r) => !linked.has(r.id)),
     [requirements, linked],
@@ -75,20 +72,15 @@ export function LinkRequirementForControlSheet({
       );
     setIsSubmitting(true);
     try {
-      const response = await apiClient.post(
-        `/v1/controls/${controlId}/requirements/link`,
-        { requirements: mappings },
-      );
+      const response = await apiClient.post(`/v1/controls/${controlId}/requirements/link`, {
+        requirements: mappings,
+      });
       if (response.error) throw new Error(response.error);
       toast.success(t('controls.requirementsLinked'));
       setIsOpen(false);
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t('controls.failedToLinkRequirements'),
-      );
+      toast.error(error instanceof Error ? error.message : t('controls.failedToLinkRequirements'));
     } finally {
       setIsSubmitting(false);
     }
@@ -96,11 +88,7 @@ export function LinkRequirementForControlSheet({
 
   return (
     <>
-      <Button
-        size="sm"
-        iconLeft={<LinkIcon size={16} />}
-        onClick={() => setIsOpen(true)}
-      >
+      <Button size="sm" iconLeft={<LinkIcon size={16} />} onClick={() => setIsOpen(true)}>
         {t('controls.linkRequirement')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -130,9 +118,7 @@ export function LinkRequirementForControlSheet({
                     />
                     <div className="flex-1">
                       <div className="font-medium text-sm">
-                        {opt.identifier?.trim()
-                          ? `${opt.identifier} — ${opt.name}`
-                          : opt.name}
+                        {opt.identifier?.trim() ? `${opt.identifier} — ${opt.name}` : opt.name}
                       </div>
                       <Text size="xs" variant="muted">
                         {t('controls.requirementFrom', {
@@ -143,10 +129,7 @@ export function LinkRequirementForControlSheet({
                   </label>
                 ))}
                 <div className="flex justify-end pt-2">
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={selected.size === 0 || isSubmitting}
-                  >
+                  <Button onClick={handleSubmit} disabled={selected.size === 0 || isSubmitting}>
                     {t('controls.linkRequirementCount', {
                       count: selected.size,
                     })}

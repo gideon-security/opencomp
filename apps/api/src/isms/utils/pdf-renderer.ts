@@ -103,7 +103,12 @@ export function renderIsmsPdf({
         overflow: 'linebreak',
       },
       columnStyles: {
-        0: { cellWidth: 48, fontStyle: 'bold', fillColor: ZEBRA, textColor: MUTED },
+        0: {
+          cellWidth: 48,
+          fontStyle: 'bold',
+          fillColor: ZEBRA,
+          textColor: MUTED,
+        },
         1: { cellWidth: contentWidth - 48 },
       },
       body: rows.map((row) => [row.label, row.value]),
@@ -258,7 +263,12 @@ export function renderIsmsPdf({
         overflow: 'linebreak',
       },
       columnStyles: {
-        0: { cellWidth: 42, fontStyle: 'bold', fillColor: ZEBRA, textColor: MUTED },
+        0: {
+          cellWidth: 42,
+          fontStyle: 'bold',
+          fillColor: ZEBRA,
+          textColor: MUTED,
+        },
         1: { cellWidth: contentWidth - 42 },
       },
       body: metadataRows(metadata).map((row) => [row.label, row.value]),

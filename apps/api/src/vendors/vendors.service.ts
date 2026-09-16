@@ -225,7 +225,10 @@ export class VendorsService {
   ) {
     try {
       if (createVendorDto.assigneeId) {
-        await validateAssigneeNotPlatformAdmin(createVendorDto.assigneeId, organizationId);
+        await validateAssigneeNotPlatformAdmin(
+          createVendorDto.assigneeId,
+          organizationId,
+        );
       }
       const vendor = await db.vendor.create({
         data: {
@@ -617,7 +620,10 @@ export class VendorsService {
         updateVendorDto.assigneeId &&
         updateVendorDto.assigneeId !== existing.assigneeId
       ) {
-        await validateAssigneeNotPlatformAdmin(updateVendorDto.assigneeId, organizationId);
+        await validateAssigneeNotPlatformAdmin(
+          updateVendorDto.assigneeId,
+          organizationId,
+        );
       }
 
       // Keep per-strategy descriptions independent across treatment

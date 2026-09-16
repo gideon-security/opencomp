@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { cn } from '@trycompai/design-system/cn';
 import type { PentestAgentEvent } from '@/lib/security/penetration-tests-client';
+import { cn } from '@trycompai/design-system/cn';
+import { useState } from 'react';
 
 interface AgentActivityLogProps {
   events: PentestAgentEvent[];
@@ -43,10 +43,7 @@ function isCustomerVisible(event: PentestAgentEvent): boolean {
  * is still wrapped in `<details>` so users can collapse it once they've
  * seen what they need.
  */
-export function AgentActivityLog({
-  events,
-  defaultOpen = true,
-}: AgentActivityLogProps) {
+export function AgentActivityLog({ events, defaultOpen = true }: AgentActivityLogProps) {
   // Track open state ourselves so the user can collapse the details
   // panel without React re-forcing it open on the next render. With
   // `open={defaultOpen}` as a controlled prop the user's collapse
@@ -68,14 +65,10 @@ export function AgentActivityLog({
           <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
             Execution trace
           </span>
-          <span className="font-mono text-xs text-muted-foreground">
-            {events.length}
-          </span>
+          <span className="font-mono text-xs text-muted-foreground">{events.length}</span>
         </div>
         <span className="text-xs text-muted-foreground">
-          {events.length === 0
-            ? 'Waiting for events…'
-            : `Showing latest ${recent.length}`}
+          {events.length === 0 ? 'Waiting for events…' : `Showing latest ${recent.length}`}
         </span>
       </summary>
       {recent.length > 0 ? (
@@ -98,8 +91,7 @@ function ActivityRow({ event }: { event: PentestAgentEvent }) {
     <div
       className={cn(
         'border-b border-border px-4 py-2 last:border-b-0',
-        isCritical &&
-          'bg-[var(--pt-sev-critical-bg)] text-[var(--pt-sev-critical-fg)]',
+        isCritical && 'bg-[var(--pt-sev-critical-bg)] text-[var(--pt-sev-critical-fg)]',
       )}
     >
       <div className="flex items-center gap-2 text-muted-foreground">
@@ -120,9 +112,7 @@ function ActivityRow({ event }: { event: PentestAgentEvent }) {
           </span>
         ) : null}
       </div>
-      {content ? (
-        <pre className="mt-1 whitespace-pre-wrap break-words">{content}</pre>
-      ) : null}
+      {content ? <pre className="mt-1 whitespace-pre-wrap break-words">{content}</pre> : null}
     </div>
   );
 }
@@ -138,7 +128,5 @@ function extractContent(event: PentestAgentEvent): string | null {
 }
 
 function truncate(s: string, max: number): string {
-  return s.length > max
-    ? `${s.slice(0, max)}\n… (${s.length - max} more chars)`
-    : s;
+  return s.length > max ? `${s.slice(0, max)}\n… (${s.length - max} more chars)` : s;
 }

@@ -3,7 +3,12 @@
 import { Badge } from '@gideon-defender/ui/badge';
 import { Button } from '@gideon-defender/ui/button';
 import { cn } from '@gideon-defender/ui/cn';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@gideon-defender/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@gideon-defender/ui/tooltip';
 // Assuming Role is from prisma
 import { ChevronsUpDown, Lock, X } from 'lucide-react';
 import type { CustomRoleOption } from './MultiRoleCombobox';

@@ -147,7 +147,10 @@ export function EmployeeDevice({
                   const passed = memberDevice[key];
                   const details = memberDevice.checkDetails?.[dbKey];
                   return (
-                    <div key={key} className="flex items-center justify-between rounded-lg border p-3">
+                    <div
+                      key={key}
+                      className="flex items-center justify-between rounded-lg border p-3"
+                    >
                       <div>
                         <span className="text-sm font-medium">{label}</span>
                         {!isUntracked && !isStale && details?.message && (

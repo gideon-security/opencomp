@@ -36,9 +36,7 @@ export function parseExceptionExpiry(
       candidate.getUTCMonth() !== m - 1 ||
       candidate.getUTCDate() !== d
     ) {
-      throw new BadRequestException(
-        'expiresAt must be a valid calendar date.',
-      );
+      throw new BadRequestException('expiresAt must be a valid calendar date.');
     }
     return new Date(Date.UTC(y, m - 1, d, 23, 59, 59, 999));
   }

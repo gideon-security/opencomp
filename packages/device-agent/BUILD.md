@@ -102,14 +102,14 @@ npm run package:all
 
 The system tray requires PNG icons in the `assets/` directory:
 
-| File | Size | Purpose |
-|------|------|---------|
-| `tray-green.png` | 16x16 | Compliant status |
-| `tray-red.png` | 16x16 | Non-compliant status |
-| `tray-gray.png` | 16x16 | Unauthenticated / checking |
-| `icon.png` | 256x256 | App icon |
-| `icon.icns` | - | macOS app icon (multi-resolution) |
-| `icon.ico` | - | Windows app icon |
+| File             | Size    | Purpose                           |
+| ---------------- | ------- | --------------------------------- |
+| `tray-green.png` | 16x16   | Compliant status                  |
+| `tray-red.png`   | 16x16   | Non-compliant status              |
+| `tray-gray.png`  | 16x16   | Unauthenticated / checking        |
+| `icon.png`       | 256x256 | App icon                          |
+| `icon.icns`      | -       | macOS app icon (multi-resolution) |
+| `icon.ico`       | -       | Windows app icon                  |
 
 On macOS, tray icons should be **template images** (monochrome black with
 transparency). Provide `@2x` variants (32x32) for Retina displays by naming
@@ -165,6 +165,7 @@ git push origin device-agent-v1.0.0
 ```
 
 The CI workflow will:
+
 1. Build on macOS (produces `.dmg`)
 2. Build on Windows (produces `.exe`)
 3. Create a GitHub Release with both artifacts attached

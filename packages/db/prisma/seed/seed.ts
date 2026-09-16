@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '@prisma/client';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { frameworkEditorModelSchemas } from './frameworkEditorSchemas';
@@ -302,15 +302,14 @@ async function seedIsmsDocumentTemplates() {
       },
     });
   }
-  console.log(
-    `Seeded ${ISMS_DOCUMENT_TEMPLATES.length} ISMS document templates.`,
-  );
+  console.log(`Seeded ${ISMS_DOCUMENT_TEMPLATES.length} ISMS document templates.`);
 }
 
 async function backfillFrameworkScopedLinks() {
   const fis = await prisma.frameworkInstance.findMany({ select: { id: true } });
   for (const fi of fis) {
-    await prisma.$executeRawUnsafe(`
+    await prisma.$executeRawUnsafe(
+      `
       INSERT INTO "FrameworkControlPolicyLink" ("frameworkInstanceId", "controlId", "policyId")
       SELECT DISTINCT $1, cp."A", cp."B"
       FROM "_ControlToPolicy" cp
@@ -323,9 +322,12 @@ async function backfillFrameworkScopedLinks() {
         WHERE fpl."frameworkInstanceId" = $1
           AND fpl."controlId" = cp."A" AND fpl."policyId" = cp."B"
       )
-    `, fi.id);
+    `,
+      fi.id,
+    );
 
-    await prisma.$executeRawUnsafe(`
+    await prisma.$executeRawUnsafe(
+      `
       INSERT INTO "FrameworkControlTaskLink" ("frameworkInstanceId", "controlId", "taskId")
       SELECT DISTINCT $1, ct."A", ct."B"
       FROM "_ControlToTask" ct
@@ -338,9 +340,12 @@ async function backfillFrameworkScopedLinks() {
         WHERE ftl."frameworkInstanceId" = $1
           AND ftl."controlId" = ct."A" AND ftl."taskId" = ct."B"
       )
-    `, fi.id);
+    `,
+      fi.id,
+    );
 
-    await prisma.$executeRawUnsafe(`
+    await prisma.$executeRawUnsafe(
+      `
       INSERT INTO "FrameworkControlDocumentTypeLink" ("frameworkInstanceId", "controlId", "formType")
       SELECT DISTINCT $1, cdt."controlId", cdt."formType"
       FROM "ControlDocumentType" cdt
@@ -353,7 +358,9 @@ async function backfillFrameworkScopedLinks() {
         WHERE fdl."frameworkInstanceId" = $1
           AND fdl."controlId" = cdt."controlId" AND fdl."formType" = cdt."formType"
       )
-    `, fi.id);
+    `,
+      fi.id,
+    );
   }
 }
 
@@ -366,9 +373,8 @@ async function main() {
     // On a fresh `migrate reset`, the backfill data migration runs against empty
     // tables and is a no-op; seed then creates the framework rows. Without this
     // call, local onboarding would fail because it reads from FrameworkVersion.
-    const { backfillFrameworkVersions } = await import(
-      '../../src/scripts/backfill-framework-versions'
-    );
+    const { backfillFrameworkVersions } =
+      await import('../../src/scripts/backfill-framework-versions');
     const result = await backfillFrameworkVersions();
     console.log('FrameworkVersion backfill:', result);
 

@@ -73,7 +73,12 @@ const okRun = (
 describe('collectFailedTasks', () => {
   it('keeps only ok + success + freshly-transitioned-to-failed runs', () => {
     const failed = collectFailedTasks([
-      okRun({ taskId: 't1', taskTitle: 'Task 1', failedCount: 2, totalCount: 9 }),
+      okRun({
+        taskId: 't1',
+        taskTitle: 'Task 1',
+        failedCount: 2,
+        totalCount: 9,
+      }),
       // success but NOT a fresh transition (already failed) → dropped
       okRun({ taskId: 't2', statusChangedToFailed: false }),
       // child run errored/crashed → dropped
@@ -89,7 +94,9 @@ describe('collectFailedTasks', () => {
 
   it('returns [] when nothing failed', () => {
     expect(
-      collectFailedTasks([okRun({ taskId: 't1', statusChangedToFailed: false })]),
+      collectFailedTasks([
+        okRun({ taskId: 't1', statusChangedToFailed: false }),
+      ]),
     ).toEqual([]);
   });
 });
@@ -105,16 +112,32 @@ describe('sendBundledFailureEmails', () => {
     isUserUnsubscribedMock.mockResolvedValue(false);
     // Assignee of t1; t2 unassigned.
     mockDb.task.findMany.mockResolvedValue([
-      { assignee: { user: { id: 'u_assignee', name: 'Ann', email: 'ann@x.com' } } },
+      {
+        assignee: {
+          user: { id: 'u_assignee', name: 'Ann', email: 'ann@x.com' },
+        },
+      },
       { assignee: null },
     ]);
     // admin + owner + an employee (excluded) + a substring-only custom role
     // (must be excluded by EXACT token matching) + the assignee again (deduped).
     mockDb.member.findMany.mockResolvedValue([
-      { role: 'admin', user: { id: 'u_admin', name: 'Adam', email: 'adam@x.com' } },
-      { role: 'owner', user: { id: 'u_owner', name: 'Oli', email: 'oli@x.com' } },
-      { role: 'employee', user: { id: 'u_emp', name: 'Eve', email: 'eve@x.com' } },
-      { role: 'co-owner', user: { id: 'u_sub', name: 'Sub', email: 'sub@x.com' } },
+      {
+        role: 'admin',
+        user: { id: 'u_admin', name: 'Adam', email: 'adam@x.com' },
+      },
+      {
+        role: 'owner',
+        user: { id: 'u_owner', name: 'Oli', email: 'oli@x.com' },
+      },
+      {
+        role: 'employee',
+        user: { id: 'u_emp', name: 'Eve', email: 'eve@x.com' },
+      },
+      {
+        role: 'co-owner',
+        user: { id: 'u_sub', name: 'Sub', email: 'sub@x.com' },
+      },
       {
         role: 'admin,auditor',
         user: { id: 'u_assignee', name: 'Ann', email: 'ann@x.com' },
@@ -158,8 +181,8 @@ describe('sendBundledFailureEmails', () => {
   });
 
   it('skips unsubscribed recipients', async () => {
-    isUserUnsubscribedMock.mockImplementation(
-      (_db, email: string) => Promise.resolve(email === 'adam@x.com'),
+    isUserUnsubscribedMock.mockImplementation((_db, email: string) =>
+      Promise.resolve(email === 'adam@x.com'),
     );
 
     await sendBundledFailureEmails({

@@ -1,13 +1,9 @@
-export {
-  storageHttpsTlsCheck,
-  storagePublicAccessCheck,
-  storageEncryptionCheck,
-} from './storage';
-export { sqlTlsCheck, sqlPublicAccessCheck, sqlAuditingCheck } from './sql';
-export { mysqlFlexibleTlsCheck } from './mysql-flexible';
-export { postgresqlFlexibleTlsCheck } from './postgresql-flexible';
-export { keyVaultProtectionCheck, keyVaultRbacCheck } from './key-vault';
-export { nsgNoOpenPortsCheck } from './network';
 export { rbacLeastPrivilegeCheck } from './entra-id';
-export { monitorLoggingAlertingCheck } from './monitor';
 export { environmentSeparationCheck } from './environment-separation';
+export { keyVaultProtectionCheck, keyVaultRbacCheck } from './key-vault';
+export { monitorLoggingAlertingCheck } from './monitor';
+export { mysqlFlexibleTlsCheck } from './mysql-flexible';
+export { nsgNoOpenPortsCheck } from './network';
+export { postgresqlFlexibleTlsCheck } from './postgresql-flexible';
+export { sqlAuditingCheck, sqlPublicAccessCheck, sqlTlsCheck } from './sql';
+export { storageEncryptionCheck, storageHttpsTlsCheck, storagePublicAccessCheck } from './storage';

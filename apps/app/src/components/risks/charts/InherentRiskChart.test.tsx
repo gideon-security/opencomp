@@ -1,11 +1,11 @@
-import { render } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -85,9 +85,7 @@ describe('InherentRiskChart', () => {
     render(<InherentRiskChart risk={mockRisk} />);
 
     expect(capturedProps.title).toBe('Inherent Risk');
-    expect(capturedProps.description).toBe(
-      'Initial risk level before any controls are applied',
-    );
+    expect(capturedProps.description).toBe('Initial risk level before any controls are applied');
     expect(capturedProps.riskId).toBe('risk-1');
     expect(capturedProps.activeLikelihood).toBe('possible');
     expect(capturedProps.activeImpact).toBe('moderate');

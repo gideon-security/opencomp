@@ -47,6 +47,7 @@ typically start running commands in the new worktree immediately, and we
 don't want them racing ahead of the install.
 
 Toggles:
+
 - `SKIP_WORKTREE_DB=1 git worktree add …` — skip isolated DB creation
   and `DATABASE_URL` rewriting. The worktree uses the shared `comp` DB
   (same behavior as before DB isolation was added).

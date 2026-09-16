@@ -76,4 +76,3 @@ export interface QuestionAnswer {
   // Preserves the original index from QuestionnaireResult.originalIndex
   _originalIndex?: number;
 }
-

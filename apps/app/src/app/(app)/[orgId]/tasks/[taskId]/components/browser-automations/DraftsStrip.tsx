@@ -61,9 +61,7 @@ export function DraftsStrip({
                 <span className="flex flex-none items-center gap-1">
                   {chain.map((host, index) => (
                     <span key={host} className="flex items-center gap-1" title={host}>
-                      {index > 0 && (
-                        <span className="text-[10px] text-muted-foreground/50">→</span>
-                      )}
+                      {index > 0 && <span className="text-[10px] text-muted-foreground/50">→</span>}
                       <VendorLogo hostname={host} size={20} />
                     </span>
                   ))}

@@ -1,7 +1,7 @@
 import { isOrgParticipant } from '@/lib/org-participation-rule';
 import { db } from '@db/server';
-import { Novu } from '@novu/api';
 import { logger, schedules } from '@gideon-defender/trigger-local';
+import { Novu } from '@novu/api';
 
 export const policySchedule = schedules.task({
   id: 'policy-schedule',

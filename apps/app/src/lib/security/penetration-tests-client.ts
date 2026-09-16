@@ -1,10 +1,5 @@
 export type PentestReportStatus =
-  | 'provisioning'
-  | 'cloning'
-  | 'running'
-  | 'completed'
-  | 'failed'
-  | 'cancelled';
+  'provisioning' | 'cloning' | 'running' | 'completed' | 'failed' | 'cancelled';
 
 export interface PentestProgress {
   status: PentestReportStatus;

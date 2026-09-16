@@ -71,15 +71,21 @@ export class MemberQueries {
           ? {
               onboardDate: {
                 ...(filters.onboardAfter ? { gte: filters.onboardAfter } : {}),
-                ...(filters.onboardBefore ? { lte: filters.onboardBefore } : {}),
+                ...(filters.onboardBefore
+                  ? { lte: filters.onboardBefore }
+                  : {}),
               },
             }
           : {}),
         ...(filters?.offboardAfter || filters?.offboardBefore
           ? {
               offboardDate: {
-                ...(filters.offboardAfter ? { gte: filters.offboardAfter } : {}),
-                ...(filters.offboardBefore ? { lte: filters.offboardBefore } : {}),
+                ...(filters.offboardAfter
+                  ? { gte: filters.offboardAfter }
+                  : {}),
+                ...(filters.offboardBefore
+                  ? { lte: filters.offboardBefore }
+                  : {}),
               },
             }
           : {}),
@@ -137,7 +143,14 @@ export class MemberQueries {
     updateData: UpdatePeopleDto,
   ): Promise<PeopleResponseDto> {
     // Separate user-level fields from member-level fields
-    const { name, email, createdAt, onboardDate, offboardDate, ...memberFields } = updateData;
+    const {
+      name,
+      email,
+      createdAt,
+      onboardDate,
+      offboardDate,
+      ...memberFields
+    } = updateData;
 
     // Prepare member update data
     const updatePayload: any = { ...memberFields };

@@ -36,14 +36,10 @@ export function resolveSoaDisplay({
   }
 
   // In-session autofill result (before the document is reloaded).
-  if (
-    processedResult?.isApplicable !== null &&
-    processedResult?.isApplicable !== undefined
-  ) {
+  if (processedResult?.isApplicable !== null && processedResult?.isApplicable !== undefined) {
     return {
       displayIsApplicable: processedResult.isApplicable,
-      justificationValue:
-        processedResult.justification || answerData?.answer || null,
+      justificationValue: processedResult.justification || answerData?.answer || null,
     };
   }
 

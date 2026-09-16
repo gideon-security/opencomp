@@ -2,11 +2,18 @@
 
 import { updateTaskSchema } from '@/actions/schema';
 import { useTaskMutations } from '@/hooks/use-task-mutations';
+import type { Task } from '@db';
 import { Button } from '@gideon-defender/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
 import { Input } from '@gideon-defender/ui/input';
 import { Textarea } from '@gideon-defender/ui/textarea';
-import type { Task } from '@db';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useQueryState } from 'nuqs';
@@ -92,11 +99,7 @@ export function UpdateTaskOverviewForm({ task }: { task: Task }) {
         </div>
         <div className="mt-8 flex justify-end">
           <Button type="submit" variant="default" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              'Save'
-            )}
+            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
           </Button>
         </div>
       </form>

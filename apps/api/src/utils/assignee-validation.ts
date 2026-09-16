@@ -28,7 +28,9 @@ export async function validateAssigneeNotPlatformAdmin(
   }
 
   if (!(await isMemberOrgParticipant(member.user.role, organizationId))) {
-    throw new BadRequestException(`Cannot assign a platform admin as ${roleLabel}`);
+    throw new BadRequestException(
+      `Cannot assign a platform admin as ${roleLabel}`,
+    );
   }
 }
 

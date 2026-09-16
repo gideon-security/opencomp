@@ -1,17 +1,30 @@
 'use client';
 
-import { usePermissions } from '@/hooks/use-permissions';
-import { usePolicyMutations } from '@/hooks/use-policy-mutations';
 import { updatePolicyFormSchema } from '@/actions/schema';
 import { StatusIndicator } from '@/components/status-indicator';
-import { useSession } from '@/utils/auth-client';
+import { useAuthMe } from '@/hooks/use-auth-me';
+import { usePermissions } from '@/hooks/use-permissions';
+import { usePolicyMutations } from '@/hooks/use-policy-mutations';
+import { Departments, Frequency, type Policy, type PolicyStatus } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import { Calendar } from '@gideon-defender/ui/calendar';
 import { cn } from '@gideon-defender/ui/cn';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@gideon-defender/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@gideon-defender/ui/form';
 import { Popover, PopoverContent, PopoverTrigger } from '@gideon-defender/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
-import { Departments, Frequency, type Policy, type PolicyStatus } from '@db';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2 } from 'lucide-react';
@@ -26,7 +39,7 @@ export function UpdatePolicyOverview({ policy }: { policy: Policy }) {
   const { hasPermission } = usePermissions();
   const canUpdate = hasPermission('policy', 'update');
   const { updatePolicy } = usePolicyMutations();
-  const session = useSession();
+  const { user } = useAuthMe();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const calculateReviewDate = (): Date => {
@@ -43,7 +56,7 @@ export function UpdatePolicyOverview({ policy }: { policy: Policy }) {
     defaultValues: {
       id: policy.id,
       status: policy.status,
-      assigneeId: policy.assigneeId ?? session.data?.user?.id,
+      assigneeId: policy.assigneeId ?? user?.id,
       department: policy.department ?? Departments.admin,
       review_frequency: policy.frequency ?? Frequency.monthly,
       review_date: reviewDate,
@@ -195,16 +208,8 @@ export function UpdatePolicyOverview({ policy }: { policy: Policy }) {
           />
         </div>
         <div className="mt-4 flex justify-end">
-          <Button
-            type="submit"
-            variant="default"
-            disabled={isSubmitting || !canUpdate}
-          >
-            {isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              'Save'
-            )}
+          <Button type="submit" variant="default" disabled={isSubmitting || !canUpdate}>
+            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
           </Button>
         </div>
       </form>

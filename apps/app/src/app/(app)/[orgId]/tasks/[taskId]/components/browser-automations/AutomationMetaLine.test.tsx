@@ -51,9 +51,7 @@ describe('AutomationMetaLine', () => {
   });
 
   it('paused: schedule on hold, no dates promised', () => {
-    render(
-      <AutomationMetaLine scheduleFrequency="monthly" lastRunAt={null} isPaused={true} />,
-    );
+    render(<AutomationMetaLine scheduleFrequency="monthly" lastRunAt={null} isPaused={true} />);
     expect(screen.getByText('Paused · monthly schedule on hold')).toBeInTheDocument();
     expect(screen.queryByText(/next/)).not.toBeInTheDocument();
   });

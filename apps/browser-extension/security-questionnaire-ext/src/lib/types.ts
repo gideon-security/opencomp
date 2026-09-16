@@ -70,12 +70,7 @@ export type QuestionnaireSurface = 'generic' | 'docs' | 'sheets' | 'forms';
 export type AnswerConfidence = 'high' | 'med' | 'low';
 
 export type QueueStatus =
-  | 'pending'
-  | 'generating'
-  | 'generated'
-  | 'approved'
-  | 'inserted'
-  | 'flagged';
+  'pending' | 'generating' | 'generated' | 'approved' | 'inserted' | 'flagged';
 
 export interface QuestionQueueItem {
   id: string;

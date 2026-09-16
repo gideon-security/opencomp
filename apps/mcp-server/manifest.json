@@ -12,24 +12,12 @@
     "entry_point": "./bin/mcp-server.js",
     "mcp_config": {
       "command": "node",
-      "args": [
-        "${__dirname}/bin/mcp-server.js",
-        "start",
-        "--apikey",
-        "${user_config.apikey}"
-      ]
+      "args": ["${__dirname}/bin/mcp-server.js", "start", "--apikey", "${user_config.apikey}"]
     }
   },
   "display_name": "@gideon-defender/mcp Server",
   "prompts": [],
-  "keywords": [
-    "@gideon-defender/mcp",
-    "server",
-    "comp",
-    "api",
-    "compliance",
-    "automation"
-  ],
+  "keywords": ["@gideon-defender/mcp", "server", "comp", "api", "compliance", "automation"],
   "user_config": {
     "apikey": {
       "type": "string",

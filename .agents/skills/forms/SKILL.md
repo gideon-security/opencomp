@@ -1,6 +1,6 @@
 ---
 name: forms
-description: "Use when building forms - covers React Hook Form, Zod validation, and form patterns"
+description: 'Use when building forms - covers React Hook Form, Zod validation, and form patterns'
 ---
 
 Source Cursor rule: `.cursor/rules/forms.mdc`.
@@ -41,7 +41,7 @@ function MyForm() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Input {...register('email')} />
       {errors.email && <p>{errors.email.message}</p>}
-      
+
       <Button type="submit" loading={isSubmitting}>
         Submit
       </Button>
@@ -58,26 +58,28 @@ const profileSchema = z.object({
   name: z.string().min(1, 'Required'),
   email: z.string().email(),
   website: z.string().url().optional(),
-  
+
   // Numbers (coerce for inputs)
   age: z.coerce.number().int().min(0),
   price: z.coerce.number().positive(),
-  
+
   // Arrays
   tags: z.array(z.string()).min(1),
-  
+
   // Enums
   status: z.enum(['active', 'inactive']),
 });
 
 // Cross-field validation
-const passwordSchema = z.object({
-  password: z.string().min(8),
-  confirmPassword: z.string(),
-}).refine(d => d.password === d.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-});
+const passwordSchema = z
+  .object({
+    password: z.string().min(8),
+    confirmPassword: z.string(),
+  })
+  .refine((d) => d.password === d.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 ```
 
 ## Controller for Complex Components
@@ -98,7 +100,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from '@trycompai/des
       </SelectContent>
     </Select>
   )}
-/>
+/>;
 ```
 
 ## Form State
@@ -108,15 +110,15 @@ const {
   register,
   handleSubmit,
   control,
-  watch,           // Watch field values
-  setValue,        // Set field programmatically
-  reset,           // Reset form
-  setError,        // Set error manually
+  watch, // Watch field values
+  setValue, // Set field programmatically
+  reset, // Reset form
+  setError, // Set error manually
   formState: {
-    errors,        // Field errors
-    isSubmitting,  // Submitting
-    isValid,       // All valid
-    isDirty,       // Modified
+    errors, // Field errors
+    isSubmitting, // Submitting
+    isValid, // All valid
+    isDirty, // Modified
   },
 } = useForm<FormData>({
   resolver: zodResolver(schema),
@@ -139,7 +141,9 @@ const onSubmit = async (data: FormData) => {
 };
 
 // Display root error
-{errors.root && <p>{errors.root.message}</p>}
+{
+  errors.root && <p>{errors.root.message}</p>;
+}
 ```
 
 ## Dynamic Fields
@@ -152,13 +156,19 @@ const { fields, append, remove } = useFieldArray({
   name: 'items',
 });
 
-{fields.map((field, index) => (
-  <div key={field.id}>
-    <Input {...register(`items.${index}.name`)} />
-    <Button type="button" onClick={() => remove(index)}>Remove</Button>
-  </div>
-))}
-<Button type="button" onClick={() => append({ name: '' })}>Add</Button>
+{
+  fields.map((field, index) => (
+    <div key={field.id}>
+      <Input {...register(`items.${index}.name`)} />
+      <Button type="button" onClick={() => remove(index)}>
+        Remove
+      </Button>
+    </div>
+  ));
+}
+<Button type="button" onClick={() => append({ name: '' })}>
+  Add
+</Button>;
 ```
 
 ## Anti-Patterns
@@ -171,10 +181,12 @@ const [email, setEmail] = useState('');
 if (email.length < 5) setError('Too short');
 
 // ❌ Missing button type (defaults to submit)
-<Button onClick={handleCancel}>Cancel</Button>
+<Button onClick={handleCancel}>Cancel</Button>;
 
 // ✅ Correct
 const { register } = useForm();
 const schema = z.object({ email: z.string().min(5) });
-<Button type="button" onClick={handleCancel}>Cancel</Button>
+<Button type="button" onClick={handleCancel}>
+  Cancel
+</Button>;
 ```

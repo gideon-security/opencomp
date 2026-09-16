@@ -1,7 +1,8 @@
 'use client';
 
-import { useMediaQuery } from '@gideon-defender/ui/hooks';
+import { usePermissions } from '@/hooks/use-permissions';
 import type { Policy } from '@db';
+import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import {
   Button,
   Drawer,
@@ -19,14 +20,19 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Archive, Renew } from '@trycompai/design-system/icons';
-import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
+import { useState } from 'react';
 import { toast } from 'sonner';
-import { usePermissions } from '@/hooks/use-permissions';
 import { usePolicy } from '../hooks/usePolicy';
 
-export function PolicyArchiveSheet({ policy, onMutate }: { policy: Policy; onMutate?: () => void }) {
+export function PolicyArchiveSheet({
+  policy,
+  onMutate,
+}: {
+  policy: Policy;
+  onMutate?: () => void;
+}) {
   const router = useRouter();
   const { orgId } = useParams<{ orgId: string }>();
   const { hasPermission } = usePermissions();
@@ -75,11 +81,7 @@ export function PolicyArchiveSheet({ policy, onMutate }: { policy: Policy; onMut
           : 'Are you sure you want to archive this policy?'}
       </Text>
       <HStack justify="end" gap="sm">
-        <Button
-          variant="outline"
-          onClick={() => handleOpenChange(false)}
-          disabled={isSubmitting}
-        >
+        <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={isSubmitting}>
           Cancel
         </Button>
         <Button

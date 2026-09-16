@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
   NO_PERMISSIONS,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // ─── Mock usePermissions ─────────────────────────────────────
 
@@ -45,9 +45,7 @@ vi.mock('@/lib/api-client', () => ({
 // ─── Mock design system ──────────────────────────────────────
 
 vi.mock('@trycompai/design-system', () => ({
-  Button: ({ children, ...props }: any) => (
-    <button {...props}>{children}</button>
-  ),
+  Button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
   Empty: ({ children }: any) => <div>{children}</div>,
   EmptyDescription: ({ children }: any) => <p>{children}</p>,
   EmptyHeader: ({ children }: any) => <div>{children}</div>,
@@ -73,9 +71,7 @@ vi.mock('@trycompai/design-system/icons', () => ({
 // ─── Mock submission-utils ───────────────────────────────────
 
 vi.mock('./submission-utils', () => ({
-  StatusBadge: ({ status }: { status: string }) => (
-    <span data-testid="status-badge">{status}</span>
-  ),
+  StatusBadge: ({ status }: { status: string }) => <span data-testid="status-badge">{status}</span>,
   formatSubmissionDate: () => '01/01/2025',
   isMatrixField: () => false,
   normalizeMatrixRows: () => [],
@@ -167,9 +163,7 @@ describe('CompanySubmissionDetailPageClient', () => {
         />,
       );
 
-      expect(
-        screen.getByText('Review this submission'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Review this submission')).toBeInTheDocument();
       expect(screen.getByText('Approve')).toBeInTheDocument();
       expect(screen.getByText('Reject')).toBeInTheDocument();
     });
@@ -183,9 +177,7 @@ describe('CompanySubmissionDetailPageClient', () => {
         />,
       );
 
-      expect(
-        screen.getByText('Reason (required for rejection)'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Reason (required for rejection)')).toBeInTheDocument();
     });
 
     it('checks evidence:update permission', () => {
@@ -218,9 +210,7 @@ describe('CompanySubmissionDetailPageClient', () => {
 
       const canReview = mockHasPermission('evidence', 'update');
       if (!canReview) {
-        expect(
-          screen.queryByText('Review this submission'),
-        ).not.toBeInTheDocument();
+        expect(screen.queryByText('Review this submission')).not.toBeInTheDocument();
         expect(screen.queryByText('Approve')).not.toBeInTheDocument();
         expect(screen.queryByText('Reject')).not.toBeInTheDocument();
       }
@@ -255,9 +245,7 @@ describe('CompanySubmissionDetailPageClient', () => {
         />,
       );
 
-      expect(
-        screen.queryByText('Review this submission'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText('Review this submission')).not.toBeInTheDocument();
       expect(screen.queryByText('Approve')).not.toBeInTheDocument();
       expect(screen.queryByText('Reject')).not.toBeInTheDocument();
     });
@@ -278,9 +266,7 @@ describe('CompanySubmissionDetailPageClient', () => {
         />,
       );
 
-      expect(
-        screen.queryByText('Review this submission'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText('Review this submission')).not.toBeInTheDocument();
     });
   });
 
@@ -301,9 +287,7 @@ describe('CompanySubmissionDetailPageClient', () => {
         />,
       );
 
-      expect(
-        screen.queryByText('Review this submission'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText('Review this submission')).not.toBeInTheDocument();
     });
   });
 
@@ -320,9 +304,7 @@ describe('CompanySubmissionDetailPageClient', () => {
         />,
       );
 
-      expect(
-        screen.getByText('Loading submission...'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Loading submission...')).toBeInTheDocument();
     });
   });
 
@@ -339,9 +321,7 @@ describe('CompanySubmissionDetailPageClient', () => {
         />,
       );
 
-      expect(
-        screen.getByText('Submission not found'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Submission not found')).toBeInTheDocument();
     });
   });
 });

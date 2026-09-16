@@ -1,6 +1,6 @@
 ---
 name: prompt-engineering
-description: "Prompt engineering best practices - invoke with @prompt-engineering"
+description: 'Prompt engineering best practices - invoke with @prompt-engineering'
 ---
 
 Source Cursor rule: `.cursor/rules/prompt-engineering.mdc`.

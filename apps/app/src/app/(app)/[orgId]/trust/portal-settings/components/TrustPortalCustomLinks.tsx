@@ -1,29 +1,15 @@
 'use client';
 
-import {
-  Button,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  Input,
-  Textarea,
-} from '@trycompai/design-system';
-import { Add, Close, Edit, Link as LinkIcon, OverflowMenuVertical, TrashCan } from '@trycompai/design-system/icons';
-import { GripVertical } from 'lucide-react';
-import { useTranslations } from 'next-intl';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useTrustPortalCustomLinks } from '@/hooks/use-trust-portal-custom-links';
-import { useState } from 'react';
-import { toast } from 'sonner';
 import {
-  DndContext,
   closestCenter,
+  DndContext,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -33,6 +19,27 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Input,
+  Textarea,
+} from '@trycompai/design-system';
+import {
+  Add,
+  Close,
+  Edit,
+  Link as LinkIcon,
+  OverflowMenuVertical,
+  TrashCan,
+} from '@trycompai/design-system/icons';
+import { GripVertical } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface CustomLink {
   id: string;
@@ -60,14 +67,9 @@ function SortableLink({
   canUpdate: boolean;
 }) {
   const t = useTranslations('trust');
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: link.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: link.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -110,9 +112,7 @@ function SortableLink({
             </DropdownMenu>
           )}
         </div>
-        {link.description && (
-          <p className="text-sm text-muted-foreground">{link.description}</p>
-        )}
+        {link.description && <p className="text-sm text-muted-foreground">{link.description}</p>}
         <a
           href={link.url}
           target="_blank"
@@ -127,10 +127,7 @@ function SortableLink({
   );
 }
 
-export function TrustPortalCustomLinks({
-  initialLinks,
-  orgId,
-}: TrustPortalCustomLinksProps) {
+export function TrustPortalCustomLinks({ initialLinks, orgId }: TrustPortalCustomLinksProps) {
   const t = useTranslations('trust');
   const { hasPermission } = usePermissions();
   const canUpdate = hasPermission('trust', 'update');
@@ -216,9 +213,7 @@ export function TrustPortalCustomLinks({
       resetForm();
     } catch {
       toast.error(
-        editingLink
-          ? t('portal.customLinks.updateFailed')
-          : t('portal.customLinks.createFailed'),
+        editingLink ? t('portal.customLinks.updateFailed') : t('portal.customLinks.createFailed'),
       );
     } finally {
       setIsMutating(false);
@@ -267,9 +262,7 @@ export function TrustPortalCustomLinks({
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h3 className="text-lg font-medium">{t('portal.customLinks.title')}</h3>
-          <p className="text-sm text-muted-foreground">
-            {t('portal.customLinks.description')}
-          </p>
+          <p className="text-sm text-muted-foreground">{t('portal.customLinks.description')}</p>
         </div>
         {canUpdate && (
           <Button onClick={() => setIsModalOpen(true)} iconLeft={<Add size={16} />}>
@@ -283,15 +276,8 @@ export function TrustPortalCustomLinks({
           <p className="text-sm text-muted-foreground">{t('portal.customLinks.emptyState')}</p>
         </div>
       ) : (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={links.map((l) => l.id)}
-            strategy={verticalListSortingStrategy}
-          >
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={links.map((l) => l.id)} strategy={verticalListSortingStrategy}>
             <div className="space-y-3">
               {links.map((link) => (
                 <SortableLink
@@ -365,14 +351,8 @@ export function TrustPortalCustomLinks({
 
               <div className="flex gap-2">
                 <div className="flex-1">
-                  <Button
-                    onClick={handleSave}
-                    width="full"
-                    loading={isMutating}
-                  >
-                    {editingLink
-                      ? t('portal.customLinks.update')
-                      : t('portal.customLinks.create')}
+                  <Button onClick={handleSave} width="full" loading={isMutating}>
+                    {editingLink ? t('portal.customLinks.update') : t('portal.customLinks.create')}
                   </Button>
                 </div>
                 <div className="flex-1">

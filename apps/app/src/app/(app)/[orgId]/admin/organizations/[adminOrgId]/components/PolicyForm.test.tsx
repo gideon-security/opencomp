@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -25,7 +25,9 @@ describe('PolicyForm', () => {
     render(<PolicyForm orgId="org_1" onCreated={onCreated} />);
 
     expect(screen.getByLabelText('organizations.policyForm.nameLabel')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'organizations.policyForm.submit' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'organizations.policyForm.submit' }),
+    ).toBeInTheDocument();
   });
 
   it('disables submit when name is empty', () => {
@@ -56,10 +58,9 @@ describe('PolicyForm', () => {
     fireEvent.click(screen.getByRole('button', { name: 'organizations.policyForm.submit' }));
 
     await waitFor(() => {
-      expect(mockPost).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_1/policies',
-        { name: 'New Security Policy' },
-      );
+      expect(mockPost).toHaveBeenCalledWith('/v1/admin/organizations/org_1/policies', {
+        name: 'New Security Policy',
+      });
     });
 
     expect(onCreated).toHaveBeenCalled();

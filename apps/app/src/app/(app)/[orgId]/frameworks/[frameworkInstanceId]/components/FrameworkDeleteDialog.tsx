@@ -1,7 +1,8 @@
 'use client';
 
-import { Button } from '@trycompai/design-system';
-import { TrashCan } from '@trycompai/design-system/icons';
+import { useFrameworks } from '@/hooks/use-frameworks';
+import { usePermissions } from '@/hooks/use-permissions';
+import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import {
   Dialog,
   DialogContent,
@@ -12,15 +13,14 @@ import {
 } from '@gideon-defender/ui/dialog';
 import { Form } from '@gideon-defender/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { usePermissions } from '@/hooks/use-permissions';
+import { Button } from '@trycompai/design-system';
+import { TrashCan } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
-import { useFrameworks } from '@/hooks/use-frameworks';
 
 const formSchema = z.object({
   comment: z.string().optional(),
@@ -72,9 +72,7 @@ export function FrameworkDeleteDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{t('instance.deleteDialogTitle')}</DialogTitle>
-          <DialogDescription>
-            {t('instance.deleteDialogDescription')}
-          </DialogDescription>
+          <DialogDescription>{t('instance.deleteDialogDescription')}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">

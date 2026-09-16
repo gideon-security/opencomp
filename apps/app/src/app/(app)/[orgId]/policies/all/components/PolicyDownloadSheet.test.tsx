@@ -1,6 +1,6 @@
+import type { Policy } from '@db';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { Policy } from '@db';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/lib/api-client', () => ({
@@ -21,16 +21,9 @@ const policies: Array<Pick<Policy, 'id' | 'name' | 'status'>> = [
   { id: 'p3', name: 'Draft Policy', status: 'draft' },
 ];
 
-const renderSheet = (
-  overrides: Partial<React.ComponentProps<typeof PolicyDownloadSheet>> = {},
-) =>
+const renderSheet = (overrides: Partial<React.ComponentProps<typeof PolicyDownloadSheet>> = {}) =>
   render(
-    <PolicyDownloadSheet
-      open={true}
-      onOpenChange={vi.fn()}
-      policies={policies}
-      {...overrides}
-    />,
+    <PolicyDownloadSheet open={true} onOpenChange={vi.fn()} policies={policies} {...overrides} />,
   );
 
 describe('PolicyDownloadSheet', () => {
@@ -99,18 +92,14 @@ describe('PolicyDownloadSheet', () => {
 
     // Start: all 3 selected. Deselect Draft Policy.
     await user.click(screen.getByLabelText(/draft policy/i));
-    expect(
-      screen.getByRole('button', { name: /download 2 policies/i }),
-    ).toBeEnabled();
+    expect(screen.getByRole('button', { name: /download 2 policies/i })).toBeEnabled();
 
     // Search to hide Draft Policy entirely
     const search = screen.getByRole('searchbox', { name: /search policies/i });
     await user.type(search, 'priva');
 
     // Download button still says 2 — hidden-but-selected are still counted
-    expect(
-      screen.getByRole('button', { name: /download 2 policies/i }),
-    ).toBeEnabled();
+    expect(screen.getByRole('button', { name: /download 2 policies/i })).toBeEnabled();
   });
 
   it('per-group select-all toggles only that group', async () => {
@@ -140,9 +129,7 @@ describe('PolicyDownloadSheet', () => {
 
     await user.click(screen.getByLabelText(/draft policy/i));
 
-    expect(
-      screen.getByRole('button', { name: /download 2 policies/i }),
-    ).toBeEnabled();
+    expect(screen.getByRole('button', { name: /download 2 policies/i })).toBeEnabled();
   });
 
   it('disables the download button when zero are selected', async () => {
@@ -180,13 +167,9 @@ describe('PolicyDownloadSheet', () => {
     renderSheet({ onOpenChange });
 
     await user.click(screen.getByLabelText(/draft policy/i));
-    await user.click(
-      screen.getByRole('button', { name: /download 2 policies/i }),
-    );
+    await user.click(screen.getByRole('button', { name: /download 2 policies/i }));
 
-    expect(api.get).toHaveBeenCalledWith(
-      '/v1/policies/download-all?policyIds=p1%2Cp2',
-    );
+    expect(api.get).toHaveBeenCalledWith('/v1/policies/download-all?policyIds=p1%2Cp2');
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
@@ -195,48 +178,24 @@ describe('PolicyDownloadSheet', () => {
     const onOpenChange = vi.fn();
 
     const { rerender } = render(
-      <PolicyDownloadSheet
-        open={true}
-        onOpenChange={onOpenChange}
-        policies={policies}
-      />,
+      <PolicyDownloadSheet open={true} onOpenChange={onOpenChange} policies={policies} />,
     );
 
     // Deselect one policy while open
     await user.click(screen.getByLabelText(/draft policy/i));
-    expect(
-      screen.getByRole('button', { name: /download 2 policies/i }),
-    ).toBeEnabled();
+    expect(screen.getByRole('button', { name: /download 2 policies/i })).toBeEnabled();
 
     // Close and reopen — selection should reset to all
-    rerender(
-      <PolicyDownloadSheet
-        open={false}
-        onOpenChange={onOpenChange}
-        policies={policies}
-      />,
-    );
-    rerender(
-      <PolicyDownloadSheet
-        open={true}
-        onOpenChange={onOpenChange}
-        policies={policies}
-      />,
-    );
+    rerender(<PolicyDownloadSheet open={false} onOpenChange={onOpenChange} policies={policies} />);
+    rerender(<PolicyDownloadSheet open={true} onOpenChange={onOpenChange} policies={policies} />);
 
     expect(screen.getByLabelText(/draft policy/i)).toBeChecked();
-    expect(
-      screen.getByRole('button', { name: /download 3 policies/i }),
-    ).toBeEnabled();
+    expect(screen.getByRole('button', { name: /download 3 policies/i })).toBeEnabled();
   });
 
   it('updates selection when the policies prop changes while open', () => {
     const { rerender } = render(
-      <PolicyDownloadSheet
-        open={true}
-        onOpenChange={vi.fn()}
-        policies={policies}
-      />,
+      <PolicyDownloadSheet open={true} onOpenChange={vi.fn()} policies={policies} />,
     );
 
     const newPolicies: typeof policies = [
@@ -244,20 +203,12 @@ describe('PolicyDownloadSheet', () => {
       { id: 'p4', name: 'New Policy', status: 'draft' },
     ];
 
-    rerender(
-      <PolicyDownloadSheet
-        open={true}
-        onOpenChange={vi.fn()}
-        policies={newPolicies}
-      />,
-    );
+    rerender(<PolicyDownloadSheet open={true} onOpenChange={vi.fn()} policies={newPolicies} />);
 
     // New policy is checked by default; stale IDs are dropped
     expect(screen.getByLabelText(/new policy/i)).toBeChecked();
     expect(screen.queryByLabelText(/privacy policy/i)).not.toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: /download 2 policies/i }),
-    ).toBeEnabled();
+    expect(screen.getByRole('button', { name: /download 2 policies/i })).toBeEnabled();
   });
 
   it('shows a toast and keeps the sheet open on API error', async () => {
@@ -270,9 +221,7 @@ describe('PolicyDownloadSheet', () => {
     const onOpenChange = vi.fn();
     renderSheet({ onOpenChange });
 
-    await user.click(
-      screen.getByRole('button', { name: /download 3 policies/i }),
-    );
+    await user.click(screen.getByRole('button', { name: /download 3 policies/i }));
 
     expect(toast.error).toHaveBeenCalled();
     expect(onOpenChange).not.toHaveBeenCalledWith(false);

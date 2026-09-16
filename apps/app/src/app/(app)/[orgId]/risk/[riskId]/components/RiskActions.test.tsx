@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -48,9 +48,7 @@ vi.mock('sonner', () => ({
 vi.mock('@trycompai/design-system', () => ({
   DropdownMenu: ({ children }: any) => <div>{children}</div>,
   DropdownMenuContent: ({ children }: any) => <div>{children}</div>,
-  DropdownMenuItem: ({ children, ...props }: any) => (
-    <button {...props}>{children}</button>
-  ),
+  DropdownMenuItem: ({ children, ...props }: any) => <button {...props}>{children}</button>,
   DropdownMenuTrigger: ({ children, ...props }: any) => (
     <button data-testid="risk-actions-trigger" {...props}>
       {children}
@@ -82,9 +80,7 @@ describe('RiskActions', () => {
   it('returns null when user lacks risk:update permission', () => {
     setMockPermissions({});
 
-    const { container } = render(
-      <RiskActions riskId="risk-1" orgId="org-1" />,
-    );
+    const { container } = render(<RiskActions riskId="risk-1" orgId="org-1" />);
 
     expect(container.innerHTML).toBe('');
   });
@@ -92,9 +88,7 @@ describe('RiskActions', () => {
   it('returns null for auditor without risk:update permission', () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
 
-    const { container } = render(
-      <RiskActions riskId="risk-1" orgId="org-1" />,
-    );
+    const { container } = render(<RiskActions riskId="risk-1" orgId="org-1" />);
 
     expect(container.innerHTML).toBe('');
   });
@@ -112,8 +106,6 @@ describe('RiskActions', () => {
 
     render(<RiskActions riskId="risk-1" orgId="org-1" />);
 
-    expect(
-      screen.getByText('detail.regenerateRiskMitigation'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('detail.regenerateRiskMitigation')).toBeInTheDocument();
   });
 });

@@ -14,10 +14,10 @@ vi.mock('@/env.mjs', () => ({ env: {} }));
 // into the test; the redirect paths return before rendering the form.
 vi.mock('@/components/login-form', () => ({ LoginForm: () => null }));
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { createMockSession, createMockUser, mockAuthApi } from '@/test-utils/mocks/auth';
 import { redirect } from 'next/navigation';
+import { beforeEach, describe, expect, it } from 'vitest';
 import Page from './page';
-import { mockAuthApi, createMockSession, createMockUser } from '@/test-utils/mocks/auth';
 
 const mockRedirect = vi.mocked(redirect);
 

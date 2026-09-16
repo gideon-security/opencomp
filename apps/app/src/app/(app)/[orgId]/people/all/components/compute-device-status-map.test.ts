@@ -223,9 +223,7 @@ describe('computeDeviceStatusMap', () => {
 
   it('ignores devices for members not in the compliance set', () => {
     const map = computeDeviceStatusMap({
-      agentDevices: [
-        makeAgentDevice({ memberId: 'mem_admin', complianceStatus: 'non_compliant' }),
-      ],
+      agentDevices: [makeAgentDevice({ memberId: 'mem_admin', complianceStatus: 'non_compliant' })],
       fleetHosts: [],
       complianceMemberIds: ['mem_1'],
     });

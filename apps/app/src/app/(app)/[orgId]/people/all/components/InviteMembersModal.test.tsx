@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { InviteMembersModal } from './InviteMembersModal';
 
 mockNextIntl();
@@ -49,8 +49,16 @@ describe('InviteMembersModal', () => {
     mockApiGet.mockResolvedValueOnce({
       data: {
         customRoles: [
-          { id: 'role_1', name: 'Pentest admin', permissions: { pentest: ['create', 'read', 'delete'] } },
-          { id: 'role_2', name: 'Compliance lead', permissions: { control: ['create', 'read', 'update'] } },
+          {
+            id: 'role_1',
+            name: 'Pentest admin',
+            permissions: { pentest: ['create', 'read', 'delete'] },
+          },
+          {
+            id: 'role_2',
+            name: 'Compliance lead',
+            permissions: { control: ['create', 'read', 'update'] },
+          },
         ],
       },
     });

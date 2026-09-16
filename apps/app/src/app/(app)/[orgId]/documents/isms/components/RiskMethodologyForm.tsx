@@ -3,8 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Label, Text, Textarea } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
-import { Controller, useForm } from 'react-hook-form';
 import { useMemo } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import type { IsmsRiskMethodologyNarrative } from '../isms-types';
 import { MethodologyLabelledList } from './MethodologyLabelledList';
@@ -118,26 +118,26 @@ export function RiskMethodologyForm({ narrative, canEdit, onSave }: RiskMethodol
         <div className="text-muted-foreground">
           <Text variant="muted">{helper}</Text>
         </div>
-      {canEdit ? (
-        <div className="flex flex-col gap-1">
-          <Controller
-            control={control}
-            name={name}
-            render={({ field: { ref: _ref, ...field } }) => (
-              <Textarea {...field} id={`methodology-${name}`} rows={rows} aria-label={label} />
+        {canEdit ? (
+          <div className="flex flex-col gap-1">
+            <Controller
+              control={control}
+              name={name}
+              render={({ field: { ref: _ref, ...field } }) => (
+                <Textarea {...field} id={`methodology-${name}`} rows={rows} aria-label={label} />
+              )}
+            />
+            {errors[name] && (
+              <span role="alert" className="text-xs text-destructive">
+                {errors[name]?.message}
+              </span>
             )}
-          />
-          {errors[name] && (
-            <span role="alert" className="text-xs text-destructive">
-              {errors[name]?.message}
-            </span>
-          )}
-        </div>
-      ) : (
-        <p className="whitespace-pre-wrap text-sm">{narrative[name] || '—'}</p>
-      )}
-    </div>
-  );
+          </div>
+        ) : (
+          <p className="whitespace-pre-wrap text-sm">{narrative[name] || '—'}</p>
+        )}
+      </div>
+    );
   };
 
   return (

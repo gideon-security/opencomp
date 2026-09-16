@@ -1,8 +1,5 @@
 import { browser } from 'wxt/browser';
-import {
-  getAuthState,
-  setActiveOrganization,
-} from '../api';
+import { getAuthState, setActiveOrganization } from '../api';
 import { extensionConfig } from '../config';
 import {
   clearConfirmedDomains,
@@ -55,10 +52,7 @@ export async function ensureActiveOrganization(): Promise<ActiveAuthState> {
 export async function getExtensionAuthState(): Promise<AuthState> {
   const selectedOrganizationId = await getSelectedOrganizationId();
   const state = await getAuthState(selectedOrganizationId);
-  if (
-    state.selectedOrganizationId &&
-    state.selectedOrganizationId !== selectedOrganizationId
-  ) {
+  if (state.selectedOrganizationId && state.selectedOrganizationId !== selectedOrganizationId) {
     await setSelectedOrganizationId(state.selectedOrganizationId);
   }
   return state;
@@ -86,9 +80,7 @@ export async function openSignIn(): Promise<void> {
   };
 }
 
-export async function switchActiveOrganization(
-  organizationId: string,
-): Promise<void> {
+export async function switchActiveOrganization(organizationId: string): Promise<void> {
   await setActiveOrganization(organizationId);
   await setSelectedOrganizationId(organizationId);
   await clearConfirmedDomains();
@@ -110,9 +102,7 @@ async function closeAuthWindowIfSignedIn(): Promise<void> {
     const windowId = authWindow.windowId;
     authWindow = null;
     if (windowId !== null) await browser.windows.remove(windowId).catch(() => undefined);
-    await browser.runtime
-      .sendMessage({ type: AUTH_UPDATED_MESSAGE })
-      .catch(() => undefined);
+    await browser.runtime.sendMessage({ type: AUTH_UPDATED_MESSAGE }).catch(() => undefined);
   } finally {
     isCheckingAuthWindow = false;
   }

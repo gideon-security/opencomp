@@ -1,7 +1,7 @@
 import { db } from '@db/server';
-import { logger, queue, tags, task } from '@gideon-defender/trigger-local';
 import WeeklyTaskDigestEmail from '@gideon-defender/email/emails/reminders/weekly-task-digest';
 import { isUserUnsubscribed } from '@gideon-defender/email/lib/check-unsubscribe';
+import { logger, queue, tags, task } from '@gideon-defender/trigger-local';
 import { sendEmailViaApi } from '../../lib/send-email-via-api';
 
 const weeklyTaskDigestQueue = queue({
@@ -37,7 +37,12 @@ export const sendWeeklyTaskDigestEmailTask = task({
     await tags.add([`org:${payload.organizationId}`]);
 
     try {
-      const unsubscribed = await isUserUnsubscribed(db, payload.email, 'weeklyTaskDigest', payload.organizationId);
+      const unsubscribed = await isUserUnsubscribed(
+        db,
+        payload.email,
+        'weeklyTaskDigest',
+        payload.organizationId,
+      );
       if (unsubscribed) {
         logger.info('User is unsubscribed from email notifications, skipping', {
           email: payload.email,

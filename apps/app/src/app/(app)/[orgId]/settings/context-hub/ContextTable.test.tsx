@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -58,7 +58,8 @@ vi.mock('lucide-react', () => ({
 }));
 
 vi.mock('@trycompai/design-system', () => ({
-  AlertDialog: ({ children, open }: any) => (open ? <div data-testid="alert-dialog">{children}</div> : null),
+  AlertDialog: ({ children, open }: any) =>
+    open ? <div data-testid="alert-dialog">{children}</div> : null,
   AlertDialogAction: ({ children, ...props }: any) => <button {...props}>{children}</button>,
   AlertDialogCancel: ({ children }: any) => <button>{children}</button>,
   AlertDialogContent: ({ children }: any) => <div>{children}</div>,
@@ -78,10 +79,10 @@ vi.mock('@trycompai/design-system', () => ({
   DrawerTitle: ({ children }: any) => <h2>{children}</h2>,
   DropdownMenu: ({ children }: any) => <div>{children}</div>,
   DropdownMenuContent: ({ children }: any) => <div>{children}</div>,
-  DropdownMenuItem: ({ children, onClick }: any) => (
-    <button onClick={onClick}>{children}</button>
+  DropdownMenuItem: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
+  DropdownMenuTrigger: ({ children }: any) => (
+    <button data-testid="dropdown-trigger">{children}</button>
   ),
-  DropdownMenuTrigger: ({ children }: any) => <button data-testid="dropdown-trigger">{children}</button>,
   HStack: ({ children }: any) => <div>{children}</div>,
   InputGroup: ({ children }: any) => <div>{children}</div>,
   InputGroupAddon: ({ children }: any) => <div>{children}</div>,

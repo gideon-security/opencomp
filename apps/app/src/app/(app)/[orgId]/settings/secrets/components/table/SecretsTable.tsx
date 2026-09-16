@@ -1,5 +1,7 @@
 'use client';
 
+import { usePermissions } from '@/hooks/use-permissions';
+import { apiClient } from '@/lib/api-client';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,8 +26,6 @@ import {
   TableRow,
 } from '@trycompai/design-system';
 import { Search } from '@trycompai/design-system/icons';
-import { apiClient } from '@/lib/api-client';
-import { usePermissions } from '@/hooks/use-permissions';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -156,9 +156,7 @@ export function SecretsTable({ initialSecrets }: SecretsTableProps) {
         <Empty>
           <EmptyHeader>
             <EmptyTitle>
-              {searchQuery
-                ? t('secrets.table.notFoundTitle')
-                : t('secrets.table.emptyTitle')}
+              {searchQuery ? t('secrets.table.notFoundTitle') : t('secrets.table.emptyTitle')}
             </EmptyTitle>
             <EmptyDescription>
               {searchQuery
@@ -221,9 +219,7 @@ export function SecretsTable({ initialSecrets }: SecretsTableProps) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>
-              {t('secrets.table.cancel')}
-            </AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>{t('secrets.table.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={handleConfirmDelete}

@@ -1,6 +1,7 @@
 'use client';
 
 import { triggerBulkEvidenceExport } from '@/lib/evidence-download';
+import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import {
   Button,
   HStack,
@@ -14,7 +15,6 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { ArrowDown } from '@trycompai/design-system/icons';
-import { useRealtimeRun } from '@gideon-defender/trigger-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -27,9 +27,7 @@ type ExportState =
   | { phase: 'triggering' }
   | { phase: 'running'; runId: string; accessToken: string };
 
-export function ExportEvidenceButton({
-  organizationName,
-}: ExportEvidenceButtonProps) {
+export function ExportEvidenceButton({ organizationName }: ExportEvidenceButtonProps) {
   const [includeJson, setIncludeJson] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [exportState, setExportState] = useState<ExportState>({
@@ -69,8 +67,7 @@ export function ExportEvidenceButton({
       }
 
       const downloadUrl =
-        run.output?.downloadUrl ??
-        (run.metadata?.downloadUrl as string | undefined);
+        run.output?.downloadUrl ?? (run.metadata?.downloadUrl as string | undefined);
 
       if (downloadUrl) {
         const link = document.createElement('a');
@@ -94,15 +91,11 @@ export function ExportEvidenceButton({
   // sheet) so the export keeps streaming — and still auto-downloads on
   // completion — even after the user dismisses the sheet, which the copy below
   // explicitly invites them to do.
-  const { run } = useRealtimeRun(
-    exportState.phase === 'running' ? exportState.runId : '',
-    {
-      accessToken:
-        exportState.phase === 'running' ? exportState.accessToken : undefined,
-      enabled: exportState.phase === 'running',
-      onComplete: handleComplete,
-    },
-  );
+  const { run } = useRealtimeRun(exportState.phase === 'running' ? exportState.runId : '', {
+    accessToken: exportState.phase === 'running' ? exportState.accessToken : undefined,
+    enabled: exportState.phase === 'running',
+    onComplete: handleComplete,
+  });
 
   const meta = run?.metadata as
     | {
@@ -134,9 +127,8 @@ export function ExportEvidenceButton({
               ) : (
                 <>
                   <Text size="sm" variant="muted">
-                    Download every task&apos;s uploaded evidence as a single ZIP
-                    so you can hand it to your auditor or keep an offline
-                    snapshot.
+                    Download every task&apos;s uploaded evidence as a single ZIP so you can hand it
+                    to your auditor or keep an offline snapshot.
                   </Text>
 
                   <HStack justify="between" align="center">
@@ -145,14 +137,10 @@ export function ExportEvidenceButton({
                         Include raw JSON files
                       </Text>
                       <Text size="xs" variant="muted">
-                        Adds machine-readable metadata alongside the evidence
-                        files.
+                        Adds machine-readable metadata alongside the evidence files.
                       </Text>
                     </Stack>
-                    <Switch
-                      checked={includeJson}
-                      onCheckedChange={setIncludeJson}
-                    />
+                    <Switch checked={includeJson} onCheckedChange={setIncludeJson} />
                   </HStack>
 
                   <HStack justify="end">
@@ -215,8 +203,8 @@ function ExportProgress({
         />
       </div>
       <Text size="xs" variant="muted">
-        This may take a few minutes for large organizations. You can close this
-        dialog — the export will continue in the background.
+        This may take a few minutes for large organizations. You can close this dialog — the export
+        will continue in the background.
       </Text>
     </Stack>
   );

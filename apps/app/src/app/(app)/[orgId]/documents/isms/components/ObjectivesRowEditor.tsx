@@ -77,11 +77,7 @@ export function ObjectivesRowEditor({ control, ownerOptions }: ObjectivesRowEdit
                   </SelectContent>
                 </Select>
               ) : (
-                <Input
-                  value={field.value}
-                  onChange={field.onChange}
-                  aria-label="Objective owner"
-                />
+                <Input value={field.value} onChange={field.onChange} aria-label="Objective owner" />
               )
             }
           />

@@ -1,9 +1,9 @@
 'use client';
 
+import type { Member, User } from '@db';
 import { cn } from '@gideon-defender/ui/cn';
 import { Input } from '@gideon-defender/ui/input';
 import { Skeleton } from '@gideon-defender/ui/skeleton';
-import type { Member, User } from '@db';
 import { Search } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import { useTransition } from 'react';

@@ -88,10 +88,7 @@ export interface DraftDiff {
   };
 }
 
-export function useFrameworkDraftDiff(
-  frameworkId: string,
-  options?: { enabled?: boolean },
-) {
+export function useFrameworkDraftDiff(frameworkId: string, options?: { enabled?: boolean }) {
   const [data, setData] = useState<DraftDiff | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -103,9 +100,7 @@ export function useFrameworkDraftDiff(
     setIsLoading(true);
     setError(null);
     try {
-      const result = await apiClient<{ data: DraftDiff }>(
-        `/framework/${frameworkId}/draft-diff`,
-      );
+      const result = await apiClient<{ data: DraftDiff }>(`/framework/${frameworkId}/draft-diff`);
       setData(result?.data);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch draft diff'));

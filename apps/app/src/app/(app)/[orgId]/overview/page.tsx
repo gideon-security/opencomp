@@ -1,5 +1,6 @@
 import { getFeatureFlags } from '@/app/posthog';
 import { serverApi } from '@/lib/api-server';
+import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import { auth } from '@/utils/auth';
 import type { FrameworkEditorFramework, Policy, Task } from '@db';
 import { PageHeader, PageLayout } from '@trycompai/design-system';
@@ -8,7 +9,6 @@ import { headers } from 'next/headers';
 import { Overview } from './components/Overview';
 import { OverviewTabs } from './components/OverviewTabs';
 import { OverviewNudges } from './nudges/OverviewNudges';
-import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 
 export async function generateMetadata() {
   const t = await getTranslations('overview');
@@ -45,7 +45,9 @@ export default async function OverviewPage({ params }: { params: Promise<{ orgId
 
   const [scoresRes, frameworksRes, availableRes, settingsRes] = await Promise.all([
     serverApi.get<ScoresResponse>('/v1/frameworks/scores'),
-    serverApi.get<{ data: FrameworkWithScore[] }>('/v1/frameworks?includeControls=true&includeScores=true'),
+    serverApi.get<{ data: FrameworkWithScore[] }>(
+      '/v1/frameworks?includeControls=true&includeScores=true',
+    ),
     serverApi.get<{ data: FrameworkEditorFramework[] }>('/v1/frameworks/available'),
     serverApi.get<{ isConfigured?: boolean }>('/v1/trust-portal/settings'),
   ]);
@@ -82,34 +84,34 @@ export default async function OverviewPage({ params }: { params: Promise<{ orgId
       />
       <PageLayout header={<PageHeader title={t('overviewPage.title')} tabs={<OverviewTabs />} />}>
         <Overview
-        frameworksWithControls={frameworksWithControls}
-        frameworksWithCompliance={frameworksWithCompliance}
-        allFrameworks={allFrameworks}
-        organizationId={organizationId}
-        publishedPoliciesScore={{
-          totalPolicies: scores?.policies?.total ?? 0,
-          publishedPolicies: scores?.policies?.published ?? 0,
-          draftPolicies: scores?.policies?.draftPolicies ?? [],
-          policiesInReview: scores?.policies?.policiesInReview ?? [],
-          unpublishedPolicies: scores?.policies?.unpublishedPolicies ?? [],
-        }}
-        doneTasksScore={{
-          totalTasks: scores?.tasks?.total ?? 0,
-          doneTasks: scores?.tasks?.done ?? 0,
-          incompleteTasks: scores?.tasks?.incompleteTasks ?? [],
-        }}
-        documentsScore={{
-          totalDocuments: scores?.documents?.totalDocuments ?? 0,
-          completedDocuments: scores?.documents?.completedDocuments ?? 0,
-          outstandingDocuments: scores?.documents?.outstandingDocuments ?? 0,
-        }}
-        peopleScore={{
-          totalMembers: scores?.people?.total ?? 0,
-          completedMembers: scores?.people?.completed ?? 0,
-        }}
-        currentMember={scores?.currentMember ?? null}
-        onboardingTriggerJobId={scores?.onboardingTriggerJobId ?? null}
-      />
+          frameworksWithControls={frameworksWithControls}
+          frameworksWithCompliance={frameworksWithCompliance}
+          allFrameworks={allFrameworks}
+          organizationId={organizationId}
+          publishedPoliciesScore={{
+            totalPolicies: scores?.policies?.total ?? 0,
+            publishedPolicies: scores?.policies?.published ?? 0,
+            draftPolicies: scores?.policies?.draftPolicies ?? [],
+            policiesInReview: scores?.policies?.policiesInReview ?? [],
+            unpublishedPolicies: scores?.policies?.unpublishedPolicies ?? [],
+          }}
+          doneTasksScore={{
+            totalTasks: scores?.tasks?.total ?? 0,
+            doneTasks: scores?.tasks?.done ?? 0,
+            incompleteTasks: scores?.tasks?.incompleteTasks ?? [],
+          }}
+          documentsScore={{
+            totalDocuments: scores?.documents?.totalDocuments ?? 0,
+            completedDocuments: scores?.documents?.completedDocuments ?? 0,
+            outstandingDocuments: scores?.documents?.outstandingDocuments ?? 0,
+          }}
+          peopleScore={{
+            totalMembers: scores?.people?.total ?? 0,
+            completedMembers: scores?.people?.completed ?? 0,
+          }}
+          currentMember={scores?.currentMember ?? null}
+          onboardingTriggerJobId={scores?.onboardingTriggerJobId ?? null}
+        />
       </PageLayout>
     </>
   );

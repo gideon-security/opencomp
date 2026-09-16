@@ -1,10 +1,7 @@
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
-import {
-  remediationForReadFailure,
-  toHttpReadFailure,
-} from '../../http-read-failure';
-import { gcpListItems, resolveGcpProjectIds, isGcpApiDisabled } from './shared';
+import { remediationForReadFailure, toHttpReadFailure } from '../../http-read-failure';
+import { gcpListItems, isGcpApiDisabled, resolveGcpProjectIds } from './shared';
 
 interface SqlInstance {
   name: string;
@@ -60,7 +57,12 @@ export const cloudSqlBackupsCheck: IntegrationCheck = {
               description: `Cloud SQL instance "${inst.name}" has automated backups enabled.`,
               resourceType: 'gcp-cloud-sql-instance',
               resourceId: `${projectId}/${inst.name}`,
-              evidence: { projectId, instance: inst.name, region: inst.region ?? null, backupsEnabled: true },
+              evidence: {
+                projectId,
+                instance: inst.name,
+                region: inst.region ?? null,
+                backupsEnabled: true,
+              },
             });
           } else {
             ctx.fail({
@@ -71,7 +73,12 @@ export const cloudSqlBackupsCheck: IntegrationCheck = {
               severity: 'medium',
               remediation:
                 'Enable automated backups (and point-in-time recovery) in the instance backup settings.',
-              evidence: { projectId, instance: inst.name, region: inst.region ?? null, backupsEnabled: false },
+              evidence: {
+                projectId,
+                instance: inst.name,
+                region: inst.region ?? null,
+                backupsEnabled: false,
+              },
             });
           }
         }
@@ -81,7 +88,9 @@ export const cloudSqlBackupsCheck: IntegrationCheck = {
         // so skip it like a zero-resource project instead of emitting a
         // false "grant permission" finding.
         if (isGcpApiDisabled(err)) {
-          ctx.log(`GCP Cloud SQL: API not enabled in project "${projectId}" — no Cloud SQL instances to evaluate; skipping`);
+          ctx.log(
+            `GCP Cloud SQL: API not enabled in project "${projectId}" — no Cloud SQL instances to evaluate; skipping`,
+          );
           continue;
         }
         const failure = toHttpReadFailure(err);

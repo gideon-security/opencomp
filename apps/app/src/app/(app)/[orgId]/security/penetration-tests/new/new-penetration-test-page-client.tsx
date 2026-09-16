@@ -11,8 +11,6 @@ interface NewPenetrationTestPageClientProps {
  * Shows the run list (dimmed, non-interactive) on the left and the create
  * form in the right pane.
  */
-export function NewPenetrationTestPageClient({
-  orgId,
-}: NewPenetrationTestPageClientProps) {
+export function NewPenetrationTestPageClient({ orgId }: NewPenetrationTestPageClientProps) {
   return <SplitView orgId={orgId} selectedRunId={null} mode="create" />;
 }

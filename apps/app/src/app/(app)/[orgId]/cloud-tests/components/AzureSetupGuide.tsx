@@ -104,7 +104,8 @@ export function AzureSetupGuide({
         <div>
           <h3 className="text-sm font-semibold">Get started with Azure scanning</h3>
           <p className="text-xs text-muted-foreground mt-0.5">
-            We&apos;ll detect your subscription and verify access. You can do it automatically or follow the manual steps.
+            We&apos;ll detect your subscription and verify access. You can do it automatically or
+            follow the manual steps.
           </p>
         </div>
 
@@ -178,9 +179,10 @@ export function AzureSetupGuide({
       {!setupResult && (
         <div className="rounded-xl border px-5 py-3">
           <p className="text-xs text-muted-foreground">
-            <span className="font-medium text-foreground">Scanning</span> works with Reader + Security Reader roles.{' '}
-            <span className="font-medium text-foreground">Auto-fix</span> requires Contributor-level access.
-            We&apos;ll detect your permissions automatically during setup.
+            <span className="font-medium text-foreground">Scanning</span> works with Reader +
+            Security Reader roles. <span className="font-medium text-foreground">Auto-fix</span>{' '}
+            requires Contributor-level access. We&apos;ll detect your permissions automatically
+            during setup.
           </p>
         </div>
       )}
@@ -214,12 +216,12 @@ function StepRow({
         {failed && <X className="h-3 w-3 text-red-500" />}
       </div>
       <div>
-        <p className={`text-sm ${done ? 'text-muted-foreground' : failed ? 'text-foreground' : 'font-medium'}`}>
+        <p
+          className={`text-sm ${done ? 'text-muted-foreground' : failed ? 'text-foreground' : 'font-medium'}`}
+        >
           {label}
         </p>
-        {error && (
-          <p className="text-[11px] text-red-500 mt-0.5">{error}</p>
-        )}
+        {error && <p className="text-[11px] text-red-500 mt-0.5">{error}</p>}
       </div>
     </div>
   );

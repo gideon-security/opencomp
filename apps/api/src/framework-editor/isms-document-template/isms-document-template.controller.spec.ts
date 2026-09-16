@@ -89,7 +89,9 @@ describe('IsmsDocumentTemplateController', () => {
   });
 
   it('maps params + query to unlinkControlTemplate', async () => {
-    mockService.unlinkControlTemplate.mockResolvedValue({ message: 'unlinked' });
+    mockService.unlinkControlTemplate.mockResolvedValue({
+      message: 'unlinked',
+    });
 
     await controller.unlinkControlTemplate('tpl_ctx', 'ct_1', 'fw_1');
 

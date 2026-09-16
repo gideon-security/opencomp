@@ -23,9 +23,7 @@ describe('TrustPortalGettingStarted', () => {
 
   it('renders the getting-started heading', () => {
     render(<TrustPortalGettingStarted portalUrl="https://trust.inc/org_123" />);
-    expect(
-      screen.getByText(/finish setting up your trust portal/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/finish setting up your trust portal/i)).toBeInTheDocument();
   });
 
   it('renders the setup steps', () => {

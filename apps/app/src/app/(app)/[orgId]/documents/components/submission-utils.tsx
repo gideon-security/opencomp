@@ -116,7 +116,10 @@ export function normalizeMatrixRows(value: unknown): MatrixRowValue[] {
   return value.map((row) => {
     if (!row || typeof row !== 'object') return {};
     return Object.fromEntries(
-      Object.entries(row).map(([key, rawValue]) => [key, typeof rawValue === 'string' ? rawValue : '']),
+      Object.entries(row).map(([key, rawValue]) => [
+        key,
+        typeof rawValue === 'string' ? rawValue : '',
+      ]),
     );
   });
 }

@@ -134,8 +134,8 @@ not create the first listing.
   tab after reloading the extension. Existing tabs can keep an old content script
   until the page is refreshed.
 - If the console shows `ws://localhost:3100` or `[wxt] Failed to connect to dev
-  server`, the loaded extension is `dist/chrome-mv3-dev`. Remove that unpacked
-   extension, or run `npm run dev --workspace=@gideon-defender/security-questionnaire-extension`.
+server`, the loaded extension is `dist/chrome-mv3-dev`. Remove that unpacked
+  extension, or run `npm run dev --workspace=@gideon-defender/security-questionnaire-extension`.
   For normal local testing, load `dist/chrome-mv3`.
 - Chrome keeps previous entries on the extension Errors page. Clear them after
   reloading if you want to verify only new errors.

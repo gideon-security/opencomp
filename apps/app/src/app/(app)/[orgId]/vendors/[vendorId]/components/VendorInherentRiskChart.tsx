@@ -1,8 +1,8 @@
 'use client';
 
+import { RiskMatrixChart } from '@/components/risks/charts/RiskMatrixChart';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useVendor, useVendorActions } from '@/hooks/use-vendors';
-import { RiskMatrixChart } from '@/components/risks/charts/RiskMatrixChart';
 import type { Vendor } from '@db';
 import { useTranslations } from 'next-intl';
 

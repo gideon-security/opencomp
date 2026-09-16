@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 import type { Editor } from '@tiptap/react';
 import { BubbleMenu } from '@tiptap/react/menus';
 import { MagicWand } from '@trycompai/design-system/icons';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { markdownToTipTapJSON } from './markdown-utils';
-import type { Node as ProseMirrorNode } from '@tiptap/pm/model';
 
 interface InlineEditBubbleProps {
   editor: Editor;
@@ -62,9 +62,7 @@ export function InlineEditBubble({ editor, policyId, disabled }: InlineEditBubbl
 
       // Convert AI response back to TipTap nodes and replace the block range
       const jsonNodes = markdownToTipTapJSON(updatedText);
-      const pmNodes = jsonNodes.map((json) =>
-        editor.state.schema.nodeFromJSON(json),
-      );
+      const pmNodes = jsonNodes.map((json) => editor.state.schema.nodeFromJSON(json));
 
       const { tr } = editor.state;
       tr.replaceWith(replaceFrom, replaceTo, pmNodes);

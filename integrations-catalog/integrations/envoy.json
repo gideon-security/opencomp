@@ -11,10 +11,7 @@
       "setupInstructions": "1. Log in to the Envoy Dev Dashboard at https://dashboard.envoy.com\n2. Navigate to Integrations > Dev Dashboard\n3. Click 'Create New'\n4. Provide a name for your integration (e.g., 'CompAI')\n5. Under API Scopes, add: employees.read, locations.read, flows.read\n6. Save the integration\n7. Copy your Client API Key from the integration settings\n8. Paste it below"
     }
   },
-  "capabilities": [
-    "checks",
-    "sync"
-  ],
+  "capabilities": ["checks", "sync"],
   "supportsMultipleConnections": false,
   "syncSupported": true,
   "checks": [

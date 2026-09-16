@@ -1,3 +1,4 @@
+import { useVendorActions, type Vendor } from '@/hooks/use-vendors';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,7 +10,6 @@ import {
   AlertDialogTitle,
 } from '@gideon-defender/ui/alert-dialog';
 import { Button } from '@gideon-defender/ui/button';
-import { useVendorActions, type Vendor } from '@/hooks/use-vendors';
 import { Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import * as React from 'react';
@@ -62,7 +62,9 @@ export const VendorDeleteCell: React.FC<VendorDeleteCellProps> = ({ vendor }) =>
           }}
         >
           <Trash2 className="h-4 w-4" />
-          <span className="sr-only">{t('list.deleteTitle')} {vendor.name}</span>
+          <span className="sr-only">
+            {t('list.deleteTitle')} {vendor.name}
+          </span>
         </Button>
       </div>
       <AlertDialog open={isRemoveAlertOpen} onOpenChange={setIsRemoveAlertOpen}>

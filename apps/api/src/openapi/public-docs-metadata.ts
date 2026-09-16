@@ -261,8 +261,7 @@ function applyMcpToolNames(
   for (const methods of Object.values(paths)) {
     for (const operation of Object.values(methods)) {
       const ext = operation?.['x-speakeasy-mcp'] as
-        | SpeakeasyMcpExtension
-        | undefined;
+        SpeakeasyMcpExtension | undefined;
       if (ext?.name) used.add(ext.name);
     }
   }
@@ -272,8 +271,7 @@ function applyMcpToolNames(
       if (!operation || typeof operation !== 'object') continue;
 
       const ext = operation['x-speakeasy-mcp'] as
-        | SpeakeasyMcpExtension
-        | undefined;
+        SpeakeasyMcpExtension | undefined;
       // Keep hand-picked names and skip disabled (non-tool) operations.
       if (ext?.name || ext?.disabled) continue;
 

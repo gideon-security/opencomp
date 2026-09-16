@@ -396,10 +396,7 @@ INSTRUCTIONS:
     try {
       const stepsSummary = params.failedPlan?.fixSteps
         ? params.failedPlan.fixSteps
-            .map(
-              (s, i) =>
-                `${i + 1}. ${s.service}:${s.command} — ${s.purpose}`,
-            )
+            .map((s, i) => `${i + 1}. ${s.service}:${s.command} — ${s.purpose}`)
             .join('\n')
         : '(no fix steps were generated)';
 

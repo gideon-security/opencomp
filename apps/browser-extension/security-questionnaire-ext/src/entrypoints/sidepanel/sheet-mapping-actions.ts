@@ -1,8 +1,5 @@
 import { browser } from 'wxt/browser';
-import {
-  getResponseError,
-  isOkResponse,
-} from '../../lib/response-guards';
+import { getResponseError, isOkResponse } from '../../lib/response-guards';
 import {
   createDefaultSheetMapping,
   createManualSheetMapping,
@@ -25,15 +22,12 @@ export async function handleSheetMappingChange(params: {
     return;
   }
 
-  let mapping = params.state.queue.sheetMapping ??
-    createDefaultSheetMapping(identity);
+  let mapping = params.state.queue.sheetMapping ?? createDefaultSheetMapping(identity);
 
   // Reopen the dialog with what the user typed when the save fails, so a
   // transient error does not throw away their column mapping.
   for (;;) {
-    const draft = await showSheetMappingDialog(
-      renderSheetMappingDialog(mapping),
-    );
+    const draft = await showSheetMappingDialog(renderSheetMappingDialog(mapping));
     if (!draft) return;
 
     const nextMapping = createManualSheetMapping({ identity, draft });

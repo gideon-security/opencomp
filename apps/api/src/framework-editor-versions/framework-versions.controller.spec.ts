@@ -18,7 +18,10 @@ jest.mock('../auth/auth.server', () => ({
 import { Test, type TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { PlatformAdminGuard } from '../auth/platform-admin.guard';
-import { FrameworkVersionsController, FrameworkDraftDiffController } from './framework-versions.controller';
+import {
+  FrameworkVersionsController,
+  FrameworkDraftDiffController,
+} from './framework-versions.controller';
 import { FrameworkVersionsService } from './framework-versions.service';
 import type { PublishVersionDto } from './dto/publish-version.dto';
 import type { AdminRequest } from '../admin-organizations/platform-admin-auth-context';
@@ -52,7 +55,10 @@ describe('FrameworkVersionsController', () => {
     it('publishes a version and returns { data: version }', async () => {
       service.publish.mockResolvedValue({ id: 'fvr_1' });
 
-      const dto: PublishVersionDto = { version: '2.0.0', releaseNotes: 'Initial release' };
+      const dto: PublishVersionDto = {
+        version: '2.0.0',
+        releaseNotes: 'Initial release',
+      };
       const result = await controller.publish('frk_1', dto, mockAdminReq);
 
       expect(service.publish).toHaveBeenCalledWith({
@@ -83,7 +89,10 @@ describe('FrameworkVersionsController', () => {
       const result = await controller.list('frk_1');
 
       expect(service.list).toHaveBeenCalledWith('frk_1');
-      expect(result).toEqual({ data: [{ id: 'fvr_1' }, { id: 'fvr_2' }], count: 2 });
+      expect(result).toEqual({
+        data: [{ id: 'fvr_1' }, { id: 'fvr_2' }],
+        count: 2,
+      });
     });
 
     it('returns count 0 when no versions exist', async () => {
@@ -110,7 +119,12 @@ describe('FrameworkVersionsController', () => {
   describe('getDiff (GET /:versionId/diff)', () => {
     it('returns { data } with version/previousVersion/diff/linkChanges', async () => {
       const payload = {
-        version: { id: 'fvr_2', version: '1.1.0', publishedAt: new Date(), releaseNotes: null },
+        version: {
+          id: 'fvr_2',
+          version: '1.1.0',
+          publishedAt: new Date(),
+          releaseNotes: null,
+        },
         previousVersion: { id: 'fvr_1', version: '1.0.0' },
         diff: {
           controls: { added: [], removed: [], updated: [] },
@@ -138,8 +152,12 @@ describe('FrameworkVersionsController', () => {
     });
 
     it('propagates NotFoundException for a missing version', async () => {
-      service.getVersionDiff.mockRejectedValue(new NotFoundException('Version not found'));
-      await expect(controller.getDiff('frk_1', 'fvr_missing')).rejects.toThrow(NotFoundException);
+      service.getVersionDiff.mockRejectedValue(
+        new NotFoundException('Version not found'),
+      );
+      await expect(controller.getDiff('frk_1', 'fvr_missing')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });
@@ -155,7 +173,9 @@ describe('FrameworkDraftDiffController', () => {
 
     const mod: TestingModule = await Test.createTestingModule({
       controllers: [FrameworkDraftDiffController],
-      providers: [{ provide: FrameworkVersionsService, useValue: draftDiffService }],
+      providers: [
+        { provide: FrameworkVersionsService, useValue: draftDiffService },
+      ],
     })
       .overrideGuard(PlatformAdminGuard)
       .useValue({ canActivate: () => true })
@@ -185,12 +205,14 @@ describe('FrameworkDraftDiffController', () => {
 
     it('propagates NotFoundException when no published version exists', async () => {
       draftDiffService.getDraftDiff.mockRejectedValue(
-        new NotFoundException('No published version yet — publish v1.0.0 first'),
+        new NotFoundException(
+          'No published version yet — publish v1.0.0 first',
+        ),
       );
 
-      await expect(draftDiffController.getDraftDiff('frk_empty')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        draftDiffController.getDraftDiff('frk_empty'),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

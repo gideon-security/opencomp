@@ -7,11 +7,42 @@ describe('buildCrossFrameworkRefs', () => {
         {
           frameworkInstanceId: 'frm_iso',
           manifest: {
-            framework: { id: 'frk_iso', name: 'ISO', catalogVersion: '1', description: null },
+            framework: {
+              id: 'frk_iso',
+              name: 'ISO',
+              catalogVersion: '1',
+              description: null,
+            },
             requirements: [],
-            controls: [{ id: 'ct_shared', name: '', description: '', requirementIds: [], policyIds: ['pt_shared'], taskIds: ['tt_shared'] }],
-            policies: [{ id: 'pt_shared', name: '', description: null, content: [], frequency: null, department: null }],
-            tasks: [{ id: 'tt_shared', name: '', description: '', frequency: null, department: null }],
+            controls: [
+              {
+                id: 'ct_shared',
+                name: '',
+                description: '',
+                requirementIds: [],
+                policyIds: ['pt_shared'],
+                taskIds: ['tt_shared'],
+              },
+            ],
+            policies: [
+              {
+                id: 'pt_shared',
+                name: '',
+                description: null,
+                content: [],
+                frequency: null,
+                department: null,
+              },
+            ],
+            tasks: [
+              {
+                id: 'tt_shared',
+                name: '',
+                description: '',
+                frequency: null,
+                department: null,
+              },
+            ],
           },
         },
       ],

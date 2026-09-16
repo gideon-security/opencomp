@@ -1,11 +1,11 @@
 import { auth } from '@/app/lib/auth';
 import { getFleetInstance } from '@/utils/fleet';
+import { hasPortalAccess } from '@/utils/portal-access';
 import type { FleetPolicyResult, Member } from '@db';
 import { db } from '@db/server';
 import { PageHeader, PageLayout } from '@trycompai/design-system';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { hasPortalAccess } from '@/utils/portal-access';
 import { NoAccessMessage } from '../components/NoAccessMessage';
 import { OrganizationDashboard } from './components/OrganizationDashboard';
 import type { FleetPolicy, Host } from './types';

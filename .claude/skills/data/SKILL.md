@@ -1,6 +1,6 @@
 ---
 name: data
-description: "Use when implementing data fetching, API calls, server/client components, or SWR hooks"
+description: 'Use when implementing data fetching, API calls, server/client components, or SWR hooks'
 ---
 
 Source Cursor rule: `.cursor/rules/data.mdc`.
@@ -47,7 +47,7 @@ export function useTasks({ organizationId, initialData }: UseTasksOptions) {
       const response = await apiClient.get(endpoint, orgId);
       return response.data?.tasks ?? [];
     },
-    { fallbackData: initialData }
+    { fallbackData: initialData },
   );
 
   const createTask = async (input: CreateTaskInput) => {
@@ -94,7 +94,7 @@ export default function Layout({ children }) {
 }
 
 // components/ClientTabs.tsx
-'use client';
+('use client');
 export function ClientTabs() {
   const router = useRouter();
   // Interactive logic here
@@ -121,15 +121,15 @@ import { useQueryState } from 'nuqs';
 
 ```tsx
 // ✅ Always
-const { orgId } = await params;                    // From URL params
+const { orgId } = await params; // From URL params
 const { data } = useSWR(key, f, { fallbackData }); // With initial data
-await apiClient.get('/v1/endpoint', orgId);        // Use apiClient
-useSWR(['/v1/tasks', orgId], fetcher);            // Include orgId in key
+await apiClient.get('/v1/endpoint', orgId); // Use apiClient
+useSWR(['/v1/tasks', orgId], fetcher); // Include orgId in key
 
 // ❌ Never
-const orgId = session?.activeOrganizationId;       // From session
-const { data } = useSWR('/api/data');              // No initial data
-await fetch('/api/endpoint');                      // Direct fetch
+const orgId = session?.activeOrganizationId; // From session
+const { data } = useSWR('/api/data'); // No initial data
+await fetch('/api/endpoint'); // Direct fetch
 ```
 
 ## File Structure

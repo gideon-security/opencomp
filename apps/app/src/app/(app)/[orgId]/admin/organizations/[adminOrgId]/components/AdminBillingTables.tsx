@@ -2,8 +2,8 @@
 
 import { formatDateLocale } from '@/lib/format';
 
-import { useTranslations } from 'next-intl';
 import { Badge, Button, Text } from '@trycompai/design-system';
+import { useTranslations } from 'next-intl';
 import type {
   AdminBillingCreditBalance,
   AdminBillingInvoice,

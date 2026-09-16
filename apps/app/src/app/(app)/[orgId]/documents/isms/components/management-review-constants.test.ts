@@ -10,9 +10,7 @@ import {
   reviewValidationMessages,
 } from './management-review-constants';
 
-function makeReview(
-  overrides: Partial<IsmsManagementReview> = {},
-): IsmsManagementReview {
+function makeReview(overrides: Partial<IsmsManagementReview> = {}): IsmsManagementReview {
   return {
     id: 'mr_1',
     reference: 'MR-2026-01',
@@ -36,14 +34,12 @@ function makeReview(
 
 describe('reviewConclusionSentence / fullActionReference', () => {
   it('assembles the ticket sentence with the verdict and date', () => {
-    expect(
-      reviewConclusionSentence({ verdict: 'suitable', meetingDate: '2026-05-01' }),
-    ).toBe(
+    expect(reviewConclusionSentence({ verdict: 'suitable', meetingDate: '2026-05-01' })).toBe(
       'The information security management system was reviewed on 2026-05-01. Overall, the ISMS was found to be suitable and no changes are required except those recorded in the outputs section below.',
     );
-    expect(
-      reviewConclusionSentence({ verdict: 'adequate', meetingDate: null }),
-    ).toContain('was reviewed. Overall, the ISMS was found to be adequate');
+    expect(reviewConclusionSentence({ verdict: 'adequate', meetingDate: null })).toContain(
+      'was reviewed. Overall, the ISMS was found to be adequate',
+    );
   });
 
   it('composes the full action reference', () => {
@@ -56,12 +52,7 @@ describe('parseAttendees / isReviewSigned / parseProcedure', () => {
     // One malformed entry invalidates the WHOLE list — exactly like the API's
     // parseReviewAttendees — so the Submit UI can never look ready while the
     // server gate counts zero attendees.
-    expect(
-      parseAttendees([
-        { memberId: 'm1', name: 'Jane' },
-        { memberId: 'm2' },
-      ]),
-    ).toEqual([]);
+    expect(parseAttendees([{ memberId: 'm1', name: 'Jane' }, { memberId: 'm2' }])).toEqual([]);
     expect(parseAttendees([{ memberId: '', name: 'Ghost' }])).toEqual([]);
     expect(parseAttendees([{ memberId: 'm3', name: '  ' }])).toEqual([]);
     expect(parseAttendees(null)).toEqual([]);
@@ -90,9 +81,7 @@ describe('parseAttendees / isReviewSigned / parseProcedure', () => {
   });
 
   it('reads the procedure out of the draft narrative', () => {
-    expect(parseProcedure({ procedure: 'We review annually.' })).toBe(
-      'We review annually.',
-    );
+    expect(parseProcedure({ procedure: 'We review annually.' })).toBe('We review annually.');
     expect(parseProcedure({ programme: 'wrong doc' })).toBe('');
     expect(parseProcedure(null)).toBe('');
   });

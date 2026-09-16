@@ -1,6 +1,6 @@
 ---
 name: trigger-basic
-description: "Only the most important rules for writing basic Trigger.dev tasks"
+description: 'Only the most important rules for writing basic Trigger.dev tasks'
 ---
 
 Source Cursor rule: `.cursor/rules/trigger.basic.mdc`.
@@ -14,10 +14,10 @@ Original Cursor alwaysApply: `false`.
 ## Basic Task
 
 ```ts
-import { task } from "@trigger.dev/sdk";
+import { task } from '@trigger.dev/sdk';
 
 export const processData = task({
-  id: "process-data",
+  id: 'process-data',
   retry: {
     maxAttempts: 10,
     factor: 1.8,
@@ -36,11 +36,11 @@ export const processData = task({
 ## Schema Task (with validation)
 
 ```ts
-import { schemaTask } from "@trigger.dev/sdk";
-import { z } from "zod";
+import { schemaTask } from '@trigger.dev/sdk';
+import { z } from 'zod';
 
 export const validatedTask = schemaTask({
-  id: "validated-task",
+  id: 'validated-task',
   schema: z.object({
     name: z.string(),
     age: z.number(),
@@ -56,16 +56,16 @@ export const validatedTask = schemaTask({
 ## Scheduled Task
 
 ```ts
-import { schedules } from "@trigger.dev/sdk";
+import { schedules } from '@trigger.dev/sdk';
 
 const dailyReport = schedules.task({
-  id: "daily-report",
-  cron: "0 9 * * *", // Daily at 9:00 AM UTC
+  id: 'daily-report',
+  cron: '0 9 * * *', // Daily at 9:00 AM UTC
   // or with timezone: cron: { pattern: "0 9 * * *", timezone: "America/New_York" },
   run: async (payload) => {
-    console.log("Scheduled run at:", payload.timestamp);
-    console.log("Last run was:", payload.lastTimestamp);
-    console.log("Next 5 runs:", payload.upcoming);
+    console.log('Scheduled run at:', payload.timestamp);
+    console.log('Last run was:', payload.lastTimestamp);
+    console.log('Next 5 runs:', payload.upcoming);
 
     // Generate daily report logic
     return { reportGenerated: true, date: payload.timestamp };
@@ -78,19 +78,19 @@ const dailyReport = schedules.task({
 ### From Backend Code
 
 ```ts
-import { tasks } from "@trigger.dev/sdk";
-import type { processData } from "./trigger/tasks";
+import { tasks } from '@trigger.dev/sdk';
+import type { processData } from './trigger/tasks';
 
 // Single trigger
-const handle = await tasks.trigger<typeof processData>("process-data", {
-  userId: "123",
+const handle = await tasks.trigger<typeof processData>('process-data', {
+  userId: '123',
   data: [{ id: 1 }, { id: 2 }],
 });
 
 // Batch trigger
-const batchHandle = await tasks.batchTrigger<typeof processData>("process-data", [
-  { payload: { userId: "123", data: [{ id: 1 }] } },
-  { payload: { userId: "456", data: [{ id: 2 }] } },
+const batchHandle = await tasks.batchTrigger<typeof processData>('process-data', [
+  { payload: { userId: '123', data: [{ id: 1 }] } },
+  { payload: { userId: '456', data: [{ id: 2 }] } },
 ]);
 ```
 
@@ -98,40 +98,40 @@ const batchHandle = await tasks.batchTrigger<typeof processData>("process-data",
 
 ```ts
 export const parentTask = task({
-  id: "parent-task",
+  id: 'parent-task',
   run: async (payload) => {
     // Trigger and continue
-    const handle = await childTask.trigger({ data: "value" });
+    const handle = await childTask.trigger({ data: 'value' });
 
     // Trigger and wait - returns Result object, NOT task output
-    const result = await childTask.triggerAndWait({ data: "value" });
+    const result = await childTask.triggerAndWait({ data: 'value' });
     if (result.ok) {
-      console.log("Task output:", result.output); // Actual task return value
+      console.log('Task output:', result.output); // Actual task return value
     } else {
-      console.error("Task failed:", result.error);
+      console.error('Task failed:', result.error);
     }
 
     // Quick unwrap (throws on error)
-    const output = await childTask.triggerAndWait({ data: "value" }).unwrap();
+    const output = await childTask.triggerAndWait({ data: 'value' }).unwrap();
 
     // Batch trigger and wait
     const results = await childTask.batchTriggerAndWait([
-      { payload: { data: "item1" } },
-      { payload: { data: "item2" } },
+      { payload: { data: 'item1' } },
+      { payload: { data: 'item2' } },
     ]);
 
     for (const run of results) {
       if (run.ok) {
-        console.log("Success:", run.output);
+        console.log('Success:', run.output);
       } else {
-        console.log("Failed:", run.error);
+        console.log('Failed:', run.error);
       }
     }
   },
 });
 
 export const childTask = task({
-  id: "child-task",
+  id: 'child-task',
   run: async (payload: { data: string }) => {
     return { processed: payload.data };
   },
@@ -143,12 +143,12 @@ export const childTask = task({
 ## Waits
 
 ```ts
-import { task, wait } from "@trigger.dev/sdk";
+import { task, wait } from '@trigger.dev/sdk';
 
 export const taskWithWaits = task({
-  id: "task-with-waits",
+  id: 'task-with-waits',
   run: async (payload) => {
-    console.log("Starting task");
+    console.log('Starting task');
 
     // Wait for specific duration
     await wait.for({ seconds: 30 });
@@ -161,12 +161,12 @@ export const taskWithWaits = task({
 
     // Wait for token (from external system)
     await wait.forToken({
-      token: "user-approval-token",
+      token: 'user-approval-token',
       timeoutInSeconds: 3600, // 1 hour timeout
     });
 
-    console.log("All waits completed");
-    return { status: "completed" };
+    console.log('All waits completed');
+    return { status: 'completed' };
   },
 });
 ```
@@ -184,7 +184,7 @@ export const taskWithWaits = task({
 ```ts
 // BREAKS APPLICATION
 client.defineJob({
-  id: "job-id",
+  id: 'job-id',
   run: async (payload, io) => {
     /* ... */
   },

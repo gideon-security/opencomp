@@ -85,7 +85,11 @@ describe('buildRolesSections', () => {
     const sections = buildRolesSections(
       input({
         roles: [
-          role({ roleKey: 'top_management', name: 'Top Management', holders: ['Raoul'] }),
+          role({
+            roleKey: 'top_management',
+            name: 'Top Management',
+            holders: ['Raoul'],
+          }),
           role({ roleKey: 'spo', name: 'SPO', holders: ['Alex'] }),
         ],
       }),
@@ -95,8 +99,14 @@ describe('buildRolesSections', () => {
     // 2 provided roles + 2 auto-generated rows
     expect(table?.rows).toHaveLength(4);
     expect(table?.rows[0][1]).toBe('Raoul'); // holder column
-    expect(table?.rows.some((r) => r[0] === 'Control / asset / risk / policy owners')).toBe(true);
-    expect(table?.rows.some((r) => r[0] === 'All personnel and contractors')).toBe(true);
+    expect(
+      table?.rows.some(
+        (r) => r[0] === 'Control / asset / risk / policy owners',
+      ),
+    ).toBe(true);
+    expect(
+      table?.rows.some((r) => r[0] === 'All personnel and contractors'),
+    ).toBe(true);
   });
 
   it('shows [To be named] when a role has no holders', () => {
@@ -109,12 +119,23 @@ describe('buildRolesSections', () => {
 
   it('assigns 5.3(a) and (b) to the SPO holder in prose', () => {
     const sections = buildRolesSections(
-      input({ roles: [role({ roleKey: 'spo', name: 'SPO', holders: ['Alex Petrisor'] })] }),
+      input({
+        roles: [
+          role({ roleKey: 'spo', name: 'SPO', holders: ['Alex Petrisor'] }),
+        ],
+      }),
     );
-    const assignments = findSection(sections, 'Specific assignments required by Clause 5.3');
+    const assignments = findSection(
+      sections,
+      'Specific assignments required by Clause 5.3',
+    );
     const paragraphs = assignments?.paragraphs ?? [];
-    expect(paragraphs.find((p) => p.text.startsWith('(a)'))?.text).toContain('Alex Petrisor');
-    expect(paragraphs.find((p) => p.text.startsWith('(b)'))?.text).toContain('Alex Petrisor');
+    expect(paragraphs.find((p) => p.text.startsWith('(a)'))?.text).toContain(
+      'Alex Petrisor',
+    );
+    expect(paragraphs.find((p) => p.text.startsWith('(b)'))?.text).toContain(
+      'Alex Petrisor',
+    );
   });
 
   it('describes the chosen internal audit route (external)', () => {
@@ -130,7 +151,8 @@ describe('buildRolesSections', () => {
         ],
       }),
     );
-    const text = findSection(sections, 'Internal audit route')?.paragraphs?.[0].text ?? '';
+    const text =
+      findSection(sections, 'Internal audit route')?.paragraphs?.[0].text ?? '';
     expect(text).toContain('external independent auditor');
     expect(text).toContain('Acme Audit LLP');
   });
@@ -166,9 +188,19 @@ describe('roleValidationMessages (server gate)', () => {
     assignments: [assigned],
   };
   const complete = (): RoleValidationRow[] => [
-    { roleKey: 'top_management', name: 'Top Management', auditRoute: null, assignments: [assigned] },
+    {
+      roleKey: 'top_management',
+      name: 'Top Management',
+      auditRoute: null,
+      assignments: [assigned],
+    },
     { roleKey: 'spo', name: 'SPO', auditRoute: null, assignments: [assigned] },
-    { roleKey: 'deputy_spo', name: 'Deputy SPO', auditRoute: null, assignments: [assigned] },
+    {
+      roleKey: 'deputy_spo',
+      name: 'Deputy SPO',
+      auditRoute: null,
+      assignments: [assigned],
+    },
     { ...externalAuditor },
   ];
 
@@ -184,7 +216,9 @@ describe('roleValidationMessages (server gate)', () => {
       auditRoute: null,
       assignments: [{ memberId: 'deactivated' }],
     };
-    expect(check(roles)).toContain('Top Management needs at least one assigned member.');
+    expect(check(roles)).toContain(
+      'Top Management needs at least one assigned member.',
+    );
   });
 
   it('requires firm + evidence for the external audit route (whitespace does not count)', () => {
@@ -234,12 +268,19 @@ describe('roleValidationMessages (server gate)', () => {
 
   it('flags an entirely-missing required seeded role', () => {
     const roles = complete().filter((r) => r.roleKey !== 'top_management');
-    expect(check(roles)).toContain('Top Management is missing from the document.');
+    expect(check(roles)).toContain(
+      'Top Management is missing from the document.',
+    );
   });
 
   it('flags a present-but-unassigned seeded role', () => {
     const roles = complete();
-    roles[1] = { roleKey: 'spo', name: 'SPO', auditRoute: null, assignments: [] };
+    roles[1] = {
+      roleKey: 'spo',
+      name: 'SPO',
+      auditRoute: null,
+      assignments: [],
+    };
     expect(check(roles)).toContain('SPO needs at least one assigned member.');
   });
 
@@ -259,7 +300,9 @@ describe('roleValidationMessages (server gate)', () => {
       auditRoute: null,
       assignments: [assigned],
     };
-    expect(check(roles)).toContain('The Internal Auditor needs an audit route selected.');
+    expect(check(roles)).toContain(
+      'The Internal Auditor needs an audit route selected.',
+    );
   });
 });
 
@@ -296,7 +339,12 @@ describe('seedRolesIfMissing', () => {
   });
 
   it('is idempotent: creates nothing when all seeded roles exist', async () => {
-    const tx = makeTx(['top_management', 'spo', 'deputy_spo', 'internal_auditor']);
+    const tx = makeTx([
+      'top_management',
+      'spo',
+      'deputy_spo',
+      'internal_auditor',
+    ]);
     await seedRolesIfMissing({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tx: tx as any,

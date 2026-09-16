@@ -14,8 +14,8 @@ import {
   Stack,
   Text,
 } from '@trycompai/design-system';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { formFieldLabel } from '../form-description-labels';

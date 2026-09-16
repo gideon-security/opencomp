@@ -1,6 +1,6 @@
 import { auth } from '@/utils/auth';
-import { Card, CardContent, CardHeader, CardTitle } from '@gideon-defender/ui/card';
 import { db } from '@db/server';
+import { Card, CardContent, CardHeader, CardTitle } from '@gideon-defender/ui/card';
 import { headers } from 'next/headers';
 import { cache } from 'react';
 import { StatusChart } from './status-chart';

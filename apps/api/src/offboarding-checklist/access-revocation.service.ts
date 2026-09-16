@@ -26,9 +26,7 @@ export class AccessRevocationService {
       },
     });
 
-    const revocationMap = new Map(
-      revocations.map((r) => [r.vendorId, r]),
-    );
+    const revocationMap = new Map(revocations.map((r) => [r.vendorId, r]));
 
     const revocationIds = revocations.map((r) => r.id);
     const allAttachments =
@@ -53,7 +51,9 @@ export class AccessRevocationService {
     const vendorList = await Promise.all(
       vendors.map(async (vendor) => {
         const revocation = revocationMap.get(vendor.id);
-        const domain = vendor.website?.replace(/^https?:\/\//, '').replace(/\/.*$/, '') ?? null;
+        const domain =
+          vendor.website?.replace(/^https?:\/\//, '').replace(/\/.*$/, '') ??
+          null;
         const rawAttachments = revocation
           ? (attachmentsByRevocation.get(revocation.id) ?? [])
           : [];
@@ -62,14 +62,20 @@ export class AccessRevocationService {
             id: attachment.id,
             name: attachment.name,
             type: attachment.type,
-            downloadUrl: await this.attachmentsService.getPresignedDownloadUrl(attachment.url),
+            downloadUrl: await this.attachmentsService.getPresignedDownloadUrl(
+              attachment.url,
+            ),
             createdAt: attachment.createdAt,
           })),
         );
         return {
           vendorId: vendor.id,
           vendorName: vendor.name,
-          logoUrl: vendor.logoUrl ?? (domain ? `https://img.logo.dev/${domain}?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ&size=64` : null),
+          logoUrl:
+            vendor.logoUrl ??
+            (domain
+              ? `https://img.logo.dev/${domain}?token=pk_X-1ZO13GSgeOoUrIuJ6GMQ&size=64`
+              : null),
           revoked: !!revocation,
           revokedAt: revocation?.revokedAt ?? null,
           revokedBy: revocation?.revokedBy ?? null,
@@ -127,7 +133,9 @@ export class AccessRevocationService {
       );
     }
 
-    let revocation: Awaited<ReturnType<typeof db.offboardingAccessRevocation.create>>;
+    let revocation: Awaited<
+      ReturnType<typeof db.offboardingAccessRevocation.create>
+    >;
     try {
       revocation = await db.offboardingAccessRevocation.create({
         data: {
@@ -142,8 +150,13 @@ export class AccessRevocationService {
         },
       });
     } catch (err) {
-      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
-        throw new BadRequestException('Vendor access has already been revoked for this member');
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2002'
+      ) {
+        throw new BadRequestException(
+          'Vendor access has already been revoked for this member',
+        );
       }
       throw err;
     }
@@ -158,7 +171,9 @@ export class AccessRevocationService {
           revokedById,
         );
       } catch (err) {
-        await db.offboardingAccessRevocation.delete({ where: { id: revocation.id } });
+        await db.offboardingAccessRevocation.delete({
+          where: { id: revocation.id },
+        });
         throw err;
       }
     }
@@ -170,7 +185,10 @@ export class AccessRevocationService {
         revokedById,
       );
     } catch (err) {
-      this.logger.warn(`Failed to sync access revocation completion for member ${memberId}`, err);
+      this.logger.warn(
+        `Failed to sync access revocation completion for member ${memberId}`,
+        err,
+      );
     }
 
     return revocation;
@@ -200,7 +218,10 @@ export class AccessRevocationService {
     );
 
     for (const attachment of attachments) {
-      await this.attachmentsService.deleteAttachment(organizationId, attachment.id);
+      await this.attachmentsService.deleteAttachment(
+        organizationId,
+        attachment.id,
+      );
     }
 
     await db.offboardingAccessRevocation.delete({
@@ -210,7 +231,10 @@ export class AccessRevocationService {
     try {
       await this.syncAccessRevocationCompletion(organizationId, memberId);
     } catch (err) {
-      this.logger.warn(`Failed to sync access revocation completion for member ${memberId}`, err);
+      this.logger.warn(
+        `Failed to sync access revocation completion for member ${memberId}`,
+        err,
+      );
     }
 
     return { success: true };
@@ -259,9 +283,16 @@ export class AccessRevocationService {
     }
 
     try {
-      await this.syncAccessRevocationCompletion(organizationId, memberId, revokedById);
+      await this.syncAccessRevocationCompletion(
+        organizationId,
+        memberId,
+        revokedById,
+      );
     } catch (err) {
-      this.logger.warn(`Failed to sync access revocation completion for member ${memberId}`, err);
+      this.logger.warn(
+        `Failed to sync access revocation completion for member ${memberId}`,
+        err,
+      );
     }
 
     return { confirmed: toCreate.length };
@@ -282,7 +313,9 @@ export class AccessRevocationService {
 
     const [totalVendors, revokedCount] = await Promise.all([
       db.vendor.count({ where: { organizationId } }),
-      db.offboardingAccessRevocation.count({ where: { organizationId, memberId } }),
+      db.offboardingAccessRevocation.count({
+        where: { organizationId, memberId },
+      }),
     ]);
 
     const allRevoked = totalVendors > 0 && revokedCount === totalVendors;

@@ -3,8 +3,8 @@
 import { authClient } from '@/utils/auth-client';
 import { Button } from '@gideon-defender/ui/button';
 import { DropdownMenuItem } from '@gideon-defender/ui/dropdown-menu';
-import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export function SignOut({

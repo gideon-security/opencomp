@@ -1,13 +1,13 @@
 'use client';
 
+import { usePermissions } from '@/hooks/use-permissions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@gideon-defender/ui/tabs';
+import { Loader2, ShieldCheck } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
-import { Loader2, ShieldCheck } from 'lucide-react';
-import { SOAFrameworkTable } from './SOAFrameworkTable';
 import { ensureSOASetup, getSOASetup } from '../hooks/useSOADocument';
-import { usePermissions } from '@/hooks/use-permissions';
 import type { FrameworkWithSOAData } from '../types';
+import { SOAFrameworkTable } from './SOAFrameworkTable';
 
 interface SOAFrameworkTabsProps {
   frameworksWithSOAData: FrameworkWithSOAData[];
@@ -21,9 +21,9 @@ const isFrameworkSupported = (frameworkName: string) => {
 export function SOAFrameworkTabs({ frameworksWithSOAData, organizationId }: SOAFrameworkTabsProps) {
   const [, startTransition] = useTransition();
   const [loadingTab, setLoadingTab] = useState<string | null>(null);
-  const [frameworkData, setFrameworkData] = useState<Map<string, typeof frameworksWithSOAData[0]>>(
-    new Map(frameworksWithSOAData.map((fw) => [fw.frameworkId, fw]))
-  );
+  const [frameworkData, setFrameworkData] = useState<
+    Map<string, (typeof frameworksWithSOAData)[0]>
+  >(new Map(frameworksWithSOAData.map((fw) => [fw.frameworkId, fw])));
   const { hasPermission } = usePermissions();
   const canCreateSetup = hasPermission('audit', 'create');
 
@@ -34,11 +34,11 @@ export function SOAFrameworkTabs({ frameworksWithSOAData, organizationId }: SOAF
       const isSupported = isFrameworkSupported(fw.framework.name);
       return isSupported && fw.configuration && fw.document;
     });
-    
+
     if (firstSupportedWithData) {
       return firstSupportedWithData.frameworkId;
     }
-    
+
     return frameworksWithSOAData[0]?.frameworkId || '';
   };
 
@@ -46,7 +46,7 @@ export function SOAFrameworkTabs({ frameworksWithSOAData, organizationId }: SOAF
 
   const handleTabChange = async (frameworkId: string) => {
     const currentData = frameworkData.get(frameworkId);
-    
+
     // If we already have configuration and document, just switch tabs
     if (currentData?.configuration && currentData?.document) {
       setActiveTab(frameworkId);
@@ -71,7 +71,8 @@ export function SOAFrameworkTabs({ frameworksWithSOAData, organizationId }: SOAF
               const newMap = new Map(prev);
               newMap.set(frameworkId, {
                 ...existingData,
-                configuration: (result.configuration ?? null) as FrameworkWithSOAData['configuration'],
+                configuration: (result.configuration ??
+                  null) as FrameworkWithSOAData['configuration'],
                 document: (result.document ?? null) as FrameworkWithSOAData['document'],
               });
               return newMap;
@@ -103,15 +104,15 @@ export function SOAFrameworkTabs({ frameworksWithSOAData, organizationId }: SOAF
           if (!fw.framework) return null;
           const isSupported = isFrameworkSupported(fw.framework.name);
           const isLoading = loadingTab === fw.frameworkId;
-          
+
           return (
-            <TabsTrigger 
-              key={fw.frameworkId} 
-              value={fw.frameworkId} 
+            <TabsTrigger
+              key={fw.frameworkId}
+              value={fw.frameworkId}
               disabled={isLoading}
               className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
-                isSupported 
-                  ? 'data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm border border-green-200 dark:border-green-900/30' 
+                isSupported
+                  ? 'data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm border border-green-200 dark:border-green-900/30'
                   : 'data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm'
               }`}
             >

@@ -1,6 +1,5 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import {
   Badge,
   Button,
@@ -14,6 +13,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { TrashCan } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import type { PendingInvitation } from './MembersTabTypes';
 
 export function InvitationsSection({
@@ -55,41 +55,43 @@ export function InvitationsSection({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {[...invitations].sort((a, b) => a.email.localeCompare(b.email)).map((inv) => (
-              <TableRow key={inv.id}>
-                <TableCell>
-                  <div className="max-w-[250px] truncate">
-                    <Text size="sm">{inv.email}</Text>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge variant="outline">
-                    {inv.role.replace(/\b\w/g, (c) => c.toUpperCase())}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <Text size="sm" variant="muted">
-                    {new Date(inv.createdAt).toLocaleDateString()}
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text size="sm" variant="muted">
-                    {new Date(inv.expiresAt).toLocaleDateString()}
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => onRevoke(inv.id)}
-                    loading={revokingId === inv.id}
-                    iconLeft={<TrashCan size={16} />}
-                  >
-                    {t('organizations.membersTab.revoke')}
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {[...invitations]
+              .sort((a, b) => a.email.localeCompare(b.email))
+              .map((inv) => (
+                <TableRow key={inv.id}>
+                  <TableCell>
+                    <div className="max-w-[250px] truncate">
+                      <Text size="sm">{inv.email}</Text>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">
+                      {inv.role.replace(/\b\w/g, (c) => c.toUpperCase())}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Text size="sm" variant="muted">
+                      {new Date(inv.createdAt).toLocaleDateString()}
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <Text size="sm" variant="muted">
+                      {new Date(inv.expiresAt).toLocaleDateString()}
+                    </Text>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => onRevoke(inv.id)}
+                      loading={revokingId === inv.id}
+                      iconLeft={<TrashCan size={16} />}
+                    >
+                      {t('organizations.membersTab.revoke')}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       )}

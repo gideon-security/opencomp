@@ -34,7 +34,10 @@ export function PolicyImageResetModal({
     setIsDeleting(true);
     try {
       const params = new URLSearchParams({ organizationId, policyId: String(policyId) });
-      const res = await fetch(`/api/fleet-policy?${params}`, { method: 'DELETE', credentials: 'include' });
+      const res = await fetch(`/api/fleet-policy?${params}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data?.error ?? 'Failed to remove images');
@@ -60,9 +63,7 @@ export function PolicyImageResetModal({
         <DialogHeader>
           <DialogTitle>Remove all images</DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-muted-foreground">
-          Are you sure you want to remove all images?
-        </p>
+        <p className="text-sm text-muted-foreground">Are you sure you want to remove all images?</p>
         <DialogFooter>
           <Button
             variant="ghost"

@@ -1,7 +1,7 @@
 'use client';
 
-import useSWR from 'swr';
 import { api } from '@/lib/api-client';
+import useSWR from 'swr';
 import type { KBDocument } from '../components/types';
 
 const KB_DOCS_KEY = '/v1/knowledge-base/documents';
@@ -41,25 +41,26 @@ interface DownloadResponse {
   fileName: string;
 }
 
-export function useKnowledgeBaseDocs({ organizationId, fallbackData }: UseKnowledgeBaseDocsOptions) {
-  const { data, error, isLoading, mutate } = useSWR<KBDocument[]>(
-    KB_DOCS_KEY,
-    fetchDocuments,
-    {
-      fallbackData,
-      revalidateOnMount: fallbackData === undefined,
-    },
-  );
+export function useKnowledgeBaseDocs({
+  organizationId,
+  fallbackData,
+}: UseKnowledgeBaseDocsOptions) {
+  const { data, error, isLoading, mutate } = useSWR<KBDocument[]>(KB_DOCS_KEY, fetchDocuments, {
+    fallbackData,
+    revalidateOnMount: fallbackData === undefined,
+  });
 
   const uploadDocument = async (
     fileName: string,
     fileType: string,
     fileData: string,
   ): Promise<UploadResponse> => {
-    const response = await api.post<UploadResponse>(
-      '/v1/knowledge-base/documents/upload',
-      { fileName, fileType, fileData, organizationId },
-    );
+    const response = await api.post<UploadResponse>('/v1/knowledge-base/documents/upload', {
+      fileName,
+      fileType,
+      fileData,
+      organizationId,
+    });
 
     if (response.error) throw new Error(response.error || 'Failed to upload file');
     if (!response.data?.id) throw new Error('Failed to upload file: invalid response');
@@ -67,21 +68,17 @@ export function useKnowledgeBaseDocs({ organizationId, fallbackData }: UseKnowle
     return response.data;
   };
 
-  const processDocuments = async (
-    documentIds: string[],
-  ): Promise<ProcessResponse> => {
-    const response = await api.post<ProcessResponse>(
-      '/v1/knowledge-base/documents/process',
-      { documentIds, organizationId },
-    );
+  const processDocuments = async (documentIds: string[]): Promise<ProcessResponse> => {
+    const response = await api.post<ProcessResponse>('/v1/knowledge-base/documents/process', {
+      documentIds,
+      organizationId,
+    });
 
     if (response.error) throw new Error(response.error);
     return response.data ?? { success: false };
   };
 
-  const deleteDocument = async (
-    documentId: string,
-  ): Promise<DeleteResponse> => {
+  const deleteDocument = async (documentId: string): Promise<DeleteResponse> => {
     const response = await api.post<DeleteResponse>(
       `/v1/knowledge-base/documents/${documentId}/delete`,
       { organizationId },
@@ -101,9 +98,7 @@ export function useKnowledgeBaseDocs({ organizationId, fallbackData }: UseKnowle
     return response.data;
   };
 
-  const downloadDocument = async (
-    documentId: string,
-  ): Promise<DownloadResponse> => {
+  const downloadDocument = async (documentId: string): Promise<DownloadResponse> => {
     const response = await api.post<DownloadResponse>(
       `/v1/knowledge-base/documents/${documentId}/download`,
       { organizationId },

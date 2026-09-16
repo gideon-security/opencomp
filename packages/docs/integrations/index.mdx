@@ -8,6 +8,7 @@ description: 'Extensible platform for building compliance check integrations'
 Integrations let you connect third-party services (GitHub, AWS, Google Cloud, etc.) to automatically run compliance checks and collect evidence.
 
 **Key Features:**
+
 - Extensible architecture for adding new integrations
 - Multiple auth strategies (OAuth, API keys, custom credentials)
 - Automated compliance checks that map to tasks
@@ -19,6 +20,7 @@ Integrations let you connect third-party services (GitHub, AWS, Google Cloud, et
 ### 1. Integration Manifests
 
 Each integration is defined by a **manifest** that describes:
+
 - Authentication method (OAuth, API key, custom)
 - Available compliance checks
 - User-configurable variables
@@ -27,6 +29,7 @@ Each integration is defined by a **manifest** that describes:
 ### 2. Checks
 
 Checks are compliance validations that run against the external service. For example:
+
 - GitHub: "Are all repos using branch protection?"
 - AWS: "Are there any high-severity findings in Security Hub?"
 - Google Workspace: "Do all users have 2FA enabled?"
@@ -40,6 +43,7 @@ Example: The GitHub "Branch Protection" check maps to the "Code Changes" task. W
 ### 4. Connection Flow
 
 **OAuth integrations:**
+
 1. User clicks "Connect"
 2. Redirected to provider's OAuth screen
 3. User authorizes
@@ -47,6 +51,7 @@ Example: The GitHub "Branch Protection" check maps to the "Code Changes" task. W
 5. Checks run automatically (if no variables needed) or after user configures variables
 
 **Custom auth integrations:**
+
 1. User clicks "Connect"
 2. User enters credentials (API keys, service account, etc.)
 3. Credentials stored securely (encrypted at rest)
@@ -55,6 +60,7 @@ Example: The GitHub "Branch Protection" check maps to the "Code Changes" task. W
 ### 5. Auto-Run Logic
 
 After connecting an integration:
+
 - If all required variables are configured → Checks run automatically via Local trigger
 - If variables needed → User configures them → Checks run
 - Checks also run daily via scheduled Local trigger task
@@ -84,15 +90,18 @@ Integrations
 ## Built-in Integrations
 
 ### Cloud Providers
+
 - **AWS** - Security Hub findings
 - **Azure** - Microsoft Defender for Cloud
 - **GCP** - Security Command Center
 
 ### Identity & Access
+
 - **Google Workspace** - User compliance, 2FA checks
 - **Rippling** - Employee sync
 
 ### Developer Tools
+
 - **GitHub** - Code security, branch protection, Dependabot
 - **Vercel** - Deployment monitoring
 - **Linear** - Team privacy, SSO checks
@@ -110,4 +119,3 @@ Integrations
 <Card title="Self-Hosting OAuth" icon="server" href="/integrations/oauth-setup">
   Configure OAuth for self-hosted deployments
 </Card>
-

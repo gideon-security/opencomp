@@ -29,10 +29,7 @@ export function RolesForm({ onAdd }: RolesFormProps) {
   );
 }
 
-function CustomRoleFields({
-  onAdd,
-  onClose,
-}: RolesFormProps & { onClose: () => void }) {
+function CustomRoleFields({ onAdd, onClose }: RolesFormProps & { onClose: () => void }) {
   const {
     control,
     handleSubmit,

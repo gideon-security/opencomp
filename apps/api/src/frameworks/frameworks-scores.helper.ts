@@ -90,7 +90,9 @@ export async function getOverviewScores(organizationId: string) {
       incompleteTasks,
     },
     people,
-    onboardingTriggerJobId: onboarding?.triggerJobCompleted ? null : (onboarding?.triggerJobId ?? null),
+    onboardingTriggerJobId: onboarding?.triggerJobCompleted
+      ? null
+      : (onboarding?.triggerJobId ?? null),
     documents: await computeDocumentsScore(organizationId),
     findings: await getOrganizationFindings(organizationId),
   };

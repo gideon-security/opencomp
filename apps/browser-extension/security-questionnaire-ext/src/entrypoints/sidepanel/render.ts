@@ -8,18 +8,9 @@ import type {
   QueueStatus,
 } from '../../lib/types';
 import { renderSheetMappingBar } from './sheet-mapping-ui';
-import {
-  footerAction,
-  footerButtonLabel,
-  footerDisabled,
-  renderSurfaceNote,
-} from './surface-ui';
+import { footerAction, footerButtonLabel, footerDisabled, renderSurfaceNote } from './surface-ui';
 
-export function renderSidePanel(
-  state: PanelState,
-  message = '',
-  isRefreshing = false,
-): string {
+export function renderSidePanel(state: PanelState, message = '', isRefreshing = false): string {
   if (state.auth.status !== 'authenticated') {
     return shell(`
       <div class="empty">
@@ -73,19 +64,28 @@ export function renderSidePanel(
       })}
       ${message ? `<div class="notice ${message.startsWith('Scan refreshed') ? 'info' : ''}">${escapeHtml(message)}</div>` : ''}
       <main class="list">
-        ${total > 0 ? state.queue.items.map((item) => renderQueueRow({
-          item,
-          canInsertIntoSurface:
-            state.queue.surface !== 'docs',
-          surface: state.queue.surface,
-        })).join('') : renderEmptyQueue()}
+        ${
+          total > 0
+            ? state.queue.items
+                .map((item) =>
+                  renderQueueRow({
+                    item,
+                    canInsertIntoSurface: state.queue.surface !== 'docs',
+                    surface: state.queue.surface,
+                  }),
+                )
+                .join('')
+            : renderEmptyQueue()
+        }
       </main>
       <footer class="foot">
-        <button class="primary block" data-action="${footerAction(state.queue.surface)}" ${footerDisabled({
-          approved,
-          answerCount,
-          surface: state.queue.surface,
-        })}>
+        <button class="primary block" data-action="${footerAction(state.queue.surface)}" ${footerDisabled(
+          {
+            approved,
+            answerCount,
+            surface: state.queue.surface,
+          },
+        )}>
           ${footerButtonLabel({ approved, answerCount, surface: state.queue.surface })}
         </button>
       </footer>
@@ -93,10 +93,7 @@ export function renderSidePanel(
   `);
 }
 
-export function renderDomainDialog(params: {
-  host: string;
-  organizationName: string;
-}): string {
+export function renderDomainDialog(params: { host: string; organizationName: string }): string {
   return dialog(`
     <div class="eyebrow">Confirm workspace</div>
     <h2>Use ${escapeHtml(params.organizationName)} here?</h2>
@@ -117,9 +114,10 @@ export function renderInsertDialog(params: {
   operation?: 'Insert' | 'Copy';
 }): string {
   const operation = params.operation ?? 'Insert';
-  const destination = operation === 'Copy'
-    ? 'Answers will be copied for guided paste into the detected answer cells.'
-    : `Destination: <code>${escapeHtml(params.host)}</code>`;
+  const destination =
+    operation === 'Copy'
+      ? 'Answers will be copied for guided paste into the detected answer cells.'
+      : `Destination: <code>${escapeHtml(params.host)}</code>`;
   return dialog(`
     <div class="eyebrow">Confirm ${operation.toLowerCase()}</div>
     <h2>${operation} ${params.count} approved answer${params.count === 1 ? '' : 's'}?</h2>

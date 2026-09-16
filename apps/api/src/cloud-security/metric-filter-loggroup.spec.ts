@@ -1,7 +1,9 @@
 import { applyResolvedMetricFilterLogGroup } from './metric-filter-loggroup';
 import type { AwsCommandStep } from './ai-remediation.prompt';
 
-const putMetricFilterStep = (params: Record<string, unknown>): AwsCommandStep => ({
+const putMetricFilterStep = (
+  params: Record<string, unknown>,
+): AwsCommandStep => ({
   service: 'cloudwatch-logs',
   command: 'PutMetricFilterCommand',
   params,
@@ -18,7 +20,9 @@ describe('applyResolvedMetricFilterLogGroup', () => {
   });
 
   it('uses the existing filter log group (update case) when cloudWatchLogGroupName is absent', () => {
-    const steps = [putMetricFilterStep({ logGroupName: 'wrong', filterName: 'f' })];
+    const steps = [
+      putMetricFilterStep({ logGroupName: 'wrong', filterName: 'f' }),
+    ];
     applyResolvedMetricFilterLogGroup(steps, { logGroupName: 'existing-lg' });
     expect(steps[0].params.logGroupName).toBe('existing-lg');
   });

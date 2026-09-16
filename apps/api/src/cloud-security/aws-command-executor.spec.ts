@@ -448,8 +448,12 @@ describe('PutMetricFilterCommand required params + normalization', () => {
       expect.arrayContaining([
         // filterPattern must be PRESENT (but may be empty), so a missing one is
         // reported via the present-check, not the non-empty REQUIRED_PARAMS one.
-        expect.stringMatching(/Required param "filterPattern" must be provided/),
-        expect.stringMatching(/Required param "metricTransformations" is missing/),
+        expect.stringMatching(
+          /Required param "filterPattern" must be provided/,
+        ),
+        expect.stringMatching(
+          /Required param "metricTransformations" is missing/,
+        ),
       ]),
     );
   });
@@ -464,7 +468,11 @@ describe('PutMetricFilterCommand required params + normalization', () => {
           filterName: 'fn',
           filterPattern: '',
           metricTransformations: [
-            { metricName: 'm', metricNamespace: 'CloudTrailMetrics', metricValue: '1' },
+            {
+              metricName: 'm',
+              metricNamespace: 'CloudTrailMetrics',
+              metricValue: '1',
+            },
           ],
         },
       }),
@@ -482,7 +490,11 @@ describe('PutMetricFilterCommand required params + normalization', () => {
           filterName: 'fn',
           filterPattern: '{ $.eventName = "X" }',
           metricTransformations: [
-            { metricName: 'm', metricNamespace: 'CloudTrailMetrics', metricValue: '1' },
+            {
+              metricName: 'm',
+              metricNamespace: 'CloudTrailMetrics',
+              metricValue: '1',
+            },
           ],
         },
       }),
@@ -503,25 +515,41 @@ describe('PutMetricFilterCommand required params + normalization', () => {
     };
     normalizeMetricFilterTransformations(input);
     expect(input.metricTransformations).toEqual([
-      { metricName: 'm', metricNamespace: 'CloudTrailMetrics', metricValue: '1' },
+      {
+        metricName: 'm',
+        metricNamespace: 'CloudTrailMetrics',
+        metricValue: '1',
+      },
     ]);
   });
 
   it('coerces a numeric metricValue to a string', () => {
     const input: Record<string, unknown> = {
       metricTransformations: [
-        { metricName: 'm', metricNamespace: 'CloudTrailMetrics', metricValue: 1 },
+        {
+          metricName: 'm',
+          metricNamespace: 'CloudTrailMetrics',
+          metricValue: 1,
+        },
       ],
     };
     normalizeMetricFilterTransformations(input);
     expect(input.metricTransformations).toEqual([
-      { metricName: 'm', metricNamespace: 'CloudTrailMetrics', metricValue: '1' },
+      {
+        metricName: 'm',
+        metricNamespace: 'CloudTrailMetrics',
+        metricValue: '1',
+      },
     ]);
   });
 
   it('leaves a well-formed metricTransformations array untouched', () => {
     const good = [
-      { metricName: 'm', metricNamespace: 'CloudTrailMetrics', metricValue: '1' },
+      {
+        metricName: 'm',
+        metricNamespace: 'CloudTrailMetrics',
+        metricValue: '1',
+      },
     ];
     const input: Record<string, unknown> = { metricTransformations: good };
     normalizeMetricFilterTransformations(input);

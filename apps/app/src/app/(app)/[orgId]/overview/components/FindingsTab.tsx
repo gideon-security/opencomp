@@ -9,7 +9,7 @@ import {
 } from '@/hooks/use-findings-api';
 import { usePermissions } from '@/hooks/use-permissions';
 import { formatDate } from '@/lib/format';
-import { FindingStatus, FindingSeverity, FindingType } from '@db';
+import { FindingSeverity, FindingStatus, FindingType } from '@db';
 import {
   Badge,
   Empty,
@@ -69,7 +69,10 @@ const STATUS_LABEL_KEYS: Record<FindingStatus, StatusLabelKey> = {
 
 const capitalize = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
 
-const SEVERITY_VARIANT: Record<FindingSeverity, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+const SEVERITY_VARIANT: Record<
+  FindingSeverity,
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
   low: 'outline',
   medium: 'secondary',
   high: 'secondary',
@@ -164,22 +167,17 @@ export function FindingsTab({
 
   const { data, mutate } = useOrganizationFindings(
     {},
-    initialFindings
-      ? { fallbackData: { data: initialFindings, status: 200 } }
-      : {},
+    initialFindings ? { fallbackData: { data: initialFindings, status: 200 } } : {},
   );
   const findings: Finding[] = Array.isArray(data?.data) ? data.data : [];
 
   // Mirror the Create Finding form: the framework filter must offer every
   // framework the org has actually enabled — not a hardcoded SOC 2 / ISO 27001
   // pair — so findings logged against ISO 42001, HIPAA, etc. are filterable.
-  const { data: frameworksData } = useApiSWR<unknown>(
-    '/v1/frameworks?includeScores=false',
-    { refreshInterval: 0 },
-  );
-  const frameworkOptions = useMemo<
-    { value: FindingType | 'all'; label: string }[]
-  >(
+  const { data: frameworksData } = useApiSWR<unknown>('/v1/frameworks?includeScores=false', {
+    refreshInterval: 0,
+  });
+  const frameworkOptions = useMemo<{ value: FindingType | 'all'; label: string }[]>(
     () => [
       { value: 'all', label: t('findings.allFrameworks') },
       ...extractOrgFrameworkTypes(frameworksData).map((type) => ({
@@ -220,9 +218,7 @@ export function FindingsTab({
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter(
-        (f) =>
-          f.content.toLowerCase().includes(q) ||
-          targetLabel(f).toLowerCase().includes(q),
+        (f) => f.content.toLowerCase().includes(q) || targetLabel(f).toLowerCase().includes(q),
       );
     }
 
@@ -240,8 +236,7 @@ export function FindingsTab({
   const severityLabel =
     severityOptions.find((o) => o.value === severityFilter)?.label ?? t('findings.severity');
   const frameworkLabel =
-    frameworkOptions.find((o) => o.value === frameworkFilter)?.label ??
-    t('findings.framework');
+    frameworkOptions.find((o) => o.value === frameworkFilter)?.label ?? t('findings.framework');
 
   const hasAnyFinding = findings.length > 0;
 
@@ -265,14 +260,10 @@ export function FindingsTab({
             <div className="flex-1 md:w-[180px] md:flex-none">
               <Select
                 value={statusFilter}
-                onValueChange={(v) =>
-                  setStatusFilter((v ?? 'all') as FindingStatus | 'all')
-                }
+                onValueChange={(v) => setStatusFilter((v ?? 'all') as FindingStatus | 'all')}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t('common.status')}>
-                    {statusLabel}
-                  </SelectValue>
+                  <SelectValue placeholder={t('common.status')}>{statusLabel}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {statusOptions.map((opt) => (
@@ -286,14 +277,10 @@ export function FindingsTab({
             <div className="flex-1 md:w-[180px] md:flex-none">
               <Select
                 value={severityFilter}
-                onValueChange={(v) =>
-                  setSeverityFilter((v ?? 'all') as FindingSeverity | 'all')
-                }
+                onValueChange={(v) => setSeverityFilter((v ?? 'all') as FindingSeverity | 'all')}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t('findings.severity')}>
-                    {severityLabel}
-                  </SelectValue>
+                  <SelectValue placeholder={t('findings.severity')}>{severityLabel}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {severityOptions.map((opt) => (
@@ -307,14 +294,10 @@ export function FindingsTab({
             <div className="flex-1 md:w-[180px] md:flex-none">
               <Select
                 value={frameworkFilter}
-                onValueChange={(v) =>
-                  setFrameworkFilter((v ?? 'all') as FindingType | 'all')
-                }
+                onValueChange={(v) => setFrameworkFilter((v ?? 'all') as FindingType | 'all')}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t('findings.framework')}>
-                    {frameworkLabel}
-                  </SelectValue>
+                  <SelectValue placeholder={t('findings.framework')}>{frameworkLabel}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {frameworkOptions.map((opt) => (
@@ -388,9 +371,7 @@ export function FindingsTab({
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={STATUS_VARIANT[f.status]}>
-                    {t(STATUS_LABEL_KEYS[f.status])}
-                  </Badge>
+                  <Badge variant={STATUS_VARIANT[f.status]}>{t(STATUS_LABEL_KEYS[f.status])}</Badge>
                 </TableCell>
                 <TableCell>
                   <Text size="sm" variant="muted">

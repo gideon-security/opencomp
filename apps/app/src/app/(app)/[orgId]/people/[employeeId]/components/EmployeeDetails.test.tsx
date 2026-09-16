@@ -1,7 +1,7 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import type { Member, User } from '@db';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { toast } from 'sonner';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EmployeeDetails } from './EmployeeDetails';

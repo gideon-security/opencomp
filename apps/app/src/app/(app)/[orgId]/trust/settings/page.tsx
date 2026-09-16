@@ -20,9 +20,7 @@ export default async function TrustSettingsPage({
 }) {
   const { orgId } = await params;
 
-  const settingsRes = await serverApi.get<TrustPortalSettings>(
-    '/v1/trust-portal/settings',
-  );
+  const settingsRes = await serverApi.get<TrustPortalSettings>('/v1/trust-portal/settings');
 
   const trustPortal = settingsRes.data;
 

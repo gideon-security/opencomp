@@ -1,10 +1,6 @@
-import { cn } from '@trycompai/design-system/cn';
 import type { IssueSeverity } from '@/lib/security/penetration-tests-client';
-import {
-  SEVERITY_BG_VAR,
-  SEVERITY_FG_VAR,
-  SEVERITY_LABEL,
-} from './severity';
+import { cn } from '@trycompai/design-system/cn';
+import { SEVERITY_BG_VAR, SEVERITY_FG_VAR, SEVERITY_LABEL } from './severity';
 
 interface SevChipProps {
   severity: IssueSeverity;

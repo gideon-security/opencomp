@@ -1,5 +1,6 @@
 'use client';
 
+import { usePermissions } from '@/hooks/use-permissions';
 import { Button } from '@gideon-defender/ui';
 import {
   DropdownMenu,
@@ -8,12 +9,11 @@ import {
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
 import { Laptop, MoreHorizontal } from 'lucide-react';
-import { usePermissions } from '@/hooks/use-permissions';
-import { Host } from '../types';
-import { RemoveDeviceAlert } from '../../all/components/RemoveDeviceAlert';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { RemoveDeviceAlert } from '../../all/components/RemoveDeviceAlert';
 import { useDevices } from '../hooks/useDevices';
+import { Host } from '../types';
 
 interface DeviceDropdownMenuProps {
   host: Host;
@@ -64,12 +64,12 @@ export const DeviceDropdownMenu = ({ host, isCurrentUserOwner }: DeviceDropdownM
       <RemoveDeviceAlert
         open={isRemoveDeviceAlertOpen}
         title="Remove Device"
-        description={(
+        description={
           <>
             {'Are you sure you want to remove this device '} <strong>{host.computer_name}</strong>?{' '}
             {'This will disconnect the device from the user.'}
           </>
-        )}
+        }
         onOpenChange={setIsRemoveDeviceAlertOpen}
         onRemove={handleRemoveDeviceClick}
         isRemoving={isRemovingDevice}

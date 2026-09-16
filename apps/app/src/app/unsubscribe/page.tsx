@@ -1,5 +1,5 @@
-import { getUnsubscribeUrl } from '@gideon-defender/email';
 import { db } from '@db/server';
+import { getUnsubscribeUrl } from '@gideon-defender/email';
 import { redirect } from 'next/navigation';
 
 interface PageProps {
@@ -18,11 +18,12 @@ export default async function UnsubscribePage({ searchParams }: PageProps) {
             <div className="mb-4 text-4xl">✓</div>
             <h1 className="mb-2 text-2xl font-bold text-gray-900">Successfully Unsubscribed</h1>
             <p className="mb-6 text-gray-600">
-              You have been unsubscribed from email notifications and reminders. You will no longer receive these emails
-              at <span className="font-semibold">{email}</span>.
+              You have been unsubscribed from email notifications and reminders. You will no longer
+              receive these emails at <span className="font-semibold">{email}</span>.
             </p>
             <p className="text-sm text-gray-500">
-              If you change your mind, you can contact your organization administrator to re-enable notifications.
+              If you change your mind, you can contact your organization administrator to re-enable
+              notifications.
             </p>
           </div>
         </div>
@@ -57,10 +58,12 @@ export default async function UnsubscribePage({ searchParams }: PageProps) {
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
           <div className="text-center">
-            <h1 className="mb-4 text-2xl font-bold text-gray-900">Unsubscribe from Email Notifications</h1>
+            <h1 className="mb-4 text-2xl font-bold text-gray-900">
+              Unsubscribe from Email Notifications
+            </h1>
             <p className="mb-6 text-gray-600">
-              Are you sure you want to unsubscribe from email notifications and reminders? You will no longer receive
-              policy notifications, task reminders, or other automated emails.
+              Are you sure you want to unsubscribe from email notifications and reminders? You will
+              no longer receive policy notifications, task reminders, or other automated emails.
             </p>
             <a
               href={unsubscribeUrl}
@@ -69,7 +72,8 @@ export default async function UnsubscribePage({ searchParams }: PageProps) {
               Unsubscribe
             </a>
             <p className="mt-4 text-sm text-gray-500">
-              If you change your mind, you can contact your organization administrator to re-enable notifications.
+              If you change your mind, you can contact your organization administrator to re-enable
+              notifications.
             </p>
           </div>
         </div>
@@ -79,4 +83,3 @@ export default async function UnsubscribePage({ searchParams }: PageProps) {
 
   redirect('/');
 }
-

@@ -1,7 +1,6 @@
 'use client';
 
 import { composeEventHandlers, useComposedRefs } from '@/lib/composition';
-import { cn } from '@gideon-defender/ui/cn';
 import {
   type Announcements,
   DndContext,
@@ -36,6 +35,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { cn } from '@gideon-defender/ui/cn';
 import { Slot } from '@radix-ui/react-slot';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -463,8 +463,10 @@ const dropAnimation: DropAnimation = {
   }),
 };
 
-interface SortableOverlayProps
-  extends Omit<React.ComponentPropsWithoutRef<typeof DragOverlay>, 'children'> {
+interface SortableOverlayProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof DragOverlay>,
+  'children'
+> {
   container?: Element | DocumentFragment | null;
   children?: ((params: { value: UniqueIdentifier }) => React.ReactNode) | React.ReactNode;
 }

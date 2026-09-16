@@ -1,10 +1,7 @@
 import { TASK_TEMPLATES } from '../../../task-mappings';
 import type { CheckContext, IntegrationCheck } from '../../../types';
-import {
-  remediationForReadFailure,
-  toHttpReadFailure,
-} from '../../http-read-failure';
-import { gcpListItems, resolveGcpProjectIds, isGcpApiDisabled } from './shared';
+import { remediationForReadFailure, toHttpReadFailure } from '../../http-read-failure';
+import { gcpListItems, isGcpApiDisabled, resolveGcpProjectIds } from './shared';
 
 interface Bucket {
   name: string;
@@ -61,7 +58,9 @@ export const storagePublicAccessCheck: IntegrationCheck = {
         // so skip it like a zero-resource project instead of emitting a
         // false "grant permission" finding.
         if (isGcpApiDisabled(err)) {
-          ctx.log(`GCP Cloud Storage: API not enabled in project "${projectId}" — no buckets to evaluate; skipping`);
+          ctx.log(
+            `GCP Cloud Storage: API not enabled in project "${projectId}" — no buckets to evaluate; skipping`,
+          );
           continue;
         }
         const failure = toHttpReadFailure(err);
@@ -85,11 +84,7 @@ export const storagePublicAccessCheck: IntegrationCheck = {
   },
 };
 
-async function evaluateBucket(
-  ctx: CheckContext,
-  projectId: string,
-  bucket: Bucket,
-): Promise<void> {
+async function evaluateBucket(ctx: CheckContext, projectId: string, bucket: Bucket): Promise<void> {
   const iam = bucket.iamConfiguration;
   const resourceId = `${projectId}/${bucket.name}`;
 
@@ -168,7 +163,12 @@ async function evaluateBucket(
       severity: 'medium',
       remediation:
         'Enable uniform bucket-level access so permissions are managed exclusively through IAM.',
-      evidence: { projectId, bucket: bucket.name, uniformBucketLevelAccess: false, publicMembers: 0 },
+      evidence: {
+        projectId,
+        bucket: bucket.name,
+        uniformBucketLevelAccess: false,
+        publicMembers: 0,
+      },
     });
     return;
   }

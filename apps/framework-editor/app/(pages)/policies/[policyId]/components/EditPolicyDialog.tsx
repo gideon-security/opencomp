@@ -1,12 +1,13 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Departments, type FrameworkEditorPolicyTemplate, Frequency } from '@/db';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { apiClient } from '@/app/lib/api-client';
 import {
   Button,
   Dialog,
@@ -30,7 +31,6 @@ import {
   SelectValue,
   Textarea,
 } from '@gideon-defender/ui';
-import { apiClient } from '@/app/lib/api-client';
 
 // Schema for the form, consistent with server action
 const EditPolicySchema = z.object({

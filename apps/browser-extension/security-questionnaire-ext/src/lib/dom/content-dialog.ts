@@ -1,8 +1,6 @@
 import type { DomainConfirmationRequest } from '../types';
 
-export function confirmDomainInContent(
-  confirmation: DomainConfirmationRequest,
-): Promise<boolean> {
+export function confirmDomainInContent(confirmation: DomainConfirmationRequest): Promise<boolean> {
   return new Promise((resolve) => {
     const host = document.createElement('div');
     host.dataset.compSqRoot = 'true';

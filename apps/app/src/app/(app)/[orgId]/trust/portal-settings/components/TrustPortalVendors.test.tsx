@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -27,7 +27,11 @@ vi.mock('sonner', () => ({
 // Mock design system
 vi.mock('@trycompai/design-system', () => ({
   Button: ({ children, onClick, disabled, iconLeft, iconRight, ...props }: any) => (
-    <button onClick={onClick} disabled={disabled} {...props}>{iconLeft}{children}{iconRight}</button>
+    <button onClick={onClick} disabled={disabled} {...props}>
+      {iconLeft}
+      {children}
+      {iconRight}
+    </button>
   ),
   Switch: ({ checked, disabled, onCheckedChange }: any) => (
     <button

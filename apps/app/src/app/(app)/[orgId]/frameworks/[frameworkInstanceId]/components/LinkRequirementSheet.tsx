@@ -1,8 +1,8 @@
 'use client';
 
-import { apiClient } from '@/lib/api-client';
 import { useFrameworks } from '@/hooks/use-frameworks';
 import { usePermissions } from '@/hooks/use-permissions';
+import { apiClient } from '@/lib/api-client';
 import {
   Button,
   Checkbox,
@@ -27,11 +27,7 @@ interface RequirementOption {
   frameworkName: string;
 }
 
-export function LinkRequirementSheet({
-  frameworkInstanceId,
-}: {
-  frameworkInstanceId: string;
-}) {
+export function LinkRequirementSheet({ frameworkInstanceId }: { frameworkInstanceId: string }) {
   const { hasPermission } = usePermissions();
   const t = useTranslations('frameworks');
   const router = useRouter();
@@ -41,10 +37,7 @@ export function LinkRequirementSheet({
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const otherFrameworkIds = useMemo(
-    () =>
-      frameworks
-        .filter((f) => f.id !== frameworkInstanceId)
-        .map((f) => f.id),
+    () => frameworks.filter((f) => f.id !== frameworkInstanceId).map((f) => f.id),
     [frameworks, frameworkInstanceId],
   );
 
@@ -110,9 +103,7 @@ export function LinkRequirementSheet({
       setIsOpen(false);
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('instance.linkRequirementsFailed'),
-      );
+      toast.error(error instanceof Error ? error.message : t('instance.linkRequirementsFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -120,11 +111,7 @@ export function LinkRequirementSheet({
 
   return (
     <>
-      <Button
-        size="sm"
-        iconLeft={<LinkIcon size={16} />}
-        onClick={() => setIsOpen(true)}
-      >
+      <Button size="sm" iconLeft={<LinkIcon size={16} />} onClick={() => setIsOpen(true)}>
         {t('instance.linkRequirementButton')}
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -154,9 +141,7 @@ export function LinkRequirementSheet({
                     />
                     <div className="flex-1">
                       <div className="font-medium text-sm">
-                        {opt.identifier?.trim()
-                          ? `${opt.identifier} — ${opt.name}`
-                          : opt.name}
+                        {opt.identifier?.trim() ? `${opt.identifier} — ${opt.name}` : opt.name}
                       </div>
                       <Text size="xs" variant="muted">
                         {t('instance.fromFramework', {
@@ -167,10 +152,7 @@ export function LinkRequirementSheet({
                   </label>
                 ))}
                 <div className="flex justify-end pt-2">
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={selected.size === 0 || isSubmitting}
-                  >
+                  <Button onClick={handleSubmit} disabled={selected.size === 0 || isSubmitting}>
                     {t('instance.linkRequirementSubmit', { count: selected.size })}
                   </Button>
                 </div>

@@ -1,16 +1,16 @@
+import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import type { FrameworkEditorRequirement } from '@db';
 import { describe, expect, it } from 'vitest';
-import type { FrameworkInstanceWithControls } from '@/lib/types/framework';
 import {
   buildControlItems,
   buildRequirementMap,
   compareRequirementsByOrder,
-  type FrameworksTranslator,
   getStatusBadge,
   groupByFamily,
   groupRequirementsByFamily,
   UNCATEGORIZED_FAMILY,
   type ControlItem,
+  type FrameworksTranslator,
   type RequirementItem,
 } from './framework-controls-shared';
 
@@ -281,7 +281,9 @@ function reqItem(overrides: {
   sortOrder?: number | null;
   requirementFamily?: string | null;
 }): RequirementItem {
-  return makeRequirement(overrides as Partial<FrameworkEditorRequirement>) as unknown as RequirementItem;
+  return makeRequirement(
+    overrides as Partial<FrameworkEditorRequirement>,
+  ) as unknown as RequirementItem;
 }
 
 describe('compareRequirementsByOrder', () => {
@@ -304,10 +306,7 @@ describe('compareRequirementsByOrder', () => {
       reqItem({ identifier: 'R-2', sortOrder: undefined }),
       reqItem({ identifier: 'R-1', sortOrder: 5 }),
     ];
-    expect(items.sort(compareRequirementsByOrder).map((r) => r.identifier)).toEqual([
-      'R-1',
-      'R-2',
-    ]);
+    expect(items.sort(compareRequirementsByOrder).map((r) => r.identifier)).toEqual(['R-1', 'R-2']);
   });
 
   it('falls back to numeric identifier order for unset rows', () => {

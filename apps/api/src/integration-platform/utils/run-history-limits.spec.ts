@@ -79,7 +79,9 @@ describe('run-history-limits', () => {
 
   describe('capLogs', () => {
     it('slices a long log array to MAX_LOGS_PER_RUN', () => {
-      const logs = Array.from({ length: 5000 }, (_, i) => ({ message: `${i}` }));
+      const logs = Array.from({ length: 5000 }, (_, i) => ({
+        message: `${i}`,
+      }));
       const capped = capLogs(logs);
       expect(Array.isArray(capped)).toBe(true);
       expect((capped as unknown[]).length).toBe(MAX_LOGS_PER_RUN);

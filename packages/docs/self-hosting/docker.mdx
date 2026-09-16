@@ -1,18 +1,18 @@
 ---
-title: "Docker Self-Hosting"
-description: "Deploy Comp with Docker Compose using per-service environment files"
+title: 'Docker Self-Hosting'
+description: 'Deploy Comp with Docker Compose using per-service environment files'
 ---
 
 ## Overview
 
 This guide covers running Comp with Docker Compose. The stack includes:
 
-| Service | Purpose | Port |
-|---------|---------|------|
-| `migrator` | Runs Prisma migrations against your database | - |
-| `seeder` | Loads reference data (frameworks, controls) | - |
-| `app` | Main Comp application | 3000 |
-| `portal` | Customer trust portal | 3002 |
+| Service    | Purpose                                      | Port |
+| ---------- | -------------------------------------------- | ---- |
+| `migrator` | Runs Prisma migrations against your database | -    |
+| `seeder`   | Loads reference data (frameworks, controls)  | -    |
+| `app`      | Main Comp application                        | 3000 |
+| `portal`   | Customer trust portal                        | 3002 |
 
 ## Prerequisites
 
@@ -22,15 +22,13 @@ This guide covers running Comp with Docker Compose. The stack includes:
 
 ## Environment File Layout
 
-<Warning>
-Docker uses **per-service env files**, not a root `.env` file.
-</Warning>
+<Warning>Docker uses **per-service env files**, not a root `.env` file.</Warning>
 
-| File | Services |
-|------|----------|
+| File               | Services         |
+| ------------------ | ---------------- |
 | `packages/db/.env` | migrator, seeder |
-| `apps/app/.env` | app |
-| `apps/portal/.env` | portal |
+| `apps/app/.env`    | app              |
+| `apps/portal/.env` | portal           |
 
 Each service reads only its designated env file via `env_file:` in `docker-compose.yml`.
 
@@ -60,6 +58,7 @@ For a functional Docker deployment, you need:
     # Revalidation
     REVALIDATION_SECRET="<random string>"
     ```
+
   </Accordion>
 
   <Accordion title="apps/portal/.env">
@@ -72,6 +71,7 @@ For a functional Docker deployment, you need:
     BETTER_AUTH_URL="https://portal.yourdomain.com"
     NEXT_PUBLIC_BETTER_AUTH_URL="https://portal.yourdomain.com"
     ```
+
   </Accordion>
 </AccordionGroup>
 
@@ -79,12 +79,13 @@ See the [Environment Reference](/self-hosting/env-reference) for all variables.
 
 ## Build-Time vs Runtime Variables
 
-| Phase | Variables | How They're Set |
-|-------|-----------|-----------------|
+| Phase      | Variables       | How They're Set                           |
+| ---------- | --------------- | ----------------------------------------- |
 | Build-time | `NEXT_PUBLIC_*` | Docker build args in `docker-compose.yml` |
-| Runtime | Everything else | Service env files (`.env`) |
+| Runtime    | Everything else | Service env files (`.env`)                |
 
 The Dockerfile defines these build args for the app:
+
 - `NEXT_PUBLIC_BETTER_AUTH_URL`
 - `NEXT_PUBLIC_PORTAL_URL`
 - `NEXT_PUBLIC_POSTHOG_KEY`
@@ -95,7 +96,8 @@ The Dockerfile defines these build args for the app:
 For portal, only `NEXT_PUBLIC_BETTER_AUTH_URL` is used at build time.
 
 <Note>
-`docker-compose.yml` passes build args from shell environment variables (e.g., `${BETTER_AUTH_URL}`). Export these before running `docker compose build`, or set them inline.
+  `docker-compose.yml` passes build args from shell environment variables (e.g., `${BETTER_AUTH_URL}
+  `). Export these before running `docker compose build`, or set them inline.
 </Note>
 
 ## Build & Run
@@ -134,8 +136,8 @@ docker compose run --rm seeder
 ```
 
 <Info>
-**migrator** runs `prisma migrate deploy` — safe to run repeatedly.  
-**seeder** upserts reference data (frameworks, controls) — idempotent.
+  **migrator** runs `prisma migrate deploy` — safe to run repeatedly. **seeder** upserts reference
+  data (frameworks, controls) — idempotent.
 </Info>
 
 ### 5. Start Services
@@ -168,11 +170,11 @@ docker builder prune --all --force
 
 Docker Compose is configured with log rotation to prevent disk exhaustion. All services use the `json-file` driver with these defaults:
 
-| Setting | Value | Description |
-|---------|-------|-------------|
-| `max-size` | 10m | Rotate logs at 10 MB |
-| `max-file` | 5 | Keep up to 5 rotated files (~50 MB per service) |
-| `compress` | true | Compress rotated files |
+| Setting    | Value | Description                                     |
+| ---------- | ----- | ----------------------------------------------- |
+| `max-size` | 10m   | Rotate logs at 10 MB                            |
+| `max-file` | 5     | Keep up to 5 rotated files (~50 MB per service) |
+| `compress` | true  | Compress rotated files                          |
 
 ### Viewing Logs
 
@@ -207,14 +209,17 @@ services:
 ```
 
 <Note>
-For centralized logging (ELK, Loki, Splunk), you can switch the logging driver to `fluentd`, `gelf`, or `loki`. See Docker's [logging driver documentation](https://docs.docker.com/engine/logging/configure/).
+  For centralized logging (ELK, Loki, Splunk), you can switch the logging driver to `fluentd`,
+  `gelf`, or `loki`. See Docker's [logging driver
+  documentation](https://docs.docker.com/engine/logging/configure/).
 </Note>
 
 ## Production Tips
 
 <CardGroup cols={2}>
   <Card title="HTTPS & Domains" icon="lock">
-    Place a reverse proxy (nginx, Caddy, Traefik) in front. Update `BETTER_AUTH_URL` and `NEXT_PUBLIC_BETTER_AUTH_URL` to your public HTTPS domains.
+    Place a reverse proxy (nginx, Caddy, Traefik) in front. Update `BETTER_AUTH_URL` and
+    `NEXT_PUBLIC_BETTER_AUTH_URL` to your public HTTPS domains.
   </Card>
   <Card title="Strong Secrets" icon="key">
     Generate secrets with `openssl rand -base64 32`. Rotate periodically.
@@ -244,12 +249,12 @@ Look for errors mentioning `process.env.*` or "Missing env var", then compare wi
 
 ### Common Misconfigurations
 
-| Issue | Solution |
-|-------|----------|
-| Using root `.env` | Docker reads per-service env files only |
-| Missing `DATABASE_URL` | Must be set in all three env files |
-| Missing `REDIS_URL` | Required for background tasks (BullMQ queue) |
-| Mismatched auth URLs | Ensure `BETTER_AUTH_URL` matches `NEXT_PUBLIC_BETTER_AUTH_URL` |
+| Issue                   | Solution                                                           |
+| ----------------------- | ------------------------------------------------------------------ |
+| Using root `.env`       | Docker reads per-service env files only                            |
+| Missing `DATABASE_URL`  | Must be set in all three env files                                 |
+| Missing `REDIS_URL`     | Required for background tasks (BullMQ queue)                       |
+| Mismatched auth URLs    | Ensure `BETTER_AUTH_URL` matches `NEXT_PUBLIC_BETTER_AUTH_URL`     |
 | Build args not exported | Export `BETTER_AUTH_URL` and `BETTER_AUTH_URL_PORTAL` before build |
 
 ### Container won't start

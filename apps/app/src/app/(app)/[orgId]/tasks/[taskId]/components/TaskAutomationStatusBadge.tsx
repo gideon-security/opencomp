@@ -1,5 +1,6 @@
 'use client';
 
+import type { TaskAutomationStatus } from '@db';
 import { Badge } from '@gideon-defender/ui/badge';
 import { cn } from '@gideon-defender/ui/cn';
 import {
@@ -8,7 +9,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@gideon-defender/ui/tooltip';
-import type { TaskAutomationStatus } from '@db';
 
 interface TaskAutomationStatusBadgeProps {
   status: TaskAutomationStatus;

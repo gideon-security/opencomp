@@ -6,9 +6,10 @@ import type {
   FrameworkInstance,
   RequirementMap,
 } from '@db';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@trycompai/design-system';
-import { Search } from '@trycompai/design-system/icons';
 import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
   Table,
   TableBody,
   TableCell,
@@ -17,8 +18,9 @@ import {
   TableRow,
   Text,
 } from '@trycompai/design-system';
-import { useRouter } from 'next/navigation';
+import { Search } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 interface RequirementsTableProps {
@@ -114,18 +116,12 @@ export function RequirementsTable({ requirements, orgId }: RequirementsTableProp
                     <span className="text-sm">{identifier || '—'}</span>
                   </TableCell>
                   <TableCell>
-                    <span
-                      className="block max-w-[280px] truncate text-sm"
-                      title={name}
-                    >
+                    <span className="block max-w-[280px] truncate text-sm" title={name}>
                       {name}
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span
-                      className="block max-w-[420px] truncate text-sm"
-                      title={description}
-                    >
+                    <span className="block max-w-[420px] truncate text-sm" title={description}>
                       {description}
                     </span>
                   </TableCell>

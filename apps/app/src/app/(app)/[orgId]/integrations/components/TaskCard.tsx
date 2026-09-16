@@ -37,9 +37,7 @@ export function TaskCard({ task, orgId }: { task: RelevantTask; orgId: string })
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
           <div className="text-center space-y-1">
             <p className="text-sm font-medium text-foreground">{t('openingTask')}</p>
-            <p className="text-xs text-muted-foreground">
-              {t('redirectingToAutomation')}
-            </p>
+            <p className="text-xs text-muted-foreground">{t('redirectingToAutomation')}</p>
           </div>
         </div>
       )}

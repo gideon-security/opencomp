@@ -21,9 +21,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   });
 
   const hasSession =
-    !!session?.user &&
-    session.user.role === 'admin' &&
-    isInternalUser(session.user.email);
+    !!session?.user && session.user.role === 'admin' && isInternalUser(session.user.email);
 
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>

@@ -1,7 +1,7 @@
 import { auth } from '@/utils/auth';
 import { anthropic } from '@ai-sdk/anthropic';
 import { db } from '@db/server';
-import { convertToModelMessages, streamText, stepCountIs, type UIMessage } from 'ai';
+import { convertToModelMessages, stepCountIs, streamText, type UIMessage } from 'ai';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { getPolicyTools } from '../../../../(app)/[orgId]/policies/[policyId]/editor/tools/policy-tools';
@@ -37,7 +37,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ policyI
     const headerStore = await headers();
     const cookieStr = headerStore.get('cookie') ?? '';
 
-    const { messages, currentContent }: { messages: Array<UIMessage>; currentContent?: string } = await req.json();
+    const { messages, currentContent }: { messages: Array<UIMessage>; currentContent?: string } =
+      await req.json();
 
     const member = await db.member.findFirst({
       where: {
@@ -183,7 +184,13 @@ You MUST produce the policy by starting from the <current_policy> text above and
         ) {
           return {
             ...part,
-            args: { content: '[previous proposal removed — use <current_policy> from system prompt]', summary: '', title: '', detail: '', reviewHint: '' },
+            args: {
+              content: '[previous proposal removed — use <current_policy> from system prompt]',
+              summary: '',
+              title: '',
+              detail: '',
+              reviewHint: '',
+            },
           };
         }
         return part;

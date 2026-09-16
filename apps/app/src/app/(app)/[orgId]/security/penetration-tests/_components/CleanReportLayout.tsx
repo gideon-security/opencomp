@@ -1,12 +1,9 @@
 'use client';
 
+import type { PentestAgentEvent, PentestRun } from '@/lib/security/penetration-tests-client';
 import { Button } from '@trycompai/design-system';
 import { Document, Download } from '@trycompai/design-system/icons';
 import { useTranslations } from 'next-intl';
-import type {
-  PentestAgentEvent,
-  PentestRun,
-} from '@/lib/security/penetration-tests-client';
 
 interface CleanReportLayoutProps {
   run: PentestRun;
@@ -116,11 +113,7 @@ function HeroRow({ run, durationMs, t }: HeroRowProps) {
   );
 }
 
-function SeveritySummaryLine({
-  t,
-}: {
-  t: ReturnType<typeof useTranslations<'security'>>;
-}) {
+function SeveritySummaryLine({ t }: { t: ReturnType<typeof useTranslations<'security'>> }) {
   return (
     <div className="font-mono text-[11px] text-muted-foreground">
       {t('penTest.cleanReport.severitySummary')}
@@ -134,18 +127,12 @@ interface AttachToAuditCtaProps {
   t: ReturnType<typeof useTranslations<'security'>>;
 }
 
-function AttachToAuditCta({
-  onDownloadMarkdown,
-  onDownloadPdf,
-  t,
-}: AttachToAuditCtaProps) {
+function AttachToAuditCta({ onDownloadMarkdown, onDownloadPdf, t }: AttachToAuditCtaProps) {
   return (
     <section className="rounded-[var(--radius)] bg-muted/40 p-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <h3 className="text-base font-medium">
-            {t('penTest.cleanReport.attachToAudit')}
-          </h3>
+          <h3 className="text-base font-medium">{t('penTest.cleanReport.attachToAudit')}</h3>
           <p className="mt-1 text-xs text-muted-foreground">
             {t('penTest.cleanReport.attachToAuditDescription')}
           </p>
@@ -172,11 +159,7 @@ function AttachToAuditCta({
 function computeDurationMs(start: string, end: string): number {
   const startMs = new Date(start).getTime();
   const endMs = new Date(end).getTime();
-  if (
-    !Number.isFinite(startMs) ||
-    !Number.isFinite(endMs) ||
-    endMs < startMs
-  ) {
+  if (!Number.isFinite(startMs) || !Number.isFinite(endMs) || endMs < startMs) {
     return 0;
   }
   return endMs - startMs;

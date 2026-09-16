@@ -11,7 +11,10 @@ interface Props {
   message?: string;
 }
 
-export function UnsubscribeFooter({ email, message = "Don't want to receive these notifications?" }: Props) {
+export function UnsubscribeFooter({
+  email,
+  message = "Don't want to receive these notifications?",
+}: Props) {
   const url = getUnsubscribeUrl(email);
   return (
     <Section className="mt-[30px] mb-[20px]">

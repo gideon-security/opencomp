@@ -1,6 +1,6 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -40,17 +40,13 @@ describe('MetricsSection (SALE-49)', () => {
     expect(html).not.toMatch(/UTC/);
 
     // Both Schedule and Next Run cells should show the em-dash placeholder.
-    const scheduleCell = html.match(
-      /metricsSection\.schedule[^<]*<\/p>\s*<p[^>]*>([^<]*)<\/p>/,
-    );
-    const nextRunCell = html.match(
-      /metricsSection\.nextRun[^<]*<\/p>\s*<p[^>]*>([^<]*)<\/p>/,
-    );
+    const scheduleCell = html.match(/metricsSection\.schedule[^<]*<\/p>\s*<p[^>]*>([^<]*)<\/p>/);
+    const nextRunCell = html.match(/metricsSection\.nextRun[^<]*<\/p>\s*<p[^>]*>([^<]*)<\/p>/);
     expect(scheduleCell?.[1]).toBe('—');
     expect(nextRunCell?.[1]).toBe('—');
   });
 
-  it('labels the daily schedule with the user\'s timezone (not UTC)', async () => {
+  it("labels the daily schedule with the user's timezone (not UTC)", async () => {
     vi.setSystemTime(new Date('2026-04-16T07:00:00Z'));
     render(
       <MetricsSection

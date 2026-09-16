@@ -11,10 +11,7 @@
       "setupInstructions": "1. Log in to Dialpad admin portal at https://dialpad.com/admin\n2. Go to Company Settings > API Keys\n3. Generate a new API key\n4. Copy the API key and paste it below"
     }
   },
-  "capabilities": [
-    "checks",
-    "sync"
-  ],
+  "capabilities": ["checks", "sync"],
   "supportsMultipleConnections": false,
   "syncSupported": true,
   "checks": [

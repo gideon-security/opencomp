@@ -12,13 +12,7 @@ export const firecrawlAgentJsonSchema = {
   properties: {
     likelihood: {
       type: 'string',
-      enum: [
-        'very_unlikely',
-        'unlikely',
-        'possible',
-        'likely',
-        'very_likely',
-      ],
+      enum: ['very_unlikely', 'unlikely', 'possible', 'likely', 'very_likely'],
       description:
         'Probability of an incident originating from or involving this vendor. Score independently of impact.',
     },

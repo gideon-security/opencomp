@@ -57,9 +57,7 @@ export function evaluatePgTls(
     issues.push('secure transport not required (require_secure_transport is OFF)');
   }
   if (!isPgTlsVersionCompliant(sslMinProtocolVersion)) {
-    issues.push(
-      `minimum TLS below 1.2 (ssl_min_protocol_version: ${sslMinProtocolVersion})`,
-    );
+    issues.push(`minimum TLS below 1.2 (ssl_min_protocol_version: ${sslMinProtocolVersion})`);
   }
   return { compliant: issues.length === 0, issues };
 }
@@ -112,67 +110,70 @@ async function readConfig(
  * customer running only PostgreSQL Flexible Server gets 0 servers found by the
  * Azure SQL check → "0 passed" for the TLS task (the reported bug class).
  */
-async function runPostgresqlFlexibleTlsForSubscription(ctx: CheckContext, sub: string): Promise<void> {
-    const servers = await listPgFlexibleServers(ctx, sub);
-    if (!servers) return;
-    if (servers.length === 0) return;
-    for (const s of servers) {
-      const requireSecure = await readConfig(ctx, s.id, 'require_secure_transport');
-      const sslMin = await readConfig(ctx, s.id, 'ssl_min_protocol_version');
+async function runPostgresqlFlexibleTlsForSubscription(
+  ctx: CheckContext,
+  sub: string,
+): Promise<void> {
+  const servers = await listPgFlexibleServers(ctx, sub);
+  if (!servers) return;
+  if (servers.length === 0) return;
+  for (const s of servers) {
+    const requireSecure = await readConfig(ctx, s.id, 'require_secure_transport');
+    const sslMin = await readConfig(ctx, s.id, 'ssl_min_protocol_version');
 
-      // A genuine read FAILURE on either parameter surfaces as "could not
-      // verify" — never a silent pass. (An unset ssl_min_protocol_version reads
-      // back as an empty string on a SUCCESSFUL response, which evaluatePgTls
-      // treats as a compliant TLS 1.2 floor; that is distinct from a failed read.)
-      if (!requireSecure.ok || !sslMin.ok) {
-        const combined = combineReadFailures(
-          [requireSecure, sslMin].flatMap((r) => (r.ok ? [] : [r.failure])),
-        );
-        ctx.fail({
-          title: `Could not verify PostgreSQL TLS settings: ${s.name}`,
-          description: `Unable to read the TLS server parameters for PostgreSQL flexible server "${s.name}"${combined ? ` (${combined.error})` : ''}, so TLS enforcement cannot be verified.`,
-          resourceType: 'azure-postgresql-flexible-server',
-          resourceId: s.id,
-          severity: 'medium',
-          remediation: remediationForReadFailure(
-            combined,
-            'Grant read access to server configurations (Microsoft.DBforPostgreSQL/flexibleServers/configurations/read), then re-run the check.',
-          ),
-          evidence: {
-            server: s.name,
-            ...(combined ? { readError: combined.error } : {}),
-          },
-        });
-        continue;
-      }
-
-      const { compliant, issues } = evaluatePgTls(requireSecure.value, sslMin.value);
-      const evidence = {
-        server: s.name,
-        requireSecureTransport: requireSecure.value,
-        sslMinProtocolVersion: sslMin.value,
-      };
-      if (compliant) {
-        ctx.pass({
-          title: `TLS 1.2 enforced: ${s.name}`,
-          description: `PostgreSQL flexible server "${s.name}" requires secure transport and a minimum TLS version of 1.2.`,
-          resourceType: 'azure-postgresql-flexible-server',
-          resourceId: s.id,
-          evidence,
-        });
-      } else {
-        ctx.fail({
-          title: `Outdated TLS configuration: ${s.name}`,
-          description: `PostgreSQL flexible server "${s.name}": ${issues.join('; ')}.`,
-          resourceType: 'azure-postgresql-flexible-server',
-          resourceId: s.id,
-          severity: 'medium',
-          remediation:
-            'Set require_secure_transport to ON and ssl_min_protocol_version to TLSv1.2 (or TLSv1.3).',
-          evidence,
-        });
-      }
+    // A genuine read FAILURE on either parameter surfaces as "could not
+    // verify" — never a silent pass. (An unset ssl_min_protocol_version reads
+    // back as an empty string on a SUCCESSFUL response, which evaluatePgTls
+    // treats as a compliant TLS 1.2 floor; that is distinct from a failed read.)
+    if (!requireSecure.ok || !sslMin.ok) {
+      const combined = combineReadFailures(
+        [requireSecure, sslMin].flatMap((r) => (r.ok ? [] : [r.failure])),
+      );
+      ctx.fail({
+        title: `Could not verify PostgreSQL TLS settings: ${s.name}`,
+        description: `Unable to read the TLS server parameters for PostgreSQL flexible server "${s.name}"${combined ? ` (${combined.error})` : ''}, so TLS enforcement cannot be verified.`,
+        resourceType: 'azure-postgresql-flexible-server',
+        resourceId: s.id,
+        severity: 'medium',
+        remediation: remediationForReadFailure(
+          combined,
+          'Grant read access to server configurations (Microsoft.DBforPostgreSQL/flexibleServers/configurations/read), then re-run the check.',
+        ),
+        evidence: {
+          server: s.name,
+          ...(combined ? { readError: combined.error } : {}),
+        },
+      });
+      continue;
     }
+
+    const { compliant, issues } = evaluatePgTls(requireSecure.value, sslMin.value);
+    const evidence = {
+      server: s.name,
+      requireSecureTransport: requireSecure.value,
+      sslMinProtocolVersion: sslMin.value,
+    };
+    if (compliant) {
+      ctx.pass({
+        title: `TLS 1.2 enforced: ${s.name}`,
+        description: `PostgreSQL flexible server "${s.name}" requires secure transport and a minimum TLS version of 1.2.`,
+        resourceType: 'azure-postgresql-flexible-server',
+        resourceId: s.id,
+        evidence,
+      });
+    } else {
+      ctx.fail({
+        title: `Outdated TLS configuration: ${s.name}`,
+        description: `PostgreSQL flexible server "${s.name}": ${issues.join('; ')}.`,
+        resourceType: 'azure-postgresql-flexible-server',
+        resourceId: s.id,
+        severity: 'medium',
+        remediation:
+          'Set require_secure_transport to ON and ssl_min_protocol_version to TLSv1.2 (or TLSv1.3).',
+        evidence,
+      });
+    }
+  }
 }
 
 export const postgresqlFlexibleTlsCheck: IntegrationCheck = {

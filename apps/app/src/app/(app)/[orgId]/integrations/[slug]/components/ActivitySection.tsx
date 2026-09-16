@@ -2,7 +2,7 @@
 
 import { api } from '@/lib/api-client';
 import { Avatar, AvatarFallback } from '@gideon-defender/ui/avatar';
-import { Section, Text, HStack, Stack } from '@trycompai/design-system';
+import { HStack, Section, Stack, Text } from '@trycompai/design-system';
 import { Activity } from '@trycompai/design-system/icons';
 import { formatDistanceToNow } from 'date-fns';
 import { Loader2 } from 'lucide-react';
@@ -25,7 +25,12 @@ interface ActivitySectionProps {
 
 const getInitials = (name: string | null) =>
   name
-    ? name.split(' ').map((p) => p[0]).join('').toUpperCase().slice(0, 2)
+    ? name
+        .split(' ')
+        .map((p) => p[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
     : 'S';
 
 function ActivityRow({ entry }: { entry: ActivityEntry }) {
@@ -35,19 +40,22 @@ function ActivityRow({ entry }: { entry: ActivityEntry }) {
   return (
     <HStack gap="sm" align="center">
       <Avatar className="h-5 w-5 shrink-0">
-        <AvatarFallback className="text-[9px]">
-          {getInitials(entry.userName)}
-        </AvatarFallback>
+        <AvatarFallback className="text-[9px]">{getInitials(entry.userName)}</AvatarFallback>
       </Avatar>
 
       <Text size="sm" as="span">
-        <Text as="span" size="sm" weight="medium">{displayName}</Text>
-        {' '}
-        <Text as="span" size="sm" variant="muted">{entry.description}</Text>
+        <Text as="span" size="sm" weight="medium">
+          {displayName}
+        </Text>{' '}
+        <Text as="span" size="sm" variant="muted">
+          {entry.description}
+        </Text>
       </Text>
 
       <div className="shrink-0 ml-auto">
-        <Text size="xs" variant="muted" font="mono">{timeAgo}</Text>
+        <Text size="xs" variant="muted" font="mono">
+          {timeAgo}
+        </Text>
       </div>
     </HStack>
   );

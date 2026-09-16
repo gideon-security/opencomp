@@ -24,7 +24,9 @@ describe('mapCertificationToBadgeType', () => {
   // recognize it, so the shared display mapper must not drop it.
   it('maps the spelled-out "Payment Card Industry Data Security Standard"', () => {
     expect(
-      mapCertificationToBadgeType('Payment Card Industry Data Security Standard'),
+      mapCertificationToBadgeType(
+        'Payment Card Industry Data Security Standard',
+      ),
     ).toBe('pci_dss');
   });
 

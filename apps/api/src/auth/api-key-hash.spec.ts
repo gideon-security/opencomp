@@ -24,7 +24,9 @@ describe('api-key-hash', () => {
   it('rejects wrong keys and wrong salts under the current scheme', () => {
     const salt = randomBytes(16).toString('hex');
     const stored = hashApiKeyCurrent(key, salt);
-    expect(matchesStoredKey(`comp_${randomBytes(32).toString('hex')}`, stored, salt)).toBe(false);
+    expect(
+      matchesStoredKey(`comp_${randomBytes(32).toString('hex')}`, stored, salt),
+    ).toBe(false);
     expect(matchesStoredKey(key, stored, 'deadbeef')).toBe(false);
   });
 
@@ -48,7 +50,15 @@ describe('api-key-hash', () => {
     expect(PBKDF2_ITERATIONS).toBeGreaterThanOrEqual(100_000);
     // Spot-check the KDF output directly against node's primitive.
     const salt = 'salt';
-    const expected = pbkdf2Sync(key, salt, PBKDF2_ITERATIONS, 32, 'sha256').toString('hex');
-    expect(hashApiKeyCurrent(key, salt)).toBe(`pbkdf2$${PBKDF2_ITERATIONS}$${expected}`);
+    const expected = pbkdf2Sync(
+      key,
+      salt,
+      PBKDF2_ITERATIONS,
+      32,
+      'sha256',
+    ).toString('hex');
+    expect(hashApiKeyCurrent(key, salt)).toBe(
+      `pbkdf2$${PBKDF2_ITERATIONS}$${expected}`,
+    );
   });
 });

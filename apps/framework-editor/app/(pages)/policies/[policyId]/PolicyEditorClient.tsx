@@ -1,9 +1,9 @@
 'use client';
 
 import { PolicyEditor } from '@/app/components/editor/PolicyEditor'; // Use PolicyEditor from framework-editor
+import { apiClient } from '@/app/lib/api-client';
 import type { JSONContent } from '@tiptap/react';
 import { toast } from 'sonner';
-import { apiClient } from '@/app/lib/api-client';
 
 interface PolicyEditorClientProps {
   policyId: string;

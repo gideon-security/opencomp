@@ -304,7 +304,9 @@ export class QuestionnaireController {
 
   @Post('upload-and-parse/upload')
   @RequirePermission('questionnaire', 'create')
-  @ApiOperation({ summary: 'Upload a questionnaire file and parse its questions' })
+  @ApiOperation({
+    summary: 'Upload a questionnaire file and parse its questions',
+  })
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -367,7 +369,9 @@ export class QuestionnaireController {
 
   @Post('parse/upload')
   @RequirePermission('questionnaire', 'create')
-  @ApiOperation({ summary: 'Upload a questionnaire file and auto-answer with export' })
+  @ApiOperation({
+    summary: 'Upload a questionnaire file and auto-answer with export',
+  })
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -448,7 +452,9 @@ export class QuestionnaireController {
   @Post('parse/upload/token')
   @Public()
   @UseGuards() // Override class-level guards — this endpoint uses token-based auth
-  @ApiOperation({ summary: 'Upload and auto-answer a questionnaire via trust portal token' })
+  @ApiOperation({
+    summary: 'Upload and auto-answer a questionnaire via trust portal token',
+  })
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiQuery({
@@ -558,7 +564,9 @@ export class QuestionnaireController {
 
   @Post('answers/export/upload')
   @RequirePermission('questionnaire', 'create')
-  @ApiOperation({ summary: 'Upload a questionnaire file and export auto-generated answers' })
+  @ApiOperation({
+    summary: 'Upload a questionnaire file and export auto-generated answers',
+  })
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({

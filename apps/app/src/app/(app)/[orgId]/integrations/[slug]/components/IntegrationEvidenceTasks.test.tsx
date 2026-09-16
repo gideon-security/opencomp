@@ -3,9 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { IntegrationEvidenceTasks } from './IntegrationEvidenceTasks';
 
-function makeProvider(
-  mappedTasks: Array<{ id: string; name: string }>,
-): IntegrationProvider {
+function makeProvider(mappedTasks: Array<{ id: string; name: string }>): IntegrationProvider {
   // Only `mappedTasks` is read by the component; cast the minimal shape.
   return { mappedTasks } as unknown as IntegrationProvider;
 }
@@ -43,11 +41,7 @@ describe('IntegrationEvidenceTasks — hides evidence tasks not added to the org
 
   it('renders nothing when none of the mapped tasks exist in the org', () => {
     const { container } = render(
-      <IntegrationEvidenceTasks
-        provider={makeProvider(MAPPED)}
-        taskTemplates={[]}
-        orgId="org-1"
-      />,
+      <IntegrationEvidenceTasks provider={makeProvider(MAPPED)} taskTemplates={[]} orgId="org-1" />,
     );
     expect(container).toBeEmptyDOMElement();
   });

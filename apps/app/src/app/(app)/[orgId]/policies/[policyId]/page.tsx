@@ -1,15 +1,8 @@
 import { getFeatureFlags } from '@/app/posthog';
-import { filterAppAccessMembers } from '@/lib/compliance';
 import { serverApi } from '@/lib/api-server';
+import { filterAppAccessMembers } from '@/lib/compliance';
 import { auth } from '@/utils/auth';
-import type {
-  AuditLog,
-  Member,
-  Organization,
-  Policy,
-  PolicyVersion,
-  User,
-} from '@db';
+import type { AuditLog, Member, Organization, Policy, PolicyVersion, User } from '@db';
 import { Breadcrumb, PageLayout } from '@trycompai/design-system';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
@@ -46,38 +39,33 @@ export default async function PolicyDetails({
 }) {
   const { policyId, orgId } = await params;
 
-  const [policyRes, membersRes, controlsRes, activityRes, versionsRes] =
-    await Promise.all([
-      serverApi.get<PolicyDetail>(`/v1/policies/${policyId}`),
-      serverApi.get<{ data: (Member & { user: User })[] }>('/v1/people'),
-      serverApi.get<{
-        mappedControls: MappedControl[];
-        allControls: MappedControl[];
-      }>(`/v1/policies/${policyId}/controls`),
-      serverApi.get<{ data: AuditLogWithRelations[] }>(
-        `/v1/audit-logs?entityType=policy&entityId=${policyId}`,
-      ),
-      serverApi.get<{
-        data: {
-          versions: PolicyVersionWithPublisher[];
-          currentVersionId: string | null;
-          pendingVersionId: string | null;
-        };
-      }>(`/v1/policies/${policyId}/versions`),
-    ]);
+  const [policyRes, membersRes, controlsRes, activityRes, versionsRes] = await Promise.all([
+    serverApi.get<PolicyDetail>(`/v1/policies/${policyId}`),
+    serverApi.get<{ data: (Member & { user: User })[] }>('/v1/people'),
+    serverApi.get<{
+      mappedControls: MappedControl[];
+      allControls: MappedControl[];
+    }>(`/v1/policies/${policyId}/controls`),
+    serverApi.get<{ data: AuditLogWithRelations[] }>(
+      `/v1/audit-logs?entityType=policy&entityId=${policyId}`,
+    ),
+    serverApi.get<{
+      data: {
+        versions: PolicyVersionWithPublisher[];
+        currentVersionId: string | null;
+        pendingVersionId: string | null;
+      };
+    }>(`/v1/policies/${policyId}/versions`),
+  ]);
 
   const policy = policyRes.data ?? null;
-  const allMembers = Array.isArray(membersRes.data?.data)
-    ? membersRes.data.data
-    : [];
+  const allMembers = Array.isArray(membersRes.data?.data) ? membersRes.data.data : [];
   // Filter to assignable members (only those with app access, exclude deactivated)
   const activeMembers = allMembers.filter((m) => !m.deactivated);
   const assignees = await filterAppAccessMembers(activeMembers, orgId);
   const mappedControls = controlsRes.data?.mappedControls ?? [];
   const allControls = controlsRes.data?.allControls ?? [];
-  const logs = Array.isArray(activityRes.data?.data)
-    ? activityRes.data.data
-    : [];
+  const logs = Array.isArray(activityRes.data?.data) ? activityRes.data.data : [];
   const versions = versionsRes.data?.data?.versions ?? [];
   const isPendingApproval = !!policy?.approverId && !!policy?.pendingVersionId;
 
@@ -85,9 +73,7 @@ export default async function PolicyDetails({
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  const flags = session?.user?.id
-    ? await getFeatureFlags(session.user.id)
-    : {};
+  const flags = session?.user?.id ? await getFeatureFlags(session.user.id) : {};
   const isAiPolicyEditorEnabled =
     flags['is-ai-policy-assistant-enabled'] === true ||
     flags['is-ai-policy-assistant-enabled'] === 'true';
@@ -106,9 +92,7 @@ export default async function PolicyDetails({
       />
       <div className="flex items-center justify-between pb-6">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {policy?.name ?? 'Policy'}
-          </h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{policy?.name ?? 'Policy'}</h1>
           {policy && <PolicyStatusBadge status={policy.status} isArchived={policy.isArchived} />}
         </div>
         <PolicyHeaderActions policy={policy} organizationId={orgId} />

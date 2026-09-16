@@ -1,5 +1,6 @@
 'use client';
 
+import type { UpdatePreview } from '@/types/framework-versioning';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +14,6 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
-import type { UpdatePreview } from '@/types/framework-versioning';
 
 interface SyncConfirmDialogProps {
   open: boolean;
@@ -83,9 +83,7 @@ export function SyncConfirmDialog({
               version: preview.toVersion.version,
             })}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            {t('instance.syncDialogDescription')}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{t('instance.syncDialogDescription')}</AlertDialogDescription>
         </AlertDialogHeader>
 
         <Stack gap="2">
@@ -132,9 +130,7 @@ export function SyncConfirmDialog({
         </Stack>
 
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isSyncing}>
-            {tCommon('common.cancel')}
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={isSyncing}>{tCommon('common.cancel')}</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} disabled={isSyncing}>
             {isSyncing ? t('instance.syncing') : t('instance.confirmSync')}
           </AlertDialogAction>

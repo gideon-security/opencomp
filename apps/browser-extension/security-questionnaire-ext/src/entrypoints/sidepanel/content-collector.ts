@@ -1,12 +1,6 @@
 import { browser } from 'wxt/browser';
-import {
-  isRecord,
-  parseDetectedQuestion,
-} from '../../lib/message-utils';
-import {
-  getResponseError,
-  isCountResponse,
-} from '../../lib/response-guards';
+import { isRecord, parseDetectedQuestion } from '../../lib/message-utils';
+import { getResponseError, isCountResponse } from '../../lib/response-guards';
 import { formatScanDebug, getScanDebug } from '../../lib/scan-debug';
 import { parseSheetMapping } from '../../lib/sheet-mapping';
 import type { DetectedQuestion, SheetMapping } from '../../lib/types';
@@ -33,10 +27,12 @@ export async function collectQuestions(tabId: number): Promise<string> {
 }
 
 async function sendCollectMessage(tabId: number): Promise<unknown> {
-  return browser.tabs.sendMessage(tabId, { type: 'comp:collect-questions' }).catch((error: unknown) => ({
-    ok: false,
-    error: error instanceof Error ? error.message : 'Unable to scan this page.',
-  }));
+  return browser.tabs
+    .sendMessage(tabId, { type: 'comp:collect-questions' })
+    .catch((error: unknown) => ({
+      ok: false,
+      error: error instanceof Error ? error.message : 'Unable to scan this page.',
+    }));
 }
 
 async function collectSheetQuestionsFromBackground(tabId: number): Promise<{
@@ -47,14 +43,16 @@ async function collectSheetQuestionsFromBackground(tabId: number): Promise<{
   const sheet = parseSheetTab(tab?.url);
   if (!sheet) return null;
 
-  const response = await browser.runtime.sendMessage({
-    type: 'comp:detect-sheet-questions',
-    pathname: sheet.pathname,
-    hash: sheet.hash,
-  }).catch((error: unknown) => ({
-    ok: false,
-    error: error instanceof Error ? error.message : 'Background sheet scan failed.',
-  }));
+  const response = await browser.runtime
+    .sendMessage({
+      type: 'comp:detect-sheet-questions',
+      pathname: sheet.pathname,
+      hash: sheet.hash,
+    })
+    .catch((error: unknown) => ({
+      ok: false,
+      error: error instanceof Error ? error.message : 'Background sheet scan failed.',
+    }));
   const debug = getScanDebug(response);
   const questions = getDetectedQuestions(response);
   const sheetMapping = getDetectedSheetMapping(response);
@@ -69,11 +67,7 @@ async function collectSheetQuestionsFromBackground(tabId: number): Promise<{
   });
   return {
     count: questions.length,
-    message: questions.length > 0
-      ? ''
-      : debug
-        ? formatScanDebug(debug)
-        : '',
+    message: questions.length > 0 ? '' : debug ? formatScanDebug(debug) : '',
   };
 }
 
@@ -115,17 +109,17 @@ function formatDebugResponse(response: unknown): string {
 }
 
 async function injectContentScript(tabId: number): Promise<boolean> {
-  return browser.scripting.executeScript({
-    target: { tabId },
-    files: ['/content-scripts/content.js'],
-    injectImmediately: true,
-  }).then(() => true).catch(() => false);
+  return browser.scripting
+    .executeScript({
+      target: { tabId },
+      files: ['/content-scripts/content.js'],
+      injectImmediately: true,
+    })
+    .then(() => true)
+    .catch(() => false);
 }
 
 function shouldRetryWithInjectedScript(response: unknown): boolean {
   const error = getResponseError(response).toLowerCase();
-  return (
-    error.includes('receiving end') ||
-    error.includes('could not establish connection')
-  );
+  return error.includes('receiving end') || error.includes('could not establish connection');
 }

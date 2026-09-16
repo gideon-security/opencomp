@@ -92,16 +92,8 @@ describe('IsmsVersionHistory', () => {
   });
 
   it('renders an error state when loading history fails', () => {
-    render(
-      <IsmsVersionHistory
-        {...baseProps}
-        versions={[]}
-        error={new Error('boom')}
-      />,
-    );
-    expect(
-      screen.getByText("Couldn't load version history"),
-    ).toBeInTheDocument();
+    render(<IsmsVersionHistory {...baseProps} versions={[]} error={new Error('boom')} />);
+    expect(screen.getByText("Couldn't load version history")).toBeInTheDocument();
   });
 
   it('shows a loading state before the first load resolves', () => {

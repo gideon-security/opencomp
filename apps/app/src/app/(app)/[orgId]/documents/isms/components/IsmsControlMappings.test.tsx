@@ -1,7 +1,7 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsControlLink, IsmsDocument } from '../isms-types';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
@@ -75,14 +75,15 @@ vi.mock('@trycompai/design-system', () => ({
     </button>
   ),
   ItemGroup: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  Item: ({
-    children,
-    render,
-  }: {
-    children: React.ReactNode;
-    render?: React.ReactElement;
-  }) =>
-    render ? <div>{render}{children}</div> : <div>{children}</div>,
+  Item: ({ children, render }: { children: React.ReactNode; render?: React.ReactElement }) =>
+    render ? (
+      <div>
+        {render}
+        {children}
+      </div>
+    ) : (
+      <div>{children}</div>
+    ),
   ItemMedia: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   ItemContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   ItemTitle: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -94,13 +95,7 @@ vi.mock('@trycompai/design-system', () => ({
   EmptyDescription: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   EmptyContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Popover: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  PopoverTrigger: ({
-    children,
-    disabled,
-  }: {
-    children?: React.ReactNode;
-    disabled?: boolean;
-  }) => (
+  PopoverTrigger: ({ children, disabled }: { children?: React.ReactNode; disabled?: boolean }) => (
     <button type="button" disabled={disabled}>
       {children}
     </button>
@@ -110,13 +105,7 @@ vi.mock('@trycompai/design-system', () => ({
   CommandInput: (props: React.ComponentProps<'input'>) => <input {...props} />,
   CommandList: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   CommandEmpty: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  CommandItem: ({
-    children,
-    onSelect,
-  }: {
-    children: React.ReactNode;
-    onSelect?: () => void;
-  }) => (
+  CommandItem: ({ children, onSelect }: { children: React.ReactNode; onSelect?: () => void }) => (
     <button type="button" onClick={onSelect}>
       {children}
     </button>
@@ -226,9 +215,7 @@ describe('IsmsControlMappings', () => {
   });
 
   it('shows an empty state when no controls are linked', () => {
-    render(
-      <IsmsControlMappings {...baseProps} document={makeDocument({ controlLinks: [] })} />,
-    );
+    render(<IsmsControlMappings {...baseProps} document={makeDocument({ controlLinks: [] })} />);
     expect(screen.getByText('controlMappings.emptyDescription')).toBeInTheDocument();
   });
 
@@ -254,9 +241,7 @@ describe('IsmsControlMappings', () => {
   });
 
   it('is read-only without evidence:update (no link/unlink controls)', () => {
-    render(
-      <IsmsControlMappings {...baseProps} canManage={false} document={makeDocument()} />,
-    );
+    render(<IsmsControlMappings {...baseProps} canManage={false} document={makeDocument()} />);
 
     // Linked controls still render for readers.
     expect(screen.getByText('Access Control Policy')).toBeInTheDocument();

@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsAudit, IsmsDocument, IsmsDriftResult } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
 
@@ -201,9 +201,7 @@ describe('InternalAuditClient', () => {
     expect(
       screen.getByText('The whole ISMS as defined in the ISMS Scope Statement (Clause 4.3).'),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText('Sarah Chen, Assured Compliance Ltd'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Sarah Chen, Assured Compliance Ltd')).toBeInTheDocument();
     // The assembled conclusion sentence renders in the read view.
     expect(
       screen.getByText('internalAuditValidation.conclusions.substantiallyConform'),
@@ -242,9 +240,7 @@ describe('InternalAuditClient', () => {
     expect(screen.getByText('Sign-off')).toBeInTheDocument();
     expect(screen.getByText('1 of 3 signed')).toBeInTheDocument();
     expect(screen.getByLabelText('Auditor signatory name')).toBeInTheDocument();
-    expect(
-      screen.getByLabelText('Top Management signatory name'),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Top Management signatory name')).toBeInTheDocument();
   });
 
   it('allows editing for a user with evidence:update', () => {
@@ -277,9 +273,7 @@ describe('InternalAuditClient', () => {
     hookState.document = makeDocument({ audits: [] });
     render(<InternalAuditClient {...baseProps} />);
 
-    expect(
-      screen.getAllByText('submitBlocked').length,
-    ).toBeGreaterThan(0);
+    expect(screen.getAllByText('submitBlocked').length).toBeGreaterThan(0);
     // Empty state invites creating the first audit.
     expect(screen.getByText('No audits yet')).toBeInTheDocument();
   });

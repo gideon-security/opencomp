@@ -41,11 +41,7 @@ interface UseEmployeeSyncReturn {
   availableProviders: SyncProviderInfo[];
 }
 
-const BUILT_IN_PROVIDERS = new Set<string>([
-  'google-workspace',
-  'rippling',
-  'jumpcloud',
-]);
+const BUILT_IN_PROVIDERS = new Set<string>(['google-workspace', 'rippling', 'jumpcloud']);
 
 const PROVIDER_CONFIG = {
   'google-workspace': {
@@ -93,9 +89,10 @@ export const useEmployeeSync = ({
       mutate({ ...data!, selectedProvider: provider }, false);
 
       if (provider) {
-        const name = provider in PROVIDER_CONFIG
-          ? PROVIDER_CONFIG[provider as BuiltInSyncProvider].name
-          : (availableProviders.find((p) => p.slug === provider)?.name ?? provider);
+        const name =
+          provider in PROVIDER_CONFIG
+            ? PROVIDER_CONFIG[provider as BuiltInSyncProvider].name
+            : (availableProviders.find((p) => p.slug === provider)?.name ?? provider);
         toast.success(`${name} set as your employee sync provider`);
       } else {
         toast.success('Employee auto-sync turned off');
@@ -142,9 +139,7 @@ export const useEmployeeSync = ({
         await setSyncProvider(provider);
       }
 
-      const response = await apiClient.post<SyncResult>(
-        getSyncUrl(provider, connectionId),
-      );
+      const response = await apiClient.post<SyncResult>(getSyncUrl(provider, connectionId));
 
       if (response.data?.success) {
         const { imported, updated, reactivated, deactivated, skipped, errors } = response.data;
@@ -163,7 +158,13 @@ export const useEmployeeSync = ({
             `Deactivated ${deactivated} employee${deactivated > 1 ? 's' : ''} (no longer in ${providerName})`,
           );
         }
-        if (imported === 0 && updated === 0 && reactivated === 0 && deactivated === 0 && skipped > 0) {
+        if (
+          imported === 0 &&
+          updated === 0 &&
+          reactivated === 0 &&
+          deactivated === 0 &&
+          skipped > 0
+        ) {
           toast.info('All employees are already synced');
         }
         if (errors > 0) {

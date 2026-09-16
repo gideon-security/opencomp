@@ -82,11 +82,7 @@ export default async function SignedPoliciesPage({
         ) : (
           <div className="space-y-2">
             {policies.map((policy) => (
-              <Link
-                key={policy.id}
-                href={`/${orgId}/policy/${policy.id}`}
-                className="block"
-              >
+              <Link key={policy.id} href={`/${orgId}/policy/${policy.id}`} className="block">
                 <Card>
                   <CardContent>
                     <div className="flex items-center gap-3">

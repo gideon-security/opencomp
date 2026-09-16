@@ -137,7 +137,11 @@ export interface UpdatePreview {
     };
     controlRequirement: {
       added: Array<{ controlName: string; requirementIdentifier: string; requirementName: string }>;
-      removed: Array<{ controlName: string; requirementIdentifier: string; requirementName: string }>;
+      removed: Array<{
+        controlName: string;
+        requirementIdentifier: string;
+        requirementName: string;
+      }>;
     };
     controlDocumentType: {
       added: Array<{ controlName: string; formType: string }>;

@@ -113,9 +113,7 @@ export async function rerankSuggestions({
     abortSignal: AbortSignal.timeout(30_000),
   });
 
-  const scoreMap = new Map(
-    result.object.scores.map((s) => [s.id, clamp(s.score, 0, 10)]),
-  );
+  const scoreMap = new Map(result.object.scores.map((s) => [s.id, clamp(s.score, 0, 10)]));
 
   return candidates
     .map((c) => ({

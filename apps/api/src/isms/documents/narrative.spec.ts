@@ -168,7 +168,9 @@ describe('leadership narrative (5.1)', () => {
       wizardAnswers: { deputySpo: { memberId: null, toBeNamed: true } },
     });
     const deputy = narrative.commitments.find((c) => c.key === 'i');
-    expect(deputy?.text).toContain('appoint a Deputy Security & Privacy Officer');
+    expect(deputy?.text).toContain(
+      'appoint a Deputy Security & Privacy Officer',
+    );
   });
 
   it('omits the Deputy SPO commitment when not provided', () => {

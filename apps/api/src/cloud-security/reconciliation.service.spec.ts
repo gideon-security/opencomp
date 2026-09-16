@@ -117,7 +117,9 @@ describe('CloudReconciliationService.reconcile', () => {
       results: [],
       scannedServices: [],
     });
-    dbMock.findingResolution.findFirst.mockResolvedValueOnce({ id: 'fres_existing' });
+    dbMock.findingResolution.findFirst.mockResolvedValueOnce({
+      id: 'fres_existing',
+    });
 
     const service = new CloudReconciliationService(makeExceptionsStub());
     const result = await service.reconcile({ currentRunId: 'icr_current' });
@@ -136,7 +138,9 @@ describe('CloudReconciliationService.reconcile', () => {
       scannedServices: [],
     });
     dbMock.findingResolution.findFirst.mockResolvedValueOnce(null);
-    dbMock.findingRegression.findFirst.mockResolvedValueOnce({ id: 'freg_existing' });
+    dbMock.findingRegression.findFirst.mockResolvedValueOnce({
+      id: 'freg_existing',
+    });
 
     const service = new CloudReconciliationService(makeExceptionsStub());
     const result = await service.reconcile({ currentRunId: 'icr_current' });
@@ -163,7 +167,11 @@ describe('CloudReconciliationService.reconcile', () => {
     setupRuns({
       currentResults: [],
       priorResults: [
-        makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: false }),
+        makeResult({
+          findingKey: 'iam-no-mfa-john',
+          resourceId: 'john',
+          passed: false,
+        }),
       ],
     });
 
@@ -185,10 +193,18 @@ describe('CloudReconciliationService.reconcile', () => {
   it('records external_fix when a prior failure is now passing and no RemediationAction matches', async () => {
     setupRuns({
       currentResults: [
-        makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: true }),
+        makeResult({
+          findingKey: 'iam-no-mfa-john',
+          resourceId: 'john',
+          passed: true,
+        }),
       ],
       priorResults: [
-        makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: false }),
+        makeResult({
+          findingKey: 'iam-no-mfa-john',
+          resourceId: 'john',
+          passed: false,
+        }),
       ],
     });
 
@@ -205,10 +221,18 @@ describe('CloudReconciliationService.reconcile', () => {
   it('records platform_fix when a successful RemediationAction lands between scans', async () => {
     setupRuns({
       currentResults: [
-        makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: true }),
+        makeResult({
+          findingKey: 'iam-no-mfa-john',
+          resourceId: 'john',
+          passed: true,
+        }),
       ],
       priorResults: [
-        makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: false }),
+        makeResult({
+          findingKey: 'iam-no-mfa-john',
+          resourceId: 'john',
+          passed: false,
+        }),
       ],
     });
     dbMock.remediationAction.findFirst.mockResolvedValueOnce({
@@ -234,7 +258,11 @@ describe('CloudReconciliationService.reconcile', () => {
     setupRuns({
       currentResults: [],
       priorResults: [
-        makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: false }),
+        makeResult({
+          findingKey: 'iam-no-mfa-john',
+          resourceId: 'john',
+          passed: false,
+        }),
       ],
     });
 
@@ -248,7 +276,7 @@ describe('CloudReconciliationService.reconcile', () => {
     );
   });
 
-  it('does NOT mark resolved when the prior finding\'s service was not in scannedServices (partial scan)', async () => {
+  it("does NOT mark resolved when the prior finding's service was not in scannedServices (partial scan)", async () => {
     setupRuns({
       currentResults: [], // partial scan — IAM service didn't run this time
       priorResults: [
@@ -272,11 +300,19 @@ describe('CloudReconciliationService.reconcile', () => {
   it('records a regression when a previously-resolved finding fails again', async () => {
     setupRuns({
       currentResults: [
-        makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: false }),
+        makeResult({
+          findingKey: 'iam-no-mfa-john',
+          resourceId: 'john',
+          passed: false,
+        }),
       ],
       priorResults: [
         // prior was passing — i.e. fix held, now broken again
-        makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: true }),
+        makeResult({
+          findingKey: 'iam-no-mfa-john',
+          resourceId: 'john',
+          passed: true,
+        }),
       ],
     });
     dbMock.findingResolution.findFirst
@@ -370,10 +406,18 @@ describe('CloudReconciliationService.reconcile', () => {
       // deploy scan for existing customers.
       setupRuns({
         currentResults: [
-          makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: true }),
+          makeResult({
+            findingKey: 'iam-no-mfa-john',
+            resourceId: 'john',
+            passed: true,
+          }),
         ],
         priorResults: [
-          makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: false }),
+          makeResult({
+            findingKey: 'iam-no-mfa-john',
+            resourceId: 'john',
+            passed: false,
+          }),
         ],
       });
       // Override findUnique to set scanMode explicitly on the current run.
@@ -388,7 +432,11 @@ describe('CloudReconciliationService.reconcile', () => {
         scanMode: 'comp_scanners',
         connection: { organizationId: 'org_1' },
         results: [
-          makeResult({ findingKey: 'iam-no-mfa-john', resourceId: 'john', passed: true }),
+          makeResult({
+            findingKey: 'iam-no-mfa-john',
+            resourceId: 'john',
+            passed: true,
+          }),
         ],
       });
 
@@ -427,7 +475,11 @@ describe('CloudReconciliationService.reconcile', () => {
       const service = new CloudReconciliationService(makeExceptionsStub());
       const result = await service.reconcile({ currentRunId: 'icr_current' });
 
-      expect(result).toEqual({ resolutions: 0, regressions: 0, skipped: false });
+      expect(result).toEqual({
+        resolutions: 0,
+        regressions: 0,
+        skipped: false,
+      });
       expect(dbMock.findingResolution.create).not.toHaveBeenCalled();
       expect(dbMock.findingRegression.create).not.toHaveBeenCalled();
     });

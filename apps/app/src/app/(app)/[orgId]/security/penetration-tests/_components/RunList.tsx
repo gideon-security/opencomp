@@ -126,9 +126,7 @@ function QuotaFooter({ balance, planRequired, quotaLabel, orgId, t }: QuotaFoote
   return (
     <div className="border-t border-border px-4 py-3">
       <div className="text-[11px] font-medium">
-        {planRequired
-          ? t('penTest.runList.planRequired')
-          : t('penTest.runList.noScansAvailable')}
+        {planRequired ? t('penTest.runList.planRequired') : t('penTest.runList.noScansAvailable')}
       </div>
       <div className="mt-0.5 text-[11px] text-muted-foreground">
         {t('penTest.runList.choosePlanLead')}{' '}

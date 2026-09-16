@@ -97,7 +97,8 @@ export const sanitizeErrorMessage = async (rawError: unknown): Promise<string> =
       maxRetries: 2,
     });
 
-    const result = text.trim() || 'The automation encountered an error. Please check your script and try again.';
+    const result =
+      text.trim() || 'The automation encountered an error. Please check your script and try again.';
 
     return result;
   } catch (aiError) {
@@ -107,7 +108,10 @@ export const sanitizeErrorMessage = async (rawError: unknown): Promise<string> =
     // Basic regex-based sanitization as fallback
     let sanitized = errorString
       // Remove potential API keys and tokens
-      .replace(/([a-zA-Z_]*(?:key|token|secret|password|api_key|apikey|authorization)[a-zA-Z_]*[=:\s]+)['"]?[a-zA-Z0-9_\-]{16,}['"]?/gi, '$1[REDACTED]')
+      .replace(
+        /([a-zA-Z_]*(?:key|token|secret|password|api_key|apikey|authorization)[a-zA-Z_]*[=:\s]+)['"]?[a-zA-Z0-9_\-]{16,}['"]?/gi,
+        '$1[REDACTED]',
+      )
       // Remove Bearer tokens
       .replace(/Bearer\s+[a-zA-Z0-9_\-\.]+/gi, 'Bearer [REDACTED]')
       // Remove connection strings
@@ -119,6 +123,8 @@ export const sanitizeErrorMessage = async (rawError: unknown): Promise<string> =
       // Remove URLs with credentials
       .replace(/:\/\/[^:]+:[^@]+@/g, '://[CREDENTIALS_REDACTED]@');
 
-    return sanitized || 'The automation encountered an error. Please check your script and try again.';
+    return (
+      sanitized || 'The automation encountered an error. Please check your script and try again.'
+    );
   }
 };

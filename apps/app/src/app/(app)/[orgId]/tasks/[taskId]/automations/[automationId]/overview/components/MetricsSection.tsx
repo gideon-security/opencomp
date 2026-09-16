@@ -155,7 +155,9 @@ export function MetricsSection({
     <div className="grid grid-cols-2 md:grid-cols-4 divide-x border-y py-4">
       <div className="px-4">
         <p className="text-xs text-muted-foreground mb-1">{t('metricsSection.successRate')}</p>
-        <p className={`text-2xl font-semibold ${totalRuns > 0 ? successRateColor : 'text-muted-foreground'}`}>
+        <p
+          className={`text-2xl font-semibold ${totalRuns > 0 ? successRateColor : 'text-muted-foreground'}`}
+        >
           {totalRuns > 0 ? `${successRate}%` : '—'}
         </p>
         <p className="text-xs text-muted-foreground">{t('metricsSection.thisWeek')}</p>

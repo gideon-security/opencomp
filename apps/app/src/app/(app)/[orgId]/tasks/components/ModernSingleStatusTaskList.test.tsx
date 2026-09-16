@@ -1,12 +1,12 @@
+import {
+  ADMIN_PERMISSIONS,
+  AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
+} from '@/test-utils/mocks/permissions';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-  setMockPermissions,
-  mockHasPermission,
-  ADMIN_PERMISSIONS,
-  AUDITOR_PERMISSIONS,
-} from '@/test-utils/mocks/permissions';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -61,9 +61,7 @@ vi.mock('@gideon-defender/ui/checkbox', () => ({
 
 // Mock child components
 vi.mock('./BulkTaskAssigneeChangeModal', () => ({
-  BulkTaskAssigneeChangeModal: () => (
-    <div data-testid="bulk-assignee-modal" />
-  ),
+  BulkTaskAssigneeChangeModal: () => <div data-testid="bulk-assignee-modal" />,
 }));
 
 vi.mock('./BulkTaskDeleteModal', () => ({
@@ -89,10 +87,7 @@ vi.mock('./TaskBulkActions', () => ({
     onEdit: (v: boolean) => void;
   }) => (
     <div data-testid="task-bulk-actions">
-      <button
-        data-testid="toggle-edit-btn"
-        onClick={() => onEdit(!isEditing)}
-      >
+      <button data-testid="toggle-edit-btn" onClick={() => onEdit(!isEditing)}>
         {isEditing ? 'Cancel Edit' : 'Edit'}
       </button>
     </div>
@@ -100,22 +95,14 @@ vi.mock('./TaskBulkActions', () => ({
 }));
 
 vi.mock('lucide-react', () => ({
-  RefreshCw: ({ className: _c }: { className?: string }) => (
-    <span data-testid="refresh-icon" />
-  ),
-  Trash2: ({ className: _c }: { className?: string }) => (
-    <span data-testid="trash-icon" />
-  ),
-  User: ({ className: _c }: { className?: string }) => (
-    <span data-testid="user-icon" />
-  ),
+  RefreshCw: ({ className: _c }: { className?: string }) => <span data-testid="refresh-icon" />,
+  Trash2: ({ className: _c }: { className?: string }) => <span data-testid="trash-icon" />,
+  User: ({ className: _c }: { className?: string }) => <span data-testid="user-icon" />,
 }));
 
 import { ModernSingleStatusTaskList } from './ModernSingleStatusTaskList';
 
-const MockIcon = ({ className: _c }: { className?: string }) => (
-  <span data-testid="status-icon" />
-);
+const MockIcon = ({ className: _c }: { className?: string }) => <span data-testid="status-icon" />;
 
 const mockTasks = [
   {

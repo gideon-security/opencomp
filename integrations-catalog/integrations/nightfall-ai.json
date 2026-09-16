@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to the Nightfall Dashboard at https://app.nightfall.ai\n2. Go to Settings (gear icon) > API Keys, or navigate to https://app.nightfall.ai/developer-platform/api-keys\n3. Click 'Create API Key' and give it a descriptive name\n4. Copy the API key (starts with 'NF-')\n5. Paste the API key below\n\nNote: The API key must be kept secret. Do not share it in publicly accessible areas."
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

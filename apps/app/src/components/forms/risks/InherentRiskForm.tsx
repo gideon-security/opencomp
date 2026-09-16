@@ -2,14 +2,20 @@
 
 import { updateInherentRiskSchema } from '@/actions/schema';
 import { useRiskActions } from '@/hooks/use-risks';
+import { Impact, Likelihood } from '@db';
 import { Button } from '@gideon-defender/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@gideon-defender/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@gideon-defender/ui/select';
-import { Impact, Likelihood } from '@db';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@gideon-defender/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
 import { useQueryState } from 'nuqs';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
@@ -66,11 +72,9 @@ export function InherentRiskForm({
         impact: values.impact,
       });
       toast.success('Inherent risk updated successfully');
-      globalMutate(
-        (key) => Array.isArray(key) && key[0]?.includes('/v1/risks'),
-        undefined,
-        { revalidate: true },
-      );
+      globalMutate((key) => Array.isArray(key) && key[0]?.includes('/v1/risks'), undefined, {
+        revalidate: true,
+      });
       setOpen(null);
     } catch {
       toast.error('Failed to update inherent risk');
@@ -131,16 +135,8 @@ export function InherentRiskForm({
         />
 
         <div className="flex justify-end">
-          <Button
-            type="submit"
-            variant="default"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              'Save'
-            )}
+          <Button type="submit" variant="default" disabled={isSubmitting}>
+            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
           </Button>
         </div>
       </form>

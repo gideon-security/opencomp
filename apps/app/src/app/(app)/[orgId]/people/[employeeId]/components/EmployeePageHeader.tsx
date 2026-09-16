@@ -2,8 +2,8 @@
 
 import { Breadcrumb, Heading } from '@trycompai/design-system';
 import { BackgroundCheckVerifiedTick } from '../../components/BackgroundCheckVerifiedTick';
-import { isCompletedBackgroundCheck } from './backgroundCheckTypes';
 import type { BackgroundCheckRecord } from './backgroundCheckTypes';
+import { isCompletedBackgroundCheck } from './backgroundCheckTypes';
 
 export function EmployeePageHeader({
   employeeName,
@@ -18,9 +18,7 @@ export function EmployeePageHeader({
   backgroundCheckStepEnabled: boolean;
   memberBackgroundCheckExempt: boolean;
 }) {
-  const isVerified = backgroundCheck
-    ? isCompletedBackgroundCheck(backgroundCheck.status)
-    : false;
+  const isVerified = backgroundCheck ? isCompletedBackgroundCheck(backgroundCheck.status) : false;
 
   return (
     <div data-slot="page-header" className="flex flex-col gap-1">

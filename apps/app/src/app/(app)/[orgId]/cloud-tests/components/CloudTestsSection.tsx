@@ -2,7 +2,6 @@
 
 import { useApi } from '@/hooks/use-api';
 import { usePermissions } from '@/hooks/use-permissions';
-import { useTranslations } from 'next-intl';
 import {
   getAwsCloudShellUrl,
   getAwsRemediationScript,
@@ -34,6 +33,7 @@ import {
   X,
   Zap,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { mutate as globalMutate } from 'swr';
@@ -44,14 +44,14 @@ import { GcpSetupGuide } from './GcpSetupGuide';
 import { RemediationDialog } from './RemediationDialog';
 import { ScheduledScanPopover } from './ScheduledScanPopover';
 
+import { MarkExceptionModal } from '@/components/integrations/MarkExceptionModal';
 import type { Finding } from '../types';
 import { CheckDefinitionPanel } from './CheckDefinitionPanel';
 import { CheckGroupBlock } from './CheckGroupBlock';
+import { EvidenceJsonViewer } from './EvidenceJsonViewer';
+import { RemediationSection } from './RemediationSection';
 import { buildCheckGroups } from './check-groups';
 import { filterFindingsByConnection } from './finding-filters';
-import { EvidenceJsonViewer } from './EvidenceJsonViewer';
-import { MarkExceptionModal } from '@/components/integrations/MarkExceptionModal';
-import { RemediationSection } from './RemediationSection';
 
 interface RemediationCapabilities {
   enabled: boolean;
@@ -342,19 +342,13 @@ export function CloudTestsSection({
             )
           : groupFindings;
 
-      const failed = matching.filter(
-        (f) => f.status === 'failed' || f.status === 'FAILED',
-      );
-      const passed = matching.filter(
-        (f) => f.status === 'passed' || f.status === 'success',
-      );
+      const failed = matching.filter((f) => f.status === 'failed' || f.status === 'FAILED');
+      const passed = matching.filter((f) => f.status === 'passed' || f.status === 'success');
 
       // With severity filter active, hide services that have no matching
       // failures. Without filters, keep services that have any findings.
       if (severityFilter) {
-        const hasMatching = failed.some(
-          (f) => f.severity?.toLowerCase() === severityFilter,
-        );
+        const hasMatching = failed.some((f) => f.severity?.toLowerCase() === severityFilter);
         if (!hasMatching) continue;
       } else if (q && failed.length === 0 && passed.length === 0) {
         continue;
@@ -369,9 +363,7 @@ export function CloudTestsSection({
       });
     }
 
-    return groups.sort(
-      (a, b) => b.failed - a.failed || a.name.localeCompare(b.name),
-    );
+    return groups.sort((a, b) => b.failed - a.failed || a.name.localeCompare(b.name));
   }, [findings, severityFilter, searchQuery]);
 
   // Split into baseline (security fundamentals) vs service-specific
@@ -417,7 +409,8 @@ export function CloudTestsSection({
         const data = response.data as { message?: string; errorCode?: string } | undefined;
         const errorCode = data?.errorCode;
         const message =
-          data?.message ?? (typeof response.error === 'string' ? response.error : t('cloudTests_scanFailedShort'));
+          data?.message ??
+          (typeof response.error === 'string' ? response.error : t('cloudTests_scanFailedShort'));
         // GCP setup errors get persistent inline message
         if (errorCode === 'SCC_NOT_ACTIVATED' || errorCode === 'GCP_ORG_MISSING') {
           setScanError({ message, errorCode });
@@ -430,9 +423,13 @@ export function CloudTestsSection({
       onScanComplete?.();
       setScanCompleted(true);
       const elapsed = Math.round((Date.now() - startTime) / 1000);
-        toast.success(t('cloudTests_scanCompleted', { elapsed }));
+      toast.success(t('cloudTests_scanCompleted', { elapsed }));
     } catch (err) {
-      toast.error(t('cloudTests_scanFailed', { error: err instanceof Error ? err.message : t('cloudTests_unknownError') }));
+      toast.error(
+        t('cloudTests_scanFailed', {
+          error: err instanceof Error ? err.message : t('cloudTests_unknownError'),
+        }),
+      );
     } finally {
       setIsScanning(false);
     }
@@ -538,7 +535,6 @@ export function CloudTestsSection({
           </Button>
         </div>
       </div>
-
 
       {/* Selected projects indicator (GCP) */}
       {providerSlug === 'gcp' &&
@@ -1381,11 +1377,7 @@ function EvidenceSection({ evidence }: { evidence: unknown }) {
         className="flex w-full items-center gap-1.5 px-3 py-2 text-left text-xs font-medium hover:bg-muted/30"
         aria-expanded={open}
       >
-        {open ? (
-          <ChevronDown className="h-3 w-3" />
-        ) : (
-          <ChevronRight className="h-3 w-3" />
-        )}
+        {open ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
         Evidence
         <span className="ml-auto text-[10px] font-normal text-muted-foreground">
           Sensitive values redacted

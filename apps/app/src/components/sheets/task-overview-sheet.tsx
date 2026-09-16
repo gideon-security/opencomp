@@ -4,7 +4,13 @@ import { Button } from '@gideon-defender/ui/button';
 import { Drawer, DrawerContent, DrawerTitle } from '@gideon-defender/ui/drawer';
 import { useMediaQuery } from '@gideon-defender/ui/hooks';
 import { ScrollArea } from '@gideon-defender/ui/scroll-area';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@gideon-defender/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@gideon-defender/ui/sheet';
 import { X } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 

@@ -8,11 +8,7 @@ export type ResearchMessage = {
 };
 
 export type ResearchPhase =
-  | 'starting'
-  | 'researching'
-  | 'core_complete'
-  | 'complete'
-  | 'failed';
+  'starting' | 'researching' | 'core_complete' | 'complete' | 'failed';
 
 export type ResearchMetadata = {
   phase: ResearchPhase;

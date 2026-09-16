@@ -1,10 +1,10 @@
 'use client';
 
-import useSWR from 'swr';
-import { useEffect, useRef, useState } from 'react';
-import { api } from '@/lib/api-client';
 import { env } from '@/env.mjs';
+import { api } from '@/lib/api-client';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import useSWR from 'swr';
 
 interface SOADocumentData {
   id: string;
@@ -30,7 +30,11 @@ function buildKey(documentId: string | null) {
   return `/v1/soa/document/${documentId}`;
 }
 
-export function useSOADocument({ documentId, organizationId, fallbackData }: UseSOADocumentOptions) {
+export function useSOADocument({
+  documentId,
+  organizationId,
+  fallbackData,
+}: UseSOADocumentOptions) {
   const [isExporting, setIsExporting] = useState(false);
   const { data, error, isLoading, mutate } = useSWR<SOADocumentData | null>(
     buildKey(documentId),
@@ -59,14 +63,11 @@ export function useSOADocument({ documentId, organizationId, fallbackData }: Use
   }): Promise<boolean> => {
     if (!documentId) throw new Error('No document ID');
 
-    const response = await api.post<{ success: boolean }>(
-      '/v1/soa/save-answer',
-      {
-        organizationId,
-        documentId,
-        ...params,
-      },
-    );
+    const response = await api.post<{ success: boolean }>('/v1/soa/save-answer', {
+      organizationId,
+      documentId,
+      ...params,
+    });
 
     if (response.error) throw new Error(response.error);
     if (!response.data?.success) throw new Error('Failed to save answer');
@@ -176,9 +177,7 @@ export function useSOADocument({ documentId, organizationId, fallbackData }: Use
       toast.success(`Exported as ${filename}`);
     } catch (error) {
       console.error('SOA export error:', error);
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to export SOA document',
-      );
+      toast.error(error instanceof Error ? error.message : 'Failed to export SOA document');
     } finally {
       setIsExporting(false);
     }

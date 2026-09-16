@@ -55,8 +55,10 @@ export class ConnectionCheckRunnerService {
   }): Promise<RunAllChecksResult> {
     const { connectionId, organizationId, checkId } = params;
 
-    const { connection, provider, manifest } =
-      await this.loadConnectionContext(connectionId, organizationId);
+    const { connection, provider, manifest } = await this.loadConnectionContext(
+      connectionId,
+      organizationId,
+    );
     if (!manifest.checks || manifest.checks.length === 0) {
       throw new BadRequestException(`No checks defined for ${provider.slug}`);
     }
@@ -105,8 +107,10 @@ export class ConnectionCheckRunnerService {
       throw new BadRequestException('Candidate code is required');
     }
 
-    const { connection, provider, manifest } =
-      await this.loadConnectionContext(connectionId, organizationId);
+    const { connection, provider, manifest } = await this.loadConnectionContext(
+      connectionId,
+      organizationId,
+    );
 
     const { credentials, variables, accessToken, onTokenRefresh } =
       await this.resolveExecutionInputs(

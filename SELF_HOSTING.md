@@ -11,11 +11,11 @@ This file is a brief overview for Docker-based self-hosting.
 
 Docker uses **separate env files** (not a root `.env`):
 
-| File | Services |
-|------|----------|
+| File               | Services         |
+| ------------------ | ---------------- |
 | `packages/db/.env` | migrator, seeder |
-| `apps/app/.env` | app |
-| `apps/portal/.env` | portal |
+| `apps/app/.env`    | app              |
+| `apps/portal/.env` | portal           |
 
 ### Minimal Required Environment
 
@@ -28,6 +28,7 @@ For a functional deployment:
 - **Misc**: `REVALIDATION_SECRET`, `NEXT_PUBLIC_PORTAL_URL` in app
 
 **Self-Hosted Mode:**
+
 - Set `NEXT_PUBLIC_SELF_HOSTED=true` in `apps/app/.env` to mark the instance as self-hosted
 - When enabled, organizations are automatically approved and bypass the payment/booking flow
 - `STRIPE_SECRET_KEY` is not required for self-hosted instances

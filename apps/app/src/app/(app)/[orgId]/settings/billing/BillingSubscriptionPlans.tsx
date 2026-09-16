@@ -115,8 +115,7 @@ export function BillingSubscriptionPlans({
               {current && subscription ? (
                 <div className="mt-auto flex flex-col gap-2">
                   <Text size="sm" variant="muted">
-                    {remaining} of {subscription.includedQuantity} {unit}{' '}
-                    remaining this period.
+                    {remaining} of {subscription.includedQuantity} {unit} remaining this period.
                   </Text>
                   <Button type="button" variant="secondary" width="full" disabled>
                     Current plan

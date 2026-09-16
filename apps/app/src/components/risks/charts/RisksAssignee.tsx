@@ -1,5 +1,5 @@
-import { getInitials } from '@/lib/utils';
 import { serverApi } from '@/lib/api-server';
+import { getInitials } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@gideon-defender/ui/card';
 import { ScrollArea } from '@gideon-defender/ui/scroll-area';

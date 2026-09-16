@@ -18,13 +18,7 @@ interface DnsCheckResponse {
  * Calls the check-dns endpoint once on mount (no polling).
  * Disabled when domain is empty or already verified.
  */
-export function useDnsStatus({
-  domain,
-  enabled,
-}: {
-  domain: string;
-  enabled: boolean;
-}) {
+export function useDnsStatus({ domain, enabled }: { domain: string; enabled: boolean }) {
   const { data, isLoading, mutate } = useSWR(
     enabled && domain ? ['check-dns', domain] : null,
     async () => {

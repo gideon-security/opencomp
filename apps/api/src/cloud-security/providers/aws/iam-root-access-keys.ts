@@ -105,9 +105,7 @@ export async function getCredentialReport(opts: {
  *
  * Exported for testing.
  */
-export function findRootAccountRow(
-  csv: string,
-): Record<string, string> | null {
+export function findRootAccountRow(csv: string): Record<string, string> | null {
   const lines = csv.trim().split('\n');
   if (lines.length < 2) return null;
 

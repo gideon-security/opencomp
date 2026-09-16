@@ -1,14 +1,14 @@
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 
 mockNextIntl();
 
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
 
 vi.mock('@/hooks/use-permissions', () => ({
@@ -64,9 +64,7 @@ vi.mock('@trycompai/design-system', () => ({
   Badge: ({ children }: any) => <span data-testid="badge">{children}</span>,
   DropdownMenu: ({ children }: any) => <div>{children}</div>,
   DropdownMenuContent: ({ children }: any) => <div>{children}</div>,
-  DropdownMenuItem: ({ children, onClick }: any) => (
-    <button onClick={onClick}>{children}</button>
-  ),
+  DropdownMenuItem: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
   DropdownMenuSeparator: () => <hr />,
   DropdownMenuTrigger: ({ children }: any) => (
     <button data-testid="actions-dropdown-trigger">{children}</button>
@@ -99,8 +97,8 @@ vi.mock('@trycompai/design-system/icons', () => ({
   ViewOff: () => <span data-testid="viewoff-icon" />,
 }));
 
-import { SecretsTable } from './SecretsTable';
 import type { Secret } from '../../hooks/useSecrets';
+import { SecretsTable } from './SecretsTable';
 
 const sampleSecrets: Secret[] = [
   {

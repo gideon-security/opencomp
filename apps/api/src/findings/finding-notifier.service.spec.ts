@@ -11,7 +11,11 @@ const mockDb = {
 
 jest.mock('@db', () => ({
   db: mockDb,
-  FindingArea: { people: 'people', documents: 'documents', compliance: 'compliance' },
+  FindingArea: {
+    people: 'people',
+    documents: 'documents',
+    compliance: 'compliance',
+  },
   FindingStatus: {
     open: 'open',
     ready_for_review: 'ready_for_review',

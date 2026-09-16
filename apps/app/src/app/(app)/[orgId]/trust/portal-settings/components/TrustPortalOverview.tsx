@@ -5,9 +5,9 @@ import { useTrustPortalSettings } from '@/hooks/use-trust-portal-settings';
 import { Button, Input, Textarea } from '@trycompai/design-system';
 import { View, ViewOff } from '@trycompai/design-system/icons';
 import { useCallback, useState } from 'react';
-import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { toast } from 'sonner';
 
 interface TrustPortalOverviewProps {
   initialData: {
@@ -109,11 +109,7 @@ export function TrustPortalOverview({ initialData, orgId }: TrustPortalOverviewP
             Add a mission statement or overview text to display at the top of your trust portal
           </p>
           {canUpdate && (
-            <Button
-              onClick={handleSave}
-              disabled={!isDirty || isSaving}
-              loading={isSaving}
-            >
+            <Button onClick={handleSave} disabled={!isDirty || isSaving} loading={isSaving}>
               Save Changes
             </Button>
           )}
@@ -133,9 +129,7 @@ export function TrustPortalOverview({ initialData, orgId }: TrustPortalOverviewP
             disabled={!canUpdate}
             maxLength={200}
           />
-          <p className="text-xs text-muted-foreground">
-            {title.length}/200 characters
-          </p>
+          <p className="text-xs text-muted-foreground">{title.length}/200 characters</p>
         </div>
 
         <div className="space-y-2">
@@ -178,18 +172,12 @@ export function TrustPortalOverview({ initialData, orgId }: TrustPortalOverviewP
                       </a>
                     ),
                     code: ({ children, className, ...props }) => (
-                      <code
-                        className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono"
-                        {...props}
-                      >
+                      <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono" {...props}>
                         {children}
                       </code>
                     ),
                     pre: ({ children, ...props }) => (
-                      <pre
-                        className="bg-muted p-4 rounded overflow-x-auto my-4"
-                        {...props}
-                      >
+                      <pre className="bg-muted p-4 rounded overflow-x-auto my-4" {...props}>
                         {children}
                       </pre>
                     ),

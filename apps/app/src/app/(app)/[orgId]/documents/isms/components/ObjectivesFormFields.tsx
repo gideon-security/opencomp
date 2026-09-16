@@ -55,7 +55,11 @@ export function ObjectivesFormFields({ control, ownerOptions }: ObjectivesFormFi
             control={control}
             name="target"
             render={({ field: { ref: _ref, ...field } }) => (
-              <Input {...field} placeholder="Target (e.g. 99.9%)" aria-label="New objective target" />
+              <Input
+                {...field}
+                placeholder="Target (e.g. 99.9%)"
+                aria-label="New objective target"
+              />
             )}
           />
         </FormField>
@@ -120,7 +124,12 @@ export function ObjectivesFormFields({ control, ownerOptions }: ObjectivesFormFi
           control={control}
           name="plan"
           render={({ field: { ref: _ref, ...field } }) => (
-            <Textarea {...field} rows={2} placeholder="Plan to achieve" aria-label="New objective plan" />
+            <Textarea
+              {...field}
+              rows={2}
+              placeholder="Plan to achieve"
+              aria-label="New objective plan"
+            />
           )}
         />
       </FormField>

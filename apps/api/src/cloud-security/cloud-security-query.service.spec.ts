@@ -86,7 +86,9 @@ const dbMock = {
 };
 
 jest.mock('@db', () => ({ db: dbMock }));
-jest.mock('@gideon-defender/integration-platform', () => ({ getManifest: jest.fn() }));
+jest.mock('@gideon-defender/integration-platform', () => ({
+  getManifest: jest.fn(),
+}));
 jest.mock('./evidence-sanitizer', () => ({
   sanitizeEvidence: (v: unknown) => v,
 }));
@@ -238,7 +240,11 @@ describe('CloudSecurityQueryService — latest-run scoping (CS-702)', () => {
       expect.objectContaining({
         where: expect.objectContaining({
           checkId: {
-            in: ['aws-security-scan', 'gcp-security-scan', 'azure-security-scan'],
+            in: [
+              'aws-security-scan',
+              'gcp-security-scan',
+              'azure-security-scan',
+            ],
           },
         }),
       }),

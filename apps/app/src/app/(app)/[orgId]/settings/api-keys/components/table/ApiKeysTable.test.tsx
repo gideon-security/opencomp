@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -66,9 +66,7 @@ describe('ApiKeysTable permission gating', () => {
     // The OverflowMenuVertical icon is inside a trigger button
     const actionButtons = screen.getAllByRole('button');
     // Should find at least the dropdown trigger for revoke action
-    const overflowButton = actionButtons.find(
-      (btn) => btn.querySelector('svg') !== null,
-    );
+    const overflowButton = actionButtons.find((btn) => btn.querySelector('svg') !== null);
     expect(overflowButton).toBeDefined();
   });
 
@@ -81,23 +79,15 @@ describe('ApiKeysTable permission gating', () => {
     // But the actions cell should be empty (ActionsCell returns null)
     // Only the "Add API Key" button should exist
     const buttons = screen.getAllByRole('button');
-    const addButton = buttons.find((btn) =>
-      btn.textContent?.includes('Add API Key'),
-    );
+    const addButton = buttons.find((btn) => btn.textContent?.includes('Add API Key'));
     expect(addButton).toBeDefined();
     // No overflow/revoke button should exist for the row
     // Since ActionsCell returns null, there should be no ellipsis trigger
     const overflowTriggers = buttons.filter(
-      (btn) =>
-        !btn.textContent?.includes('Add API Key') &&
-        !btn.textContent?.includes('Search'),
+      (btn) => !btn.textContent?.includes('Add API Key') && !btn.textContent?.includes('Search'),
     );
     // The only non-"Add API Key" buttons should be search-related or none
-    expect(
-      overflowTriggers.every(
-        (btn) => btn.querySelector('[data-testid]') === null,
-      ),
-    ).toBe(true);
+    expect(overflowTriggers.every((btn) => btn.querySelector('[data-testid]') === null)).toBe(true);
   });
 
   it('hides revoke action when user has no permissions', () => {
@@ -107,9 +97,7 @@ describe('ApiKeysTable permission gating', () => {
     expect(screen.getByText('Production API Key')).toBeInTheDocument();
     // No overflow menu triggers should be rendered
     const buttons = screen.getAllByRole('button');
-    const nonAddButtons = buttons.filter(
-      (btn) => !btn.textContent?.includes('Add API Key'),
-    );
+    const nonAddButtons = buttons.filter((btn) => !btn.textContent?.includes('Add API Key'));
     // None of the remaining buttons should be a revoke trigger
     for (const btn of nonAddButtons) {
       expect(btn.textContent).not.toContain('Revoke');

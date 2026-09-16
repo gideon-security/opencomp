@@ -1,12 +1,19 @@
 'use client';
 
-import { Alert, AlertDescription, AlertTitle, Spinner, Stack, Text } from '@trycompai/design-system';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  Spinner,
+  Stack,
+  Text,
+} from '@trycompai/design-system';
 import { WarningAlt } from '@trycompai/design-system/icons';
 import Link from 'next/link';
-import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
 import { useIsmsRiskTreatment } from '../hooks/useIsmsRiskTreatment';
-import { IsmsDocumentShell } from './IsmsDocumentShell';
+import type { IsmsDocument as IsmsDocumentData } from '../isms-types';
 import type { ApproverOption } from './IsmsApprovalSection';
+import { IsmsDocumentShell } from './IsmsDocumentShell';
 import { RiskTreatmentTable } from './RiskTreatmentTable';
 
 interface RiskTreatmentPlanClientProps {
@@ -26,8 +33,7 @@ interface RiskTreatmentPlanClientProps {
  */
 export function RiskTreatmentPlanClient(props: RiskTreatmentPlanClientProps) {
   const { organizationId, documentId } = props;
-  const { riskTreatment, error, isLoading, mutateRiskTreatment } =
-    useIsmsRiskTreatment(documentId);
+  const { riskTreatment, error, isLoading, mutateRiskTreatment } = useIsmsRiskTreatment(documentId);
 
   // null = ready to submit. Fail closed: a load/revalidation error blocks
   // submission even when stale cached data is still present (SWR keeps the

@@ -2,9 +2,9 @@
 
 import { Button } from '@gideon-defender/ui';
 import { useState } from 'react';
-import { useFrameworkVersions } from './hooks/useFrameworkVersions';
 import { PublishVersionDialog } from './components/PublishVersionDialog';
 import { VersionList } from './components/VersionList';
+import { useFrameworkVersions } from './hooks/useFrameworkVersions';
 
 interface VersionsClientProps {
   frameworkId: string;

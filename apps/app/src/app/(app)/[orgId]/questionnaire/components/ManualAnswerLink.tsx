@@ -20,15 +20,9 @@ export function ManualAnswerLink({
   const knowledgeBaseUrl = `/${orgId}/questionnaire/knowledge-base#manual-answer-${manualAnswerId}`;
 
   return (
-    <Link
-      href={knowledgeBaseUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className}
-    >
+    <Link href={knowledgeBaseUrl} target="_blank" rel="noopener noreferrer" className={className}>
       {sourceName}
       <LinkIcon className="h-3 w-3" />
     </Link>
   );
 }
-

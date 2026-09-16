@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('sonner', () => ({
   toast: { success: vi.fn(), error: vi.fn(), info: vi.fn() },
@@ -32,9 +32,7 @@ vi.mock('@gideon-defender/ui/dropdown-menu', () => ({
   DropdownMenu: ({ children }: any) => <div>{children}</div>,
   DropdownMenuTrigger: ({ children }: any) => <>{children}</>,
   DropdownMenuContent: ({ children }: any) => <div>{children}</div>,
-  DropdownMenuItem: ({ children, onSelect }: any) => (
-    <button onClick={onSelect}>{children}</button>
-  ),
+  DropdownMenuItem: ({ children, onSelect }: any) => <button onClick={onSelect}>{children}</button>,
 }));
 
 vi.mock('@trycompai/design-system', () => ({
@@ -101,38 +99,22 @@ describe('CommentItem delete error handling', () => {
   });
 
   it('shows the server-provided reason when deletion fails', async () => {
-    deleteCommentMock.mockRejectedValue(
-      new Error('You can only delete your own comments'),
-    );
+    deleteCommentMock.mockRejectedValue(new Error('You can only delete your own comments'));
 
-    render(
-      <CommentItem
-        comment={baseComment}
-        refreshComments={vi.fn()}
-        entityType="task"
-      />,
-    );
+    render(<CommentItem comment={baseComment} refreshComments={vi.fn()} entityType="task" />);
 
     await openDeleteDialog();
     await confirmDelete();
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith(
-        'You can only delete your own comments',
-      );
+      expect(toast.error).toHaveBeenCalledWith('You can only delete your own comments');
     });
   });
 
   it('falls back to a generic message when the error has no message', async () => {
     deleteCommentMock.mockRejectedValue('not an Error instance');
 
-    render(
-      <CommentItem
-        comment={baseComment}
-        refreshComments={vi.fn()}
-        entityType="task"
-      />,
-    );
+    render(<CommentItem comment={baseComment} refreshComments={vi.fn()} entityType="task" />);
 
     await openDeleteDialog();
     await confirmDelete();
@@ -147,11 +129,7 @@ describe('CommentItem delete error handling', () => {
     const refreshComments = vi.fn();
 
     render(
-      <CommentItem
-        comment={baseComment}
-        refreshComments={refreshComments}
-        entityType="task"
-      />,
+      <CommentItem comment={baseComment} refreshComments={refreshComments} entityType="task" />,
     );
 
     await openDeleteDialog();

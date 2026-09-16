@@ -11,9 +11,7 @@
       "setupInstructions": "1. Log in to Secureframe at https://app.secureframe.com\n2. Go to Settings > API Keys\n3. Generate a new API key with read access\n4. Copy the API key and paste it below"
     }
   },
-  "capabilities": [
-    "checks"
-  ],
+  "capabilities": ["checks"],
   "supportsMultipleConnections": false,
   "syncSupported": false,
   "checks": [

@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -82,59 +82,29 @@ describe('PolicyDeleteDialog', () => {
     });
 
     it('renders the dialog with title and description when open', () => {
-      render(
-        <PolicyDeleteDialog
-          isOpen={true}
-          onClose={onClose}
-          policy={basePolicy}
-        />,
-      );
+      render(<PolicyDeleteDialog isOpen={true} onClose={onClose} policy={basePolicy} />);
       expect(screen.getByText('Delete Policy')).toBeInTheDocument();
-      expect(
-        screen.getByText(/are you sure you want to delete this policy/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/are you sure you want to delete this policy/i)).toBeInTheDocument();
     });
 
     it('warns that the entire policy and all versions are deleted, not just the current version', () => {
-      render(
-        <PolicyDeleteDialog
-          isOpen={true}
-          onClose={onClose}
-          policy={basePolicy}
-        />,
-      );
-      expect(
-        screen.getByText(/all of its versions/i),
-      ).toBeInTheDocument();
+      render(<PolicyDeleteDialog isOpen={true} onClose={onClose} policy={basePolicy} />);
+      expect(screen.getByText(/all of its versions/i)).toBeInTheDocument();
       expect(
         screen.getByText(/not just the version you are currently viewing/i),
       ).toBeInTheDocument();
     });
 
     it('renders Delete button enabled for admin', () => {
-      render(
-        <PolicyDeleteDialog
-          isOpen={true}
-          onClose={onClose}
-          policy={basePolicy}
-        />,
-      );
+      render(<PolicyDeleteDialog isOpen={true} onClose={onClose} policy={basePolicy} />);
       const deleteBtn = screen.getByRole('button', { name: /delete/i });
       expect(deleteBtn).toBeInTheDocument();
       expect(deleteBtn).not.toBeDisabled();
     });
 
     it('renders Cancel button', () => {
-      render(
-        <PolicyDeleteDialog
-          isOpen={true}
-          onClose={onClose}
-          policy={basePolicy}
-        />,
-      );
-      expect(
-        screen.getByRole('button', { name: /cancel/i }),
-      ).toBeInTheDocument();
+      render(<PolicyDeleteDialog isOpen={true} onClose={onClose} policy={basePolicy} />);
+      expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
     });
   });
 
@@ -144,29 +114,15 @@ describe('PolicyDeleteDialog', () => {
     });
 
     it('renders Delete button as disabled for auditor', () => {
-      render(
-        <PolicyDeleteDialog
-          isOpen={true}
-          onClose={onClose}
-          policy={basePolicy}
-        />,
-      );
+      render(<PolicyDeleteDialog isOpen={true} onClose={onClose} policy={basePolicy} />);
       const deleteBtn = screen.getByRole('button', { name: /delete/i });
       expect(deleteBtn).toBeDisabled();
     });
 
     it('still renders dialog title and description for auditor', () => {
-      render(
-        <PolicyDeleteDialog
-          isOpen={true}
-          onClose={onClose}
-          policy={basePolicy}
-        />,
-      );
+      render(<PolicyDeleteDialog isOpen={true} onClose={onClose} policy={basePolicy} />);
       expect(screen.getByText('Delete Policy')).toBeInTheDocument();
-      expect(
-        screen.getByText(/are you sure you want to delete this policy/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/are you sure you want to delete this policy/i)).toBeInTheDocument();
     });
   });
 
@@ -176,13 +132,7 @@ describe('PolicyDeleteDialog', () => {
     });
 
     it('does not render dialog content when closed', () => {
-      render(
-        <PolicyDeleteDialog
-          isOpen={false}
-          onClose={onClose}
-          policy={basePolicy}
-        />,
-      );
+      render(<PolicyDeleteDialog isOpen={false} onClose={onClose} policy={basePolicy} />);
       expect(screen.queryByText('Delete Policy')).not.toBeInTheDocument();
     });
   });

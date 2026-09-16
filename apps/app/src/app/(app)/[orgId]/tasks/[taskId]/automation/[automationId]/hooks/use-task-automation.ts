@@ -80,18 +80,13 @@ export function useTaskAutomation(overrideAutomationId?: string): UseTaskAutomat
 
   const updateAutomation = async (body: UpdateAutomationPayload) => {
     const realId = data?.id || automationId;
-    const response = await api.patch(
-      `/v1/tasks/${taskId}/automations/${realId}`,
-      body,
-    );
+    const response = await api.patch(`/v1/tasks/${taskId}/automations/${realId}`, body);
     if (response.error) throw new Error(response.error);
     await mutate();
   };
 
   const deleteAutomation = async () => {
-    const response = await api.delete(
-      `/v1/tasks/${taskId}/automations/${automationId}`,
-    );
+    const response = await api.delete(`/v1/tasks/${taskId}/automations/${automationId}`);
     if (response.error) throw new Error(response.error);
   };
 

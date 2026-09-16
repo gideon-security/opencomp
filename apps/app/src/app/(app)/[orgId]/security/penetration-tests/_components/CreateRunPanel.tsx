@@ -96,15 +96,10 @@ export function CreateRunPanel({
         ]),
       )
       .min(1, t('penTest.create.selectAtLeastOneCheck')),
-    authorized: z
-      .boolean()
-      .refine((value) => value === true, {
-        message: t('penTest.create.authorizationRequired'),
-      }),
-    additionalContext: z
-      .string()
-      .max(4000, t('penTest.create.contextTooLong'))
-      .optional(),
+    authorized: z.boolean().refine((value) => value === true, {
+      message: t('penTest.create.authorizationRequired'),
+    }),
+    additionalContext: z.string().max(4000, t('penTest.create.contextTooLong')).optional(),
   });
 
   type CreateRunFormValues = z.infer<typeof createRunSchema>;
@@ -245,9 +240,7 @@ export function CreateRunPanel({
           <div className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
             {t('penTest.create.newScan')}
           </div>
-          <div className="mb-1 text-[20px] font-normal">
-            {t('penTest.create.startPentest')}
-          </div>
+          <div className="mb-1 text-[20px] font-normal">{t('penTest.create.startPentest')}</div>
           <p className="mb-5 text-xs leading-relaxed text-muted-foreground">
             {t('penTest.create.findingsStreamIn')}
           </p>
@@ -303,7 +296,12 @@ export function CreateRunPanel({
 
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <div className="w-full sm:w-auto">
-              <Button type="button" variant="outline" onClick={handleCancel} disabled={isSubmitting}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancel}
+                disabled={isSubmitting}
+              >
                 {tCommon('common.cancel')}
               </Button>
             </div>

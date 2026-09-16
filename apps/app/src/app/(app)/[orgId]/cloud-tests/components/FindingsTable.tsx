@@ -94,7 +94,13 @@ export function FindingsTable({ findings }: FindingsTableProps) {
                   <Button
                     variant="ghost"
                     size="icon-sm"
-                    iconLeft={isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    iconLeft={
+                      isExpanded ? (
+                        <ChevronDown className="h-4 w-4" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4" />
+                      )
+                    }
                   />
                 </TableCell>
                 <TableCell>
@@ -103,9 +109,7 @@ export function FindingsTable({ findings }: FindingsTableProps) {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <span className="font-medium">
-                    {finding.title || 'Untitled Finding'}
-                  </span>
+                  <span className="font-medium">{finding.title || 'Untitled Finding'}</span>
                 </TableCell>
                 <TableCell>
                   <Badge variant={statusVariant[statusKey] || 'secondary'}>

@@ -195,8 +195,8 @@ export class PeopleService {
         organizationId,
         timelinesService: this.timelinesService,
       }).catch((err) => {
-      this.logger.warn('timeline auto-complete check failed', err);
-    });
+        this.logger.warn('timeline auto-complete check failed', err);
+      });
 
       return member;
     } catch (error) {
@@ -285,8 +285,8 @@ export class PeopleService {
           organizationId,
           timelinesService: this.timelinesService,
         }).catch((err) => {
-      this.logger.warn('timeline auto-complete check failed', err);
-    });
+          this.logger.warn('timeline auto-complete check failed', err);
+        });
       }
 
       return { created, errors, summary };

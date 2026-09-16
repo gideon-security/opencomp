@@ -1,17 +1,11 @@
 'use client';
 
+import type { AdminTimelinePhaseTemplate } from '@/hooks/use-admin-timelines';
+import { api } from '@/lib/api-client';
+import { Button, Card, CardContent, Input, Text } from '@trycompai/design-system';
+import { Add, Save } from '@trycompai/design-system/icons';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { api } from '@/lib/api-client';
-import type { AdminTimelinePhaseTemplate } from '@/hooks/use-admin-timelines';
-import {
-  Button,
-  Card,
-  CardContent,
-  Input,
-  Text,
-} from '@trycompai/design-system';
-import { Add, Save } from '@trycompai/design-system/icons';
 import { SubPhaseRow } from './SubPhaseRow';
 
 interface PhaseGroupCardProps {
@@ -43,26 +37,20 @@ export function PhaseGroupCard({
   const [savingLabel, setSavingLabel] = useState(false);
 
   const sorted = [...phases].sort((a, b) => a.orderIndex - b.orderIndex);
-  const totalDuration = sorted.reduce(
-    (sum, p) => sum + p.defaultDurationWeeks,
-    0,
-  );
+  const totalDuration = sorted.reduce((sum, p) => sum + p.defaultDurationWeeks, 0);
   const isLabelDirty = editingLabel !== groupLabel;
 
   const handleAddSubPhase = async () => {
     setAdding(true);
     const maxOrder = Math.max(...sorted.map((p) => p.orderIndex), -1);
-    const res = await api.post(
-      `/v1/admin/timeline-templates/${templateId}/phases`,
-      {
-        name: 'New Sub-phase',
-        orderIndex: maxOrder + 1,
-        defaultDurationWeeks: 1,
-        completionType: 'MANUAL',
-        locksTimelineOnComplete: false,
-        groupLabel,
-      },
-    );
+    const res = await api.post(`/v1/admin/timeline-templates/${templateId}/phases`, {
+      name: 'New Sub-phase',
+      orderIndex: maxOrder + 1,
+      defaultDurationWeeks: 1,
+      completionType: 'MANUAL',
+      locksTimelineOnComplete: false,
+      groupLabel,
+    });
     setAdding(false);
     if (res.error) {
       toast.error(res.error);
@@ -80,10 +68,9 @@ export function PhaseGroupCard({
     setSavingLabel(true);
     const results = await Promise.all(
       sorted.map((phase) =>
-        api.patch(
-          `/v1/admin/timeline-templates/${templateId}/phases/${phase.id}`,
-          { groupLabel: editingLabel.trim() },
-        ),
+        api.patch(`/v1/admin/timeline-templates/${templateId}/phases/${phase.id}`, {
+          groupLabel: editingLabel.trim(),
+        }),
       ),
     );
     setSavingLabel(false);
@@ -96,10 +83,7 @@ export function PhaseGroupCard({
     onMutate();
   };
 
-  const handleMoveWithinGroup = async (
-    phaseId: string,
-    direction: 'up' | 'down',
-  ) => {
+  const handleMoveWithinGroup = async (phaseId: string, direction: 'up' | 'down') => {
     const idx = sorted.findIndex((p) => p.id === phaseId);
     if (idx < 0) return;
     const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
@@ -115,16 +99,15 @@ export function PhaseGroupCard({
 
   return (
     <div className="flex gap-2">
-      <div
-        className="w-1 shrink-0 rounded-full"
-        style={{ backgroundColor: groupColor }}
-      />
+      <div className="w-1 shrink-0 rounded-full" style={{ backgroundColor: groupColor }} />
       <div className="flex-1">
         <Card>
           <CardContent>
             <div className="flex flex-col gap-2 pb-3">
               <div className="flex items-center justify-between gap-3">
-                <Text size="xs" variant="muted">Phase {phaseNumber}</Text>
+                <Text size="xs" variant="muted">
+                  Phase {phaseNumber}
+                </Text>
                 <div className="flex items-center gap-3">
                   <Text size="xs" variant="muted">
                     {totalDuration}w total
@@ -142,10 +125,7 @@ export function PhaseGroupCard({
               </div>
               <div className="flex items-center gap-2">
                 <div className="max-w-xs">
-                  <Input
-                    value={editingLabel}
-                    onChange={(e) => setEditingLabel(e.target.value)}
-                  />
+                  <Input value={editingLabel} onChange={(e) => setEditingLabel(e.target.value)} />
                 </div>
                 {isLabelDirty && (
                   <Button
@@ -166,16 +146,24 @@ export function PhaseGroupCard({
               <div className="flex items-center gap-2 px-3">
                 <div className="w-16 shrink-0" />
                 <div className="min-w-0 flex-1">
-                  <Text size="xs" variant="muted">Name</Text>
+                  <Text size="xs" variant="muted">
+                    Name
+                  </Text>
                 </div>
                 <div className="w-24 shrink-0">
-                  <Text size="xs" variant="muted">Duration (wk)</Text>
+                  <Text size="xs" variant="muted">
+                    Duration (wk)
+                  </Text>
                 </div>
                 <div className="w-36 shrink-0">
-                  <Text size="xs" variant="muted">Completion</Text>
+                  <Text size="xs" variant="muted">
+                    Completion
+                  </Text>
                 </div>
                 <div className="w-20 shrink-0 text-center">
-                  <Text size="xs" variant="muted">Lock</Text>
+                  <Text size="xs" variant="muted">
+                    Lock
+                  </Text>
                 </div>
                 <div className="w-16 shrink-0" />
               </div>

@@ -1,9 +1,9 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
 import { useFrameworkUpdateStatus } from '@/hooks/use-framework-update-status';
 import { usePermissions } from '@/hooks/use-permissions';
 import type { FrameworkUpdateStatus } from '@/types/framework-versioning';
+import { useParams, useRouter } from 'next/navigation';
 import { UpdateAvailableBanner } from './UpdateAvailableBanner';
 
 interface FrameworkVersioningSectionProps {
@@ -33,9 +33,7 @@ export function FrameworkVersioningSection({
           status={data}
           canUpdate={canUpdate}
           hasActiveAudit={hasActiveAudit}
-          onReview={() =>
-            router.push(`/${orgId}/frameworks/${frameworkInstanceId}/review-update`)
-          }
+          onReview={() => router.push(`/${orgId}/frameworks/${frameworkInstanceId}/review-update`)}
         />
       )}
     </>

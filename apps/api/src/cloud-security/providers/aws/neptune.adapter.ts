@@ -148,9 +148,9 @@ export class NeptuneAdapter implements AwsServiceAdapter {
           }
 
           // 5. Audit logs exported to CloudWatch Logs.
-          const auditEnabled = (cluster.EnabledCloudwatchLogsExports ?? []).includes(
-            'audit',
-          );
+          const auditEnabled = (
+            cluster.EnabledCloudwatchLogsExports ?? []
+          ).includes('audit');
           if (!auditEnabled) {
             findings.push(
               this.makeFinding(

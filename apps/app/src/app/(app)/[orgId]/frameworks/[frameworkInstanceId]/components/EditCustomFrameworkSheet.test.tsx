@@ -1,13 +1,13 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -69,9 +69,7 @@ describe('EditCustomFrameworkSheet', () => {
     renderSheet();
     expect(screen.getByText('instance.editFrameworkTitle')).toBeInTheDocument();
     expect(screen.getByDisplayValue('CMMC')).toBeInTheDocument();
-    expect(
-      screen.getByDisplayValue('Original description'),
-    ).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Original description')).toBeInTheDocument();
   });
 
   it('submits the edited values via updateCustomFramework', async () => {

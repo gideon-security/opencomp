@@ -1,23 +1,18 @@
 'use client';
 
+import { useAssignableMembers } from '@/hooks/use-organization-members';
+import { usePermissions } from '@/hooks/use-permissions';
 import {
   useTaskItems,
   useTaskItemsStats,
+  type TaskItemEntityType,
+  type TaskItemFilters,
+  type TaskItemPriority,
   type TaskItemSortBy,
   type TaskItemSortOrder,
-  type TaskItemFilters,
   type TaskItemStatus,
-  type TaskItemPriority,
-  type TaskItemEntityType,
 } from '@/hooks/use-task-items';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { TaskItemFocusView } from './TaskItemFocusView';
-import { TaskItemCreateDialog } from './TaskItemCreateDialog';
-import { TaskItemList } from './TaskItemList';
-import { useAssignableMembers } from '@/hooks/use-organization-members';
 import { filterMembersByOwnerOrAdmin } from '@/utils/filter-members-by-role';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { usePermissions } from '@/hooks/use-permissions';
 import {
   Button,
   DataTableFilters,
@@ -31,7 +26,11 @@ import {
 } from '@trycompai/design-system';
 import { Add } from '@trycompai/design-system/icons';
 import { Loader2 } from 'lucide-react';
-
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { TaskItemCreateDialog } from './TaskItemCreateDialog';
+import { TaskItemFocusView } from './TaskItemFocusView';
+import { TaskItemList } from './TaskItemList';
 
 interface TaskItemsProps {
   entityId: string;
@@ -85,7 +84,10 @@ export const TaskItems = ({
     return filterMembersByOwnerOrAdmin({ members, currentAssigneeId });
   }, [members, filters.assigneeId]);
 
-  const handleFilterChange = (filterType: 'status' | 'priority' | 'assigneeId', value: string | null) => {
+  const handleFilterChange = (
+    filterType: 'status' | 'priority' | 'assigneeId',
+    value: string | null,
+  ) => {
     setFilters((prev) => {
       const next = { ...prev };
       if (value === null || value === 'all') {
@@ -131,8 +133,7 @@ export const TaskItems = ({
   const allTaskItems = displayResponse?.data?.data || [];
   const paginationMeta = displayResponse?.data?.meta;
   const isFocusMode = Boolean(selectedTaskItemId);
-  const selectedTaskItem =
-    allTaskItems.find((t) => t.id === selectedTaskItemId) || null;
+  const selectedTaskItem = allTaskItems.find((t) => t.id === selectedTaskItemId) || null;
 
   // Client-side search filter
   const filteredTaskItems = useMemo(() => {
@@ -143,7 +144,8 @@ export const TaskItems = ({
 
   // Polling for "Verify risk assessment" generating tasks
   const hasGeneratingTask = useMemo(
-    () => allTaskItems.some((t) => t.title === 'Verify risk assessment' && t.status === 'in_progress'),
+    () =>
+      allTaskItems.some((t) => t.title === 'Verify risk assessment' && t.status === 'in_progress'),
     [allTaskItems],
   );
   useEffect(() => {
@@ -209,9 +211,7 @@ export const TaskItems = ({
               value={filters.priority || 'all'}
               onValueChange={(v) => handleFilterChange('priority', v === 'all' ? null : v)}
             >
-              <SelectTrigger>
-                {filters.priority || 'All Priority'}
-              </SelectTrigger>
+              <SelectTrigger>{filters.priority || 'All Priority'}</SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Priority</SelectItem>
                 <SelectItem value="urgent">Urgent</SelectItem>

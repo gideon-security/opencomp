@@ -45,10 +45,7 @@ function buildExportInfo(
         taskCount: number;
       },
 ): string {
-  const lines = [
-    'Evidence export',
-    `Started at: ${new Date().toISOString()}`,
-  ];
+  const lines = ['Evidence export', `Started at: ${new Date().toISOString()}`];
   if (info.kind === 'task') {
     lines.push(`Task ID: ${info.taskId}`);
   } else {
@@ -226,10 +223,7 @@ export class EvidenceExportService {
     // per-task data load runs. Combined with res.flushHeaders() upstream this
     // keeps the response visibly alive through any proxy idle timer.
     archive.append(
-      Buffer.from(
-        buildExportInfo({ kind: 'task', taskId }),
-        'utf-8',
-      ),
+      Buffer.from(buildExportInfo({ kind: 'task', taskId }), 'utf-8'),
       { name: `${folderName}/EXPORT_INFO.txt` },
     );
 

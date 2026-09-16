@@ -111,7 +111,9 @@ describe('MemberQueries.updateMember — reactivation', () => {
   });
 
   it('does not touch deactivated when the patch omits isActive', async () => {
-    await MemberQueries.updateMember('mem_1', 'org_1', { jobTitle: 'Engineer' });
+    await MemberQueries.updateMember('mem_1', 'org_1', {
+      jobTitle: 'Engineer',
+    });
 
     const call = (mockedDb.member.update as jest.Mock).mock.calls[0][0];
     expect(call.data).not.toHaveProperty('deactivated');

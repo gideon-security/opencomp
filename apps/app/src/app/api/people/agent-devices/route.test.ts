@@ -1,5 +1,5 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NextResponse } from 'next/server';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/lib/permissions.server', () => ({
   requireApiPermission: vi.fn(),
@@ -83,9 +83,7 @@ function deviceRow(overrides: Partial<Record<string, unknown>> = {}) {
 
 describe('GET /api/people/agent-devices', () => {
   it('forwards the 401/403 response when the RBAC guard denies access', async () => {
-    mockedRequire.mockResolvedValue(
-      NextResponse.json({ error: 'Forbidden' }, { status: 403 }),
-    );
+    mockedRequire.mockResolvedValue(NextResponse.json({ error: 'Forbidden' }, { status: 403 }));
     const res = await GET(req());
     expect(res.status).toBe(403);
     expect(mockedFindMany).not.toHaveBeenCalled();
@@ -131,7 +129,7 @@ describe('GET /api/people/agent-devices', () => {
 
   it('returns hasActiveAgentSession=true for devices with an unexpired linked session, false otherwise', async () => {
     const future = new Date(FIXED_NOW.getTime() + 60 * 60 * 1000); // 1 hour ahead
-    const past = new Date(FIXED_NOW.getTime() - 60 * 60 * 1000);   // 1 hour ago
+    const past = new Date(FIXED_NOW.getTime() - 60 * 60 * 1000); // 1 hour ago
 
     mockedFindMany.mockResolvedValue([
       deviceRow({ id: 'dev_active', agentSession: { expiresAt: future } }),
@@ -141,9 +139,7 @@ describe('GET /api/people/agent-devices', () => {
 
     const res = await GET(req());
     const body = await res.json();
-    const byId = Object.fromEntries(
-      body.data.map((d: { id: string }) => [d.id, d]),
-    );
+    const byId = Object.fromEntries(body.data.map((d: { id: string }) => [d.id, d]));
 
     expect(byId['dev_active'].hasActiveAgentSession).toBe(true);
     expect(byId['dev_none'].hasActiveAgentSession).toBe(false);

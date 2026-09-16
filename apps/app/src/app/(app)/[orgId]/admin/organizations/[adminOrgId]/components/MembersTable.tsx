@@ -1,6 +1,5 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import {
   Badge,
   Button,
@@ -13,6 +12,7 @@ import {
   Text,
 } from '@trycompai/design-system';
 import { Login } from '@trycompai/design-system/icons';
+import { useTranslations } from 'next-intl';
 import type { OrgMember } from './MembersTabTypes';
 
 export function MembersTable({
@@ -38,46 +38,48 @@ export function MembersTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {[...members].sort((a, b) => a.user.name.localeCompare(b.user.name)).map((member) => (
-          <TableRow key={member.id}>
-            <TableCell>
-              <div className="max-w-[200px] truncate">
-                <Text size="sm" weight="medium">
-                  {member.user.name}
-                </Text>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="max-w-[250px] truncate">
+        {[...members]
+          .sort((a, b) => a.user.name.localeCompare(b.user.name))
+          .map((member) => (
+            <TableRow key={member.id}>
+              <TableCell>
+                <div className="max-w-[200px] truncate">
+                  <Text size="sm" weight="medium">
+                    {member.user.name}
+                  </Text>
+                </div>
+              </TableCell>
+              <TableCell>
+                <div className="max-w-[250px] truncate">
+                  <Text size="sm" variant="muted">
+                    {member.user.email}
+                  </Text>
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge variant="secondary">
+                  {member.role.replace(/\b\w/g, (c) => c.toUpperCase())}
+                </Badge>
+              </TableCell>
+              <TableCell>
                 <Text size="sm" variant="muted">
-                  {member.user.email}
+                  {new Date(member.createdAt).toLocaleDateString()}
                 </Text>
-              </div>
-            </TableCell>
-            <TableCell>
-              <Badge variant="secondary">
-                {member.role.replace(/\b\w/g, (c) => c.toUpperCase())}
-              </Badge>
-            </TableCell>
-            <TableCell>
-              <Text size="sm" variant="muted">
-                {new Date(member.createdAt).toLocaleDateString()}
-              </Text>
-            </TableCell>
-            <TableCell>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onImpersonate(member)}
-                loading={impersonatingUserId === member.user.id}
-                disabled={impersonatingUserId !== null}
-                iconLeft={<Login size={16} />}
-              >
-                {t('organizations.membersTab.loginAs')}
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
+              </TableCell>
+              <TableCell>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onImpersonate(member)}
+                  loading={impersonatingUserId === member.user.id}
+                  disabled={impersonatingUserId !== null}
+                  iconLeft={<Login size={16} />}
+                >
+                  {t('organizations.membersTab.loginAs')}
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );

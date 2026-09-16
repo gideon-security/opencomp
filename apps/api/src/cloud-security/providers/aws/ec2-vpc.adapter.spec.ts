@@ -12,7 +12,9 @@ type SendHandler = (command: unknown) => unknown;
 function buildClient(handler: SendHandler) {
   return {
     send: jest.fn((command: unknown) => Promise.resolve(handler(command))),
-  } as unknown as Parameters<Ec2VpcAdapter['scan']>[0]['credentials'] extends infer _
+  } as unknown as Parameters<
+    Ec2VpcAdapter['scan']
+  >[0]['credentials'] extends infer _
     ? import('@aws-sdk/client-ec2').EC2Client
     : never;
 }
@@ -30,8 +32,15 @@ describe('Ec2VpcAdapter — checkVpcFlowLogs', () => {
   // and assert behavior via the returned findings.
 
   function runScanWithFlowLogs(args: {
-    vpcs: Array<{ VpcId: string; IsDefault?: boolean; Tags?: Array<{ Key: string; Value: string }> }>;
-    flowLogPages: Array<{ FlowLogs: Array<{ ResourceId: string }>; NextToken?: string }>;
+    vpcs: Array<{
+      VpcId: string;
+      IsDefault?: boolean;
+      Tags?: Array<{ Key: string; Value: string }>;
+    }>;
+    flowLogPages: Array<{
+      FlowLogs: Array<{ ResourceId: string }>;
+      NextToken?: string;
+    }>;
     hasRunningInstances?: boolean;
   }) {
     let flowLogPageIndex = 0;
@@ -66,7 +75,9 @@ describe('Ec2VpcAdapter — checkVpcFlowLogs', () => {
           c: unknown,
           region: string,
           accountId?: string,
-        ) => Promise<ReturnType<typeof adapter.scan> extends Promise<infer U> ? U : never>;
+        ) => Promise<
+          ReturnType<typeof adapter.scan> extends Promise<infer U> ? U : never
+        >;
       }
     ).checkVpcFlowLogs;
     return fn.call(adapter, client, 'us-east-1', '123456789012');

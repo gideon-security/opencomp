@@ -83,7 +83,7 @@ async function runCheck(
         severity: result.severity,
       });
     },
-    fetch: (async <T,>(path: string): Promise<T> => {
+    fetch: (async <T>(path: string): Promise<T> => {
       // /repos/<owner>/<repo>
       const repoMatch = path.match(/^\/repos\/([^/]+\/[^/]+)$/);
       if (repoMatch) {
@@ -106,7 +106,7 @@ async function runCheck(
       throw new Error(`Unexpected fetch: ${path}`);
     }) as CheckContext['fetch'],
     fetchAllPages: (async () => []) as CheckContext['fetchAllPages'],
-    fetchWithLinkHeader: (async <T,>(
+    fetchWithLinkHeader: (async <T>(
       path: string,
       options?: { params?: Record<string, string> },
     ): Promise<T[]> => {
@@ -120,10 +120,10 @@ async function runCheck(
         return fixture.openAlertSeverities.map(makeAlert) as unknown as T[];
       }
       if (state === 'fixed') {
-        return (Array(fixture.fixedCount ?? 0).fill(makeAlert('low')) as unknown) as T[];
+        return Array(fixture.fixedCount ?? 0).fill(makeAlert('low')) as unknown as T[];
       }
       if (state === 'dismissed') {
-        return (Array(fixture.dismissedCount ?? 0).fill(makeAlert('low')) as unknown) as T[];
+        return Array(fixture.dismissedCount ?? 0).fill(makeAlert('low')) as unknown as T[];
       }
       return [] as unknown as T[];
     }) as CheckContext['fetchWithLinkHeader'],
@@ -200,22 +200,24 @@ describe('dependabotCheck severity gating', () => {
   });
 
   it('passes when threshold is critical and only high alerts exist', async () => {
-    const result = await runCheck(
-      [repo('acme/api', { openAlertSeverities: ['high', 'high'] })],
-      { target_repos: ['acme/api'], alert_severity_threshold: 'critical' },
-    );
+    const result = await runCheck([repo('acme/api', { openAlertSeverities: ['high', 'high'] })], {
+      target_repos: ['acme/api'],
+      alert_severity_threshold: 'critical',
+    });
     expect(result.passed).toHaveLength(1);
     expect(result.failed).toEqual([]);
   });
 
   it('fails when threshold is low and any alert exists', async () => {
-    const result = await runCheck(
-      [repo('acme/api', { openAlertSeverities: ['low'] })],
-      { target_repos: ['acme/api'], alert_severity_threshold: 'low' },
-    );
+    const result = await runCheck([repo('acme/api', { openAlertSeverities: ['low'] })], {
+      target_repos: ['acme/api'],
+      alert_severity_threshold: 'low',
+    });
     expect(result.failed).toHaveLength(1);
     expect(result.failed[0]!.title).toBe('1 unresolved Dependabot alert on api');
-    expect(result.failed[0]!.description).toContain('1 open any severity alert is still unresolved');
+    expect(result.failed[0]!.description).toContain(
+      '1 open any severity alert is still unresolved',
+    );
   });
 
   it('fails when Dependabot is paused but high alerts exist', async () => {
@@ -258,19 +260,18 @@ describe('dependabotCheck severity gating', () => {
 
   it('passes when alert fetch fails (null alertCounts) and Dependabot is enabled', async () => {
     // No alert signal -> do not regress to a false-fail.
-    const result = await runCheck(
-      [repo('acme/api', { alertsFetchFails: true })],
-      { target_repos: ['acme/api'] },
-    );
+    const result = await runCheck([repo('acme/api', { alertsFetchFails: true })], {
+      target_repos: ['acme/api'],
+    });
     expect(result.passed).toHaveLength(1);
     expect(result.failed).toEqual([]);
   });
 
   it('handles unknown threshold by falling back to "high"', async () => {
-    const result = await runCheck(
-      [repo('acme/api', { openAlertSeverities: ['high'] })],
-      { target_repos: ['acme/api'], alert_severity_threshold: 'bogus' },
-    );
+    const result = await runCheck([repo('acme/api', { openAlertSeverities: ['high'] })], {
+      target_repos: ['acme/api'],
+      alert_severity_threshold: 'bogus',
+    });
     expect(result.failed).toHaveLength(1);
   });
 });

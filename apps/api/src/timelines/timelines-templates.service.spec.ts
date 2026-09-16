@@ -74,11 +74,26 @@ describe('TimelinesTemplatesService', () => {
 
     (getDefaultTemplatesForFramework as jest.Mock)
       .mockReturnValueOnce([
-        { frameworkName: 'SOC 2', name: 'SOC 2 Type 1', cycleNumber: 1, phases: [] },
-        { frameworkName: 'SOC 2', name: 'SOC 2 Type 2', cycleNumber: 2, phases: [] },
+        {
+          frameworkName: 'SOC 2',
+          name: 'SOC 2 Type 1',
+          cycleNumber: 1,
+          phases: [],
+        },
+        {
+          frameworkName: 'SOC 2',
+          name: 'SOC 2 Type 2',
+          cycleNumber: 2,
+          phases: [],
+        },
       ])
       .mockReturnValueOnce([
-        { frameworkName: 'ISO27001', name: 'ISO 27001', cycleNumber: 1, phases: [] },
+        {
+          frameworkName: 'ISO27001',
+          name: 'ISO 27001',
+          cycleNumber: 1,
+          phases: [],
+        },
       ]);
 
     (mockDb.timelineTemplate.findMany as jest.Mock).mockResolvedValue([]);
@@ -107,7 +122,11 @@ describe('TimelinesTemplatesService', () => {
         phases: { orderBy: { orderIndex: 'asc' } },
         framework: true,
       },
-      orderBy: [{ frameworkId: 'asc' }, { trackKey: 'asc' }, { cycleNumber: 'asc' }],
+      orderBy: [
+        { frameworkId: 'asc' },
+        { trackKey: 'asc' },
+        { cycleNumber: 'asc' },
+      ],
     });
   });
 
@@ -139,9 +158,16 @@ describe('TimelinesTemplatesService', () => {
       { id: 'frk_soc2', name: 'SOC2' },
     ]);
     (getDefaultTemplatesForFramework as jest.Mock).mockReturnValue([
-      { frameworkName: 'SOC 2', name: 'SOC 2 Type 1', cycleNumber: 1, phases: [] },
+      {
+        frameworkName: 'SOC 2',
+        name: 'SOC 2 Type 1',
+        cycleNumber: 1,
+        phases: [],
+      },
     ]);
-    (mockDb.timelineTemplate.findUnique as jest.Mock).mockResolvedValue({ id: 'tml_existing' });
+    (mockDb.timelineTemplate.findUnique as jest.Mock).mockResolvedValue({
+      id: 'tml_existing',
+    });
     (mockDb.timelineTemplate.findMany as jest.Mock).mockResolvedValue([]);
 
     await service.findAll();
@@ -190,7 +216,9 @@ describe('TimelinesTemplatesService', () => {
   it('returns an empty list when no frameworks exist', async () => {
     const service = new TimelinesTemplatesService();
 
-    (mockDb.frameworkEditorFramework.findMany as jest.Mock).mockResolvedValue([]);
+    (mockDb.frameworkEditorFramework.findMany as jest.Mock).mockResolvedValue(
+      [],
+    );
     (mockDb.timelineTemplate.findMany as jest.Mock).mockResolvedValue([]);
 
     const result = await service.findAll();
@@ -201,7 +229,11 @@ describe('TimelinesTemplatesService', () => {
         phases: { orderBy: { orderIndex: 'asc' } },
         framework: true,
       },
-      orderBy: [{ frameworkId: 'asc' }, { trackKey: 'asc' }, { cycleNumber: 'asc' }],
+      orderBy: [
+        { frameworkId: 'asc' },
+        { trackKey: 'asc' },
+        { cycleNumber: 'asc' },
+      ],
     });
   });
 });

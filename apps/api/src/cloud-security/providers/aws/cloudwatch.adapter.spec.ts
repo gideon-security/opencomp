@@ -96,7 +96,7 @@ describe('CloudWatchAdapter — CloudTrail log group resolution', () => {
     );
   });
 
-  it('uses the existing filter\'s own log group for the no-transformation update', async () => {
+  it("uses the existing filter's own log group for the no-transformation update", async () => {
     mockTrailSend.mockResolvedValue({
       trailList: [
         {
@@ -126,7 +126,9 @@ describe('CloudWatchAdapter — CloudTrail log group resolution', () => {
 
     expect(noTransform).toBeDefined();
     expect(noTransform!.evidence?.logGroupName).toBe('existing-lg');
-    expect(noTransform!.remediation).toContain('logGroupName set to "existing-lg"');
+    expect(noTransform!.remediation).toContain(
+      'logGroupName set to "existing-lg"',
+    );
   });
 
   it('returns the prerequisite finding when no trail integrates with CloudWatch Logs', async () => {
@@ -152,6 +154,6 @@ describe('CloudWatchAdapter — CloudTrail log group resolution', () => {
     );
     expect(missing).toBeDefined();
     expect(missing!.evidence?.cloudWatchLogGroupName).toBeUndefined();
-    expect(missing!.remediation).toContain("CloudWatch Logs log group");
+    expect(missing!.remediation).toContain('CloudWatch Logs log group');
   });
 });

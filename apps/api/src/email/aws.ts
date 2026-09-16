@@ -11,7 +11,9 @@ const EMAIL_AWS_SECRET_ACCESS_KEY = process.env.APP_AWS_SECRET_ACCESS_KEY;
 const EMAIL_AWS_ENDPOINT = process.env.APP_AWS_ENDPOINT;
 
 const hasCredentials =
-  !!EMAIL_AWS_ACCESS_KEY_ID && !!EMAIL_AWS_SECRET_ACCESS_KEY && !!EMAIL_AWS_REGION;
+  !!EMAIL_AWS_ACCESS_KEY_ID &&
+  !!EMAIL_AWS_SECRET_ACCESS_KEY &&
+  !!EMAIL_AWS_REGION;
 
 if (!hasCredentials) {
   logger.warn(

@@ -1,5 +1,6 @@
 'use client';
 
+import { usePermissions } from '@/hooks/use-permissions';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +14,6 @@ import {
 } from '@trycompai/design-system';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { usePermissions } from '@/hooks/use-permissions';
 import { useRevokeAgentAccess } from '../hooks/useRevokeAgentAccess';
 
 interface RevokeAgentAccessDialogProps {
@@ -21,10 +21,7 @@ interface RevokeAgentAccessDialogProps {
   deviceName: string;
 }
 
-export function RevokeAgentAccessDialog({
-  deviceId,
-  deviceName,
-}: RevokeAgentAccessDialogProps) {
+export function RevokeAgentAccessDialog({ deviceId, deviceName }: RevokeAgentAccessDialogProps) {
   const { hasPermission } = usePermissions();
   const { revokeAgentAccess } = useRevokeAgentAccess();
   const [open, setOpen] = useState(false);
@@ -56,20 +53,20 @@ export function RevokeAgentAccessDialog({
       </Button>
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Revoke agent access on {deviceName}?</AlertDialogTitle>
-          <AlertDialogDescription>
-            The agent on this device will sign out on its next check-in. The user
-            will need to sign in again to resume reporting compliance. This does
-            not affect the user&apos;s web sessions.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirm} disabled={isSubmitting}>
-            Revoke
-          </AlertDialogAction>
-        </AlertDialogFooter>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Revoke agent access on {deviceName}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The agent on this device will sign out on its next check-in. The user will need to
+              sign in again to resume reporting compliance. This does not affect the user&apos;s web
+              sessions.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirm} disabled={isSubmitting}>
+              Revoke
+            </AlertDialogAction>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>

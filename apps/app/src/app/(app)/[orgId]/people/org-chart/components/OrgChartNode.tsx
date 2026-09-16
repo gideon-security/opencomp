@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
 import { Handle, Position, type NodeProps } from '@xyflow/react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface OrgChartNodeData {
   name: string;
@@ -12,10 +12,7 @@ export interface OrgChartNodeData {
   [key: string]: unknown;
 }
 
-export function OrgChartNode({
-  data,
-  selected,
-}: NodeProps & { data: OrgChartNodeData }) {
+export function OrgChartNode({ data, selected }: NodeProps & { data: OrgChartNodeData }) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editValue, setEditValue] = useState(data.title || '');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -67,9 +64,7 @@ export function OrgChartNode({
           {initials}
         </div>
         <div className="flex flex-col overflow-hidden">
-          <span className="truncate text-sm font-medium text-foreground">
-            {data.name}
-          </span>
+          <span className="truncate text-sm font-medium text-foreground">{data.name}</span>
           {isEditingTitle ? (
             <input
               ref={inputRef}

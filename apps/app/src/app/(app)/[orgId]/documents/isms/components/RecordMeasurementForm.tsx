@@ -17,11 +17,7 @@ import { Add } from '@trycompai/design-system/icons';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import type { IsmsMetric } from '../isms-types';
-import {
-  addPeriods,
-  periodLabel,
-  periodStartFor,
-} from './monitoring-periods';
+import { addPeriods, periodLabel, periodStartFor } from './monitoring-periods';
 
 const recordSchema = z.object({
   periodStart: z.string().min(1, 'Pick a period'),
@@ -111,11 +107,7 @@ export function RecordMeasurementForm({ metric, onRecord }: RecordMeasurementFor
           control={control}
           name="note"
           render={({ field: { ref: _ref, ...field } }) => (
-            <Input
-              {...field}
-              placeholder="Note (optional)"
-              aria-label="Measurement note"
-            />
+            <Input {...field} placeholder="Note (optional)" aria-label="Measurement note" />
           )}
         />
         <div>

@@ -70,9 +70,7 @@ export async function runAllChecks(): Promise<CheckResult[]> {
       log(`Running check: ${check.displayName}`);
       const result = await check.run();
       results.push(result);
-      log(
-        `  ${check.displayName}: ${result.passed ? 'PASS' : 'FAIL'} - ${result.details.message}`,
-      );
+      log(`  ${check.displayName}: ${result.passed ? 'PASS' : 'FAIL'} - ${result.details.message}`);
     } catch (error) {
       log(`Check failed: ${check.displayName} - ${error}`, 'ERROR');
       results.push({

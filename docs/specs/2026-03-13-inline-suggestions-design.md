@@ -43,7 +43,7 @@ Each diffed section maps to a `SuggestionRange`:
 
 ```typescript
 interface SuggestionRange {
-  id: string;                    // Unique identifier
+  id: string; // Unique identifier
   type: 'modify' | 'insert' | 'delete';
   // Position in the editor document (ProseMirror positions)
   from: number;
@@ -90,6 +90,7 @@ function buildPositionMap(doc: ProseMirrorNode): PositionMap;
 **Location:** `apps/app/src/app/(app)/[orgId]/policies/[policyId]/editor/hooks/use-suggestions.ts`
 
 **Responsibilities:**
+
 - Compute diff between current and proposed content
 - Map diffs to ProseMirror positions
 - Track decisions per range
@@ -108,19 +109,20 @@ interface UseSuggestionsOptions {
 
 interface UseSuggestionsReturn {
   ranges: SuggestionRange[];
-  activeCount: number;          // Ranges still pending
-  totalCount: number;           // Total ranges with real changes
+  activeCount: number; // Ranges still pending
+  totalCount: number; // Total ranges with real changes
   accept: (id: string) => void;
   reject: (id: string) => void;
   acceptAll: () => void;
   rejectAll: () => void;
   dismissAll: () => void;
   giveFeedback: (id: string, feedback: string) => void;
-  isActive: boolean;            // Any suggestions present
+  isActive: boolean; // Any suggestions present
 }
 ```
 
 **Accept behavior:**
+
 - `accept(id)` → Dispatches a ProseMirror transaction that replaces the range `[from, to]` with `proposedSlice`. Updates the position map for all subsequent ranges (positions shift after insertion/deletion).
 - `acceptAll()` → Applies all pending ranges in reverse document order (bottom-up) to avoid position invalidation.
 - `reject(id)` → Marks the range as rejected, removes its decorations. No document change.
@@ -152,25 +154,29 @@ For each `SuggestionRange`, a widget decoration is placed at the `from` position
 
 ```typescript
 // Widget decoration for gutter icons
-Decoration.widget(range.from, (view) => {
-  const container = document.createElement('div');
-  container.className = 'suggestion-gutter';
-  // Accept button
-  const acceptBtn = document.createElement('button');
-  acceptBtn.className = 'suggestion-gutter-accept';
-  acceptBtn.onclick = () => accept(range.id);
-  // Reject button
-  const rejectBtn = document.createElement('button');
-  rejectBtn.className = 'suggestion-gutter-reject';
-  rejectBtn.onclick = () => reject(range.id);
-  // Feedback button
-  const feedbackBtn = document.createElement('button');
-  feedbackBtn.className = 'suggestion-gutter-feedback';
-  feedbackBtn.onclick = () => openFeedback(range.id);
+Decoration.widget(
+  range.from,
+  (view) => {
+    const container = document.createElement('div');
+    container.className = 'suggestion-gutter';
+    // Accept button
+    const acceptBtn = document.createElement('button');
+    acceptBtn.className = 'suggestion-gutter-accept';
+    acceptBtn.onclick = () => accept(range.id);
+    // Reject button
+    const rejectBtn = document.createElement('button');
+    rejectBtn.className = 'suggestion-gutter-reject';
+    rejectBtn.onclick = () => reject(range.id);
+    // Feedback button
+    const feedbackBtn = document.createElement('button');
+    feedbackBtn.className = 'suggestion-gutter-feedback';
+    feedbackBtn.onclick = () => openFeedback(range.id);
 
-  container.append(acceptBtn, rejectBtn, feedbackBtn);
-  return container;
-}, { side: -1 });
+    container.append(acceptBtn, rejectBtn, feedbackBtn);
+    return container;
+  },
+  { side: -1 },
+);
 ```
 
 ### 3. `SuggestionsTopBar` Component
@@ -287,20 +293,22 @@ const suggestions = useSuggestions({
 4. **Pass** `suggestions` to the editor and top bar:
 
 ```tsx
-{suggestions.isActive && (
-  <SuggestionsTopBar
-    activeCount={suggestions.activeCount}
-    totalCount={suggestions.totalCount}
-    onAcceptAll={suggestions.acceptAll}
-    onRejectAll={suggestions.rejectAll}
-    onDismiss={suggestions.dismissAll}
-  />
-)}
+{
+  suggestions.isActive && (
+    <SuggestionsTopBar
+      activeCount={suggestions.activeCount}
+      totalCount={suggestions.totalCount}
+      onAcceptAll={suggestions.acceptAll}
+      onRejectAll={suggestions.rejectAll}
+      onDismiss={suggestions.dismissAll}
+    />
+  );
+}
 
 <PolicyEditor
   // existing props...
   suggestions={suggestions.ranges}
-/>
+/>;
 ```
 
 ### Changes to PolicyEditor / Editor component
@@ -312,6 +320,7 @@ const suggestions = useSuggestions({
 ### Editor Ref
 
 The `PolicyEditor` needs to expose the TipTap `Editor` instance so `useSuggestions` can:
+
 - Read the document structure for position mapping
 - Dispatch transactions for accepting changes
 
@@ -320,6 +329,7 @@ This is done via `useImperativeHandle` + `forwardRef` or a callback ref pattern.
 ## Per-Hunk Feedback (Preserved)
 
 The existing per-hunk feedback flow stays the same conceptually:
+
 - User clicks pencil gutter icon → inline feedback input appears below the section
 - Submits feedback → sends message via chat with `FEEDBACK_MARKER`
 - AI regenerates → new `proposedMarkdown` arrives → `useSuggestions` recomputes ranges
@@ -344,15 +354,19 @@ The existing per-hunk feedback flow stays the same conceptually:
 ## Edge Cases
 
 ### Position invalidation after accept
+
 When a change is accepted, all subsequent ProseMirror positions shift. Solution: accept in reverse document order for bulk operations. For single accepts, recompute the position map after the transaction.
 
 ### Editor content changes during review
+
 If the user manually edits the document while suggestions are active, positions become stale. Solution: on any non-suggestion transaction, recompute the diff and position map. If a manually-edited region overlaps a suggestion range, auto-dismiss that suggestion.
 
 ### Empty diff
+
 If the AI returns identical content, `useSuggestions` returns `isActive: false` and no decorations render.
 
 ### Large documents
+
 ProseMirror decorations are efficient — they're part of the view layer, not stored in the document. Performance should be fine for policy-sized documents (typically <100 nodes).
 
 ## File Structure

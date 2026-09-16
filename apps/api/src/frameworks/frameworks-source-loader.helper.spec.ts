@@ -8,9 +8,16 @@ import type { FrameworkManifest } from './framework-versioning/manifest.types';
 
 type LoaderTx = Parameters<typeof loadFrameworkSources>[0]['tx'];
 
-function manifest(overrides: Partial<FrameworkManifest> = {}): FrameworkManifest {
+function manifest(
+  overrides: Partial<FrameworkManifest> = {},
+): FrameworkManifest {
   return {
-    framework: { id: 'frk_pci', name: 'PCI DSS', catalogVersion: '1', description: null },
+    framework: {
+      id: 'frk_pci',
+      name: 'PCI DSS',
+      catalogVersion: '1',
+      description: null,
+    },
     requirements: [],
     controls: [],
     policies: [],
@@ -25,7 +32,9 @@ function manifest(overrides: Partial<FrameworkManifest> = {}): FrameworkManifest
  */
 function fullManifest(): FrameworkManifest {
   return manifest({
-    requirements: [{ id: 'req_live', identifier: 'R1', name: 'Req', description: null }],
+    requirements: [
+      { id: 'req_live', identifier: 'R1', name: 'Req', description: null },
+    ],
     controls: [
       {
         id: 'ct_live',
@@ -38,9 +47,24 @@ function fullManifest(): FrameworkManifest {
       },
     ],
     policies: [
-      { id: 'pt_live', name: 'Policy', description: null, content: [], frequency: null, department: null },
+      {
+        id: 'pt_live',
+        name: 'Policy',
+        description: null,
+        content: [],
+        frequency: null,
+        department: null,
+      },
     ],
-    tasks: [{ id: 'tt_live', name: 'Task', description: 'd', frequency: null, department: null }],
+    tasks: [
+      {
+        id: 'tt_live',
+        name: 'Task',
+        description: 'd',
+        frequency: null,
+        department: null,
+      },
+    ],
   });
 }
 
@@ -51,7 +75,11 @@ function mockTx({
   liveTasks,
   liveRequirementIds,
 }: {
-  versions: Array<{ id: string; frameworkId: string; manifest: FrameworkManifest }>;
+  versions: Array<{
+    id: string;
+    frameworkId: string;
+    manifest: FrameworkManifest;
+  }>;
   liveControlIds: string[];
   livePolicyIds: string[];
   liveTasks: Array<{ id: string; automationStatus: string }>;
@@ -60,16 +88,22 @@ function mockTx({
   return {
     frameworkVersion: { findMany: jest.fn().mockResolvedValue(versions) },
     frameworkEditorControlTemplate: {
-      findMany: jest.fn().mockResolvedValue(liveControlIds.map((id) => ({ id }))),
+      findMany: jest
+        .fn()
+        .mockResolvedValue(liveControlIds.map((id) => ({ id }))),
     },
     frameworkEditorPolicyTemplate: {
-      findMany: jest.fn().mockResolvedValue(livePolicyIds.map((id) => ({ id }))),
+      findMany: jest
+        .fn()
+        .mockResolvedValue(livePolicyIds.map((id) => ({ id }))),
     },
     frameworkEditorTaskTemplate: {
       findMany: jest.fn().mockResolvedValue(liveTasks),
     },
     frameworkEditorRequirement: {
-      findMany: jest.fn().mockResolvedValue(liveRequirementIds.map((id) => ({ id }))),
+      findMany: jest
+        .fn()
+        .mockResolvedValue(liveRequirementIds.map((id) => ({ id }))),
     },
   } as unknown as LoaderTx;
 }
@@ -84,7 +118,13 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
   it('drops a manifest TASK whose live template was hard-deleted (the reported Task_taskTemplateId_fkey bug)', async () => {
     const m = fullManifest();
     m.controls[0].taskIds = ['tt_live', 'tt_dead'];
-    m.tasks.push({ id: 'tt_dead', name: 'Deleted Task', description: 'd', frequency: null, department: null });
+    m.tasks.push({
+      id: 'tt_dead',
+      name: 'Deleted Task',
+      description: 'd',
+      frequency: null,
+      department: null,
+    });
 
     const tx = mockTx({
       versions: [{ id: 'fv_1', frameworkId: 'frk_pci', manifest: m }],
@@ -94,7 +134,11 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
       liveRequirementIds: ['req_live'],
     });
 
-    const result = await loadFrameworkSources({ frameworkEditorIds, frameworkEditorFrameworks: [], tx });
+    const result = await loadFrameworkSources({
+      frameworkEditorIds,
+      frameworkEditorFrameworks: [],
+      tx,
+    });
 
     // tt_dead must never reach task.createMany — it would FK-fail on insert.
     expect(ids(result.taskTemplates)).toEqual(['tt_live']);
@@ -120,7 +164,11 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
       liveRequirementIds: ['req_live'],
     });
 
-    const result = await loadFrameworkSources({ frameworkEditorIds, frameworkEditorFrameworks: [], tx });
+    const result = await loadFrameworkSources({
+      frameworkEditorIds,
+      frameworkEditorFrameworks: [],
+      tx,
+    });
 
     expect(ids(result.controlTemplates)).toEqual(['ct_live']);
   });
@@ -145,7 +193,11 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
       liveRequirementIds: ['req_live'],
     });
 
-    const result = await loadFrameworkSources({ frameworkEditorIds, frameworkEditorFrameworks: [], tx });
+    const result = await loadFrameworkSources({
+      frameworkEditorIds,
+      frameworkEditorFrameworks: [],
+      tx,
+    });
 
     expect(ids(result.policyTemplates)).toEqual(['pt_live']);
   });
@@ -153,7 +205,12 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
   it('drops a dead REQUIREMENT from groupedRelations (RequirementMap.requirementId has no downstream guard)', async () => {
     const m = fullManifest();
     m.controls[0].requirementIds = ['req_live', 'req_dead'];
-    m.requirements.push({ id: 'req_dead', identifier: 'R2', name: 'Deleted Req', description: null });
+    m.requirements.push({
+      id: 'req_dead',
+      identifier: 'R2',
+      name: 'Deleted Req',
+      description: null,
+    });
 
     const tx = mockTx({
       versions: [{ id: 'fv_1', frameworkId: 'frk_pci', manifest: m }],
@@ -163,29 +220,43 @@ describe('loadFrameworkSources — stale-manifest reconciliation', () => {
       liveRequirementIds: ['req_live'], // req_dead absent
     });
 
-    const result = await loadFrameworkSources({ frameworkEditorIds, frameworkEditorFrameworks: [], tx });
+    const result = await loadFrameworkSources({
+      frameworkEditorIds,
+      frameworkEditorFrameworks: [],
+      tx,
+    });
 
-    const rel = result.groupedRelations.find((r) => r.controlTemplateId === 'ct_live');
+    const rel = result.groupedRelations.find(
+      (r) => r.controlTemplateId === 'ct_live',
+    );
     expect(rel?.requirementTemplateIds).toEqual(['req_live']);
   });
 
   it('passes everything through unchanged and resolves automationStatus when all templates are live', async () => {
     const tx = mockTx({
-      versions: [{ id: 'fv_1', frameworkId: 'frk_pci', manifest: fullManifest() }],
+      versions: [
+        { id: 'fv_1', frameworkId: 'frk_pci', manifest: fullManifest() },
+      ],
       liveControlIds: ['ct_live'],
       livePolicyIds: ['pt_live'],
       liveTasks: [{ id: 'tt_live', automationStatus: 'MANUAL' }],
       liveRequirementIds: ['req_live'],
     });
 
-    const result = await loadFrameworkSources({ frameworkEditorIds, frameworkEditorFrameworks: [], tx });
+    const result = await loadFrameworkSources({
+      frameworkEditorIds,
+      frameworkEditorFrameworks: [],
+      tx,
+    });
 
     expect(ids(result.controlTemplates)).toEqual(['ct_live']);
     expect(ids(result.policyTemplates)).toEqual(['pt_live']);
     expect(ids(result.taskTemplates)).toEqual(['tt_live']);
     // automationStatus is not in the manifest — it must come from the live row.
     expect(result.taskTemplates[0].automationStatus).toBe('MANUAL');
-    const rel = result.groupedRelations.find((r) => r.controlTemplateId === 'ct_live');
+    const rel = result.groupedRelations.find(
+      (r) => r.controlTemplateId === 'ct_live',
+    );
     expect(rel?.requirementTemplateIds).toEqual(['req_live']);
     expect(rel?.policyTemplateIds).toEqual(['pt_live']);
     expect(rel?.taskTemplateIds).toEqual(['tt_live']);

@@ -1,6 +1,6 @@
 ---
 name: essentials
-description: "Critical rules that must always be followed"
+description: 'Critical rules that must always be followed'
 ---
 
 Source Cursor rule: `.cursor/rules/essentials.mdc`.

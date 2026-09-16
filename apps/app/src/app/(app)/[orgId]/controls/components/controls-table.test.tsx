@@ -1,13 +1,13 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
   NO_PERMISSIONS,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -109,9 +109,7 @@ vi.mock('react', async () => {
 import { ControlsTable } from './controls-table';
 
 describe('ControlsTable', () => {
-  const mockPromises = createResolvedPromise([
-    { data: mockControlsData, pageCount: 1 },
-  ]);
+  const mockPromises = createResolvedPromise([{ data: mockControlsData, pageCount: 1 }]);
 
   beforeEach(() => {
     vi.clearAllMocks();

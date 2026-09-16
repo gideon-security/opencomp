@@ -1,6 +1,6 @@
 ---
 name: trigger-realtime
-description: "How to use realtime in your Trigger.dev tasks and your frontend"
+description: 'How to use realtime in your Trigger.dev tasks and your frontend'
 ---
 
 Source Cursor rule: `.cursor/rules/trigger.realtime.mdc`.
@@ -24,17 +24,17 @@ Realtime allows you to:
 ### Public Access Tokens
 
 ```ts
-import { auth } from "@trigger.dev/sdk";
+import { auth } from '@trigger.dev/sdk';
 
 // Read-only token for specific runs
 const publicToken = await auth.createPublicToken({
   scopes: {
     read: {
-      runs: ["run_123", "run_456"],
-      tasks: ["my-task-1", "my-task-2"],
+      runs: ['run_123', 'run_456'],
+      tasks: ['my-task-1', 'my-task-2'],
     },
   },
-  expirationTime: "1h", // Default: 15 minutes
+  expirationTime: '1h', // Default: 15 minutes
 });
 ```
 
@@ -42,8 +42,8 @@ const publicToken = await auth.createPublicToken({
 
 ```ts
 // Single-use token for triggering tasks
-const triggerToken = await auth.createTriggerPublicToken("my-task", {
-  expirationTime: "30m",
+const triggerToken = await auth.createTriggerPublicToken('my-task', {
+  expirationTime: '30m',
 });
 ```
 
@@ -52,19 +52,19 @@ const triggerToken = await auth.createTriggerPublicToken("my-task", {
 ### Subscribe to Runs
 
 ```ts
-import { runs, tasks } from "@trigger.dev/sdk";
+import { runs, tasks } from '@trigger.dev/sdk';
 
 // Trigger and subscribe
-const handle = await tasks.trigger("my-task", { data: "value" });
+const handle = await tasks.trigger('my-task', { data: 'value' });
 
 // Subscribe to specific run
 for await (const run of runs.subscribeToRun<typeof myTask>(handle.id)) {
   console.log(`Status: ${run.status}, Progress: ${run.metadata?.progress}`);
-  if (run.status === "COMPLETED") break;
+  if (run.status === 'COMPLETED') break;
 }
 
 // Subscribe to runs with tag
-for await (const run of runs.subscribeToRunsWithTag("user-123")) {
+for await (const run of runs.subscribeToRunsWithTag('user-123')) {
   console.log(`Tagged run ${run.id}: ${run.status}`);
 }
 
@@ -77,7 +77,7 @@ for await (const run of runs.subscribeToBatch(batchId)) {
 ### Streams
 
 ```ts
-import { task, metadata } from "@trigger.dev/sdk";
+import { task, metadata } from '@trigger.dev/sdk';
 
 // Task that streams data
 export type STREAMS = {
@@ -85,20 +85,20 @@ export type STREAMS = {
 };
 
 export const streamingTask = task({
-  id: "streaming-task",
+  id: 'streaming-task',
   run: async (payload) => {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [{ role: "user", content: payload.prompt }],
+      model: 'gpt-4',
+      messages: [{ role: 'user', content: payload.prompt }],
       stream: true,
     });
 
     // Register stream
-    const stream = await metadata.stream("openai", completion);
+    const stream = await metadata.stream('openai', completion);
 
-    let text = "";
+    let text = '';
     for await (const chunk of stream) {
-      text += chunk.choices[0]?.delta?.content || "";
+      text += chunk.choices[0]?.delta?.content || '';
     }
 
     return { text };
@@ -108,11 +108,11 @@ export const streamingTask = task({
 // Subscribe to streams
 for await (const part of runs.subscribeToRun(runId).withStreams<STREAMS>()) {
   switch (part.type) {
-    case "run":
-      console.log("Run update:", part.run.status);
+    case 'run':
+      console.log('Run update:', part.run.status);
       break;
-    case "openai":
-      console.log("Stream chunk:", part.chunk);
+    case 'openai':
+      console.log('Stream chunk:', part.chunk);
       break;
   }
 }
@@ -129,13 +129,13 @@ npm install @trigger.dev/react-hooks
 ### Triggering Tasks
 
 ```tsx
-"use client";
-import { useTaskTrigger, useRealtimeTaskTrigger } from "@trigger.dev/react-hooks";
-import type { myTask } from "../trigger/tasks";
+'use client';
+import { useTaskTrigger, useRealtimeTaskTrigger } from '@trigger.dev/react-hooks';
+import type { myTask } from '../trigger/tasks';
 
 function TriggerComponent({ accessToken }: { accessToken: string }) {
   // Basic trigger
-  const { submit, handle, isLoading } = useTaskTrigger<typeof myTask>("my-task", {
+  const { submit, handle, isLoading } = useTaskTrigger<typeof myTask>('my-task', {
     accessToken,
   });
 
@@ -144,15 +144,15 @@ function TriggerComponent({ accessToken }: { accessToken: string }) {
     submit: realtimeSubmit,
     run,
     isLoading: isRealtimeLoading,
-  } = useRealtimeTaskTrigger<typeof myTask>("my-task", { accessToken });
+  } = useRealtimeTaskTrigger<typeof myTask>('my-task', { accessToken });
 
   return (
     <div>
-      <button onClick={() => submit({ data: "value" })} disabled={isLoading}>
+      <button onClick={() => submit({ data: 'value' })} disabled={isLoading}>
         Trigger Task
       </button>
 
-      <button onClick={() => realtimeSubmit({ data: "realtime" })} disabled={isRealtimeLoading}>
+      <button onClick={() => realtimeSubmit({ data: 'realtime' })} disabled={isRealtimeLoading}>
         Trigger with Realtime
       </button>
 
@@ -165,21 +165,21 @@ function TriggerComponent({ accessToken }: { accessToken: string }) {
 ### Subscribing to Runs
 
 ```tsx
-"use client";
-import { useRealtimeRun, useRealtimeRunsWithTag } from "@trigger.dev/react-hooks";
-import type { myTask } from "../trigger/tasks";
+'use client';
+import { useRealtimeRun, useRealtimeRunsWithTag } from '@trigger.dev/react-hooks';
+import type { myTask } from '../trigger/tasks';
 
 function SubscribeComponent({ runId, accessToken }: { runId: string; accessToken: string }) {
   // Subscribe to specific run
   const { run, error } = useRealtimeRun<typeof myTask>(runId, {
     accessToken,
     onComplete: (run) => {
-      console.log("Task completed:", run.output);
+      console.log('Task completed:', run.output);
     },
   });
 
   // Subscribe to tagged runs
-  const { runs } = useRealtimeRunsWithTag("user-123", { accessToken });
+  const { runs } = useRealtimeRunsWithTag('user-123', { accessToken });
 
   if (error) return <div>Error: {error.message}</div>;
   if (!run) return <div>Loading...</div>;
@@ -204,9 +204,9 @@ function SubscribeComponent({ runId, accessToken }: { runId: string; accessToken
 ### Streams with React
 
 ```tsx
-"use client";
-import { useRealtimeRunWithStreams } from "@trigger.dev/react-hooks";
-import type { streamingTask, STREAMS } from "../trigger/tasks";
+'use client';
+import { useRealtimeRunWithStreams } from '@trigger.dev/react-hooks';
+import type { streamingTask, STREAMS } from '../trigger/tasks';
 
 function StreamComponent({ runId, accessToken }: { runId: string; accessToken: string }) {
   const { run, streams } = useRealtimeRunWithStreams<typeof streamingTask, STREAMS>(runId, {
@@ -216,7 +216,7 @@ function StreamComponent({ runId, accessToken }: { runId: string; accessToken: s
   const text = streams.openai
     .filter((chunk) => chunk.choices[0]?.delta?.content)
     .map((chunk) => chunk.choices[0].delta.content)
-    .join("");
+    .join('');
 
   return (
     <div>
@@ -230,8 +230,8 @@ function StreamComponent({ runId, accessToken }: { runId: string; accessToken: s
 ### Wait Tokens
 
 ```tsx
-"use client";
-import { useWaitToken } from "@trigger.dev/react-hooks";
+'use client';
+import { useWaitToken } from '@trigger.dev/react-hooks';
 
 function WaitTokenComponent({ tokenId, accessToken }: { tokenId: string; accessToken: string }) {
   const { complete } = useWaitToken(tokenId, { accessToken });
@@ -243,9 +243,9 @@ function WaitTokenComponent({ tokenId, accessToken }: { tokenId: string; accessT
 ### SWR Hooks (Fetch Once)
 
 ```tsx
-"use client";
-import { useRun } from "@trigger.dev/react-hooks";
-import type { myTask } from "../trigger/tasks";
+'use client';
+import { useRun } from '@trigger.dev/react-hooks';
+import type { myTask } from '../trigger/tasks';
 
 function SWRComponent({ runId, accessToken }: { runId: string; accessToken: string }) {
   const { run, error, isLoading } = useRun<typeof myTask>(runId, {

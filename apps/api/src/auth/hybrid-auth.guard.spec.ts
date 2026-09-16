@@ -118,7 +118,12 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       role: 'user',
     });
     mockMemberFindMany.mockResolvedValue([
-      { id: 'mem_1', role: 'owner,admin', department: 'it', organizationId: 'org_1' },
+      {
+        id: 'mem_1',
+        role: 'owner,admin',
+        department: 'it',
+        organizationId: 'org_1',
+      },
     ]);
 
     const { context, request } = createContext({
@@ -142,7 +147,12 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       role: 'user',
     });
     mockMemberFindMany.mockResolvedValue([
-      { id: 'mem_2', role: 'auditor', department: 'none', organizationId: 'org_1' },
+      {
+        id: 'mem_2',
+        role: 'auditor',
+        department: 'none',
+        organizationId: 'org_1',
+      },
     ]);
 
     const { context, request } = createContext({
@@ -181,7 +191,9 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
     });
 
     // 403 (authenticated, but no org) — not a 401 that would trigger re-auth.
-    await expect(guard.canActivate(context)).rejects.toThrow(ForbiddenException);
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      ForbiddenException,
+    );
   });
 
   it('blocks an org-less user even on org-agnostic (skipOrgCheck) endpoints', async () => {
@@ -202,7 +214,9 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       authorization: 'Bearer mcp_access_token',
     });
 
-    await expect(guard.canActivate(context)).rejects.toThrow(ForbiddenException);
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      ForbiddenException,
+    );
   });
 
   it('multi-org with no saved choice → asks them to pick (no silent tenant)', async () => {
@@ -213,8 +227,18 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       role: 'user',
     });
     mockMemberFindMany.mockResolvedValue([
-      { id: 'mem_a', role: 'admin', department: 'none', organizationId: 'org_a' },
-      { id: 'mem_b', role: 'owner', department: 'none', organizationId: 'org_b' },
+      {
+        id: 'mem_a',
+        role: 'admin',
+        department: 'none',
+        organizationId: 'org_a',
+      },
+      {
+        id: 'mem_b',
+        role: 'owner',
+        department: 'none',
+        organizationId: 'org_b',
+      },
     ]);
     mockMcpBindingFindUnique.mockResolvedValue(null);
 
@@ -223,7 +247,9 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
     });
 
     // 403 (token is valid — user just needs to pick an org), not a 401.
-    await expect(guard.canActivate(context)).rejects.toThrow(ForbiddenException);
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      ForbiddenException,
+    );
     // No tenant must have been bound.
     expect(request.organizationId).toBe('');
   });
@@ -236,7 +262,12 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       role: 'user',
     });
     mockMemberFindMany.mockResolvedValue([
-      { id: 'mem_a', role: 'admin', department: 'none', organizationId: 'org_a' },
+      {
+        id: 'mem_a',
+        role: 'admin',
+        department: 'none',
+        organizationId: 'org_a',
+      },
       { id: 'mem_b', role: 'owner', department: 'it', organizationId: 'org_b' },
     ]);
     mockMcpBindingFindUnique.mockResolvedValue({ organizationId: 'org_b' });
@@ -259,8 +290,18 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       role: 'user',
     });
     mockMemberFindMany.mockResolvedValue([
-      { id: 'mem_a', role: 'admin', department: 'none', organizationId: 'org_a' },
-      { id: 'mem_b', role: 'owner', department: 'none', organizationId: 'org_b' },
+      {
+        id: 'mem_a',
+        role: 'admin',
+        department: 'none',
+        organizationId: 'org_a',
+      },
+      {
+        id: 'mem_b',
+        role: 'owner',
+        department: 'none',
+        organizationId: 'org_b',
+      },
     ]);
     // Bound to an org they were removed from.
     mockMcpBindingFindUnique.mockResolvedValue({ organizationId: 'org_gone' });
@@ -270,7 +311,9 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
     });
 
     // 403 (token is valid — user just needs to pick an org), not a 401.
-    await expect(guard.canActivate(context)).rejects.toThrow(ForbiddenException);
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      ForbiddenException,
+    );
   });
 
   it('marks platform admins from the user role', async () => {
@@ -281,7 +324,12 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       role: 'admin',
     });
     mockMemberFindMany.mockResolvedValue([
-      { id: 'mem_4', role: 'owner', department: 'none', organizationId: 'org_1' },
+      {
+        id: 'mem_4',
+        role: 'owner',
+        department: 'none',
+        organizationId: 'org_1',
+      },
     ]);
 
     const { context, request } = createContext({
@@ -302,7 +350,12 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       role: 'admin',
     });
     mockMemberFindMany.mockResolvedValue([
-      { id: 'mem_pa', role: 'employee', department: 'none', organizationId: 'org_1' },
+      {
+        id: 'mem_pa',
+        role: 'employee',
+        department: 'none',
+        organizationId: 'org_1',
+      },
     ]);
 
     const { context, request } = createContext({
@@ -322,14 +375,21 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       role: 'user',
     });
     mockMemberFindMany.mockResolvedValue([
-      { id: 'mem_e', role: 'employee', department: 'none', organizationId: 'org_1' },
+      {
+        id: 'mem_e',
+        role: 'employee',
+        department: 'none',
+        organizationId: 'org_1',
+      },
     ]);
 
     const { context, request } = createContext({
       authorization: 'Bearer mcp_access_token',
     });
 
-    await expect(guard.canActivate(context)).rejects.toThrow(ForbiddenException);
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      ForbiddenException,
+    );
     expect(request.organizationId).toBe('');
   });
 
@@ -341,7 +401,12 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       role: 'user',
     });
     mockMemberFindMany.mockResolvedValue([
-      { id: 'mem_c', role: 'Compliance Lead', department: 'none', organizationId: 'org_1' },
+      {
+        id: 'mem_c',
+        role: 'Compliance Lead',
+        department: 'none',
+        organizationId: 'org_1',
+      },
     ]);
     // Custom role resolved from organization_role with app access granted.
     mockOrgRoleFindMany.mockResolvedValue([
@@ -365,7 +430,12 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       role: 'user',
     });
     mockMemberFindMany.mockResolvedValue([
-      { id: 'mem_d', role: 'Read Only Portal', department: 'none', organizationId: 'org_1' },
+      {
+        id: 'mem_d',
+        role: 'Read Only Portal',
+        department: 'none',
+        organizationId: 'org_1',
+      },
     ]);
     mockOrgRoleFindMany.mockResolvedValue([
       { permissions: JSON.stringify({ policy: ['read'], portal: ['read'] }) },
@@ -375,7 +445,230 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
       authorization: 'Bearer mcp_access_token',
     });
 
-    await expect(guard.canActivate(context)).rejects.toThrow(ForbiddenException);
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      ForbiddenException,
+    );
+  });
+});
+
+describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
+  let guard: HybridAuthGuard;
+  let reflector: Reflector;
+  let enforce = false;
+  const mockVerify = jest.fn();
+  const mockLogMismatch = jest.fn();
+
+  const createContext = (
+    headers: Record<string, string>,
+  ): { context: ExecutionContext; request: Record<string, unknown> } => {
+    const request: Record<string, unknown> = { headers };
+    const context = {
+      switchToHttp: () => ({ getRequest: () => request }),
+      getHandler: () => jest.fn(),
+      getClass: () => jest.fn(),
+    } as unknown as ExecutionContext;
+    return { context, request };
+  };
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    enforce = false;
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        HybridAuthGuard,
+        {
+          provide: ApiKeyService,
+          useValue: { extractApiKey: jest.fn(), validateApiKey: jest.fn() },
+        },
+        Reflector,
+      ],
+    }).compile();
+
+    reflector = module.get<Reflector>(Reflector);
+    jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false);
+
+    const apiKeyService = module.get<ApiKeyService>(ApiKeyService);
+    // The Gideon services are @Optional() constructor deps — inject stubs
+    // directly so the Bearer path is exercised without JWKS network access.
+    const gideonJwtService = {
+      isConfigured: () => true,
+      isEnforceMode: () => enforce,
+      isShadowMode: () => !enforce,
+      verify: (...args: unknown[]) => mockVerify(...args),
+      resolveTenantId: (payload: { tid?: string }) => payload.tid ?? null,
+      resolveUserId: (payload: { sub?: string }) => payload.sub ?? null,
+    } as unknown as import('./gideon-jwt.service').GideonJwtService;
+    const gideonShadowService = {
+      logTenantOperationsMismatch: (...args: unknown[]) =>
+        mockLogMismatch(...args),
+    } as unknown as import('../gideon/gideon-shadow.service').GideonShadowService;
+    guard = new HybridAuthGuard(
+      apiKeyService,
+      reflector,
+      gideonJwtService,
+      gideonShadowService,
+    );
+    mockLogMismatch.mockResolvedValue(undefined);
+    // No session/MCP session by default; individual tests opt in.
+    mockGetSession.mockResolvedValue(null);
+    mockGetMcpSession.mockResolvedValue(null);
+    mockMcpBindingFindUnique.mockResolvedValue(null);
+    mockOrgRoleFindMany.mockResolvedValue([]);
+  });
+
+  function mockLinkedUser() {
+    mockVerify.mockResolvedValue({
+      payload: { sub: 'gideon-sub-1', tid: 'org_1', email: 'gin@acme.com' },
+      protectedHeader: { kid: 'k1' },
+    });
+    // gideonSub → OpenComp user link (provisioned at OIDC first login).
+    mockUserFindUnique.mockResolvedValue({
+      id: 'usr_1',
+      email: 'gin@acme.com',
+    });
+    mockOrgFindUnique.mockResolvedValue({ id: 'org_1' });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_1',
+      role: 'admin',
+      department: 'it',
+    });
+  }
+
+  it('authenticates a linked Gideon sub and binds org + member', async () => {
+    mockLinkedUser();
+
+    const { context, request } = createContext({
+      authorization: 'Bearer gideon.jwt.token',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    // The Gideon `sub` must be resolved through User.gideonSub — never used
+    // directly as the OpenComp user id.
+    expect(mockUserFindUnique).toHaveBeenCalledWith({
+      where: { gideonSub: 'gideon-sub-1' },
+      select: { id: true, email: true },
+    });
+    expect(request.authType).toBe('gideon');
+    expect(request.isGideonJwt).toBe(true);
+    expect(request.organizationId).toBe('org_1');
+    expect(request.userId).toBe('usr_1');
+    expect(request.userEmail).toBe('gin@acme.com');
+    expect(request.userRoles).toEqual(['admin']);
+    expect(request.memberId).toBe('mem_1');
+  });
+
+  it('shadow mode: invalid Gideon token falls through to a valid session', async () => {
+    mockVerify.mockResolvedValue(null);
+    mockGetSession.mockResolvedValue({
+      user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
+      session: { id: 'sess_9', activeOrganizationId: 'org_9' },
+    });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_9',
+      role: 'owner',
+      department: 'none',
+    });
+
+    const { context, request } = createContext({
+      authorization: 'Bearer stale.gideon.token',
+      cookie: 'local.session_token=legacy',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(request.authType).toBe('session');
+    expect(request.userId).toBe('usr_9');
+    expect(request.isGideonJwt).toBeUndefined();
+  });
+
+  it('shadow mode: unlinked sub falls through to session (dual-run fallback)', async () => {
+    mockVerify.mockResolvedValue({
+      payload: { sub: 'gideon-sub-unknown', tid: 'org_1' },
+      protectedHeader: { kid: 'k1' },
+    });
+    mockUserFindUnique.mockResolvedValue(null);
+    mockGetSession.mockResolvedValue({
+      user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
+      session: { id: 'sess_9', activeOrganizationId: 'org_9' },
+    });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_9',
+      role: 'owner',
+      department: 'none',
+    });
+
+    const { context, request } = createContext({
+      authorization: 'Bearer gideon.jwt.token',
+      cookie: 'local.session_token=legacy',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(request.authType).toBe('session');
+    expect(request.userId).toBe('usr_9');
+  });
+
+  it('enforce mode: invalid Gideon token is a 401 with no session fallback', async () => {
+    enforce = true;
+    mockVerify.mockResolvedValue(null);
+
+    const { context } = createContext({
+      authorization: 'Bearer forged.jwt.token',
+    });
+
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      'Invalid Gideon JWT',
+    );
+    expect(mockGetSession).not.toHaveBeenCalled();
+  });
+
+  it('enforce mode: unlinked sub is a 401 (no memberships possible)', async () => {
+    enforce = true;
+    mockVerify.mockResolvedValue({
+      payload: { sub: 'gideon-sub-unknown', tid: 'org_1' },
+      protectedHeader: { kid: 'k1' },
+    });
+    mockUserFindUnique.mockResolvedValue(null);
+
+    const { context } = createContext({
+      authorization: 'Bearer gideon.jwt.token',
+    });
+
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      'Invalid Gideon JWT',
+    );
+    expect(mockGetSession).not.toHaveBeenCalled();
+  });
+
+  it('enforce mode: linked user still authenticates', async () => {
+    enforce = true;
+    mockLinkedUser();
+
+    const { context, request } = createContext({
+      authorization: 'Bearer gideon.jwt.token',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(request.authType).toBe('gideon');
+    expect(request.userId).toBe('usr_1');
+  });
+
+  it('no Bearer header skips Gideon entirely and uses the session', async () => {
+    mockGetSession.mockResolvedValue({
+      user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
+      session: { id: 'sess_9', activeOrganizationId: 'org_9' },
+    });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_9',
+      role: 'owner',
+      department: 'none',
+    });
+
+    const { context, request } = createContext({
+      cookie: 'local.session_token=legacy',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(mockVerify).not.toHaveBeenCalled();
+    expect(request.authType).toBe('session');
   });
 });
 

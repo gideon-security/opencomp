@@ -1,10 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
-  setMockPermissions,
   ADMIN_PERMISSIONS,
   mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/hooks/use-permissions', () => ({
   usePermissions: () => ({
@@ -36,9 +36,7 @@ vi.mock('@trycompai/design-system', () => ({
   AlertDialogTitle: ({ children }: any) => <h2>{children}</h2>,
   AlertDialogDescription: ({ children }: any) => <p>{children}</p>,
   AlertDialogFooter: ({ children }: any) => <div>{children}</div>,
-  AlertDialogCancel: ({ children, onClick }: any) => (
-    <button onClick={onClick}>{children}</button>
-  ),
+  AlertDialogCancel: ({ children, onClick }: any) => <button onClick={onClick}>{children}</button>,
   AlertDialogAction: ({ children, onClick, disabled }: any) => (
     <button onClick={onClick} disabled={disabled}>
       {children}
@@ -93,9 +91,7 @@ describe('RevokeAgentAccessDialog', () => {
     fireEvent.click(await screen.findByRole('button', { name: /^revoke$/i }));
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith(
-        expect.stringMatching(/could not revoke/i),
-      );
+      expect(toast.error).toHaveBeenCalledWith(expect.stringMatching(/could not revoke/i));
     });
   });
 });

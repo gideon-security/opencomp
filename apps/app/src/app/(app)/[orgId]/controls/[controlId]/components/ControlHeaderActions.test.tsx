@@ -1,13 +1,13 @@
-import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
   NO_PERMISSIONS,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -21,9 +21,7 @@ vi.mock('@/hooks/use-permissions', () => ({
 
 // Mock @gideon-defender/ui components
 vi.mock('@gideon-defender/ui/button', () => ({
-  Button: ({ children, ...props }: any) => (
-    <button {...props}>{children}</button>
-  ),
+  Button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
 }));
 
 vi.mock('@gideon-defender/ui/dropdown-menu', () => ({
@@ -32,17 +30,13 @@ vi.mock('@gideon-defender/ui/dropdown-menu', () => ({
       {children}
     </div>
   ),
-  DropdownMenuContent: ({ children }: any) => (
-    <div data-testid="dropdown-content">{children}</div>
-  ),
+  DropdownMenuContent: ({ children }: any) => <div data-testid="dropdown-content">{children}</div>,
   DropdownMenuItem: ({ children, onClick }: any) => (
     <div data-testid="dropdown-item" onClick={onClick} role="menuitem">
       {children}
     </div>
   ),
-  DropdownMenuTrigger: ({ children }: any) => (
-    <div data-testid="dropdown-trigger">{children}</div>
-  ),
+  DropdownMenuTrigger: ({ children }: any) => <div data-testid="dropdown-trigger">{children}</div>,
 }));
 
 // Mock lucide-react icons
@@ -79,9 +73,7 @@ describe('ControlHeaderActions', () => {
     it('renders dropdown menu when user has control:delete permission', () => {
       setMockPermissions(ADMIN_PERMISSIONS);
 
-      const { container } = render(
-        <ControlHeaderActions control={mockControl} />,
-      );
+      const { container } = render(<ControlHeaderActions control={mockControl} />);
 
       expect(container.innerHTML).not.toBe('');
       expect(screen.getByTestId('dropdown-menu')).toBeInTheDocument();
@@ -91,9 +83,7 @@ describe('ControlHeaderActions', () => {
     it('returns null when user lacks control:delete permission', () => {
       setMockPermissions(AUDITOR_PERMISSIONS);
 
-      const { container } = render(
-        <ControlHeaderActions control={mockControl} />,
-      );
+      const { container } = render(<ControlHeaderActions control={mockControl} />);
 
       expect(container.innerHTML).toBe('');
     });
@@ -101,9 +91,7 @@ describe('ControlHeaderActions', () => {
     it('returns null when user has no permissions at all', () => {
       setMockPermissions(NO_PERMISSIONS);
 
-      const { container } = render(
-        <ControlHeaderActions control={mockControl} />,
-      );
+      const { container } = render(<ControlHeaderActions control={mockControl} />);
 
       expect(container.innerHTML).toBe('');
     });

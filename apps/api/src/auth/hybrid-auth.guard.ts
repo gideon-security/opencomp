@@ -200,17 +200,35 @@ export class HybridAuthGuard implements CanActivate {
         this.logger.warn('[Gideon] JWT verify failed in enforce mode');
         return 'enforce_failed';
       }
-      this.logger.debug('[GideonShadow] JWT verify failed, falling through to session');
+      this.logger.debug(
+        '[GideonShadow] JWT verify failed, falling through to session',
+      );
       return null;
     }
 
     const tenantId = this.gideonJwtService.resolveTenantId(result.payload);
-    const userId = this.gideonJwtService.resolveUserId(result.payload);
-    if (!tenantId || !userId) {
+    const gideonSub = this.gideonJwtService.resolveUserId(result.payload);
+    if (!tenantId || !gideonSub) {
       this.logger.warn('[Gideon] JWT missing tenant or sub');
       if (this.gideonJwtService.isEnforceMode()) return 'enforce_failed';
       return null;
     }
+
+    // Milestone 2 — the Gideon `sub` is not the OpenComp user id (the link
+    // lives on `User.gideonSub`, set by OIDC JIT provisioning). Resolve the
+    // linked OpenComp user before the membership check: an unlinked sub
+    // holds no memberships, so it falls through to session in shadow mode
+    // and 401s in enforce mode — same as an unknown tenant/member.
+    const linkedUser = await db.user.findUnique({
+      where: { gideonSub },
+      select: { id: true, email: true },
+    });
+    if (!linkedUser) {
+      this.logger.warn(`[Gideon] sub not linked to an OpenComp user`);
+      if (this.gideonJwtService.isEnforceMode()) return 'enforce_failed';
+      return null;
+    }
+    const userId = linkedUser.id;
 
     // Verify org exists and user is member (same check as session)
     const org = await db.organization.findUnique({
@@ -218,7 +236,9 @@ export class HybridAuthGuard implements CanActivate {
       select: { id: true },
     });
     if (!org) {
-      this.logger.warn(`[GideonShadow] tenant ${tenantId} not found in opencomp`);
+      this.logger.warn(
+        `[GideonShadow] tenant ${tenantId} not found in opencomp`,
+      );
       if (this.gideonJwtService.isEnforceMode()) return 'enforce_failed';
       return null;
     }
@@ -237,9 +257,7 @@ export class HybridAuthGuard implements CanActivate {
 
     request.organizationId = tenantId;
     request.userId = userId;
-    request.userEmail =
-      (result.payload.email as string | undefined) ||
-      (result.payload as Record<string, unknown>).email as string | undefined;
+    request.userEmail = result.payload.email ?? linkedUser.email;
     request.userRoles = member.role ? member.role.split(',') : null;
     request.memberId = member.id;
     request.memberDepartment = member.department;

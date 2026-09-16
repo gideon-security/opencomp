@@ -87,9 +87,7 @@ export function WizardStepScope({ control, defaults }: WizardStepScopeProps) {
                   helper="Layers your organization manages (e.g. data, databases, application configuration)."
                   items={customer}
                   emptyText="No customer-managed layers yet."
-                  onAdd={(item) =>
-                    field.onChange({ customer: [...customer, item], provider })
-                  }
+                  onAdd={(item) => field.onChange({ customer: [...customer, item], provider })}
                   onRemove={(index) =>
                     field.onChange({
                       customer: customer.filter((_, i) => i !== index),
@@ -102,9 +100,7 @@ export function WizardStepScope({ control, defaults }: WizardStepScopeProps) {
                   helper="Layers your hosting provider manages (e.g. underlying infrastructure)."
                   items={provider}
                   emptyText="No provider-managed layers yet."
-                  onAdd={(item) =>
-                    field.onChange({ customer, provider: [...provider, item] })
-                  }
+                  onAdd={(item) => field.onChange({ customer, provider: [...provider, item] })}
                   onRemove={(index) =>
                     field.onChange({
                       customer,

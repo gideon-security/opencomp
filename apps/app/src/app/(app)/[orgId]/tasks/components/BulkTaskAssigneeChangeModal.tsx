@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { Member, User } from '@db';
+import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
 import { Button } from '@gideon-defender/ui/button';
 import {
   Dialog,
@@ -12,9 +13,8 @@ import {
 } from '@gideon-defender/ui/dialog';
 import { Label } from '@gideon-defender/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@gideon-defender/ui/select';
-import { Avatar, AvatarFallback, AvatarImage } from '@gideon-defender/ui/avatar';
-import { Member, User } from '@db';
 import { Loader2, UserIcon } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useTasks } from '../hooks/useTasks';
 

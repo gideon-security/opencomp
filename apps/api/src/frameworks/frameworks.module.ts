@@ -9,7 +9,11 @@ import { FrameworkRollbackService } from './framework-versioning/framework-rollb
 @Module({
   imports: [AuthModule, TimelinesModule],
   controllers: [FrameworksController],
-  providers: [FrameworksService, FrameworkSyncService, FrameworkRollbackService],
+  providers: [
+    FrameworksService,
+    FrameworkSyncService,
+    FrameworkRollbackService,
+  ],
   exports: [FrameworksService],
 })
 export class FrameworksModule {}

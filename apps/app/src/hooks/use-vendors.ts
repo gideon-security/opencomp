@@ -1,7 +1,7 @@
 'use client';
 
-import { useApiSWR, UseApiSWROptions } from '@/hooks/use-api-swr';
-import { ApiResponse } from '@/lib/api-client';
+import { useApi } from '@/hooks/use-api';
+import { UseApiSWROptions } from '@/hooks/use-api-swr';
 import type {
   Impact,
   Likelihood,
@@ -11,7 +11,6 @@ import type {
   VendorCategory,
   VendorStatus,
 } from '@db';
-import { useApi } from '@/hooks/use-api';
 import { createEntityHooks, createLinkageActions } from './create-entity-hooks';
 
 export interface VendorLinkedTask {
@@ -136,13 +135,18 @@ export function useVendors(options: UseVendorsOptions = {}) {
  * const { data, isLoading, mutate } = useVendor(vendorId);
  */
 export function useVendor(vendorId: string | null, options: UseVendorOptions = {}) {
-  const result = vendorHooks.useOne(vendorId, options as never) as unknown as ReturnType<typeof vendorHooks.useOne> & {
+  const result = vendorHooks.useOne(vendorId, options as never) as unknown as ReturnType<
+    typeof vendorHooks.useOne
+  > & {
     vendor?: VendorResponse | null;
     entity: VendorResponse | null;
     data: VendorResponse | null;
   };
   // Keep backward-compat `vendor` alias alongside `entity`/`data`
-  return { ...result, vendor: (result as { entity: unknown }).entity ?? (result as { data: unknown }).data ?? null } as unknown as ReturnType<typeof vendorHooks.useOne> & { vendor: VendorResponse | null };
+  return {
+    ...result,
+    vendor: (result as { entity: unknown }).entity ?? (result as { data: unknown }).data ?? null,
+  } as unknown as ReturnType<typeof vendorHooks.useOne> & { vendor: VendorResponse | null };
 }
 
 /**

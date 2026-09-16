@@ -1,8 +1,5 @@
 export type PurgeS3BucketRef =
-  | 'orgAssets'
-  | 'default'
-  | 'knowledgeBase'
-  | 'questionnaire';
+  'orgAssets' | 'default' | 'knowledgeBase' | 'questionnaire';
 
 export type PurgeS3KeysByBucket = Partial<Record<PurgeS3BucketRef, string[]>>;
 

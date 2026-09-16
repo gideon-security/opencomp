@@ -28,15 +28,10 @@ export const downloadTrainingCertificate = authActionClient
 
     // Verify the caller has access to this organization
     if (session.activeOrganizationId !== organizationId) {
-      throw new Error(
-        'Unauthorized: You do not have access to this organization',
-      );
+      throw new Error('Unauthorized: You do not have access to this organization');
     }
 
-    const apiUrl =
-      env.NEXT_PUBLIC_API_URL ||
-      process.env.API_BASE_URL ||
-      'http://localhost:3333';
+    const apiUrl = env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL || 'http://localhost:3333';
 
     // Forward session cookies for authentication
     const headerStore = await headers();

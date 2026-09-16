@@ -21,10 +21,7 @@ import {
   extractFrameworkNames,
   type ExistingItemRaw,
 } from './add-existing-item-helpers';
-import {
-  ControlRequirementSelect,
-  type RequirementOption,
-} from './ControlRequirementSelect';
+import { ControlRequirementSelect, type RequirementOption } from './ControlRequirementSelect';
 
 export type { ExistingItemRaw };
 
@@ -36,12 +33,11 @@ interface ExistingItemDisplay {
 
 type ItemType = 'task' | 'control' | 'policy';
 
-const ITEM_TYPE_CONFIG: Record<ItemType, { label: string; linkPath: string }> =
-  {
-    task: { label: 'Task', linkPath: 'link-task' },
-    control: { label: 'Control', linkPath: 'link-control' },
-    policy: { label: 'Policy', linkPath: 'link-policy' },
-  };
+const ITEM_TYPE_CONFIG: Record<ItemType, { label: string; linkPath: string }> = {
+  task: { label: 'Task', linkPath: 'link-task' },
+  control: { label: 'Control', linkPath: 'link-control' },
+  policy: { label: 'Policy', linkPath: 'link-policy' },
+};
 
 interface AddExistingItemDialogProps {
   isOpen: boolean;
@@ -74,9 +70,7 @@ export function AddExistingItemDialog({
   const [linkedIds, setLinkedIds] = useState<Set<string>>(new Set());
 
   // Requirement-selection step (controls only).
-  const [pendingControl, setPendingControl] = useState<ExistingItemDisplay | null>(
-    null,
-  );
+  const [pendingControl, setPendingControl] = useState<ExistingItemDisplay | null>(null);
   const [requirements, setRequirements] = useState<RequirementOption[]>([]);
   const [isLoadingRequirements, setIsLoadingRequirements] = useState(false);
 
@@ -131,8 +125,7 @@ export function AddExistingItemDialog({
         router.refresh();
       } catch (error) {
         toast.error(
-          extractApiErrorMessage(error) ??
-            `Failed to link ${config.label.toLowerCase()}`,
+          extractApiErrorMessage(error) ?? `Failed to link ${config.label.toLowerCase()}`,
         );
       } finally {
         setLinkingId(null);
@@ -169,8 +162,7 @@ export function AddExistingItemDialog({
         <DialogHeader>
           <DialogTitle>Add Existing {config.label}</DialogTitle>
           <DialogDescription>
-            Search and link an existing {config.label.toLowerCase()} from
-            another framework.
+            Search and link an existing {config.label.toLowerCase()} from another framework.
           </DialogDescription>
         </DialogHeader>
 
@@ -187,70 +179,64 @@ export function AddExistingItemDialog({
           />
         ) : (
           <>
-        <div className="relative">
-          <Search className="text-muted-foreground absolute left-2.5 top-2.5 h-4 w-4" />
-          <Input
-            placeholder={`Search by name or framework...`}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="rounded-sm pl-8"
-            autoFocus
-          />
-        </div>
+            <div className="relative">
+              <Search className="text-muted-foreground absolute left-2.5 top-2.5 h-4 w-4" />
+              <Input
+                placeholder={`Search by name or framework...`}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="rounded-sm pl-8"
+                autoFocus
+              />
+            </div>
 
-        <ScrollArea className="h-[340px] rounded-sm border">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="text-muted-foreground h-5 w-5 animate-spin" />
-            </div>
-          ) : availableItems.length === 0 ? (
-            <div className="text-muted-foreground py-12 text-center text-sm">
-              {search
-                ? `No ${config.label.toLowerCase()}s matching "${search}"`
-                : `No unlinked ${config.label.toLowerCase()}s available`}
-            </div>
-          ) : (
-            <div className="space-y-1 p-2">
-              {availableItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="hover:bg-muted/50 flex items-center justify-between gap-2 rounded-sm p-2"
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-medium">
-                      {item.name}
-                    </div>
-                    {item.frameworkNames.length > 0 && (
-                      <div className="mt-0.5 flex flex-wrap gap-1">
-                        {item.frameworkNames.map((fn) => (
-                          <Badge
-                            key={fn}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {fn}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="shrink-0 rounded-sm"
-                    disabled={linkingId === item.id}
-                    onClick={() => handleLink(item)}
-                  >
-                    {linkingId === item.id ? (
-                      <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                    ) : null}
-                    Link
-                  </Button>
+            <ScrollArea className="h-[340px] rounded-sm border">
+              {isLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="text-muted-foreground h-5 w-5 animate-spin" />
                 </div>
-              ))}
-            </div>
-          )}
-        </ScrollArea>
+              ) : availableItems.length === 0 ? (
+                <div className="text-muted-foreground py-12 text-center text-sm">
+                  {search
+                    ? `No ${config.label.toLowerCase()}s matching "${search}"`
+                    : `No unlinked ${config.label.toLowerCase()}s available`}
+                </div>
+              ) : (
+                <div className="space-y-1 p-2">
+                  {availableItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="hover:bg-muted/50 flex items-center justify-between gap-2 rounded-sm p-2"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-sm font-medium">{item.name}</div>
+                        {item.frameworkNames.length > 0 && (
+                          <div className="mt-0.5 flex flex-wrap gap-1">
+                            {item.frameworkNames.map((fn) => (
+                              <Badge key={fn} variant="secondary" className="text-xs">
+                                {fn}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="shrink-0 rounded-sm"
+                        disabled={linkingId === item.id}
+                        onClick={() => handleLink(item)}
+                      >
+                        {linkingId === item.id ? (
+                          <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                        ) : null}
+                        Link
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
           </>
         )}
       </DialogContent>

@@ -136,6 +136,7 @@ If you get errors, be sure to fix them before committing.
 Every endpoint in `apps/api/src/` ships to three places: the public OpenAPI spec (`packages/docs/openapi.json`), the customer-facing MCP server published as `@gideon-defender/mcp-server` on npm, and the runtime `ValidationPipe`. Endpoints that break the contract either silently fail for AI agents (Claude Desktop, Cursor, Codex, etc.) or reject requests at runtime.
 
 **Read the full contract before adding a body-accepting endpoint:**
+
 - AI tool users: [`.claude/skills/api-endpoint-contract/SKILL.md`](.claude/skills/api-endpoint-contract/SKILL.md) (Claude auto-loads) or [`.cursor/rules/api-endpoint-contract.mdc`](.cursor/rules/api-endpoint-contract.mdc) (Cursor auto-loads).
 - For Codex/ChatGPT and human reading: see the "API Endpoint Contract" section in [`AGENTS.md`](AGENTS.md).
 

@@ -9,15 +9,9 @@ import type {
   RequirementMap,
   Task,
 } from '@db';
-import {
-  Stack,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@trycompai/design-system';
-import { useParams } from 'next/navigation';
+import { Stack, Tabs, TabsContent, TabsList, TabsTrigger } from '@trycompai/design-system';
 import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 import type { ControlProgressResponse } from '../data/getOrganizationControlProgress';
 import { PoliciesTable } from './PoliciesTable';
 import { RequirementsTable } from './RequirementsTable';
@@ -56,7 +50,9 @@ export function SingleControl({
     <Tabs defaultValue="policies">
       <Stack gap="lg">
         <TabsList variant="underline">
-          <TabsTrigger value="policies">{t('tabPolicies', { count: relatedPolicies.length })}</TabsTrigger>
+          <TabsTrigger value="policies">
+            {t('tabPolicies', { count: relatedPolicies.length })}
+          </TabsTrigger>
           <TabsTrigger value="tasks">{t('tabTasks', { count: relatedTasks.length })}</TabsTrigger>
           <TabsTrigger value="requirements">
             {t('tabRequirements', { count: control.requirementsMapped.length })}

@@ -86,11 +86,7 @@ describe('computeSuggestionRanges', () => {
         '',
         'Content of section two.',
       ].join('\n');
-      const proposed = [
-        '## Section Two',
-        '',
-        'Content of section two.',
-      ].join('\n');
+      const proposed = ['## Section Two', '', 'Content of section two.'].join('\n');
       const posMap = makePositionMap(original);
 
       const ranges = computeSuggestionRanges(posMap, proposed);
@@ -175,16 +171,13 @@ describe('computeSuggestionRanges', () => {
 
     it('produces an insert range when a new section is appended', () => {
       const original = '## Existing\n\nExisting content.';
-      const proposed =
-        '## Existing\n\nExisting content.\n\n## New Section\n\nNew content.';
+      const proposed = '## Existing\n\nExisting content.\n\n## New Section\n\nNew content.';
       const posMap = makePositionMap(original);
 
       const ranges = computeSuggestionRanges(posMap, proposed);
 
       expect(ranges.length).toBeGreaterThanOrEqual(1);
-      const insertRange = ranges.find(
-        (r) => r.type === 'insert' || r.type === 'modify',
-      );
+      const insertRange = ranges.find((r) => r.type === 'insert' || r.type === 'modify');
       expect(insertRange).toBeDefined();
       expect(insertRange!.proposedText).toContain('New Section');
     });
@@ -242,11 +235,7 @@ describe('computeSuggestionRanges', () => {
         '',
         'Content C.',
       ].join('\n');
-      const proposed = [
-        '## Section C',
-        '',
-        'Content C.',
-      ].join('\n');
+      const proposed = ['## Section C', '', 'Content C.'].join('\n');
       const posMap = makePositionMap(original);
 
       const ranges = computeSuggestionRanges(posMap, proposed);
@@ -255,9 +244,7 @@ describe('computeSuggestionRanges', () => {
       // into a single range
       const deleteRanges = ranges.filter((r) => r.type === 'delete');
       // Whether merged or not, the total coverage should include both sections
-      const allOriginalText = deleteRanges
-        .map((r) => r.originalText)
-        .join(' ');
+      const allOriginalText = deleteRanges.map((r) => r.originalText).join(' ');
       expect(allOriginalText).toContain('Section A');
       expect(allOriginalText).toContain('Section B');
     });
@@ -304,17 +291,10 @@ describe('computeSuggestionRanges', () => {
     it('merges overlapping ranges of different types into modify', () => {
       // When two ranges overlap/are adjacent but have different types,
       // the merged result should be 'modify'
-      const original = [
-        'Line A',
-        'Line B',
-        'Line C',
-      ].join('\n');
+      const original = ['Line A', 'Line B', 'Line C'].join('\n');
       // Remove Line B and change Line C -- these may produce adjacent
       // delete + modify hunks
-      const proposed = [
-        'Line A',
-        'Changed Line C',
-      ].join('\n');
+      const proposed = ['Line A', 'Changed Line C'].join('\n');
       const posMap = makePositionMap(original);
 
       const ranges = computeSuggestionRanges(posMap, proposed);
@@ -351,18 +331,8 @@ describe('computeSuggestionRanges', () => {
     });
 
     it('handles multi-line modifications', () => {
-      const original = [
-        '## Policy',
-        '',
-        'We shall do X.',
-        'We shall also do Y.',
-      ].join('\n');
-      const proposed = [
-        '## Policy',
-        '',
-        'We must do A.',
-        'We must also do B.',
-      ].join('\n');
+      const original = ['## Policy', '', 'We shall do X.', 'We shall also do Y.'].join('\n');
+      const proposed = ['## Policy', '', 'We must do A.', 'We must also do B.'].join('\n');
       const posMap = makePositionMap(original);
 
       const ranges = computeSuggestionRanges(posMap, proposed);
@@ -416,8 +386,7 @@ describe('computeSuggestionRanges', () => {
 
     it('produces a suggestion when only a link is added', () => {
       const current = 'Store passwords in an approved password manager.';
-      const proposed =
-        'Store passwords in an approved [password manager](https://1password.com).';
+      const proposed = 'Store passwords in an approved [password manager](https://1password.com).';
       const posMap = makePositionMap(current);
 
       const ranges = computeSuggestionRanges(posMap, proposed);

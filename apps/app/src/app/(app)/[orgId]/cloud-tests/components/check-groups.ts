@@ -82,21 +82,15 @@ export function buildCheckGroups(findings: Finding[]): CheckGroup[] {
 
   const groups: CheckGroup[] = [];
   for (const [checkKey, bucket] of byKey) {
-    const failed = bucket.filter(
-      (f) => f.status === 'failed' || f.status === 'FAILED',
-    );
-    const passed = bucket.filter(
-      (f) => f.status === 'passed' || f.status === 'success',
-    );
+    const failed = bucket.filter((f) => f.status === 'failed' || f.status === 'FAILED');
+    const passed = bucket.filter((f) => f.status === 'passed' || f.status === 'success');
     const representative = failed[0] ?? bucket[0];
     const severity =
       failed.length === 0
         ? 'info'
         : failed.reduce((highest, f) => {
             const sev = (f.severity ?? 'info').toLowerCase();
-            return (SEVERITY_RANK[sev] ?? 0) > (SEVERITY_RANK[highest] ?? 0)
-              ? sev
-              : highest;
+            return (SEVERITY_RANK[sev] ?? 0) > (SEVERITY_RANK[highest] ?? 0) ? sev : highest;
           }, 'info');
 
     groups.push({
@@ -115,8 +109,7 @@ export function buildCheckGroups(findings: Finding[]): CheckGroup[] {
     if (a.failed.length === 0 && b.failed.length > 0) return 1;
     // Among failures, highest severity first.
     if (a.failed.length > 0 && b.failed.length > 0) {
-      const sevDiff =
-        (SEVERITY_RANK[b.severity] ?? 0) - (SEVERITY_RANK[a.severity] ?? 0);
+      const sevDiff = (SEVERITY_RANK[b.severity] ?? 0) - (SEVERITY_RANK[a.severity] ?? 0);
       if (sevDiff !== 0) return sevDiff;
     }
     // Otherwise alphabetical for stability.

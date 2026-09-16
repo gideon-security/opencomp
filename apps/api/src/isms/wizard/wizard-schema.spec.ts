@@ -70,9 +70,9 @@ describe('partialWizardAnswersSchema (incremental save)', () => {
 
 describe('saveWizardProfileSchema', () => {
   it('requires a frameworkId', () => {
-    expect(
-      saveWizardProfileSchema.safeParse({ answers: {} }).success,
-    ).toBe(false);
+    expect(saveWizardProfileSchema.safeParse({ answers: {} }).success).toBe(
+      false,
+    );
   });
 
   it('accepts frameworkId + partial answers + complete flag', () => {

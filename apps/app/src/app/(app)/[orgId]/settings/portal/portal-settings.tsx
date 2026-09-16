@@ -59,7 +59,9 @@ export function PortalSettings({
               t('portal.deviceAgentStepError'),
             );
           }}
-          disabled={!hasPermission('organization', 'update') || updatingField === 'deviceAgentStepEnabled'}
+          disabled={
+            !hasPermission('organization', 'update') || updatingField === 'deviceAgentStepEnabled'
+          }
         />
       </SettingRow>
       <SettingRow
@@ -77,7 +79,10 @@ export function PortalSettings({
               t('portal.securityTrainingStepError'),
             );
           }}
-          disabled={!hasPermission('organization', 'update') || updatingField === 'securityTrainingStepEnabled'}
+          disabled={
+            !hasPermission('organization', 'update') ||
+            updatingField === 'securityTrainingStepEnabled'
+          }
         />
       </SettingRow>
       <SettingRow
@@ -95,7 +100,10 @@ export function PortalSettings({
               t('portal.whistleblowerReportError'),
             );
           }}
-          disabled={!hasPermission('organization', 'update') || updatingField === 'whistleblowerReportEnabled'}
+          disabled={
+            !hasPermission('organization', 'update') ||
+            updatingField === 'whistleblowerReportEnabled'
+          }
         />
       </SettingRow>
       <SettingRow
@@ -113,7 +121,9 @@ export function PortalSettings({
               t('portal.accessRequestError'),
             );
           }}
-          disabled={!hasPermission('organization', 'update') || updatingField === 'accessRequestFormEnabled'}
+          disabled={
+            !hasPermission('organization', 'update') || updatingField === 'accessRequestFormEnabled'
+          }
         />
       </SettingRow>
     </SettingGroup>

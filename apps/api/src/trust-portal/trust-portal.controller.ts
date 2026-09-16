@@ -447,7 +447,8 @@ export class TrustPortalController {
   @Put('settings/security-questionnaire')
   @RequirePermission('trust', 'update')
   @ApiOperation({
-    summary: 'Show or hide the Security Questionnaire on the public trust portal',
+    summary:
+      'Show or hide the Security Questionnaire on the public trust portal',
   })
   @ApiBody({
     schema: {

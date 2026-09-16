@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  setMockPermissions,
-  mockHasPermission,
   ADMIN_PERMISSIONS,
   AUDITOR_PERMISSIONS,
+  mockHasPermission,
+  setMockPermissions,
 } from '@/test-utils/mocks/permissions';
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock usePermissions
 vi.mock('@/hooks/use-permissions', () => ({
@@ -66,34 +66,17 @@ vi.mock('@gideon-defender/ui/cn', () => ({
 }));
 
 vi.mock('@gideon-defender/ui/dialog', () => ({
-  Dialog: ({
-    children,
-    open,
-  }: {
-    children: React.ReactNode;
-    open: boolean;
-  }) => (open ? <div data-testid="dialog">{children}</div> : null),
-  DialogContent: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => <div>{children}</div>,
-  DialogDescription: ({ children }: { children: React.ReactNode }) => (
-    <p>{children}</p>
-  ),
-  DialogFooter: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => <div data-testid="dialog-footer">{children}</div>,
-  DialogHeader: ({ children }: { children: React.ReactNode }) => (
+  Dialog: ({ children, open }: { children: React.ReactNode; open: boolean }) =>
+    open ? <div data-testid="dialog">{children}</div> : null,
+  DialogContent: ({ children }: { children: React.ReactNode; className?: string }) => (
     <div>{children}</div>
   ),
-  DialogTitle: ({ children }: { children: React.ReactNode }) => (
-    <h2>{children}</h2>
+  DialogDescription: ({ children }: { children: React.ReactNode }) => <p>{children}</p>,
+  DialogFooter: ({ children }: { children: React.ReactNode; className?: string }) => (
+    <div data-testid="dialog-footer">{children}</div>
   ),
+  DialogHeader: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  DialogTitle: ({ children }: { children: React.ReactNode }) => <h2>{children}</h2>,
 }));
 
 vi.mock('@gideon-defender/ui/tabs', () => ({
@@ -104,13 +87,9 @@ vi.mock('@gideon-defender/ui/tabs', () => ({
     value?: string;
     onValueChange?: (v: string) => void;
   }) => <div>{children}</div>,
-  TabsContent: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    value: string;
-    className?: string;
-  }) => <div>{children}</div>,
+  TabsContent: ({ children }: { children: React.ReactNode; value: string; className?: string }) => (
+    <div>{children}</div>
+  ),
   TabsList: ({
     children,
   }: {
@@ -118,21 +97,14 @@ vi.mock('@gideon-defender/ui/tabs', () => ({
     className?: string;
     style?: React.CSSProperties;
   }) => <div>{children}</div>,
-  TabsTrigger: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    value: string;
-  }) => <div>{children}</div>,
+  TabsTrigger: ({ children }: { children: React.ReactNode; value: string }) => (
+    <div>{children}</div>
+  ),
 }));
 
 vi.mock('lucide-react', () => ({
-  Loader2: ({ className: _c }: { className?: string }) => (
-    <span data-testid="loader-icon" />
-  ),
-  Trash2: ({ className: _c }: { className?: string }) => (
-    <span data-testid="trash-icon" />
-  ),
+  Loader2: ({ className: _c }: { className?: string }) => <span data-testid="loader-icon" />,
+  Trash2: ({ className: _c }: { className?: string }) => <span data-testid="trash-icon" />,
 }));
 
 vi.mock('@trycompai/design-system', () => ({
@@ -243,9 +215,7 @@ describe('CloudSettingsModal permission gating', () => {
 
   it('renders nothing when connectedProviders is empty', () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    const { container } = render(
-      <CloudSettingsModal {...defaultProps} connectedProviders={[]} />,
-    );
+    const { container } = render(<CloudSettingsModal {...defaultProps} connectedProviders={[]} />);
     expect(container.innerHTML).toBe('');
   });
 
@@ -261,18 +231,14 @@ describe('CloudSettingsModal permission gating', () => {
     // integration:delete. Admin has both, so the button shows.
     setMockPermissions(ADMIN_PERMISSIONS);
     render(<CloudSettingsModal {...defaultProps} />);
-    expect(
-      screen.getByRole('button', { name: /cloudTests_switchTo/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /cloudTests_switchTo/i })).toBeInTheDocument();
   });
 
   it('hides the AWS scan-mode switch button for users without integration:update', () => {
     // Auditor has read-only permissions — should not see Switch.
     setMockPermissions(AUDITOR_PERMISSIONS);
     render(<CloudSettingsModal {...defaultProps} />);
-    expect(
-      screen.queryByRole('button', { name: /cloudTests_switchTo/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /cloudTests_switchTo/i })).not.toBeInTheDocument();
   });
 
   it('shows the AWS scan-mode switch for update-only users (NOT delete users)', () => {
@@ -281,9 +247,7 @@ describe('CloudSettingsModal permission gating', () => {
     // because the API gates this endpoint on integration:update only.
     setMockPermissions({ integration: ['read', 'update'] });
     render(<CloudSettingsModal {...defaultProps} />);
-    expect(
-      screen.getByRole('button', { name: /cloudTests_switchTo/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /cloudTests_switchTo/i })).toBeInTheDocument();
     // ...and they correctly DO NOT see Disconnect (delete permission required).
     expect(screen.queryByText('cloudTests_disconnect')).not.toBeInTheDocument();
   });

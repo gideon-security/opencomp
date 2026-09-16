@@ -1,7 +1,7 @@
 'use client';
 
-import { authClient } from '@/utils/auth-client';
 import { buildAuthCallbackUrl } from '@/utils/auth-callback';
+import { authClient } from '@/utils/auth-client';
 import { Button } from '@gideon-defender/ui/button';
 import { Icons } from '@gideon-defender/ui/icons';
 import { Loader2 } from 'lucide-react';

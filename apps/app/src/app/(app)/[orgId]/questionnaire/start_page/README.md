@@ -16,6 +16,7 @@ start_page/
 ## Purpose
 
 The start page (`/questionnaire`) displays:
+
 - Header with navigation buttons (Questionnaires, Knowledge Base)
 - "New Questionnaire" card with button to create a new questionnaire
 - History of previously parsed questionnaires
@@ -25,4 +26,3 @@ The start page (`/questionnaire`) displays:
 1. **First Step (Start Page)**: `/questionnaire` - Shows overview and history
 2. **Second Step (Create)**: `/questionnaire/new_questionnaire` - File upload and parsing
 3. **View Details**: `/questionnaire/[questionnaireId]` - View individual questionnaire
-

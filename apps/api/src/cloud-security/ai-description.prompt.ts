@@ -12,7 +12,9 @@ export const checkDescriptionSchema = z.object({
     .string()
     .min(1)
     .max(160)
-    .describe('Plain-English summary of what this check verifies (~1 sentence).'),
+    .describe(
+      'Plain-English summary of what this check verifies (~1 sentence).',
+    ),
   description: z
     .string()
     .min(20)
@@ -71,7 +73,9 @@ export interface CheckDescriptionInput {
   remediation: string | null;
 }
 
-export function buildCheckDescriptionPrompt(input: CheckDescriptionInput): string {
+export function buildCheckDescriptionPrompt(
+  input: CheckDescriptionInput,
+): string {
   return [
     `Provider: ${input.provider.toUpperCase()}`,
     input.serviceName ? `Service: ${input.serviceName}` : null,

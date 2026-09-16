@@ -282,7 +282,9 @@ export class BrowserMfaInstructionsService {
   /** Accepts a full URL or a bare hostname; always returns a normalized host. */
   private normalizeHost(rawHost: string): string {
     const trimmed = rawHost.trim();
-    const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+    const withScheme = /^https?:\/\//i.test(trimmed)
+      ? trimmed
+      : `https://${trimmed}`;
     try {
       return normalizeHostnameFromUrl(withScheme);
     } catch {

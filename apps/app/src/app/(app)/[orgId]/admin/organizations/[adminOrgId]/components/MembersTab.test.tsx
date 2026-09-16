@@ -1,6 +1,6 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockNextIntl } from '@/test-utils/mocks/next-intl';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 mockNextIntl();
 
@@ -73,51 +73,29 @@ describe('MembersTab', () => {
 
   it('renders members table', async () => {
     mockGet.mockResolvedValue({ data: [] });
-    render(
-      <MembersTab
-        orgId="org_1"
-        orgName="Acme Corp"
-        members={mockMembers}
-      />,
-    );
+    render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
 
     await waitFor(() => expect(mockGet).toHaveBeenCalled());
     expect(screen.getByText('Alice Owner')).toBeInTheDocument();
     expect(screen.getByText('Bob Admin')).toBeInTheDocument();
     expect(screen.getByText('alice@acme.com')).toBeInTheDocument();
-    expect(
-      screen.getByText(/organizations\.membersTab\.members/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/organizations\.membersTab\.members/i)).toBeInTheDocument();
   });
 
   it('fetches and renders pending invitations', async () => {
     mockGet.mockResolvedValue({ data: mockInvitations });
-    render(
-      <MembersTab
-        orgId="org_1"
-        orgName="Acme Corp"
-        members={mockMembers}
-      />,
-    );
+    render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
 
     await waitFor(() => {
       expect(screen.getByText('charlie@acme.com')).toBeInTheDocument();
     });
 
-    expect(mockGet).toHaveBeenCalledWith(
-      '/v1/admin/organizations/org_1/invitations',
-    );
+    expect(mockGet).toHaveBeenCalledWith('/v1/admin/organizations/org_1/invitations');
   });
 
   it('shows empty state when no pending invitations', async () => {
     mockGet.mockResolvedValue({ data: [] });
-    render(
-      <MembersTab
-        orgId="org_1"
-        orgName="Acme Corp"
-        members={mockMembers}
-      />,
-    );
+    render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
 
     await waitFor(() => {
       expect(screen.getByText(/organizations\.membersTab\.noInvitations/i)).toBeInTheDocument();
@@ -126,13 +104,7 @@ describe('MembersTab', () => {
 
   it('shows Invite Member button', async () => {
     mockGet.mockResolvedValue({ data: [] });
-    render(
-      <MembersTab
-        orgId="org_1"
-        orgName="Acme Corp"
-        members={mockMembers}
-      />,
-    );
+    render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
 
     await waitFor(() => expect(mockGet).toHaveBeenCalled());
     expect(
@@ -144,13 +116,7 @@ describe('MembersTab', () => {
 
   it('renders Login As buttons for each member', async () => {
     mockGet.mockResolvedValue({ data: [] });
-    render(
-      <MembersTab
-        orgId="org_1"
-        orgName="Acme Corp"
-        members={mockMembers}
-      />,
-    );
+    render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
 
     await waitFor(() => expect(mockGet).toHaveBeenCalled());
     const loginButtons = screen.getAllByRole('button', {
@@ -161,18 +127,10 @@ describe('MembersTab', () => {
 
   it('calls correct invitations API endpoint', async () => {
     mockGet.mockResolvedValue({ data: [] });
-    render(
-      <MembersTab
-        orgId="org_test"
-        orgName="Test Corp"
-        members={[]}
-      />,
-    );
+    render(<MembersTab orgId="org_test" orgName="Test Corp" members={[]} />);
 
     await waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith(
-        '/v1/admin/organizations/org_test/invitations',
-      );
+      expect(mockGet).toHaveBeenCalledWith('/v1/admin/organizations/org_test/invitations');
     });
   });
 
@@ -180,13 +138,7 @@ describe('MembersTab', () => {
     it('does NOT call impersonateUser immediately on Login As click', async () => {
       const { authClient } = await import('@/utils/auth-client');
       mockGet.mockResolvedValue({ data: [] });
-      render(
-        <MembersTab
-          orgId="org_1"
-          orgName="Acme Corp"
-          members={mockMembers}
-        />,
-      );
+      render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
 
       const loginButtons = screen.getAllByRole('button', {
         name: /organizations\.membersTab\.loginAs/i,
@@ -199,39 +151,7 @@ describe('MembersTab', () => {
 
     it('shows confirmation dialog when Login As is clicked', async () => {
       mockGet.mockResolvedValue({ data: [] });
-      render(
-        <MembersTab
-          orgId="org_1"
-          orgName="Acme Corp"
-          members={mockMembers}
-        />,
-      );
-
-      const loginButtons = screen.getAllByRole('button', {
-        name: /organizations\.membersTab\.loginAs/i,
-      });
-      fireEvent.click(loginButtons[0]);
-
-      await waitFor(() => {
-        expect(screen.getByText(/organizations\.membersTab\.impersonate\.title/i)).toBeInTheDocument();
-      });
-
-      expect(
-        screen.getByText(
-          /organizations\.membersTab\.impersonate\.descriptionPrefix/i,
-        ),
-      ).toBeInTheDocument();
-    });
-
-    it('describes security implications in the confirmation dialog', async () => {
-      mockGet.mockResolvedValue({ data: [] });
-      render(
-        <MembersTab
-          orgId="org_1"
-          orgName="Acme Corp"
-          members={mockMembers}
-        />,
-      );
+      render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
 
       const loginButtons = screen.getAllByRole('button', {
         name: /organizations\.membersTab\.loginAs/i,
@@ -240,22 +160,18 @@ describe('MembersTab', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(
-            /organizations\.membersTab\.impersonate\.descriptionSuffix/i,
-          ),
+          screen.getByText(/organizations\.membersTab\.impersonate\.title/i),
         ).toBeInTheDocument();
       });
+
+      expect(
+        screen.getByText(/organizations\.membersTab\.impersonate\.descriptionPrefix/i),
+      ).toBeInTheDocument();
     });
 
-    it('has a Cancel button that closes the dialog', async () => {
+    it('describes security implications in the confirmation dialog', async () => {
       mockGet.mockResolvedValue({ data: [] });
-      render(
-        <MembersTab
-          orgId="org_1"
-          orgName="Acme Corp"
-          members={mockMembers}
-        />,
-      );
+      render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
 
       const loginButtons = screen.getAllByRole('button', {
         name: /organizations\.membersTab\.loginAs/i,
@@ -263,15 +179,37 @@ describe('MembersTab', () => {
       fireEvent.click(loginButtons[0]);
 
       await waitFor(() => {
-        expect(screen.getByText(/organizations\.membersTab\.impersonate\.title/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/organizations\.membersTab\.impersonate\.descriptionSuffix/i),
+        ).toBeInTheDocument();
       });
+    });
 
-      fireEvent.click(screen.getByRole('button', {
-          name: /organizations\.membersTab\.cancel/i,
-        }));
+    it('has a Cancel button that closes the dialog', async () => {
+      mockGet.mockResolvedValue({ data: [] });
+      render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
+
+      const loginButtons = screen.getAllByRole('button', {
+        name: /organizations\.membersTab\.loginAs/i,
+      });
+      fireEvent.click(loginButtons[0]);
 
       await waitFor(() => {
-        expect(screen.queryByText(/organizations\.membersTab\.impersonate\.title/i)).not.toBeInTheDocument();
+        expect(
+          screen.getByText(/organizations\.membersTab\.impersonate\.title/i),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(
+        screen.getByRole('button', {
+          name: /organizations\.membersTab\.cancel/i,
+        }),
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText(/organizations\.membersTab\.impersonate\.title/i),
+        ).not.toBeInTheDocument();
       });
     });
 
@@ -281,13 +219,7 @@ describe('MembersTab', () => {
       (authClient.organization.setActive as ReturnType<typeof vi.fn>).mockResolvedValue({});
       mockGet.mockResolvedValue({ data: [] });
 
-      render(
-        <MembersTab
-          orgId="org_1"
-          orgName="Acme Corp"
-          members={mockMembers}
-        />,
-      );
+      render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
 
       const loginButtons = screen.getAllByRole('button', {
         name: /organizations\.membersTab\.loginAs/i,
@@ -295,12 +227,16 @@ describe('MembersTab', () => {
       fireEvent.click(loginButtons[0]);
 
       await waitFor(() => {
-        expect(screen.getByText(/organizations\.membersTab\.impersonate\.title/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/organizations\.membersTab\.impersonate\.title/i),
+        ).toBeInTheDocument();
       });
 
-      fireEvent.click(screen.getByRole('button', {
+      fireEvent.click(
+        screen.getByRole('button', {
           name: /organizations\.membersTab\.impersonate\.confirm$/i,
-        }));
+        }),
+      );
 
       await waitFor(() => {
         expect(authClient.admin.impersonateUser).toHaveBeenCalledWith({

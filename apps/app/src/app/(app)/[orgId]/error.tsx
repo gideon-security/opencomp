@@ -1,8 +1,8 @@
 'use client';
 
 import { Button } from '@gideon-defender/ui/button';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { useEffect } from 'react';
 
 export default function ErrorPage({

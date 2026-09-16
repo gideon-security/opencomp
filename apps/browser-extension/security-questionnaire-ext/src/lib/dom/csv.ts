@@ -1,7 +1,4 @@
-export function parseCsvRows(
-  text: string,
-  options: { keepEmptyRows?: boolean } = {},
-): string[][] {
+export function parseCsvRows(text: string, options: { keepEmptyRows?: boolean } = {}): string[][] {
   const rows: string[][] = [];
   let row: string[] = [];
   let cell = '';
