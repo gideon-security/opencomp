@@ -1,10 +1,9 @@
 'use client';
 
-import { authClient } from '@/utils/auth-client';
+import { signOutFromGideon } from '@/utils/gideon-sign-out';
 import { Button } from '@gideon-defender/ui/button';
 import { DropdownMenuItem } from '@gideon-defender/ui/dropdown-menu';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export function SignOut({
@@ -17,18 +16,11 @@ export function SignOut({
   size?: 'default' | 'sm' | 'lg' | 'icon';
 }) {
   const t = useTranslations('auth');
-  const router = useRouter();
   const [isLoading, setLoading] = useState(false);
 
   const handleSignOut = async () => {
     setLoading(true);
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push('/auth');
-        },
-      },
-    });
+    await signOutFromGideon();
   };
 
   if (asButton) {

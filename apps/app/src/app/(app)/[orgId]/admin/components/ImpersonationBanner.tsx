@@ -1,15 +1,19 @@
 'use client';
 
 import { useAuthMe } from '@/hooks/use-auth-me';
-import { authClient } from '@/utils/auth-client';
+import { api } from '@/lib/api-client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+interface StopImpersonatingResponse {
+  success: boolean;
+  activeOrganizationId: string | null;
+}
+
 export function ImpersonationBanner() {
-  // Milestone 2 — impersonation state comes from GET /v1/auth/me (resolved
-  // server-side by HybridAuthGuard), not better-auth session resolution.
-  // Stop-impersonating still uses the better-auth admin plugin until it is
-  // reimplemented as a native endpoint in Milestone 3 (plan §6 step 15).
+  // Impersonation state comes from GET /v1/auth/me (resolved server-side by
+  // HybridAuthGuard); stopping goes through the native admin endpoint, which
+  // restores the admin session cookie and returns its org for the landing.
   const { user, impersonatedBy, mutate } = useAuthMe();
   const router = useRouter();
   const [stopping, setStopping] = useState(false);
@@ -19,16 +23,16 @@ export function ImpersonationBanner() {
   const handleStop = async () => {
     setStopping(true);
     try {
-      await authClient.admin.stopImpersonating();
+      const res = await api.post<StopImpersonatingResponse>('/v1/admin/stop-impersonating');
+      if (res.error || !res.data?.success) {
+        throw new Error(res.error ?? 'Failed to stop impersonating');
+      }
       // Revalidate GET /v1/auth/me so the banner hides immediately. Without
       // this the SWR cache still holds the impersonated user (no focus
       // revalidation) and router.refresh() alone does not remount us.
       await mutate();
-      const { data: restored } = await authClient.getSession();
-      (authClient.$store as { notify: (signal: string) => void }).notify('$sessionSignal');
-      const adminOrgId = (restored?.session as Record<string, unknown> | undefined)
-        ?.activeOrganizationId;
-      if (typeof adminOrgId === 'string' && adminOrgId) {
+      const adminOrgId = res.data.activeOrganizationId;
+      if (adminOrgId) {
         router.push(`/${adminOrgId}/admin/organizations`);
       } else {
         router.push('/');

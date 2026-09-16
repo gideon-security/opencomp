@@ -16,15 +16,10 @@ vi.mock('@/lib/api-client', () => ({
   },
 }));
 
-vi.mock('@/utils/auth-client', () => ({
-  authClient: {
-    admin: { impersonateUser: vi.fn() },
-    organization: { setActive: vi.fn() },
-  },
-}));
+const mockPush = vi.fn();
 
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: mockPush }),
 }));
 
 import { MembersTab } from './MembersTab';
@@ -135,8 +130,7 @@ describe('MembersTab', () => {
   });
 
   describe('impersonation confirmation dialog', () => {
-    it('does NOT call impersonateUser immediately on Login As click', async () => {
-      const { authClient } = await import('@/utils/auth-client');
+    it('does NOT call the impersonate endpoint immediately on Login As click', async () => {
       mockGet.mockResolvedValue({ data: [] });
       render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
 
@@ -145,7 +139,7 @@ describe('MembersTab', () => {
       });
       fireEvent.click(loginButtons[0]);
 
-      expect(authClient.admin.impersonateUser).not.toHaveBeenCalled();
+      expect(mockPost).not.toHaveBeenCalledWith('/v1/admin/impersonate', expect.anything());
       await waitFor(() => expect(mockGet).toHaveBeenCalled());
     });
 
@@ -213,10 +207,8 @@ describe('MembersTab', () => {
       });
     });
 
-    it('calls impersonateUser only after confirming the dialog', async () => {
-      const { authClient } = await import('@/utils/auth-client');
-      (authClient.admin.impersonateUser as ReturnType<typeof vi.fn>).mockResolvedValue({});
-      (authClient.organization.setActive as ReturnType<typeof vi.fn>).mockResolvedValue({});
+    it('calls the native impersonate endpoint and lands on the org overview', async () => {
+      mockPost.mockResolvedValue({ data: { success: true, userId: 'usr_1' } });
       mockGet.mockResolvedValue({ data: [] });
 
       render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
@@ -239,10 +231,38 @@ describe('MembersTab', () => {
       );
 
       await waitFor(() => {
-        expect(authClient.admin.impersonateUser).toHaveBeenCalledWith({
-          userId: 'usr_1',
-        });
+        expect(mockPost).toHaveBeenCalledWith('/v1/admin/impersonate', { userId: 'usr_1' });
       });
+      expect(mockPush).toHaveBeenCalledWith('/org_1/overview');
+    });
+
+    it('stays put when impersonation fails', async () => {
+      mockPost.mockResolvedValue({ error: 'Cannot impersonate a banned user' });
+      mockGet.mockResolvedValue({ data: [] });
+
+      render(<MembersTab orgId="org_1" orgName="Acme Corp" members={mockMembers} />);
+
+      const loginButtons = screen.getAllByRole('button', {
+        name: /organizations\.membersTab\.loginAs/i,
+      });
+      fireEvent.click(loginButtons[0]);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/organizations\.membersTab\.impersonate\.title/i),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(
+        screen.getByRole('button', {
+          name: /organizations\.membersTab\.impersonate\.confirm$/i,
+        }),
+      );
+
+      await waitFor(() => {
+        expect(mockPost).toHaveBeenCalledWith('/v1/admin/impersonate', { userId: 'usr_1' });
+      });
+      expect(mockPush).not.toHaveBeenCalled();
     });
   });
 });

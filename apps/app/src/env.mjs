@@ -3,13 +3,7 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
-    AUTH_GOOGLE_ID: z.string().optional(),
-    AUTH_GOOGLE_SECRET: z.string().optional(),
-    AUTH_GITHUB_ID: z.string().optional(),
-    AUTH_GITHUB_SECRET: z.string().optional(),
     AUTH_SECRET: z.string(),
-    AUTH_MICROSOFT_CLIENT_ID: z.string().optional(),
-    AUTH_MICROSOFT_CLIENT_SECRET: z.string().optional(),
     DATABASE_URL: z.string().min(1),
     OPENAI_API_KEY: z.string().optional(),
     GROQ_API_KEY: z.string().optional(),
@@ -50,17 +44,10 @@ export const env = createEnv({
     NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER: z.string().optional(),
     NEXT_PUBLIC_SELF_HOSTED: z.string().optional(),
     NEXT_PUBLIC_APP_ENV: z.string().optional(),
-    NEXT_PUBLIC_LEGACY_AUTH_ENABLED: z.string().optional(),
   },
 
   runtimeEnv: {
-    AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
-    AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
-    AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
-    AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
     AUTH_SECRET: process.env.AUTH_SECRET,
-    AUTH_MICROSOFT_CLIENT_ID: process.env.AUTH_MICROSOFT_CLIENT_ID,
-    AUTH_MICROSOFT_CLIENT_SECRET: process.env.AUTH_MICROSOFT_CLIENT_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     GROQ_API_KEY: process.env.GROQ_API_KEY,
@@ -98,7 +85,6 @@ export const env = createEnv({
     INTERNAL_API_TOKEN: process.env.INTERNAL_API_TOKEN,
     NEXT_PUBLIC_SELF_HOSTED: process.env.NEXT_PUBLIC_SELF_HOSTED,
     NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
-    NEXT_PUBLIC_LEGACY_AUTH_ENABLED: process.env.NEXT_PUBLIC_LEGACY_AUTH_ENABLED,
   },
 
   skipValidation: !!process.env.CI || !!process.env.SKIP_ENV_VALIDATION,

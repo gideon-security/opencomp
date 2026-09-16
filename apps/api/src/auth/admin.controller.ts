@@ -159,7 +159,7 @@ export class AdminController {
   async stopImpersonating(
     @Req() req: AuthenticatedRequest,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ success: boolean }> {
+  ): Promise<{ success: boolean; activeOrganizationId: string | null }> {
     const adminUserId = req.impersonatedBy;
     if (!adminUserId) {
       throw new BadRequestException('No active impersonation session');
@@ -191,7 +191,9 @@ export class AdminController {
         path: '/admin/stop-impersonating',
       },
     });
-    return { success: true };
+    // Return the restored session's org so the frontend can land back on the
+    // admin surface without a second session read.
+    return { success: true, activeOrganizationId: session.activeOrganizationId };
   }
 
   @Post('ban')
