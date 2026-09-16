@@ -9,13 +9,12 @@ import { HybridAuthGuard } from './hybrid-auth.guard';
 import { ApiKeyService } from './api-key.service';
 import { SKIP_ORG_CHECK_KEY } from './skip-org-check.decorator';
 
-// Mock auth.server — only the two session resolvers the guard uses.
-const mockGetSession = jest.fn();
+// Mock auth.server — only the legacy MCP session resolver the guard still
+// uses as fallback for Gram-issued OAuth tokens.
 const mockGetMcpSession = jest.fn();
 jest.mock('./auth.server', () => ({
   auth: {
     api: {
-      getSession: (...args: unknown[]) => mockGetSession(...args),
       getMcpSession: (...args: unknown[]) => mockGetMcpSession(...args),
     },
   },
@@ -102,8 +101,6 @@ describe('HybridAuthGuard — MCP OAuth path', () => {
     reflector = module.get<Reflector>(Reflector);
     // Not public, and don't skip the org check.
     jest.spyOn(reflector, 'getAllAndOverride').mockReturnValue(false);
-    // No cookie/regular session → forces the MCP OAuth fallback.
-    mockGetSession.mockResolvedValue(null);
     // No org binding by default; individual tests override.
     mockMcpBindingFindUnique.mockResolvedValue(null);
     // No custom roles by default (built-in roles resolve without a DB call).
@@ -457,6 +454,7 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
   let enforce = false;
   const mockVerify = jest.fn();
   const mockLogMismatch = jest.fn();
+  const mockNativeResolve = jest.fn();
 
   const createContext = (
     headers: Record<string, string>,
@@ -502,15 +500,19 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
       logTenantOperationsMismatch: (...args: unknown[]) =>
         mockLogMismatch(...args),
     } as unknown as import('../gideon/gideon-shadow.service').GideonShadowService;
+    const nativeSessionService = {
+      resolveFromHeaders: (...args: unknown[]) => mockNativeResolve(...args),
+    } as unknown as import('./native-session.service').NativeSessionService;
     guard = new HybridAuthGuard(
       apiKeyService,
       reflector,
       gideonJwtService,
       gideonShadowService,
+      nativeSessionService,
     );
     mockLogMismatch.mockResolvedValue(undefined);
-    // No session/MCP session by default; individual tests opt in.
-    mockGetSession.mockResolvedValue(null);
+    // No native/MCP session by default; individual tests opt in.
+    mockNativeResolve.mockResolvedValue(null);
     mockGetMcpSession.mockResolvedValue(null);
     mockMcpBindingFindUnique.mockResolvedValue(null);
     mockOrgRoleFindMany.mockResolvedValue([]);
@@ -559,9 +561,15 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
 
   it('shadow mode: invalid Gideon token falls through to a valid session', async () => {
     mockVerify.mockResolvedValue(null);
-    mockGetSession.mockResolvedValue({
+    mockNativeResolve.mockResolvedValue({
       user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
-      session: { id: 'sess_9', activeOrganizationId: 'org_9' },
+      session: {
+        id: 'sess_9',
+        activeOrganizationId: 'org_9',
+        impersonatedBy: null,
+        deviceAgent: false,
+        expiresAt: new Date(Date.now() + 60_000),
+      },
     });
     mockMemberFindFirst.mockResolvedValue({
       id: 'mem_9',
@@ -586,9 +594,15 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
       protectedHeader: { kid: 'k1' },
     });
     mockUserFindUnique.mockResolvedValue(null);
-    mockGetSession.mockResolvedValue({
+    mockNativeResolve.mockResolvedValue({
       user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
-      session: { id: 'sess_9', activeOrganizationId: 'org_9' },
+      session: {
+        id: 'sess_9',
+        activeOrganizationId: 'org_9',
+        impersonatedBy: null,
+        deviceAgent: false,
+        expiresAt: new Date(Date.now() + 60_000),
+      },
     });
     mockMemberFindFirst.mockResolvedValue({
       id: 'mem_9',
@@ -617,7 +631,7 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
     await expect(guard.canActivate(context)).rejects.toThrow(
       'Invalid Gideon JWT',
     );
-    expect(mockGetSession).not.toHaveBeenCalled();
+    expect(mockNativeResolve).not.toHaveBeenCalled();
   });
 
   it('enforce mode: unlinked sub is a 401 (no memberships possible)', async () => {
@@ -635,7 +649,7 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
     await expect(guard.canActivate(context)).rejects.toThrow(
       'Invalid Gideon JWT',
     );
-    expect(mockGetSession).not.toHaveBeenCalled();
+    expect(mockNativeResolve).not.toHaveBeenCalled();
   });
 
   it('enforce mode: linked user still authenticates', async () => {
@@ -652,9 +666,15 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
   });
 
   it('no Bearer header skips Gideon entirely and uses the session', async () => {
-    mockGetSession.mockResolvedValue({
+    mockNativeResolve.mockResolvedValue({
       user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
-      session: { id: 'sess_9', activeOrganizationId: 'org_9' },
+      session: {
+        id: 'sess_9',
+        activeOrganizationId: 'org_9',
+        impersonatedBy: null,
+        deviceAgent: false,
+        expiresAt: new Date(Date.now() + 60_000),
+      },
     });
     mockMemberFindFirst.mockResolvedValue({
       id: 'mem_9',
@@ -801,7 +821,6 @@ describe('HybridAuthGuard — native session first (Milestone 3)', () => {
     );
     // Native miss by default; individual tests opt into a hit.
     mockResolveFromHeaders.mockResolvedValue(null);
-    mockGetSession.mockResolvedValue(null);
     mockGetMcpSession.mockResolvedValue(null);
     mockMemberFindFirst.mockResolvedValue(null);
   });
@@ -836,7 +855,7 @@ describe('HybridAuthGuard — native session first (Milestone 3)', () => {
       cookieHeader: 'local.session_token=native_tok',
       authHeader: undefined,
     });
-    expect(mockGetSession).not.toHaveBeenCalled();
+    expect(mockGetMcpSession).not.toHaveBeenCalled();
     expect(request.authType).toBe('session');
     expect(request.userId).toBe('usr_1');
     expect(request.userEmail).toBe('native@acme.com');
@@ -846,26 +865,18 @@ describe('HybridAuthGuard — native session first (Milestone 3)', () => {
     expect(request.isPlatformAdmin).toBe(false);
   });
 
-  it('falls back to better-auth when the native lookup misses', async () => {
+  it('native miss with no MCP token is a 401 (no better-auth fallback)', async () => {
     mockResolveFromHeaders.mockResolvedValue(null);
-    mockGetSession.mockResolvedValue({
-      user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
-      session: { id: 'sess_9', activeOrganizationId: 'org_9' },
-    });
-    mockMemberFindFirst.mockResolvedValue({
-      id: 'mem_9',
-      role: 'owner',
-      department: 'none',
+    mockGetMcpSession.mockResolvedValue(null);
+
+    const { context } = createContext({
+      cookie: 'local.session_token=stale',
     });
 
-    const { context, request } = createContext({
-      cookie: 'local.session_token=legacy',
-    });
-
-    await expect(guard.canActivate(context)).resolves.toBe(true);
-    expect(mockGetSession).toHaveBeenCalledTimes(1);
-    expect(request.authType).toBe('session');
-    expect(request.userId).toBe('usr_9');
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      UnauthorizedException,
+    );
+    expect(mockGetMcpSession).toHaveBeenCalledTimes(1);
   });
 
   it('propagates impersonation state from the native session', async () => {
@@ -943,7 +954,6 @@ describe('HybridAuthGuard — MCP via Gideon JWT (Milestone 3)', () => {
       undefined,
       undefined,
     );
-    mockGetSession.mockResolvedValue(null);
     mockGetMcpSession.mockResolvedValue(null);
     mockMcpBindingFindUnique.mockResolvedValue(null);
     mockOrgRoleFindMany.mockResolvedValue([]);

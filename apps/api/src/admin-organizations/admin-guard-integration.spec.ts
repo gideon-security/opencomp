@@ -4,17 +4,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PlatformAdminGuard } from '../auth/platform-admin.guard';
+import type { NativeSessionService } from '../auth/native-session.service';
 
-const mockGetSession = jest.fn();
+const mockResolveFromHeaders = jest.fn();
 const mockFindUnique = jest.fn();
-
-jest.mock('../auth/auth.server', () => ({
-  auth: {
-    api: {
-      getSession: (...args: unknown[]) => mockGetSession(...args),
-    },
-  },
-}));
 
 jest.mock('@db', () => ({
   db: {
@@ -40,12 +33,30 @@ function buildContext(
   } as unknown as ExecutionContext;
 }
 
+function mockNativeHit(userId: string) {
+  mockResolveFromHeaders.mockResolvedValue({
+    user: { id: userId, email: `${userId}@test.com`, role: 'user' },
+    session: {
+      id: 'sess_1',
+      activeOrganizationId: 'org_1',
+      impersonatedBy: null,
+      deviceAgent: false,
+      expiresAt: new Date(Date.now() + 60_000),
+    },
+  });
+}
+
 describe('PlatformAdminGuard — runtime rejection scenarios', () => {
   let guard: PlatformAdminGuard;
 
   beforeEach(() => {
-    guard = new PlatformAdminGuard();
+    const nativeSessionService = {
+      resolveFromHeaders: (...args: unknown[]) =>
+        mockResolveFromHeaders(...args),
+    } as unknown as NativeSessionService;
+    guard = new PlatformAdminGuard(nativeSessionService);
     jest.clearAllMocks();
+    mockResolveFromHeaders.mockResolvedValue(null);
   });
 
   describe('returns 401 for unauthenticated requests', () => {
@@ -61,7 +72,7 @@ describe('PlatformAdminGuard — runtime rejection scenarios', () => {
       await expect(guard.canActivate(ctx)).rejects.toThrow(
         UnauthorizedException,
       );
-      expect(mockGetSession).not.toHaveBeenCalled();
+      expect(mockResolveFromHeaders).not.toHaveBeenCalled();
     });
 
     it('rejects requests with only x-service-token', async () => {
@@ -69,11 +80,11 @@ describe('PlatformAdminGuard — runtime rejection scenarios', () => {
       await expect(guard.canActivate(ctx)).rejects.toThrow(
         UnauthorizedException,
       );
-      expect(mockGetSession).not.toHaveBeenCalled();
+      expect(mockResolveFromHeaders).not.toHaveBeenCalled();
     });
 
     it('rejects when session cookie is present but session is expired', async () => {
-      mockGetSession.mockResolvedValue(null);
+      mockResolveFromHeaders.mockResolvedValue(null);
       const ctx = buildContext({ cookie: 'session=expired_token' });
       await expect(guard.canActivate(ctx)).rejects.toThrow(
         UnauthorizedException,
@@ -81,7 +92,7 @@ describe('PlatformAdminGuard — runtime rejection scenarios', () => {
     });
 
     it('rejects when bearer token is present but session is invalid', async () => {
-      mockGetSession.mockResolvedValue({ user: {} });
+      mockResolveFromHeaders.mockResolvedValue(null);
       const ctx = buildContext({ authorization: 'Bearer invalid' });
       await expect(guard.canActivate(ctx)).rejects.toThrow(
         UnauthorizedException,
@@ -91,7 +102,7 @@ describe('PlatformAdminGuard — runtime rejection scenarios', () => {
 
   describe('returns 403 for authenticated non-admin users', () => {
     it('rejects a user with role "user"', async () => {
-      mockGetSession.mockResolvedValue({ user: { id: 'usr_regular' } });
+      mockNativeHit('usr_regular');
       mockFindUnique.mockResolvedValue({
         id: 'usr_regular',
         email: 'regular@test.com',
@@ -106,7 +117,7 @@ describe('PlatformAdminGuard — runtime rejection scenarios', () => {
     });
 
     it('rejects a user with role null (no role set)', async () => {
-      mockGetSession.mockResolvedValue({ user: { id: 'usr_norole' } });
+      mockNativeHit('usr_norole');
       mockFindUnique.mockResolvedValue({
         id: 'usr_norole',
         email: 'norole@test.com',
@@ -118,7 +129,7 @@ describe('PlatformAdminGuard — runtime rejection scenarios', () => {
     });
 
     it('rejects a user with role "owner" (org role, not platform admin)', async () => {
-      mockGetSession.mockResolvedValue({ user: { id: 'usr_owner' } });
+      mockNativeHit('usr_owner');
       mockFindUnique.mockResolvedValue({
         id: 'usr_owner',
         email: 'owner@test.com',
@@ -130,9 +141,7 @@ describe('PlatformAdminGuard — runtime rejection scenarios', () => {
     });
 
     it('rejects when session claims admin but DB says user', async () => {
-      mockGetSession.mockResolvedValue({
-        user: { id: 'usr_sneaky', role: 'admin' },
-      });
+      mockNativeHit('usr_sneaky');
       mockFindUnique.mockResolvedValue({
         id: 'usr_sneaky',
         email: 'sneaky@test.com',
@@ -148,7 +157,7 @@ describe('PlatformAdminGuard — runtime rejection scenarios', () => {
     });
 
     it('rejects a user who was deleted between session check and DB lookup', async () => {
-      mockGetSession.mockResolvedValue({ user: { id: 'usr_deleted' } });
+      mockNativeHit('usr_deleted');
       mockFindUnique.mockResolvedValue(null);
       const ctx = buildContext({ cookie: 'session=valid' });
 
@@ -161,7 +170,7 @@ describe('PlatformAdminGuard — runtime rejection scenarios', () => {
 
   describe('allows authenticated platform admin', () => {
     it('succeeds and sets request context for role=admin', async () => {
-      mockGetSession.mockResolvedValue({ user: { id: 'usr_admin' } });
+      mockNativeHit('usr_admin');
       mockFindUnique.mockResolvedValue({
         id: 'usr_admin',
         email: 'admin@platform.com',
