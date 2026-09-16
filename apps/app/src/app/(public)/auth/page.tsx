@@ -1,5 +1,4 @@
 import { LoginForm } from '@/components/login-form';
-import { env } from '@/env.mjs';
 import { auth } from '@/utils/auth';
 import { getSafeRedirectPath } from '@/utils/auth-callback';
 import { BrandLogo } from '@gideon-defender/ui/brand-logo';
@@ -48,15 +47,6 @@ export default async function Page({
 
   const t = await getTranslations('auth');
 
-  // Milestone 3 — Gideon is the default authenticator. Legacy entry points
-  // (Google/GitHub/Microsoft social, magic link) render only when the public
-  // kill-switch is on AND the provider credentials are configured.
-  const legacyAuthEnabled = env.NEXT_PUBLIC_LEGACY_AUTH_ENABLED === 'true';
-  const showGoogle = legacyAuthEnabled && !!(env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET);
-  const showGithub = legacyAuthEnabled && !!(env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET);
-  const showMicrosoft =
-    legacyAuthEnabled && !!(env.AUTH_MICROSOFT_CLIENT_ID && env.AUTH_MICROSOFT_CLIENT_SECRET);
-
   return (
     <div className="flex min-h-dvh flex-col text-foreground">
       <main className="flex flex-1 items-center justify-center p-6">
@@ -73,14 +63,7 @@ export default async function Page({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pb-6 px-8">
-            <LoginForm
-              inviteCode={inviteCode}
-              redirectTo={safeRedirectTo}
-              legacyAuthEnabled={legacyAuthEnabled}
-              showGoogle={showGoogle}
-              showGithub={showGithub}
-              showMicrosoft={showMicrosoft}
-            />
+            <LoginForm inviteCode={inviteCode} redirectTo={safeRedirectTo} />
           </CardContent>
           <CardFooter className="pb-10">
             <p className="w-full px-6 text-center text-xs text-muted-foreground">

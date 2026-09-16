@@ -190,7 +190,7 @@ describe('AdminController (native admin endpoints)', () => {
         res as never,
       );
 
-      expect(result).toEqual({ success: true });
+      expect(result).toEqual({ success: true, activeOrganizationId: 'org_1' });
       expect(mockSessionDeleteMany).toHaveBeenCalledWith({
         where: { id: 'ses_imp' },
       });

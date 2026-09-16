@@ -14,7 +14,7 @@ import {
   type UserPermissions,
 } from '@/lib/permissions';
 import type { OrganizationFromMe } from '@/types';
-import { authClient } from '@/utils/auth-client';
+import { signOutFromGideon } from '@/utils/gideon-sign-out';
 import { Badge, Globe, Locked, Logout, ManageProtection, Settings } from '@carbon/icons-react';
 import type { Onboarding, Organization } from '@db';
 import { BrandLogo } from '@gideon-defender/ui/brand-logo';
@@ -234,13 +234,7 @@ function AppShellWrapperContent({
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={async () => {
-                      await authClient.signOut({
-                        fetchOptions: {
-                          onSuccess: () => {
-                            router.push('/auth');
-                          },
-                        },
-                      });
+                      await signOutFromGideon();
                     }}
                   >
                     <Logout size={16} />

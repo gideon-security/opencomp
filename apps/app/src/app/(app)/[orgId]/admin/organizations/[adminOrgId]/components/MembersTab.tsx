@@ -1,7 +1,6 @@
 'use client';
 
 import { api } from '@/lib/api-client';
-import { authClient } from '@/utils/auth-client';
 import { Input } from '@gideon-defender/ui/input';
 import { Label } from '@gideon-defender/ui/label';
 import {
@@ -120,14 +119,19 @@ export function MembersTab({
     const userId = impersonateTarget.user.id;
     setImpersonateTarget(null);
     setImpersonatingUserId(userId);
-    try {
-      await authClient.admin.impersonateUser({ userId });
-      await authClient.organization.setActive({ organizationId: orgId });
-      router.push(`/${orgId}/overview`);
-    } catch (err) {
-      console.error('Impersonation failed:', err);
+    // The native endpoint mints the impersonation session (cookie) with the
+    // target's resolved org. The [orgId] layout syncs activeOrganizationId to
+    // the URL org server-side on landing, so no client-side set-active call
+    // is needed before navigating.
+    const res = await api.post<{ success: boolean; userId: string }>('/v1/admin/impersonate', {
+      userId,
+    });
+    if (res.error) {
+      console.error('Impersonation failed:', res.error);
       setImpersonatingUserId(null);
+      return;
     }
+    router.push(`/${orgId}/overview`);
   };
 
   const handleSheetChange = (open: boolean) => {

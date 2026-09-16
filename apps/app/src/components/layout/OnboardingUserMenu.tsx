@@ -1,6 +1,6 @@
 'use client';
 
-import { authClient } from '@/utils/auth-client';
+import { signOutFromGideon } from '@/utils/gideon-sign-out';
 import { Avatar, AvatarFallback, AvatarImageNext } from '@gideon-defender/ui/avatar';
 import {
   DropdownMenu,
@@ -11,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from '@gideon-defender/ui/dropdown-menu';
 import type { User } from 'better-auth';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface OnboardingUserMenuProps {
@@ -19,18 +18,11 @@ interface OnboardingUserMenuProps {
 }
 
 export function OnboardingUserMenu({ user }: OnboardingUserMenuProps) {
-  const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push('/auth');
-        },
-      },
-    });
+    await signOutFromGideon();
   };
 
   return (
