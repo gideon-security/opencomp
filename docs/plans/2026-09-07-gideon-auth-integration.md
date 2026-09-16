@@ -1,16 +1,16 @@
 # OpenComp × Gideon Auth integration plan
 
-**Status:** Milestone 1 done (2026-09-15); Milestone 2 code-complete, flip pending (2026-09-16); Milestone 3 planned
+**Status:** Milestone 1 done (2026-09-15); Milestone 2 code-complete, flip pending (2026-09-16); Milestone 3 cutover-enablement done (2026-09-16), deletion PR pending
 **Date:** 2026-09-07 (updated 2026-09-16)
 **Goal:** Replace better-auth (including Google/GitHub/Microsoft social, magic link, email OTP) with Gideon Auth as the sole authenticator for OpenComp.
 
 ## Milestone map
 
-| Milestone                                           | Scope           | Plan steps             |
-| --------------------------------------------------- | --------------- | ---------------------- |
-| 1 — OIDC login via library (dual-run, no deletions) | Done 2026-09-15 | §4.5 + §5.7, 8, 10, 11 |
-| 2 — Session reads off better-auth                   | Code done 2026-09-16, flip pending | §8 + §5.9              |
-| 3 — Cutover and deletion                            | Planned         | §6 + §7                |
+| Milestone                                           | Scope                                                                                                                                     | Plan steps             |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| 1 — OIDC login via library (dual-run, no deletions) | Done 2026-09-15                                                                                                                           | §4.5 + §5.7, 8, 10, 11 |
+| 2 — Session reads off better-auth                   | Code done 2026-09-16, flip pending                                                                                                        | §8 + §5.9              |
+| 3 — Cutover and deletion                            | Cutover-enablement done 2026-09-16 (native sessions/permissions/admin, Gideon-only default, MCP accepts Gideon JWTs); deletion PR pending | §6 + §7                |
 
 ## 1. Context
 
@@ -178,14 +178,14 @@ auth library can be deleted in Milestone 3 without touching UI code.
 
 1. ✅ Done 2026-09-16 — every `authClient.useSession` call replaced with the
    `useAuthMe` SWR hook on `GET /v1/auth/me` (`apps/app/src/hooks/use-auth-me.ts`
-   + `use-auth-me.test.tsx`; shared envelope unwrap in `unwrapApiData`,
-   `apps/app/src/lib/api-client.ts`). Migrated call sites: `notification-bell.tsx`,
-   `FindingDetailSheet.tsx`, `policy-overview.tsx`, `ai/chat.tsx`,
-   `ImpersonationBanner.tsx` (all in `apps/app/src`; the banner revalidates via
-   `mutate()` after stop-impersonating so it hides immediately). Portal audit:
-   zero `useSession()` callers, nothing to migrate. `GET /v1/auth/me` now also
-   returns `impersonatedBy`, `authType`, and `hasInactiveMembership`
-   (`AuthController.getMe`, surfaced through `@AuthContext()`).
+   - `use-auth-me.test.tsx`; shared envelope unwrap in `unwrapApiData`,
+     `apps/app/src/lib/api-client.ts`). Migrated call sites: `notification-bell.tsx`,
+     `FindingDetailSheet.tsx`, `policy-overview.tsx`, `ai/chat.tsx`,
+     `ImpersonationBanner.tsx` (all in `apps/app/src`; the banner revalidates via
+     `mutate()` after stop-impersonating so it hides immediately). Portal audit:
+     zero `useSession()` callers, nothing to migrate. `GET /v1/auth/me` now also
+     returns `impersonatedBy`, `authType`, and `hasInactiveMembership`
+     (`AuthController.getMe`, surfaced through `@AuthContext()`).
 2. 🟡 Code-ready, flip pending — `HybridAuthGuard` Gideon path resolves `sub`
    through `User.gideonSub` before the membership check (unlinked subs 401 in
    enforce mode, fall through to session in shadow mode), with 6 new guard

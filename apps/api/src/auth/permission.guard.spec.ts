@@ -22,6 +22,8 @@ jest.mock('@gideon-defender/auth', () => ({
 // Mock ./app-access (used to authorize MCP OAuth requests). Mocked here so the
 // spec doesn't pull in @db via the real module; permissionsGrant uses the real
 // (trivial) logic so only resolveRolePermissions needs stubbing.
+// rolesGrantPermissions mirrors the real helper (resolve + grant check) so the
+// native fast-path tests exercise the guard's branching, not the helper.
 const mockResolveRolePermissions = jest.fn();
 jest.mock('./app-access', () => ({
   resolveRolePermissions: (...args: unknown[]) =>
@@ -31,6 +33,23 @@ jest.mock('./app-access', () => ({
     resource: string,
     action: string,
   ) => perms?.[resource]?.includes(action) ?? false,
+  rolesGrantPermissions: async ({
+    organizationId,
+    roles,
+    required,
+  }: {
+    organizationId: string;
+    roles: string[];
+    required: Record<string, string[]>;
+  }) => {
+    const perms: Record<string, string[]> = await mockResolveRolePermissions(
+      organizationId,
+      roles,
+    );
+    return Object.entries(required).every(([resource, actions]) =>
+      actions.every((action) => perms?.[resource]?.includes(action) ?? false),
+    );
+  },
 }));
 
 describe('PermissionGuard', () => {
@@ -303,6 +322,46 @@ describe('PermissionGuard', () => {
       await expect(guard.canActivate(context)).rejects.toThrow(
         ForbiddenException,
       );
+    });
+
+    it('uses the native role check for session callers with resolved roles', async () => {
+      jest
+        .spyOn(reflector, 'getAllAndOverride')
+        .mockReturnValue([{ resource: 'control', actions: ['read'] }]);
+      mockResolveRolePermissions.mockResolvedValue({
+        control: ['read', 'create'],
+      });
+
+      const context = createMockExecutionContext({
+        headers: { cookie: 'session=abc' },
+        userRoles: ['admin'],
+        organizationId: 'org_1',
+      });
+
+      await expect(guard.canActivate(context)).resolves.toBe(true);
+      // Native path — better-auth hasPermission must NOT be consulted.
+      expect(mockHasPermission).not.toHaveBeenCalled();
+      expect(mockResolveRolePermissions).toHaveBeenCalledWith('org_1', [
+        'admin',
+      ]);
+    });
+
+    it('denies session callers natively when resolved roles lack the permission', async () => {
+      jest
+        .spyOn(reflector, 'getAllAndOverride')
+        .mockReturnValue([{ resource: 'control', actions: ['delete'] }]);
+      mockResolveRolePermissions.mockResolvedValue({ control: ['read'] });
+
+      const context = createMockExecutionContext({
+        headers: { cookie: 'session=abc' },
+        userRoles: ['auditor'],
+        organizationId: 'org_1',
+      });
+
+      await expect(guard.canActivate(context)).rejects.toThrow(
+        ForbiddenException,
+      );
+      expect(mockHasPermission).not.toHaveBeenCalled();
     });
   });
 

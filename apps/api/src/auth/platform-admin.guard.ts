@@ -1,17 +1,22 @@
 import {
   CanActivate,
   ExecutionContext,
+  Inject,
   Injectable,
+  Optional,
   UnauthorizedException,
   ForbiddenException,
 } from '@nestjs/common';
 import { db } from '@db';
 import { auth } from './auth.server';
+import { NativeSessionService } from './native-session.service';
 
 interface PlatformAdminRequest {
   userId?: string;
   userEmail?: string;
   isPlatformAdmin?: boolean;
+  sessionId?: string;
+  impersonatedBy?: string;
   headers: {
     authorization?: string;
     cookie?: string;
@@ -21,24 +26,47 @@ interface PlatformAdminRequest {
 
 @Injectable()
 export class PlatformAdminGuard implements CanActivate {
+  constructor(
+    // @Inject keeps the runtime token reference (see HybridAuthGuard).
+    @Optional()
+    @Inject(NativeSessionService)
+    private readonly nativeSessionService?: NativeSessionService,
+  ) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<PlatformAdminRequest>();
 
-    // Build headers for better-auth SDK
-    const headers = new Headers();
     const authHeader = request.headers['authorization'];
-    if (authHeader) {
-      headers.set('authorization', authHeader);
-    }
     const cookieHeader = request.headers['cookie'];
-    if (cookieHeader) {
-      headers.set('cookie', cookieHeader);
-    }
 
     if (!authHeader && !cookieHeader) {
       throw new UnauthorizedException(
         'Platform admin routes require authentication',
       );
+    }
+
+    // Milestone 3 — resolve the session natively first (Session-row lookup,
+    // no better-auth). better-auth stays as fallback during dual-run.
+    if (this.nativeSessionService) {
+      const native = await this.nativeSessionService.resolveFromHeaders({
+        cookieHeader,
+        authHeader,
+      });
+      if (native) {
+        return this.activateForUser(request, native.user.id, {
+          sessionId: native.session.id,
+          impersonatedBy: native.session.impersonatedBy,
+        });
+      }
+    }
+
+    // Build headers for better-auth SDK
+    const headers = new Headers();
+    if (authHeader) {
+      headers.set('authorization', authHeader);
+    }
+    if (cookieHeader) {
+      headers.set('cookie', cookieHeader);
     }
 
     // Resolve session via better-auth SDK
@@ -48,9 +76,24 @@ export class PlatformAdminGuard implements CanActivate {
       throw new UnauthorizedException('Invalid or expired session');
     }
 
-    // Verify admin role from the database (better-auth managed field)
+    const rawImpersonatedBy = (
+      session.session as Record<string, unknown> | undefined
+    )?.impersonatedBy;
+    return this.activateForUser(request, session.user.id, {
+      sessionId: session.session?.id,
+      impersonatedBy:
+        typeof rawImpersonatedBy === 'string' ? rawImpersonatedBy : null,
+    });
+  }
+
+  private async activateForUser(
+    request: PlatformAdminRequest,
+    userId: string,
+    session: { sessionId?: string; impersonatedBy: string | null },
+  ): Promise<boolean> {
+    // Verify admin role from the database
     const user = await db.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: userId },
       select: {
         id: true,
         email: true,
@@ -72,6 +115,12 @@ export class PlatformAdminGuard implements CanActivate {
     request.userId = user.id;
     request.userEmail = user.email;
     request.isPlatformAdmin = true;
+    if (session.sessionId) {
+      request.sessionId = session.sessionId;
+    }
+    if (session.impersonatedBy) {
+      request.impersonatedBy = session.impersonatedBy;
+    }
 
     return true;
   }

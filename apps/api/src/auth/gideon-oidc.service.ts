@@ -69,11 +69,17 @@ export class GideonOidcService {
   private readonly logger = new Logger(GideonOidcService.name);
   private config: Configuration | null = null;
 
+  /**
+   * The client secret is OPTIONAL: Gideon apps registered as public
+   * (`is_public`) have no secret. openid-client v6 then authenticates the
+   * code exchange as a public client (`none` + `client_id` in the body),
+   * which is safe here because the exchange is server-side and always bound
+   * to the PKCE S256 verifier + state/nonce stored in Redis.
+   */
   isConfigured(): boolean {
     return !!(
       process.env.GIDEON_IDENTITY_URL &&
       process.env.GIDEON_OIDC_CLIENT_ID &&
-      process.env.GIDEON_OIDC_CLIENT_SECRET &&
       process.env.GIDEON_OIDC_REDIRECT_URI
     );
   }
@@ -97,8 +103,10 @@ export class GideonOidcService {
 
     const identityUrl = process.env.GIDEON_IDENTITY_URL;
     const clientId = process.env.GIDEON_OIDC_CLIENT_ID;
-    const clientSecret = process.env.GIDEON_OIDC_CLIENT_SECRET;
-    if (!identityUrl || !clientId || !clientSecret) {
+    // Optional — public (`is_public`) Gideon apps have no secret; the
+    // library then uses `none` client auth (PKCE-bound, server-side).
+    const clientSecret = process.env.GIDEON_OIDC_CLIENT_SECRET || undefined;
+    if (!identityUrl || !clientId) {
       throw new UnauthorizedException('Gideon OIDC is not configured');
     }
 
@@ -118,7 +126,10 @@ export class GideonOidcService {
         ? { execute: [oidc.allowInsecureRequests] }
         : undefined,
     );
-    this.logger.log(`Gideon OIDC discovery complete: ${identityUrl}`);
+    this.logger.log(
+      `Gideon OIDC discovery complete: ${identityUrl} ` +
+        `(client_auth=${clientSecret ? 'client_secret_post' : 'none/public'})`,
+    );
     return this.config;
   }
 

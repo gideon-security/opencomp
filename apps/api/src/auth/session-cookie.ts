@@ -46,7 +46,16 @@ export const SECURE_COOKIE_PREFIX = '__Secure-';
 export function shouldUseSecureCookies(): boolean {
   const baseUrl = process.env.BASE_URL || '';
   try {
-    if (new URL(baseUrl).protocol === 'https:') return true;
+    const url = new URL(baseUrl);
+    if (url.protocol === 'https:') return true;
+    if (
+      url.protocol === 'http:' &&
+      (url.hostname === 'localhost' ||
+        url.hostname === '127.0.0.1' ||
+        url.hostname === '::1')
+    ) {
+      return false;
+    }
   } catch {
     // Unparseable BASE_URL — fall through to the environment check.
   }

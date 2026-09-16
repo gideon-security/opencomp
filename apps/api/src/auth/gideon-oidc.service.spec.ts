@@ -71,8 +71,13 @@ describe('GideonOidcService', () => {
       expect(service.isConfigured()).toBe(true);
     });
 
-    it('false when the client secret is missing', () => {
+    it('true without a client secret (public Gideon app)', () => {
       delete process.env.GIDEON_OIDC_CLIENT_SECRET;
+      expect(service.isConfigured()).toBe(true);
+    });
+
+    it('false when the client id is missing', () => {
+      delete process.env.GIDEON_OIDC_CLIENT_ID;
       expect(service.isConfigured()).toBe(false);
     });
   });
@@ -98,6 +103,20 @@ describe('GideonOidcService', () => {
         ENV.GIDEON_OIDC_CLIENT_SECRET,
         undefined,
         undefined,
+      );
+    });
+
+    it('discovers as a public client when no secret is set', async () => {
+      delete process.env.GIDEON_OIDC_CLIENT_SECRET;
+      service.resetCache();
+      await service.getOidcConfig();
+      // undefined metadata → openid-client v6 `none` client auth (PKCE-bound).
+      expect(mockDiscovery).toHaveBeenCalledWith(
+        expect.any(URL),
+        ENV.GIDEON_OIDC_CLIENT_ID,
+        undefined,
+        undefined,
+        expect.objectContaining({ execute: expect.any(Array) }),
       );
     });
 
@@ -141,9 +160,22 @@ describe('GideonOidcService', () => {
     });
 
     it('throws when OIDC is not configured', async () => {
-      delete process.env.GIDEON_OIDC_CLIENT_SECRET;
+      delete process.env.GIDEON_OIDC_CLIENT_ID;
       await expect(service.buildLoginUrl()).rejects.toThrow(
         UnauthorizedException,
+      );
+    });
+
+    it('builds a login URL without a client secret (public client)', async () => {
+      delete process.env.GIDEON_OIDC_CLIENT_SECRET;
+      const result = await service.buildLoginUrl({ redirectTo: '/risks' });
+      expect(result.url).toContain('code_challenge=');
+      expect(mockDiscovery).toHaveBeenCalledWith(
+        expect.any(URL),
+        ENV.GIDEON_OIDC_CLIENT_ID,
+        undefined,
+        undefined,
+        expect.anything(),
       );
     });
   });

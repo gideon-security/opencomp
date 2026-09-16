@@ -78,6 +78,7 @@ services:
     env_file:
       - apps/api/.env
     environment:
+      BASE_URL: http://localhost:3333
       # comp_app = least-privilege cache role (ACL-scoped to app:* keys).
       # comp_service = full-access queue role for BullMQ/trigger-local.
       REDIS_URL: redis://comp_app:comp_app_local_dev_password@redis:6379

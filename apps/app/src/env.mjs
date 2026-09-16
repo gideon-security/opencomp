@@ -50,6 +50,7 @@ export const env = createEnv({
     NEXT_PUBLIC_NOVU_APPLICATION_IDENTIFIER: z.string().optional(),
     NEXT_PUBLIC_SELF_HOSTED: z.string().optional(),
     NEXT_PUBLIC_APP_ENV: z.string().optional(),
+    NEXT_PUBLIC_LEGACY_AUTH_ENABLED: z.string().optional(),
   },
 
   runtimeEnv: {
@@ -97,6 +98,7 @@ export const env = createEnv({
     INTERNAL_API_TOKEN: process.env.INTERNAL_API_TOKEN,
     NEXT_PUBLIC_SELF_HOSTED: process.env.NEXT_PUBLIC_SELF_HOSTED,
     NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
+    NEXT_PUBLIC_LEGACY_AUTH_ENABLED: process.env.NEXT_PUBLIC_LEGACY_AUTH_ENABLED,
   },
 
   skipValidation: !!process.env.CI || !!process.env.SKIP_ENV_VALIDATION,

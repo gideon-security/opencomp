@@ -59,6 +59,20 @@ describe('session-cookie', () => {
       process.env.NODE_ENV = 'test';
       expect(shouldUseSecureCookies()).toBe(false);
     });
+
+    it('is false for an explicit HTTP loopback URL in production', () => {
+      process.env.BASE_URL = 'http://localhost:3333';
+      process.env.NODE_ENV = 'production';
+      expect(shouldUseSecureCookies()).toBe(false);
+      expect(getSessionCookieName()).toBe('local.session_token');
+    });
+
+    it('fails closed when BASE_URL is absent in production', () => {
+      delete process.env.BASE_URL;
+      process.env.NODE_ENV = 'production';
+      expect(shouldUseSecureCookies()).toBe(true);
+      expect(getSessionCookieName()).toBe('__Secure-local.session_token');
+    });
   });
 
   describe('getSessionCookieName', () => {

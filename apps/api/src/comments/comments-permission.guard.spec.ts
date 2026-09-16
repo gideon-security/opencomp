@@ -31,6 +31,14 @@ jest.mock('../auth/auth.server', () => ({
   auth: { api: { hasPermission: jest.fn() } },
 }));
 
+// Milestone 3 — the guard prefers the native role check when HybridAuthGuard
+// resolved roles. Mock app-access so the spec doesn't pull in @db.
+const rolesGrantPermissionsMock = jest.fn();
+jest.mock('../auth/app-access', () => ({
+  rolesGrantPermissions: (...args: unknown[]) =>
+    rolesGrantPermissionsMock(...args),
+}));
+
 import { CommentsPermissionGuard } from './comments-permission.guard';
 import { auth } from '../auth/auth.server';
 
@@ -42,6 +50,8 @@ type MockRequest = {
   isApiKey?: boolean;
   isServiceToken?: boolean;
   isPlatformAdmin?: boolean;
+  userRoles?: string[] | null;
+  organizationId?: string;
 };
 
 function makeContext(request: MockRequest): ExecutionContext {
@@ -69,6 +79,7 @@ function reflectorWith(resource: string, action: string): Reflector {
 describe('CommentsPermissionGuard', () => {
   beforeEach(() => {
     hasPermissionMock.mockReset();
+    rolesGrantPermissionsMock.mockReset();
   });
 
   it('resolves entityType from POST body and checks finding:update when finding', async () => {
@@ -166,9 +177,7 @@ describe('CommentsPermissionGuard', () => {
     });
     // Inject explicit scope set on the request — entityType=finding requires
     // `finding:update`, NOT `task:update`.
-    (
-      context.switchToHttp().getRequest() as { apiKeyScopes: string[] }
-    ).apiKeyScopes = ['finding:update'];
+    context.switchToHttp().getRequest().apiKeyScopes = ['finding:update'];
     await expect(guard.canActivate(context)).resolves.toBe(true);
     expect(hasPermissionMock).not.toHaveBeenCalled();
   });
@@ -181,9 +190,7 @@ describe('CommentsPermissionGuard', () => {
       headers: {},
       isApiKey: true,
     });
-    (
-      context.switchToHttp().getRequest() as { apiKeyScopes: string[] }
-    ).apiKeyScopes = ['task:update']; // wrong scope
+    context.switchToHttp().getRequest().apiKeyScopes = ['task:update']; // wrong scope
     await expect(guard.canActivate(context)).rejects.toThrow(
       ForbiddenException,
     );
@@ -200,9 +207,7 @@ describe('CommentsPermissionGuard', () => {
       headers: {},
       isServiceToken: true,
     });
-    (
-      context.switchToHttp().getRequest() as { serviceName: string }
-    ).serviceName = 'svc-test';
+    context.switchToHttp().getRequest().serviceName = 'svc-test';
     await expect(guard.canActivate(context)).rejects.toThrow(
       ForbiddenException,
     );
@@ -219,9 +224,7 @@ describe('CommentsPermissionGuard', () => {
       headers: {},
       isServiceToken: true,
     });
-    (
-      context.switchToHttp().getRequest() as { serviceName: string }
-    ).serviceName = 'svc-test';
+    context.switchToHttp().getRequest().serviceName = 'svc-test';
     await expect(guard.canActivate(context)).resolves.toBe(true);
   });
 
@@ -247,5 +250,40 @@ describe('CommentsPermissionGuard', () => {
       headers: {},
     });
     await expect(guard.canActivate(context)).resolves.toBe(true);
+  });
+
+  it('uses the native role check when HybridAuthGuard resolved roles', async () => {
+    rolesGrantPermissionsMock.mockResolvedValueOnce(true);
+    const guard = new CommentsPermissionGuard(reflectorWith('task', 'update'));
+    const context = makeContext({
+      method: 'POST',
+      body: { entityType: 'finding' },
+      headers: { cookie: 'session=abc' },
+      userRoles: ['auditor'],
+      organizationId: 'org_1',
+    });
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(rolesGrantPermissionsMock).toHaveBeenCalledWith({
+      organizationId: 'org_1',
+      roles: ['auditor'],
+      required: { finding: ['update'] },
+    });
+    expect(hasPermissionMock).not.toHaveBeenCalled();
+  });
+
+  it('denies natively when resolved roles lack the permission', async () => {
+    rolesGrantPermissionsMock.mockResolvedValueOnce(false);
+    const guard = new CommentsPermissionGuard(reflectorWith('task', 'update'));
+    const context = makeContext({
+      method: 'POST',
+      body: { entityType: 'finding' },
+      headers: { cookie: 'session=abc' },
+      userRoles: ['auditor'],
+      organizationId: 'org_1',
+    });
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      ForbiddenException,
+    );
+    expect(hasPermissionMock).not.toHaveBeenCalled();
   });
 });
