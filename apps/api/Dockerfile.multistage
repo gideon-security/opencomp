@@ -29,18 +29,17 @@ COPY packages/trigger-local/package.json ./packages/trigger-local/
 COPY packages/trigger-react-local/package.json ./packages/trigger-react-local/
 COPY packages/kv/package.json ./packages/kv/
 
-# Copy API package.json
+# Copy API package.json (workspace deps use `*` ranges, which npm links
+# locally — no spec conversion needed).
 COPY apps/api/package.json ./apps/api/
-COPY scripts/convert-workspace-specs.cjs ./scripts/convert-workspace-specs.cjs
-
-# npm only supports the `workspace:` protocol in the ROOT manifest; rewrite
-# workspace deps (including the trigger-local shim packages) to file:.
-RUN node scripts/convert-workspace-specs.cjs
 
 # Install dependencies — skip lifecycle scripts (husky, prisma postinstall,
 # etc. not needed here; prisma is generated explicitly in the builder).
 # --legacy-peer-deps mirrors bun's peer resolution.
+# Fetch retries: registry access from filtered networks routinely drops TLS
+# mid-install (ECONNRESET), so retry with backoff instead of failing the layer.
 RUN npm install --ignore-scripts --no-audit --no-fund --legacy-peer-deps \
+  --fetch-retries=8 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000 \
   && npm install --no-save --no-audit --no-fund --legacy-peer-deps sharp@^0.34.5
 
 # =============================================================================

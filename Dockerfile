@@ -10,20 +10,20 @@ FROM node:22-slim AS deps
 
 WORKDIR /app
 
-# Copy workspace configuration. npm only supports the `workspace:` protocol in
-# the ROOT manifest, so we rewrite every workspace dep (including the
-# trigger-local shim packages) to `file:` relative paths before installing.
+# Copy workspace configuration. Workspace deps use `*` ranges, which npm
+# links to the local workspaces natively — no spec conversion needed.
 COPY package.json ./
 COPY packages ./packages
 COPY apps/app/package.json ./apps/app/package.json
 COPY apps/portal/package.json ./apps/portal/package.json
-COPY scripts/convert-workspace-specs.cjs ./scripts/convert-workspace-specs.cjs
-RUN node scripts/convert-workspace-specs.cjs
 
 # Install all dependencies (lifecycle scripts skipped; prisma + workspace
 # package builds are run explicitly in later stages). --legacy-peer-deps mirrors
 # bun's peer resolution, which this monorepo relies on (e.g. responsive-react-email).
-RUN npm install --ignore-scripts --no-audit --no-fund --legacy-peer-deps
+# Fetch retries: registry access from filtered networks routinely drops TLS
+# mid-install (ECONNRESET), so retry with backoff instead of failing the layer.
+RUN npm install --ignore-scripts --no-audit --no-fund --legacy-peer-deps \
+  --fetch-retries=8 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
 
 # bun links EVERY workspace into node_modules; npm only links declared deps.
 # The apps import packages they don't declare (ui, analytics, kv, ...), so link

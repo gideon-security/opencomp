@@ -4,6 +4,12 @@ const DEFAULT_TRUSTED_ORIGINS = [
   'http://localhost:3333',
   'http://localhost:3004',
   'http://localhost:3008',
+  // Internal compose service name. The app/portal containers call better-auth
+  // server-to-server with BACKEND_API_URL=http://api:3333, and app
+  // server code injects that URL as the Origin header (CSRF). Without this
+  // entry those calls fail origin validation (e.g. organization/set-active),
+  // leaving sessions without an active org so org-scoped API calls 401.
+  'http://api:3333',
   'https://app.gideondefender.com',
   'https://portal.gideondefender.com',
   'https://api.gideondefender.com',

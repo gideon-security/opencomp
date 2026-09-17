@@ -48,6 +48,15 @@ describe('getTrustedOrigins', () => {
     expect(origins.every((o: string) => o !== '*' && o !== 'true')).toBe(true);
   });
 
+  it('should include the internal compose API origin for server-to-server better-auth calls', () => {
+    // Regression: the containerized app calls organization/set-active with
+    // Origin: http://api:3333 (BACKEND_API_URL). Without this entry
+    // better-auth rejects with INVALID_ORIGIN, sessions never get an active
+    // org, and every org-scoped API call 401s.
+    expect(getTrustedOrigins()).toContain('http://api:3333');
+    expect(getBetterAuthTrustedOrigins()).toContain('http://api:3333');
+  });
+
   it('should trim whitespace from comma-separated origins', () => {
     process.env.AUTH_TRUSTED_ORIGINS = '  https://a.com  ,  https://b.com  ';
 
