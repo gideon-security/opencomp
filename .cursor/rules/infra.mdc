@@ -7,14 +7,15 @@ alwaysApply: false
 
 ## Package Manager
 
-**Use `bun`, never npm/yarn/pnpm.**
+**Use `pnpm`, never npm/yarn/bun.** Version pinned via `packageManager` (corepack locally, `pnpm/action-setup` in CI).
 
 ```bash
-bun install              # Install deps
-bun add <pkg>            # Add package
-bun add -D <pkg>         # Add dev dependency
-bun run <script>         # Run script
-bunx <cmd>               # Execute binary
+pnpm install              # Install deps
+pnpm add <pkg>            # Add package
+pnpm add -D <pkg>         # Add dev dependency
+pnpm run <script>         # Run script
+pnpm exec <cmd>           # Execute binary
+pnpm dlx <pkg>            # One-off download + execute
 ```
 
 ## Monorepo Structure
@@ -37,15 +38,15 @@ comp/
 
 ```bash
 # Multi-package (via turbo)
-npm run build            # Build all
-npm run lint             # Lint all
-npm run typecheck        # Type check all
-npm run dev              # Dev all
+pnpm run build            # Build all
+pnpm run lint             # Lint all
+pnpm run typecheck        # Type check all
+pnpm run dev              # Dev all
 
 # Single package
-npm run dev --workspace=@gideon-defender/app
-npm run db:generate --workspace=@gideon-defender/db
-turbo build --filter=@gideon-defender/ui
+pnpm --filter=@gideon-defender/app run dev
+pnpm --filter=@gideon-defender/db run db:generate
+pnpm exec turbo build --filter=@gideon-defender/ui
 ```
 
 ## Importing Between Packages
@@ -62,12 +63,12 @@ import { Button } from '../../../packages/ui/src/button';
 ## Adding Dependencies
 
 ```bash
-# To specific package
-bun add axios -F apps/app
-bun add -D vitest -F @gideon-defender/ui
+# To specific package (run from the package dir, or use --filter from root)
+pnpm --filter apps/app add axios
+pnpm --filter @gideon-defender/ui add -D vitest
 
 # To root (dev tools only)
-bun add -D -w prettier typescript
+pnpm add -D -w prettier typescript
 ```
 
 ## After Code Changes
@@ -75,8 +76,8 @@ bun add -D -w prettier typescript
 **Always run checks:**
 
 ```bash
-bun run typecheck
-bun run lint
+pnpm run typecheck
+pnpm run lint
 ```
 
 Fix all errors before committing.

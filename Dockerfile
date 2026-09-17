@@ -1,6 +1,6 @@
 # =============================================================================
 # Multi-stage build: migrator/seeder, app, portal.
-# Uses npm workspaces + node:22 (no bun). Built for linux/arm64.
+# Uses pnpm workspaces + node:22. Built for linux/arm64.
 # =============================================================================
 
 # =============================================================================
@@ -10,24 +10,24 @@ FROM node:22-slim AS deps
 
 WORKDIR /app
 
-# Copy workspace configuration. Workspace deps use `*` ranges, which npm
+# pnpm binary for all downstream stages inheriting from deps. Fetch flags
+# tolerate flaky registry access (dropped TLS mid-download).
+RUN npm install -g pnpm@10.15.0 --fetch-retries=8 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
+
+# Copy workspace configuration. Workspace deps use `*` ranges, which pnpm
 # links to the local workspaces natively — no spec conversion needed.
-COPY package.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY packages ./packages
 COPY apps/app/package.json ./apps/app/package.json
 COPY apps/portal/package.json ./apps/portal/package.json
 
 # Install all dependencies (lifecycle scripts skipped; prisma + workspace
-# package builds are run explicitly in later stages). --legacy-peer-deps mirrors
-# bun's peer resolution, which this monorepo relies on (e.g. responsive-react-email).
-# Fetch retries: registry access from filtered networks routinely drops TLS
-# mid-install (ECONNRESET), so retry with backoff instead of failing the layer.
-RUN npm install --ignore-scripts --no-audit --no-fund --legacy-peer-deps \
-  --fetch-retries=8 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
+# package builds are run explicitly in later stages).
+RUN pnpm install --ignore-scripts
 
-# bun links EVERY workspace into node_modules; npm only links declared deps.
-# The apps import packages they don't declare (ui, analytics, kv, ...), so link
-# every workspace member into node_modules to match bun's resolution.
+# pnpm links only declared deps per package, but the apps import workspace
+# members they don't declare (ui, analytics, kv, ...), so link every
+# workspace member into node_modules to preserve resolution.
 RUN node -e "const fs=require('fs'),path=require('path');const nm='/app/node_modules';for(const top of ['packages','apps']){const dir='/app/'+top;if(!fs.existsSync(dir))continue;for(const entry of fs.readdirSync(dir)){const p=path.join(dir,entry);const mf=path.join(p,'package.json');if(!fs.statSync(p).isDirectory()||!fs.existsSync(mf))continue;let name;try{name=JSON.parse(fs.readFileSync(mf,'utf8')).name;}catch{}if(!name)continue;const link=path.join(nm,...name.split('/'));if(fs.existsSync(link)||fs.lstatSync(link,{throwIfNoEntry:false}))continue;fs.mkdirSync(path.dirname(link),{recursive:true});fs.symlinkSync(path.relative(path.dirname(link),p),link);}}"
 
 # =============================================================================
@@ -37,16 +37,15 @@ FROM node:22-slim AS migrator
 
 WORKDIR /app
 
+# pnpm for the one-off tool install below. .npmrc carries fetch retries.
+RUN npm install -g pnpm@10.15.0 --fetch-retries=8 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
+COPY .npmrc ./
+
 # Local Prisma schema, migrations, and the seed script.
 COPY packages/db ./packages/db
 
 # Install ONLY Prisma + seed runtime dependencies.
-RUN npm install --no-audit --no-fund \
-    prisma@7.6.0 \
-    @prisma/client@7.6.0 \
-    @prisma/adapter-pg@7.6.0 \
-    zod@^4 \
-    tsx@^4
+RUN npm init -y >/dev/null && pnpm add prisma@7.6.0 @prisma/client@7.6.0 @prisma/adapter-pg@7.6.0 zod@^4 tsx@^4
 
 # Combine the split schema files into dist/schema.prisma and generate the
 # @prisma/client runtime (prisma-client-js) into node_modules/@prisma/client.
@@ -58,8 +57,9 @@ RUN cd packages/db \
 # Prisma 7 requires the datasource URL in prisma.config.ts (not in schema.prisma).
 RUN printf 'import "dotenv/config";\nimport { defineConfig } from "prisma/config";\n\nexport default defineConfig({\n  schema: "packages/db/dist/schema.prisma",\n  migrations: { path: "packages/db/dist/migrations" },\n  datasource: { url: process.env.DATABASE_URL! },\n});\n' > prisma.config.ts
 
-# Run migrations against the combined schema.
-CMD ["npx", "prisma", "migrate", "deploy"]
+# Run migrations against the combined schema (direct bin path — no package
+# manager needed at runtime).
+CMD ["./node_modules/.bin/prisma", "migrate", "deploy"]
 
 # =============================================================================
 # STAGE 3: App Builder
@@ -74,15 +74,15 @@ COPY apps/app ./apps/app
 # Build workspace packages the app resolves through their package `exports`
 # (dist entry points). Build all internal packages the app imports (incl.
 # analytics, kv, ui which it uses without declaring as deps).
-RUN cd packages/db && npm run build \
-  && cd ../auth && npm run build \
-  && cd ../company && npm run build \
-  && cd ../billing && npm run build \
-  && cd ../integration-platform && npm run build \
-  && cd ../email && npm run build \
-  && cd ../analytics && npm run build \
-  && cd ../kv && npm run build \
-  && cd ../ui && npm run build
+RUN cd packages/db && pnpm run build \
+  && cd ../auth && pnpm run build \
+  && cd ../company && pnpm run build \
+  && cd ../billing && pnpm run build \
+  && cd ../integration-platform && pnpm run build \
+  && cd ../email && pnpm run build \
+  && cd ../analytics && pnpm run build \
+  && cd ../kv && pnpm run build \
+  && cd ../ui && pnpm run build
 
 # Ensure Next build has required public env at build-time
 ARG NEXT_PUBLIC_BETTER_AUTH_URL
@@ -106,7 +106,7 @@ ENV NEXT_PUBLIC_BETTER_AUTH_URL=$NEXT_PUBLIC_BETTER_AUTH_URL \
 # the local `db:getschema` + `db:generate` flow.
 RUN cd apps/app \
   && find ../../packages/db/prisma/schema -name '*.prisma' ! -name 'schema.prisma' -exec cp {} prisma/schema/ \; \
-  && SKIP_ENV_VALIDATION=true npm run build:docker
+  && SKIP_ENV_VALIDATION=true pnpm run build:docker
 
 # =============================================================================
 # STAGE 4: App Production
@@ -137,13 +137,13 @@ WORKDIR /app
 COPY apps/portal ./apps/portal
 
 # Build workspace packages the portal resolves through their package `exports`.
-RUN cd packages/db && npm run build \
-  && cd ../auth && npm run build \
-  && cd ../company && npm run build \
-  && cd ../email && npm run build \
-  && cd ../analytics && npm run build \
-  && cd ../kv && npm run build \
-  && cd ../ui && npm run build
+RUN cd packages/db && pnpm run build \
+  && cd ../auth && pnpm run build \
+  && cd ../company && pnpm run build \
+  && cd ../email && pnpm run build \
+  && cd ../analytics && pnpm run build \
+  && cd ../kv && pnpm run build \
+  && cd ../ui && pnpm run build
 
 # Ensure Next build has required public env at build-time
 ARG NEXT_PUBLIC_BETTER_AUTH_URL
@@ -158,7 +158,7 @@ ENV NEXT_PUBLIC_BETTER_AUTH_URL=$NEXT_PUBLIC_BETTER_AUTH_URL \
 # matching the local `db:getschema` + `db:generate` flow.
 RUN cd apps/portal \
   && find ../../packages/db/prisma/schema -name '*.prisma' ! -name 'schema.prisma' -exec cp {} prisma/schema/ \; \
-  && SKIP_ENV_VALIDATION=true npm run build:docker
+  && SKIP_ENV_VALIDATION=true pnpm run build:docker
 
 # =============================================================================
 # STAGE 6: Portal Production

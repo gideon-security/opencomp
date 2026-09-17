@@ -62,7 +62,7 @@ services:
       target: migrator
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/comp?sslmode=disable
-    command: ['npx', 'tsx', 'packages/db/prisma/seed/seed.ts']
+    command: ['./node_modules/.bin/tsx', 'packages/db/prisma/seed/seed.ts']
     depends_on:
       migrator:
         condition: service_completed_successfully

@@ -1,5 +1,14 @@
-import { EvidenceFormType as DbEvidenceFormType } from '@prisma/client';
 import type { EvidenceFormType } from './form-types';
+
+// NOTE: This package intentionally does NOT import from '@prisma/client'.
+// The generated client is only populated by `db:generate` (packages/db) into a
+// single pnpm store variant, so a value import of the EvidenceFormType enum
+// breaks this package's build whenever generation hasn't run or resolves to a
+// different store copy (CI: "has no exported member 'EvidenceFormType'").
+// The DB enum members are identical to their string values
+// (e.g. board_meeting = 'board_meeting'), so the snake_case string union
+// below is assignment-compatible with Prisma's EvidenceFormType in both
+// directions.
 
 export const EXTERNAL_TO_DB_EVIDENCE_FORM_TYPE = {
   'board-meeting': 'board_meeting',
@@ -18,6 +27,13 @@ export const EXTERNAL_TO_DB_EVIDENCE_FORM_TYPE = {
 } as const satisfies Record<EvidenceFormType, string>;
 
 export type DbEvidenceFormTypeValue = (typeof EXTERNAL_TO_DB_EVIDENCE_FORM_TYPE)[EvidenceFormType];
+
+/**
+ * DB-side evidence form type. Same string literals as Prisma's
+ * EvidenceFormType enum — kept local so this package builds without the
+ * generated Prisma client.
+ */
+export type DbEvidenceFormType = DbEvidenceFormTypeValue;
 
 export const DB_TO_EXTERNAL_EVIDENCE_FORM_TYPE = {
   board_meeting: 'board-meeting',
@@ -47,7 +63,7 @@ export function toExternalEvidenceFormTypeValue(
 }
 
 export function toDbEvidenceFormType(formType: EvidenceFormType): DbEvidenceFormType {
-  return DbEvidenceFormType[toDbEvidenceFormTypeValue(formType)];
+  return toDbEvidenceFormTypeValue(formType);
 }
 
 export function toExternalEvidenceFormType(

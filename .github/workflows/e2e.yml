@@ -37,13 +37,13 @@ jobs:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/comp?sslmode=disable
     steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/npm-install
+      - uses: ./.github/actions/pnpm-install
       - name: Apply migrations
         working-directory: packages/db
-        run: npx prisma migrate deploy
+        run: pnpm exec prisma migrate deploy
       - name: Run API e2e tests
         working-directory: apps/api
-        run: npm run test:e2e
+        run: pnpm run test:e2e
 
   app-e2e:
     name: App e2e tests (Playwright)
@@ -80,28 +80,26 @@ jobs:
       REDIS_URL: redis://localhost:6379
       NEXT_PUBLIC_PORTAL_URL: http://localhost:3002
       REVALIDATION_SECRET: test-revalidation-secret
-      GOOGLE_ID: test-client-id
-      GOOGLE_SECRET: test-client-secret
     steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/npm-install
+      - uses: ./.github/actions/pnpm-install
       - name: Install Playwright browsers
         working-directory: apps/app
-        run: npx playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium
       # The Next.js dev server resolves workspace packages (@gideon-defender/db,
       # auth, billing, ...) through their exports maps, which point at dist/
       # build output. A fresh checkout has no dist/, so instrumentation fails
       # to compile ("Can't resolve '@gideon-defender/db'"). Build all of the
       # app's dependencies (^... = deps only, skips the slow app build itself).
       - name: Build workspace packages
-        run: npx turbo run build --filter=@gideon-defender/app^...
+        run: pnpm exec turbo run build --filter=@gideon-defender/app^...
       - name: Apply migrations
         working-directory: packages/db
-        run: npx prisma migrate deploy
+        run: pnpm exec prisma migrate deploy
       - name: Start app
         working-directory: apps/app
         run: |
-          npm run dev > /tmp/app.log 2>&1 &
+          pnpm run dev > /tmp/app.log 2>&1 &
           for i in $(seq 1 60); do
             if curl -sf http://localhost:3000 > /dev/null 2>&1; then
               echo "App is up after ${i}s"
@@ -114,4 +112,4 @@ jobs:
           exit 1
       - name: Run app e2e tests
         working-directory: apps/app
-        run: npx playwright test --project=chromium
+        run: pnpm exec playwright test --project=chromium

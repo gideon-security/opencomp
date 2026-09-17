@@ -8,13 +8,13 @@ alwaysApply: true
 
 ## Package Manager
 
-Use `bun`, never npm/yarn/pnpm.
+Use `pnpm`, never npm/yarn/bun.
 
 ```bash
-bun install          # Install deps
-bun add <pkg>        # Add package
-bun run <script>     # Run script
-bunx <cmd>           # Execute binary
+pnpm install          # Install deps
+pnpm add <pkg>        # Add package
+pnpm run <script>     # Run script
+pnpm exec <cmd>       # Execute binary
 ```
 
 ## Components
@@ -98,8 +98,8 @@ import { useQueryState } from 'nuqs';
 **Always run checks after code changes:**
 
 ```bash
-bun run typecheck
-bun run lint
+pnpm run typecheck
+pnpm run lint
 ```
 
 Fix all errors before committing.

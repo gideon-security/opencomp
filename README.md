@@ -91,35 +91,35 @@ git clone https://github.com/gideon-security/opencomp.git
 cd opencomp
 ```
 
-3. Install dependencies using npm
+3. Install dependencies using pnpm (v10+, managed via `packageManager` — corepack activates the pinned version)
 
 ```sh
-npm install
+pnpm install
 ```
 
 4. Get Database Running
 
 ```sh
 cd packages/db
-npm run docker:up # Spin up docker container
-npm run db:migrate # Run migrations
+pnpm run docker:up # Spin up docker container
+pnpm run db:migrate # Run migrations
 ```
 
 5. Generate Prisma Types for each app
 
 ```sh
 cd apps/app
-npm run db:generate
+pnpm run db:generate
 cd ../portal
-npm run db:generate
+pnpm run db:generate
 cd ../api
-npm run db:generate
+pnpm run db:generate
 ```
 
 6. Run all apps in parallel from the root directory
 
 ```sh
-npm run dev
+pnpm run dev
 ```
 
 ---
@@ -228,16 +228,16 @@ strings live in `apps/app/messages/en.json` and `apps/app/messages/es.json`
 
 ```sh
 # App unit tests (Vitest)
-cd apps/app && npx vitest run
+cd apps/app && pnpm exec vitest run
 
 # API unit tests (Jest) — loads apps/api/.env automatically
-cd apps/api && npx jest --forceExit
+cd apps/api && pnpm exec jest --forceExit
 
 # API e2e tests — needs a local Postgres + migrations applied
-cd apps/api && npm run test:e2e
+cd apps/api && pnpm run test:e2e
 
 # App e2e tests (Playwright) — boots the full stack; see .github/workflows/e2e.yml
-cd apps/app && npx playwright test --project=chromium
+cd apps/app && pnpm exec playwright test --project=chromium
 ```
 
 ---
@@ -250,7 +250,7 @@ Start and initialize the PostgreSQL database using Docker:
 
    ```sh
    cd packages/db
-   npm run docker:up
+   pnpm run docker:up
    ```
 
 2. Default credentials:
@@ -284,29 +284,29 @@ Start and initialize the PostgreSQL database using Docker:
 
 ```sh
  # Generate Prisma client
- npm run db:generate
+ pnpm run db:generate
 
  # Push the schema to the database
- npm run db:push
+ pnpm run db:push
 
- # Optional: Seed the database with initial data
- npm run db:seed
+  # Optional: Seed the database with initial data
+  pnpm run db:seed
 ```
 
 Other useful database commands:
 
 ```sh
 # Open Prisma Studio to view/edit data
-npm run db:studio
+pnpm run db:studio
 
 # Run database migrations
-npm run db:migrate
+pnpm run db:migrate
 
 # Stop the database container
-npm run docker:down
+pnpm run docker:down
 
 # Remove the database container and volume
-npm run docker:clean
+pnpm run docker:clean
 ```
 
 ---
@@ -316,26 +316,20 @@ npm run docker:clean
 Once everything is configured:
 
 ```sh
-npm run dev
+pnpm run dev
 ```
 
-Or use the Turbo repo script:
+Or use the Turbo repo script (turbo is a root devDependency, no global install needed):
 
 ```sh
-npx turbo dev
-```
-
-> 💡 Make sure you have Turbo installed. If not, you can install it using npm:
-
-```sh
-npm install -g turbo
+pnpm exec turbo dev
 ```
 
 🎉 Yay! You now have a working local instance of Gideon Defender OpenComp! 🚀
 
 ### Full Stack with Docker Compose
 
-The monorepo ships a Docker-based local stack that runs everything with `node:22` + npm. It builds and starts the API, app, and portal along with Postgres, Redis, and LocalStack (AWS S3). Podman works too (`alias docker=podman`, or `podman-compose`):
+The monorepo ships a Docker-based local stack that runs everything with `node:22` + pnpm. It builds and starts the API, app, and portal along with Postgres, Redis, and LocalStack (AWS S3). Podman works too (`alias docker=podman`, or `podman-compose`):
 
 ```sh
 # Build and start the whole stack (app on :3000, portal on :3002, api on :3333)
@@ -383,7 +377,7 @@ This repository uses semantic-release to automatically publish packages to npm w
 
 ```bash
 # Install a published package
-npm install @gideon-defender/ui
+pnpm add @gideon-defender/ui
 
 # Use in your project
 import { Button } from '@gideon-defender/ui/button'
@@ -394,13 +388,13 @@ import { client } from '@gideon-defender/kv'
 
 ```bash
 # Build all packages
-npm run build
+pnpm run build
 
 # Build specific package
-npm run build --workspace=@gideon-defender/ui
+pnpm --filter=@gideon-defender/ui run build
 
 # Test packages locally
-npm run release:packages -- --dry-run
+pnpm run release:packages -- --dry-run
 ```
 
 ## License

@@ -2,12 +2,17 @@
 
 ## Tooling
 
-- **Package manager**: `npm` (never bun/yarn/pnpm)
-- **Build**: `npm run build` (uses turbo). Filter: `npm run build --workspace=@gideon-defender/app`
-- **Typecheck**: `npm run typecheck` or `npx turbo run typecheck --filter=@gideon-defender/api`
-- **Tests (app)**: `cd apps/app && npx vitest run`
-- **Tests (api)**: `cd apps/api && npx jest src/<module> --passWithNoTests`
-- **Lint**: `npm run lint`
+- **Package manager**: `pnpm` (never npm/yarn/bun). Version pinned via `packageManager` (`pnpm/action-setup` in CI, corepack locally). Lockfile `pnpm-lock.yaml` must be committed with any dependency change.
+- **Install**: `pnpm install --frozen-lockfile` (CI). Workspace members resolve via `pnpm-workspace.yaml`; `prefer-workspace-packages`/`link-workspace-packages` in `.npmrc` force local linking.
+- **Run workspace scripts**: `pnpm --filter <name> run <script>` (never `npm --workspace=`). Inside a package dir, `pnpm run <script>` works.
+- **Binaries**: `pnpm exec <bin>` (never `npx`). One-off downloads: `pnpm dlx <pkg>`.
+- **Overrides**: `pnpm.overrides` in root `package.json` (parent-scoped: `"parent>child": "range"`). Never npm `overrides`.
+- **`apps/mcp-server` is the exception**: standalone Speakeasy project, excluded from workspaces, keeps its own npm + `package-lock.json`.
+- **Build**: `pnpm run build` (uses turbo). Filter: `pnpm --filter=@gideon-defender/app run build`
+- **Typecheck**: `pnpm run typecheck` or `pnpm exec turbo run typecheck --filter=@gideon-defender/api`
+- **Tests (app)**: `cd apps/app && pnpm exec vitest run`
+- **Tests (api)**: `cd apps/api && pnpm exec jest src/<module> --passWithNoTests`
+- **Lint**: `pnpm run lint`
 
 ## Code Style
 
@@ -28,7 +33,7 @@ apps/
   portal/             # Employee portal (:3002)
   browser-extension/  # Browser extension
   framework-editor/   # Framework editor (:3004)
-  mcp-server/         # Speakeasy-generated MCP server, standalone (excluded from npm workspaces, own lockfile)
+  mcp-server/         # Speakeasy-generated MCP server, standalone (excluded from pnpm workspaces, own lockfile)
 packages/
   auth/               # RBAC definitions (permissions.ts) — single source of truth
   db/                 # Prisma schema + client
@@ -148,13 +153,13 @@ Every customer-facing API endpoint MUST have:
 - **App tests**: Vitest + @testing-library/react (jsdom environment)
 - **API tests**: Jest with NestJS testing utilities
 - **Permission tests**: Test admin (write) and read-only user scenarios
-- **Run from package dir**: `cd apps/app && npx vitest run` or `cd apps/api && npx jest`
+- **Run from package dir**: `cd apps/app && pnpm exec vitest run` or `cd apps/api && pnpm exec jest`
 
 ## Database
 
 - **Schema**: `packages/db/prisma/schema/` (split into files per model)
 - **IDs**: Always use prefixed CUIDs: `@default(dbgenerated("generate_prefixed_cuid('prefix'::text)"))`
-- **Migrations**: `cd packages/db && npx prisma migrate dev --name your_name`
+- **Migrations**: `cd packages/db && pnpm exec prisma migrate dev --name your_name`
 - **Multi-tenancy**: Always scope queries by `organizationId`
 - **Transactions**: Use for operations modifying multiple records
 

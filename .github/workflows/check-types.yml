@@ -11,11 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/dangerous-git-checkout
-      - uses: ./.github/actions/npm-install
+      - uses: ./.github/actions/pnpm-install
       - name: Show info
         run: node -e "console.log(require('v8').getHeapStatistics())"
       - name: Configure TSC problem matcher
         run: |
           echo "::remove-matcher owner=tsc::"
           echo "::add-matcher::.github/matchers/tsc-absolute.json"
-      - run: npm run typecheck:ci
+      - run: pnpm run typecheck:ci

@@ -32,9 +32,9 @@ Runs three steps automatically on `git worktree add`:
    this way each worktree uses its own DB while still sharing API
    keys, etc.
 3. **Install deps + apply migrations + generate clients** —
-   `npm install`, `cd packages/db && npm run db:migrate`, then
-   `npm run db:generate` (`scripts/setup-worktree.sh`). The full
-   `npm run build` is opt-in because it adds several minutes and most
+   `pnpm install`, `cd packages/db && pnpm run db:migrate`, then
+   `pnpm run db:generate` (`scripts/setup-worktree.sh`). The full
+   `pnpm run build` is opt-in because it adds several minutes and most
    dev workflows (`dev`, tests, typechecks) don't need it.
 
 The hook fires **only** inside `git worktree add` — regular `git checkout`,
@@ -54,7 +54,7 @@ Toggles:
 - `SKIP_WORKTREE_SETUP=1 git worktree add …` — skip install + generate
   (just link envs + create the DB).
 - `SETUP_WORKTREE_WITH_BUILD=1 git worktree add …` — also run
-  `npm run build` when you actually need the built artifacts.
+  `pnpm run build` when you actually need the built artifacts.
 
 ## Backfilling existing worktrees
 
@@ -77,27 +77,27 @@ Trigger.dev's dev CLI has no per-branch or per-session isolation —
 it's hardcoded to connect to the project's single shared "dev"
 environment (verified by reading the CLI source in
 `node_modules/trigger.dev/dist/esm/commands/dev.js`). Running
-`npm run dev` in five worktrees → five processes register tasks
+`pnpm run dev` in five worktrees → five processes register tasks
 against the same environment, last-writer-wins, zombie workers,
 tasks cross-executed on the wrong branch's code.
 
-The rule: **pick one "active" worktree** for `npm run dev` (full
+The rule: **pick one "active" worktree** for `pnpm run dev` (full
 stack with `trigger dev`). In the other worktrees, run the UI
 framework only:
 
 ```sh
 # apps/app — Next.js only, no trigger dev
-npm run dev:no-trigger --workspace=@gideon-defender/app
+pnpm --filter=@gideon-defender/app run dev:no-trigger
 
 # apps/api — NestJS only, no trigger dev
-npm run dev:no-trigger --workspace=@gideon-defender/api
+pnpm --filter=@gideon-defender/api run dev:no-trigger
 ```
 
 Port collisions across worktrees are still your problem: bump the
 `PORT` in the worktree's `.env.local` (e.g. `PORT=3001`, `PORT=3334`)
 for any non-default worktree.
 
-When you swap which worktree is active, kill the full `npm run dev`
+When you swap which worktree is active, kill the full `pnpm run dev`
 in the old one first so task registration is clean before the new
 one claims the dev environment.
 

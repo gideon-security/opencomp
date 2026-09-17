@@ -3,10 +3,13 @@
   "description": "Analytics utilities using PostHog for OpenComp",
   "version": "1.0.0",
   "dependencies": {
+    "next": "^16.2.6",
     "posthog-js": "^1.236.6",
-    "posthog-node": "^5.8.2"
+    "posthog-node": "^5.8.2",
+    "react": "^19.1.1"
   },
   "devDependencies": {
+    "@types/node": "^24.0.3",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },

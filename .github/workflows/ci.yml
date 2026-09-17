@@ -23,22 +23,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/npm-install
+      - uses: ./.github/actions/pnpm-install
       - name: Run db unit tests
         working-directory: packages/db
         # backfill-framework-versions.spec.ts is a destructive integration test that
         # requires a seeded local DB; it is not a unit test and is excluded from CI.
-        run: npx vitest run --exclude '**/backfill-framework-versions.spec.ts'
+        run: pnpm exec vitest run --exclude '**/backfill-framework-versions.spec.ts'
 
   app-unit:
     name: App unit tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/npm-install
+      - uses: ./.github/actions/pnpm-install
       - name: Run app unit tests
         working-directory: apps/app
-        run: npx vitest run
+        run: pnpm exec vitest run
 
   api-unit:
     name: API unit tests
@@ -63,12 +63,12 @@ jobs:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/comp?sslmode=disable
     steps:
       - uses: actions/checkout@v5
-      - uses: ./.github/actions/npm-install
+      - uses: ./.github/actions/pnpm-install
       - name: Apply migrations
         working-directory: packages/db
-        run: npx prisma migrate deploy
+        run: pnpm exec prisma migrate deploy
       - name: Run API unit tests
         working-directory: apps/api
         # --forceExit: specs that load the real Prisma client leak an open connection
         # handle, which otherwise makes the jest worker hang on teardown.
-        run: npx jest --forceExit
+        run: pnpm exec jest --forceExit

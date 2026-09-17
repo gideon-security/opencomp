@@ -4,7 +4,7 @@ Read CLAUDE.md at the repo root and apps/api/CLAUDE.md for comprehensive project
 
 ## Quick Reference
 
-- **Package manager**: `bun` (never npm/yarn/pnpm)
+- **Package manager**: `pnpm` (never npm/yarn/bun)
 - **No `as any`** casts. No `@ts-ignore`. Fix the types instead.
 - **Max 300 lines** per file.
 - **Session auth only** — no JWT. Use `credentials: 'include'` for API calls.

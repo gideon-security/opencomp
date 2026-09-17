@@ -8,7 +8,7 @@
 #
 # Environment toggles:
 #   SKIP_WORKTREE_SETUP=1     — skip everything (just link envs)
-#   SETUP_WORKTREE_WITH_BUILD=1 — also run `bun run build` (slow, minutes;
+#   SETUP_WORKTREE_WITH_BUILD=1 — also run `pnpm run build` (slow, minutes;
 #                                 unnecessary for `dev`, tests, typechecks)
 #
 # Defaults to the current working directory.
@@ -31,18 +31,18 @@ fi
 
 cd "$target"
 
-echo "▸ Installing dependencies (bun install) in $target"
-bun install
+echo "▸ Installing dependencies (pnpm install) in $target"
+pnpm install
 
-echo "▸ Applying Prisma migrations (cd packages/db && bun run db:migrate)"
-(cd packages/db && bun run db:migrate)
+echo "▸ Applying Prisma migrations (cd packages/db && pnpm run db:migrate)"
+(cd packages/db && pnpm run db:migrate)
 
-echo "▸ Generating Prisma client (bun run db:generate)"
-bun run db:generate
+echo "▸ Generating Prisma client (pnpm run db:generate)"
+pnpm run db:generate
 
 if [[ "${SETUP_WORKTREE_WITH_BUILD:-}" == "1" ]]; then
-  echo "▸ Building all packages (bun run build)"
-  bun run build
+  echo "▸ Building all packages (pnpm run build)"
+  pnpm run build
 else
   echo "▸ Skipping build — set SETUP_WORKTREE_WITH_BUILD=1 to include it"
 fi

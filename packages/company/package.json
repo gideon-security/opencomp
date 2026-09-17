@@ -2,10 +2,11 @@
   "name": "@gideon-defender/company",
   "version": "1.0.0",
   "dependencies": {
-    "@prisma/client": "*",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@gideon-defender/tsconfig": "*",
+    "@types/node": "^24.0.3",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },
