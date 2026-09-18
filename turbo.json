@@ -81,7 +81,7 @@
       "dependsOn": ["^lint"]
     },
     "typecheck": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "db:generate"],
       "outputs": ["node_modules/.cache/tsbuildinfo.json"]
     },
     "dev": {

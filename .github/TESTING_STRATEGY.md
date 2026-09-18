@@ -120,11 +120,11 @@ Before pushing:
 
 ```bash
 # For feature work
-npm run test:all  # Runs unit + E2E (Chromium)
+pnpm run test:all  # Runs unit + E2E (Chromium)
 
 # Before release PR
-npm run test       # All unit tests
-npm run test:e2e   # All E2E tests
+pnpm run test       # All unit tests
+pnpm run test:e2e   # All E2E tests
 ```
 
 ## Monitoring and Maintenance

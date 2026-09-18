@@ -25,6 +25,6 @@ find . -name "package.json" -not -path "./node_modules/*" -not -path "./.git/*" 
 done
 
 echo "Running syncpack to ensure consistency..."
-bun run deps:fix
+pnpm run deps:fix
 
-echo "Done! Don't forget to run 'bun install' to update your lock file." 
+echo "Done! Don't forget to run 'pnpm install' to update your lock file." 

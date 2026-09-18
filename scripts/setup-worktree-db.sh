@@ -59,14 +59,15 @@ fi
 mgmt_url=$(printf '%s' "$src_url" \
   | perl -pe 's{^(postgres(?:ql)?://[^/]+/)[^?]*(\?.*)?$}{${1}postgres$2};')
 
-# Use the main worktree's node_modules (which always has `pg` via
-# @prisma/adapter-pg) so we don't require psql on PATH.
-if [[ ! -d "$main/node_modules/pg" ]]; then
-  echo "setup-worktree-db: $main/node_modules/pg missing — run bun install in the main worktree first" >&2
+# Use the main worktree's installed `pg` (present via @prisma/adapter-pg) so
+# we don't require psql on PATH. pnpm nests it under .pnpm, so resolve
+# through node instead of assuming a top-level node_modules/pg path.
+if ! (cd "$main" && pnpm exec node -e "require.resolve('pg')" >/dev/null 2>&1); then
+  echo "setup-worktree-db: pg not installed — run pnpm install in the main worktree first" >&2
   exit 1
 fi
 
-(cd "$main" && bun run "$script_dir/create-database.mjs" "$mgmt_url" "$db_name" >&2)
+(cd "$main" && pnpm exec node "$script_dir/create-database.mjs" "$mgmt_url" "$db_name" >&2)
 
 # stdout: the isolated URL for callers to consume
 printf '%s\n' "$iso_url"

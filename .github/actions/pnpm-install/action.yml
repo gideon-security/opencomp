@@ -1,13 +1,13 @@
 ########################################################################################
-# "npm install" composite action                                                       #
+# "pnpm install" composite action                                                  #
 #--------------------------------------------------------------------------------------#
 # Cache:                                                                               #
-#   - npm cache                                                                        #
+#   - pnpm store                                                                       #
 #   - node_modules directory                                                           #
 ########################################################################################
 
-name: 'npm install'
-description: 'Run npm ci (fallback: npm install) with cache enabled'
+name: 'pnpm install'
+description: 'Run pnpm install --frozen-lockfile with cache enabled'
 inputs:
   node_version:
     description: 'Node.js version to use'
@@ -17,11 +17,16 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.15.0
+
     - name: Use Node ${{ inputs.node_version }}
       uses: actions/setup-node@v5
       with:
         node-version: ${{ inputs.node_version }}
-        cache: npm
+        cache: pnpm
 
     # Cache node_modules
     - name: Restore node_modules
@@ -29,10 +34,13 @@ runs:
       uses: actions/cache@v5
       with:
         path: '**/node_modules/'
-        key: ${{ runner.os }}-npm-nm-cache-${{ hashFiles('package-lock.json', 'package.json') }}
+        key: ${{ runner.os }}-pnpm-nm-cache-${{ hashFiles('pnpm-lock.yaml', 'package.json') }}
 
     - name: Install dependencies
       shell: bash
-      run: |
-        npm ci || npm install
-        cd packages/db && npm run db:generate
+      run: pnpm install --frozen-lockfile
+
+    - name: Generate Prisma client
+      shell: bash
+      working-directory: packages/db
+      run: pnpm run db:generate

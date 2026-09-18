@@ -5,11 +5,8 @@ A modern, accessible UI component library built with React, TypeScript, and Tail
 ## Installation
 
 ```bash
-# Using npm
-npm install @gideon-defender/ui
-
-# Using yarn
-yarn add @gideon-defender/ui
+# Using pnpm
+pnpm add @gideon-defender/ui
 ```
 
 ## Setup

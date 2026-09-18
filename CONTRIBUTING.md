@@ -82,13 +82,14 @@ To develop locally:
    git checkout -b MY_BRANCH_NAME
    ```
 
-3. Make sure you have Node.js >=22 and npm >=10 installed
-   (https://nodejs.org/). The project uses npm workspaces — no bun required.
+3. Make sure you have Node.js >=22 and pnpm 10 installed
+   (https://pnpm.io/). The project uses pnpm workspaces — corepack
+   activates the version pinned in `packageManager`.
 
 4. Install the dependencies with:
 
    ```sh
-   npm install
+   pnpm install
    ```
 
 5. Set up your `.env` file:
@@ -98,7 +99,7 @@ To develop locally:
 6. Start developing and watch for code changes:
 
    ```sh
-   npm run dev
+   pnpm run dev
    ```
 
 ## Building
@@ -106,7 +107,7 @@ To develop locally:
 You can build the project with:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 Please be sure that you can make a full production build before pushing code.
@@ -126,7 +127,7 @@ Coming soon.
 To check the formatting of your code:
 
 ```sh
-npm run lint
+pnpm run lint
 ```
 
 If you get errors, be sure to fix them before committing.
@@ -148,7 +149,7 @@ Every endpoint in `apps/api/src/` ships to three places: the public OpenAPI spec
 4. `@ApiOperation.description` ≤ 240 chars (truncator in `seo-text.ts`).
 5. Long-running ops return a run handle and document the poll target — don't make agents wait synchronously.
 6. File uploads accept an `s3Key` field (presigned upload path) — never base64 inline from agents.
-7. After your change: `npm run dev --workspace=@gideon-defender/api` regenerates `packages/docs/openapi.json` on boot — **commit it with your PR**. The daily Speakeasy CI reads from that file.
+7. After your change: `pnpm --filter=@gideon-defender/api run dev` regenerates `packages/docs/openapi.json` on boot — **commit it with your PR**. The daily Speakeasy CI reads from that file.
 
 ## Making a Pull Request
 

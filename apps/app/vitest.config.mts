@@ -9,6 +9,17 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test-utils/setup.ts'],
+    server: {
+      deps: {
+        // pnpm's symlinked layout lets vitest load React twice — once bundled
+        // (vite-transformed ESM) and once natively (externalized CJS) — which
+        // surfaces as "Invalid hook call" in specs rendering real floating-ui
+        // components. Inline them so vite serves a single instance. Note the
+        // base-ui pattern must cover every @base-ui/* package (utils,
+        // floating-ui-react, …), not just @base-ui/react.
+        inline: [/^react$/, /^react-dom$/, /@base-ui\//],
+      },
+    },
     include: [
       'src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'prisma/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
@@ -30,6 +41,10 @@ export default defineConfig({
     },
   },
   resolve: {
+    // pnpm's isolated layout can resolve react/react-dom to distinct paths
+    // (root symlink vs .pnpm peer copy), producing two module instances and
+    // "Invalid hook call" crashes. Force a single copy like npm hoisting did.
+    dedupe: ['react', 'react-dom'],
     alias: {
       '@': resolve(__dirname, './src'),
       '@gideon-defender/billing': resolve(__dirname, '../../packages/billing/src/index.ts'),

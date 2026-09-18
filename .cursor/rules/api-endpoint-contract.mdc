@@ -114,7 +114,7 @@ The hosted MCP (Gram) uses **dynamic toolsets**: with 300+ tools the agent seman
 4. No `SessionOnlyGuard` on agent-callable endpoints.
 5. Long-running → run handle + poll target.
 6. File input → `s3Key` field + `UploadsService.readUploadAsBase64`.
-7. Run dev (`bun run --filter '@gideon-defender/api' dev`) → openapi.json regenerates on boot.
+7. Run dev (`pnpm --filter '@gideon-defender/api' run dev`) → openapi.json regenerates on boot.
 8. **`git add packages/docs/openapi.json`** — commit the regenerated spec with your API change.
 9. Verify the new schema isn't empty:
    ```

@@ -73,6 +73,10 @@ playground/
 # Ignore lock files to prevent conflicts between different package managers
 bun.lock
 yarn.lock
+# Root uses pnpm — never commit an npm lockfile here. The standalone
+# Speakeasy project in apps/mcp-server keeps its own npm lockfile.
+package-lock.json
+!apps/mcp-server/package-lock.json
 
 # Playwright test results and reports
 **/playwright-report/
