@@ -453,6 +453,7 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
   let reflector: Reflector;
   let enforce = false;
   const mockVerify = jest.fn();
+  const mockIsGideonToken = jest.fn();
   const mockLogMismatch = jest.fn();
   const mockNativeResolve = jest.fn();
 
@@ -493,6 +494,7 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
       isEnforceMode: () => enforce,
       isShadowMode: () => !enforce,
       verify: (...args: unknown[]) => mockVerify(...args),
+      isGideonToken: (...args: unknown[]) => mockIsGideonToken(...args),
       resolveTenantId: (payload: { tid?: string }) => payload.tid ?? null,
       resolveUserId: (payload: { sub?: string }) => payload.sub ?? null,
     } as unknown as import('./gideon-jwt.service').GideonJwtService;
@@ -512,6 +514,8 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
     );
     mockLogMismatch.mockResolvedValue(undefined);
     // No native/MCP session by default; individual tests opt in.
+    // Tokens present as non-Gideon by default; enforce-failure tests opt in.
+    mockIsGideonToken.mockReturnValue(false);
     mockNativeResolve.mockResolvedValue(null);
     mockGetMcpSession.mockResolvedValue(null);
     mockMcpBindingFindUnique.mockResolvedValue(null);
@@ -623,6 +627,9 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
   it('enforce mode: invalid Gideon token is a 401 with no session fallback', async () => {
     enforce = true;
     mockVerify.mockResolvedValue(null);
+    // Forged token presents as a Gideon JWT (JWT-shaped, matching iss) but
+    // fails verification → hard 401.
+    mockIsGideonToken.mockReturnValue(true);
 
     const { context } = createContext({
       authorization: 'Bearer forged.jwt.token',
@@ -632,6 +639,65 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
       'Invalid Gideon JWT',
     );
     expect(mockNativeResolve).not.toHaveBeenCalled();
+  });
+
+  it('enforce mode: opaque session bearer falls through to session (dual-run)', async () => {
+    enforce = true;
+    mockVerify.mockResolvedValue(null);
+    mockIsGideonToken.mockReturnValue(false);
+    mockNativeResolve.mockResolvedValue({
+      user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
+      session: {
+        id: 'sess_9',
+        activeOrganizationId: 'org_9',
+        impersonatedBy: null,
+        deviceAgent: true,
+        expiresAt: new Date(Date.now() + 60_000),
+      },
+    });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_9',
+      role: 'owner',
+      department: 'none',
+    });
+
+    const { context, request } = createContext({
+      authorization: 'Bearer opaque-device-agent-session-token',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(request.authType).toBe('session');
+    expect(request.userId).toBe('usr_9');
+    expect(request.isGideonJwt).toBeUndefined();
+  });
+
+  it('enforce mode: foreign-issuer JWT falls through to session', async () => {
+    enforce = true;
+    mockVerify.mockResolvedValue(null);
+    mockIsGideonToken.mockReturnValue(false);
+    mockNativeResolve.mockResolvedValue({
+      user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
+      session: {
+        id: 'sess_9',
+        activeOrganizationId: 'org_9',
+        impersonatedBy: null,
+        deviceAgent: false,
+        expiresAt: new Date(Date.now() + 60_000),
+      },
+    });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_9',
+      role: 'owner',
+      department: 'none',
+    });
+
+    const { context, request } = createContext({
+      authorization: 'Bearer foreign.issuer.jwt',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(request.authType).toBe('session');
+    expect(request.userId).toBe('usr_9');
   });
 
   it('enforce mode: unlinked sub is a 401 (no memberships possible)', async () => {

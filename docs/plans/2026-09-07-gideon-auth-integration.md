@@ -1,6 +1,6 @@
 # OpenComp × Gideon Auth integration plan
 
-**Status:** Milestone 1 done (2026-09-15); Milestone 2 code-complete, flip pending (2026-09-16); Milestone 3 cutover-enablement done (2026-09-16), deletion PR pending
+**Status:** Milestone 1 done (2026-09-15); Milestone 2 flipped locally (2026-09-18); Milestone 3 cutover-enablement done (2026-09-16), deletion PR pending
 **Date:** 2026-09-07 (updated 2026-09-16)
 **Goal:** Replace better-auth (including Google/GitHub/Microsoft social, magic link, email OTP) with Gideon Auth as the sole authenticator for OpenComp.
 
@@ -9,7 +9,7 @@
 | Milestone                                           | Scope                                                                                                                                     | Plan steps             |
 | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | 1 — OIDC login via library (dual-run, no deletions) | Done 2026-09-15                                                                                                                           | §4.5 + §5.7, 8, 10, 11 |
-| 2 — Session reads off better-auth                   | Code done 2026-09-16, flip pending                                                                                                        | §8 + §5.9              |
+| 2 — Session reads off better-auth                   | Flipped locally 2026-09-18 (staging/prod pending)                                                                                                             | §8 + §5.9              |
 | 3 — Cutover and deletion                            | Cutover-enablement done 2026-09-16 (native sessions/permissions/admin, Gideon-only default, MCP accepts Gideon JWTs); deletion PR pending | §6 + §7                |
 
 ## 1. Context
@@ -122,9 +122,18 @@ From `apps/api/src/auth/auth.server.ts`, guards, frontend, and Prisma:
 8. On callback: find-or-create `User` by verified email (or `gideonSub`), set
    `gideonSub`, mint a standard `Session` row + cookie (reuse the existing
    `activeOrganizationId` session-creation hook).
-9. (Milestone 2, §8 — code-ready 2026-09-16, flip pending) Promote `GideonJwtService` from shadow to enforcing
-   second factor in `HybridAuthGuard` behind `GIDEON_JWT_ENABLED`, keeping
-   better-auth session as fallback during dual-run.
+9. (Milestone 2, §8 — flipped locally 2026-09-18) `GideonJwtService` promoted
+    from shadow to enforcing second factor in `HybridAuthGuard` behind
+    `GIDEON_JWT_ENABLED`, keeping the better-auth session as fallback during
+    dual-run. Pre-flip guard patch (2026-09-18): enforce mode 401s only
+    tokens presenting as Gideon JWTs (`GideonJwtService.isGideonToken()` —
+    JWT-shaped with matching `iss`); opaque session/MCP bearer tokens
+    (device-agent, Gram) and foreign JWTs fall through to session auth in
+    every mode. Without the patch, enforce mode 401'd all Bearer-session
+    callers. Tests: `gideon-jwt.service.spec.ts` (isGideonToken),
+    `hybrid-auth.guard.spec.ts` (opaque + foreign-issuer fallthrough in
+    enforce). Local env: `GIDEON_JWT_AUDIENCE=gideon-cockpit`,
+    `GIDEON_JWT_ENABLED=true` (`apps/api/.env`, gitignored).
 10. Sign-in UI: "Continue with Gideon" button on `(public)/auth` and portal
     login → new login endpoint; keep Google/magic-link/OTP until cutover.
     Route invite links (`accept-invite.tsx`) through Gideon login, then resume
@@ -186,16 +195,25 @@ auth library can be deleted in Milestone 3 without touching UI code.
      zero `useSession()` callers, nothing to migrate. `GET /v1/auth/me` now also
      returns `impersonatedBy`, `authType`, and `hasInactiveMembership`
      (`AuthController.getMe`, surfaced through `@AuthContext()`).
-2. 🟡 Code-ready, flip pending — `HybridAuthGuard` Gideon path resolves `sub`
-   through `User.gideonSub` before the membership check (unlinked subs 401 in
-   enforce mode, fall through to session in shadow mode), with 6 new guard
-   tests (linked/unlinked × shadow/enforce). Still to do: set
-   `GIDEON_JWT_ENABLED=true` per environment, keeping the better-auth session
-   as fallback. Monitor shadow-mismatch logs (`GideonShadowService`) before
-   proceeding.
+2. ✅ Flipped locally 2026-09-18 — `GideonJwtService` resolves `sub`
+    through `User.gideonSub` before the membership check (unlinked subs 401 in
+    enforce mode, fall through to session in shadow mode), with 6 new guard
+    tests (linked/unlinked × shadow/enforce) plus 2 fallthrough tests
+    (opaque bearer, foreign-issuer JWT). Live-verified against the flipped
+    local api: opaque bearer → session path (`Invalid or expired session`),
+    forged Gideon-shaped JWT → `Invalid Gideon JWT` 401 with JWKS fetched
+    from the dev issuer; no shadow-mismatch errors; operator account
+    `gideonSub`-linked. Still to do per environment (staging/prod): set
+    `GIDEON_JWT_ENABLED=true` with that deployment's `GIDEON_JWT_AUDIENCE`
+    (do NOT copy the dev value) on an image containing the `isGideonToken`
+    guard patch, keeping the better-auth session as fallback. Monitor
+    shadow-mismatch logs (`GideonShadowService`) before proceeding.
 3. ⏳ Pending (operational) — dual-run exit check: Gideon logins mint usable
-   sessions, `GET /v1/auth/me` resolves for both session types, mismatch logs
-   are clean.
+    sessions, `GET /v1/auth/me` resolves for both session types, mismatch logs
+    are clean. Local note: full Bearer-JWT end-to-end is not exercisable
+    until tenant mapping lands (Gideon `tid` UUID vs OpenComp `org_*` ids —
+    cutover §6 territory); covered by unit tests + live forged-token check
+    instead.
 
 ## 9. Milestone 3 — Cutover and deletion
 
@@ -224,6 +242,10 @@ Gideon becomes the only authenticator; better-auth is removed. Executes §6
 ## 10. Open inputs needed
 
 - Deployed issuer URL(s) and audience; staging vs prod split.
+  (Dev resolved 2026-09-18: issuer `https://api.dev.gideondefender.com`,
+  `JWT_AUDIENCE` = `gideon-cockpit` — verified empirically by decoding a live
+  dev access token, `aud: ["gideon-cockpit", client_id]`. Staging/prod values
+  still required from the auth team; do not reuse the dev value.)
 - API→auth-service network reachability confirmation.
 - OAuth client-registration access + local-dev redirect arrangement.
   (Still outstanding after Milestone 1: confidential

@@ -187,7 +187,10 @@ export class HybridAuthGuard implements CanActivate {
    * Phase 0 — Gideon JWT shadow/verify.
    * Tries `Authorization: Bearer <gideon_jwt>` via `GideonJwtService`.
    * - In shadow mode (`GIDEON_JWT_SHADOW_ENABLED` or auto-shadow when configured), failures fall through to session.
-   * - In enforce mode (`GIDEON_JWT_ENABLED=true`), failures throw 401.
+   * - In enforce mode (`GIDEON_JWT_ENABLED=true`), failures throw 401 — but
+   *   only for tokens that present as Gideon JWTs (JWT-shaped, matching iss).
+   *   Opaque bearer tokens (better-auth sessions, legacy MCP tokens) always
+   *   fall through to session auth so dual-run clients keep working.
    * - On success, populates `request` (organizationId=user's tenant, userId=sub) and logs shadow mismatch for
    *   `GET /v1/platform/tenants/:id/operations` via `GideonShadowService`.
    */
@@ -207,7 +210,13 @@ export class HybridAuthGuard implements CanActivate {
 
     const result = await this.gideonJwtService.verify(token);
     if (!result) {
-      if (this.gideonJwtService.isEnforceMode()) {
+      // Enforce only tokens that present as Gideon JWTs. Anything else
+      // (opaque session/MCP bearer tokens, foreign JWTs) falls through to
+      // session auth in every mode — dual-run fallback.
+      if (
+        this.gideonJwtService.isEnforceMode() &&
+        this.gideonJwtService.isGideonToken(token)
+      ) {
         this.logger.warn('[Gideon] JWT verify failed in enforce mode');
         return 'enforce_failed';
       }
