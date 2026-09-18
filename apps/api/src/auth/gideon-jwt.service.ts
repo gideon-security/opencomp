@@ -126,6 +126,24 @@ export class GideonJwtService {
   }
 
   /**
+   * Whether a Bearer token presents as a Gideon JWT: JWT-shaped with an `iss`
+   * matching the configured issuer. Used by HybridAuthGuard so enforce mode
+   * only hard-fails tokens that claim to be Gideon JWTs — opaque
+   * session/MCP bearer tokens fall through to session auth in every mode.
+   */
+  isGideonToken(token: string): boolean {
+    if (!token || token.split('.').length !== 3) return false;
+    const issuer = this.issuer;
+    if (!issuer) return false;
+    try {
+      const payload = decodeJwt(token) as Record<string, unknown>;
+      return payload.iss === issuer;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Verify a Gideon JWT. Returns payload on success, null on failure or when disabled.
    * Never throws — caller decides to fallback or enforce.
    */

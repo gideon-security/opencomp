@@ -230,6 +230,50 @@ describe('GideonJwtService', () => {
     });
   });
 
+  describe('isGideonToken', () => {
+    it('false for opaque non-JWT tokens', () => {
+      process.env.GIDEON_JWT_ISSUER = 'https://auth.example.com';
+      expect(service.isGideonToken('opaque-session-token')).toBe(false);
+      expect(mockDecodeJwt).not.toHaveBeenCalled();
+    });
+
+    it('false for JWT-shaped tokens with mismatched iss', () => {
+      process.env.GIDEON_JWT_ISSUER = 'https://auth.example.com';
+      mockDecodeJwt.mockReturnValue({
+        iss: 'https://other.example.com',
+      } as never);
+
+      expect(service.isGideonToken('header.payload.sig')).toBe(false);
+      expect(mockDecodeJwt).toHaveBeenCalledWith('header.payload.sig');
+    });
+
+    it('true for JWT-shaped tokens with matching iss', () => {
+      process.env.GIDEON_JWT_ISSUER = 'https://auth.example.com';
+      mockDecodeJwt.mockReturnValue({
+        iss: 'https://auth.example.com',
+      } as never);
+
+      expect(service.isGideonToken('header.payload.sig')).toBe(true);
+    });
+
+    it('false when decodeJwt throws (malformed token)', () => {
+      process.env.GIDEON_JWT_ISSUER = 'https://auth.example.com';
+      mockDecodeJwt.mockImplementation(() => {
+        throw new Error('Invalid JWT');
+      });
+
+      expect(service.isGideonToken('not.a.jwt')).toBe(false);
+    });
+
+    it('false when no issuer is configured', () => {
+      mockDecodeJwt.mockReturnValue({
+        iss: 'https://auth.example.com',
+      } as never);
+
+      expect(service.isGideonToken('header.payload.sig')).toBe(false);
+    });
+  });
+
   describe('resolveTenantId / resolveUserId', () => {
     it('prefers tid over tenant_id over organizationId', () => {
       expect(service.resolveTenantId({ sub: 'u', tid: 'tid1' } as never)).toBe(
