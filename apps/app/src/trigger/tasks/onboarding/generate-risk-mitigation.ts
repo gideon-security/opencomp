@@ -157,6 +157,20 @@ export const generateRiskMitigationsForOrg = task({
       return;
     }
 
+    // Resume: risks with a written mitigation plan were finished by a
+    // previous run — only the unmitigated ones cost LLM calls.
+    const pendingRisks = risks.filter((r) => !r.treatmentStrategyDescription?.trim());
+    const skippedCount = risks.length - pendingRisks.length;
+    if (skippedCount > 0) {
+      logger.info(`Skipping ${skippedCount} already-mitigated risks`, {
+        organizationId,
+      });
+    }
+    if (pendingRisks.length === 0) {
+      logger.info(`All ${risks.length} risks already mitigated`, { organizationId });
+      return;
+    }
+
     if (!author) {
       logger.warn(
         `No onboarding author found for org ${organizationId}; treatment descriptions will generate but risks will not be reassigned`,
@@ -167,7 +181,7 @@ export const generateRiskMitigationsForOrg = task({
 
     const batchResult = await tasks.batchTriggerAndWait<typeof generateRiskMitigation>(
       'generate-risk-mitigation',
-      risks.map((r) => ({
+      pendingRisks.map((r) => ({
         payload: {
           organizationId,
           riskId: r.id,

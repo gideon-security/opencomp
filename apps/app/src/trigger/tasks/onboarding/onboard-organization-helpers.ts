@@ -1315,25 +1315,48 @@ export async function triggerPolicyUpdates(
   const policies = await getOrganizationPolicies(organizationId);
 
   if (policies.length > 0) {
-    // Initialize policy progress tracking in parent metadata
+    // Resume: a policy with a published version was already tailored by a
+    // previous run — skip it so retries only spend quota on unfinished
+    // work instead of re-tailoring everything from scratch.
+    const versioned = await db.policyVersion.findMany({
+      where: { policyId: { in: policies.map((p) => p.id) } },
+      select: { policyId: true },
+    });
+    const tailoredIds = new Set(versioned.map((v) => v.policyId));
+    const pending = policies.filter((p) => !tailoredIds.has(p.id));
+
+    // Initialize policy progress tracking in parent metadata.
+    // Already-tailored policies count as completed so the UI reflects
+    // resumed (not restarted) progress.
     metadata.set('policiesTotal', policies.length);
-    metadata.set('policiesCompleted', 0);
-    metadata.set('policiesRemaining', policies.length);
+    metadata.set('policiesCompleted', policies.length - pending.length);
+    metadata.set('policiesRemaining', pending.length);
     // Store policy info for tracking individual policies
     metadata.set(
       'policiesInfo',
       policies.map((p) => ({ id: p.id, name: p.name })),
     );
 
-    // Initialize individual policy statuses - all start as 'queued'
+    // Initialize individual policy statuses - tailored ones are completed,
+    // the rest start as 'queued'
     // Each policy gets its own metadata key: policy_{id}_status
     policies.forEach((policy) => {
-      metadata.set(`policy_${policy.id}_status`, 'queued');
+      metadata.set(
+        `policy_${policy.id}_status`,
+        tailoredIds.has(policy.id) ? 'completed' : 'queued',
+      );
     });
+
+    if (pending.length === 0) {
+      logger.info(`All ${policies.length} policies already tailored — skipping`, {
+        organizationId,
+      });
+      return;
+    }
 
     await tasks.batchTrigger<typeof updatePolicy>(
       'update-policy',
-      policies.map((policy) => ({
+      pending.map((policy) => ({
         payload: {
           organizationId,
           policyId: policy.id,
