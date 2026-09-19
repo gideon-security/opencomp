@@ -134,6 +134,20 @@ export const generateVendorMitigationsForOrg = task({
       return;
     }
 
+    // Resume: vendors with a written mitigation plan were finished by a
+    // previous run — only the unmitigated ones cost LLM calls.
+    const pendingVendors = vendors.filter((v) => !v.treatmentStrategyDescription?.trim());
+    const skippedCount = vendors.length - pendingVendors.length;
+    if (skippedCount > 0) {
+      logger.info(`Skipping ${skippedCount} already-mitigated vendors`, {
+        organizationId,
+      });
+    }
+    if (pendingVendors.length === 0) {
+      logger.info(`All ${vendors.length} vendors already mitigated`, { organizationId });
+      return;
+    }
+
     if (!author) {
       logger.warn(
         `No onboarding author found for org ${organizationId}; treatment descriptions will generate but vendors will not be reassigned`,
@@ -144,7 +158,7 @@ export const generateVendorMitigationsForOrg = task({
 
     const batchResult = await tasks.batchTriggerAndWait<typeof generateVendorMitigation>(
       'generate-vendor-mitigation',
-      vendors.map((v) => ({
+      pendingVendors.map((v) => ({
         payload: {
           organizationId,
           vendorId: v.id,

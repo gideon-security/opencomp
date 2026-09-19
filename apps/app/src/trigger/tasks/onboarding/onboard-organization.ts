@@ -113,6 +113,30 @@ export const onboardOrganization = task({
 
       const [vendors, risks] = await Promise.all([
         (async () => {
+          // Resume: vendors extracted + created by a previous run are
+          // reused as-is — re-running the LLM extraction every retry is
+          // what burns the quota without converging.
+          const existingVendors = await db.vendor.findMany({
+            where: { organizationId: payload.organizationId },
+          });
+          if (existingVendors.length > 0) {
+            logger.info(
+              `Skipping vendor extraction — ${existingVendors.length} vendors already exist`,
+              { organizationId: payload.organizationId },
+            );
+            metadata.set('vendorsTotal', existingVendors.length);
+            metadata.set('vendorsCompleted', existingVendors.length);
+            metadata.set('vendorsRemaining', 0);
+            metadata.set(
+              'vendorsInfo',
+              existingVendors.map((v) => ({ id: v.id, name: v.name })),
+            );
+            existingVendors.forEach((vendor) => {
+              metadata.set(`vendor_${vendor.id}_status`, 'assessing');
+            });
+            metadata.set('vendors', true);
+            return existingVendors;
+          }
           const vendorData = await extractVendorsFromContext(questionsAndAnswers);
           if (vendorData.length > 0) {
             metadata.set('vendorsTotal', vendorData.length);
@@ -146,6 +170,33 @@ export const onboardOrganization = task({
         })(),
         (async () => {
           metadata.set('currentStep', 'Creating Risks...');
+          // Resume: risks created by a previous run (baselines are
+          // non-LLM, so any completed run leaves rows behind) are reused
+          // as-is instead of re-running LLM extraction.
+          const existingRisks = await db.risk.findMany({
+            where: { organizationId: payload.organizationId },
+          });
+          if (existingRisks.length > 0) {
+            logger.info(
+              `Skipping risk extraction — ${existingRisks.length} risks already exist`,
+              { organizationId: payload.organizationId },
+            );
+            metadata.set('risksTotal', existingRisks.length);
+            metadata.set('risksCompleted', existingRisks.length);
+            metadata.set('risksRemaining', 0);
+            metadata.set(
+              'risksInfo',
+              existingRisks.map((r) => ({
+                id: r.id,
+                name: r.description?.slice(0, 80) ?? r.id,
+              })),
+            );
+            existingRisks.forEach((risk) => {
+              metadata.set(`risk_${risk.id}_status`, 'assessing');
+            });
+            metadata.set('risk', true);
+            return existingRisks;
+          }
           const created = await createRisks(
             questionsAndAnswers,
             payload.organizationId,
