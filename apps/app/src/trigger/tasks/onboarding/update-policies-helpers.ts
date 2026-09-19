@@ -1,4 +1,5 @@
 import { generateObjectWithRetry } from '@/lib/llm-call';
+import { TAILORED_POLICY_CHANGELOG } from '@/lib/policy-changelog';
 import { google } from '@ai-sdk/google';
 import {
   db,
@@ -226,7 +227,7 @@ export async function updatePolicyInDatabase(
           version: 1,
           content: content as JSONContent[],
           publishedById: memberId || null,
-          changelog: 'Regenerated policy content',
+          changelog: TAILORED_POLICY_CHANGELOG,
         },
       });
 

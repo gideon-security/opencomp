@@ -748,7 +748,11 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
 
   it('scopes membership + request to the tenant org id (tid == org id)', async () => {
     mockVerify.mockResolvedValue({
-      payload: { sub: 'gideon-sub-1', tid: 'tenant-abc', email: 'gin@acme.com' },
+      payload: {
+        sub: 'gideon-sub-1',
+        tid: 'tenant-abc',
+        email: 'gin@acme.com',
+      },
       protectedHeader: { kid: 'k1' },
     });
     mockUserFindUnique.mockResolvedValue({
@@ -773,7 +777,11 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
     });
     // Membership and request scoping use the tenant org id directly.
     expect(mockMemberFindFirst).toHaveBeenCalledWith({
-      where: { userId: 'usr_1', organizationId: 'tenant-abc', deactivated: false },
+      where: {
+        userId: 'usr_1',
+        organizationId: 'tenant-abc',
+        deactivated: false,
+      },
       select: { id: true, role: true, department: true },
     });
     expect(request.organizationId).toBe('tenant-abc');

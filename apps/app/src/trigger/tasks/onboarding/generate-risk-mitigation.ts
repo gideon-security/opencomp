@@ -157,6 +157,45 @@ export const generateRiskMitigationsForOrg = task({
       return;
     }
 
+    // Resume: risks with a written mitigation plan were finished by a
+    // previous run — only the unmitigated ones cost LLM calls. A risk
+    // with a plan but still open lost the status write to a crash
+    // between the two writes, so it runs again to heal.
+    const needsMitigation = (r: (typeof risks)[number]) =>
+      !r.treatmentStrategyDescription?.trim() || r.status === RiskStatus.open;
+    const pendingRisks = risks.filter(needsMitigation);
+    const skippedCount = risks.length - pendingRisks.length;
+    const metadataHandle = metadata.root ?? metadata.parent ?? metadata;
+
+    // Rebase progress on the same complete data set that this fan-out uses.
+    // The parent only knows about risks created during its current run.
+    metadataHandle.set('risksTotal', risks.length);
+    metadataHandle.set('risksCompleted', skippedCount);
+    metadataHandle.set('risksRemaining', pendingRisks.length);
+    metadataHandle.set(
+      'risksInfo',
+      risks.map((risk) => ({
+        id: risk.id,
+        name: risk.description?.slice(0, 80) ?? risk.id,
+      })),
+    );
+    for (const risk of risks) {
+      metadataHandle.set(
+        `risk_${risk.id}_status`,
+        needsMitigation(risk) ? 'assessing' : 'completed',
+      );
+    }
+
+    if (skippedCount > 0) {
+      logger.info(`Skipping ${skippedCount} already-mitigated risks`, {
+        organizationId,
+      });
+    }
+    if (pendingRisks.length === 0) {
+      logger.info(`All ${risks.length} risks already mitigated`, { organizationId });
+      return;
+    }
+
     if (!author) {
       logger.warn(
         `No onboarding author found for org ${organizationId}; treatment descriptions will generate but risks will not be reassigned`,
@@ -167,7 +206,7 @@ export const generateRiskMitigationsForOrg = task({
 
     const batchResult = await tasks.batchTriggerAndWait<typeof generateRiskMitigation>(
       'generate-risk-mitigation',
-      risks.map((r) => ({
+      pendingRisks.map((r) => ({
         payload: {
           organizationId,
           riskId: r.id,

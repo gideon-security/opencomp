@@ -20,7 +20,10 @@ import {
   mockUserFindUnique,
   mockUserUpdate,
 } from './gideon-oidc.service.fixtures';
-import { GideonOidcService, extractGideonTenantId } from './gideon-oidc.service';
+import {
+  GideonOidcService,
+  extractGideonTenantId,
+} from './gideon-oidc.service';
 
 // Module-scope mocks referenced by the hoisted @db factory below.
 
@@ -413,9 +416,9 @@ describe('GideonOidcService', () => {
     };
 
     it('extracts tid from a JWT access token', () => {
-      expect(
-        extractGideonTenantId(jwt({ sub: 'u', tid: 'tenant-1' })),
-      ).toBe('tenant-1');
+      expect(extractGideonTenantId(jwt({ sub: 'u', tid: 'tenant-1' }))).toBe(
+        'tenant-1',
+      );
     });
 
     it('accepts alternate tenant claim shapes', () => {

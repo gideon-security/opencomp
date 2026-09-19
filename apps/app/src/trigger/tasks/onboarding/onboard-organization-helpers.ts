@@ -7,7 +7,6 @@ import {
 import { google } from '@ai-sdk/google';
 import {
   Departments,
-  FrameworkEditorFramework,
   Impact,
   Likelihood,
   Risk,
@@ -31,7 +30,6 @@ import {
   selectMitigationCitations,
   type MitigationCitation,
 } from './select-mitigation-citations';
-import { updatePolicy } from './update-policy';
 
 const ONBOARDING_MODEL = 'gemini-3.5-flash' as const;
 
@@ -1295,57 +1293,6 @@ async function createRisksFromDataWithBaseline(
   return createdRisks;
 }
 
-/**
- * Gets all policies for an organization
- */
-export async function getOrganizationPolicies(organizationId: string) {
-  return await db.policy.findMany({
-    where: { organizationId },
-  });
-}
-
-/**
- * Triggers policy update tasks
- */
-export async function triggerPolicyUpdates(
-  organizationId: string,
-  questionsAndAnswers: ContextItem[],
-  frameworks: FrameworkEditorFramework[],
-): Promise<void> {
-  const policies = await getOrganizationPolicies(organizationId);
-
-  if (policies.length > 0) {
-    // Initialize policy progress tracking in parent metadata
-    metadata.set('policiesTotal', policies.length);
-    metadata.set('policiesCompleted', 0);
-    metadata.set('policiesRemaining', policies.length);
-    // Store policy info for tracking individual policies
-    metadata.set(
-      'policiesInfo',
-      policies.map((p) => ({ id: p.id, name: p.name })),
-    );
-
-    // Initialize individual policy statuses - all start as 'queued'
-    // Each policy gets its own metadata key: policy_{id}_status
-    policies.forEach((policy) => {
-      metadata.set(`policy_${policy.id}_status`, 'queued');
-    });
-
-    await tasks.batchTrigger<typeof updatePolicy>(
-      'update-policy',
-      policies.map((policy) => ({
-        payload: {
-          organizationId,
-          policyId: policy.id,
-          contextHub: questionsAndAnswers.map((c) => `${c.question}\n${c.answer}`).join('\n'),
-          frameworks,
-        },
-        options: { concurrencyKey: organizationId },
-      })),
-    );
-  }
-}
-
 // HIGH-LEVEL ORCHESTRATION FUNCTIONS
 
 /**
@@ -1478,15 +1425,4 @@ export async function createRisks(
   }
 
   return createdRisks;
-}
-
-/**
- * Update organization policies with context
- */
-export async function updateOrganizationPolicies(
-  organizationId: string,
-  questionsAndAnswers: ContextItem[],
-  frameworks: FrameworkEditorFramework[],
-): Promise<void> {
-  await triggerPolicyUpdates(organizationId, questionsAndAnswers, frameworks);
 }

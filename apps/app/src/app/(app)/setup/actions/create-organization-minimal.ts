@@ -119,8 +119,7 @@ export const createOrganizationMinimal = authActionClientWithoutOrg
         if (existingOrg.id !== tenantId) {
           return {
             success: false,
-            error:
-              'This Gideon tenant already has an organization. Please use the existing one.',
+            error: 'This Gideon tenant already has an organization. Please use the existing one.',
           };
         }
         // Ensure post-creation steps are completed in case the original
@@ -328,8 +327,7 @@ export const createOrganizationMinimal = authActionClientWithoutOrg
       if ((error as { code?: string }).code === 'P2002') {
         return {
           success: false,
-          error:
-            'This Gideon tenant already has an organization. Please use the existing one.',
+          error: 'This Gideon tenant already has an organization. Please use the existing one.',
         };
       }
 
