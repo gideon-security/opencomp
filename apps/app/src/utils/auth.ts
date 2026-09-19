@@ -471,106 +471,6 @@ async function addMember(options: {
 }
 
 /**
- * Sign up with email and password.
- * Note: This is mainly for testing. In production, use the auth client.
- */
-function signUpEmail(options: {
-  body: { email: string; password: string; name: string };
-  headers?: ReadonlyHeaders | Headers;
-  asResponse: true;
-}): Promise<Response>;
-function signUpEmail(options: {
-  body: { email: string; password: string; name: string };
-  headers?: ReadonlyHeaders | Headers;
-  asResponse?: false;
-}): Promise<Session | null>;
-async function signUpEmail(options: {
-  body: { email: string; password: string; name: string };
-  headers?: ReadonlyHeaders | Headers;
-  asResponse?: boolean;
-}): Promise<Response | Session | null> {
-  try {
-    const response = await fetch(`${API_URL}/api/auth/sign-up/email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers ? headersToObject(options.headers) : {}),
-      },
-      body: JSON.stringify(options.body),
-    });
-
-    if (options.asResponse) {
-      return response;
-    }
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    return data as Session;
-  } catch (error) {
-    if (IS_DEVELOPMENT) {
-      console.error('[auth] Failed to sign up:', error);
-    }
-    if (options.asResponse) {
-      return new Response(JSON.stringify({ error: 'Failed to sign up' }), { status: 500 });
-    }
-    return null;
-  }
-}
-
-/**
- * Sign in with email and password.
- * Note: This is mainly for testing. In production, use the auth client.
- */
-function signInEmail(options: {
-  body: { email: string; password: string };
-  headers?: ReadonlyHeaders | Headers;
-  asResponse: true;
-}): Promise<Response>;
-function signInEmail(options: {
-  body: { email: string; password: string };
-  headers?: ReadonlyHeaders | Headers;
-  asResponse?: false;
-}): Promise<Session | null>;
-async function signInEmail(options: {
-  body: { email: string; password: string };
-  headers?: ReadonlyHeaders | Headers;
-  asResponse?: boolean;
-}): Promise<Response | Session | null> {
-  try {
-    const response = await fetch(`${API_URL}/api/auth/sign-in/email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers ? headersToObject(options.headers) : {}),
-      },
-      body: JSON.stringify(options.body),
-    });
-
-    if (options.asResponse) {
-      return response;
-    }
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    return data as Session;
-  } catch (error) {
-    if (IS_DEVELOPMENT) {
-      console.error('[auth] Failed to sign in:', error);
-    }
-    if (options.asResponse) {
-      return new Response(JSON.stringify({ error: 'Failed to sign in' }), { status: 500 });
-    }
-    return null;
-  }
-}
-
-/**
  * Server-side auth API object that mirrors the better-auth server API.
  *
  * Usage:
@@ -591,8 +491,6 @@ export const auth = {
     getFullOrganization,
     createInvitation,
     addMember,
-    signUpEmail,
-    signInEmail,
   },
   /**
    * Type inference helpers for compatibility with existing code.

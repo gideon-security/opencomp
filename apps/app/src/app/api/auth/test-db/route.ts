@@ -17,10 +17,10 @@ export async function GET() {
     // Test basic query
     const userCount = await db.user.count();
 
-    // Create a test organization first
+    // Create a test organization first (tenant is the org: test tid as id)
     const testOrg = await db.organization.create({
       data: {
-        id: `org_test_${Date.now()}`,
+        id: `tid_test_${Date.now()}`,
         name: 'Test DB Org',
         hasAccess: true,
       },

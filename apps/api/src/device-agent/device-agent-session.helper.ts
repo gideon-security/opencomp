@@ -32,7 +32,7 @@ export async function createDeviceAgentSession({
       token: randomBytes(32).toString('hex'),
       userId,
       expiresAt,
-      activeOrganizationId: await resolveActiveOrganizationId(userId),
+      activeOrganizationId: await resolveActiveOrganizationId({ userId }),
       deviceAgent: true,
     },
   });

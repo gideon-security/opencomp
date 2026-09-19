@@ -115,26 +115,26 @@ describe('GideonShadowService', () => {
     expect(debug).toHaveBeenCalledWith(expect.stringContaining('match'));
   });
 
-  it('uses fixed Prisma select (no take inside select) and then member findFirst', async () => {
+  it('resolves the local org by tid-as-id (tenant is the org)', async () => {
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({ tenant: { name: 'Acme' } }),
     } as never);
     mockOrgFindUnique.mockResolvedValue({
-      id: 'org_1',
+      id: 'tenant-abc',
       name: 'Acme',
       createdAt: new Date(),
     } as never);
     mockMemberFindFirst.mockResolvedValue(null);
 
-    await service.logTenantOperationsMismatch('org_1', 'tok');
+    await service.logTenantOperationsMismatch('tenant-abc', 'tok');
 
     expect(mockOrgFindUnique).toHaveBeenCalledWith({
-      where: { id: 'org_1' },
+      where: { id: 'tenant-abc' },
       select: { id: true, name: true, createdAt: true },
     });
     expect(mockMemberFindFirst).toHaveBeenCalledWith({
-      where: { organizationId: 'org_1' },
+      where: { organizationId: 'tenant-abc' },
       select: { id: true },
     });
   });

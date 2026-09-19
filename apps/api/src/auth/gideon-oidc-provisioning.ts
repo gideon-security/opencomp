@@ -10,16 +10,45 @@ export interface ProvisionGideonUserParams {
   email: string;
   name?: string;
   image?: string;
+  /**
+   * Gideon tenant id from the login (decoded from the access token). The
+   * tenant IS the organization (Organization.id), so this also selects the
+   * session's active org — stamped onto the user row for onboarding, which
+   * reads it to create organizations under the login's tenant.
+   */
+  tenantId?: string;
 }
 
 /**
- * Most-recent organization for a user — the shared `activeOrganizationId`
- * rule used by better-auth's session-creation hook (`auth.server.ts`) and
- * Gideon OIDC session minting so the two paths cannot drift.
+ * Active organization for a session. Tenant is the org: when the login
+ * carries a Gideon tenant id, the session points at the org with that id
+ * (verified live membership — never a different org than the tenant that
+ * issued the login). Unknown tenants and non-members resolve to null and
+ * flow into setup; there is no most-recent fallback for Gideon logins.
+ * Callers without a tenant (better-auth, device agent) keep the
+ * most-recent-membership rule.
  */
-export async function resolveActiveOrganizationId(
-  userId: string,
-): Promise<string | null> {
+export async function resolveActiveOrganizationId({
+  userId,
+  tenantId,
+}: {
+  userId: string;
+  tenantId?: string;
+}): Promise<string | null> {
+  if (tenantId) {
+    const org = await db.organization.findUnique({
+      where: { id: tenantId },
+      select: { id: true },
+    });
+    if (org) {
+      const membership = await db.member.findFirst({
+        where: { userId, organizationId: org.id, deactivated: false },
+        select: { id: true },
+      });
+      if (membership) return org.id;
+    }
+    return null;
+  }
   const org = await db.organization.findFirst({
     where: { members: { some: { userId } } },
     orderBy: { createdAt: 'desc' },
@@ -47,13 +76,14 @@ export async function provisionGideonUser({
   email,
   name,
   image,
+  tenantId,
 }: ProvisionGideonUserParams) {
   const normalizedEmail = email.trim().toLowerCase();
   const existing = await db.user.findFirst({
     where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
   });
   if (existing) {
-    return linkGideonSub({ sub, email: normalizedEmail, existing });
+    return linkGideonSub({ sub, email: normalizedEmail, existing, tenantId });
   }
   try {
     return await db.user.create({
@@ -63,6 +93,7 @@ export async function provisionGideonUser({
         name: name ?? normalizedEmail.split('@')[0] ?? normalizedEmail,
         ...(image ? { image } : {}),
         gideonSub: sub,
+        ...(tenantId ? { gideonTenantId: tenantId } : {}),
         lastLogin: new Date(),
       },
     });
@@ -72,7 +103,12 @@ export async function provisionGideonUser({
       where: { email: { equals: normalizedEmail, mode: 'insensitive' } },
     });
     if (raced) {
-      return linkGideonSub({ sub, email: normalizedEmail, existing: raced });
+      return linkGideonSub({
+        sub,
+        email: normalizedEmail,
+        existing: raced,
+        tenantId,
+      });
     }
     const bySub = await db.user.findUnique({ where: { gideonSub: sub } });
     if (!bySub) throw error;
@@ -81,7 +117,11 @@ export async function provisionGideonUser({
     }
     return db.user.update({
       where: { id: bySub.id },
-      data: { email: normalizedEmail, lastLogin: new Date() },
+      data: {
+        email: normalizedEmail,
+        lastLogin: new Date(),
+        ...(tenantId ? { gideonTenantId: tenantId } : {}),
+      },
     });
   }
 }
@@ -90,10 +130,12 @@ async function linkGideonSub({
   sub,
   email,
   existing,
+  tenantId,
 }: {
   sub: string;
   email: string;
   existing: { id: string; banned: boolean | null; gideonSub: string | null };
+  tenantId?: string;
 }) {
   if (existing.banned) {
     throw new ForbiddenException('Account is disabled');
@@ -112,6 +154,7 @@ async function linkGideonSub({
       data: {
         lastLogin: new Date(),
         ...(existing.gideonSub ? {} : { gideonSub: sub }),
+        ...(tenantId ? { gideonTenantId: tenantId } : {}),
       },
     });
   } catch (error) {
@@ -128,22 +171,27 @@ async function linkGideonSub({
 }
 
 /**
- * Mint a standard Session row, reusing the better-auth session-creation
- * hook behavior (most-recent org becomes activeOrganizationId).
+ * Mint a standard Session row. The active org is the login's Gideon tenant
+ * (tenant is the org); see `resolveActiveOrganizationId`.
  */
 export async function mintGideonSession({
   userId,
   refreshToken,
+  tenantId,
 }: {
   userId: string;
   refreshToken?: string;
+  tenantId?: string;
 }) {
   return db.session.create({
     data: {
       token: randomBytes(32).toString('hex'),
       userId,
       expiresAt: new Date(Date.now() + SESSION_TTL_SECONDS * 1000),
-      activeOrganizationId: await resolveActiveOrganizationId(userId),
+      activeOrganizationId: await resolveActiveOrganizationId({
+        userId,
+        tenantId,
+      }),
       ...(refreshToken ? { gideonRefreshToken: refreshToken } : {}),
     },
   });

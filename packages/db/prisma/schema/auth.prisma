@@ -16,6 +16,10 @@ model User {
   isPlatformAdmin                Boolean   @default(false)
   // Stable Gideon Auth `sub` ↔ OpenComp user link for OIDC login (Phase 0/1).
   gideonSub                      String?   @unique
+  // Gideon tenant id from the user's login (decoded from the access token,
+  // refreshed on every Gideon login). Setup reads it to stamp new
+  // organizations — tenant is the org, so no org is created without one.
+  gideonTenantId                 String?
 
   accounts                   Account[]
   auditLog                   AuditLog[]

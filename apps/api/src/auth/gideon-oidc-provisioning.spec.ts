@@ -1,10 +1,16 @@
 import { ForbiddenException } from '@nestjs/common';
-import { provisionGideonUser } from './gideon-oidc-provisioning';
+import {
+  provisionGideonUser,
+  resolveActiveOrganizationId,
+} from './gideon-oidc-provisioning';
 
 const mockFindFirst = jest.fn();
 const mockFindUnique = jest.fn();
 const mockCreate = jest.fn();
 const mockUpdate = jest.fn();
+const mockMemberFindFirst = jest.fn();
+const mockOrgFindFirst = jest.fn();
+const mockOrgFindUnique = jest.fn();
 
 jest.mock('@db', () => ({
   db: {
@@ -14,7 +20,13 @@ jest.mock('@db', () => ({
       create: (...args: unknown[]) => mockCreate(...args),
       update: (...args: unknown[]) => mockUpdate(...args),
     },
-    organization: { findFirst: jest.fn() },
+    member: {
+      findFirst: (...args: unknown[]) => mockMemberFindFirst(...args),
+    },
+    organization: {
+      findFirst: (...args: unknown[]) => mockOrgFindFirst(...args),
+      findUnique: (...args: unknown[]) => mockOrgFindUnique(...args),
+    },
     session: { create: jest.fn(), findUnique: jest.fn(), delete: jest.fn() },
   },
 }));
@@ -133,5 +145,118 @@ describe('provisionGideonUser', () => {
       provisionGideonUser({ sub: 'sub-1', email: 'new@example.com' }),
     ).rejects.toEqual({ code: 'P2002' });
     expect(mockUpdate).not.toHaveBeenCalled();
+  });
+});
+
+describe('provisionGideonUser tenant stamping', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('stamps the login tenant on newly created users', async () => {
+    mockFindFirst.mockResolvedValue(null);
+    mockCreate.mockResolvedValue({ id: 'usr_new' });
+
+    await provisionGideonUser({
+      sub: 'sub-1',
+      email: 'new@example.com',
+      tenantId: 'tenant-1',
+    });
+
+    expect(mockCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({ gideonTenantId: 'tenant-1' }),
+    });
+  });
+
+  it('refreshes the login tenant when linking an existing user', async () => {
+    mockFindFirst.mockResolvedValue({
+      id: 'usr_1',
+      banned: false,
+      gideonSub: null,
+    });
+    mockUpdate.mockResolvedValue({ id: 'usr_1' });
+
+    await provisionGideonUser({
+      sub: 'sub-1',
+      email: 'ada@example.com',
+      tenantId: 'tenant-1',
+    });
+
+    expect(mockUpdate).toHaveBeenCalledWith({
+      where: { id: 'usr_1' },
+      data: expect.objectContaining({ gideonTenantId: 'tenant-1' }),
+    });
+  });
+
+  it('omits the tenant field when the login carries none', async () => {
+    mockFindFirst.mockResolvedValue(null);
+    mockCreate.mockResolvedValue({ id: 'usr_new' });
+
+    await provisionGideonUser({ sub: 'sub-1', email: 'new@example.com' });
+
+    expect(mockCreate).toHaveBeenCalledWith({
+      data: expect.not.objectContaining({ gideonTenantId: expect.anything() }),
+    });
+  });
+});
+
+describe('resolveActiveOrganizationId', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('returns the tenant org id when the user is a member (tenant is the org)', async () => {
+    mockOrgFindUnique.mockResolvedValue({ id: 'tenant-1' });
+    mockMemberFindFirst.mockResolvedValue({ id: 'mem_1' });
+    mockOrgFindFirst.mockResolvedValue({ id: 'org_recent' });
+
+    await expect(
+      resolveActiveOrganizationId({ userId: 'usr_1', tenantId: 'tenant-1' }),
+    ).resolves.toBe('tenant-1');
+
+    expect(mockOrgFindUnique).toHaveBeenCalledWith({
+      where: { id: 'tenant-1' },
+      select: { id: true },
+    });
+    expect(mockMemberFindFirst).toHaveBeenCalledWith({
+      where: {
+        userId: 'usr_1',
+        organizationId: 'tenant-1',
+        deactivated: false,
+      },
+      select: { id: true },
+    });
+    expect(mockOrgFindFirst).not.toHaveBeenCalled();
+  });
+
+  it('resolves null for unknown tenants (setup flow, no most-recent fallback)', async () => {
+    mockOrgFindUnique.mockResolvedValue(null);
+    mockOrgFindFirst.mockResolvedValue({ id: 'org_recent' });
+
+    await expect(
+      resolveActiveOrganizationId({ userId: 'usr_1', tenantId: 'tenant-1' }),
+    ).resolves.toBeNull();
+    expect(mockMemberFindFirst).not.toHaveBeenCalled();
+    expect(mockOrgFindFirst).not.toHaveBeenCalled();
+  });
+
+  it('resolves null when the user is not a member of the tenant org', async () => {
+    mockOrgFindUnique.mockResolvedValue({ id: 'tenant-1' });
+    mockMemberFindFirst.mockResolvedValue(null);
+    mockOrgFindFirst.mockResolvedValue({ id: 'org_recent' });
+
+    await expect(
+      resolveActiveOrganizationId({ userId: 'usr_1', tenantId: 'tenant-1' }),
+    ).resolves.toBeNull();
+    expect(mockOrgFindFirst).not.toHaveBeenCalled();
+  });
+
+  it('uses most-recent when no tenant id is given (legacy path)', async () => {
+    mockOrgFindFirst.mockResolvedValue({ id: 'org_recent' });
+
+    await expect(
+      resolveActiveOrganizationId({ userId: 'usr_1' }),
+    ).resolves.toBe('org_recent');
+    expect(mockOrgFindUnique).not.toHaveBeenCalled();
   });
 });

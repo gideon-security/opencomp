@@ -2,6 +2,7 @@
 
 import { grantInitialPentestCredit } from '@/actions/organization/lib/grant-initial-pentest-credit';
 import { initializeOrganization } from '@/actions/organization/lib/initialize-organization';
+import { requireGideonTenantId } from '@/actions/organization/lib/require-gideon-tenant';
 import { authActionClientWithoutOrg } from '@/actions/safe-action';
 import { serverApi } from '@/lib/api-server';
 import { createTrainingVideoEntries } from '@/lib/db/employee';
@@ -36,6 +37,17 @@ export const createOrganization = authActionClientWithoutOrg
         };
       }
 
+      // Gideon owns tenant issuance: no org without a Gideon-issued tid
+      // from the caller's user row. No second way.
+      const tenant = await requireGideonTenantId(session);
+      if ('error' in tenant) {
+        return {
+          success: false,
+          error: tenant.error,
+        };
+      }
+      const tenantId = tenant.tenantId;
+
       // Internal team accounts (verified @gideondefender.com) have access provisioned up front.
       const userEmail = session.user.email;
       const isVerifiedTryCompEmail =
@@ -54,6 +66,10 @@ export const createOrganization = authActionClientWithoutOrg
 
       const newOrg = await db.organization.create({
         data: {
+          // Tenant is the org: the Gideon-issued tid is the primary key. A
+          // second create for the same tenant hits the PK and surfaces
+          // below as "already has an organization".
+          id: tenantId,
           name: parsedInput.organizationName,
           website: parsedInput.website,
           // Auto-enable for verified internal accounts or local development

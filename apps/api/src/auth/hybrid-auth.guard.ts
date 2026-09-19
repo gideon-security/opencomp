@@ -250,21 +250,24 @@ export class HybridAuthGuard implements CanActivate {
     }
     const userId = linkedUser.id;
 
-    // Verify org exists and user is member (same check as session)
+    // Verify org exists and user is member (same check as session).
+    // Tenant is the org: the token's tid IS the organization id. Unknown
+    // tenants and non-members 401 in enforce mode (and fall through in
+    // shadow) — no org without a tid.
     const org = await db.organization.findUnique({
       where: { id: tenantId },
       select: { id: true },
     });
     if (!org) {
       this.logger.warn(
-        `[GideonShadow] tenant ${tenantId} not found in opencomp`,
+        `[GideonShadow] unknown Gideon tenant ${tenantId} (no such organization)`,
       );
       if (this.gideonJwtService.isEnforceMode()) return 'enforce_failed';
       return null;
     }
 
     const member = await db.member.findFirst({
-      where: { userId, organizationId: tenantId, deactivated: false },
+      where: { userId, organizationId: org.id, deactivated: false },
       select: { id: true, role: true, department: true },
     });
     if (!member) {
@@ -275,7 +278,7 @@ export class HybridAuthGuard implements CanActivate {
       return null;
     }
 
-    request.organizationId = tenantId;
+    request.organizationId = org.id;
     request.userId = userId;
     request.userEmail = result.payload.email ?? linkedUser.email;
     request.userRoles = member.role ? member.role.split(',') : null;
@@ -285,7 +288,6 @@ export class HybridAuthGuard implements CanActivate {
     request.isApiKey = false;
     request.isServiceToken = false;
     request.isGideonJwt = true;
-    request.gideonTenantId = tenantId;
     // Surface the assurance level for downstream enforcement (native admin
     // endpoints require aal >= 2 for Gideon-JWT callers). Absent → unknown,
     // enforced as missing by the consumer.
