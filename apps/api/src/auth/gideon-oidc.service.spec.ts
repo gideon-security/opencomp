@@ -7,8 +7,10 @@ import {
   mockBuildAuthorizationUrl,
   mockDiscovery,
   mockFetchUserInfo,
+  mockMemberFindFirst,
   mockOidc,
   mockOrgFindFirst,
+  mockOrgFindUnique,
   mockRedisGetdel,
   mockRedisSet,
   mockSessionCreate,
@@ -18,7 +20,9 @@ import {
   mockUserFindUnique,
   mockUserUpdate,
 } from './gideon-oidc.service.fixtures';
-import { GideonOidcService } from './gideon-oidc.service';
+import { GideonOidcService, extractGideonTenantId } from './gideon-oidc.service';
+
+// Module-scope mocks referenced by the hoisted @db factory below.
 
 // openid-client v6 is ESM-only and loaded via dynamic import() inside
 // gideon-oidc-client — mock the loader statically instead.
@@ -41,8 +45,12 @@ jest.mock('@db', () => ({
       create: (...args: unknown[]) => mockUserCreate(...args),
       update: (...args: unknown[]) => mockUserUpdate(...args),
     },
+    member: {
+      findFirst: (...args: unknown[]) => mockMemberFindFirst(...args),
+    },
     organization: {
       findFirst: (...args: unknown[]) => mockOrgFindFirst(...args),
+      findUnique: (...args: unknown[]) => mockOrgFindUnique(...args),
     },
     session: {
       create: (...args: unknown[]) => mockSessionCreate(...args),
@@ -215,6 +223,69 @@ describe('GideonOidcService', () => {
       expect(result.redirectTo).toBe('/risks');
     });
 
+    it('stamps the login tenant on the user row', async () => {
+      const b64 = (o: unknown) =>
+        Buffer.from(JSON.stringify(o)).toString('base64url');
+      const accessToken = `${b64({ alg: 'RS256', kid: 'k1' })}.${b64({
+        sub: 'gideon-sub-1',
+        tid: 'tenant-9',
+      })}.sig`;
+      mockSuccessfulExchange();
+      mockAuthorizationCodeGrant.mockResolvedValue({
+        access_token: accessToken,
+        refresh_token: 'refresh-1',
+        claims: () => ({ sub: 'gideon-sub-1' }),
+      });
+      mockUserFindFirst.mockResolvedValue({
+        id: 'usr_1',
+        email: 'ada@example.com',
+        gideonSub: null,
+        banned: false,
+      });
+      mockUserUpdate.mockResolvedValue({ id: 'usr_1' });
+
+      await service.handleCallback({ callbackUrl });
+
+      expect(mockUserUpdate).toHaveBeenCalledWith({
+        where: { id: 'usr_1' },
+        data: expect.objectContaining({ gideonTenantId: 'tenant-9' }),
+      });
+    });
+
+    it('points the minted session at the tenant org (tid == org id)', async () => {
+      const b64 = (o: unknown) =>
+        Buffer.from(JSON.stringify(o)).toString('base64url');
+      const accessToken = `${b64({ alg: 'RS256', kid: 'k1' })}.${b64({
+        sub: 'gideon-sub-1',
+        tid: 'tenant-9',
+      })}.sig`;
+      mockSuccessfulExchange();
+      mockAuthorizationCodeGrant.mockResolvedValue({
+        access_token: accessToken,
+        refresh_token: 'refresh-1',
+        claims: () => ({ sub: 'gideon-sub-1' }),
+      });
+      mockUserFindFirst.mockResolvedValue({
+        id: 'usr_1',
+        email: 'ada@example.com',
+        gideonSub: null,
+        banned: false,
+      });
+      mockUserUpdate.mockResolvedValue({ id: 'usr_1' });
+      // The tenant IS the org: org id equals the tid and the user belongs
+      // to it — the session's active org follows the tenant.
+      mockOrgFindUnique.mockResolvedValue({ id: 'tenant-9' });
+      mockMemberFindFirst.mockResolvedValue({ id: 'mem_1' });
+
+      await service.handleCallback({ callbackUrl });
+
+      expect(mockSessionCreate).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          activeOrganizationId: 'tenant-9',
+        }),
+      });
+    });
+
     it('provisions a new user for an unknown verified email', async () => {
       mockSuccessfulExchange();
       mockUserFindFirst.mockResolvedValue(null);
@@ -331,6 +402,35 @@ describe('GideonOidcService', () => {
         ForbiddenException,
       );
       expect(mockSessionCreate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('extractGideonTenantId', () => {
+    const jwt = (payload: Record<string, unknown>) => {
+      const b64 = (o: unknown) =>
+        Buffer.from(JSON.stringify(o)).toString('base64url');
+      return `${b64({ alg: 'RS256', kid: 'k1' })}.${b64(payload)}.sig`;
+    };
+
+    it('extracts tid from a JWT access token', () => {
+      expect(
+        extractGideonTenantId(jwt({ sub: 'u', tid: 'tenant-1' })),
+      ).toBe('tenant-1');
+    });
+
+    it('accepts alternate tenant claim shapes', () => {
+      expect(
+        extractGideonTenantId(jwt({ sub: 'u', tenant_id: 'tenant-2' })),
+      ).toBe('tenant-2');
+      expect(
+        extractGideonTenantId(jwt({ sub: 'u', organizationId: 'tenant-3' })),
+      ).toBe('tenant-3');
+    });
+
+    it('returns undefined for opaque or missing tokens', () => {
+      expect(extractGideonTenantId('opaque-token')).toBeUndefined();
+      expect(extractGideonTenantId(undefined)).toBeUndefined();
+      expect(extractGideonTenantId(jwt({ sub: 'u' }))).toBeUndefined();
     });
   });
 });

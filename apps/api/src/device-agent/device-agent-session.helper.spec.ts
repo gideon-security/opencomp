@@ -43,7 +43,7 @@ describe('createDeviceAgentSession', () => {
 
     const result = await createDeviceAgentSession({ userId: 'usr_1' });
 
-    expect(resolveActiveOrgMock).toHaveBeenCalledWith('usr_1');
+    expect(resolveActiveOrgMock).toHaveBeenCalledWith({ userId: 'usr_1' });
     expect(sessionCreateMock).toHaveBeenCalledTimes(1);
     const { data } = sessionCreateMock.mock.calls[0][0] as {
       data: Record<string, unknown>;

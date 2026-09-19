@@ -731,6 +731,112 @@ describe('HybridAuthGuard — Gideon JWT (Milestone 2 enforce)', () => {
     expect(request.userId).toBe('usr_1');
   });
 
+  it('resolves the organization by tid-as-id (tenant is the org)', async () => {
+    mockLinkedUser();
+
+    const { context, request } = createContext({
+      authorization: 'Bearer gideon.jwt.token',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(mockOrgFindUnique).toHaveBeenCalledWith({
+      where: { id: 'org_1' },
+      select: { id: true },
+    });
+    expect(request.organizationId).toBe('org_1');
+  });
+
+  it('scopes membership + request to the tenant org id (tid == org id)', async () => {
+    mockVerify.mockResolvedValue({
+      payload: { sub: 'gideon-sub-1', tid: 'tenant-abc', email: 'gin@acme.com' },
+      protectedHeader: { kid: 'k1' },
+    });
+    mockUserFindUnique.mockResolvedValue({
+      id: 'usr_1',
+      email: 'gin@acme.com',
+    });
+    mockOrgFindUnique.mockResolvedValue({ id: 'tenant-abc' });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_1',
+      role: 'admin',
+      department: 'it',
+    });
+
+    const { context, request } = createContext({
+      authorization: 'Bearer gideon.jwt.token',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(mockOrgFindUnique).toHaveBeenCalledWith({
+      where: { id: 'tenant-abc' },
+      select: { id: true },
+    });
+    // Membership and request scoping use the tenant org id directly.
+    expect(mockMemberFindFirst).toHaveBeenCalledWith({
+      where: { userId: 'usr_1', organizationId: 'tenant-abc', deactivated: false },
+      select: { id: true, role: true, department: true },
+    });
+    expect(request.organizationId).toBe('tenant-abc');
+  });
+
+  it('enforce mode: tenant with no mapped organization is a 401', async () => {
+    enforce = true;
+    mockVerify.mockResolvedValue({
+      payload: { sub: 'gideon-sub-1', tid: 'tenant-unknown' },
+      protectedHeader: { kid: 'k1' },
+    });
+    mockUserFindUnique.mockResolvedValue({
+      id: 'usr_1',
+      email: 'gin@acme.com',
+    });
+    mockOrgFindUnique.mockResolvedValue(null);
+
+    const { context } = createContext({
+      authorization: 'Bearer gideon.jwt.token',
+    });
+
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      'Invalid Gideon JWT',
+    );
+    expect(mockNativeResolve).not.toHaveBeenCalled();
+  });
+
+  it('shadow mode: tenant with no mapped organization falls through to session', async () => {
+    mockVerify.mockResolvedValue({
+      payload: { sub: 'gideon-sub-1', tid: 'tenant-unknown' },
+      protectedHeader: { kid: 'k1' },
+    });
+    mockUserFindUnique.mockResolvedValue({
+      id: 'usr_1',
+      email: 'gin@acme.com',
+    });
+    mockOrgFindUnique.mockResolvedValue(null);
+    mockNativeResolve.mockResolvedValue({
+      user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },
+      session: {
+        id: 'sess_9',
+        activeOrganizationId: 'org_9',
+        impersonatedBy: null,
+        deviceAgent: false,
+        expiresAt: new Date(Date.now() + 60_000),
+      },
+    });
+    mockMemberFindFirst.mockResolvedValue({
+      id: 'mem_9',
+      role: 'owner',
+      department: 'none',
+    });
+
+    const { context, request } = createContext({
+      authorization: 'Bearer gideon.jwt.token',
+      cookie: 'local.session_token=legacy',
+    });
+
+    await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(request.authType).toBe('session');
+    expect(request.userId).toBe('usr_9');
+  });
+
   it('no Bearer header skips Gideon entirely and uses the session', async () => {
     mockNativeResolve.mockResolvedValue({
       user: { id: 'usr_9', email: 'legacy@acme.com', role: 'user' },

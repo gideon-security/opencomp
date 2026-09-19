@@ -73,7 +73,9 @@ export class AdminController {
     data: Record<string, unknown>;
   }): Promise<void> {
     try {
-      const organizationId = await resolveActiveOrganizationId(adminUserId);
+      const organizationId = await resolveActiveOrganizationId({
+        userId: adminUserId,
+      });
       if (!organizationId) {
         this.logger.warn(
           `[Admin] Skipping audit log (no org for admin ${adminUserId}): ${description}`,
@@ -131,7 +133,9 @@ export class AdminController {
         token: randomBytes(32).toString('hex'),
         userId: target.id,
         expiresAt: new Date(Date.now() + SESSION_TTL_SECONDS * 1000),
-        activeOrganizationId: await resolveActiveOrganizationId(target.id),
+        activeOrganizationId: await resolveActiveOrganizationId({
+          userId: target.id,
+        }),
         impersonatedBy: adminUserId,
       },
     });
@@ -173,7 +177,9 @@ export class AdminController {
         token: randomBytes(32).toString('hex'),
         userId: adminUserId,
         expiresAt: new Date(Date.now() + SESSION_TTL_SECONDS * 1000),
-        activeOrganizationId: await resolveActiveOrganizationId(adminUserId),
+        activeOrganizationId: await resolveActiveOrganizationId({
+          userId: adminUserId,
+        }),
       },
     });
     setSessionCookie({

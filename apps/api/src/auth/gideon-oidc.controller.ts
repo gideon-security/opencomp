@@ -47,8 +47,8 @@ export class GideonOidcController {
 
   private get appBaseUrl(): string {
     return (
-      process.env.NEXT_PUBLIC_APP_URL ||
-      process.env.BETTER_AUTH_URL ||
+      stripSurroundingQuotes(process.env.NEXT_PUBLIC_APP_URL) ||
+      stripSurroundingQuotes(process.env.BETTER_AUTH_URL) ||
       'http://localhost:3000'
     );
   }
@@ -231,6 +231,28 @@ export class GideonOidcController {
     clearSessionCookie({ res });
     return { loggedOut: true };
   }
+}
+
+/**
+ * Env loaders disagree on quotes: dotenv strips surrounding quotes, but
+ * `docker run --env-file` and Compose `env_file` pass them through
+ * literally (`NEXT_PUBLIC_APP_URL="http://localhost:3000"`). A quoted base
+ * makes every `res.redirect()` a relative URL, which the browser resolves
+ * against the API origin into a 404 like
+ * `/v1/auth/gideon/%22http://localhost:3000%22/`. Strip them here so one
+ * copy-paste from `.env.example` cannot break login.
+ */
+function stripSurroundingQuotes(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  if (
+    trimmed.length >= 2 &&
+    ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'")))
+  ) {
+    return trimmed.slice(1, -1).trim() || undefined;
+  }
+  return trimmed || undefined;
 }
 
 /**

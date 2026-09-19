@@ -89,7 +89,11 @@ RUN find /app/packages/db/prisma/schema -name '*.prisma' ! -name 'schema.prisma'
   && cd /app/apps/api && pnpm exec nest build
 
 # =============================================================================
-# STAGE 3: Production Runtime
+# STAGE 3: Production Runtime — prod-only install + built artifacts.
+# NOTE: `pnpm prune --prod` does NOT strip devDependencies (it only drops
+# extraneous packages), so this stage does a fresh `pnpm install --prod`
+# instead of copying node_modules from the builder. The builder's full
+# install (typescript, @nestjs/cli, jest, ...) never enters this stage.
 # =============================================================================
 FROM node:22-slim AS production
 
@@ -98,6 +102,10 @@ RUN groupadd --system nestjs && useradd --system --gid nestjs --create-home nest
 
 WORKDIR /app
 RUN chown nestjs:nestjs /app
+
+# pnpm for the prod-only install below. Fetch flags tolerate flaky
+# registry access (dropped TLS mid-download).
+RUN npm install -g pnpm@10.15.0 --fetch-retries=8 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
 
 # Install runtime dependencies + AWS RDS CA certificate bundle.
 # fontconfig + fonts-dejavu-core are needed so sharp/librsvg can render text
@@ -109,36 +117,71 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 ENV NODE_EXTRA_CA_CERTS=/usr/local/share/aws-rds-ca-bundle.pem
 
-# Copy built NestJS app
+# Fresh prod-only install — same manifest set as the deps stage. The root
+# package.json is stripped to workspace config only (it carries frontend
+# deps the API doesn't need). Sources are NOT copied yet; pnpm only needs
+# the manifests to link the workspace.
+COPY pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY package.json ./
+RUN node -e " \
+  const fs = require('fs'); \
+  const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8')); \
+  delete pkg.dependencies; delete pkg.devDependencies; delete pkg.scripts; \
+  fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));"
+COPY packages/auth/package.json ./packages/auth/
+COPY packages/db/package.json ./packages/db/
+COPY packages/utils/package.json ./packages/utils/
+COPY packages/integration-platform/package.json ./packages/integration-platform/
+COPY packages/tsconfig/package.json ./packages/tsconfig/
+COPY packages/email/package.json ./packages/email/
+COPY packages/company/package.json ./packages/company/
+COPY packages/billing/package.json ./packages/billing/
+COPY packages/trigger-local/package.json ./packages/trigger-local/
+COPY packages/trigger-react-local/package.json ./packages/trigger-react-local/
+COPY packages/kv/package.json ./packages/kv/
+COPY apps/api/package.json ./apps/api/
+# The content-addressable store (~GBs of tarballs) would otherwise ship in
+# this layer — node_modules is hardlinked, so dropping the store is safe.
+RUN pnpm install --prod --ignore-scripts && rm -rf "$(pnpm store path)"
+
+# Workspace sources from the build context. .dockerignore keeps this
+# node_modules-free (and dist-free); compiled dist/ is copied from the
+# builder in the next step.
+COPY --chown=nestjs:nestjs packages/auth ./packages/auth
+COPY --chown=nestjs:nestjs packages/db ./packages/db
+COPY --chown=nestjs:nestjs packages/utils ./packages/utils
+COPY --chown=nestjs:nestjs packages/integration-platform ./packages/integration-platform
+COPY --chown=nestjs:nestjs packages/tsconfig ./packages/tsconfig
+COPY --chown=nestjs:nestjs packages/email ./packages/email
+COPY --chown=nestjs:nestjs packages/company ./packages/company
+COPY --chown=nestjs:nestjs packages/billing ./packages/billing
+COPY --chown=nestjs:nestjs packages/trigger-local ./packages/trigger-local
+COPY --chown=nestjs:nestjs packages/kv ./packages/kv
+
+# Compiled output from the builder: NestJS dist, API prisma schema dir, and
+# each workspace package's dist/ (their package `exports` point at dist).
 COPY --from=builder --chown=nestjs:nestjs /app/apps/api/dist ./dist
-
-# Copy prisma schema (for reference only — client is already generated in node_modules)
 COPY --from=builder --chown=nestjs:nestjs /app/apps/api/prisma ./prisma
+COPY --from=builder --chown=nestjs:nestjs /app/packages/auth/dist ./packages/auth/dist
+COPY --from=builder --chown=nestjs:nestjs /app/packages/db/dist ./packages/db/dist
+COPY --from=builder --chown=nestjs:nestjs /app/packages/integration-platform/dist ./packages/integration-platform/dist
+COPY --from=builder --chown=nestjs:nestjs /app/packages/email/dist ./packages/email/dist
+COPY --from=builder --chown=nestjs:nestjs /app/packages/company/dist ./packages/company/dist
+COPY --from=builder --chown=nestjs:nestjs /app/packages/billing/dist ./packages/billing/dist
+COPY --from=builder --chown=nestjs:nestjs /app/packages/kv/dist ./packages/kv/dist
 
-# Copy package.json (for any runtime needs)
-COPY --from=builder --chown=nestjs:nestjs /app/apps/api/package.json ./package.json
-
-# Copy workspace packages that are referenced by node_modules symlinks
-COPY --from=builder --chown=nestjs:nestjs /app/packages/auth ./packages/auth
-COPY --from=builder --chown=nestjs:nestjs /app/packages/db ./packages/db
-COPY --from=builder --chown=nestjs:nestjs /app/packages/utils ./packages/utils
-COPY --from=builder --chown=nestjs:nestjs /app/packages/integration-platform ./packages/integration-platform
-COPY --from=builder --chown=nestjs:nestjs /app/packages/tsconfig ./packages/tsconfig
-COPY --from=builder --chown=nestjs:nestjs /app/packages/email ./packages/email
-COPY --from=builder --chown=nestjs:nestjs /app/packages/company ./packages/company
-COPY --from=builder --chown=nestjs:nestjs /app/packages/billing ./packages/billing
-COPY --from=builder --chown=nestjs:nestjs /app/packages/trigger-local ./packages/trigger-local
-COPY --from=builder --chown=nestjs:nestjs /app/packages/kv ./packages/kv
-
-# Copy production node_modules (includes Prisma client already generated)
-COPY --from=builder --chown=nestjs:nestjs /app/node_modules ./node_modules
+# Generate the Prisma client into the fresh prod node_modules. The prisma
+# CLI is a prod dependency of apps/api (not of @gideon-defender/db, where it
+# is dev-only), so it lives in apps/api/node_modules — NODE_PATH makes it
+# resolvable to the generate script. A copied client would point at the
+# builder's store paths, so it must be generated here against this stage's
+# install.
+RUN cd packages/db && NODE_PATH=/app/apps/api/node_modules node scripts/generate-prisma-client-js.js
 
 # apps/api's own direct dependencies (dotenv, @aws-sdk/client-sqs, etc.) are
 # pnpm symlinks living in apps/api/node_modules, not hoisted to the root —
-# copy them too (same relative depth so their `../../node_modules/.pnpm/...`
-# symlink targets still resolve) and add NODE_PATH since dist runs from
-# /app/dist rather than /app/apps/api/dist.
-COPY --from=builder --chown=nestjs:nestjs /app/apps/api/node_modules ./apps/api/node_modules
+# dist runs from /app/dist rather than /app/apps/api/dist, so add NODE_PATH
+# since require() resolution from /app/dist can't see them otherwise.
 ENV NODE_PATH=/app/apps/api/node_modules
 
 # ESM-only deps (e.g. openid-client, "type": "module" with no require
@@ -147,9 +190,8 @@ ENV NODE_PATH=/app/apps/api/node_modules
 # runtime deps (oauth4webapi, jose — pnpm places these as siblings inside
 # openid-client's per-package node_modules, not nested inside it) into
 # node_modules directly so ESM resolution (which only walks up from
-# /app/dist) finds them. Copying the whole apps/api/node_modules tree would
-# collide with hoisted devDependencies (eslint, prettier, etc.) that already
-# exist as directories vs. symlinks at the same paths.
+# /app/dist) finds them. Only the three runtime packages are copied (not the
+# whole apps/api/node_modules tree) to keep the image minimal.
 RUN store_dir="$(dirname "$(readlink -f /app/apps/api/node_modules/openid-client)")" \
   && cp -rL "$store_dir/openid-client" /app/node_modules/openid-client \
   && [ -e /app/node_modules/oauth4webapi ] || cp -rL "$store_dir/oauth4webapi" /app/node_modules/oauth4webapi \
@@ -160,6 +202,10 @@ RUN store_dir="$(dirname "$(readlink -f /app/apps/api/node_modules/openid-client
 # `@/...` and `@db` specifiers; node_modules symlinks make them resolvable.
 RUN ln -s /app/dist/src /app/node_modules/@ \
   && ln -s /app/dist/prisma /app/node_modules/@db
+
+# The prod install, Prisma generation, and symlinks above ran as root —
+# hand the tree to the runtime user.
+RUN chown -R nestjs:nestjs /app/node_modules /app/dist /app/packages /app/prisma /app/apps
 
 # Set production environment
 ENV NODE_ENV=production

@@ -1,11 +1,14 @@
-import { auth } from '@/utils/auth';
 import { db, Departments } from '@db/server';
+import { createHmac, randomBytes } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic';
 
 // This endpoint is ONLY for E2E tests - never enable in production!
+// It mints a user + organization + session directly in the database.
+// No better-auth involved: Gideon OIDC is the only login, and E2E tests
+// must not depend on the email+password path.
 export async function POST(request: NextRequest) {
   // SECONDARY GUARD: Block in production even if E2E_TEST_MODE is accidentally set
   if (process.env.NODE_ENV === 'production') {
@@ -28,14 +31,20 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[TEST-LOGIN] Error in POST handler:', error);
     return NextResponse.json(
-      { error: 'Failed to create test session', details: error },
+      { error: 'Failed to create test session', details: String(error) },
       { status: 500 },
     );
   }
 }
 
 async function handleLogin(request: NextRequest) {
-  let body;
+  let body: {
+    email?: string;
+    name?: string;
+    hasAccess?: boolean;
+    skipOrg?: boolean;
+    gideonTenantId?: string;
+  };
   try {
     body = await request.json();
   } catch (err) {
@@ -46,162 +55,60 @@ async function handleLogin(request: NextRequest) {
     );
   }
 
-  const { email, name, hasAccess } = body;
-  const testPassword = 'Test123456!';
+  const email = body.email ?? `test-e2e-${Date.now()}@example.com`;
+  const name = body.name ?? `Test User ${Date.now()}`;
+  // Tenant is the org: test orgs are created under an explicit test tid.
+  const tenantId = body.gideonTenantId ?? `tid_test_${Date.now()}`;
 
-  // For E2E tests, always start with a clean user state
-  // Delete existing user if present to avoid password/state issues
-  let existingUser;
+  const secret = process.env.SECRET_KEY;
+  if (!secret) {
+    console.error('[TEST-LOGIN] SECRET_KEY is not set');
+    return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+  }
+
+  // For E2E tests, always start with a clean user state.
   try {
-    existingUser = await db.user.findUnique({
-      where: { email },
-    });
+    await db.user.deleteMany({ where: { email } });
   } catch (err) {
-    console.error('[TEST-LOGIN] Error looking up existing user:', err);
+    console.error('[TEST-LOGIN] Error deleting existing user:', err);
     return NextResponse.json(
-      { error: 'Failed to check for existing user', details: String(err) },
+      { error: 'Failed to delete existing user', details: String(err) },
       { status: 500 },
     );
   }
 
-  if (existingUser) {
-    try {
-      await db.user.delete({ where: { email } });
-    } catch (err) {
-      console.error('[TEST-LOGIN] Error deleting existing user:', err);
-      return NextResponse.json(
-        { error: 'Failed to delete existing user', details: String(err) },
-        { status: 500 },
-      );
-    }
-  }
-
-  // Create the user using Better Auth's signUpEmail method
-  let signUpResponse;
-  try {
-    signUpResponse = await auth.api.signUpEmail({
-      body: {
-        email,
-        password: testPassword,
-        name: name || `Test User ${Date.now()}`,
-      },
-      headers: request.headers, // Pass the request headers
-      asResponse: true,
-    });
-  } catch (err) {
-    console.error('[TEST-LOGIN] Error during signUpEmail:', err);
-    return NextResponse.json(
-      { error: 'Failed to sign up (exception)', details: String(err) },
-      { status: 500 },
-    );
-  }
-
-  if (!signUpResponse.ok) {
-    let errorData;
-    try {
-      errorData = await signUpResponse.json();
-    } catch (err) {
-      errorData = { parseError: String(err) };
-    }
-    console.error('[TEST-LOGIN] Sign up failed:', errorData);
-    return NextResponse.json({ error: 'Failed to sign up', details: errorData }, { status: 400 });
-  }
-
-  // Mark the user as verified (for test purposes)
-  try {
-    await db.user.update({
-      where: { email },
-      data: { emailVerified: true },
-    });
-  } catch (err) {
-    console.error('[TEST-LOGIN] Error marking user as verified:', err);
-    return NextResponse.json(
-      { error: 'Failed to mark user as verified', details: String(err) },
-      { status: 500 },
-    );
-  }
-
-  // Get the user we just created
   let user;
   try {
-    user = await db.user.findUnique({
-      where: { email },
-    });
-    if (!user) {
-      return NextResponse.json({ error: 'User not found after creation' }, { status: 400 });
-    }
-  } catch (err) {
-    console.error('[TEST-LOGIN] Error fetching user after creation:', err);
-    return NextResponse.json(
-      { error: 'Failed to fetch user after creation', details: String(err) },
-      { status: 500 },
-    );
-  }
-
-  // Try signing in with a small delay to ensure user is fully committed
-  try {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  } catch (err) {
-    console.error('[TEST-LOGIN] Error during delay:', err);
-  }
-
-  let responseData: any;
-  let signInResponse;
-  try {
-    signInResponse = await auth.api.signInEmail({
-      body: {
+    user = await db.user.create({
+      data: {
         email,
-        password: testPassword,
+        name,
+        emailVerified: true,
       },
-      headers: request.headers,
-      asResponse: true,
     });
   } catch (err) {
-    console.error('[TEST-LOGIN] Error during signInEmail:', err);
+    console.error('[TEST-LOGIN] Error creating user:', err);
     return NextResponse.json(
-      { error: 'Failed to sign in (exception)', details: String(err) },
+      { error: 'Failed to create user', details: String(err) },
       { status: 500 },
     );
   }
 
-  if (!signInResponse.ok) {
-    let errorData;
-    try {
-      errorData = await signInResponse.json();
-    } catch (e) {
-      try {
-        errorData = await signInResponse.text();
-      } catch (err) {
-        errorData = { parseError: String(err) };
-      }
-    }
-    console.error('[TEST-LOGIN] Sign in failed with error:', errorData);
-
-    // Try alternative approach - create session directly
-  } else {
-    // Get the response data from successful sign-in
-    try {
-      responseData = await signInResponse.json();
-    } catch (err) {
-      console.error('[TEST-LOGIN] Error parsing sign in response JSON:', err);
-      return NextResponse.json(
-        { error: 'Failed to parse sign in response', details: String(err) },
-        { status: 500 },
-      );
-    }
-  }
-
-  // Create an organization for the user if skipOrg is not true
+  // Create an organization for the user if skipOrg is not true.
+  // The session is minted with this org already active, so no separate
+  // set-active step is needed.
   let org = null;
   if (!body.skipOrg) {
     try {
       org = await db.organization.create({
         data: {
+          // Tenant is the org: the test tid is the primary key.
+          id: tenantId,
           name: `Test Org ${Date.now()}`,
-          hasAccess: hasAccess || false, // Allow setting hasAccess for tests
+          hasAccess: body.hasAccess || false, // Allow setting hasAccess for tests
           members: {
             create: {
-              userId: responseData.user.id,
+              userId: user.id,
               role: 'owner',
               department: Departments.it,
               isActive: true,
@@ -217,64 +124,52 @@ async function handleLogin(request: NextRequest) {
         { status: 500 },
       );
     }
-
-    // Set this as the active organization for the session (non-blocking)
-    try {
-      const setActiveOrgResponse = await auth.api.setActiveOrganization({
-        headers: request.headers,
-        body: {
-          organizationId: org.id,
-        },
-        asResponse: true,
-      });
-
-      if (!setActiveOrgResponse.ok) {
-        // Try again with a small delay
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        await auth.api.setActiveOrganization({
-          headers: request.headers,
-          body: {
-            organizationId: org.id,
-          },
-        });
-      }
-    } catch (err) {
-      console.error(
-        '[TEST-LOGIN] Warning: Failed to set active organization (continuing anyway):',
-        err,
-      );
-      // Don't fail the entire request - user can still authenticate
-      // The middleware will handle setting active org if needed
-    }
   }
 
-  // Create a new response with the data
-  let response;
+  let session;
   try {
-    response = NextResponse.json({
-      success: true,
-      user: responseData.user,
-      session: responseData.session,
-      organizationId: body.skipOrg ? null : org?.id,
+    session = await db.session.create({
+      data: {
+        token: randomBytes(32).toString('hex'),
+        userId: user.id,
+        activeOrganizationId: org?.id ?? null,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      },
     });
   } catch (err) {
-    console.error('[TEST-LOGIN] Error creating response object:', err);
+    console.error('[TEST-LOGIN] Error creating session:', err);
     return NextResponse.json(
-      { error: 'Failed to create response', details: String(err) },
+      { error: 'Failed to create session', details: String(err) },
       { status: 500 },
     );
   }
 
-  // Copy all cookies from Better Auth's response to our response
-  try {
-    const cookies = signInResponse.headers.getSetCookie();
-    cookies.forEach((cookie: string) => {
-      response.headers.append('Set-Cookie', cookie);
-    });
-  } catch (err) {
-    console.error('[TEST-LOGIN] Error copying cookies:', err);
-    // Still return the response, but log the error
-  }
+  const response = NextResponse.json({
+    success: true,
+    user: { id: user.id, email: user.email, name: user.name },
+    session: {
+      id: session.id,
+      token: session.token,
+      userId: session.userId,
+      activeOrganizationId: session.activeOrganizationId,
+      expiresAt: session.expiresAt,
+    },
+    organizationId: body.skipOrg ? null : org?.id,
+  });
+
+  // Sign the session cookie exactly like the API's session signer
+  // (HMAC-SHA-256 over the raw token, same SECRET_KEY): the API verifies
+  // this signature when the browser sends the cookie back. E2E runs on
+  // plain-HTTP localhost, so the cookie mirrors the API's local attributes
+  // (name `local.session_token`, lax, non-secure, host-only).
+  const signature = createHmac('sha256', secret).update(session.token, 'utf8').digest('base64');
+  response.cookies.set('local.session_token', `${session.token}.${signature}`, {
+    httpOnly: true,
+    path: '/',
+    sameSite: 'lax',
+    secure: false,
+    maxAge: 7 * 24 * 60 * 60,
+  });
 
   return response;
 }

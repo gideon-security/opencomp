@@ -7,7 +7,6 @@ export interface AuthenticatedRequest extends Request {
   isServiceToken?: boolean;
   serviceName?: string;
   isGideonJwt?: boolean;
-  gideonTenantId?: string;
   isPlatformAdmin: boolean;
   userId?: string;
   userEmail?: string;

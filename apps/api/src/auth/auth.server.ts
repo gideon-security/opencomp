@@ -273,9 +273,9 @@ export const auth = betterAuth({
             );
           }
           try {
-            const activeOrganizationId = await resolveActiveOrganizationId(
-              session.userId,
-            );
+            const activeOrganizationId = await resolveActiveOrganizationId({
+              userId: session.userId,
+            });
 
             if (activeOrganizationId) {
               if (isDev) {

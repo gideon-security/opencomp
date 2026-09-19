@@ -1,5 +1,8 @@
 model Organization {
-  id                          String      @id @default(dbgenerated("generate_prefixed_cuid('org'::text)"))
+  // The Gideon tenant id IS the organization id. Gideon owns tenant
+  // issuance, so an organization only ever exists with a Gideon-issued id —
+  // no default, callers always supply it. Tenant is the org: no mapping.
+  id                          String      @id
   name                        String
   slug                        String      @unique @default(dbgenerated("generate_prefixed_cuid('slug'::text)"))
   logo                        String?

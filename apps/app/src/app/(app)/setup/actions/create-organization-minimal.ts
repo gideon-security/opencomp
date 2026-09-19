@@ -2,6 +2,7 @@
 
 import { grantInitialPentestCredit } from '@/actions/organization/lib/grant-initial-pentest-credit';
 import { initializeOrganization } from '@/actions/organization/lib/initialize-organization';
+import { requireGideonTenantId } from '@/actions/organization/lib/require-gideon-tenant';
 import { authActionClientWithoutOrg } from '@/actions/safe-action';
 import { env } from '@/env.mjs';
 import { serverApi } from '@/lib/api-server';
@@ -42,6 +43,17 @@ export const createOrganizationMinimal = authActionClientWithoutOrg
           error: 'Not authorized.',
         };
       }
+
+      // Gideon owns tenant issuance: no org without a Gideon-issued tid
+      // from the caller's user row. No second way.
+      const tenant = await requireGideonTenantId(session);
+      if ('error' in tenant) {
+        return {
+          success: false,
+          error: tenant.error,
+        };
+      }
+      const tenantId = tenant.tenantId;
 
       // CS-569 backstop: never create an org for a user whose only memberships
       // are deactivated (0 active, >=1 inactive) — that user was offboarded and
@@ -100,6 +112,17 @@ export const createOrganizationMinimal = authActionClientWithoutOrg
       });
 
       if (existingOrg) {
+        // Tenant is the org: only reuse the name-matched org when it is
+        // this tenant's org. Anything else falls through to create, which
+        // hits the PK when the tenant already owns an org (friendly error
+        // below) instead of attaching frameworks to a foreign org.
+        if (existingOrg.id !== tenantId) {
+          return {
+            success: false,
+            error:
+              'This Gideon tenant already has an organization. Please use the existing one.',
+          };
+        }
         // Ensure post-creation steps are completed in case the original
         // request failed partway through (after DB insert but before
         // onboarding record or framework initialization).
@@ -169,6 +192,10 @@ export const createOrganizationMinimal = authActionClientWithoutOrg
       // Create a new organization
       const newOrg = await db.organization.create({
         data: {
+          // Tenant is the org: the Gideon-issued tid is the primary key. A
+          // second create for the same tenant hits the PK and surfaces
+          // below as "already has an organization".
+          id: tenantId,
           name: parsedInput.organizationName,
           website: parsedInput.website,
           onboardingCompleted: false, // Explicitly set to false
@@ -296,6 +323,14 @@ export const createOrganizationMinimal = authActionClientWithoutOrg
         } catch (cleanupError) {
           console.error('Failed to clean up org after creation error:', cleanupError);
         }
+      }
+
+      if ((error as { code?: string }).code === 'P2002') {
+        return {
+          success: false,
+          error:
+            'This Gideon tenant already has an organization. Please use the existing one.',
+        };
       }
 
       if (error instanceof Error) {

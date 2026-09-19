@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { db } from '@db';
+import { decodeJwt } from 'jose';
 import type { Configuration } from 'openid-client';
 import { loadOidcClient } from './gideon-oidc-client';
 import {
@@ -234,11 +235,17 @@ export class GideonOidcService {
       throw new ForbiddenException('Gideon email address is not verified');
     }
 
+    // Tenant is the org: capture the login's tenant id (from the access
+    // token) so provisioning stamps it on the user row and the session
+    // activates the organization with that id. No org without a tid.
+    const tenantId = extractGideonTenantId(tokens.access_token);
+
     const user = await provisionGideonUser({
       sub,
       email,
       name: typeof profile.name === 'string' ? profile.name : undefined,
       image: typeof profile.picture === 'string' ? profile.picture : undefined,
+      tenantId,
     });
     const session = await mintGideonSession({
       userId: user.id,
@@ -246,6 +253,7 @@ export class GideonOidcService {
         typeof tokens.refresh_token === 'string'
           ? tokens.refresh_token
           : undefined,
+      tenantId,
     });
 
     return {
@@ -290,7 +298,6 @@ export class GideonOidcService {
       if ((error as { code?: string }).code !== 'P2025') throw error;
     }
   }
-
   /** Best-effort revocation against Gideon's /v1/oidc/revoke. */
   private async revokeToken(token: string): Promise<void> {
     try {
@@ -302,5 +309,26 @@ export class GideonOidcService {
         `Gideon token revocation failed: ${(error as Error).message}`,
       );
     }
+  }
+}
+
+/**
+ * Best-effort Gideon tenant id from an access token (unverified decode —
+ * callers must not trust it for authorization, only for org identity:
+ * tenant is the org). Accepts the tenant claim shapes Gideon issues (`tid`,
+ * `tenant_id`, `organizationId`, `tenantId`). Returns undefined for
+ * opaque/undecodable tokens so provisioning proceeds without a tenant.
+ */
+export function extractGideonTenantId(
+  accessToken: string | undefined,
+): string | undefined {
+  if (!accessToken) return undefined;
+  try {
+    const payload = decodeJwt(accessToken) as Record<string, unknown>;
+    const tid =
+      payload.tid ?? payload.tenant_id ?? payload.organizationId ?? payload.tenantId;
+    return typeof tid === 'string' && tid ? tid : undefined;
+  } catch {
+    return undefined;
   }
 }

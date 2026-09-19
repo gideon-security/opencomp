@@ -91,7 +91,8 @@ export class GideonShadowService {
         clearTimeout(timeout);
       }
 
-      // OpenComp local projection for same tenant
+      // OpenComp local projection for same tenant. Tenant is the org:
+      // the tid IS the organization id.
       const opencompOrg = await db.organization
         .findUnique({
           where: { id: tenantId },
@@ -106,7 +107,7 @@ export class GideonShadowService {
       const hasMembers = opencompOrg
         ? await db.member
             .findFirst({
-              where: { organizationId: tenantId },
+              where: { organizationId: opencompOrg.id },
               select: { id: true },
             })
             .then((m) => !!m)

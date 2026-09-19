@@ -219,6 +219,51 @@ describe('GideonOidcController', () => {
     });
   });
 
+  describe('quoted app base URL (docker --env-file keeps quotes)', () => {
+    it('strips quotes on the login failure redirect', async () => {
+      process.env.NEXT_PUBLIC_APP_URL = '"http://localhost:3000"';
+      mockBuildLoginUrl.mockRejectedValue(new Error('misconfigured'));
+      const res = buildRes();
+
+      await controller.login({}, res as never);
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        'http://localhost:3000/auth?error=gideon_unavailable',
+      );
+    });
+
+    it('strips quotes on the post-login redirect', async () => {
+      process.env.NEXT_PUBLIC_APP_URL = '"http://localhost:3000"';
+      delete process.env.BETTER_AUTH_URL;
+      mockHandleCallback.mockResolvedValue({
+        sessionToken: 'ses-token',
+        expiresAt: new Date('2026-09-22T00:00:00Z'),
+      });
+      const res = buildRes();
+
+      await controller.callback(
+        { code: 'c', state: 's' },
+        buildReq({}) as never,
+        res as never,
+      );
+
+      expect(res.redirect).toHaveBeenCalledWith('http://localhost:3000/');
+    });
+
+    it('falls back to BETTER_AUTH_URL when the app URL is only quotes', async () => {
+      process.env.NEXT_PUBLIC_APP_URL = '""';
+      process.env.BETTER_AUTH_URL = "'http://localhost:3000'";
+      mockBuildLoginUrl.mockRejectedValue(new Error('misconfigured'));
+      const res = buildRes();
+
+      await controller.login({}, res as never);
+
+      expect(res.redirect).toHaveBeenCalledWith(
+        'http://localhost:3000/auth?error=gideon_unavailable',
+      );
+    });
+  });
+
   describe('logout', () => {
     it('revokes the secure-cookie session and clears both variants', async () => {
       process.env.BASE_URL = 'https://api.gideondefender.com';
