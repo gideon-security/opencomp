@@ -134,6 +134,42 @@ export const generateVendorMitigationsForOrg = task({
       return;
     }
 
+    // Resume: vendors with a written mitigation plan were finished by a
+    // previous run — only the unmitigated ones cost LLM calls. A vendor
+    // with a plan but without the assessed status lost the status write
+    // to a crash between the two writes, so it runs again to heal.
+    const needsMitigation = (v: (typeof vendors)[number]) =>
+      !v.treatmentStrategyDescription?.trim() || v.status !== VendorStatus.assessed;
+    const pendingVendors = vendors.filter(needsMitigation);
+    const skippedCount = vendors.length - pendingVendors.length;
+    const metadataHandle = metadata.root ?? metadata.parent ?? metadata;
+
+    // Rebase progress on the same complete data set that this fan-out uses.
+    // The parent only knows about vendors extracted during its current run.
+    metadataHandle.set('vendorsTotal', vendors.length);
+    metadataHandle.set('vendorsCompleted', skippedCount);
+    metadataHandle.set('vendorsRemaining', pendingVendors.length);
+    metadataHandle.set(
+      'vendorsInfo',
+      vendors.map((vendor) => ({ id: vendor.id, name: vendor.name })),
+    );
+    for (const vendor of vendors) {
+      metadataHandle.set(
+        `vendor_${vendor.id}_status`,
+        needsMitigation(vendor) ? 'assessing' : 'completed',
+      );
+    }
+
+    if (skippedCount > 0) {
+      logger.info(`Skipping ${skippedCount} already-mitigated vendors`, {
+        organizationId,
+      });
+    }
+    if (pendingVendors.length === 0) {
+      logger.info(`All ${vendors.length} vendors already mitigated`, { organizationId });
+      return;
+    }
+
     if (!author) {
       logger.warn(
         `No onboarding author found for org ${organizationId}; treatment descriptions will generate but vendors will not be reassigned`,
@@ -144,7 +180,7 @@ export const generateVendorMitigationsForOrg = task({
 
     const batchResult = await tasks.batchTriggerAndWait<typeof generateVendorMitigation>(
       'generate-vendor-mitigation',
-      vendors.map((v) => ({
+      pendingVendors.map((v) => ({
         payload: {
           organizationId,
           vendorId: v.id,

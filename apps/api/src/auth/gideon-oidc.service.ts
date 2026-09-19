@@ -326,7 +326,10 @@ export function extractGideonTenantId(
   try {
     const payload = decodeJwt(accessToken) as Record<string, unknown>;
     const tid =
-      payload.tid ?? payload.tenant_id ?? payload.organizationId ?? payload.tenantId;
+      payload.tid ??
+      payload.tenant_id ??
+      payload.organizationId ??
+      payload.tenantId;
     return typeof tid === 'string' && tid ? tid : undefined;
   } catch {
     return undefined;

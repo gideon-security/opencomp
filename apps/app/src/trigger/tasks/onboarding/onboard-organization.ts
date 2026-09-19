@@ -10,8 +10,8 @@ import {
   createVendors,
   extractVendorsFromContext,
   getOrganizationContext,
-  updateOrganizationPolicies,
 } from './onboard-organization-helpers';
+import { triggerPolicyUpdates } from './trigger-policy-updates';
 
 // v4 queues must be declared in advance
 const onboardOrgQueue = queue({ name: 'onboard-organization', concurrencyLimit: 50 });
@@ -105,7 +105,11 @@ export const onboardOrganization = task({
       // progress tracked via child metadata (policy_${id}_status).
       const policyCount = policyList.length;
       metadata.set('currentStep', `Tailoring Policies... (0/${policyCount})`);
-      await updateOrganizationPolicies(payload.organizationId, questionsAndAnswers, frameworks);
+      await triggerPolicyUpdates({
+        organizationId: payload.organizationId,
+        questionsAndAnswers,
+        frameworks,
+      });
       metadata.set('policies', true);
 
       // Extract vendors + risks in parallel (both are independent LLM calls).
@@ -113,6 +117,10 @@ export const onboardOrganization = task({
 
       const [vendors, risks] = await Promise.all([
         (async () => {
+          // No resume skip here by design: createVendors dedupes against
+          // existing rows by name, and skipping on any-row-exists would
+          // freeze a partial set after a mid-creation crash. Quota savings
+          // on retry come from the mitigation fan-out filter instead.
           const vendorData = await extractVendorsFromContext(questionsAndAnswers);
           if (vendorData.length > 0) {
             metadata.set('vendorsTotal', vendorData.length);
@@ -146,6 +154,10 @@ export const onboardOrganization = task({
         })(),
         (async () => {
           metadata.set('currentStep', 'Creating Risks...');
+          // No resume skip here by design, same as vendors above:
+          // createRisks filters baselines against existing titles and tells
+          // the extractor to skip them, so a retry heals a partial set
+          // instead of freezing it.
           const created = await createRisks(
             questionsAndAnswers,
             payload.organizationId,

@@ -23,9 +23,9 @@ describe('requireGideonTenantId', () => {
       gideonTenantId: 'tenant-1',
     } as never);
 
-    await expect(
-      requireGideonTenantId({ user: { id: 'user-1' } }),
-    ).resolves.toEqual({ tenantId: 'tenant-1' });
+    await expect(requireGideonTenantId({ user: { id: 'user-1' } })).resolves.toEqual({
+      tenantId: 'tenant-1',
+    });
     expect(mockFindUnique).toHaveBeenCalledWith({
       where: { id: 'user-1' },
       select: { gideonTenantId: true },

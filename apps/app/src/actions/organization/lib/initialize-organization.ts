@@ -1,3 +1,4 @@
+import { SEED_POLICY_CHANGELOG } from '@/lib/policy-changelog';
 import { db, Prisma } from '@db/server';
 import { loadFrameworkSources } from './load-framework-sources';
 
@@ -212,7 +213,7 @@ export const _upsertOrgFrameworkStructureCore = async ({
         policyId,
         version: 1,
         content: { set: contentArray },
-        changelog: 'Initial version from template',
+        changelog: SEED_POLICY_CHANGELOG,
       })),
     });
 

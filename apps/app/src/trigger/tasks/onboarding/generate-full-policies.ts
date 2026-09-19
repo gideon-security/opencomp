@@ -1,6 +1,7 @@
 import { db } from '@db/server';
 import { logger, queue, tags, task } from '@gideon-defender/trigger-local';
-import { getOrganizationContext, triggerPolicyUpdates } from './onboard-organization-helpers';
+import { getOrganizationContext } from './onboard-organization-helpers';
+import { triggerPolicyUpdates } from './trigger-policy-updates';
 
 // v4 queues must be declared in advance
 const generateFullPoliciesQueue = queue({
@@ -40,7 +41,11 @@ export const generateFullPolicies = task({
       });
 
       // Trigger policy updates for all policies
-      await triggerPolicyUpdates(payload.organizationId, questionsAndAnswers, frameworks);
+      await triggerPolicyUpdates({
+        organizationId: payload.organizationId,
+        questionsAndAnswers,
+        frameworks,
+      });
 
       logger.info(
         `Successfully triggered policy updates for organization ${payload.organizationId}`,
