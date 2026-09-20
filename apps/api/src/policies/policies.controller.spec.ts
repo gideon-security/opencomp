@@ -87,8 +87,8 @@ jest.mock('@gideon-defender/trigger-local', () => ({
   tasks: { trigger: jest.fn() },
 }));
 
-jest.mock('@ai-sdk/openai', () => ({
-  openai: jest.fn(),
+jest.mock('@ai-sdk/google', () => ({
+  google: jest.fn(),
 }));
 
 jest.mock('ai', () => ({

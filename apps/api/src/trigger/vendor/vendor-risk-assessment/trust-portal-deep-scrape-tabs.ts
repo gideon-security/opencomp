@@ -1,17 +1,17 @@
 import { logger } from '@gideon-defender/trigger-local';
-import { anthropic } from '@ai-sdk/anthropic';
+import { google } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 
 /**
  * Some trust portals are SPAs whose sidebar items are buttons/divs without
  * href attributes — Firecrawl's `links` format doesn't enumerate them.
- * When URL-based section discovery yields nothing, ask Claude Sonnet 4.6
+ * When URL-based section discovery yields nothing, ask Gemini Flash
  * to extract sidebar/tab labels from the initial markdown so the orchestrator
  * can click each by text content.
  */
 
-const TAB_MODEL = 'claude-sonnet-4-6';
+const TAB_MODEL = 'gemini-3.8-flash';
 const MAX_TABS = 15;
 const MARKDOWN_LIMIT = 12_000;
 
@@ -62,7 +62,7 @@ export async function identifySidebarTabs(params: {
 
   try {
     const { object } = await generateObject({
-      model: anthropic(TAB_MODEL),
+      model: google(TAB_MODEL),
       schema: tabSchema,
       prompt: buildPrompt({ vendorName, initialMarkdown }),
     });

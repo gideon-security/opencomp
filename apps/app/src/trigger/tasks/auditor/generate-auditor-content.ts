@@ -1,5 +1,5 @@
 import { getOrganizationContext } from '@/trigger/tasks/onboarding/onboard-organization-helpers';
-import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { db } from '@db/server';
 import { logger, metadata, schemaTask, tags } from '@gideon-defender/trigger-local';
 import { generateText } from 'ai';
@@ -116,7 +116,7 @@ async function generateSectionContent(
   vendorsBlock: string,
 ): Promise<string> {
   const { text } = await generateText({
-    model: openai('gpt-5.5'),
+    model: google('gemini-3.8-flash'),
     system: AUDITOR_SYSTEM_PROMPT,
     prompt: buildSectionUserPrompt({
       section,

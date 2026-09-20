@@ -5,9 +5,7 @@ import { PDFDocument } from 'pdf-lib';
 import { generateText } from 'ai';
 
 // Mock AI dependencies
-jest.mock('@ai-sdk/openai', () => ({ openai: jest.fn() }));
-jest.mock('@ai-sdk/anthropic', () => ({ anthropic: jest.fn() }));
-jest.mock('@ai-sdk/groq', () => ({ createGroq: jest.fn(() => jest.fn()) }));
+jest.mock('@ai-sdk/google', () => ({ google: jest.fn() }));
 jest.mock('ai', () => ({
   generateText: jest.fn(),
   generateObject: jest.fn(),
@@ -113,22 +111,20 @@ describe('content-extractor: extractContentFromFile', () => {
     expect(result).toContain('What is 2+2?,4');
   });
 
-  it('should fall back to OpenAI when Claude PDF extraction is overloaded', async () => {
+  it('should surface Gemini PDF extraction failures without retrying the same model', async () => {
     const pdf = await PDFDocument.create();
     pdf.addPage();
     const bytes = await pdf.save();
     const mockGenerateText = generateText as jest.Mock;
-    mockGenerateText
-      .mockRejectedValueOnce(new Error('Overloaded'))
-      .mockResolvedValueOnce({ text: 'Extracted PDF text' });
+    mockGenerateText.mockRejectedValueOnce(new Error('Overloaded'));
 
-    const result = await extractContentFromFile(
-      Buffer.from(bytes).toString('base64'),
-      'application/pdf',
-    );
-
-    expect(result).toBe('Extracted PDF text');
-    expect(mockGenerateText).toHaveBeenCalledTimes(2);
+    await expect(
+      extractContentFromFile(
+        Buffer.from(bytes).toString('base64'),
+        'application/pdf',
+      ),
+    ).rejects.toThrow('Failed to extract PDF content');
+    expect(mockGenerateText).toHaveBeenCalledTimes(1);
   });
 
   it('should reject legacy XLS files with a clear message', async () => {

@@ -2,7 +2,7 @@ import { generateObject } from 'ai';
 import { BrowserMfaInstructionsService } from './browser-mfa-instructions.service';
 
 jest.mock('ai', () => ({ generateObject: jest.fn() }));
-jest.mock('@ai-sdk/anthropic', () => ({ anthropic: () => 'mock-model' }));
+jest.mock('@ai-sdk/google', () => ({ google: () => 'mock-model' }));
 
 const mockGenerate = generateObject as jest.MockedFunction<
   typeof generateObject

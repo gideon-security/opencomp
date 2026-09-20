@@ -1,5 +1,5 @@
 import { auth } from '@/utils/auth';
-import { anthropic } from '@ai-sdk/anthropic';
+import { google } from '@ai-sdk/google';
 import { db } from '@db/server';
 import { convertToModelMessages, stepCountIs, streamText, type UIMessage } from 'ai';
 import { headers } from 'next/headers';
@@ -198,7 +198,7 @@ You MUST produce the policy by starting from the <current_policy> text above and
     })) as Array<UIMessage>;
 
     const result = streamText({
-      model: anthropic('claude-sonnet-4-6'),
+      model: google('gemini-3.8-flash'),
       system: systemPrompt,
       messages: await convertToModelMessages(cleanedMessages),
       toolChoice: 'auto',

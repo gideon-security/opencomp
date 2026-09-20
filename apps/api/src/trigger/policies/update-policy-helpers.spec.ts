@@ -48,14 +48,11 @@ jest.mock('ai', () => ({
   NoObjectGeneratedError: { isInstance: jest.fn(() => false) },
 }));
 
-jest.mock('@ai-sdk/openai', () => ({ openai: jest.fn(() => 'openai-model') }));
-jest.mock('@ai-sdk/anthropic', () => ({
-  anthropic: jest.fn(() => 'anthropic-model'),
-}));
+jest.mock('@ai-sdk/google', () => ({ google: jest.fn(() => 'gemini-model') }));
 
 // A real TipTap template carrying an org-specific handlebars placeholder. The
 // deterministic template processor must substitute {{COMPANY}} with the org
-// name; the legacy gpt-5-mini generator never would (it ignores the template).
+// name; a generic full-document generator never would (it ignores the template).
 const TEMPLATE_CONTENT = {
   type: 'doc',
   content: [
@@ -116,7 +113,7 @@ describe('processPolicyUpdate (individual policy regeneration)', () => {
         }),
     );
 
-    // If the legacy gpt-5-mini path runs, it returns generic, template-ignoring
+    // If a generic full-document path runs, it returns template-ignoring
     // content (no org-specific values) — exactly the reported bug.
     (generateObject as jest.Mock).mockResolvedValue({
       object: {
@@ -147,7 +144,7 @@ describe('processPolicyUpdate (individual policy regeneration)', () => {
     expect(serialized).toContain('Acme Inc');
     expect(serialized).not.toContain('{{COMPANY}}');
 
-    // The slow, generic gpt-5-mini full-document generator must not run for a
+    // The slow, generic full-document generator must not run for a
     // template that has no instruction cue lines to refine.
     expect(generateObject).not.toHaveBeenCalled();
     expect(serialized).not.toContain('Generic boilerplate policy content.');

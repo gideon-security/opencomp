@@ -3,7 +3,7 @@ import {
   findSimilarContentBatch,
 } from '@/vector-store/lib';
 import type { SimilarContentResult } from '@/vector-store/lib';
-import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { logger } from '@gideon-defender/trigger-local';
 import { generateText } from 'ai';
 import {
@@ -96,7 +96,7 @@ async function generateAnswerWithLLM(
   context: string,
 ): Promise<string> {
   const { text } = await generateText({
-    model: openai(ANSWER_MODEL),
+    model: google(ANSWER_MODEL),
     system: ANSWER_SYSTEM_PROMPT,
     prompt: `Based on the following context from our organization's policies and documentation, answer this question:
 

@@ -41,7 +41,7 @@ export const INTERACTIVE_SESSION_TIMEOUT_SECONDS = 15 * 60;
 // Model behind extract()/act() (reading pages, verdicts, form fills). Separate
 // from the navigation (CUA) model and configurable via env; default unchanged.
 const STAGEHAND_MODEL =
-  process.env.BROWSERBASE_STAGEHAND_MODEL || 'anthropic/claude-sonnet-4-6';
+  process.env.BROWSERBASE_STAGEHAND_MODEL || 'google/gemini-3.8-flash';
 const BROWSERBASE_API_MAX_ATTEMPTS = 3;
 const BROWSERBASE_RETRY_DELAYS_MS = [250, 750];
 const BROWSERBASE_DEFAULT_HEADERS = { 'accept-encoding': 'identity' };
@@ -289,7 +289,7 @@ export class BrowserbaseSessionService {
     // mishandling) in our runtime — the same failure the identity header already
     // fixes for our own calls. Attaching via env:'LOCAL' + cdpUrl makes Stagehand
     // connect straight to the session over CDP without that call; extract/act/
-    // agent then run locally against ANTHROPIC_API_KEY.
+    // agent then run locally against GOOGLE_GENERATIVE_AI_API_KEY.
     const cdpUrl = await this.getSessionConnectUrl(sessionId);
 
     // A transient CDP attach can still fail; retry init, closing any
@@ -303,7 +303,7 @@ export class BrowserbaseSessionService {
           localBrowserLaunchOptions: { cdpUrl },
           model: {
             modelName: STAGEHAND_MODEL,
-            apiKey: process.env.ANTHROPIC_API_KEY,
+            apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
           },
           verbose: 1,
           logger: (line) => {

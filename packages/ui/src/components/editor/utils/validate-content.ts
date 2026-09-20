@@ -154,13 +154,11 @@ function mergeOrphanedListItems(nodes: JSONContent[]): JSONContent[] {
   return result;
 }
 
-function ensureNonEmptyText(value: unknown): string {
-  const text = typeof value === 'string' ? value : '';
-  // Normalize NBSP and narrow no-break space for emptiness checks
-  const normalized = text.replace(/[\u00A0\u202F]/g, '');
-  if (normalized.trim().length > 0) return text;
-  // Return zero-width space to ensure non-empty text node without visual change
-  return '\u200B';
+function isBlankText(value: unknown): boolean {
+  if (typeof value !== 'string') return true;
+  // Strip invisible-only content (NBSP, zero-width space, narrow no-break
+  // space) before checking — these carry no visible text.
+  return value.replace(/[ ​ ]/g, '').trim().length === 0;
 }
 
 /**
@@ -235,11 +233,13 @@ function fixParagraph(node: any): JSONContent {
 
   const fixedContent = content
     .map((item: any) => {
-      // Fix text nodes that are missing the type property
+      // Fix text nodes that are missing the type property. Blank-only text
+      // is dropped rather than kept as an invisible placeholder.
       if (item.text && !item.type) {
+        if (isBlankText(item.text)) return null;
         return {
           type: 'text',
-          text: ensureNonEmptyText(item.text),
+          text: item.text,
           ...(item.marks && { marks: fixMarks(item.marks) }),
         };
       }
@@ -330,13 +330,15 @@ function fixListItem(node: any): JSONContent {
 /**
  * Fixes text nodes
  */
-function fixTextNode(node: any): JSONContent {
+function fixTextNode(node: any): JSONContent | null {
   const { text, marks, ...rest } = node;
 
-  const value = ensureNonEmptyText(text);
+  // Drop empty and whitespace-only (including NBSP/ZWSP) text nodes.
+  // They carry no content and pollute copy/paste and search.
+  if (isBlankText(text)) return null;
   return {
     type: 'text',
-    text: value,
+    text,
     ...(marks && Array.isArray(marks) && { marks: fixMarks(marks) }),
     ...rest,
   };

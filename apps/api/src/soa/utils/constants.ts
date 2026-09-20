@@ -2,9 +2,9 @@
  * SOA-specific constants and prompts
  */
 
-// LLM Model identifiers
-export const SOA_RAG_MODEL = 'gpt-5-mini';
-export const SOA_BATCH_MODEL = 'gpt-4o-mini';
+// LLM Model identifiers — Gemini-only (GOOGLE_GENERATIVE_AI_API_KEY)
+export const SOA_RAG_MODEL = 'gemini-3.8-flash';
+export const SOA_BATCH_MODEL = 'gemini-3.8-flash';
 
 // Supported framework names for ISO 27001
 export const ISO27001_FRAMEWORK_NAMES = ['ISO 27001', 'iso27001', 'ISO27001'];

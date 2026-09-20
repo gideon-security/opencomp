@@ -1,6 +1,6 @@
 import Firecrawl from '@mendable/firecrawl-js';
 import { logger } from '@gideon-defender/trigger-local';
-import { anthropic } from '@ai-sdk/anthropic';
+import { google } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 import type {
@@ -19,7 +19,7 @@ import {
   buildSectionScrapeOptions,
 } from './trust-portal-deep-scrape-scrape-options';
 
-const EXTRACTION_MODEL = 'claude-sonnet-4-6';
+const EXTRACTION_MODEL = 'gemini-3.8-flash';
 const SECTION_CONCURRENCY = 5;
 const MARKDOWN_TRUNCATE_LIMIT = 200_000;
 
@@ -273,7 +273,7 @@ export async function deepScrapeTrustPortal(
   let extracted: { certifications: ExtractedCert[] };
   try {
     const { object } = await generateObject({
-      model: anthropic(EXTRACTION_MODEL),
+      model: google(EXTRACTION_MODEL),
       schema: certificationExtractionSchema,
       prompt: buildExtractionPrompt({ vendorName, combinedMarkdown }),
     });

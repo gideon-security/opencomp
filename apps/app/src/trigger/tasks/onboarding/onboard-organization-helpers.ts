@@ -31,7 +31,7 @@ import {
   type MitigationCitation,
 } from './select-mitigation-citations';
 
-const ONBOARDING_MODEL = 'gemini-3.5-flash' as const;
+const ONBOARDING_MODEL = 'gemini-3.8-flash' as const;
 
 type VendorForRiskAssessmentTrigger = {
   id: string;
