@@ -5,7 +5,7 @@ import {
   mockHasPermission,
   setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDriftResult, IsmsManagementReview } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
@@ -186,9 +186,18 @@ describe('ManagementReviewClient', () => {
     hookState.drift = { isStale: false, changedSources: [] };
   });
 
-  it('renders the procedure paragraph and the review with its details', () => {
+  // The review cards use react-hook-form + zodResolver with a re-sync
+  // `reset()` in an effect. The resolver settles asynchronously after mount,
+  // so flush it inside act before asserting — otherwise React logs
+  // "not wrapped in act" noise for ProcedureCard/ReviewCard/rows.
+  async function renderSettled(ui: Parameters<typeof render>[0]) {
+    render(ui);
+    await act(async () => {});
+  }
+
+  it('renders the procedure paragraph and the review with its details', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<ManagementReviewClient {...baseProps} />);
+    await renderSettled(<ManagementReviewClient {...baseProps} />);
 
     expect(
       screen.getByText('Acme holds a management review of the ISMS at least annually.'),
@@ -205,9 +214,9 @@ describe('ManagementReviewClient', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the Inputs table with the discussed count', () => {
+  it('renders the Inputs table with the discussed count', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<ManagementReviewClient {...baseProps} />);
+    await renderSettled(<ManagementReviewClient {...baseProps} />);
 
     expect(screen.getByText('Inputs (9.3.2)')).toBeInTheDocument();
     expect(screen.getByText('2 of 2 discussed')).toBeInTheDocument();
@@ -216,9 +225,9 @@ describe('ManagementReviewClient', () => {
     expect(screen.getByText('First review — no prior actions.')).toBeInTheDocument();
   });
 
-  it('renders attendees, outputs, and the actions arising with owner and full reference', () => {
+  it('renders attendees, outputs, and the actions arising with owner and full reference', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<ManagementReviewClient {...baseProps} />);
+    await renderSettled(<ManagementReviewClient {...baseProps} />);
 
     expect(screen.getByText('Member One')).toBeInTheDocument();
     expect(screen.getByText('Two improvements agreed at this review.')).toBeInTheDocument();
@@ -228,9 +237,9 @@ describe('ManagementReviewClient', () => {
     expect(screen.getAllByText('Approver Two').length).toBeGreaterThan(0);
   });
 
-  it('locks a signed review: no detail edits or input adds, sign-off stays editable', () => {
+  it('locks a signed review: no detail edits or input adds, sign-off stays editable', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<ManagementReviewClient {...baseProps} />);
+    await renderSettled(<ManagementReviewClient {...baseProps} />);
 
     // The fixture review is signed → locked notice, no edit/delete/add-input.
     expect(screen.getByText(/signed by the chair and locked/)).toBeInTheDocument();
@@ -244,12 +253,12 @@ describe('ManagementReviewClient', () => {
     expect(screen.queryByLabelText('Delete MR-2026-01-A01')).not.toBeInTheDocument();
   });
 
-  it('allows editing an unsigned review for a user with evidence:update', () => {
+  it('allows editing an unsigned review for a user with evidence:update', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.document = makeDocument({
       reviews: [makeReview({ signoffChairName: null, signoffChairDate: null })],
     });
-    render(<ManagementReviewClient {...baseProps} />);
+    await renderSettled(<ManagementReviewClient {...baseProps} />);
 
     expect(screen.getByText('New review')).toBeInTheDocument();
     expect(screen.getByText('Add input row')).toBeInTheDocument();
@@ -259,12 +268,12 @@ describe('ManagementReviewClient', () => {
     expect(mockHasPermission).toHaveBeenCalledWith('evidence', 'update');
   });
 
-  it('hides mutating controls for a read-only user but keeps export', () => {
+  it('hides mutating controls for a read-only user but keeps export', async () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
     hookState.document = makeDocument({
       reviews: [makeReview({ signoffChairName: null, signoffChairDate: null })],
     });
-    render(<ManagementReviewClient {...baseProps} />);
+    await renderSettled(<ManagementReviewClient {...baseProps} />);
 
     expect(screen.queryByText('New review')).not.toBeInTheDocument();
     expect(screen.queryByText('Add input row')).not.toBeInTheDocument();
@@ -275,7 +284,7 @@ describe('ManagementReviewClient', () => {
     expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
-  it('carries open actions forward to the next review', () => {
+  it('carries open actions forward to the next review', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.document = makeDocument({
       reviews: [
@@ -292,7 +301,7 @@ describe('ManagementReviewClient', () => {
         }),
       ],
     });
-    render(<ManagementReviewClient {...baseProps} />);
+    await renderSettled(<ManagementReviewClient {...baseProps} />);
 
     expect(screen.getByText('carriedForward.title')).toBeInTheDocument();
     // The first review's open action appears twice: on its own review and in
@@ -300,10 +309,10 @@ describe('ManagementReviewClient', () => {
     expect(screen.getAllByText('MR-2026-01-A01')).toHaveLength(2);
   });
 
-  it('warns when no review is recorded (clause 9.3 gate)', () => {
+  it('warns when no review is recorded (clause 9.3 gate)', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.document = makeDocument({ reviews: [] });
-    render(<ManagementReviewClient {...baseProps} />);
+    await renderSettled(<ManagementReviewClient {...baseProps} />);
 
     expect(
       screen.getAllByText(/At least one management review must be recorded\./).length,
@@ -312,7 +321,7 @@ describe('ManagementReviewClient', () => {
     expect(screen.getByText('No reviews yet')).toBeInTheDocument();
   });
 
-  it('warns when a completed review is missing its requirements', () => {
+  it('warns when a completed review is missing its requirements', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.document = makeDocument({
       reviews: [
@@ -338,7 +347,7 @@ describe('ManagementReviewClient', () => {
         }),
       ],
     });
-    render(<ManagementReviewClient {...baseProps} />);
+    await renderSettled(<ManagementReviewClient {...baseProps} />);
 
     expect(
       screen.getAllByText(/MR-2026-01 is complete but has no meeting date\./).length,

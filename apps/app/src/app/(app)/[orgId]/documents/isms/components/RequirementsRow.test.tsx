@@ -122,7 +122,7 @@ describe('RequirementsRow', () => {
     expect(onSave).not.toHaveBeenCalled();
   });
 
-  it('does not surface a raw "Linked party ID" input', () => {
+  it('does not surface a raw "Linked party ID" input', async () => {
     render(
       <RequirementsRow
         requirement={makeRequirement({ interestedPartyId: 'isms_ip_abc123' })}
@@ -131,6 +131,9 @@ describe('RequirementsRow', () => {
         onDelete={vi.fn().mockResolvedValue(undefined)}
       />,
     );
+    // The row re-syncs via reset() in an effect with an async zodResolver —
+    // flush it inside act before interacting to avoid "not wrapped in act".
+    await act(async () => {});
 
     fireEvent.click(screen.getByLabelText('Edit requirement'));
 

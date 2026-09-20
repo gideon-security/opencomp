@@ -5,7 +5,7 @@ import {
   mockHasPermission,
   setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsContextIssue, IsmsDocument, IsmsDriftResult } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
@@ -139,9 +139,18 @@ describe('ContextOfOrganizationClient', () => {
     hookState.drift = { isStale: false, changedSources: [] };
   });
 
-  it('renders derived issues with provenance', () => {
+  // Issue rows use react-hook-form + zodResolver with a re-sync `reset()`
+  // in an effect. The resolver settles asynchronously after mount, so flush
+  // it inside act before asserting — otherwise React logs "not wrapped in
+  // act" noise.
+  async function renderSettled(ui: Parameters<typeof render>[0]) {
+    render(ui);
+    await act(async () => {});
+  }
+
+  it('renders derived issues with provenance', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<ContextOfOrganizationClient {...baseProps} />);
+    await renderSettled(<ContextOfOrganizationClient {...baseProps} />);
 
     // Read-first cards show the issue text, not always-on textareas.
     expect(screen.getByText('Derived internal issue')).toBeInTheDocument();
@@ -151,9 +160,9 @@ describe('ContextOfOrganizationClient', () => {
     expect(screen.getAllByText('Auto-derived').length).toBeGreaterThan(0);
   });
 
-  it('allows editing (shows mutating controls) for a user with evidence:update', () => {
+  it('allows editing (shows mutating controls) for a user with evidence:update', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<ContextOfOrganizationClient {...baseProps} />);
+    await renderSettled(<ContextOfOrganizationClient {...baseProps} />);
 
     expect(screen.getByText('shell.generate')).toBeInTheDocument();
     // One collapsed "Add … issue" trigger per kind section.
@@ -164,9 +173,9 @@ describe('ContextOfOrganizationClient', () => {
     expect(mockHasPermission).toHaveBeenCalledWith('evidence', 'update');
   });
 
-  it('renders each issue category and exposes a per-kind add affordance for an admin', () => {
+  it('renders each issue category and exposes a per-kind add affordance for an admin', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<ContextOfOrganizationClient {...baseProps} />);
+    await renderSettled(<ContextOfOrganizationClient {...baseProps} />);
 
     // Read-mode rows surface the clause 4.1 category alongside the source pill.
     expect(screen.getByText('Governance & Structure')).toBeInTheDocument();
@@ -176,9 +185,9 @@ describe('ContextOfOrganizationClient', () => {
     expect(screen.getByText('Add external issue')).toBeInTheDocument();
   });
 
-  it('hides mutating controls for a read-only user but keeps export', () => {
+  it('hides mutating controls for a read-only user but keeps export', async () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
-    render(<ContextOfOrganizationClient {...baseProps} />);
+    await renderSettled(<ContextOfOrganizationClient {...baseProps} />);
 
     expect(screen.queryByText('shell.generate')).not.toBeInTheDocument();
     expect(screen.queryByText(/Add internal issue/)).not.toBeInTheDocument();
@@ -194,7 +203,7 @@ describe('ContextOfOrganizationClient', () => {
   it('shows the drift banner when the document is stale', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.drift = { isStale: true, changedSources: ['vendorCount', 'memberCount'] };
-    render(<ContextOfOrganizationClient {...baseProps} />);
+    await renderSettled(<ContextOfOrganizationClient {...baseProps} />);
 
     await waitFor(() => {
       expect(screen.getByText('Out of date')).toBeInTheDocument();

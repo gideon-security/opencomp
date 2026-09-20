@@ -5,7 +5,7 @@ import {
   mockHasPermission,
   setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -162,9 +162,17 @@ describe('InterestedPartiesClient', () => {
     hookState.drift = { isStale: false, changedSources: [] };
   });
 
-  it('renders the register content as read-first cards', () => {
+  // Row cards use react-hook-form + zodResolver with a re-sync `reset()` in
+  // an effect. The resolver settles asynchronously after mount, so flush it
+  // inside act before asserting — otherwise React logs "not wrapped in act".
+  async function renderSettled(ui: Parameters<typeof render>[0]) {
+    render(ui);
+    await act(async () => {});
+  }
+
+  it('renders the register content as read-first cards', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<InterestedPartiesClient {...baseProps} />);
+    await renderSettled(<InterestedPartiesClient {...baseProps} />);
 
     // Read-first cards show the party name + needs as text, not always-on inputs.
     expect(screen.getByText('Customers')).toBeInTheDocument();
@@ -176,9 +184,9 @@ describe('InterestedPartiesClient', () => {
     expect(screen.queryByText('vendor:customers')).not.toBeInTheDocument();
   });
 
-  it('allows editing (shows mutating controls) for a user with evidence:update', () => {
+  it('allows editing (shows mutating controls) for a user with evidence:update', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<InterestedPartiesClient {...baseProps} />);
+    await renderSettled(<InterestedPartiesClient {...baseProps} />);
 
     expect(screen.getByText('shell.generate')).toBeInTheDocument();
     expect(screen.getByText('Add interested party')).toBeInTheDocument();
@@ -188,9 +196,9 @@ describe('InterestedPartiesClient', () => {
     expect(mockHasPermission).toHaveBeenCalledWith('evidence', 'update');
   });
 
-  it('hides mutating controls for a read-only user but keeps export', () => {
+  it('hides mutating controls for a read-only user but keeps export', async () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
-    render(<InterestedPartiesClient {...baseProps} />);
+    await renderSettled(<InterestedPartiesClient {...baseProps} />);
 
     expect(screen.queryByText('shell.generate')).not.toBeInTheDocument();
     expect(screen.queryByText('Add interested party')).not.toBeInTheDocument();
@@ -206,7 +214,7 @@ describe('InterestedPartiesClient', () => {
   it('shows the drift banner when the document is stale', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.drift = { isStale: true, changedSources: ['vendorCount', 'memberCount'] };
-    render(<InterestedPartiesClient {...baseProps} />);
+    await renderSettled(<InterestedPartiesClient {...baseProps} />);
 
     await waitFor(() => {
       expect(screen.getByText('Out of date')).toBeInTheDocument();
@@ -216,7 +224,7 @@ describe('InterestedPartiesClient', () => {
 
   it('creates a party through to hook.createRow with the register + form data', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<InterestedPartiesClient {...baseProps} />);
+    await renderSettled(<InterestedPartiesClient {...baseProps} />);
 
     // Open the add form (closed-state trigger), then fill the three fields.
     fireEvent.click(screen.getByText('Add interested party'));
@@ -250,7 +258,7 @@ describe('InterestedPartiesClient', () => {
 
   it('edits a row through to hook.updateRow with the register, row id + changes', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<InterestedPartiesClient {...baseProps} />);
+    await renderSettled(<InterestedPartiesClient {...baseProps} />);
 
     // Enter edit mode on the first row, change the name, then save.
     fireEvent.click(screen.getAllByLabelText('Edit interested party')[0]);
@@ -277,7 +285,7 @@ describe('InterestedPartiesClient', () => {
   it('keeps the add form open with the user input when hook.createRow rejects', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     mockCreateRow.mockRejectedValueOnce(new Error('Network error'));
-    render(<InterestedPartiesClient {...baseProps} />);
+    await renderSettled(<InterestedPartiesClient {...baseProps} />);
 
     fireEvent.click(screen.getByText('Add interested party'));
     fireEvent.change(screen.getByLabelText('New interested party name'), {
@@ -306,7 +314,7 @@ describe('InterestedPartiesClient', () => {
   it('keeps the row in edit mode with the user changes when hook.updateRow rejects', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     mockUpdateRow.mockRejectedValueOnce(new Error('Save failed'));
-    render(<InterestedPartiesClient {...baseProps} />);
+    await renderSettled(<InterestedPartiesClient {...baseProps} />);
 
     fireEvent.click(screen.getAllByLabelText('Edit interested party')[0]);
     fireEvent.change(screen.getByLabelText('Interested party name'), {

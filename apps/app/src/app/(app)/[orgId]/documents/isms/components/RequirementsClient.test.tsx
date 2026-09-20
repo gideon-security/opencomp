@@ -5,7 +5,7 @@ import {
   mockHasPermission,
   setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDriftResult, IsmsInterestedPartyRequirement } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
@@ -139,9 +139,18 @@ describe('RequirementsClient', () => {
     hookState.drift = { isStale: false, changedSources: [] };
   });
 
-  it('renders derived and edited requirements with provenance', () => {
+  // Requirement rows use react-hook-form + zodResolver with a re-sync
+  // `reset()` in an effect. The resolver settles asynchronously after mount,
+  // so flush it inside act before asserting — otherwise React logs
+  // "not wrapped in act" noise.
+  async function renderSettled(ui: Parameters<typeof render>[0]) {
+    render(ui);
+    await act(async () => {});
+  }
+
+  it('renders derived and edited requirements with provenance', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<RequirementsClient {...baseProps} />);
+    await renderSettled(<RequirementsClient {...baseProps} />);
 
     // Read-first cards show the requirement + treatment as text, not always-on inputs.
     expect(screen.getByText('Derived customer requirement')).toBeInTheDocument();
@@ -152,9 +161,9 @@ describe('RequirementsClient', () => {
     expect(screen.getAllByText('Manual').length).toBeGreaterThan(0);
   });
 
-  it('back link returns to the ISO 27001 documents tab', () => {
+  it('back link returns to the ISO 27001 documents tab', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<RequirementsClient {...baseProps} />);
+    await renderSettled(<RequirementsClient {...baseProps} />);
 
     expect(screen.getByRole('link', { name: 'ISMS' })).toHaveAttribute(
       'href',
@@ -162,9 +171,9 @@ describe('RequirementsClient', () => {
     );
   });
 
-  it('allows editing (shows mutating controls) for a user with evidence:update', () => {
+  it('allows editing (shows mutating controls) for a user with evidence:update', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<RequirementsClient {...baseProps} />);
+    await renderSettled(<RequirementsClient {...baseProps} />);
 
     expect(screen.getByText('shell.generate')).toBeInTheDocument();
     expect(screen.getByText('Add requirement')).toBeInTheDocument();
@@ -173,9 +182,9 @@ describe('RequirementsClient', () => {
     expect(mockHasPermission).toHaveBeenCalledWith('evidence', 'update');
   });
 
-  it('hides mutating controls for a read-only user but keeps export', () => {
+  it('hides mutating controls for a read-only user but keeps export', async () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
-    render(<RequirementsClient {...baseProps} />);
+    await renderSettled(<RequirementsClient {...baseProps} />);
 
     expect(screen.queryByText('shell.generate')).not.toBeInTheDocument();
     expect(screen.queryByText('Add requirement')).not.toBeInTheDocument();
@@ -192,7 +201,7 @@ describe('RequirementsClient', () => {
   it('shows the drift banner when the document is stale', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.drift = { isStale: true, changedSources: ['vendorCount', 'frameworks'] };
-    render(<RequirementsClient {...baseProps} />);
+    await renderSettled(<RequirementsClient {...baseProps} />);
 
     await waitFor(() => {
       expect(screen.getByText('Out of date')).toBeInTheDocument();
