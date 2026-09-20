@@ -1,8 +1,8 @@
 // Mock @db before importing the service so the Prisma client doesn't try
 // to connect at import time in this unit-test env.
 jest.mock('@db', () => ({}));
-jest.mock('@ai-sdk/anthropic', () => ({
-  anthropic: () => null,
+jest.mock('@ai-sdk/google', () => ({
+  google: () => null,
 }));
 jest.mock('ai', () => ({
   generateObject: jest.fn(),
@@ -29,7 +29,7 @@ function basePlan(overrides: Partial<FixPlan> = {}): FixPlan {
     rollbackSupported: false,
     requiresAcknowledgment: false,
     ...overrides,
-  } as FixPlan;
+  };
 }
 
 describe('AiRemediationService.generateFixPlan empty-state backstop', () => {
@@ -467,7 +467,7 @@ describe('AiRemediationService.refineStepFromError', () => {
     expect(callArgs.prompt).toContain('CreateServiceLinkedRoleCommand');
     // ... and the neighbor step's service so the AI can use cross-step context.
     expect(callArgs.prompt).toContain('guardduty');
-    // `temperature` must NOT be sent: claude-opus-4-8 rejects it with a 400
+    // `temperature` must NOT be sent: the model rejects it with a 400
     // ("temperature is deprecated for this model"), which would make the call
     // throw and silently degrade auto-fix to manual steps.
     expect(callArgs.temperature).toBeUndefined();
@@ -623,7 +623,7 @@ describe('AiRemediationService.generateFixPlan empty-plan retry', () => {
     });
 
     expect(generateObjectMock).toHaveBeenCalledTimes(2);
-    // Neither call may send `temperature` — claude-opus-4-8 rejects it (400).
+    // Neither call may send `temperature` — the model rejects it (400).
     // The retry is a fresh re-sample (default sampling), not a temperature bump.
     expect(generateObjectMock.mock.calls[0][0].temperature).toBeUndefined();
     expect(generateObjectMock.mock.calls[1][0].temperature).toBeUndefined();
@@ -737,11 +737,11 @@ describe('AiRemediationService GCP/Azure empty-plan retry', () => {
   });
 });
 
-describe('AiRemediationService MODEL calls omit temperature (opus-4-8 regression)', () => {
+describe('AiRemediationService MODEL calls omit temperature (regression)', () => {
   // Regression for the production bug where auto-fix silently showed manual
-  // "Remediation Steps" for every cloud finding. The remediation model was
-  // bumped to claude-opus-4-8, which rejects the `temperature` parameter with
-  // a 400 ("temperature is deprecated for this model"). Every generateObject
+  // "Remediation Steps" for every cloud finding. The remediation model
+  // rejected the `temperature` parameter with a 400 ("temperature is
+  // deprecated for this model"). Every generateObject
   // call that passed `temperature` therefore threw, was caught, and fell back
   // to fallbackPlan() → guidedOnly:true with the verbatim adapter remediation.
   const generateObjectMock = generateObject as unknown as jest.Mock;

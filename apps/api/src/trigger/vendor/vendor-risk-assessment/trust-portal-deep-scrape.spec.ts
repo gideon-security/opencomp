@@ -9,8 +9,8 @@ jest.mock('@gideon-defender/trigger-local', () => ({
   },
 }));
 
-jest.mock('@ai-sdk/anthropic', () => ({
-  anthropic: jest.fn(() => 'claude-mock-model'),
+jest.mock('@ai-sdk/google', () => ({
+  google: jest.fn(() => 'gemini-mock-model'),
 }));
 
 const generateObjectMock = jest.fn();

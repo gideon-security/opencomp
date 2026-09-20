@@ -69,7 +69,7 @@ interface SourceHashInput {
 }
 
 /**
- * Hash of the inputs that drive Haiku output. When this changes — because
+ * Hash of the inputs that drive Gemini output. When this changes — because
  * the adapter altered the finding's title/description/severity/remediation
  * — the cache entry is regenerated on the next view. Includes the model
  * version so flipping DESCRIPTION_MODEL_VERSION forces a global refresh.

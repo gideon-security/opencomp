@@ -1,6 +1,6 @@
 'use server';
 
-import { groq } from '@ai-sdk/groq';
+import { google } from '@ai-sdk/google';
 import { db } from '@db/server';
 import { generateObject, NoObjectGeneratedError } from 'ai';
 import { z } from 'zod';
@@ -58,7 +58,7 @@ export async function generateAutomationSuggestions(
 
     // Generate AI suggestions
     const { object } = await generateObject({
-      model: groq('meta-llama/llama-4-scout-17b-16e-instruct'),
+      model: google('gemini-3.8-flash'),
       schema: SuggestionsSchema,
       system: AUTOMATION_SUGGESTIONS_SYSTEM_PROMPT,
       prompt: getAutomationSuggestionsPrompt(taskDescription, vendorList, contextInfo),

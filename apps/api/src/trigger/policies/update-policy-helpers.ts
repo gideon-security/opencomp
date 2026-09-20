@@ -250,9 +250,8 @@ export async function processPolicyUpdate(
 
   // Deterministic template processing: fill {{PLACEHOLDER}} values and evaluate
   // {{#if framework}} blocks from the org's real context. Mirrors the
-  // bulk/onboarding path and replaces the slow, generic gpt-5-mini
-  // full-document generator that ignored the template and produced
-  // template-ish output.
+  // bulk/onboarding path and replaces the slow, generic full-document
+  // generator that ignored the template and produced template-ish output.
   const processedContent = processTemplate({
     content: policyTemplate.content,
     companyName: organization.name ?? 'Company',

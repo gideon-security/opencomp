@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { generateObject } from 'ai';
-import { anthropic } from '@ai-sdk/anthropic';
+import { google } from '@ai-sdk/google';
 import { z } from 'zod';
 import {
   type FixPlan,
@@ -28,11 +28,10 @@ import {
 } from './azure-ai-remediation.prompt';
 import { normalizeFixPlan } from './plan-normalizer';
 
-const MODEL = anthropic('claude-opus-4-8');
-// Cheaper, faster model for the manual-steps fallback. The output is pure
-// natural language with no SDK-call shape to validate, so the strongest
-// model is overkill — we just need clear instructions.
-const FALLBACK_MODEL = anthropic('claude-sonnet-4-6');
+// Gemini Flash for every pass. Fix-plan output is structured SDK-call shapes,
+// so keep prompts strict; the manual-steps fallback below needs only clear
+// natural language, which the same model handles.
+const MODEL = google('gemini-3.8-flash');
 const REMEDIATION_ROLE_NAME = 'OpenComp-Remediator';
 
 export interface FindingContext {
@@ -85,10 +84,9 @@ export class AiRemediationService {
 
   /** Single fix-plan generation pass (generate → enrich → normalize). */
   private async requestFixPlan(finding: FindingContext): Promise<FixPlan> {
-    // NOTE: claude-opus-4-8 rejects the `temperature` parameter
-    // ("temperature is deprecated for this model" → 400), which previously
-    // made every plan generation throw and silently fall back to manual
-    // remediation steps. Do not re-add `temperature` to MODEL calls.
+    // NOTE: keep MODEL calls free of `temperature` — some providers reject it
+    // (previously 400 on opus) which silently fell back to manual remediation.
+    // Do not re-add `temperature` to MODEL calls.
     const { object } = await generateObject({
       model: MODEL,
       schema: fixPlanSchema,
@@ -401,7 +399,7 @@ INSTRUCTIONS:
         : '(no fix steps were generated)';
 
       const { object } = await generateObject({
-        model: FALLBACK_MODEL,
+        model: MODEL,
         schema: z.object({
           guidedSteps: z
             .array(z.string())
@@ -493,7 +491,7 @@ Produce 3-8 ordered steps. Each step is a single concrete action the customer ca
   private async requestGcpFixPlan(
     finding: FindingContext,
   ): Promise<GcpFixPlan> {
-    // MODEL (claude-opus-4-8) rejects `temperature` — do not re-add it.
+    // MODEL rejects `temperature` — do not re-add it.
     const { object } = await generateObject({
       model: MODEL,
       schema: gcpFixPlanSchema,
@@ -578,7 +576,7 @@ Generate the complete fix plan with EXACT JSON values from the real GCP state.`,
   private async requestAzureFixPlan(
     finding: FindingContext,
   ): Promise<AzureFixPlan> {
-    // MODEL (claude-opus-4-8) rejects `temperature` — do not re-add it.
+    // MODEL rejects `temperature` — do not re-add it.
     const { object } = await generateObject({
       model: MODEL,
       schema: azureFixPlanSchema,

@@ -3,7 +3,7 @@ import {
   findSimilarContentBatch,
 } from '@/vector-store/lib';
 import type { SimilarContentResult } from '@/vector-store/lib';
-import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import {
   deduplicateSources,
@@ -118,7 +118,7 @@ async function generateSOAAnswerFromContent(
 
   // Generate answer using LLM with ISO 27001 compliance analysis prompt
   const { text } = await generateText({
-    model: openai(SOA_RAG_MODEL),
+    model: google(SOA_RAG_MODEL),
     system: SOA_RAG_SYSTEM_PROMPT,
     prompt: `Based EXCLUSIVELY on the following context from our organization's policies and documentation, answer this question:
 
@@ -186,7 +186,7 @@ export async function generateSOAControlAnswer(
 
   // Generate answer using LLM
   const { text } = await generateText({
-    model: openai(SOA_BATCH_MODEL),
+    model: google(SOA_BATCH_MODEL),
     system: SOA_BATCH_SYSTEM_PROMPT,
     prompt: `Based on the following context from our organization's policies and documentation, analyze this SOA question:
 

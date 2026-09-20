@@ -93,12 +93,10 @@ registration lives in `apps/api/.env` (see the `GIDEON_OIDC_*` block in
 
 ### AI Providers
 
-| Name                | Service(s) | Phase   | Required    | Notes                                  |
-| ------------------- | ---------- | ------- | ----------- | -------------------------------------- |
-| `OPENAI_API_KEY`    | app        | runtime | conditional | OpenAI API key for AI features         |
-| `ANTHROPIC_API_KEY` | app        | runtime | optional    | Anthropic API key (alternative models) |
-| `GROQ_API_KEY`      | app        | runtime | optional    | Groq API key for dashboard chat        |
-| `FIRECRAWL_API_KEY` | app        | runtime | conditional | Firecrawl for vendor research          |
+| Name                         | Service(s) | Phase   | Required    | Notes                         |
+| ---------------------------- | ---------- | ------- | ----------- | ----------------------------- |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | app, api   | runtime | conditional | Gemini API key for AI features |
+| `FIRECRAWL_API_KEY`          | app        | runtime | conditional | Firecrawl for vendor research |
 
 ### Rate Limiting & Caching
 

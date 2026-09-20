@@ -9,9 +9,9 @@ export const MAX_CLASSIFICATION_CONCURRENCY = 4;
 // File size limits
 export const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024; // 100MB
 
-// LLM Model identifiers
-export const PARSING_MODEL = 'gpt-5-mini';
-export const ANSWER_MODEL = 'gpt-4o-mini';
+// LLM Model identifiers — Gemini-only (GOOGLE_GENERATIVE_AI_API_KEY)
+export const PARSING_MODEL = 'gemini-3.8-flash';
+export const ANSWER_MODEL = 'gemini-3.8-flash';
 
 // System prompts for answer generation
 export const ANSWER_SYSTEM_PROMPT = `You are an expert at answering security and compliance questions for vendor questionnaires.

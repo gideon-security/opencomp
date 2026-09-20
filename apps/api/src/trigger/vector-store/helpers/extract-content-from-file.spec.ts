@@ -11,12 +11,8 @@ jest.mock('@/vector-store/logger', () => ({
   },
 }));
 
-jest.mock('@ai-sdk/anthropic', () => ({
-  anthropic: jest.fn(() => 'claude-mock-model'),
-}));
-
-jest.mock('@ai-sdk/openai', () => ({
-  openai: jest.fn(() => 'openai-mock-model'),
+jest.mock('@ai-sdk/google', () => ({
+  google: jest.fn(() => 'gemini-mock-model'),
 }));
 
 jest.mock('ai', () => ({
@@ -175,7 +171,7 @@ describe('extractContentFromFile - PDF extraction', () => {
     jest.clearAllMocks();
   });
 
-  it('should use Claude for PDF files', async () => {
+  it('should use Gemini for PDF files', async () => {
     const pdfContent = 'Extracted SOC 2 report content';
     mockGenerateText.mockResolvedValue({
       text: pdfContent,
@@ -187,7 +183,7 @@ describe('extractContentFromFile - PDF extraction', () => {
     expect(result).toBe(pdfContent);
     expect(mockGenerateText).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: 'claude-mock-model',
+        model: 'gemini-mock-model',
         messages: expect.arrayContaining([
           expect.objectContaining({
             role: 'user',
@@ -220,7 +216,7 @@ describe('extractContentFromFile - image extraction', () => {
     jest.clearAllMocks();
   });
 
-  it('should use OpenAI vision for images', async () => {
+  it('should use Gemini vision for images', async () => {
     const imageContent = 'Text from image';
     mockGenerateText.mockResolvedValue({
       text: imageContent,
@@ -232,7 +228,7 @@ describe('extractContentFromFile - image extraction', () => {
     expect(result).toBe(imageContent);
     expect(mockGenerateText).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: 'openai-mock-model',
+        model: 'gemini-mock-model',
         messages: expect.arrayContaining([
           expect.objectContaining({
             role: 'user',

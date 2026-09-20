@@ -1,6 +1,6 @@
 'use server';
 
-import { groq } from '@ai-sdk/groq';
+import { google } from '@ai-sdk/google';
 import { generateText } from 'ai';
 
 const ERROR_SANITIZATION_SYSTEM_PROMPT = `Transform error messages into friendly, helpful guidance. Hide any sensitive data.
@@ -90,7 +90,7 @@ export const sanitizeErrorMessage = async (rawError: unknown): Promise<string> =
   // Always use AI to make errors user-friendly and hide sensitive data
   try {
     const { text } = await generateText({
-      model: groq('meta-llama/llama-4-scout-17b-16e-instruct'),
+      model: google('gemini-3.8-flash'),
       system: ERROR_SANITIZATION_SYSTEM_PROMPT,
       prompt: errorString,
       temperature: 0, // Deterministic output

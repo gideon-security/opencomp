@@ -1,5 +1,5 @@
 import { auth } from '@/utils/auth';
-import { groq } from '@ai-sdk/groq';
+import { google } from '@ai-sdk/google';
 import { generateObject, NoObjectGeneratedError } from 'ai';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -94,7 +94,7 @@ Format: {"relevantTasks": [{"taskTemplateId": "...", "taskName": "...", "reason"
 
   try {
     const { object } = await generateObject({
-      model: groq('meta-llama/llama-4-scout-17b-16e-instruct'),
+      model: google('gemini-3.8-flash'),
       schema: RelevantTasksSchema,
       system: systemPrompt,
       prompt: userPrompt,

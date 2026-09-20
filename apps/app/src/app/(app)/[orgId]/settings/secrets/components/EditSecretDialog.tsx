@@ -127,7 +127,7 @@ export function EditSecretDialog({ secret, open, onOpenChange }: EditSecretDialo
               <Label htmlFor="edit-name">{t('secrets.editDialog.nameLabel')}</Label>
               <Input
                 id="edit-name"
-                placeholder="e.g., GITHUB_TOKEN, OPENAI_API_KEY"
+                placeholder="e.g., GITHUB_TOKEN, GOOGLE_GENERATIVE_AI_API_KEY"
                 {...register('name')}
               />
               {errors.name?.message ? (

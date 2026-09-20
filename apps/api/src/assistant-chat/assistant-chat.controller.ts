@@ -123,7 +123,6 @@ Important:
         system: systemPrompt,
         messages: await convertToModelMessages(messages),
         tools,
-        providerOptions: modelConfig.providerOptions,
         stopWhen: stepCountIs(5),
         experimental_telemetry: getAITelemetry('grc-assistant'),
       });

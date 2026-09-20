@@ -1,5 +1,5 @@
 import { auth } from '@/utils/auth';
-import { anthropic } from '@ai-sdk/anthropic';
+import { google } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     }
 
     const result = await generateText({
-      model: anthropic('claude-sonnet-4-6'),
+      model: google('gemini-3.8-flash'),
       // A single section is small; cap output so a runaway generation can't hang
       // the 30s request, and so we get a clean stop rather than a truncated edit.
       maxOutputTokens: 4000,

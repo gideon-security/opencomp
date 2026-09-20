@@ -40,7 +40,7 @@ export interface RerankedCandidate {
   rerankScore: number;
 }
 
-const RERANK_MODEL = 'gemini-3.1-flash-lite' as const;
+const RERANK_MODEL = 'gemini-3.8-flash' as const;
 
 const SYSTEM_PROMPT = `You are a GRC analyst evaluating which compliance tasks would meaningfully reduce a specific risk or vendor exposure.
 

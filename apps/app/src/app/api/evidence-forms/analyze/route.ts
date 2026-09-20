@@ -1,7 +1,7 @@
 import { env } from '@/env.mjs';
 import { serverApi } from '@/lib/api-server';
 import { auth } from '@/utils/auth';
-import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -82,7 +82,7 @@ interface AuthMeResponse {
 }
 
 export async function POST(req: Request) {
-  if (!env.OPENAI_API_KEY) {
+  if (!env.GOOGLE_GENERATIVE_AI_API_KEY) {
     return NextResponse.json({ error: 'AI analysis is not configured.' }, { status: 500 });
   }
 
@@ -180,7 +180,7 @@ For each requirement, determine if the exercise documentation adequately address
 
   try {
     const { object } = await generateObject({
-      model: openai('gpt-4o-mini'),
+      model: google('gemini-3.8-flash'),
       schema: analysisResultSchema,
       system: systemPrompt,
       prompt: userPrompt,

@@ -20,16 +20,10 @@ import { reloginWithStoredCredentials } from './browser-credential-login';
 
 type Stagehand = import('@browserbasehq/stagehand').Stagehand;
 
-// Screenshot-based navigation model. GPT-5.6 Terra is the balanced tier of
-// OpenAI's newest family — strong browser-automation accuracy at roughly half
-// Sol's cost — a good fit for a multi-step agent. Configurable via env for A/B
-// tests (e.g. openai/gpt-5.6-sol for max accuracy), with no per-site tuning.
-const DEFAULT_CUA_MODEL = 'openai/gpt-5.6-terra';
-// Claude fallback used when the primary model is unavailable (missing OpenAI key,
-// preview access, rate limits, upstream errors). Must be a computer-use-capable
-// model Stagehand supports — claude-sonnet-5 is NOT one; the proven Claude CUA
-// options are claude-opus-4-8 / claude-sonnet-4-6 / claude-haiku-4-5.
-const FALLBACK_CUA_MODEL = 'anthropic/claude-sonnet-4-6';
+// Screenshot-based navigation model. Gemini Flash via the Gemini CUA template —
+// fast and cheap for multi-step browser automation. Configurable via env for
+// A/B tests, with no per-site tuning.
+const DEFAULT_CUA_MODEL = 'google/gemini-3.8-flash';
 // How many screenshot→action steps the agent may take. Generous so it can
 // recover from a wrong turn on a complex site rather than giving up.
 const CUA_MAX_STEPS = 30;
@@ -43,27 +37,14 @@ type CuaModel = {
 
 function resolveCuaModel(logger: Logger): CuaModel {
   const requested = process.env.BROWSERBASE_CUA_MODEL || DEFAULT_CUA_MODEL;
-  if (requested.startsWith('openai/') && !process.env.OPENAI_API_KEY) {
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
     logger.warn(
-      `OPENAI_API_KEY not set; falling back from ${requested} to ${FALLBACK_CUA_MODEL} for navigation.`,
+      `GOOGLE_GENERATIVE_AI_API_KEY not set; navigation with ${requested} will fail.`,
     );
-    return {
-      modelName: FALLBACK_CUA_MODEL,
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    };
   }
   return {
     modelName: requested,
-    apiKey: requested.startsWith('openai/')
-      ? process.env.OPENAI_API_KEY
-      : process.env.ANTHROPIC_API_KEY,
-  };
-}
-
-function claudeFallbackModel(): CuaModel {
-  return {
-    modelName: FALLBACK_CUA_MODEL,
-    apiKey: process.env.ANTHROPIC_API_KEY,
+    apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
   };
 }
 
@@ -251,7 +232,7 @@ export async function executeBrowserEvidence({
     // Find its own way (no exact directions needed), self-correct a wrong turn,
     // and read what's already on screen instead of over-navigating.
     const instruction = `${input.instruction}. Work out the path yourself — you don't need exact directions. If the instruction names a specific item or page, open it so the final screenshot clearly shows just that item, not a long list of many. Before finishing, verify the page matches what was asked and correct it if you opened the wrong thing. Don't take unnecessary detours. When the right thing is clearly shown, stop and wait.`;
-    const primaryModel = resolveCuaModel(logger);
+    const model = resolveCuaModel(logger);
     // Follow the agent across tabs while it works (test/watched runs only).
     const stopFollowing = onLiveView
       ? startLiveViewFollower({
@@ -262,32 +243,11 @@ export async function executeBrowserEvidence({
         })
       : () => {};
     try {
-      try {
-        await runCuaNavigation({
-          stagehand: activeStagehand,
-          instruction,
-          model: primaryModel,
-        });
-      } catch (navError) {
-        // The navigation model can be unavailable at runtime (preview access, rate
-        // limits, upstream errors). Fall back to Claude once — unless we were
-        // already on it — rather than failing the whole run.
-        if (primaryModel.modelName === FALLBACK_CUA_MODEL) throw navError;
-        logger.warn(
-          `Navigation with ${primaryModel.modelName} failed; retrying with ${FALLBACK_CUA_MODEL}. ${
-            navError instanceof Error ? navError.message : String(navError)
-          }`,
-        );
-        log(
-          'action',
-          'Primary navigation model unavailable — retrying with a backup model.',
-        );
-        await runCuaNavigation({
-          stagehand: activeStagehand,
-          instruction,
-          model: claudeFallbackModel(),
-        });
-      }
+      await runCuaNavigation({
+        stagehand: activeStagehand,
+        instruction,
+        model,
+      });
     } finally {
       stopFollowing();
     }

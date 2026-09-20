@@ -21,7 +21,7 @@ interface CheckDefinition {
  *
  * Fetches a Tier 3 description lazily from
  * /v1/cloud-security/findings/:id/check-definition. The first request
- * for an AWS check triggers a Haiku call server-side (~1-2s). Subsequent
+ * for an AWS check triggers a Gemini call server-side (~1-2s). Subsequent
  * requests for the same check in the same org hit the DB cache (~50ms).
  * GCP/Azure findings resolve synchronously from provider evidence.
  *

@@ -5,8 +5,7 @@ export const env = createEnv({
   server: {
     AUTH_SECRET: z.string(),
     DATABASE_URL: z.string().min(1),
-    OPENAI_API_KEY: z.string().optional(),
-    GROQ_API_KEY: z.string().optional(),
+    GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
     REVALIDATION_SECRET: z.string(),
     VERCEL_ACCESS_TOKEN: z.string().optional(),
     VERCEL_TEAM_ID: z.string().optional(),
@@ -49,8 +48,7 @@ export const env = createEnv({
   runtimeEnv: {
     AUTH_SECRET: process.env.AUTH_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    GROQ_API_KEY: process.env.GROQ_API_KEY,
+    GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
     REVALIDATION_SECRET: process.env.REVALIDATION_SECRET,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,

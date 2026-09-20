@@ -1,4 +1,4 @@
-import { anthropic } from '@ai-sdk/anthropic';
+import { google } from '@ai-sdk/google';
 import { logger } from '@gideon-defender/trigger-local';
 import { generateObject } from 'ai';
 import { z } from 'zod';
@@ -62,7 +62,7 @@ export async function refineCueLines(
 
   try {
     const { object } = await generateObject({
-      model: anthropic('claude-sonnet-4-6'),
+      model: google('gemini-3.8-flash'),
       system: `You rewrite policy template instructions into direct, professional policy language. Each input is an instruction (e.g. "State that...", "Define..."). Return the equivalent text as it should appear in a published security policy — authoritative, concise, no instructional phrasing.`,
       prompt: `Policy: "${policyName}"\n\nRewrite each instruction:\n${cueLines.map((c, i) => `${i + 1}. ${c.text}`).join('\n')}`,
       schema: z.object({

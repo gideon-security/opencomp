@@ -1,4 +1,4 @@
-import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { generateObject, jsonSchema } from 'ai';
 import {
   MAX_CHUNK_SIZE_CHARS,
@@ -152,7 +152,7 @@ export async function parseChunkQuestionsAndAnswers(
 ): Promise<QuestionAnswer[]> {
   try {
     const { object } = await generateObject({
-      model: openai(PARSING_MODEL),
+      model: google(PARSING_MODEL),
       schema: jsonSchema({
         type: 'object',
         properties: {

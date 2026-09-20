@@ -148,7 +148,7 @@ export class CheckDefinitionService {
    * Resolve a check description for a finding.
    *
    * - AWS: cached per (orgId, checkId) with source-hash invalidation.
-   *   First-view triggers a Haiku call (~1-2s); all subsequent views and
+   *   First-view triggers a Gemini call (~1-2s); all subsequent views and
    *   all other findings of the same check type hit the cache (~50ms).
    * - GCP / Azure: derived synchronously from provider evidence — no AI,
    *   no DB cache. Returns null when evidence doesn't carry enough context.

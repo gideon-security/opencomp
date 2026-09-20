@@ -1,4 +1,4 @@
-jest.mock('@ai-sdk/openai', () => ({ openai: jest.fn() }));
+jest.mock('@ai-sdk/google', () => ({ google: jest.fn() }));
 jest.mock('ai', () => ({
   generateObject: jest.fn(),
   jsonSchema: jest.fn((s) => s),

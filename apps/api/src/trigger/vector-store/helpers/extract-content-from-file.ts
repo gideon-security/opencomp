@@ -1,7 +1,6 @@
 import { loadXlsxWorkbook } from '@/utils/load-xlsx';
 import { logger } from '@/vector-store/logger';
-import { anthropic } from '@ai-sdk/anthropic';
-import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { generateText } from 'ai';
 import mammoth from 'mammoth';
 
@@ -189,13 +188,13 @@ export async function extractContentFromFile(
     );
   }
 
-  // Handle PDFs using Claude's native multi-page PDF support
+  // Handle PDFs using Gemini's native multi-page PDF support
   const isPdf = fileType === 'application/pdf';
 
   if (isPdf) {
     const fileSizeMB = (fileBuffer.length / (1024 * 1024)).toFixed(2);
 
-    logger.info('Extracting content from PDF using Claude', {
+    logger.info('Extracting content from PDF using Gemini', {
       fileType,
       fileSizeMB,
     });
@@ -204,7 +203,7 @@ export async function extractContentFromFile(
 
     try {
       const { text } = await generateText({
-        model: anthropic('claude-sonnet-4-6'),
+        model: google('gemini-3.8-flash'),
         messages: [
           {
             role: 'user',
@@ -245,7 +244,7 @@ export async function extractContentFromFile(
     }
   }
 
-  // Handle images using OpenAI vision API
+  // Handle images using Gemini vision API
   const isImage = fileType.startsWith('image/');
 
   if (isImage) {
@@ -260,7 +259,7 @@ export async function extractContentFromFile(
 
     try {
       const { text } = await generateText({
-        model: openai('gpt-4o-mini'),
+        model: google('gemini-3.8-flash'),
         messages: [
           {
             role: 'user',

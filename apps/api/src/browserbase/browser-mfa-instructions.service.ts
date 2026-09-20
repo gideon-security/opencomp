@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { anthropic } from '@ai-sdk/anthropic';
+import { google } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 import { normalizeHostnameFromUrl } from './browserbase-url';
@@ -7,7 +7,7 @@ import { normalizeHostnameFromUrl } from './browserbase-url';
 // Guidance is plain natural language with no SDK-call shape to validate, so the
 // cheaper/faster model is the right fit — same choice as the manual-steps
 // fallback in ai-remediation.service.
-const MODEL = anthropic('claude-sonnet-4-6');
+const MODEL = google('gemini-3.8-flash');
 
 // A vendor's MFA setup UI rarely changes, so a day keeps guidance fresh while
 // making all-but-the-first request for a vendor instant and free. In-memory is

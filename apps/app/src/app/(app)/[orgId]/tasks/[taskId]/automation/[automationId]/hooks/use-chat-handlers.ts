@@ -74,7 +74,7 @@ export function useChatHandlers({
         { text },
         {
           body: {
-            modelId: 'google/gemini-3.1-flash-lite',
+            modelId: 'google/gemini-3.8-flash',
             reasoningEffort: 'high',
             orgId,
             taskId,
@@ -96,7 +96,7 @@ export function useChatHandlers({
         },
         {
           body: {
-            modelId: 'google/gemini-3.1-flash-lite',
+            modelId: 'google/gemini-3.8-flash',
             reasoningEffort: 'high',
             orgId,
             taskId,
@@ -120,7 +120,7 @@ export function useChatHandlers({
         },
         {
           body: {
-            modelId: 'google/gemini-3.1-flash-lite',
+            modelId: 'google/gemini-3.8-flash',
             reasoningEffort: 'high',
             orgId,
             taskId,

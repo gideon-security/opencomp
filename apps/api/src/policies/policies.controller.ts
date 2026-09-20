@@ -33,7 +33,7 @@ import {
   ApiExtraModels,
 } from '@nestjs/swagger';
 import type { Response } from 'express';
-import { openai } from '@ai-sdk/openai';
+import { google } from '@ai-sdk/google';
 import { streamText, convertToModelMessages, type UIMessage } from 'ai';
 import { db } from '@db';
 import { auth as triggerAuth, tasks } from '@gideon-defender/trigger-local';
@@ -1381,7 +1381,7 @@ export class PoliciesController {
     @Body() body: AISuggestPolicyRequestDto,
     @Res() res: Response,
   ) {
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
       throw new HttpException(
         'AI service not configured',
         HttpStatus.SERVICE_UNAVAILABLE,
@@ -1435,7 +1435,7 @@ Keep responses helpful and focused on the policy editing task.`;
     ];
 
     const result = streamText({
-      model: openai('gpt-5.5'),
+      model: google('gemini-3.8-flash'),
       system: systemPrompt,
       messages: await convertToModelMessages(messages),
     });
