@@ -105,9 +105,9 @@ export function UpdateRiskForm({ risk, onSuccess }: UpdateRiskFormProps) {
             )}
           />
           <div className="flex justify-end pt-4">
-            <button type="submit" disabled={isSubmitting}>
-              <Button loading={isSubmitting}>Save</Button>
-            </button>
+            <Button type="submit" loading={isSubmitting} disabled={isSubmitting}>
+              Save
+            </Button>
           </div>
         </Stack>
       </form>

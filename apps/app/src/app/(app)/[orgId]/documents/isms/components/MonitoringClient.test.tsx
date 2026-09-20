@@ -5,7 +5,7 @@ import {
   mockHasPermission,
   setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDriftResult, IsmsMetric } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
@@ -187,9 +187,18 @@ describe('MonitoringClient', () => {
     hookState.drift = { isStale: false, changedSources: [] };
   });
 
-  it('renders the metrics register with provenance, people, and overdue state', () => {
+  // The metric rows use react-hook-form + zodResolver with a re-sync
+  // `reset()` in an effect. The resolver settles asynchronously after mount,
+  // so flush it inside act before asserting — otherwise React logs
+  // "not wrapped in act" noise for MonitoringRow.
+  async function renderSettled(ui: Parameters<typeof render>[0]) {
+    render(ui);
+    await act(async () => {});
+  }
+
+  it('renders the metrics register with provenance, people, and overdue state', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<MonitoringClient {...baseProps} />);
+    await renderSettled(<MonitoringClient {...baseProps} />);
 
     // Metric names render on the register card and again in the due view.
     expect(screen.getAllByText('Production availability / uptime').length).toBeGreaterThan(0);
@@ -203,9 +212,9 @@ describe('MonitoringClient', () => {
     expect(screen.getAllByText('Overdue').length).toBeGreaterThan(0);
   });
 
-  it('shows the Metrics due bulk-entry view with one row per missing period', () => {
+  it('shows the Metrics due bulk-entry view with one row per missing period', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<MonitoringClient {...baseProps} />);
+    await renderSettled(<MonitoringClient {...baseProps} />);
 
     expect(screen.getByText('Metrics due')).toBeInTheDocument();
     // Overdue metric: current + 2 gap periods; healthy metric: current only —
@@ -217,9 +226,9 @@ describe('MonitoringClient', () => {
     expect(screen.getAllByText(/Same as last period \(99\.90%\)/).length).toBeGreaterThan(0);
   });
 
-  it('shows measurement history with honest recorded-on data and gap rows', () => {
+  it('shows measurement history with honest recorded-on data and gap rows', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<MonitoringClient {...baseProps} />);
+    await renderSettled(<MonitoringClient {...baseProps} />);
 
     // The mocked Collapsible renders open, exposing the history table.
     expect(screen.getAllByText('99.90%').length).toBeGreaterThan(0);
@@ -228,9 +237,9 @@ describe('MonitoringClient', () => {
     expect(screen.getAllByText('Export CSV').length).toBeGreaterThan(0);
   });
 
-  it('allows editing for a user with evidence:update', () => {
+  it('allows editing for a user with evidence:update', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<MonitoringClient {...baseProps} />);
+    await renderSettled(<MonitoringClient {...baseProps} />);
 
     expect(screen.getByText('Add metric')).toBeInTheDocument();
     expect(screen.getAllByLabelText(/^Edit /).length).toBe(2);
@@ -246,21 +255,21 @@ describe('MonitoringClient', () => {
     expect(mockHasPermission).toHaveBeenCalledWith('evidence', 'update');
   });
 
-  it('offers Delete only for custom metrics', () => {
+  it('offers Delete only for custom metrics', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.document = makeDocument({
       metrics: [
         makeMetric({ id: 'met_9', metricKey: null, name: 'Custom metric', source: 'manual' }),
       ],
     });
-    render(<MonitoringClient {...baseProps} />);
+    await renderSettled(<MonitoringClient {...baseProps} />);
 
     expect(screen.getByLabelText('Delete Custom metric')).toBeInTheDocument();
   });
 
-  it('hides mutating controls for a read-only user but keeps export', () => {
+  it('hides mutating controls for a read-only user but keeps export', async () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
-    render(<MonitoringClient {...baseProps} />);
+    await renderSettled(<MonitoringClient {...baseProps} />);
 
     expect(screen.queryByText('Add metric')).not.toBeInTheDocument();
     expect(screen.queryByText('Metrics due')).not.toBeInTheDocument();
@@ -270,12 +279,12 @@ describe('MonitoringClient', () => {
     expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
-  it('warns when no metric is active (clause 9.1 gate)', () => {
+  it('warns when no metric is active (clause 9.1 gate)', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.document = makeDocument({
       metrics: [makeMetric({ isActive: false })],
     });
-    render(<MonitoringClient {...baseProps} />);
+    await renderSettled(<MonitoringClient {...baseProps} />);
 
     // Surfaced twice: the register warning and the submit-blocked reason.
     expect(screen.getAllByText(/At least one metric must be active\./).length).toBeGreaterThan(0);

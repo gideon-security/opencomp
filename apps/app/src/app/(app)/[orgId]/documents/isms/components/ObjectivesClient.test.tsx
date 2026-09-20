@@ -5,7 +5,7 @@ import {
   mockHasPermission,
   setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsDocument, IsmsDriftResult, IsmsObjective } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
@@ -145,9 +145,18 @@ describe('ObjectivesClient', () => {
     hookState.drift = { isStale: false, changedSources: [] };
   });
 
-  it('renders the objectives register with provenance', () => {
+  // Objective rows use react-hook-form + zodResolver with a re-sync
+  // `reset()` in an effect. The resolver settles asynchronously after mount,
+  // so flush it inside act before asserting — otherwise React logs
+  // "not wrapped in act" noise.
+  async function renderSettled(ui: Parameters<typeof render>[0]) {
+    render(ui);
+    await act(async () => {});
+  }
+
+  it('renders the objectives register with provenance', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<ObjectivesClient {...baseProps} />);
+    await renderSettled(<ObjectivesClient {...baseProps} />);
 
     // Read-first cards show the objective text + status, not always-on inputs.
     expect(screen.getByText('Reduce phishing click rate')).toBeInTheDocument();
@@ -161,9 +170,9 @@ describe('ObjectivesClient', () => {
     expect(screen.getAllByText('Manual').length).toBeGreaterThan(0);
   });
 
-  it('allows editing (shows mutating controls) for a user with evidence:update', () => {
+  it('allows editing (shows mutating controls) for a user with evidence:update', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<ObjectivesClient {...baseProps} />);
+    await renderSettled(<ObjectivesClient {...baseProps} />);
 
     expect(screen.getByText('shell.generate')).toBeInTheDocument();
     expect(screen.getByText('Add objective')).toBeInTheDocument();
@@ -172,9 +181,9 @@ describe('ObjectivesClient', () => {
     expect(mockHasPermission).toHaveBeenCalledWith('evidence', 'update');
   });
 
-  it('hides mutating controls for a read-only user but keeps export', () => {
+  it('hides mutating controls for a read-only user but keeps export', async () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
-    render(<ObjectivesClient {...baseProps} />);
+    await renderSettled(<ObjectivesClient {...baseProps} />);
 
     expect(screen.queryByText('shell.generate')).not.toBeInTheDocument();
     expect(screen.queryByText('Add objective')).not.toBeInTheDocument();
@@ -190,7 +199,7 @@ describe('ObjectivesClient', () => {
   it('shows the drift banner when the document is stale', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.drift = { isStale: true, changedSources: ['vendorCount', 'memberCount'] };
-    render(<ObjectivesClient {...baseProps} />);
+    await renderSettled(<ObjectivesClient {...baseProps} />);
 
     await waitFor(() => {
       expect(screen.getByText('Out of date')).toBeInTheDocument();

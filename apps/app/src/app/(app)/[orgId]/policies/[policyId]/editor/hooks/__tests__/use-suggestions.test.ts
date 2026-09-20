@@ -909,14 +909,15 @@ describe('useSuggestions', () => {
       expect(result.current.ranges[0].decision).toBe('pending');
     });
 
-    it('does not affect non-loading ranges', async () => {
+    it('does not affect non-loading ranges', () => {
       const ranges = [
         makeSuggestionRange({ id: 'suggestion-1-1', decision: 'pending' }),
         makeSuggestionRange({ id: 'suggestion-2-2', decision: 'pending' }),
       ];
       vi.mocked(computeSuggestionRanges).mockReturnValue(ranges);
       const editor = makeMockEditor();
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network error')));
+      // Uses the default hanging fetch from beforeEach so the range stays in
+      // 'loading' without settling (no console.error noise, no post-test act).
 
       const { result } = renderHook(() =>
         useSuggestions({
@@ -926,9 +927,12 @@ describe('useSuggestions', () => {
       );
 
       // Put only first range into loading
-      await act(async () => {
-        await result.current.giveFeedback('suggestion-1-1', 'feedback');
+      act(() => {
+        void result.current.giveFeedback('suggestion-1-1', 'feedback');
       });
+
+      expect(result.current.ranges[0].decision).toBe('loading');
+      expect(result.current.ranges[1].decision).toBe('pending');
 
       act(() => {
         result.current.resetLoading();

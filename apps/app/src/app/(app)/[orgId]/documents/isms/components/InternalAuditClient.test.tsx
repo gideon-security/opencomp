@@ -5,7 +5,7 @@ import {
   mockHasPermission,
   setMockPermissions,
 } from '@/test-utils/mocks/permissions';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IsmsAudit, IsmsDocument, IsmsDriftResult } from '../isms-types';
 import { ismsDesignSystemMock, ismsIconsMock, ismsSharedMock } from './__test-helpers__/dsMocks';
@@ -190,9 +190,18 @@ describe('InternalAuditClient', () => {
     hookState.drift = { isStale: false, changedSources: [] };
   });
 
-  it('renders the programme paragraph and the audit with its plan fields', () => {
+  // The audit cards use react-hook-form + zodResolver with a re-sync
+  // `reset()` in an effect. The resolver settles asynchronously after mount,
+  // so flush it inside act before asserting — otherwise React logs
+  // "not wrapped in act" noise for ProgrammeCard/AuditCard/rows.
+  async function renderSettled(ui: Parameters<typeof render>[0]) {
+    render(ui);
+    await act(async () => {});
+  }
+
+  it('renders the programme paragraph and the audit with its plan fields', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<InternalAuditClient {...baseProps} />);
+    await renderSettled(<InternalAuditClient {...baseProps} />);
 
     expect(
       screen.getByText('Acme runs an annual internal audit of the whole ISMS.'),
@@ -208,9 +217,9 @@ describe('InternalAuditClient', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the Controls Tested table with results and notes', () => {
+  it('renders the Controls Tested table with results and notes', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<InternalAuditClient {...baseProps} />);
+    await renderSettled(<InternalAuditClient {...baseProps} />);
 
     expect(screen.getByText('auditControls.title')).toBeInTheDocument();
     // Appears in the table and again as the finding's related control.
@@ -220,9 +229,9 @@ describe('InternalAuditClient', () => {
     expect(screen.getByText('Three metrics overdue. See F-01.')).toBeInTheDocument();
   });
 
-  it('renders findings with type, owner and linked control', () => {
+  it('renders findings with type, owner and linked control', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<InternalAuditClient {...baseProps} />);
+    await renderSettled(<InternalAuditClient {...baseProps} />);
 
     expect(screen.getByText('F-01')).toBeInTheDocument();
     expect(screen.getByText('internalAuditValidation.findingTypes.ncMinor')).toBeInTheDocument();
@@ -233,9 +242,9 @@ describe('InternalAuditClient', () => {
     expect(screen.getAllByText('Approver Two').length).toBeGreaterThan(0);
   });
 
-  it('renders the three sign-off slots with the signed count', () => {
+  it('renders the three sign-off slots with the signed count', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<InternalAuditClient {...baseProps} />);
+    await renderSettled(<InternalAuditClient {...baseProps} />);
 
     expect(screen.getByText('Sign-off')).toBeInTheDocument();
     expect(screen.getByText('1 of 3 signed')).toBeInTheDocument();
@@ -243,9 +252,9 @@ describe('InternalAuditClient', () => {
     expect(screen.getByLabelText('Top Management signatory name')).toBeInTheDocument();
   });
 
-  it('allows editing for a user with evidence:update', () => {
+  it('allows editing for a user with evidence:update', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
-    render(<InternalAuditClient {...baseProps} />);
+    await renderSettled(<InternalAuditClient {...baseProps} />);
 
     expect(screen.getByText('New audit')).toBeInTheDocument();
     expect(screen.getByText('auditControls.addRow')).toBeInTheDocument();
@@ -255,9 +264,9 @@ describe('InternalAuditClient', () => {
     expect(mockHasPermission).toHaveBeenCalledWith('evidence', 'update');
   });
 
-  it('hides mutating controls for a read-only user but keeps export', () => {
+  it('hides mutating controls for a read-only user but keeps export', async () => {
     setMockPermissions(AUDITOR_PERMISSIONS);
-    render(<InternalAuditClient {...baseProps} />);
+    await renderSettled(<InternalAuditClient {...baseProps} />);
 
     expect(screen.queryByText('New audit')).not.toBeInTheDocument();
     expect(screen.queryByText('Add control row')).not.toBeInTheDocument();
@@ -268,22 +277,22 @@ describe('InternalAuditClient', () => {
     expect(screen.getByText('shell.exportDocx')).toBeInTheDocument();
   });
 
-  it('warns when no audit is recorded (clause 9.2 gate)', () => {
+  it('warns when no audit is recorded (clause 9.2 gate)', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.document = makeDocument({ audits: [] });
-    render(<InternalAuditClient {...baseProps} />);
+    await renderSettled(<InternalAuditClient {...baseProps} />);
 
     expect(screen.getAllByText('submitBlocked').length).toBeGreaterThan(0);
     // Empty state invites creating the first audit.
     expect(screen.getByText('No audits yet')).toBeInTheDocument();
   });
 
-  it('warns when a completed audit has no conclusion verdict', () => {
+  it('warns when a completed audit has no conclusion verdict', async () => {
     setMockPermissions(ADMIN_PERMISSIONS);
     hookState.document = makeDocument({
       audits: [makeAudit({ conclusionVerdict: null })],
     });
-    render(<InternalAuditClient {...baseProps} />);
+    await renderSettled(<InternalAuditClient {...baseProps} />);
 
     expect(screen.getAllByText('submitBlocked').length).toBeGreaterThan(0);
   });

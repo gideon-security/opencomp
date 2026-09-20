@@ -37,6 +37,11 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: '22'
+          # SBOM job only parses pnpm-lock.yaml via syft — no install, no cache.
+          # setup-node v5 auto-enables package-manager caching by default, which
+          # tries to locate the pnpm binary and fails with
+          # "Unable to locate executable file: pnpm" when pnpm isn't installed.
+          package-manager-cache: false
 
       # Generates an SPDX SBOM from pnpm-lock.yaml and uploads it as a
       # workflow artifact. No dependency-snapshot submission: GitHub's native
