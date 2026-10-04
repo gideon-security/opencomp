@@ -15,7 +15,6 @@ import {
   awsCloudShellScript,
   awsCredentialFields,
   awsCredentialSchema,
-  awsSetupInstructions,
 } from './credentials';
 
 export const awsManifest: IntegrationManifest = {
@@ -35,7 +34,9 @@ export const awsManifest: IntegrationManifest = {
       description: 'AWS IAM Role Assumption - secure cross-account access',
       credentialFields: awsCredentialFields,
       validationSchema: awsCredentialSchema,
-      setupInstructions: awsSetupInstructions,
+      // No static setupInstructions: the EXTERNAL_ID is issued per
+      // connection, so a static string can never carry the right value.
+      // Surfaces render the per-connection CloudShell script instead.
       setupScript: awsCloudShellScript,
     },
   },
